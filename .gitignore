@@ -1,0 +1,75 @@
+# Unity specific
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Bb]urstCache/
+[Ll]ogs/
+[Mm]emoryCaptures/
+Recordings/
+SysInfo.txt
+UserSettings/
+Assets/Synty/
+
+# Visual Studio / JetBrains
+.vs/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.db
+*.opendb
+*.VC.db
+
+# Rider / JetBrains IDEA
+.idea/
+*.sln.iml
+
+# Generated/exported data
+*.apk
+*.aab
+*.unitypackage
+*.cap
+*.orig
+*.mdb
+*.pdb
+*.apk
+*.aab
+*.ipa
+*.app
+
+# Crash/Profiler
+crashlytics-build.properties
+*.dmp
+*.memgraph
+*.stacktrace
+*.log
+
+# TextMesh Pro local cache
+Assets/TextMesh Pro/
+
+# Addressables / AssetBundle caches
+[Aa]sset[Bb]undles/
+StreamingAssets/aa.meta
+
+# Collaborate
+CollabSnapshot/
+
+# PlasticSCM
+PlasticSCM/*
+
+# Misc
+.DS_Store
+Thumbs.db
+*.swp
+*.lock
+
+# Package Manager
+Packages/packages-lock.json
