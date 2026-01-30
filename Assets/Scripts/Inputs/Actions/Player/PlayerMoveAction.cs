@@ -38,8 +38,6 @@ public class PlayerMoveAction : InputActionHandler
         Vector3 worldDirection = CalculateWorldDirection(rawInput);
         PlayerMoveIntentStruct intent = new PlayerMoveIntentStruct(rawInput, worldDirection);
 
-        // Dispatch the intent (implementation depends on your EventDispatcher setup)
-        Debug.Log($"PlayerMoveAction: Publishing intent {intent}");
         eventDispatcher.Publish(intent);
     }
 
