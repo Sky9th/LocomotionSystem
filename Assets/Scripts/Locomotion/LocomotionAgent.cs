@@ -11,16 +11,30 @@ public class LocomotionAgent : MonoBehaviour
     [SerializeField] private bool autoRegister = true;
     [SerializeField] private bool markAsPlayer;
     [SerializeField] private bool subscribePlayerMoveIntent = true;
+    [Header("Rig References")]
+    [SerializeField] private Transform followTarget;
+
+    [Header("Motion Settings")]
+    [SerializeField, Min(0f)] private float moveSpeed = 4f;
+    [SerializeField, Min(0f)] private float acceleration = 20f;
+
+    [Header("Debug")]
+    [SerializeField] private bool drawDebugVectors;
+    [SerializeField, Min(0.1f)] private float debugForwardLength = 2f;
 
     private bool isRegistered;
     private PlayerLocomotionStruct latestSnapshot = PlayerLocomotionStruct.Default;
     private PlayerMoveIntentStruct lastMoveIntent = PlayerMoveIntentStruct.None;
-    private EventDispatcher eventDispatcher;
-    private bool isSubscribedToMoveIntent;
+    private MoveIntentHandler moveIntentHandler;
+    private Vector3 currentVelocity;
+    private GroundContactStruct lastGroundContact = GroundContactStruct.None;
+    private Vector3 followForward = Vector3.forward;
 
     public bool IsPlayer => markAsPlayer;
     public bool IsRegistered => isRegistered;
     public PlayerLocomotionStruct Snapshot => latestSnapshot;
+    public PlayerMoveIntentStruct LastMoveIntent => lastMoveIntent;
+    public Vector3 FollowForward => followForward;
 
     private void Awake()
     {
@@ -28,6 +42,8 @@ public class LocomotionAgent : MonoBehaviour
         {
             manager = FindManagerInScene();
         }
+        ResolveFollowTarget();
+        UpdateFollowForward();
     }
 
     private void OnEnable()
@@ -45,6 +61,24 @@ public class LocomotionAgent : MonoBehaviour
         TryRegisterWithManager();
     }
 
+    private void Update()
+    {
+        if (!isRegistered)
+        {
+            return;
+        }
+
+        float deltaTime = Time.deltaTime;
+        if (deltaTime <= Mathf.Epsilon)
+        {
+            return;
+        }
+
+        UpdateFollowForward();
+        DrawDebugVectors();
+        SimulateLocomotion(deltaTime);
+    }
+
     private void OnDisable()
     {
         if (manager != null && isRegistered)
@@ -54,7 +88,10 @@ public class LocomotionAgent : MonoBehaviour
         }
 
         lastMoveIntent = PlayerMoveIntentStruct.None;
-        UnsubscribePlayerMoveIntent();
+        currentVelocity = Vector3.zero;
+        lastGroundContact = GroundContactStruct.None;
+        followForward = transform.forward;
+        UnregisterIntentHandlers();
     }
 
     public bool TryRegisterWithManager()
@@ -77,7 +114,7 @@ public class LocomotionAgent : MonoBehaviour
         if (manager.RegisterComponent(this))
         {
             isRegistered = true;
-            SubscribePlayerMoveIntent();
+            RegisterIntentHandlers();
             return true;
         }
 
@@ -96,43 +133,99 @@ public class LocomotionAgent : MonoBehaviour
     }
 
 
-    private void SubscribePlayerMoveIntent()
+    private void RegisterIntentHandlers()
     {
-        if (!subscribePlayerMoveIntent || isSubscribedToMoveIntent)
+        if (subscribePlayerMoveIntent)
+        {
+            moveIntentHandler ??= new MoveIntentHandler(this);
+            moveIntentHandler.Subscribe();
+        }
+    }
+
+    private void UnregisterIntentHandlers()
+    {
+        moveIntentHandler?.Unsubscribe();
+    }
+
+    private void SimulateLocomotion(float deltaTime)
+    {
+        Vector3 desiredVelocity = CalculateDesiredVelocity();
+        currentVelocity = Vector3.MoveTowards(currentVelocity, desiredVelocity, acceleration * deltaTime);
+
+        PlayerLocomotionState state = currentVelocity.sqrMagnitude > Mathf.Epsilon
+            ? PlayerLocomotionState.Walk
+            : PlayerLocomotionState.Idle;
+        Vector3 forward = followForward;
+
+        lastGroundContact = new GroundContactStruct(true, transform.position, Vector3.up);
+
+        PlayerLocomotionStruct snapshot = new PlayerLocomotionStruct(
+            transform.position,
+            currentVelocity,
+            forward,
+            state,
+            lastGroundContact);
+
+        PushSnapshot(snapshot);
+    }
+
+    private Vector3 CalculateDesiredVelocity()
+    {
+        if (lastMoveIntent.HasInput)
+        {
+            return lastMoveIntent.WorldDirection * moveSpeed;
+        }
+
+        return Vector3.zero;
+    }
+
+    private void ResolveFollowTarget()
+    {
+        if (followTarget != null)
         {
             return;
         }
 
-        if (GameContext.Instance != null && GameContext.Instance.TryResolveService(out EventDispatcher dispatcher))
+        var follow = transform.Find("Follow");
+        if (follow != null)
         {
-            eventDispatcher = dispatcher;
-            eventDispatcher.Subscribe<PlayerMoveIntentStruct>(OnPlayerMoveIntent);
-            isSubscribedToMoveIntent = true;
+            followTarget = follow;
         }
     }
 
-    private void OnPlayerMoveIntent(PlayerMoveIntentStruct intent, MetaStruct meta)
+    private void UpdateFollowForward()
     {
-        if (!isRegistered || !subscribePlayerMoveIntent)
+        Vector3 forwardSource;
+        if (followTarget != null)
+        {
+            forwardSource = followTarget.forward;
+        }
+        else
+        {
+            forwardSource = transform.forward;
+        }
+
+        forwardSource.y = 0f;
+        if (forwardSource.sqrMagnitude <= Mathf.Epsilon)
+        {
+            forwardSource = transform.forward;
+            forwardSource.y = 0f;
+        }
+
+        followForward = forwardSource.sqrMagnitude > Mathf.Epsilon
+            ? forwardSource.normalized
+            : Vector3.forward;
+    }
+
+    private void DrawDebugVectors()
+    {
+        if (!drawDebugVectors)
         {
             return;
         }
 
-        BufferPlayerMoveIntent(intent);
+        Debug.DrawRay(transform.position, followForward * debugForwardLength, Color.cyan);
     }
-
-    private void UnsubscribePlayerMoveIntent()
-    {
-        if (!isSubscribedToMoveIntent || eventDispatcher == null)
-        {
-            return;
-        }
-
-        eventDispatcher.Unsubscribe<PlayerMoveIntentStruct>(OnPlayerMoveIntent);
-        isSubscribedToMoveIntent = false;
-    }
-
-
     private LocomotionManager FindManagerInScene()
     {
         if (GameContext.Instance != null && GameContext.Instance.TryResolveService(out LocomotionManager resolved))

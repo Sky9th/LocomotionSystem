@@ -1,0 +1,33 @@
+using UnityEngine;
+
+/// <summary>
+/// Central registry for Animator parameters consumed by LocomotionAdapter.
+/// Edit here when adding/removing animator bindings so every adapter stays consistent.
+/// </summary>
+internal static class LocomotionAnimatorParameters
+{
+    public const string Speed = "Speed";
+    public const string Acceleration = "Acceleration";
+    public const string State = "LocomotionState";
+    public const string MoveX = "MoveX";
+    public const string MoveY = "MoveY";
+    public const string Grounded = "IsGrounded";
+
+    public static readonly int SpeedHash = HashParameter(Speed);
+    public static readonly int AccelerationHash = HashParameter(Acceleration);
+    public static readonly int StateHash = HashParameter(State);
+    public static readonly int MoveXHash = HashParameter(MoveX);
+    public static readonly int MoveYHash = HashParameter(MoveY);
+    public static readonly int GroundedHash = HashParameter(Grounded);
+
+    private static int HashParameter(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            Debug.LogError("Animator parameter name is missing in LocomotionAnimatorParameters.");
+            return -1;
+        }
+
+        return Animator.StringToHash(name);
+    }
+}

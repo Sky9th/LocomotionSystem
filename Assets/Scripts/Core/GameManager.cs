@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private InputManager inputManager;
     [SerializeField] private CameraManager cameraManager;
     [SerializeField] private LocomotionManager locomotionManager;
+    [Header("System Options")]
+    [SerializeField] private bool hideCursorOnBootstrap = true;
 
     public GameContext Context => gameContext;
     public EventDispatcher Dispatcher => eventDispatcher;
@@ -44,6 +46,8 @@ public class GameManager : MonoBehaviour
         {
             Instance = null;
         }
+
+        ApplyCursorSettings(false);
     }
 
     private void WireDependencies()
@@ -94,6 +98,7 @@ public class GameManager : MonoBehaviour
         RegisterService(cameraManager, nameof(cameraManager));
         RegisterService(locomotionManager, nameof(locomotionManager));
 
+        ApplyCursorSettings(hideCursorOnBootstrap);
         isBootstrapped = true;
     }
 
@@ -106,5 +111,11 @@ public class GameManager : MonoBehaviour
         }
 
         service.Register(gameContext);
+    }
+
+    private static void ApplyCursorSettings(bool hideCursor)
+    {
+        Cursor.visible = !hideCursor;
+        Cursor.lockState = hideCursor ? CursorLockMode.Locked : CursorLockMode.None;
     }
 }
