@@ -20,6 +20,11 @@ public abstract class InputActionHandler : ScriptableObject
     protected bool IsContextBound { get; private set; }
     protected bool IsEnabled { get; private set; }
 
+    internal bool SupportsState(EGameState state)
+    {
+        return OnSupportsState(state);
+    }
+
     /// <summary>
     /// Public entry point used by InputManager to supply the current shared
     /// context (camera transform, stance references, etc.).
@@ -88,4 +93,9 @@ public abstract class InputActionHandler : ScriptableObject
     }
 
     protected abstract void Execute (InputAction.CallbackContext context);
+
+    protected virtual bool OnSupportsState(EGameState state)
+    {
+        return true;
+    }
 }

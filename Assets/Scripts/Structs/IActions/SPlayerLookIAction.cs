@@ -3,12 +3,12 @@ using UnityEngine;
 
 /// <summary>
 /// Canonical payload that represents aggregated look deltas (mouse/controller) for the player camera.
-/// Stored under Structs/Intents so every subsystem observes the same DTO layout.
+/// Stored under Structs/IActions so every subsystem observes the same DTO layout.
 /// </summary>
 [Serializable]
-public struct PlayerLookIntentStruct
+public struct SPlayerLookIAction
 {
-    public PlayerLookIntentStruct(Vector2 delta)
+    public SPlayerLookIAction(Vector2 delta)
     {
         Delta = delta;
     }
@@ -20,5 +20,5 @@ public struct PlayerLookIntentStruct
 
     public bool HasDelta => Delta.sqrMagnitude > Mathf.Epsilon;
 
-    public static PlayerLookIntentStruct None => new PlayerLookIntentStruct(Vector2.zero);
+    public static SPlayerLookIAction None => new SPlayerLookIAction(Vector2.zero);
 }

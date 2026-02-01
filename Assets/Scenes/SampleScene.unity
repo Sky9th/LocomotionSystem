@@ -478,6 +478,54 @@ MonoBehaviour:
   logRegistrations: 0
   defaultPlayerAgent: {fileID: 0}
   inspectorAgents: []
+--- !u!1 &382845006
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 382845007}
+  - component: {fileID: 382845008}
+  m_Layer: 0
+  m_Name: GameState
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &382845007
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 382845006}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1935384744}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &382845008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 382845006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3807a6d59bb64734b985b603b76d0900, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  initialState: 10
+  logTransitions: 0
+  currentState: 0
+  previousState: 0
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -993,6 +1041,9 @@ MonoBehaviour:
   followTarget: {fileID: 0}
   moveSpeed: 4
   acceleration: 20
+  maxHeadYawDegrees: 75
+  maxHeadPitchDegrees: 75
+  headLookSmoothingSpeed: 540
   drawDebugVectors: 1
   debugForwardLength: 2
 --- !u!114 &1442721876
@@ -1014,6 +1065,7 @@ MonoBehaviour:
   runtimeSpeed: 0
   runtimeAcceleration: 0
   runtimeIntent: {x: 0, y: 0}
+  runtimeHeadLook: {x: 0, y: 0}
 --- !u!114 &1442721877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1255,6 +1307,7 @@ MonoBehaviour:
   actionHandlers:
   - {fileID: 11400000, guid: f40b8d7ebb79ed64ebecd12c9e86669f, type: 2}
   - {fileID: 11400000, guid: 03fcc991a49c02a4387e36007f7f6e01, type: 2}
+  - {fileID: 11400000, guid: 6bbab9c561509af44a4e4b2c2a749982, type: 2}
 --- !u!1 &1935384742
 GameObject:
   m_ObjectHideFlags: 0
@@ -1286,10 +1339,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameContext: {fileID: 0}
   eventDispatcher: {fileID: 0}
+  gameState: {fileID: 0}
   inputManager: {fileID: 0}
   cameraManager: {fileID: 0}
   locomotionManager: {fileID: 0}
-  hideCursorOnBootstrap: 1
+  lockCursorWhenPlaying: 1
+  hideCursorWhenPlaying: 1
+  showCursorInMenus: 1
 --- !u!4 &1935384744
 Transform:
   m_ObjectHideFlags: 0
@@ -1308,6 +1364,7 @@ Transform:
   - {fileID: 420502196}
   - {fileID: 1486990743}
   - {fileID: 343272091}
+  - {fileID: 382845007}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807

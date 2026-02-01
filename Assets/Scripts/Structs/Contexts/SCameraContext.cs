@@ -6,9 +6,9 @@ using UnityEngine;
 /// Shared via GameContext so any subsystem can reason about camera pose/FOV deterministically.
 /// </summary>
 [Serializable]
-public struct CameraContextStruct
+public struct SCameraContext
 {
-    public CameraContextStruct(
+    public SCameraContext(
         Vector3 position,
         Quaternion rotation,
         float fieldOfView,

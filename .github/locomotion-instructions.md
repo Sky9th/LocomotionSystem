@@ -2,7 +2,7 @@
 
 ## 目标
 - 构建基于 RuntimeServiceBase 生命周期的确定性、对设计友好的角色移动管线。
-- 保持输入、物理、表现分离：Locomotion 负责消费意图与推进物理，其它系统只需观测快照/事件。
+- 保持输入、物理、表现分离：Locomotion 负责消费 IAction 与推进物理，其它系统只需观测快照/事件。
 
 ## 架构
 ### 玩家 Rig 约定
@@ -11,9 +11,9 @@
 - Locomotion 始终以 `Follow` 的水平前向作为角色的“期望前进方向”；即便 `Model` 还未对齐，也根据 `Follow` 的朝向来采样输入与推进速度。
 - 当 `Model` 朝向与 `Follow` 不一致时，Locomotion 需要触发转身（补间或立即对齐），确保最终 `Model` 与 `Follow` 同步，避免摄像机与运动矢量脱节。
 
-### 数据流（Handler → Agent → Manager → GameContext → Adapter）
-- 所有原始输入或 AI 指令都以 Struct 意图形式进入 `LocomotionAgent`。
-- Agent 在本地状态机中消化这些意图，生成唯一可信的 `PlayerLocomotionStruct`，并通过 `LocomotionManager` 推送到 `GameContext`。
+-### 数据流（Handler → Agent → Manager → GameContext → Adapter）
+- 所有原始输入或 AI 指令都以 `S` 前缀的 IAction 结构进入 `LocomotionAgent`。
+- Agent 在本地状态机中消化这些 IAction，生成唯一可信的 `SPlayerLocomotion`，并通过 `LocomotionManager` 推送到 `GameContext`。
 - 各类 `LocomotionAdapter` 只读 Agent/Manager 提供的快照，驱动 Animator、音频、特效等表现层。
 
 1. **LocomotionManager : RuntimeServiceBase（注册器）**
@@ -24,30 +24,30 @@
 2. **LocomotionAgent（每角色挂载）**
    - MonoBehaviour 形式挂在玩家或 AI 身上，持有 CharacterController/Rigidbody、局部配置 Profile 等核心依赖。
    - `OnEnable` 时尝试向 LocomotionManager 注册，若 Manager 尚未初始化则在 Awake 中缓存引用并在下一帧重试。
-   - 通过 `IntentHandler<T>` 子类订阅玩家输入（Move、Jump 等）或 AI 指令，统一缓存在 Agent 内部；同一 Agent 可以同时拥有多种 Handler。
-   - 在 `Update`/`FixedUpdate` 中读取最新意图、驱动状态机与地面检测，生成单一可信的 `PlayerLocomotionStruct`（或通用快照）。
+   - 通过 IAction Handler（例如后续会替换 `IntentHandler<T>` 的实现）订阅玩家输入（Move、Jump 等）或 AI 指令，统一缓存在 Agent 内部；同一 Agent 可以同时拥有多种 Handler。
+   - 在 `Update`/`FixedUpdate` 中读取最新 IAction、驱动状态机与地面检测，生成单一可信的 `SPlayerLocomotion`（或通用快照）。
    - 调用 `PushSnapshot()` 把快照同步给 LocomotionManager；需要时 Manager 再写入 GameContext，供其他系统查询。
 
 3. **LocomotionAdapter（参数与表现桥接器）**
-   - 独立 MonoBehaviour，作为 LocomotionAgent 的伴随组件，**只读** Agent 推送的快照/意图缓存，把速度、加速度、状态标签等映射到 Animator、VFX、音频或 UI；不再负责生成/修改快照。
+   - 独立 MonoBehaviour，作为 LocomotionAgent 的伴随组件，**只读** Agent 推送的快照/IAction 缓存，把速度、加速度、状态标签等映射到 Animator、VFX、音频或 UI；不再负责生成/修改快照。
    - 暴露序列化字段以配置 Animator 参数名（Hash 缓存）、插值/平滑曲线、阈值触发（如落地、加速），并在 `Update`/`LateUpdate` 中执行同步，确保表现调参与核心物理解耦。
    - 可以针对不同表现需求挂载多个 Adapter（动画、脚步音、屏幕震动等）；基类 `LocomotionAdapter` 可直接承担“通用表现桥接”职责，必要时再派生出 `LocomotionAnimatorAdapter`、`LocomotionFootstepAdapter` 等专用实现。
    - 每个 Adapter 仅消费数据，必要时做局部平滑或延迟处理，并可通过 `Logger` / 事件输出调试信息，方便设计师验证表现层逻辑而无需触碰 Agent 状态机。
 
 4. **输入链路**
-   - 玩家：Input System 的 `PlayerMoveAction` 等 Handler 发布意图 → 对应 `LocomotionAgent` 订阅并 `BufferPlayerMoveIntent`（或其它缓存函数）。
-   - 视角：`PlayerLookAction` 仍负责驱动摄像机/Follow，但 Locomotion 不再订阅 `PlayerLookIntentStruct`，只需从 `Follow` Transform 读取结果即可。
-   - AI：脚本/行为树直接调用 Agent 提供的 API（如 `SetDesiredDirection(Vector3)`、`InjectIntentStruct`）写入同一套缓存。
-   - Intent Struct 始终不可变，Agent 是唯一的写入口；Handler、AI 或 Adapter 均不得直接修改 Agent 的状态机数据。
+   - 玩家：Input System 的 `PlayerMoveAction` 等 Handler 发布 IAction → 对应 `LocomotionAgent` 订阅并 `BufferPlayerMoveIAction`（或其它缓存函数）。
+   - 视角：`PlayerLookAction` 仍负责驱动摄像机/Follow，但 Locomotion 不再订阅 `SPlayerLookIAction`，只需从 `Follow` Transform 读取结果即可。
+   - AI：脚本/行为树直接调用 Agent 提供的 API（如 `SetDesiredDirection(Vector3)`、`InjectIAction`）写入同一套缓存。
+   - IAction 结构始终不可变，Agent 是唯一的写入口；Handler、AI 或 Adapter 均不得直接修改 Agent 的状态机数据。
 
 5. **状态机**
    - 状态：`Idle`、`Walk`、`Sprint`、`Airborne`，可扩展 `Slide`、`Climb`。
-   - 转换条件依赖地面检测、意图强度、体力等标志；额外记录 `Follow` 与 `Model` 的夹角，在需要快速转身（如>120°）时可进入专用 `Turn`/`SnapTurn` 状态。
+   - 转换条件依赖地面检测、IAction 强度、体力等标志；额外记录 `Follow` 与 `Model` 的夹角，在需要快速转身（如>120°）时可进入专用 `Turn`/`SnapTurn` 状态。
    - 每个状态定义加速度、最大速度、阻尼及进入/退出事件，并指定如何将 `Follow` 前向映射为 `Model` 的目标前向（直接对齐或缓动）。
 
 6. **地面与表面**
    - 每帧执行一次 Raycast/Spherecast，求得地面法线、坡度、材质标签。
-   - 以 `GroundContact` Struct 缓存结果并写入 `PlayerLocomotionStruct`。
+   - 以 `SGroundContact` 缓存结果并写入 `SPlayerLocomotion`。
    - 通过 ScriptableObject 配置坡度阈值、台阶高度等容差。
 
 7. **物理集成**
@@ -56,7 +56,7 @@
    - 暴露 `OnMoveComputed(Vector3 desiredVelocity)` 等调试回调。
 
 8. **快照与事件**
-   - `PlayerLocomotionStruct` 字段：位置、速度、前向、上向、当前状态、是否贴地、地面法线、坡度角等，由 Agent 在运动计算后组装；前向统一来自 `Follow` 的水平投影，并记录 `Model` 与 `Follow` 的对齐误差，方便 Adapter 做“转身动画”。
+   - `SPlayerLocomotion` 字段：位置、速度、前向、上向、当前状态、是否贴地、地面法线、坡度角等，由 Agent 在运动计算后组装；前向统一来自 `Follow` 的水平投影，并记录 `Model` 与 `Follow` 的对齐误差，方便 Adapter 做“转身动画”。
    - Agent 调用 `PushSnapshot()` → LocomotionManager `PublishSnapshot()` 缓存 → Manager 视情况把玩家快照写入 `GameContext`。
    - Agent 或 Manager 可通过 EventDispatcher 广播状态事件（开始移动、进入冲刺、落地、离地），Adapter 只做监听而不生成事件。
 
@@ -67,11 +67,11 @@
 
 10. **调试与工具**
    - Inspector 开关：Gizmo（目标方向、地面法线）、运行时指标（当前速度、坡度）。
-   - 提供 Editor `LocomotionDebugger` 面板用于快速查看状态/意图。
+   - 提供 Editor `LocomotionDebugger` 面板用于快速查看状态/IAction。
 
 ## 实现顺序
-1. 定义基础数据结构（`PlayerLocomotionStruct`、`GroundContactStruct`），仅包含 Idle/Walk 所需字段。
-2. 实现 `LocomotionManager`（注册中心），并建立 `LocomotionAgent` 框架：包含意图缓存、CharacterController 流程、Idle↔Walk 状态判定。
+1. 定义基础数据结构（`SPlayerLocomotion`、`SGroundContact`），仅包含 Idle/Walk 所需字段。
+2. 实现 `LocomotionManager`（注册中心），并建立 `LocomotionAgent` 框架：包含 IAction 缓存、CharacterController 流程、Idle↔Walk 状态判定。
 3. 增加最小化 ScriptableObject 配置（步行速度、加速度、地面检测参数），并允许不同组件指派不同 Profile。
 4. 玩家组件推送快照到 GameContext，Manager 同步注册，Inspector 中验证 Idle/Walk 状态及速度更新。
 5. 在 Idle/Walk 验证稳定后，再按需拓展 Sprint、Airborne、Jump 等高级动作，并为 AI 组件铺设专属输入接口。
