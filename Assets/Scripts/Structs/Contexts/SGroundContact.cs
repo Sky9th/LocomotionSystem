@@ -5,9 +5,9 @@ using UnityEngine;
 /// 描述角色当前与地面的接触情况。首版仅需 Idle/Walk 信息，可后续拓展。
 /// </summary>
 [Serializable]
-public struct GroundContactStruct
+public struct SGroundContact
 {
-    public GroundContactStruct(bool isGrounded, Vector3 point, Vector3 normal)
+    public SGroundContact(bool isGrounded, Vector3 point, Vector3 normal)
     {
         IsGrounded = isGrounded;
         ContactPoint = point;
@@ -18,5 +18,5 @@ public struct GroundContactStruct
     public Vector3 ContactPoint { get; }
     public Vector3 ContactNormal { get; }
 
-    public static GroundContactStruct None => new GroundContactStruct(false, Vector3.zero, Vector3.up);
+    public static SGroundContact None => new SGroundContact(false, Vector3.zero, Vector3.up);
 }

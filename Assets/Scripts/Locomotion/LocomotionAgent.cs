@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -10,7 +11,8 @@ public class LocomotionAgent : MonoBehaviour
     [SerializeField] private LocomotionManager manager;
     [SerializeField] private bool autoRegister = true;
     [SerializeField] private bool markAsPlayer;
-    [SerializeField] private bool subscribePlayerMoveIntent = true;
+    [SerializeField] private bool subscribePlayerMoveAction = true;
+    [SerializeField] private bool subscribePlayerLookAction = true;
     [Header("Rig References")]
     [SerializeField] private Transform followTarget;
 
@@ -18,23 +20,32 @@ public class LocomotionAgent : MonoBehaviour
     [SerializeField, Min(0f)] private float moveSpeed = 4f;
     [SerializeField, Min(0f)] private float acceleration = 20f;
 
+    [Header("Head Look Limits")]
+    [SerializeField, Range(0f, 90f)] private float maxHeadYawDegrees = 75f;
+    [SerializeField, Range(0f, 90f)] private float maxHeadPitchDegrees = 75f;
+    [SerializeField, Min(0f)] private float headLookSmoothingSpeed = 540f;
+
     [Header("Debug")]
     [SerializeField] private bool drawDebugVectors;
     [SerializeField, Min(0.1f)] private float debugForwardLength = 2f;
 
     private bool isRegistered;
-    private PlayerLocomotionStruct latestSnapshot = PlayerLocomotionStruct.Default;
-    private PlayerMoveIntentStruct lastMoveIntent = PlayerMoveIntentStruct.None;
-    private MoveIntentHandler moveIntentHandler;
+    private SPlayerLocomotion latestSnapshot = SPlayerLocomotion.Default;
+    private readonly Dictionary<System.Type, object> iActionBuffer = new();
+    private MoveActionHandler moveActionHandler;
+    private LookActionHandler lookActionHandler;
     private Vector3 currentVelocity;
-    private GroundContactStruct lastGroundContact = GroundContactStruct.None;
-    private Vector3 followForward = Vector3.forward;
+    private SGroundContact lastGroundContact = SGroundContact.None;
+    private Vector3 forwardDirection = Vector3.forward;
+    private Vector2 lookDirection = Vector2.zero;
 
     public bool IsPlayer => markAsPlayer;
     public bool IsRegistered => isRegistered;
-    public PlayerLocomotionStruct Snapshot => latestSnapshot;
-    public PlayerMoveIntentStruct LastMoveIntent => lastMoveIntent;
-    public Vector3 FollowForward => followForward;
+    public SPlayerLocomotion Snapshot => latestSnapshot;
+    public SPlayerMoveIAction LastMoveAction => TryGetIAction(out SPlayerMoveIAction action) ? action : SPlayerMoveIAction.None;
+    public Vector3 ForwardDirection => forwardDirection;
+    public Vector2 LookDirection => lookDirection;
+    public float HeadLookSmoothingSpeed => headLookSmoothingSpeed;
 
     private void Awake()
     {
@@ -43,7 +54,6 @@ public class LocomotionAgent : MonoBehaviour
             manager = FindManagerInScene();
         }
         ResolveFollowTarget();
-        UpdateFollowForward();
     }
 
     private void OnEnable()
@@ -74,9 +84,9 @@ public class LocomotionAgent : MonoBehaviour
             return;
         }
 
-        UpdateFollowForward();
-        DrawDebugVectors();
+        UpdateForwardDirection();
         SimulateLocomotion(deltaTime);
+        DrawDebugVectors();
     }
 
     private void OnDisable()
@@ -87,11 +97,11 @@ public class LocomotionAgent : MonoBehaviour
             isRegistered = false;
         }
 
-        lastMoveIntent = PlayerMoveIntentStruct.None;
         currentVelocity = Vector3.zero;
-        lastGroundContact = GroundContactStruct.None;
-        followForward = transform.forward;
-        UnregisterIntentHandlers();
+        lastGroundContact = SGroundContact.None;
+        forwardDirection = transform.forward;
+        iActionBuffer.Clear();
+        UnregisterActionHandlers();
     }
 
     public bool TryRegisterWithManager()
@@ -114,37 +124,55 @@ public class LocomotionAgent : MonoBehaviour
         if (manager.RegisterComponent(this))
         {
             isRegistered = true;
-            RegisterIntentHandlers();
+            RegisterActionHandlers();
             return true;
         }
 
         return false;
     }
 
-    public void PushSnapshot(PlayerLocomotionStruct snapshot)
+    public void PushSnapshot(SPlayerLocomotion snapshot)
     {
         latestSnapshot = snapshot;
         manager?.PublishSnapshot(this, snapshot);
     }
 
-    internal void BufferPlayerMoveIntent(PlayerMoveIntentStruct intent)
+    internal void BufferIAction<TAction>(TAction action) where TAction : struct
     {
-        lastMoveIntent = intent;
+        iActionBuffer[typeof(TAction)] = action;
     }
 
-
-    private void RegisterIntentHandlers()
+    public bool TryGetIAction<TAction>(out TAction action) where TAction : struct
     {
-        if (subscribePlayerMoveIntent)
+        if (iActionBuffer.TryGetValue(typeof(TAction), out object boxed) && boxed is TAction typed)
         {
-            moveIntentHandler ??= new MoveIntentHandler(this);
-            moveIntentHandler.Subscribe();
+            action = typed;
+            return true;
+        }
+
+        action = default;
+        return false;
+    }
+
+    private void RegisterActionHandlers()
+    {
+        if (subscribePlayerMoveAction)
+        {
+            moveActionHandler ??= new MoveActionHandler(this);
+            moveActionHandler.Subscribe();
+        }
+
+        if (subscribePlayerLookAction)
+        {
+            lookActionHandler ??= new LookActionHandler(this);
+            lookActionHandler.Subscribe();
         }
     }
 
-    private void UnregisterIntentHandlers()
+    private void UnregisterActionHandlers()
     {
-        moveIntentHandler?.Unsubscribe();
+        moveActionHandler?.Unsubscribe();
+        lookActionHandler?.Unsubscribe();
     }
 
     private void SimulateLocomotion(float deltaTime)
@@ -152,17 +180,19 @@ public class LocomotionAgent : MonoBehaviour
         Vector3 desiredVelocity = CalculateDesiredVelocity();
         currentVelocity = Vector3.MoveTowards(currentVelocity, desiredVelocity, acceleration * deltaTime);
 
-        PlayerLocomotionState state = currentVelocity.sqrMagnitude > Mathf.Epsilon
-            ? PlayerLocomotionState.Walk
-            : PlayerLocomotionState.Idle;
-        Vector3 forward = followForward;
+        ELocomotionState state = currentVelocity.sqrMagnitude > Mathf.Epsilon
+            ? ELocomotionState.Walk
+            : ELocomotionState.Idle;
 
-        lastGroundContact = new GroundContactStruct(true, transform.position, Vector3.up);
+        lastGroundContact = new SGroundContact(true, transform.position, Vector3.up);
 
-        PlayerLocomotionStruct snapshot = new PlayerLocomotionStruct(
+        Vector2 lookDirection = CalculateClampedLookAngles();
+
+        SPlayerLocomotion snapshot = new SPlayerLocomotion(
             transform.position,
             currentVelocity,
-            forward,
+            forwardDirection,
+            lookDirection,
             state,
             lastGroundContact);
 
@@ -171,12 +201,29 @@ public class LocomotionAgent : MonoBehaviour
 
     private Vector3 CalculateDesiredVelocity()
     {
-        if (lastMoveIntent.HasInput)
+        SPlayerMoveIAction moveAction = LastMoveAction;
+        if (moveAction.HasInput)
         {
-            return lastMoveIntent.WorldDirection * moveSpeed;
+            return moveAction.WorldDirection * moveSpeed;
         }
 
         return Vector3.zero;
+    }
+
+    internal void ApplyLookAction(SPlayerLookIAction action)
+    {
+        if (followTarget != null)
+        {
+            Vector3 euler = followTarget.rotation.eulerAngles;
+            euler.z = 0f;
+            float pitch = NormalizeAngle180(euler.x);
+            pitch = Mathf.Clamp(pitch + action.Delta.y, -maxHeadPitchDegrees, maxHeadPitchDegrees);
+            euler.x = pitch;
+            euler.y += action.Delta.x;
+            followTarget.rotation = Quaternion.Euler(euler);
+        }
+
+        BufferIAction(action);
     }
 
     private void ResolveFollowTarget()
@@ -193,7 +240,7 @@ public class LocomotionAgent : MonoBehaviour
         }
     }
 
-    private void UpdateFollowForward()
+    private void UpdateForwardDirection()
     {
         Vector3 forwardSource;
         if (followTarget != null)
@@ -212,9 +259,47 @@ public class LocomotionAgent : MonoBehaviour
             forwardSource.y = 0f;
         }
 
-        followForward = forwardSource.sqrMagnitude > Mathf.Epsilon
+        forwardDirection = forwardSource.sqrMagnitude > Mathf.Epsilon
             ? forwardSource.normalized
             : Vector3.forward;
+    }
+
+    private Vector2 CalculateClampedLookAngles()
+    {
+        if (followTarget == null)
+        {
+            return Vector2.zero;
+        }
+
+        Vector3 rawForward = followTarget.forward;
+        if (rawForward.sqrMagnitude <= Mathf.Epsilon)
+        {
+            return Vector2.zero;
+        }
+
+        Quaternion targetRotation = Quaternion.LookRotation(rawForward, Vector3.up);
+        Quaternion localDelta = Quaternion.Inverse(transform.rotation) * targetRotation;
+        Vector3 euler = localDelta.eulerAngles;
+
+        float yaw = Mathf.Clamp(NormalizeAngle180(euler.y), -maxHeadYawDegrees, maxHeadYawDegrees);
+        float pitch = Mathf.Clamp(NormalizeAngle180(euler.x), -maxHeadPitchDegrees, maxHeadPitchDegrees);
+
+        return new Vector2(yaw, pitch);
+    }
+
+    private static float NormalizeAngle180(float angle)
+    {
+        angle %= 360f;
+        if (angle > 180f)
+        {
+            angle -= 360f;
+        }
+        else if (angle < -180f)
+        {
+            angle += 360f;
+        }
+
+        return angle;
     }
 
     private void DrawDebugVectors()
@@ -224,7 +309,7 @@ public class LocomotionAgent : MonoBehaviour
             return;
         }
 
-        Debug.DrawRay(transform.position, followForward * debugForwardLength, Color.cyan);
+        Debug.DrawRay(transform.position, forwardDirection * debugForwardLength, Color.cyan);
     }
     private LocomotionManager FindManagerInScene()
     {

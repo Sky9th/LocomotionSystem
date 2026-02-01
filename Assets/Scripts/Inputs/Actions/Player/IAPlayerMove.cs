@@ -8,8 +8,8 @@ using UnityEngine.InputSystem;
 /// action never touches physics directly; it simply reports structured data back
 /// to the InputManager for further dispatch.
 /// </summary>
-[CreateAssetMenu(menuName = "Inputs/Player/Move Action")]
-public class PlayerMoveAction : InputActionHandler
+[CreateAssetMenu(menuName = "Inputs/Player/IA Player Move")]
+public class IAPlayerMove : InputActionHandler
 {
 
     [Header("Processing")]
@@ -36,7 +36,7 @@ public class PlayerMoveAction : InputActionHandler
         }
 
         Vector3 worldDirection = CalculateWorldDirection(rawInput);
-        PlayerMoveIntentStruct intent = new PlayerMoveIntentStruct(rawInput, worldDirection);
+        SPlayerMoveIAction intent = new SPlayerMoveIAction(rawInput, worldDirection);
 
         eventDispatcher.Publish(intent);
     }
@@ -52,4 +52,8 @@ public class PlayerMoveAction : InputActionHandler
         return new Vector3(planarInput.x, 0f, planarInput.y);
     }
 
+    protected override bool OnSupportsState(EGameState state)
+    {
+        return state == EGameState.Playing;
+    }
 }

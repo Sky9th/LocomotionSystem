@@ -1,7 +1,7 @@
 # InputManager Guidance
 
 ## Overview
-- `Assets/Scripts/Inputs/InputManager.cs` 是 Unity 新输入系统与游戏逻辑之间的唯一桥梁，负责把控制器/键鼠信号转换为可复用的「输入意图」，并确保这些意图在每帧都能被稳定采样。
+- `Assets/Scripts/Inputs/InputManager.cs` 是 Unity 新输入系统与游戏逻辑之间的唯一桥梁，负责把控制器/键鼠信号转换为可复用的「输入 IAction」数据（简称 IAction），并确保这些 IAction 在每帧都能被稳定采样。
 - `GameManager` 在启动阶段实例化并注册 `InputManager`，同时把它挂接到 `EventDispatcher`，以保证所有输入事件都通过消息系统传播且遵循统一的激活/停用顺序。
 - `InputManager` 严禁直接操作 Transform、Physics 或 Animator；它只负责整理数据并发送事件/快照。
 
@@ -14,7 +14,7 @@
 	- 抽象基类负责：缓存 InputManager 传入的上下文（相机、姿态依赖等）、提供 Enable/Disable 生命周期方法，并暴露 `Dispose()` 清理钩子。事件派发权留在 InputManager。
 	- 具体 Action 只做输入解析 → 数据结构封装 → 通过委托或接口把数据回传给 InputManager，禁止直接触碰场景对象或自行访问 `EventDispatcher`。
 3. `Assets/Scripts/Structs/`
-	- 存放可跨子系统复用的只读数据结构（意图、上下文快照等）。根目录下的 `Core/MetaStruct.cs` 定义 `StructMeta`（统一的时间戳/帧信息），业务 DTO（意图、上下文、事件）按子文件夹分类，并统一以 `*Struct` 结尾（例如 `Intents/PlayerMoveIntentStruct.cs`）便于检索。
+	- 存放可跨子系统复用的只读数据结构（IAction、上下文快照等）。根目录下的 `Core/MetaStruct.cs` 定义 `StructMeta`（统一的时间戳/帧信息），业务 DTO 按子文件夹分类，其中「IAction」目录替代旧的 `Intents/`。所有结构体统一移除 `Struct` 后缀，改用 `S` 前缀（例如 `IActions/SPlayerMoveIAction.cs`）以提升可读性。
 	- Input 层仅负责生成这些 DTO，写入逻辑保持单向；其余系统只读，避免出现“读取后反写输入模块”的双向依赖。
 4. `Assets/Scripts/Inputs/InputManager.cs`
 	- 集中管理所有 Action Map，负责启用/禁用 Action、订阅回调并将处理好的数据转发给 `EventDispatcher`。
@@ -35,14 +35,14 @@
 - `Dispose()` 既会取消订阅 Input System 回调，也会清空 `eventDispatcher` 引用；关闭场景或更换 Action 时必须调用以防止重复订阅。
 - 新增 Action 时：
 	1. 继承 `InputActionHandler` 并实现 `Execute()`。
-	2. 在 `Execute()` 内用 `context.ReadValue<T>()` 采样输入，对采集值进行滤波/归一化，然后组装成意图结构体。
-	3. 通过 `eventDispatcher.Publish(intent)` 将最终数据广播出去，保持 “输入 → 意图 → 系统” 单向链路。
+	2. 在 `Execute()` 内用 `context.ReadValue<T>()` 采样输入，对采集值进行滤波/归一化，然后组装成 IAction 结构（遵循 `S` 前缀命名）。
+	3. 通过 `eventDispatcher.Publish(iaction)` 将最终数据广播出去，保持 “输入 → IAction → 系统” 单向链路。
 
-## 现有案例：PlayerMoveAction
+-## 现有案例：PlayerMoveAction
 - 文件：`Assets/Scripts/Inputs/Actions/Player/PlayerMoveAction.cs`
-- 功能：读取 `Vector2` WASD 值，按 `deadZone`/`normalizeWorldDirection` 配置过滤后，生成 `PlayerMoveIntentStruct`（`RawInput`+世界方向+时间戳）。
+- 功能：读取 `Vector2` WASD 值，按 `deadZone`/`normalizeWorldDirection` 配置过滤后，生成 `SPlayerMoveIAction`（`RawInput`+世界方向+时间戳）。
 - `CalculateWorldDirection()` 目前将输入的 X/Y 映射到世界 X/Z 平面（未参考摄像机朝向）。如需朝向对齐，可在此方法里注入 `Camera` 或 `Transform` 上下文，并在 `InitializeHandler` 时由 `InputManager` 传递。
-- `PlayerMoveIntentStruct` 位于 `Assets/Scripts/Structs/Intents/PlayerMoveIntentStruct.cs`，内部持有 `StructMeta` 来记录统一的时间戳/帧号；其它子系统（如 `PlayerController`）只需订阅 `EventDispatcher` 即可获取并消费。
+- `SPlayerMoveIAction` 位于 `Assets/Scripts/Structs/IActions/SPlayerMoveIAction.cs`，内部持有 `StructMeta` 来记录统一的时间戳/帧号；其它子系统（如 `PlayerController`）只需订阅 `EventDispatcher` 即可获取并消费。
 
 ## InputManager 生命周期梳理
 1. `GameManager` 调用 `InputManager.Initialize(eventDispatcher, playerCamera)`：
@@ -55,5 +55,5 @@
 - 始终由 `GameManager` 驱动 `InputManager.Initialize()`，不要在别处直接调用 `ConfigureActions()`，避免多次绑定事件。
 - 所有新建的 `InputActionHandler` 资产需要在 `InputManager` Inspector 中注册，否则生命周期方法不会被执行。
 - 若 Action 需要访问摄像机或姿态数据，可扩展 `InputActionHandler.InitializeHandler(...)` 的参数签名，并从 `InputManager.Initialize(...)` 内传入。保持在一个地方统一 wiring，便于调试。
-- 输入意图应保持只读结构体（统一 `*Struct` 命名，参考 `PlayerMoveIntentStruct`），后续系统可以安全地缓存副本，避免引用型数据被无意修改。
+- 输入 IAction 应保持只读结构体（统一以 `S` 前缀命名，参考 `SPlayerMoveIAction`），后续系统可以安全地缓存副本，避免引用型数据被无意修改。
 - 调试阶段可在 Action 内部使用 `Debug.Log`（见 `PlayerMoveAction`），但请记得在进入性能测试前加条件或移除，以免刷屏。

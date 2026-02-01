@@ -12,6 +12,8 @@ internal static class LocomotionAnimatorParameters
     public const string MoveX = "MoveX";
     public const string MoveY = "MoveY";
     public const string Grounded = "IsGrounded";
+    public const string HeadLookX = "HeadLookX";
+    public const string HeadLookY = "HeadLookY";
 
     public static readonly int SpeedHash = HashParameter(Speed);
     public static readonly int AccelerationHash = HashParameter(Acceleration);
@@ -19,6 +21,8 @@ internal static class LocomotionAnimatorParameters
     public static readonly int MoveXHash = HashParameter(MoveX);
     public static readonly int MoveYHash = HashParameter(MoveY);
     public static readonly int GroundedHash = HashParameter(Grounded);
+    public static readonly int HeadLookXHash = HashParameter(HeadLookX);
+    public static readonly int HeadLookYHash = HashParameter(HeadLookY);
 
     private static int HashParameter(string name)
     {

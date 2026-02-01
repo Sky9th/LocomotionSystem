@@ -7,7 +7,7 @@ using UnityEngine;
 /// deterministic pose/FOV data without touching scene objects directly.
 /// </summary>
 [DisallowMultipleComponent]
-public class CameraManager : RuntimeServiceBase
+public class CameraManager : BaseService
 {
     [Header("Cinemachine Wiring")]
     [SerializeField] private CinemachineBrain cameraBrain;
@@ -19,13 +19,9 @@ public class CameraManager : RuntimeServiceBase
     [SerializeField] private Transform followTarget;
     [SerializeField] private Transform lookAtTarget;
 
-    private CameraContextStruct lastSnapshot;
+    private SCameraContext lastSnapshot;
     private bool hasSnapshot;
     private bool isInitialized;
-    private EventDispatcher eventDispatcher;
-    private PlayerLookIntentStruct lastLookIntent;
-    private MetaStruct lastLookMeta;
-    private bool hasLookIntent;
 
     public bool IsInitialized => isInitialized;
     public CinemachineVirtualCamera ActiveVirtualCamera => ResolveActiveVirtualCamera();
@@ -66,9 +62,13 @@ public class CameraManager : RuntimeServiceBase
         context.RegisterService(this);
         isInitialized = true;
 
-        TryBindEventDispatcher(context);
         PushSnapshot();
         return true;
+    }
+
+    protected override void SubscribeToDispatcher()
+    {
+        // CameraManager no longer consumes look actions directly; LocomotionAgent handles follow rotation.
     }
 
     private CinemachineBrain FindFirstBrain()
@@ -89,69 +89,9 @@ public class CameraManager : RuntimeServiceBase
             return;
         }
 
-        TryBindEventDispatcher(GameContext);
         PushSnapshot();
     }
 
-    private void HandlePlayerLookIntent(PlayerLookIntentStruct intent, MetaStruct meta)
-    {
-        if (!isInitialized)
-        {
-            return;
-        }
-
-        lastLookIntent = intent;
-        lastLookMeta = meta;
-        hasLookIntent = true;
-
-        RotateFollowTarget(intent);
-    }
-
-    private void RotateFollowTarget(PlayerLookIntentStruct intent)
-    {
-        if (followTarget == null)
-        {
-            return;
-        }
-
-        var euler = followTarget.rotation.eulerAngles;
-        euler.z = 0f; // Prevent roll
-        var pitch = NormalizeAngle(euler.x);
-        pitch = Mathf.Clamp(pitch + intent.Delta.y, -85f, 85f);
-        euler.x = pitch;
-        euler.y += intent.Delta.x;
-        followTarget.rotation = Quaternion.Euler(euler);
-    }
-
-    private static float NormalizeAngle(float angle)
-    {
-        angle %= 360f;
-        if (angle > 180f)
-        {
-            angle -= 360f;
-        }
-
-        if (angle < -180f)
-        {
-            angle += 360f;
-        }
-
-        return angle;
-    }
-
-    private void TryBindEventDispatcher(GameContext context)
-    {
-        if (eventDispatcher != null || context == null)
-        {
-            return;
-        }
-
-        if (context.TryResolveService<EventDispatcher>(out var dispatcher))
-        {
-            eventDispatcher = dispatcher;
-            eventDispatcher.Subscribe<PlayerLookIntentStruct>(HandlePlayerLookIntent);
-        }
-    }
 
     private void PushSnapshot()
     {
@@ -166,7 +106,7 @@ public class CameraManager : RuntimeServiceBase
             return;
         }
 
-        lastSnapshot = new CameraContextStruct(
+        lastSnapshot = new SCameraContext(
             outputCamera.transform.position,
             outputCamera.transform.rotation,
             outputCamera.fieldOfView,
@@ -223,17 +163,10 @@ public class CameraManager : RuntimeServiceBase
         }
     }
 
-    public bool TryGetLatestSnapshot(out CameraContextStruct snapshot)
+    public bool TryGetLatestSnapshot(out SCameraContext snapshot)
     {
         snapshot = lastSnapshot;
         return hasSnapshot;
-    }
-
-    public bool TryGetLastLookIntent(out PlayerLookIntentStruct intent, out MetaStruct meta)
-    {
-        intent = lastLookIntent;
-        meta = lastLookMeta;
-        return hasLookIntent;
     }
 
     private CinemachineVirtualCamera ResolveActiveVirtualCamera()
@@ -246,12 +179,4 @@ public class CameraManager : RuntimeServiceBase
         return defaultVirtualCamera;
     }
 
-    private void OnDestroy()
-    {
-        if (eventDispatcher != null)
-        {
-            eventDispatcher.Unsubscribe<PlayerLookIntentStruct>(HandlePlayerLookIntent);
-            eventDispatcher = null;
-        }
-    }
 }

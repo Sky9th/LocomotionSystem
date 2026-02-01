@@ -1,9 +1,9 @@
-internal abstract class IntentHandler<TIntent>
+internal abstract class ActionHandler<TAction>
 {
     private EventDispatcher eventDispatcher;
     private bool isSubscribed;
 
-    protected IntentHandler(LocomotionAgent owner)
+    protected ActionHandler(LocomotionAgent owner)
     {
         Owner = owner;
     }
@@ -22,7 +22,7 @@ internal abstract class IntentHandler<TIntent>
             return;
         }
 
-        eventDispatcher.Subscribe<TIntent>(OnIntent);
+        eventDispatcher.Subscribe<TAction>(OnAction);
         isSubscribed = true;
     }
 
@@ -33,22 +33,22 @@ internal abstract class IntentHandler<TIntent>
             return;
         }
 
-        eventDispatcher.Unsubscribe<TIntent>(OnIntent);
+        eventDispatcher.Unsubscribe<TAction>(OnAction);
         eventDispatcher = null;
         isSubscribed = false;
     }
 
-    private void OnIntent(TIntent intent, MetaStruct meta)
+    private void OnAction(TAction action, MetaStruct meta)
     {
         if (Owner == null || !Owner.IsRegistered)
         {
             return;
         }
 
-        Execute(intent, meta);
+        Execute(action, meta);
     }
 
-    protected abstract void Execute(TIntent intent, MetaStruct meta);
+    protected abstract void Execute(TAction action, MetaStruct meta);
 
     private static bool TryResolveDispatcher(out EventDispatcher dispatcher)
     {

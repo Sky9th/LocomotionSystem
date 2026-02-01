@@ -2,11 +2,11 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// Translates the "Look" action into a normalized PlayerLookIntentStruct payload.
+/// Translates the "Look" action into a normalized SPlayerLookIAction payload.
 /// Keeps camera/locomotion systems decoupled from raw device specifics.
 /// </summary>
-[CreateAssetMenu(menuName = "Inputs/Player/Look Action")]
-public class PlayerLookAction : InputActionHandler
+[CreateAssetMenu(menuName = "Inputs/Player/IA Player Look")]
+public class IAPlayerLook : InputActionHandler
 {
     [Header("Processing")]
     [SerializeField] private float sensitivity = 1f;
@@ -25,7 +25,12 @@ public class PlayerLookAction : InputActionHandler
             delta.y = -delta.y;
         }
 
-        PlayerLookIntentStruct intent = new PlayerLookIntentStruct(delta);
+        SPlayerLookIAction intent = new SPlayerLookIAction(delta);
         eventDispatcher.Publish(intent);
+    }
+
+    protected override bool OnSupportsState(EGameState state)
+    {
+        return state == EGameState.Playing;
     }
 }

@@ -5,13 +5,13 @@ using UnityEngine;
 /// 全局 Locomotion 注册器。负责协调各角色的 LocomotionAgent，并将关键快照同步到 GameContext。
 /// </summary>
 [DisallowMultipleComponent]
-public class LocomotionManager : RuntimeServiceBase
+public class LocomotionManager : BaseService
 {
     [SerializeField] private bool logRegistrations;
     [SerializeField] private LocomotionAgent defaultPlayerAgent;
 
     private readonly HashSet<LocomotionAgent> activeAgents = new();
-    private readonly Dictionary<LocomotionAgent, PlayerLocomotionStruct> snapshotCache = new();
+    private readonly Dictionary<LocomotionAgent, SPlayerLocomotion> snapshotCache = new();
     [SerializeField] private List<LocomotionAgent> inspectorAgents = new();
     private LocomotionAgent playerAgent;
 
@@ -72,7 +72,7 @@ public class LocomotionManager : RuntimeServiceBase
         }
     }
 
-    internal void PublishSnapshot(LocomotionAgent agent, PlayerLocomotionStruct snapshot)
+    internal void PublishSnapshot(LocomotionAgent agent, SPlayerLocomotion snapshot)
     {
         if (!IsRegistered || agent == null)
         {
@@ -87,25 +87,25 @@ public class LocomotionManager : RuntimeServiceBase
         }
     }
 
-    public bool TryGetSnapshot(LocomotionAgent agent, out PlayerLocomotionStruct snapshot)
+    public bool TryGetSnapshot(LocomotionAgent agent, out SPlayerLocomotion snapshot)
     {
         if (agent != null && snapshotCache.TryGetValue(agent, out snapshot))
         {
             return true;
         }
 
-        snapshot = PlayerLocomotionStruct.Default;
+        snapshot = SPlayerLocomotion.Default;
         return false;
     }
 
-    public bool TryGetPlayerSnapshot(out PlayerLocomotionStruct snapshot)
+    public bool TryGetPlayerSnapshot(out SPlayerLocomotion snapshot)
     {
         if (playerAgent != null)
         {
             return TryGetSnapshot(playerAgent, out snapshot);
         }
 
-        snapshot = PlayerLocomotionStruct.Default;
+        snapshot = SPlayerLocomotion.Default;
         return false;
     }
 

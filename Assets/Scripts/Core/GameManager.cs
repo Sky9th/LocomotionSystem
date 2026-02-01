@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -11,18 +12,23 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameContext gameContext;
     [SerializeField] private EventDispatcher eventDispatcher;
+    [SerializeField] private GameState gameState;
     [SerializeField] private InputManager inputManager;
     [SerializeField] private CameraManager cameraManager;
     [SerializeField] private LocomotionManager locomotionManager;
-    [Header("System Options")]
-    [SerializeField] private bool hideCursorOnBootstrap = true;
-
+    [Header("Cursor Options")]
+    [SerializeField] private bool lockCursorWhenPlaying = true;
+    [SerializeField] private bool hideCursorWhenPlaying = true;
+    [SerializeField] private bool showCursorInMenus = true;
+    
     public GameContext Context => gameContext;
     public EventDispatcher Dispatcher => eventDispatcher;
+    public GameState GameState => gameState;
     public InputManager Input => inputManager;
     public CameraManager Camera => cameraManager;
     public LocomotionManager Locomotion => locomotionManager;
 
+    private readonly List<BaseService> registeredServices = new();
     private bool isBootstrapped;
 
     private void Awake()
@@ -42,12 +48,12 @@ public class GameManager : MonoBehaviour
 
     private void OnDestroy()
     {
+        UnsubscribeDispatcherEvents();
+
         if (Instance == this)
         {
             Instance = null;
         }
-
-        ApplyCursorSettings(false);
     }
 
     private void WireDependencies()
@@ -60,6 +66,11 @@ public class GameManager : MonoBehaviour
         if (inputManager == null)
         {
             inputManager = GetComponentInChildren<InputManager>();
+        }
+
+        if (gameState == null)
+        {
+            gameState = GetComponentInChildren<GameState>();
         }
 
         if (gameContext == null)
@@ -92,17 +103,31 @@ public class GameManager : MonoBehaviour
         }
 
         gameContext.Initialize();
+        registeredServices.Clear();
 
         RegisterService(eventDispatcher, nameof(eventDispatcher));
+
+        if (eventDispatcher == null || !eventDispatcher.IsRegistered)
+        {
+            Debug.LogError("GameManager requires a valid EventDispatcher before continuing.", this);
+            return;
+        }
+
+        RegisterService(gameState, nameof(gameState));
         RegisterService(inputManager, nameof(inputManager));
         RegisterService(cameraManager, nameof(cameraManager));
         RegisterService(locomotionManager, nameof(locomotionManager));
 
-        ApplyCursorSettings(hideCursorOnBootstrap);
+        AttachDispatcherToServices();
+        ActivateServiceSubscriptions();
+
+        SubscribeDispatcherEvents();
+        ApplyCursorMode(gameState != null ? gameState.CurrentState : EGameState.Initializing);
+        
         isBootstrapped = true;
     }
 
-    private void RegisterService(RuntimeServiceBase service, string label)
+    private void RegisterService(BaseService service, string label)
     {
         if (service == null)
         {
@@ -111,11 +136,97 @@ public class GameManager : MonoBehaviour
         }
 
         service.Register(gameContext);
+
+        if (service.IsRegistered && !registeredServices.Contains(service))
+        {
+            registeredServices.Add(service);
+        }
     }
 
-    private static void ApplyCursorSettings(bool hideCursor)
+    private void AttachDispatcherToServices()
     {
-        Cursor.visible = !hideCursor;
-        Cursor.lockState = hideCursor ? CursorLockMode.Locked : CursorLockMode.None;
+        if (eventDispatcher == null || !eventDispatcher.IsRegistered)
+        {
+            Debug.LogError("Cannot attach dispatcher references before EventDispatcher finishes registering.", this);
+            return;
+        }
+
+        foreach (var service in registeredServices)
+        {
+            service?.AttachDispatcher(eventDispatcher);
+        }
+    }
+
+    private void ActivateServiceSubscriptions()
+    {
+        foreach (var service in registeredServices)
+        {
+            service?.ActivateSubscriptions();
+        }
+    }
+
+    private void SubscribeDispatcherEvents()
+    {
+        if (eventDispatcher == null)
+        {
+            Debug.LogWarning("Cannot subscribe to dispatcher events without a valid EventDispatcher reference.", this);
+            return;
+        }
+
+        eventDispatcher.Subscribe<SUIEscapeIAction>(HandleEscapeIntent);
+    }
+
+    private void UnsubscribeDispatcherEvents()
+    {
+        if (eventDispatcher == null)
+        {
+            return;
+        }
+
+        eventDispatcher.Unsubscribe<SUIEscapeIAction>(HandleEscapeIntent);
+    }
+
+    private void HandleEscapeIntent(SUIEscapeIAction payload, MetaStruct meta)
+    {
+        Logger.Log($"GameManager received SUIEscapeIAction: IsPressed={payload.IsPressed}");
+        if (!payload.IsPressed || gameState == null)
+        {
+            return;
+        }
+
+        switch (gameState.CurrentState)
+        {
+            case EGameState.MainMenu:
+                gameState.RequestState(EGameState.Playing);
+                break;
+            case EGameState.Playing:
+                gameState.RequestState(EGameState.MainMenu);
+                break;
+        }
+        ApplyCursorMode(gameState != null ? gameState.CurrentState : EGameState.Initializing);
+    }
+
+    private void ApplyCursorMode(EGameState state)
+    {
+        switch (state)
+        {
+            case EGameState.MainMenu:
+            case EGameState.Paused:
+                SetCursorVisibility(true, CursorLockMode.None);
+                break;
+            case EGameState.Playing:
+                var targetLock = lockCursorWhenPlaying ? CursorLockMode.Locked : CursorLockMode.Confined;
+                SetCursorVisibility(false, targetLock);
+                break;
+            default:
+                SetCursorVisibility(true, CursorLockMode.None);
+                break;
+        }
+    }
+
+    private void SetCursorVisibility(bool isVisible, CursorLockMode lockMode)
+    {
+        Cursor.visible = isVisible;
+        Cursor.lockState = lockMode;
     }
 }
