@@ -89,6 +89,8 @@ public class LocomotionAdapter : MonoBehaviour
         animator.SetBool(LocomotionAnimatorParameters.GroundedHash, snapshot.IsGrounded);
         animator.SetFloat(LocomotionAnimatorParameters.HeadLookXHash, smoothedHeadLookX);
         animator.SetFloat(LocomotionAnimatorParameters.HeadLookYHash, runtimeHeadLook.y);
+        animator.SetFloat(LocomotionAnimatorParameters.TurnAngleHash, snapshot.TurnAngle);
+        animator.SetBool(LocomotionAnimatorParameters.IsTurningHash, snapshot.IsTurning);
     }
 
     public void SetAnimator(Animator targetAnimator)
