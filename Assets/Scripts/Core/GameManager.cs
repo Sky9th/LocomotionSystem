@@ -16,10 +16,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private InputManager inputManager;
     [SerializeField] private CameraManager cameraManager;
     [SerializeField] private LocomotionManager locomotionManager;
+    [SerializeField] private TimeScaleManager timeScaleService;
     [Header("Cursor Options")]
     [SerializeField] private bool lockCursorWhenPlaying = true;
-    [SerializeField] private bool hideCursorWhenPlaying = true;
-    [SerializeField] private bool showCursorInMenus = true;
     
     public GameContext Context => gameContext;
     public EventDispatcher Dispatcher => eventDispatcher;
@@ -27,6 +26,7 @@ public class GameManager : MonoBehaviour
     public InputManager Input => inputManager;
     public CameraManager Camera => cameraManager;
     public LocomotionManager Locomotion => locomotionManager;
+    public TimeScaleManager TimeScale => timeScaleService;
 
     private readonly List<BaseService> registeredServices = new();
     private bool isBootstrapped;
@@ -87,6 +87,11 @@ public class GameManager : MonoBehaviour
         {
             locomotionManager = GetComponentInChildren<LocomotionManager>();
         }
+
+        if (timeScaleService == null)
+        {
+            timeScaleService = GetComponentInChildren<TimeScaleManager>();
+        }
     }
 
     private void Bootstrap()
@@ -117,6 +122,7 @@ public class GameManager : MonoBehaviour
         RegisterService(inputManager, nameof(inputManager));
         RegisterService(cameraManager, nameof(cameraManager));
         RegisterService(locomotionManager, nameof(locomotionManager));
+        RegisterService(timeScaleService, nameof(timeScaleService));
 
         AttachDispatcherToServices();
         ActivateServiceSubscriptions();
@@ -188,7 +194,6 @@ public class GameManager : MonoBehaviour
 
     private void HandleEscapeIntent(SUIEscapeIAction payload, MetaStruct meta)
     {
-        Logger.Log($"GameManager received SUIEscapeIAction: IsPressed={payload.IsPressed}");
         if (!payload.IsPressed || gameState == null)
         {
             return;

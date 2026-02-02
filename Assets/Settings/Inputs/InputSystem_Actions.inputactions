@@ -1011,6 +1011,54 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "System",
+            "id": "e006a984-d607-492a-abb1-9bc4ee0b4377",
+            "actions": [
+                {
+                    "name": "TimeSlow",
+                    "type": "Button",
+                    "id": "c7227bbc-004a-41b2-991b-c2e532dcc0e1",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TimeResume",
+                    "type": "Button",
+                    "id": "6b0a12f4-b91e-4baa-a8e0-89a2e239f19c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "60275444-8af8-466e-9c2f-7a1d818cddbb",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "TimeSlow",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c425d0cf-3a94-480f-b3d4-d58f8f72435b",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "TimeResume",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

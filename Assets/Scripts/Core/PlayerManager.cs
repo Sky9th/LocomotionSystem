@@ -11,7 +11,6 @@ public class PlayerManager : MonoBehaviour
 
     [Header("Alignment")]
     [SerializeField] private bool keepPlayerAlignedWithModel = true;
-    [SerializeField] private bool syncRotation = true;
 
     private void Awake()
     {
@@ -31,25 +30,5 @@ public class PlayerManager : MonoBehaviour
         {
             return;
         }
-
-        AlignPlayerToModel();
-    }
-
-    private void AlignPlayerToModel()
-    {
-        var worldPos = modelRoot.position;
-        var worldRot = modelRoot.rotation;
-
-        if (syncRotation)
-        {
-            transform.SetPositionAndRotation(worldPos, worldRot);
-            modelRoot.localRotation = Quaternion.identity;
-        }
-        else
-        {
-            transform.position = worldPos;
-        }
-
-        modelRoot.localPosition = Vector3.zero;
     }
 }

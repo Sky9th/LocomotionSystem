@@ -5,7 +5,7 @@ using UnityEngine;
 /// 挂载在角色上的 Locomotion 组件。负责向 LocomotionManager 注册并在后续版本中执行具体运动逻辑。
 /// </summary>
 [DisallowMultipleComponent]
-public class LocomotionAgent : MonoBehaviour
+public partial class LocomotionAgent : MonoBehaviour
 {
     [Header("Registration")]
     [SerializeField] private LocomotionManager manager;
@@ -13,8 +13,14 @@ public class LocomotionAgent : MonoBehaviour
     [SerializeField] private bool markAsPlayer;
     [SerializeField] private bool subscribePlayerMoveAction = true;
     [SerializeField] private bool subscribePlayerLookAction = true;
+
     [Header("Rig References")]
-    [SerializeField] private Transform followTarget;
+    [SerializeField] private Transform followAnchor;
+    [SerializeField] private Transform modelRoot;
+
+    [Header("Animation")]
+    [SerializeField] private Animator animator;
+    [SerializeField] private bool autoResolveAnimator = true;
 
     [Header("Motion Settings")]
     [SerializeField, Min(0f)] private float moveSpeed = 4f;
@@ -24,6 +30,14 @@ public class LocomotionAgent : MonoBehaviour
     [SerializeField, Range(0f, 90f)] private float maxHeadYawDegrees = 75f;
     [SerializeField, Range(0f, 90f)] private float maxHeadPitchDegrees = 75f;
     [SerializeField, Min(0f)] private float headLookSmoothingSpeed = 540f;
+
+    [Header("Turn Settings")]
+    [SerializeField, Range(0f, 180f)] private float turnEnterAngle = 65f;
+    [SerializeField, Range(0f, 180f)] private float turnExitAngle = 20f;
+    [SerializeField, Min(0f)] private float turnDebounceDuration = 0.25f;
+    [SerializeField, Range(0f, 45f)] private float lookStabilityAngle = 2f;
+    [SerializeField, Min(0f)] private float lookStabilityDuration = 0.15f;
+    [SerializeField, Range(0f, 25f)] private float turnCompletionAngle = 5f;
 
     [Header("Debug")]
     [SerializeField] private bool drawDebugVectors;
@@ -38,6 +52,11 @@ public class LocomotionAgent : MonoBehaviour
     private SGroundContact lastGroundContact = SGroundContact.None;
     private Vector3 forwardDirection = Vector3.forward;
     private Vector2 lookDirection = Vector2.zero;
+    private bool isTurningInPlace;
+    private float currentTurnAngle;
+    private float turnStateCooldown;
+    private float lastDesiredYaw;
+    private float lookStabilityTimer;
 
     public bool IsPlayer => markAsPlayer;
     public bool IsRegistered => isRegistered;
@@ -53,22 +72,24 @@ public class LocomotionAgent : MonoBehaviour
         {
             manager = FindManagerInScene();
         }
-        ResolveFollowTarget();
-    }
 
-    private void OnEnable()
-    {
-        // FixedUpdate handles retrying registration each frame.
-    }
-
-    private void FixedUpdate()
-    {
-        if (!autoRegister || isRegistered)
+        var model = transform.Find("Model");
+        if (model != null)
         {
-            return;
+            modelRoot = model;
         }
 
-        TryRegisterWithManager();
+        var follow = transform.Find("Follow");
+        if (follow != null)
+        {
+            followAnchor = follow;
+        }
+
+        if (animator == null && autoResolveAnimator)
+        {
+            animator = GetComponentInChildren<Animator>();
+        }
+
     }
 
     private void Update()
@@ -89,6 +110,14 @@ public class LocomotionAgent : MonoBehaviour
         DrawDebugVectors();
     }
 
+    private void LateUpdate()
+    {
+        if (modelRoot != null)
+        {
+            AlignPlayerToModel();
+        }
+    }
+
     private void OnDisable()
     {
         if (manager != null && isRegistered)
@@ -100,36 +129,15 @@ public class LocomotionAgent : MonoBehaviour
         currentVelocity = Vector3.zero;
         lastGroundContact = SGroundContact.None;
         forwardDirection = transform.forward;
+        isTurningInPlace = false;
+        currentTurnAngle = 0f;
+        turnStateCooldown = 0f;
+        lastDesiredYaw = 0f;
+        lookStabilityTimer = 0f;
         iActionBuffer.Clear();
         UnregisterActionHandlers();
     }
 
-    public bool TryRegisterWithManager()
-    {
-        if (isRegistered)
-        {
-            return true;
-        }
-
-        if (manager == null)
-        {
-            manager = FindManagerInScene();
-        }
-
-        if (manager == null || !manager.IsRegistered)
-        {
-            return false;
-        }
-
-        if (manager.RegisterComponent(this))
-        {
-            isRegistered = true;
-            RegisterActionHandlers();
-            return true;
-        }
-
-        return false;
-    }
 
     public void PushSnapshot(SPlayerLocomotion snapshot)
     {
@@ -154,152 +162,20 @@ public class LocomotionAgent : MonoBehaviour
         return false;
     }
 
-    private void RegisterActionHandlers()
-    {
-        if (subscribePlayerMoveAction)
-        {
-            moveActionHandler ??= new MoveActionHandler(this);
-            moveActionHandler.Subscribe();
-        }
-
-        if (subscribePlayerLookAction)
-        {
-            lookActionHandler ??= new LookActionHandler(this);
-            lookActionHandler.Subscribe();
-        }
-    }
-
-    private void UnregisterActionHandlers()
-    {
-        moveActionHandler?.Unsubscribe();
-        lookActionHandler?.Unsubscribe();
-    }
-
-    private void SimulateLocomotion(float deltaTime)
-    {
-        Vector3 desiredVelocity = CalculateDesiredVelocity();
-        currentVelocity = Vector3.MoveTowards(currentVelocity, desiredVelocity, acceleration * deltaTime);
-
-        ELocomotionState state = currentVelocity.sqrMagnitude > Mathf.Epsilon
-            ? ELocomotionState.Walk
-            : ELocomotionState.Idle;
-
-        lastGroundContact = new SGroundContact(true, transform.position, Vector3.up);
-
-        Vector2 lookDirection = CalculateClampedLookAngles();
-
-        SPlayerLocomotion snapshot = new SPlayerLocomotion(
-            transform.position,
-            currentVelocity,
-            forwardDirection,
-            lookDirection,
-            state,
-            lastGroundContact);
-
-        PushSnapshot(snapshot);
-    }
-
-    private Vector3 CalculateDesiredVelocity()
-    {
-        SPlayerMoveIAction moveAction = LastMoveAction;
-        if (moveAction.HasInput)
-        {
-            return moveAction.WorldDirection * moveSpeed;
-        }
-
-        return Vector3.zero;
-    }
-
     internal void ApplyLookAction(SPlayerLookIAction action)
     {
-        if (followTarget != null)
+        if (followAnchor != null)
         {
-            Vector3 euler = followTarget.rotation.eulerAngles;
+            Vector3 euler = followAnchor.rotation.eulerAngles;
             euler.z = 0f;
             float pitch = NormalizeAngle180(euler.x);
             pitch = Mathf.Clamp(pitch + action.Delta.y, -maxHeadPitchDegrees, maxHeadPitchDegrees);
             euler.x = pitch;
             euler.y += action.Delta.x;
-            followTarget.rotation = Quaternion.Euler(euler);
+            followAnchor.rotation = Quaternion.Euler(euler);
         }
 
         BufferIAction(action);
-    }
-
-    private void ResolveFollowTarget()
-    {
-        if (followTarget != null)
-        {
-            return;
-        }
-
-        var follow = transform.Find("Follow");
-        if (follow != null)
-        {
-            followTarget = follow;
-        }
-    }
-
-    private void UpdateForwardDirection()
-    {
-        Vector3 forwardSource;
-        if (followTarget != null)
-        {
-            forwardSource = followTarget.forward;
-        }
-        else
-        {
-            forwardSource = transform.forward;
-        }
-
-        forwardSource.y = 0f;
-        if (forwardSource.sqrMagnitude <= Mathf.Epsilon)
-        {
-            forwardSource = transform.forward;
-            forwardSource.y = 0f;
-        }
-
-        forwardDirection = forwardSource.sqrMagnitude > Mathf.Epsilon
-            ? forwardSource.normalized
-            : Vector3.forward;
-    }
-
-    private Vector2 CalculateClampedLookAngles()
-    {
-        if (followTarget == null)
-        {
-            return Vector2.zero;
-        }
-
-        Vector3 rawForward = followTarget.forward;
-        if (rawForward.sqrMagnitude <= Mathf.Epsilon)
-        {
-            return Vector2.zero;
-        }
-
-        Quaternion targetRotation = Quaternion.LookRotation(rawForward, Vector3.up);
-        Quaternion localDelta = Quaternion.Inverse(transform.rotation) * targetRotation;
-        Vector3 euler = localDelta.eulerAngles;
-
-        float yaw = Mathf.Clamp(NormalizeAngle180(euler.y), -maxHeadYawDegrees, maxHeadYawDegrees);
-        float pitch = Mathf.Clamp(NormalizeAngle180(euler.x), -maxHeadPitchDegrees, maxHeadPitchDegrees);
-
-        return new Vector2(yaw, pitch);
-    }
-
-    private static float NormalizeAngle180(float angle)
-    {
-        angle %= 360f;
-        if (angle > 180f)
-        {
-            angle -= 360f;
-        }
-        else if (angle < -180f)
-        {
-            angle += 360f;
-        }
-
-        return angle;
     }
 
     private void DrawDebugVectors()
@@ -311,6 +187,7 @@ public class LocomotionAgent : MonoBehaviour
 
         Debug.DrawRay(transform.position, forwardDirection * debugForwardLength, Color.cyan);
     }
+
     private LocomotionManager FindManagerInScene()
     {
         if (GameContext.Instance != null && GameContext.Instance.TryResolveService(out LocomotionManager resolved))
@@ -319,5 +196,12 @@ public class LocomotionAgent : MonoBehaviour
         }
 
         return FindObjectOfType<LocomotionManager>();
+    }
+
+    private void AlignPlayerToModel()
+    {
+        var worldPos = modelRoot.position;
+        transform.position = worldPos;
+        modelRoot.localPosition = Vector3.zero;
     }
 }
