@@ -10,7 +10,7 @@ public partial class LocomotionAgent : MonoBehaviour
         Vector3 desiredVelocity = CalculateDesiredVelocity();
         currentVelocity = Vector3.MoveTowards(currentVelocity, desiredVelocity, acceleration * deltaTime);
 
-        UpdateTurnState(deltaTime);
+        UpdateFootFrontState();
 
         ELocomotionState state = currentVelocity.sqrMagnitude > Mathf.Epsilon
             ? ELocomotionState.Walk
@@ -28,7 +28,8 @@ public partial class LocomotionAgent : MonoBehaviour
             state,
             lastGroundContact,
             currentTurnAngle,
-            isTurningInPlace);
+            isTurningInPlace,
+            isLeftFootOnFront);
 
         PushSnapshot(snapshot);
     }
@@ -98,7 +99,7 @@ public partial class LocomotionAgent : MonoBehaviour
         Vector3 euler = localDelta.eulerAngles;
 
         float yaw = Mathf.Clamp(NormalizeAngle180(euler.y), -maxHeadYawDegrees, maxHeadYawDegrees);
-        float pitch = Mathf.Clamp(NormalizeAngle180(euler.x), -maxHeadPitchDegrees, maxHeadPitchDegrees);
+        float pitch = -Mathf.Clamp(NormalizeAngle180(euler.x), -maxHeadPitchDegrees, maxHeadPitchDegrees);
 
         return new Vector2(yaw, pitch);
     }
@@ -117,72 +118,4 @@ public partial class LocomotionAgent : MonoBehaviour
 
         return angle;
     }
-
-    private void UpdateTurnState(float deltaTime)
-    {
-        Vector3 bodyForward = modelRoot != null ? modelRoot.forward : transform.forward;
-        bodyForward.y = 0f;
-        if (bodyForward.sqrMagnitude <= Mathf.Epsilon)
-        {
-            bodyForward = forwardDirection;
-        }
-
-        Vector3 desiredForward = forwardDirection;
-        desiredForward.y = 0f;
-        if (desiredForward.sqrMagnitude <= Mathf.Epsilon)
-        {
-            desiredForward = Vector3.forward;
-        }
-
-        float desiredYaw = Mathf.Atan2(desiredForward.x, desiredForward.z) * Mathf.Rad2Deg;
-        float yawDelta = Mathf.Abs(Mathf.DeltaAngle(desiredYaw, lastDesiredYaw));
-        if (yawDelta <= lookStabilityAngle)
-        {
-            lookStabilityTimer += deltaTime;
-        }
-        else
-        {
-            lookStabilityTimer = 0f;
-        }
-        lastDesiredYaw = desiredYaw;
-
-        float signedAngle = 0f;
-        if (bodyForward.sqrMagnitude > Mathf.Epsilon && desiredForward.sqrMagnitude > Mathf.Epsilon)
-        {
-            signedAngle = Vector3.SignedAngle(bodyForward.normalized, desiredForward.normalized, Vector3.up);
-        }
-
-        if (turnStateCooldown > 0f)
-        {
-            turnStateCooldown -= deltaTime;
-        }
-
-        float absAngle = Mathf.Abs(signedAngle);
-        bool wantsTurn = absAngle >= turnEnterAngle;
-
-        bool lookIsStable = lookStabilityTimer >= lookStabilityDuration;
-        bool shouldCompleteTurn = absAngle <= turnCompletionAngle;
-
-        if (!isTurningInPlace && wantsTurn && turnStateCooldown <= 0f && lookIsStable)
-        {
-            isTurningInPlace = true;
-            turnStateCooldown = turnDebounceDuration;
-        }
-        
-        if (isTurningInPlace &&shouldCompleteTurn)
-        {
-            Logger.Log($"[TurnState] Completing turn due to angle threshold.");
-            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-            int idleHash = Animator.StringToHash("Idle");
-            if (stateInfo.shortNameHash != idleHash)
-            {
-                animator.CrossFadeInFixedTime(idleHash, 0.25f);
-            }
-            isTurningInPlace = false;
-            turnStateCooldown = turnDebounceDuration;
-        }
-
-        currentTurnAngle = signedAngle;
-    }
-
 }

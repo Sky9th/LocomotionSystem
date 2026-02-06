@@ -15,7 +15,8 @@ public struct SPlayerLocomotion
         ELocomotionState state,
         SGroundContact groundContact,
         float turnAngle,
-        bool isTurning)
+        bool isTurning,
+        bool isLeftFootOnFront)
     {
         Position = position;
         Velocity = velocity;
@@ -25,6 +26,7 @@ public struct SPlayerLocomotion
         GroundContact = groundContact;
         TurnAngle = turnAngle;
         IsTurning = isTurning;
+        IsLeftFootOnFront = isLeftFootOnFront;
     }
 
     public Vector3 Position { get; }
@@ -35,6 +37,7 @@ public struct SPlayerLocomotion
     public SGroundContact GroundContact { get; }
     public float TurnAngle { get; }
     public bool IsTurning { get; }
+    public bool IsLeftFootOnFront { get; }
 
     public float Speed => Velocity.magnitude;
     public bool HasMovement => Velocity.sqrMagnitude > Mathf.Epsilon;
@@ -48,5 +51,6 @@ public struct SPlayerLocomotion
         ELocomotionState.Idle,
         SGroundContact.None,
         0f,
-        false);
+        false,
+        true);
 }

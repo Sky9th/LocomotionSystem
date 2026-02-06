@@ -57,6 +57,7 @@ public partial class LocomotionAgent : MonoBehaviour
     private float turnStateCooldown;
     private float lastDesiredYaw;
     private float lookStabilityTimer;
+    private bool isLeftFootOnFront;
 
     public bool IsPlayer => markAsPlayer;
     public bool IsRegistered => isRegistered;
