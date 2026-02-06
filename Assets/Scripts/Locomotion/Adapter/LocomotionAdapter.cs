@@ -1,16 +1,15 @@
 using UnityEngine;
 
 /// <summary>
-/// Bridges locomotion snapshots/intent data to presentation layers (Animator, VFX, UI).
-/// Keeps LocomotionAgent slim by exposing smoothed speed/acceleration and feeding animator parameters.
+/// Bridges locomotion snapshots/intent data to presentation layers (Animancer, VFX, UI).
+/// Computes smoothed speed/acceleration and derived planar velocity, keeping LocomotionAgent slim.
 /// </summary>
 [DisallowMultipleComponent]
 public class LocomotionAdapter : MonoBehaviour
 {
+
     [Header("Dependencies")]
     [SerializeField] private LocomotionAgent agent;
-    [SerializeField] private Animator animator;
-    [SerializeField] private bool autoResolveAnimator = true;
 
     [Header("Debug")]
     [SerializeField] private bool logSnapshot;
@@ -24,23 +23,20 @@ public class LocomotionAdapter : MonoBehaviour
     private Vector2 runtimeIntent;
     [SerializeField, Tooltip("Head yaw/pitch in degrees sampled from LocomotionAgent (X = yaw, Y = pitch).")]
     private Vector2 runtimeHeadLook;
+    [SerializeField, Tooltip("Planar velocity projected onto right (X) / forward (Y) axes.")]
+    private Vector2 runtimePlanarSpeed;
 
     public float Speed => runtimeSpeed;
     public float Acceleration => runtimeAcceleration;
     public Vector2 Intent => runtimeIntent;
     public Vector2 HeadLook => runtimeHeadLook;
-    public bool HasValidAnimatorParameters { get; private set; }
+    public Vector2 PlanarSpeed => runtimePlanarSpeed;
 
     private void Awake()
     {
         if (agent == null)
         {
             agent = GetComponent<LocomotionAgent>();
-        }
-
-        if (autoResolveAnimator && animator == null)
-        {
-            animator = GetComponentInChildren<Animator>();
         }
     }
 
@@ -59,10 +55,7 @@ public class LocomotionAdapter : MonoBehaviour
         runtimeSpeed = snapshot.Speed;
         runtimeIntent = agent.LastMoveAction.RawInput;
         runtimeHeadLook = snapshot.LookDirection;
-        if (animator != null)
-        {
-            PushToAnimator(snapshot);
-        }
+        runtimePlanarSpeed = CalculatePlanarSpeed(snapshot);
 
         if (logSnapshot)
         {
@@ -70,32 +63,22 @@ public class LocomotionAdapter : MonoBehaviour
         }
     }
 
-    private void PushToAnimator(SPlayerLocomotion snapshot)
+    private Vector2 CalculatePlanarSpeed(SPlayerLocomotion snapshot)
     {
-        if (animator == null)
+        Vector3 planarVelocity = Vector3.ProjectOnPlane(snapshot.Velocity, Vector3.up);
+        Vector3 forward = snapshot.Forward.sqrMagnitude > Mathf.Epsilon ? snapshot.Forward : transform.forward;
+        Vector3 right = Vector3.Cross(Vector3.up, forward);
+        if (right.sqrMagnitude <= Mathf.Epsilon)
         {
-            return;
+            right = transform.right;
         }
 
-        float targetHeadLook = snapshot.LookDirection.x;
-        float currentHeadLook = animator.GetFloat(LocomotionAnimatorParameters.HeadLookXHash);
-        float smoothedHeadLookX = Mathf.MoveTowards(currentHeadLook, targetHeadLook, agent.HeadLookSmoothingSpeed * Time.deltaTime);
+        forward.Normalize();
+        right.Normalize();
 
-        animator.SetFloat(LocomotionAnimatorParameters.SpeedHash, runtimeSpeed);
-        animator.SetFloat(LocomotionAnimatorParameters.AccelerationHash, runtimeAcceleration);
-        animator.SetInteger(LocomotionAnimatorParameters.StateHash, (int)snapshot.State);
-        animator.SetFloat(LocomotionAnimatorParameters.MoveXHash, runtimeIntent.x);
-        animator.SetFloat(LocomotionAnimatorParameters.MoveYHash, runtimeIntent.y);
-        animator.SetBool(LocomotionAnimatorParameters.GroundedHash, snapshot.IsGrounded);
-        animator.SetFloat(LocomotionAnimatorParameters.HeadLookXHash, smoothedHeadLookX);
-        animator.SetFloat(LocomotionAnimatorParameters.HeadLookYHash, runtimeHeadLook.y);
-        animator.SetFloat(LocomotionAnimatorParameters.TurnAngleHash, snapshot.TurnAngle);
-        animator.SetBool(LocomotionAnimatorParameters.IsTurningHash, snapshot.IsTurning);
-    }
-
-    public void SetAnimator(Animator targetAnimator)
-    {
-        animator = targetAnimator;
+        float rightSpeed = Vector3.Dot(planarVelocity, right);
+        float forwardSpeed = Vector3.Dot(planarVelocity, forward);
+        return new Vector2(rightSpeed, forwardSpeed);
     }
 
 }

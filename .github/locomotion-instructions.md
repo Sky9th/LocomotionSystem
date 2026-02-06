@@ -29,9 +29,9 @@
    - 调用 `PushSnapshot()` 把快照同步给 LocomotionManager；需要时 Manager 再写入 GameContext，供其他系统查询。
 
 3. **LocomotionAdapter（参数与表现桥接器）**
-   - 独立 MonoBehaviour，作为 LocomotionAgent 的伴随组件，**只读** Agent 推送的快照/IAction 缓存，把速度、加速度、状态标签等映射到 Animator、VFX、音频或 UI；不再负责生成/修改快照。
-   - 暴露序列化字段以配置 Animator 参数名（Hash 缓存）、插值/平滑曲线、阈值触发（如落地、加速），并在 `Update`/`LateUpdate` 中执行同步，确保表现调参与核心物理解耦。
-   - 可以针对不同表现需求挂载多个 Adapter（动画、脚步音、屏幕震动等）；基类 `LocomotionAdapter` 可直接承担“通用表现桥接”职责，必要时再派生出 `LocomotionAnimatorAdapter`、`LocomotionFootstepAdapter` 等专用实现。
+   - 独立 MonoBehaviour，作为 LocomotionAgent 的伴随组件，**只读** Agent 推送的快照/IAction 缓存，把速度、加速度、状态标签等映射到 Animancer 动画状态、VFX、音频或 UI；不再负责生成/修改快照。
+   - 暴露序列化字段以配置 Animancer 状态或 Transition 资源引用、混合权重/平滑曲线、阈值触发（如落地、加速），并在 `Update`/`LateUpdate` 中执行同步，确保表现调参与核心物理解耦。
+   - 可以针对不同表现需求挂载多个 Adapter（动画、脚步音、屏幕震动等）；基类 `LocomotionAdapter` 可直接承担“通用表现桥接”职责，必要时再派生出专用实现（如动画专用、脚步音专用）。
    - 每个 Adapter 仅消费数据，必要时做局部平滑或延迟处理，并可通过 `Logger` / 事件输出调试信息，方便设计师验证表现层逻辑而无需触碰 Agent 状态机。
 
 4. **输入链路**
@@ -44,6 +44,18 @@
    - 状态：`Idle`、`Walk`、`Sprint`、`Airborne`，可扩展 `Slide`、`Climb`。
    - 转换条件依赖地面检测、IAction 强度、体力等标志；额外记录 `Follow` 与 `Model` 的夹角，在需要快速转身（如>120°）时可进入专用 `Turn`/`SnapTurn` 状态。
    - 每个状态定义加速度、最大速度、阻尼及进入/退出事件，并指定如何将 `Follow` 前向映射为 `Model` 的目标前向（直接对齐或缓动）。
+
+### 动画状态概览（基于 Animancer）
+- 参考资产：直接使用角色相关的 Loop/Turn/Look 等动画剪辑或 Animancer Transition 资产，默认进入 Idle 动画状态，当角色平面速度大于 0 时切入 Walk/Run 状态；当 `IsTurning` 与 `TurnAngle` 满足阈值时，切换到原地转身相关的动画状态，转身完成或速度恢复为 0 再退回 Idle。
+- 基础状态应至少包含：Idle、Walk/Run、Turn In Place、Airborne 等，必要时可拆分更多细分状态（如 Sprint、Slide）。
+- 头部/上半身可通过额外的 Animancer 层或局部 Mask（如只影响 Head 骨骼）叠加 Look additive clip，使头部跟随输入而不影响身体，保持与核心 Locomotion 状态解耦。
+- LocomotionAdapter 必须与这些状态保持一致：速度来自 `SPlayerLocomotion.Velocity.magnitude`，`IsTurning/TurnAngle` 由 Agent 的朝向差计算；触发时机务必与 Animancer 状态切换条件同步，避免逻辑/表现错位。
+
+### Walk 2D 混合设计（Animancer）
+- 现有 `MoveX/MoveY` 只反映玩家输入方向，无法描述 Root Motion 实际速度，因此新增 `PlanarSpeedX`、`PlanarSpeedY` 两个平面速度分量字段，分别对应世界空间（或角色本地）水平/垂直速度分量。
+- 速度计算：以 `FollowAnchor` 的水平前向和右向为基，使用规范化输入向量乘以配置化 `MoveSpeed` 得到期望速度，再投影到 `PlanarSpeedX`（右向分量）、`PlanarSpeedY`（前向分量）。角色仍由 Root Motion 推进，只是通过该速度推断混合占比，后续可引入全局 `SpeedMultiplier` 调节不同角色差异。
+- 动画侧（Animancer）：Walk 相关动画使用 2D 混合状态（如 Directional Mixer）混合 Forward/Strafe/Back clip；混合参数使用 `PlanarSpeedX/PlanarSpeedY`，从而保证直走、斜走、转弯时的动画比例与实际朝向一致。
+- Adapter 任务：除 `MoveX/MoveY` 继续写入输入向量外，新增写入 `PlanarSpeedX/Y`（来源于 `SPlayerLocomotion` 中计算结果），确保表现层与逻辑数据完全对齐。
 
 6. **地面与表面**
    - 每帧执行一次 Raycast/Spherecast，求得地面法线、坡度、材质标签。
