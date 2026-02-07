@@ -1,0 +1,297 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7281958960604446398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
+  m_Name: TurnInPlaceR180
+  m_EditorClassIdentifier: 
+  _Transition:
+    rid: 1609343240932950029
+  references:
+    version: 2
+    RefIds:
+    - rid: 1609343240932950029
+      type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
+      data:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes: []
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: 7389978470482366679, guid: 5125176f85932cf408d29be76966fe94,
+          type: 3}
+        _NormalizedStartTime: NaN
+--- !u!114 &-5686787643896996578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
+  m_Name: TurnInPlaceL180
+  m_EditorClassIdentifier: 
+  _Transition:
+    rid: 1609343240932950028
+  references:
+    version: 2
+    RefIds:
+    - rid: 1609343240932950028
+      type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
+      data:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes: []
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: -6356340604553270176, guid: 11fb0234f9e7b234d90f02fee2aaf100,
+          type: 3}
+        _NormalizedStartTime: NaN
+--- !u!114 &-4676789515798329813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
+  m_Name: LookMixer
+  m_EditorClassIdentifier: 
+  _Transition:
+    rid: 1609343240932950023
+  references:
+    version: 2
+    RefIds:
+    - rid: 1609343240932950023
+      type: {class: MixerTransition2D, ns: Animancer, asm: Kybernetik.Animancer}
+      data:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes: []
+          _Callbacks: []
+          _Names: []
+        _Animations:
+        - {fileID: 3068510199649783275, guid: 5fa3e15c53ed6eb4e86539a2809b481e, type: 3}
+        - {fileID: 683597571334327635, guid: 5fa3e15c53ed6eb4e86539a2809b481e, type: 3}
+        - {fileID: -1706797500725867822, guid: 5fa3e15c53ed6eb4e86539a2809b481e, type: 3}
+        - {fileID: -3677299682021922460, guid: 5fa3e15c53ed6eb4e86539a2809b481e, type: 3}
+        _Speeds: []
+        _SynchronizeChildren: 
+        _Thresholds:
+        - {x: 0, y: 1}
+        - {x: 0, y: -1}
+        - {x: 1, y: 0}
+        - {x: -1, y: 0}
+        _DefaultParameter: {x: 0, y: 0}
+        _Type: 0
+        _ParameterNameX: {fileID: 11400000, guid: 8ab2d9352c085d24ab83203d54124dda,
+          type: 2}
+        _ParameterNameY: {fileID: 11400000, guid: 2369aff4318fad545aeea5c349718d6b,
+          type: 2}
+--- !u!114 &-1237515139493486604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
+  m_Name: Idle
+  m_EditorClassIdentifier: 
+  _Transition:
+    rid: 1609343240932950021
+  references:
+    version: 2
+    RefIds:
+    - rid: 1609343240932950021
+      type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
+      data:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes: []
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: -5048631755769649023, guid: 66e38452873e557408553dfd4c808a3f,
+          type: 3}
+        _NormalizedStartTime: NaN
+--- !u!114 &-613736580003927102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
+  m_Name: TurnInPlaceR90
+  m_EditorClassIdentifier: 
+  _Transition:
+    rid: 1609343240932950027
+  references:
+    version: 2
+    RefIds:
+    - rid: 1609343240932950027
+      type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
+      data:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes: []
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: 786506915467791735, guid: 4aa5befc0d756164fa29e294897c2613,
+          type: 3}
+        _NormalizedStartTime: NaN
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f08fdd50e79d0c4bb235a5c2696516d, type: 3}
+  m_Name: HumanLocomotionTransitions
+  m_EditorClassIdentifier: 
+  _Definition:
+    _Transitions:
+    - {fileID: -1237515139493486604}
+    - {fileID: -4676789515798329813}
+    - {fileID: 8269135969601451288}
+    - {fileID: -613736580003927102}
+    - {fileID: -5686787643896996578}
+    - {fileID: -7281958960604446398}
+    - {fileID: 8118410883589941551}
+    _Modifiers: []
+    _Aliases:
+    - _Name: {fileID: 11400000, guid: e080e4a005dcb7c47b71b7217c1e44b2, type: 2}
+      _Index: 0
+    - _Name: {fileID: 11400000, guid: 787e4e53402c6b141b958c85857d99bb, type: 2}
+      _Index: 1
+    - _Name: {fileID: 11400000, guid: 3997fcecd2b0db04bb077248eccb6c70, type: 2}
+      _Index: 2
+    - _Name: {fileID: 11400000, guid: cd8614c33b5e91d489beb07de8d7112f, type: 2}
+      _Index: 3
+    - _Name: {fileID: 11400000, guid: 470dbfabfb96aa442a71a295e3d66d15, type: 2}
+      _Index: 4
+    - _Name: {fileID: 11400000, guid: 1b561666096556d4ab8df624c35d0472, type: 2}
+      _Index: 5
+    - _Name: {fileID: 11400000, guid: ff9f31ba1724cd34187efff0895d0615, type: 2}
+      _Index: 6
+    _AliasAllTransitions: 1
+--- !u!114 &6329991998728917179
+MonoBehaviour:
+  m_ObjectHideFlags: 17
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f04d4a67566152e40aaa01b8b745ff6b, type: 3}
+  m_Name: Editor Data
+  m_EditorClassIdentifier: 
+  _Library: {fileID: 11400000}
+  _TransitionSortMode: 0
+--- !u!114 &8118410883589941551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
+  m_Name: WalkMixer
+  m_EditorClassIdentifier: 
+  _Transition:
+    rid: 1609343246250278915
+  references:
+    version: 2
+    RefIds:
+    - rid: 1609343246250278915
+      type: {class: MixerTransition2D, ns: Animancer, asm: Kybernetik.Animancer}
+      data:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes: []
+          _Callbacks: []
+          _Names: []
+        _Animations:
+        - {fileID: -4009464807177172532, guid: d70eb4ab1865041448de7674821f7f7c, type: 3}
+        - {fileID: -6468842943480885880, guid: 22474272c34027542935c52a6b3076a9, type: 3}
+        - {fileID: 5444290685379613686, guid: 39af0c355008d9e4fb65c6f31833aa9d, type: 3}
+        - {fileID: -5844879506735206853, guid: cfdb7f8e095db4d498dc8c2a7f6d0cab, type: 3}
+        - {fileID: 2047457311872533986, guid: 09948e8810a0e0646b66917960899107, type: 3}
+        - {fileID: -4483162228018015910, guid: a590d1b5767d5d54386b34c9f7f7fe21, type: 3}
+        - {fileID: 2227134355851379932, guid: 6bfdfe863d273e34fb7091837f71c882, type: 3}
+        - {fileID: 1964287270537140565, guid: 326a77dad90a09949bf4d2533bf2ab1b, type: 3}
+        - {fileID: -5048631755769649023, guid: 66e38452873e557408553dfd4c808a3f, type: 3}
+        _Speeds: []
+        _SynchronizeChildren: 
+        _Thresholds:
+        - {x: 0, y: 1}
+        - {x: 0.5, y: 0.5}
+        - {x: 1, y: 0}
+        - {x: 0.5, y: -0.5}
+        - {x: 0, y: -1}
+        - {x: -0.5, y: -0.5}
+        - {x: -1, y: 0}
+        - {x: -0.5, y: 0.5}
+        - {x: 0, y: 0}
+        _DefaultParameter: {x: 1, y: 0}
+        _Type: 0
+        _ParameterNameX: {fileID: 11400000, guid: ac471ab640645ef49bd0608d5edd20f5,
+          type: 2}
+        _ParameterNameY: {fileID: 11400000, guid: a1c41d41f265525458a59e53423ffbbe,
+          type: 2}
+--- !u!114 &8269135969601451288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
+  m_Name: TurnInPlaceL90
+  m_EditorClassIdentifier: 
+  _Transition:
+    rid: 1609343240932950024
+  references:
+    version: 2
+    RefIds:
+    - rid: 1609343240932950024
+      type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
+      data:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes: []
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: 5271736363738221749, guid: fde4813f79e8ecc43865c6a8330f5a97,
+          type: 3}
+        _NormalizedStartTime: NaN

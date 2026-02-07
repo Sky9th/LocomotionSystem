@@ -40,9 +40,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1947580238982052747}
-  - component: {fileID: 6388861383764810232}
-  - component: {fileID: 1200743877274899340}
   - component: {fileID: 6472117511268014734}
+  - component: {fileID: 6388861383764810232}
+  - component: {fileID: 641403358556863053}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -67,6 +67,20 @@ Transform:
   - {fileID: 3954816038181264415}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6472117511268014734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8667043660662020576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bbae2fefb804dd4a81e63708894d735, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  modelRoot: {fileID: 0}
+  keepPlayerAlignedWithModel: 1
 --- !u!114 &6388861383764810232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84,15 +98,24 @@ MonoBehaviour:
   markAsPlayer: 1
   subscribePlayerMoveAction: 1
   subscribePlayerLookAction: 1
-  followTarget: {fileID: 0}
+  followAnchor: {fileID: 0}
+  modelRoot: {fileID: 0}
+  animator: {fileID: 0}
+  autoResolveAnimator: 1
   moveSpeed: 4
   acceleration: 20
   maxHeadYawDegrees: 75
   maxHeadPitchDegrees: 75
   headLookSmoothingSpeed: 540
+  turnEnterAngle: 65
+  turnExitAngle: 20
+  turnDebounceDuration: 0.25
+  lookStabilityAngle: 2
+  lookStabilityDuration: 0.15
+  turnCompletionAngle: 5
   drawDebugVectors: 1
   debugForwardLength: 2
---- !u!114 &1200743877274899340
+--- !u!114 &641403358556863053
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -101,32 +124,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 8667043660662020576}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0e9ae0f2aaaa864f87db8225edeb9cd, type: 3}
+  m_Script: {fileID: 11500000, guid: 490dfd204f54f17488a43791bce655fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 0}
-  animator: {fileID: 0}
-  autoResolveAnimator: 1
-  logSnapshot: 0
-  runtimeSpeed: 0
-  runtimeAcceleration: 0
-  runtimeIntent: {x: 0, y: 0}
-  runtimeHeadLook: {x: 0, y: 0}
---- !u!114 &6472117511268014734
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8667043660662020576}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7bbae2fefb804dd4a81e63708894d735, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  modelRoot: {fileID: 0}
-  keepPlayerAlignedWithModel: 1
-  syncRotation: 1
+  animancer: {fileID: 0}
+  alias: {fileID: 0}
+  headerMask: {fileID: 0}
+  headYawSpeed: 5
+  headPitchSpeed: 5
 --- !u!1001 &7698765721122133654
 PrefabInstance:
   m_ObjectHideFlags: 0

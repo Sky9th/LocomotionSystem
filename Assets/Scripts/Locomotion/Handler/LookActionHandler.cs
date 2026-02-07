@@ -6,6 +6,6 @@ internal sealed class LookActionHandler : ActionHandler<SPlayerLookIAction>
 
     protected override void Execute(SPlayerLookIAction action, MetaStruct meta)
     {
-        Owner.ApplyLookAction(action);
+        Owner.BufferIAction(action);
     }
 }
