@@ -11,6 +11,7 @@ public struct SPlayerLocomotion
         Vector3 position,
         Vector3 velocity,
         Vector3 forward,
+        Vector2 localVelocity,
         Vector2 lookDirection,
         ELocomotionState state,
         SGroundContact groundContact,
@@ -21,6 +22,7 @@ public struct SPlayerLocomotion
         Position = position;
         Velocity = velocity;
         Forward = forward.sqrMagnitude > Mathf.Epsilon ? forward.normalized : Vector3.forward;
+        LocalVelocity = localVelocity;
         LookDirection = lookDirection;
         State = state;
         GroundContact = groundContact;
@@ -32,6 +34,7 @@ public struct SPlayerLocomotion
     public Vector3 Position { get; }
     public Vector3 Velocity { get; }
     public Vector3 Forward { get; }
+    public Vector2 LocalVelocity { get; }
     public Vector2 LookDirection { get; }
     public ELocomotionState State { get; }
     public SGroundContact GroundContact { get; }
@@ -47,6 +50,7 @@ public struct SPlayerLocomotion
         Vector3.zero,
         Vector3.zero,
         Vector3.forward,
+        Vector2.zero,
         Vector2.zero,
         ELocomotionState.Idle,
         SGroundContact.None,
