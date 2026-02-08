@@ -15,10 +15,12 @@ public class AnimancerStringProfile : ScriptableObject
     public StringAsset walkLeft;
     public StringAsset walkRight;
     public StringAsset walkBackward;
-    public StringAsset turnLeft90;
-    public StringAsset turnRight90; 
-    public StringAsset turnLeft180;
-    public StringAsset turnRight180;
+    public StringAsset turnInWalk180L;
+    public StringAsset turnInWalk180R;
+    public StringAsset turnInPlace90L;
+    public StringAsset turnInPlace90R; 
+    public StringAsset turnInPlace180L;
+    public StringAsset turnInPlace180R;
     public StringAsset lookMixer;
     public StringAsset lookUp;
     public StringAsset lookDown;

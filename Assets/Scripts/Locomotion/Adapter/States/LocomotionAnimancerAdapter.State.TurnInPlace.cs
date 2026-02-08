@@ -34,11 +34,11 @@ namespace Game.Locomotion.Adapter
 
                 if (angle < 90f)
                 {
-                    Adapter.baseLayer.TryPlay(snapshot.TurnAngle > 0f ? Adapter.alias.turnRight90 : Adapter.alias.turnLeft90);
+                    Adapter.baseLayer.TryPlay(snapshot.TurnAngle > 0f ? Adapter.alias.turnInPlace90R : Adapter.alias.turnInPlace90L);
                 }
                 else
                 {
-                    Adapter.baseLayer.TryPlay(snapshot.TurnAngle > 0f ? Adapter.alias.turnRight180 : Adapter.alias.turnLeft180);
+                    Adapter.baseLayer.TryPlay(snapshot.TurnAngle > 0f ? Adapter.alias.turnInPlace180R : Adapter.alias.turnInPlace180L);
                 }
             }
         }
