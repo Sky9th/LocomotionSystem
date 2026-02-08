@@ -102,6 +102,35 @@ MonoBehaviour:
           type: 2}
         _ParameterNameY: {fileID: 11400000, guid: 2369aff4318fad545aeea5c349718d6b,
           type: 2}
+--- !u!114 &-3786755868950054941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
+  m_Name: TurnInWalk180L
+  m_EditorClassIdentifier: 
+  _Transition:
+    rid: 1609343250247974920
+  references:
+    version: 2
+    RefIds:
+    - rid: 1609343250247974920
+      type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
+      data:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes: []
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: 1827226128182048838, guid: baa545746b88c194892c607734315fb2,
+          type: 3}
+        _NormalizedStartTime: NaN
 --- !u!114 &-1237515139493486604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,6 +210,8 @@ MonoBehaviour:
     - {fileID: -5686787643896996578}
     - {fileID: -7281958960604446398}
     - {fileID: 8118410883589941551}
+    - {fileID: 71537367975672513}
+    - {fileID: -3786755868950054941}
     _Modifiers: []
     _Aliases:
     - _Name: {fileID: 11400000, guid: e080e4a005dcb7c47b71b7217c1e44b2, type: 2}
@@ -197,7 +228,40 @@ MonoBehaviour:
       _Index: 5
     - _Name: {fileID: 11400000, guid: ff9f31ba1724cd34187efff0895d0615, type: 2}
       _Index: 6
+    - _Name: {fileID: 11400000, guid: a1aa8de1168235f438639d24b093dc33, type: 2}
+      _Index: 7
+    - _Name: {fileID: 11400000, guid: 3f47afb1acfa38d4b8269baf2b2079ba, type: 2}
+      _Index: 8
     _AliasAllTransitions: 1
+--- !u!114 &71537367975672513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
+  m_Name: TurnInWalk180R
+  m_EditorClassIdentifier: 
+  _Transition:
+    rid: 1609343250247974912
+  references:
+    version: 2
+    RefIds:
+    - rid: 1609343250247974912
+      type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
+      data:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes: []
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: 1827226128182048838, guid: 340de400a4ea14b4b9d10f172bf44322,
+          type: 3}
+        _NormalizedStartTime: NaN
 --- !u!114 &6329991998728917179
 MonoBehaviour:
   m_ObjectHideFlags: 17

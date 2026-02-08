@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private CameraManager cameraManager;
     [SerializeField] private LocomotionManager locomotionManager;
     [SerializeField] private TimeScaleManager timeScaleService;
+    [SerializeField] private UIManager uiService;
     [Header("Cursor Options")]
     [SerializeField] private bool lockCursorWhenPlaying = true;
     
@@ -27,6 +28,7 @@ public class GameManager : MonoBehaviour
     public CameraManager Camera => cameraManager;
     public LocomotionManager Locomotion => locomotionManager;
     public TimeScaleManager TimeScale => timeScaleService;
+    public UIManager UI => uiService;
 
     private readonly List<BaseService> registeredServices = new();
     private bool isBootstrapped;
@@ -92,6 +94,11 @@ public class GameManager : MonoBehaviour
         {
             timeScaleService = GetComponentInChildren<TimeScaleManager>();
         }
+
+        if (uiService == null)
+        {
+            uiService = GetComponentInChildren<UIManager>();
+        }
     }
 
     private void Bootstrap()
@@ -123,9 +130,11 @@ public class GameManager : MonoBehaviour
         RegisterService(cameraManager, nameof(cameraManager));
         RegisterService(locomotionManager, nameof(locomotionManager));
         RegisterService(timeScaleService, nameof(timeScaleService));
+        RegisterService(uiService, nameof(uiService));
 
         AttachDispatcherToServices();
         ActivateServiceSubscriptions();
+        InitializeServices();
 
         SubscribeDispatcherEvents();
         ApplyCursorMode(gameState != null ? gameState.CurrentState : EGameState.Initializing);
@@ -168,6 +177,14 @@ public class GameManager : MonoBehaviour
         foreach (var service in registeredServices)
         {
             service?.ActivateSubscriptions();
+        }
+    }
+
+    private void InitializeServices()
+    {
+        foreach (var service in registeredServices)
+        {
+            service?.NotifyInitialized();
         }
     }
 

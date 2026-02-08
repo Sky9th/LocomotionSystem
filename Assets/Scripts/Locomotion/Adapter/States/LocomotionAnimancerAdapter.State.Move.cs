@@ -10,13 +10,13 @@ namespace Game.Locomotion.Adapter
         private sealed class MoveState : State
         {
             private Vector2MixerState currentMoveState;
+            private AnimancerState currentTurnState;
             private LocomotionAnimancerAdapter adapter;
 
             public MoveState(LocomotionAnimancerAdapter adapter) : base(adapter)
             {
                 this.adapter = adapter;
                 AddTransition(LocomotionConditions.IsStopped, () => Adapter.idleState);
-                AddTransition(LocomotionConditions.IsTurningInPlace, () => Adapter.turnState);
             }
 
             public override void OnEnterState()
@@ -31,8 +31,43 @@ namespace Game.Locomotion.Adapter
                     return;
                 }
 
-                currentMoveState.Parameter = adapter.agent.Snapshot.LocalVelocity;
-                // TODO: update walk/run blending based on snapshot.Velocity here.
+                var snapshot = adapter.agent.Snapshot;
+                currentMoveState.Parameter = snapshot.LocalVelocity;
+                float absAngle = Mathf.Abs(snapshot.TurnAngle);
+                Debug.Log($"Turn Angle: {snapshot.TurnAngle}, Abs Angle: {absAngle}");
+                if (absAngle > 0f)
+                {
+                    if (absAngle > 130f)
+                    {
+                        if (snapshot.TurnAngle > 0f)
+                            currentTurnState = adapter.baseLayer.TryPlay(Adapter.alias.turnInWalk180R);
+                        else {
+                            currentTurnState = adapter.baseLayer.TryPlay(Adapter.alias.turnInWalk180L);
+                        }
+                    } else {
+                        float maxStep = adapter.agent.WalkTurnSpeed * Time.deltaTime;
+                        float deltaAngle = Mathf.Sign(snapshot.TurnAngle) * Mathf.Min(maxStep, absAngle);
+
+                        if (Mathf.Abs(deltaAngle) > Mathf.Epsilon)
+                        {
+                            adapter.agent.Model.transform.rotation = Quaternion.AngleAxis(deltaAngle, Vector3.up) * adapter.agent.Model.transform.rotation;
+                        }
+                    }
+                }
+
+                if (currentTurnState != null)
+                {
+                    if(currentTurnState.NormalizedTime >= 1f - Mathf.Epsilon)
+                    {
+                        Debug.Log($"Current Turn State: {currentTurnState}");
+                        currentMoveState = (Vector2MixerState)Adapter.baseLayer.TryPlay(Adapter.alias.walkMixer);
+                        currentTurnState = null;
+                    }
+                }
+
+                if (absAngle < Mathf.Epsilon) { 
+                    currentMoveState = (Vector2MixerState)Adapter.baseLayer.TryPlay(Adapter.alias.walkMixer);
+                }
             }
         }
     }

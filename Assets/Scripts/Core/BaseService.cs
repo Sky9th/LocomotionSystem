@@ -14,6 +14,7 @@ public abstract class BaseService : MonoBehaviour
     protected EventDispatcher Dispatcher { get; private set; }
     private readonly Dictionary<Type, object> serviceCache = new();
     private bool subscriptionsActivated;
+    private bool isInitialized;
 
     /// <summary>
     /// Called by GameManager to hook this service into the GameContext.
@@ -36,6 +37,7 @@ public abstract class BaseService : MonoBehaviour
         serviceCache.Clear();
         Dispatcher = null;
         subscriptionsActivated = false;
+        isInitialized = false;
         if (OnRegister(context))
         {
             IsRegistered = true;
@@ -150,6 +152,30 @@ public abstract class BaseService : MonoBehaviour
 
         SubscribeToDispatcher();
         subscriptionsActivated = true;
+    }
+
+    /// <summary>
+    /// Called by GameManager after all services have registered, attached a dispatcher,
+    /// and activated their subscriptions. Use this for any final initialization that
+    /// relies on other services being fully ready.
+    /// </summary>
+    protected virtual void OnInitialized()
+    {
+    }
+
+    /// <summary>
+    /// Internal entry point used by GameManager to notify services that the
+    /// bootstrap sequence has completed.
+    /// </summary>
+    internal void NotifyInitialized()
+    {
+        if (!IsRegistered || isInitialized)
+        {
+            return;
+        }
+
+        OnInitialized();
+        isInitialized = true;
     }
 
     protected virtual void OnDispatcherAvailable()

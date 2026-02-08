@@ -18,10 +18,12 @@ MonoBehaviour:
   walkLeft: {fileID: 11400000, guid: 9a2e14ed79e7af041b736d6a1e986d64, type: 2}
   walkRight: {fileID: 11400000, guid: 78d540f0e2e5bc34ab555420c224a019, type: 2}
   walkBackward: {fileID: 11400000, guid: 56ad804a1ae7bf640bf0570c6d50b6c4, type: 2}
-  turnLeft90: {fileID: 11400000, guid: 3997fcecd2b0db04bb077248eccb6c70, type: 2}
-  turnRight90: {fileID: 11400000, guid: cd8614c33b5e91d489beb07de8d7112f, type: 2}
-  turnLeft180: {fileID: 11400000, guid: 470dbfabfb96aa442a71a295e3d66d15, type: 2}
-  turnRight180: {fileID: 11400000, guid: 1b561666096556d4ab8df624c35d0472, type: 2}
+  turnInWalk180L: {fileID: 11400000, guid: 3f47afb1acfa38d4b8269baf2b2079ba, type: 2}
+  turnInWalk180R: {fileID: 11400000, guid: a1aa8de1168235f438639d24b093dc33, type: 2}
+  turnInPlace90L: {fileID: 11400000, guid: 3997fcecd2b0db04bb077248eccb6c70, type: 2}
+  turnInPlace90R: {fileID: 11400000, guid: cd8614c33b5e91d489beb07de8d7112f, type: 2}
+  turnInPlace180L: {fileID: 11400000, guid: 470dbfabfb96aa442a71a295e3d66d15, type: 2}
+  turnInPlace180R: {fileID: 11400000, guid: 1b561666096556d4ab8df624c35d0472, type: 2}
   lookMixer: {fileID: 11400000, guid: 787e4e53402c6b141b958c85857d99bb, type: 2}
   lookUp: {fileID: 11400000, guid: 45ed51026d6a8154a8260ddc6230c2c5, type: 2}
   lookDown: {fileID: 11400000, guid: 04b1295a12916d443b050bed1c0f8ea1, type: 2}

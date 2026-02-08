@@ -25,6 +25,7 @@ public partial class LocomotionAgent : MonoBehaviour
         UpdateForwardDirection();
         UpdateFootFrontState();
         UpdateAnchorRotation();
+        CalculateTurnAngle();
         UpdateTurnState(deltaTime);
 
         if (LastMoveAction.HasInput)
@@ -177,7 +178,11 @@ public partial class LocomotionAgent : MonoBehaviour
         return angle;
     }
 
-    private void UpdateTurnState(float deltaTime)
+    /// <summary>
+    /// Calculates the signed planar turn angle (in degrees) between the character body forward
+    /// and the locomotion forwardDirection. Returns 0 if either vector has no magnitude.
+    /// </summary>
+    private void CalculateTurnAngle()
     {
         Vector3 bodyForward = modelRoot != null ? modelRoot.forward : transform.forward;
         bodyForward.y = 0f;
@@ -186,6 +191,23 @@ public partial class LocomotionAgent : MonoBehaviour
             bodyForward = forwardDirection;
         }
 
+        Vector3 desiredForward = forwardDirection;
+        desiredForward.y = 0f;
+        if (desiredForward.sqrMagnitude <= Mathf.Epsilon)
+        {
+            desiredForward = Vector3.forward;
+        }
+
+        if (bodyForward.sqrMagnitude > Mathf.Epsilon && desiredForward.sqrMagnitude > Mathf.Epsilon)
+        {
+            currentTurnAngle = Vector3.SignedAngle(bodyForward.normalized, desiredForward.normalized, Vector3.up);
+        }
+
+        currentTurnAngle =  0f;
+    }
+
+    private void UpdateTurnState(float deltaTime)
+    {
         Vector3 desiredForward = forwardDirection;
         desiredForward.y = 0f;
         if (desiredForward.sqrMagnitude <= Mathf.Epsilon)
@@ -205,18 +227,12 @@ public partial class LocomotionAgent : MonoBehaviour
         }
         lastDesiredYaw = desiredYaw;
 
-        float signedAngle = 0f;
-        if (bodyForward.sqrMagnitude > Mathf.Epsilon && desiredForward.sqrMagnitude > Mathf.Epsilon)
-        {
-            signedAngle = Vector3.SignedAngle(bodyForward.normalized, desiredForward.normalized, Vector3.up);
-        }
-
         if (turnStateCooldown > 0f)
         {
             turnStateCooldown -= deltaTime;
         }
 
-        float absAngle = Mathf.Abs(signedAngle);
+        float absAngle = Mathf.Abs(currentTurnAngle);
 
         bool wantsTurn = absAngle >= config.TurnEnterAngle;
         bool lookIsStable = lookStabilityTimer >= config.LookStabilityDuration;
@@ -232,7 +248,5 @@ public partial class LocomotionAgent : MonoBehaviour
             isTurningInPlace = false;
             turnStateCooldown = config.TurnDebounceDuration;
         }
-
-        currentTurnAngle = signedAngle;
     }
 }

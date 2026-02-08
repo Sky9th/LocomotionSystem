@@ -38,6 +38,7 @@ public partial class LocomotionAgent : MonoBehaviour
     private MoveActionHandler moveActionHandler;
     private LookActionHandler lookActionHandler;
 
+    public Transform Model => modelRoot;
     public bool IsPlayer => markAsPlayer;
     public bool IsRegistered => isRegistered;
     public SPlayerLocomotion Snapshot => latestSnapshot;
@@ -46,6 +47,7 @@ public partial class LocomotionAgent : MonoBehaviour
     public Vector3 ForwardDirection => latestSnapshot.Forward;
     public Vector2 LookDirection => latestSnapshot.LookDirection;
     public float HeadLookSmoothingSpeed => config.HeadLookSmoothingSpeed;
+    public float WalkTurnSpeed => config.WalkTurnSpeed;
 
     private void Awake()
     {

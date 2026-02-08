@@ -26,6 +26,9 @@ public class LocomotionConfigProfile : ScriptableObject
     [SerializeField, Min(0f)] private float lookStabilityDuration = 0.15f;
     [SerializeField, Range(0f, 25f)] private float turnCompletionAngle = 5f;
 
+    [Header("Walk Turn Settings")]
+    [SerializeField, Min(0f)] private float walkTurnSpeed = 360f;
+
     public float MoveSpeed => moveSpeed;
     public float Acceleration => acceleration;
     public float MaxHeadYawDegrees => maxHeadYawDegrees;
@@ -37,4 +40,5 @@ public class LocomotionConfigProfile : ScriptableObject
     public float LookStabilityAngle => lookStabilityAngle;
     public float LookStabilityDuration => lookStabilityDuration;
     public float TurnCompletionAngle => turnCompletionAngle;
+    public float WalkTurnSpeed => walkTurnSpeed;
 }
