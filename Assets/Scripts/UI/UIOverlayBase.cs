@@ -1,45 +1,35 @@
 using UnityEngine;
 
 /// <summary>
-/// Base class for non-fullscreen UI overlays such as HUD, debug panels, and tooltips.
-/// Overlays are managed by UIService and can be stacked on top of each other.
+/// Base class for overlay-style UI elements which can stack on top of each other.
+/// Typical examples: HUD, notifications, debug panels, tooltips, etc.
+///
+/// UIManager controls the lifetime of these instances and will call
+/// SetVisible/OnShow/OnHide according to overlay state.
 /// </summary>
-public abstract class UIOverlayBase : MonoBehaviour
+public abstract class UIOverlayBase : UIElementBase
 {
     /// <summary>
-    /// True when this overlay is currently visible.
-    /// Implementations may override visibility behavior (e.g. CanvasGroup),
-    /// but should keep this property in sync.
+    /// Overlays opt into the shared refresh loop by default so they only
+    /// need to override Refresh() in most cases.
     /// </summary>
-    public bool IsVisible { get; private set; }
+    protected override bool ShouldAutoRefresh => true;
 
     /// <summary>
-    /// Called by UIService when the overlay is shown.
-    /// Payload can be used to pass contextual information (e.g. target entity).
+    /// Called by UIManager when this overlay is shown.
     /// </summary>
     public virtual void OnShow(object payload)
     {
-        SetVisible(true);
+        ResetRefreshTimer();
     }
 
     /// <summary>
-    /// Called by UIService when the overlay is hidden.
+    /// Called by UIManager when this overlay is hidden.
     /// </summary>
     public virtual void OnHide()
     {
-        SetVisible(false);
+        ResetRefreshTimer();
     }
 
-    /// <summary>
-    /// Unified entry point for toggling visibility.
-    /// Default implementation uses GameObject active state.
-    /// </summary>
-    public virtual void SetVisible(bool visible)
-    {
-        IsVisible = visible;
-        if (gameObject.activeSelf != visible)
-        {
-            gameObject.SetActive(visible);
-        }
-    }
+    // Visibility behavior is inherited from UIElementBase.SetVisible.
 }

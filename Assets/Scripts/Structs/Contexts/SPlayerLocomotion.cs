@@ -10,7 +10,8 @@ public struct SPlayerLocomotion
     public SPlayerLocomotion(
         Vector3 position,
         Vector3 velocity,
-        Vector3 forward,
+        Vector3 locomotionHeading,
+        Vector3 bodyForward,
         Vector2 localVelocity,
         Vector2 lookDirection,
         ELocomotionState state,
@@ -21,7 +22,8 @@ public struct SPlayerLocomotion
     {
         Position = position;
         Velocity = velocity;
-        Forward = forward.sqrMagnitude > Mathf.Epsilon ? forward.normalized : Vector3.forward;
+        LocomotionHeading = locomotionHeading.sqrMagnitude > Mathf.Epsilon ? locomotionHeading.normalized : Vector3.forward;
+        BodyForward = bodyForward.sqrMagnitude > Mathf.Epsilon ? bodyForward.normalized : Vector3.forward;
         LocalVelocity = localVelocity;
         LookDirection = lookDirection;
         State = state;
@@ -33,7 +35,8 @@ public struct SPlayerLocomotion
 
     public Vector3 Position { get; }
     public Vector3 Velocity { get; }
-    public Vector3 Forward { get; }
+    public Vector3 LocomotionHeading { get; }
+    public Vector3 BodyForward { get; }
     public Vector2 LocalVelocity { get; }
     public Vector2 LookDirection { get; }
     public ELocomotionState State { get; }
@@ -49,6 +52,7 @@ public struct SPlayerLocomotion
     public static SPlayerLocomotion Default => new SPlayerLocomotion(
         Vector3.zero,
         Vector3.zero,
+        Vector3.forward,
         Vector3.forward,
         Vector2.zero,
         Vector2.zero,

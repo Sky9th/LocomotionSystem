@@ -34,7 +34,6 @@ namespace Game.Locomotion.Adapter
                 var snapshot = adapter.agent.Snapshot;
                 currentMoveState.Parameter = snapshot.LocalVelocity;
                 float absAngle = Mathf.Abs(snapshot.TurnAngle);
-                Debug.Log($"Turn Angle: {snapshot.TurnAngle}, Abs Angle: {absAngle}");
                 if (absAngle > 0f)
                 {
                     if (absAngle > 130f)
@@ -50,6 +49,7 @@ namespace Game.Locomotion.Adapter
 
                         if (Mathf.Abs(deltaAngle) > Mathf.Epsilon)
                         {
+                            Logger.Log($"Applying turn delta of {deltaAngle} to model (absAngle={absAngle})");
                             adapter.agent.Model.transform.rotation = Quaternion.AngleAxis(deltaAngle, Vector3.up) * adapter.agent.Model.transform.rotation;
                         }
                     }
@@ -59,7 +59,6 @@ namespace Game.Locomotion.Adapter
                 {
                     if(currentTurnState.NormalizedTime >= 1f - Mathf.Epsilon)
                     {
-                        Debug.Log($"Current Turn State: {currentTurnState}");
                         currentMoveState = (Vector2MixerState)Adapter.baseLayer.TryPlay(Adapter.alias.walkMixer);
                         currentTurnState = null;
                     }

@@ -29,7 +29,6 @@ namespace Game.Locomotion.Adapter
 
         if (!headLookMixerInitialized)
         {
-            Debug.Log(mixerState.ChildCount);
             for (int i = 0; i < mixerState.ChildCount; i++)
             {
                 var child = mixerState.GetChild(i);

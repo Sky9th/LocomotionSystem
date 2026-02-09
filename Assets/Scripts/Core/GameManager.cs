@@ -44,6 +44,8 @@ public class GameManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
+        Logger.Log("GameManager Awake: starting bootstrap sequence.", nameof(GameManager), this);
+
         WireDependencies();
         Bootstrap();
     }
@@ -105,23 +107,29 @@ public class GameManager : MonoBehaviour
     {
         if (isBootstrapped)
         {
+            Logger.Log("GameManager.Bootstrap called but already bootstrapped. Skipping.", nameof(GameManager), this);
             return;
         }
 
         if (gameContext == null)
         {
             Debug.LogError("GameManager is missing a GameContext reference.", this);
+            Logger.LogError("GameManager is missing a GameContext reference.", nameof(GameManager), this);
             return;
         }
 
+        Logger.Log("Bootstrap Step 1: Initializing GameContext.", nameof(GameManager), this);
         gameContext.Initialize();
+        Logger.Log($"GameContext after Initialize. IsInitialized={gameContext.IsInitialized}, RegisteredServiceCount={gameContext.RegisteredServiceCount}", nameof(GameManager), this);
         registeredServices.Clear();
 
+        Logger.Log("Bootstrap Step 2: Registering core services.", nameof(GameManager), this);
         RegisterService(eventDispatcher, nameof(eventDispatcher));
 
         if (eventDispatcher == null || !eventDispatcher.IsRegistered)
         {
             Debug.LogError("GameManager requires a valid EventDispatcher before continuing.", this);
+            Logger.LogError("GameManager requires a valid EventDispatcher before continuing.", nameof(GameManager), this);
             return;
         }
 
@@ -132,13 +140,15 @@ public class GameManager : MonoBehaviour
         RegisterService(timeScaleService, nameof(timeScaleService));
         RegisterService(uiService, nameof(uiService));
 
+        Logger.Log($"Bootstrap Step 3: Attaching dispatcher and activating {registeredServices.Count} registered services.", nameof(GameManager), this);
         AttachDispatcherToServices();
         ActivateServiceSubscriptions();
         InitializeServices();
 
         SubscribeDispatcherEvents();
         ApplyCursorMode(gameState != null ? gameState.CurrentState : EGameState.Initializing);
-        
+
+        Logger.Log($"GameManager bootstrap completed. RegisteredServices={registeredServices.Count}", nameof(GameManager), this);
         isBootstrapped = true;
     }
 
@@ -147,14 +157,21 @@ public class GameManager : MonoBehaviour
         if (service == null)
         {
             Debug.LogWarning($"GameManager could not register service '{label}' because the reference is missing.", this);
+            Logger.LogWarning($"RegisterService skipped: '{label}' is null.", nameof(GameManager), this);
             return;
         }
 
+        Logger.Log($"RegisterService starting for '{label}' ({service.GetType().Name}).", nameof(GameManager), service);
         service.Register(gameContext);
 
         if (service.IsRegistered && !registeredServices.Contains(service))
         {
             registeredServices.Add(service);
+            Logger.Log($"RegisterService succeeded for '{label}' ({service.GetType().Name}). IsRegistered={service.IsRegistered}", nameof(GameManager), service);
+        }
+        else
+        {
+            Logger.LogWarning($"RegisterService did not complete for '{label}' ({service.GetType().Name}). IsRegistered={service.IsRegistered}", nameof(GameManager), service);
         }
     }
 
@@ -163,12 +180,20 @@ public class GameManager : MonoBehaviour
         if (eventDispatcher == null || !eventDispatcher.IsRegistered)
         {
             Debug.LogError("Cannot attach dispatcher references before EventDispatcher finishes registering.", this);
+            Logger.LogError("Cannot attach dispatcher references before EventDispatcher finishes registering.", nameof(GameManager), this);
             return;
         }
 
+        Logger.Log($"Attaching EventDispatcher to {registeredServices.Count} services.", nameof(GameManager), this);
         foreach (var service in registeredServices)
         {
-            service?.AttachDispatcher(eventDispatcher);
+            if (service == null)
+            {
+                continue;
+            }
+
+            Logger.Log($"AttachDispatcher -> {service.GetType().Name}", nameof(GameManager), service);
+            service.AttachDispatcher(eventDispatcher);
         }
     }
 
@@ -176,7 +201,13 @@ public class GameManager : MonoBehaviour
     {
         foreach (var service in registeredServices)
         {
-            service?.ActivateSubscriptions();
+            if (service == null)
+            {
+                continue;
+            }
+
+            Logger.Log($"ActivateSubscriptions -> {service.GetType().Name}", nameof(GameManager), service);
+            service.ActivateSubscriptions();
         }
     }
 
@@ -184,7 +215,13 @@ public class GameManager : MonoBehaviour
     {
         foreach (var service in registeredServices)
         {
-            service?.NotifyInitialized();
+            if (service == null)
+            {
+                continue;
+            }
+
+            Logger.Log($"NotifyInitialized -> {service.GetType().Name}", nameof(GameManager), service);
+            service.NotifyInitialized();
         }
     }
 

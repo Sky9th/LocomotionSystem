@@ -22,14 +22,18 @@ public abstract class BaseService : MonoBehaviour
     /// </summary>
     public void Register(GameContext context)
     {
+        Logger.Log($"[{GetType().Name}] Register invoked. ContextIsNull={context == null}", GetType().Name, this);
+
         if (context == null)
         {
             Debug.LogError($"{name} cannot register without a valid GameContext reference.", this);
+            Logger.LogError($"{name} cannot register without a valid GameContext reference.", GetType().Name, this);
             return;
         }
 
         if (IsRegistered)
         {
+            Logger.Log($"[{GetType().Name}] Register skipped - already registered.", GetType().Name, this);
             return;
         }
 
@@ -38,14 +42,19 @@ public abstract class BaseService : MonoBehaviour
         Dispatcher = null;
         subscriptionsActivated = false;
         isInitialized = false;
-        if (OnRegister(context))
+        var success = OnRegister(context);
+        Logger.Log($"[{GetType().Name}] OnRegister returned {success}.", GetType().Name, this);
+
+        if (success)
         {
             IsRegistered = true;
+            Logger.Log($"[{GetType().Name}] Registration completed. IsRegistered={IsRegistered}", GetType().Name, this);
         }
         else
         {
             GameContext = null;
             serviceCache.Clear();
+            Logger.LogWarning($"[{GetType().Name}] Registration failed. GameContext cleared and cache reset.", GetType().Name, this);
         }
     }
 

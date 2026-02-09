@@ -1,288 +1,295 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Central coordinator for all runtime UI. Manages fullscreen screens and overlays
-/// (including debug panels) and provides a simple API for navigation.
+/// Central runtime entry point for all game UI.
+/// Manages UIScreenBase (full-screen) and UIOverlayBase (overlay) instances
+/// and exposes a simple API for showing, hiding and toggling them.
+///
+/// Lifecycle is coordinated by GameManager via BaseService hooks:
+/// - Register(GameContext): cache context, build lookup tables, record initial active states.
+/// - AttachDispatcher(EventDispatcher): cache dispatcher reference (no subscriptions yet).
+/// - ActivateSubscriptions(): future extension point for input / UI events.
+/// - OnInitialized(): restore default visible screens/overlays based on initial activeSelf.
 /// </summary>
-[DisallowMultipleComponent]
 public class UIManager : BaseService
 {
-    [Header("Root Canvas")]
-    [SerializeField] private Canvas rootCanvas;
+    [Header("UI Roots")]
+    [SerializeField] private Transform uiRoot;
+    [SerializeField] private Transform screensRoot;
+    [SerializeField] private Transform overlaysRoot;
 
-    [Header("Screens (optional in first iteration)")]
-    [SerializeField] private UIScreenEntry[] screens = Array.Empty<UIScreenEntry>();
+    [Header("Screen Config")]
+    [SerializeField] private UIScreenConfig screenConfig;
 
-    [Header("Overlays")]
-    [SerializeField] private UIOverlayEntry[] overlays = Array.Empty<UIOverlayEntry>();
+    [Header("Overlay Config")]
+    [SerializeField] private UIOverlayConfig overlayConfig;
 
-    // Configuration lookup by id.
-    private readonly Dictionary<string, UIScreenBase> screenLookup = new();
-    private readonly Dictionary<string, UIOverlayBase> overlayLookup = new();
+    private readonly Dictionary<string, UIScreenBase> screensById = new();
+    private readonly Dictionary<string, UIOverlayBase> overlaysById = new();
 
-    // Runtime instances (scene objects or instantiated prefabs).
-    private readonly Dictionary<string, UIScreenBase> screenInstances = new();
-    private readonly Dictionary<string, UIOverlayBase> overlayInstances = new();
+    private readonly HashSet<string> activeOverlayIds = new();
 
-    // Initial active state of scene-based UI elements, recorded at registration.
-    private readonly Dictionary<string, bool> screenInitialActive = new();
-    private readonly Dictionary<string, bool> overlayInitialActive = new();
+    private UIScreenBase currentScreen;
+    private string currentScreenId;
 
-    private UIScreenBase activeScreen;
-
+    /// <summary>
+    /// Called by GameManager during bootstrap to bind this manager to the GameContext
+    /// and prepare internal lookup structures.
+    /// </summary>
     protected override bool OnRegister(GameContext context)
     {
-        context.RegisterService(this);
-
-        if (rootCanvas == null)
+        if (context == null)
         {
-            rootCanvas = GetComponentInChildren<Canvas>();
-            if (rootCanvas == null)
-            {
-                Debug.LogWarning($"{name} is missing a Canvas reference. UI may not be visible.", this);
-            }
+            Debug.LogError("UIManager requires a valid GameContext reference.", this);
+            return false;
         }
 
-        BuildLookupsAndResetInstances();
+        BuildScreenLookup();
+        BuildOverlayLookup();
+
         return true;
     }
 
-    private void BuildLookupsAndResetInstances()
+    private void BuildScreenLookup()
     {
-        screenLookup.Clear();
-        overlayLookup.Clear();
-        screenInstances.Clear();
-        overlayInstances.Clear();
-        screenInitialActive.Clear();
-        overlayInitialActive.Clear();
+        screensById.Clear();
+        currentScreen = null;
+        currentScreenId = null;
 
-        foreach (var entry in screens)
+        var entries = screenConfig != null ? screenConfig.Screens : null;
+        if (entries == null || entries.Length == 0)
         {
-            if (string.IsNullOrWhiteSpace(entry.id) || entry.screen == null)
-            {
-                continue;
-            }
-
-            if (screenLookup.ContainsKey(entry.id))
-            {
-                Debug.LogWarning($"Duplicate screen id '{entry.id}' in {name}.", this);
-                continue;
-            }
-
-            screenLookup.Add(entry.id, entry.screen);
-
-            var screen = entry.screen;
-            if (screen != null && screen.gameObject.scene.IsValid())
-            {
-                bool wasActive = screen.gameObject.activeSelf;
-                screenInitialActive[entry.id] = wasActive;
-                screen.SetVisible(false);
-                screenInstances[entry.id] = screen;
-            }
+            Debug.LogWarning("UIManager has no UIScreenConfig or it contains no entries.", this);
+            return;
         }
 
-        foreach (var entry in overlays)
+        for (int i = 0; i < entries.Length; i++)
         {
-            if (string.IsNullOrWhiteSpace(entry.id) || entry.overlay == null)
+            var entry = entries[i];
+            if (string.IsNullOrEmpty(entry.id))
             {
+                Debug.LogWarning($"UIManager has a UIScreenEntry with an empty id at index {i}.", this);
                 continue;
             }
 
-            if (overlayLookup.ContainsKey(entry.id))
+            if (entry.screen == null)
             {
-                Debug.LogWarning($"Duplicate overlay id '{entry.id}' in {name}.", this);
+                Debug.LogWarning($"UIManager UIScreenEntry '{entry.id}' has no screen reference.", this);
                 continue;
             }
 
-            overlayLookup.Add(entry.id, entry.overlay);
-
-            var overlay = entry.overlay;
-            if (overlay != null && overlay.gameObject.scene.IsValid())
+            if (screensById.ContainsKey(entry.id))
             {
-                bool wasActive = overlay.gameObject.activeSelf;
-                overlayInitialActive[entry.id] = wasActive;
-                overlay.SetVisible(false);
-                overlayInstances[entry.id] = overlay;
+                Debug.LogWarning($"UIManager detected duplicate screen id '{entry.id}'. Only the first instance will be used.", this);
+                continue;
             }
+
+            // Entries in the ScriptableObject are treated as prefabs.
+            // Instantiate them under the configured screens root (or uiRoot/this.transform)
+            // and keep the instances disabled until initialization completes.
+            var parent = screensRoot != null ? screensRoot : (uiRoot != null ? uiRoot : transform);
+            var instance = Instantiate(entry.screen, parent);
+            instance.gameObject.SetActive(false);
+
+            // Inject GameContext into the instantiated screen so it can
+            // access shared runtime data if needed.
+            instance.Registered(GameContext);
+
+            screensById.Add(entry.id, instance);
         }
     }
 
+    private void BuildOverlayLookup()
+    {
+        overlaysById.Clear();
+        activeOverlayIds.Clear();
+
+        var entries = overlayConfig != null ? overlayConfig.Overlays : null;
+        if (entries == null || entries.Length == 0)
+        {
+            Debug.LogWarning("UIManager has no UIOverlayConfig or it contains no entries.", this);
+            return;
+        }
+
+        for (int i = 0; i < entries.Length; i++)
+        {
+            var entry = entries[i];
+            if (string.IsNullOrEmpty(entry.id))
+            {
+                Debug.LogWarning($"UIManager has a UIOverlayEntry with an empty id at index {i}.", this);
+                continue;
+            }
+
+            if (entry.overlay == null)
+            {
+                Debug.LogWarning($"UIManager UIOverlayEntry '{entry.id}' has no overlay reference.", this);
+                continue;
+            }
+
+            if (overlaysById.ContainsKey(entry.id))
+            {
+                Debug.LogWarning($"UIManager detected duplicate overlay id '{entry.id}'. Only the first instance will be used.", this);
+                continue;
+            }
+
+            // Entries in the ScriptableObject are treated as prefabs.
+            // Instantiate them under the configured overlays root (or uiRoot/this.transform)
+            // and keep the instances disabled until initialization completes.
+            var parent = overlaysRoot != null ? overlaysRoot : (uiRoot != null ? uiRoot : transform);
+            var instance = Instantiate(entry.overlay, parent);
+            instance.gameObject.SetActive(false);
+
+            // Inject GameContext into the instantiated overlay so it can
+            // access shared runtime data if needed.
+            instance.Registered(GameContext);
+
+            overlaysById.Add(entry.id, instance);
+        }
+    }
+
+    /// <summary>
+    /// Called by GameManager after all services registered and subscriptions are active.
+    /// At this stage UIManager is allowed to begin showing UI.
+    /// It will scan all known elements and automatically show any whose
+    /// logical Visible flag is true (for example LocomotionDebugOverlay).
+    /// </summary>
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
-        // Restore default visibility for any scene-based screens/overlays that were
-        // authored as active in the editor.
-        foreach (var pair in screenInitialActive)
+        // Activate the first screen which is marked as logically visible.
+        foreach (var pair in screensById)
         {
-            if (pair.Value)
+            var screen = pair.Value;
+            if (screen != null && screen.Visible)
             {
                 ShowScreen(pair.Key);
+                break;
             }
         }
 
-        foreach (var pair in overlayInitialActive)
+        // Activate all overlays which are marked as logically visible.
+        foreach (var pair in overlaysById)
         {
-            if (pair.Value)
+            var overlay = pair.Value;
+            if (overlay != null && overlay.Visible)
             {
                 ShowOverlay(pair.Key);
             }
         }
     }
 
-    #region Screen API
-
+    /// <summary>
+    /// Switch the active full-screen UI to the specified screen id.
+    /// Only one screen can be active at a time.
+    /// </summary>
     public void ShowScreen(string screenId, object payload = null)
     {
-        if (!TryGetScreenInstance(screenId, out var target))
+        if (string.IsNullOrEmpty(screenId))
         {
+            Debug.LogWarning("UIManager.ShowScreen was called with an empty id.", this);
             return;
         }
 
-        if (activeScreen == target)
+        if (!screensById.TryGetValue(screenId, out var targetScreen) || targetScreen == null)
         {
+            Debug.LogWarning($"UIManager could not find UIScreen with id '{screenId}'.", this);
             return;
         }
 
-        if (activeScreen != null)
+        if (currentScreen == targetScreen)
         {
-            activeScreen.OnExit();
+            // Already showing the requested screen; allow re-enter with new payload if desired.
+            currentScreen.OnEnter(payload);
+            return;
         }
 
-        activeScreen = target;
-        activeScreen.OnEnter(payload);
+        if (currentScreen != null)
+        {
+            currentScreen.OnExit();
+            currentScreen.SetVisible(false);
+        }
+
+        currentScreen = targetScreen;
+        currentScreenId = screenId;
+
+        currentScreen.gameObject.SetActive(true);
+        currentScreen.SetVisible(true);
+        currentScreen.OnEnter(payload);
     }
 
-    #endregion
-
-    #region Overlay API
-
+    /// <summary>
+    /// Show (or refresh) an overlay by id. Multiple overlays can be visible at once.
+    /// </summary>
     public void ShowOverlay(string overlayId, object payload = null)
     {
-        if (!TryGetOverlayInstance(overlayId, out var overlay))
+        if (string.IsNullOrEmpty(overlayId))
         {
+            Debug.LogWarning("UIManager.ShowOverlay was called with an empty id.", this);
             return;
         }
 
+        if (!overlaysById.TryGetValue(overlayId, out var overlay) || overlay == null)
+        {
+            Debug.LogWarning($"UIManager could not find UIOverlay with id '{overlayId}'.", this);
+            return;
+        }
+
+        overlay.gameObject.SetActive(true);
+        overlay.SetVisible(true);
         overlay.OnShow(payload);
+        activeOverlayIds.Add(overlayId);
     }
 
+    /// <summary>
+    /// Hide an overlay by id if it is currently visible.
+    /// </summary>
     public void HideOverlay(string overlayId)
     {
-        if (!TryGetOverlayInstance(overlayId, out var overlay))
+        if (string.IsNullOrEmpty(overlayId))
+        {
+            Debug.LogWarning("UIManager.HideOverlay was called with an empty id.", this);
+            return;
+        }
+
+        if (!overlaysById.TryGetValue(overlayId, out var overlay) || overlay == null)
         {
             return;
         }
 
-        overlay.OnHide();
-    }
-
-    public void ToggleOverlay(string overlayId, object payload = null)
-    {
-        if (!TryGetOverlayInstance(overlayId, out var overlay))
+        if (!activeOverlayIds.Contains(overlayId))
         {
-            return;
-        }
-
-        if (overlay.IsVisible)
-        {
-            overlay.OnHide();
-        }
-        else
-        {
-            overlay.OnShow(payload);
-        }
-    }
-
-    public void ToggleDebugOverlay(string overlayId)
-    {
-        ToggleOverlay(overlayId);
-    }
-
-    #endregion
-
-    #region Instance Resolution
-
-    private bool TryGetScreenInstance(string screenId, out UIScreenBase screen)
-    {
-        screen = null;
-        if (string.IsNullOrWhiteSpace(screenId))
-        {
-            return false;
-        }
-
-        if (!screenLookup.TryGetValue(screenId, out var config) || config == null)
-        {
-            Debug.LogWarning($"{name} could not find screen with id '{screenId}'.", this);
-            return false;
-        }
-
-        if (screenInstances.TryGetValue(screenId, out screen) && screen != null)
-        {
-            return true;
-        }
-
-        // If the referenced screen lives in the active scene, just use it.
-        if (config.gameObject.scene.IsValid())
-        {
-            screen = config;
-        }
-        else
-        {
-            if (rootCanvas == null)
-            {
-                Debug.LogWarning($"{name} cannot instantiate screen '{screenId}' because rootCanvas is missing.", this);
-                return false;
-            }
-
-            screen = Instantiate(config, rootCanvas.transform);
-            screen.SetVisible(false);
-        }
-
-        screenInstances[screenId] = screen;
-        return screen != null;
-    }
-
-    private bool TryGetOverlayInstance(string overlayId, out UIOverlayBase overlay)
-    {
-        overlay = null;
-        if (string.IsNullOrWhiteSpace(overlayId))
-        {
-            return false;
-        }
-
-        if (!overlayLookup.TryGetValue(overlayId, out var config) || config == null)
-        {
-            Debug.LogWarning($"{name} could not find overlay with id '{overlayId}'.", this);
-            return false;
-        }
-
-        if (overlayInstances.TryGetValue(overlayId, out overlay) && overlay != null)
-        {
-            return true;
-        }
-
-        if (config.gameObject.scene.IsValid())
-        {
-            overlay = config;
-        }
-        else
-        {
-            if (rootCanvas == null)
-            {
-                Debug.LogWarning($"{name} cannot instantiate overlay '{overlayId}' because rootCanvas is missing.", this);
-                return false;
-            }
-
-            overlay = Instantiate(config, rootCanvas.transform);
+            // If we are not tracking this as active, still attempt to hide its GameObject.
             overlay.SetVisible(false);
+            return;
         }
 
-        overlayInstances[overlayId] = overlay;
-        return overlay != null;
+        overlay.gameObject.SetActive(false);
+        overlay.OnHide();
+        overlay.SetVisible(false);
+        activeOverlayIds.Remove(overlayId);
     }
 
-    #endregion
+    /// <summary>
+    /// Toggle an overlay's visibility state.
+    /// Intended for Debug UI panels or temporary overlays.
+    /// </summary>
+    public void ToggleDebugOverlay(string overlayId, object payload = null)
+    {
+        if (string.IsNullOrEmpty(overlayId))
+        {
+            Debug.LogWarning("UIManager.ToggleDebugOverlay was called with an empty id.", this);
+            return;
+        }
+
+        if (activeOverlayIds.Contains(overlayId))
+        {
+            HideOverlay(overlayId);
+        }
+        else
+        {
+            ShowOverlay(overlayId, payload);
+        }
+    }
 }
