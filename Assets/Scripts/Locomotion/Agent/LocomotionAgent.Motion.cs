@@ -8,7 +8,7 @@ public partial class LocomotionAgent : MonoBehaviour
     // Locomotion and orientation state
     private Vector3 currentVelocity;
     private SGroundContact lastGroundContact = SGroundContact.None;
-    private Vector3 forwardDirection = Vector3.forward;
+    private Vector3 locomotionHeading = Vector3.forward;
     private Vector2 lookDirection = Vector2.zero;
     private bool isTurningInPlace;
     private float currentTurnAngle;
@@ -22,7 +22,7 @@ public partial class LocomotionAgent : MonoBehaviour
     {
         float deltaTime = GameTime.Delta;
 
-        UpdateForwardDirection();
+        UpdateLocomotionHeading();
         UpdateFootFrontState();
         UpdateAnchorRotation();
         CalculateTurnAngle();
@@ -45,10 +45,14 @@ public partial class LocomotionAgent : MonoBehaviour
 
         lookDirection = CalculateClampedLookAngles();
 
+        Vector3 bodyForward = modelRoot != null ? modelRoot.forward : transform.forward;
+        bodyForward.y = 0f;
+
         SPlayerLocomotion snapshot = new SPlayerLocomotion(
             transform.position,
             currentVelocity,
-            forwardDirection,
+            locomotionHeading,
+            bodyForward,
             localVelocity,
             lookDirection,
             state,
@@ -78,8 +82,8 @@ public partial class LocomotionAgent : MonoBehaviour
             return Vector2.zero;
         }
 
-        Vector3 forward = forwardDirection.sqrMagnitude > Mathf.Epsilon
-            ? forwardDirection.normalized
+        Vector3 forward = locomotionHeading.sqrMagnitude > Mathf.Epsilon
+            ? locomotionHeading.normalized
             : Vector3.forward;
 
         Vector3 right = Vector3.Cross(Vector3.up, forward);
@@ -104,7 +108,7 @@ public partial class LocomotionAgent : MonoBehaviour
         currentVelocity = Vector3.MoveTowards(currentVelocity, desiredVelocity, config.Acceleration * deltaTime);
     }
 
-    private void UpdateForwardDirection()
+    private void UpdateLocomotionHeading()
     {
         Vector3 forwardSource;
         if (followAnchor != null)
@@ -123,7 +127,7 @@ public partial class LocomotionAgent : MonoBehaviour
             forwardSource.y = 0f;
         }
 
-        forwardDirection = forwardSource.sqrMagnitude > Mathf.Epsilon
+        locomotionHeading = forwardSource.sqrMagnitude > Mathf.Epsilon
             ? forwardSource.normalized
             : Vector3.forward;
     }
@@ -180,35 +184,22 @@ public partial class LocomotionAgent : MonoBehaviour
 
     /// <summary>
     /// Calculates the signed planar turn angle (in degrees) between the character body forward
-    /// and the locomotion forwardDirection. Returns 0 if either vector has no magnitude.
+    /// and the locomotion heading. Returns 0 if either vector has no magnitude.
     /// </summary>
     private void CalculateTurnAngle()
     {
-        Vector3 bodyForward = modelRoot != null ? modelRoot.forward : transform.forward;
+        Vector3 bodyForward = modelRoot.forward;
         bodyForward.y = 0f;
-        if (bodyForward.sqrMagnitude <= Mathf.Epsilon)
-        {
-            bodyForward = forwardDirection;
-        }
 
-        Vector3 desiredForward = forwardDirection;
+        Vector3 desiredForward = locomotionHeading;
         desiredForward.y = 0f;
-        if (desiredForward.sqrMagnitude <= Mathf.Epsilon)
-        {
-            desiredForward = Vector3.forward;
-        }
-
-        if (bodyForward.sqrMagnitude > Mathf.Epsilon && desiredForward.sqrMagnitude > Mathf.Epsilon)
-        {
-            currentTurnAngle = Vector3.SignedAngle(bodyForward.normalized, desiredForward.normalized, Vector3.up);
-        }
-
-        currentTurnAngle =  0f;
+        
+        currentTurnAngle = Vector3.SignedAngle(bodyForward.normalized, desiredForward.normalized, Vector3.up);
     }
 
     private void UpdateTurnState(float deltaTime)
     {
-        Vector3 desiredForward = forwardDirection;
+        Vector3 desiredForward = locomotionHeading;
         desiredForward.y = 0f;
         if (desiredForward.sqrMagnitude <= Mathf.Epsilon)
         {

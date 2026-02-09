@@ -41,21 +41,23 @@ public partial class LocomotionAgent : MonoBehaviour
 
         Vector3 origin = modelRoot != null ? modelRoot.position : transform.position;
 
-        Vector3 forward = modelRoot != null ? modelRoot.forward : transform.forward;
-        forward.y = 0f;
-        if (forward.sqrMagnitude <= Mathf.Epsilon)
+        // Use the character's body forward axis for "front" detection,
+        // but fall back to locomotion heading when the model forward is invalid.
+        Vector3 bodyForwardAxis = modelRoot != null ? modelRoot.forward : transform.forward;
+        bodyForwardAxis.y = 0f;
+        if (bodyForwardAxis.sqrMagnitude <= Mathf.Epsilon)
         {
-            forward = forwardDirection;
-            forward.y = 0f;
+            bodyForwardAxis = locomotionHeading;
+            bodyForwardAxis.y = 0f;
         }
-        if (forward.sqrMagnitude <= Mathf.Epsilon)
+        if (bodyForwardAxis.sqrMagnitude <= Mathf.Epsilon)
         {
-            forward = Vector3.forward;
+            bodyForwardAxis = Vector3.forward;
         }
-        forward.Normalize();
+        bodyForwardAxis.Normalize();
 
-        float leftOffset = Vector3.Dot(leftFootPos - origin, forward);
-        float rightOffset = Vector3.Dot(rightFootPos - origin, forward);
+        float leftOffset = Vector3.Dot(leftFootPos - origin, bodyForwardAxis);
+        float rightOffset = Vector3.Dot(rightFootPos - origin, bodyForwardAxis);
 
         const float epsilon = 0.005f;
         if (Mathf.Abs(leftOffset - rightOffset) <= epsilon)

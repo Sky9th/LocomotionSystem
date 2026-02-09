@@ -51,6 +51,10 @@ public class GameContext : MonoBehaviour
     {
         if (isInitialized)
         {
+            if (logDebugInfo)
+            {
+                Logger.Log("GameContext.Initialize called but already initialized.", nameof(GameContext), this);
+            }
             return;
         }
 
@@ -58,7 +62,7 @@ public class GameContext : MonoBehaviour
 
         if (logDebugInfo)
         {
-            Debug.Log("GameContext initialized.", this);
+            Logger.Log($"GameContext initialized. RegisteredServiceCount={RegisteredServiceCount}", nameof(GameContext), this);
         }
     }
 
@@ -72,7 +76,7 @@ public class GameContext : MonoBehaviour
 
         if (logDebugInfo)
         {
-            Debug.Log($"Snapshot updated: {typeof(TSnapshot).Name}", this);
+            Logger.Log($"Snapshot updated: {typeof(TSnapshot).Name}", nameof(GameContext), this);
         }
     }
 
@@ -114,5 +118,10 @@ public class GameContext : MonoBehaviour
         }
 
         serviceRegistry[typeof(TService)] = service;
+
+        if (logDebugInfo)
+        {
+            Logger.Log($"Service registered in GameContext: {typeof(TService).Name}", nameof(GameContext), this);
+        }
     }
 }

@@ -44,7 +44,7 @@ public partial class LocomotionAgent : MonoBehaviour
     public SPlayerLocomotion Snapshot => latestSnapshot;
     public SPlayerMoveIAction LastMoveAction => TryGetIAction(out SPlayerMoveIAction action) ? action : SPlayerMoveIAction.None;
     public SPlayerLookIAction LastLookAction => TryGetIAction(out SPlayerLookIAction action) ? action : SPlayerLookIAction.None;
-    public Vector3 ForwardDirection => latestSnapshot.Forward;
+    public Vector3 LocomotionHeading => latestSnapshot.LocomotionHeading;
     public Vector2 LookDirection => latestSnapshot.LookDirection;
     public float HeadLookSmoothingSpeed => config.HeadLookSmoothingSpeed;
     public float WalkTurnSpeed => config.WalkTurnSpeed;
@@ -115,7 +115,7 @@ public partial class LocomotionAgent : MonoBehaviour
 
         currentVelocity = Vector3.zero;
         lastGroundContact = SGroundContact.None;
-        forwardDirection = transform.forward;
+        locomotionHeading = transform.forward;
         isTurningInPlace = false;
         currentTurnAngle = 0f;
         turnStateCooldown = 0f;
@@ -157,7 +157,9 @@ public partial class LocomotionAgent : MonoBehaviour
             return;
         }
 
-        Debug.DrawRay(transform.position, ForwardDirection * debugForwardLength, Color.cyan);
+        Debug.DrawRay(transform.position, LocomotionHeading * debugForwardLength, Color.cyan);
+        Debug.DrawRay(transform.position, LookDirection * debugForwardLength, Color.yellow);
+        Debug.DrawRay(transform.position, latestSnapshot.BodyForward * debugForwardLength, Color.magenta);
     }
 
     private LocomotionManager FindManagerInScene()
