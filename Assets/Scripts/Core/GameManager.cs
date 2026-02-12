@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
+    [SerializeField] private GameObject PlayerPrefab;
     [SerializeField] private GameContext gameContext;
     [SerializeField] private EventDispatcher eventDispatcher;
     [SerializeField] private GameState gameState;
@@ -48,6 +49,23 @@ public class GameManager : MonoBehaviour
 
         WireDependencies();
         Bootstrap();
+
+        // Not common service functionality below, but GameManager needs to respond to game state changes to manage cursor state, so we subscribe to the event here.
+        SubscribeDispatcherEvents();
+        ApplyCursorMode(gameState != null ? gameState.CurrentState : EGameState.Initializing);
+        CreatePlayer();
+    }
+
+    private void CreatePlayer()
+    {
+        if (PlayerPrefab == null)
+        {
+            Debug.LogError("PlayerPrefab reference is missing in GameManager.", this);
+            return;
+        }
+
+        GameObject playerInstance = Instantiate(PlayerPrefab);
+        playerInstance.name = PlayerPrefab.name;
     }
 
     private void OnDestroy()
@@ -144,9 +162,6 @@ public class GameManager : MonoBehaviour
         AttachDispatcherToServices();
         ActivateServiceSubscriptions();
         InitializeServices();
-
-        SubscribeDispatcherEvents();
-        ApplyCursorMode(gameState != null ? gameState.CurrentState : EGameState.Initializing);
 
         Logger.Log($"GameManager bootstrap completed. RegisteredServices={registeredServices.Count}", nameof(GameManager), this);
         isBootstrapped = true;

@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 挂载在角色上的 Locomotion 组件。负责向 LocomotionManager 注册并在后续版本中执行具体运动逻辑。
+/// Locomotion component attached to a character. Responsible for registering with
+/// the LocomotionManager and driving character movement logic.
 /// </summary>
 [DisallowMultipleComponent]
 public partial class LocomotionAgent : MonoBehaviour
@@ -77,7 +78,16 @@ public partial class LocomotionAgent : MonoBehaviour
         {
             animator = GetComponentInChildren<Animator>();
         }
+    }
 
+    private void FixedUpdate()
+    {
+        if (!autoRegister || isRegistered)
+        {
+            return;
+        }
+
+        TryRegisterWithManager();
     }
 
     private void Update()
@@ -123,9 +133,7 @@ public partial class LocomotionAgent : MonoBehaviour
         lookStabilityTimer = 0f;
         iActionBuffer.Clear();
         UnregisterActionHandlers();
-
     }
-
 
     public void PushSnapshot(SPlayerLocomotion snapshot)
     {
@@ -148,34 +156,5 @@ public partial class LocomotionAgent : MonoBehaviour
 
         action = default;
         return false;
-    }
-
-    private void DrawDebugVectors()
-    {
-        if (!drawDebugVectors)
-        {
-            return;
-        }
-
-        Debug.DrawRay(transform.position, LocomotionHeading * debugForwardLength, Color.cyan);
-        Debug.DrawRay(transform.position, LookDirection * debugForwardLength, Color.yellow);
-        Debug.DrawRay(transform.position, latestSnapshot.BodyForward * debugForwardLength, Color.magenta);
-    }
-
-    private LocomotionManager FindManagerInScene()
-    {
-        if (GameContext.Instance != null && GameContext.Instance.TryResolveService(out LocomotionManager resolved))
-        {
-            return resolved;
-        }
-
-        return FindObjectOfType<LocomotionManager>();
-    }
-
-    private void AlignPlayerToModel()
-    {
-        var worldPos = modelRoot.position;
-        transform.position = worldPos;
-        modelRoot.localPosition = Vector3.zero;
     }
 }

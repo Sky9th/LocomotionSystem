@@ -21,18 +21,10 @@ public class CameraManager : BaseService
 
     private SCameraContext lastSnapshot;
     private bool hasSnapshot;
-    private bool isInitialized;
-
-    public bool IsInitialized => isInitialized;
     public CinemachineVirtualCamera ActiveVirtualCamera => ResolveActiveVirtualCamera();
 
     protected override bool OnRegister(GameContext context)
     {
-        if (isInitialized)
-        {
-            return true;
-        }
-
         if (autoLocateBrain && cameraBrain == null)
         {
             cameraBrain = FindFirstBrain();
@@ -60,7 +52,6 @@ public class CameraManager : BaseService
         }
 
         context.RegisterService(this);
-        isInitialized = true;
 
         PushSnapshot();
         return true;
@@ -84,11 +75,6 @@ public class CameraManager : BaseService
 
     private void LateUpdate()
     {
-        if (!isInitialized)
-        {
-            return;
-        }
-
         PushSnapshot();
     }
 

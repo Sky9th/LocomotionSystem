@@ -3,6 +3,7 @@
 ## 目标
 - 构建基于 RuntimeServiceBase 生命周期的确定性、对设计友好的角色移动管线。
 - 保持输入、物理、表现分离：Locomotion 负责消费 IAction 与推进物理，其它系统只需观测快照/事件。
+- 所有代码标识符（类名、枚举、字段、属性、方法等）统一使用英文，注释与文档可使用中英文混合，确保项目国际化。
 
 ## 架构
 ### 玩家 Rig 约定
@@ -41,10 +42,12 @@
    - AI：脚本/行为树直接调用 Agent 提供的 API（如 `SetDesiredDirection(Vector3)`、`InjectIAction`）写入同一套缓存。
    - IAction 结构始终不可变，Agent 是唯一的写入口；Handler、AI 或 Adapter 均不得直接修改 Agent 的状态机数据。
 
-5. **状态机**
-   - 状态：`Idle`、`Walk`、`Sprint`、`Airborne`，可扩展 `Slide`、`Climb`。
-   - 转换条件依赖地面检测、IAction 强度、体力等标志；额外记录 `Follow` 与 `Model` 的夹角，在需要快速转身（如>120°）时可进入专用 `Turn`/`SnapTurn` 状态。
-   - 每个状态定义加速度、最大速度、阻尼及进入/退出事件，并指定如何将 `Follow` 前向映射为 `Model` 的目标前向（直接对齐或缓动）。
+5. **状态机（分层设计）**
+   - **高层状态（ELocomotionState）**：用于粗粒度判断当前是否在地面/空中以及是否移动，例如：`GroundedIdle`（地面静止）、`GroundedMoving`（地面移动中）、`Airborne`（空中）、`Landing`（落地过渡）。
+   - **姿态层（EPostureState）**：描述身体姿态，不关心速度，例如：`Standing`、`Crouching`、`Prone`。不同姿态下可限制或允许不同步态组合（如 Prone 只允许 Crawl）。
+   - **步态层（EMovementGait）**：描述移动方式与速度档位，例如：`Idle`、`Walk`、`Run`、`Sprint`、`Crawl`。同一姿态下可根据输入与数值在不同步态间切换（如 Standing+Walk → Standing+Run → Standing+Sprint）。
+   - **条件层（ELocomotionCondition）**：额外状态修饰，如 `Normal`、`InjuredLight`、`InjuredHeavy`，在保持相同姿态/步态组合的前提下改变数值与表现（移动速度、动画、音效等）。
+   - 转换条件依赖地面检测、IAction 强度、体力等标志；额外记录 `Follow` 与 `Model` 的夹角，在需要快速转身（如>120°）时可进入专用 `Turn`/`SnapTurn` 状态。高层状态（ELocomotionState）主要由「是否在地面 + 当前步态」推导，姿态/步态/条件则由输入与系统数值共同决定。
 
 ### 动画状态概览（基于 Animancer）
 - 参考资产：直接使用角色相关的 Loop/Turn/Look 等动画剪辑或 Animancer Transition 资产，默认进入 Idle 动画状态，当角色平面速度大于 0 时切入 Walk/Run 状态；当 `IsTurning` 与 `TurnAngle` 满足阈值时，切换到原地转身相关的动画状态，转身完成或速度恢复为 0 再退回 Idle。
@@ -69,7 +72,7 @@
    - 暴露 `OnMoveComputed(Vector3 desiredVelocity)` 等调试回调。
 
 8. **快照与事件**
-   - `SPlayerLocomotion` 字段：位置、速度、前向、上向、当前状态、是否贴地、地面法线、坡度角等，由 Agent 在运动计算后组装；前向统一来自 `Follow` 的水平投影，并记录 `Model` 与 `Follow` 的对齐误差，方便 Adapter 做“转身动画”。
+   - `SPlayerLocomotion` 字段：位置、速度、前向、上向、高层 Locomotion 状态（ELocomotionState）、姿态（EPostureState）、步态（EMovementGait）、条件修饰（ELocomotionCondition）、是否贴地、地面法线、坡度角等，由 Agent 在运动计算后组装；前向统一来自 `Follow` 的水平投影，并记录 `Model` 与 `Follow` 的对齐误差，方便 Adapter 做“转身动画”。
    - Agent 调用 `PushSnapshot()` → LocomotionManager `PublishSnapshot()` 缓存 → Manager 视情况把玩家快照写入 `GameContext`。
    - Agent 或 Manager 可通过 EventDispatcher 广播状态事件（开始移动、进入冲刺、落地、离地），Adapter 只做监听而不生成事件。
 

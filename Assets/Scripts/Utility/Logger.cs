@@ -6,7 +6,8 @@ using System.Text;
 using UnityEngine;
 
 /// <summary>
-/// 统一的日志工具，自动识别并格式化常见数据类型（原生类型、Unity 结构、IEnumerable、Struct 等）。
+/// Unified logging utility that automatically inspects and formats common data types
+/// (primitives, Unity structs, IEnumerable, structs, etc.).
 /// </summary>
 internal static class Logger
 {

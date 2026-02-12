@@ -1,6 +1,7 @@
 using UnityEngine;
 using Animancer.FSM;
 using Game.Locomotion.Adapter.Conditions;
+using Animancer;
 
 namespace Game.Locomotion.Adapter
 {
@@ -8,6 +9,9 @@ namespace Game.Locomotion.Adapter
     {
         private sealed class IdleState : State
         {
+
+            private AnimancerState idleState;
+
             public IdleState(LocomotionAnimancerAdapter adapter) : base(adapter)
             {
                 // Prefer turning-in-place over moving when both could apply.
@@ -17,7 +21,16 @@ namespace Game.Locomotion.Adapter
 
             public override void OnEnterState()
             {
-                Adapter.baseLayer.TryPlay(Adapter.alias.idle);
+                Logger.Log(Adapter.agent.Snapshot.IsLeftFootOnFront);
+                if (Adapter.agent.Snapshot.IsLeftFootOnFront)
+                {
+                    Logger.Log("Playing left idle");
+                    idleState = Adapter.baseLayer.TryPlay(Adapter.alias.idleL);
+                } else
+                {
+                    Logger.Log("Playing right idle");
+                    idleState = Adapter.baseLayer.TryPlay(Adapter.alias.idleR);
+                }
             }
 
             public override void Update()

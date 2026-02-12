@@ -1,12 +1,19 @@
 /// <summary>
-/// 角色移动状态。初始版本只包含 Idle 与 Walk，预留扩展空间。
+/// High-level locomotion state used to roughly categorize the current behaviour.
+/// Detailed posture (standing/crouching/prone), gait (walk/run/sprint/crawl) and condition
+/// are represented by EPostureState, EMovementGait and ELocomotionCondition.
 /// </summary>
 public enum ELocomotionState
 {
-    Idle = 0,
-    Walk = 1,
-    // Sprint,
-    // Airborne,
-    // Slide,
-    // Climb
+    /// <summary>On the ground with no significant movement (typically corresponds to Idle).</summary>
+    GroundedIdle = 0,
+
+    /// <summary>On the ground and moving (Walk / Run / Sprint / Crawl, etc.).</summary>
+    GroundedMoving = 1,
+
+    /// <summary>In the air: jumping, ascending or falling.</summary>
+    Airborne = 2,
+
+    /// <summary>Transition phase right after landing.</summary>
+    Landing = 3
 }

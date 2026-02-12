@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// 描述角色当前与地面的接触情况。首版仅需 Idle/Walk 信息，可后续拓展。
+/// Describes the current ground contact state for the character.
 /// </summary>
 [Serializable]
 public struct SGroundContact

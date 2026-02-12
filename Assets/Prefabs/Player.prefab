@@ -41,8 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1947580238982052747}
   - component: {fileID: 6472117511268014734}
-  - component: {fileID: 6388861383764810232}
-  - component: {fileID: 641403358556863053}
+  - component: {fileID: 2838104954811850373}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -81,7 +80,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelRoot: {fileID: 0}
   keepPlayerAlignedWithModel: 1
---- !u!114 &6388861383764810232
+--- !u!114 &2838104954811850373
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -90,49 +89,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 8667043660662020576}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69806efb82eb85b4cbc549bbd204fc35, type: 3}
+  m_Script: {fileID: 11500000, guid: 238fb252770836b4baa3b824d26fb274, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  manager: {fileID: 0}
-  autoRegister: 1
-  markAsPlayer: 1
-  subscribePlayerMoveAction: 1
-  subscribePlayerLookAction: 1
   followAnchor: {fileID: 0}
   modelRoot: {fileID: 0}
-  animator: {fileID: 0}
-  autoResolveAnimator: 1
-  moveSpeed: 4
-  acceleration: 20
-  maxHeadYawDegrees: 75
-  maxHeadPitchDegrees: 75
-  headLookSmoothingSpeed: 540
-  turnEnterAngle: 65
-  turnExitAngle: 20
-  turnDebounceDuration: 0.25
-  lookStabilityAngle: 2
-  lookStabilityDuration: 0.15
-  turnCompletionAngle: 5
-  drawDebugVectors: 1
+  config: {fileID: 11400000, guid: d254e0574a65f2f4f8cec62548948e01, type: 2}
+  isPlayer: 1
+  autoSubscribeInput: 1
+  drawDebugGizmos: 1
   debugForwardLength: 2
---- !u!114 &641403358556863053
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8667043660662020576}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 490dfd204f54f17488a43791bce655fe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  agent: {fileID: 0}
-  animancer: {fileID: 0}
-  alias: {fileID: 0}
-  headerMask: {fileID: 0}
-  headYawSpeed: 5
-  headPitchSpeed: 5
 --- !u!1001 &7698765721122133654
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -200,7 +166,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 0cc042ee60418744c9462242d6709594, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: bfa42ba6d484e4e448024c9acf736ce9,
         type: 3}
       propertyPath: m_UpdateMode
