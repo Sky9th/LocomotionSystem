@@ -9,7 +9,8 @@ using UnityEngine;
 public class AnimancerStringProfile : ScriptableObject
 {
     [Header("Clips")]
-    public StringAsset idle;
+    public StringAsset idleL;
+    public StringAsset idleR;
     public StringAsset walkMixer;
     public StringAsset walkForward;
     public StringAsset walkLeft;

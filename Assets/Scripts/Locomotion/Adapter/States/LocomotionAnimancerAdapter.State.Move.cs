@@ -24,6 +24,13 @@ namespace Game.Locomotion.Adapter
                 currentMoveState = (Vector2MixerState)Adapter.baseLayer.TryPlay(Adapter.alias.walkMixer);
             }
 
+            public override void OnExitState()
+            {
+                Logger.Log("Exiting MoveState, stopping current move and turn states");
+                currentMoveState = null;
+                currentTurnState = null;
+            }
+
             public override void Update()
             {
                 if (TryApplyTransitions())
@@ -49,7 +56,6 @@ namespace Game.Locomotion.Adapter
 
                         if (Mathf.Abs(deltaAngle) > Mathf.Epsilon)
                         {
-                            Logger.Log($"Applying turn delta of {deltaAngle} to model (absAngle={absAngle})");
                             adapter.agent.Model.transform.rotation = Quaternion.AngleAxis(deltaAngle, Vector3.up) * adapter.agent.Model.transform.rotation;
                         }
                     }

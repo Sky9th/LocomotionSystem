@@ -131,6 +131,35 @@ MonoBehaviour:
         _Clip: {fileID: 1827226128182048838, guid: baa545746b88c194892c607734315fb2,
           type: 3}
         _NormalizedStartTime: NaN
+--- !u!114 &-3527362819005395903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
+  m_Name: IdleR
+  m_EditorClassIdentifier: 
+  _Transition:
+    rid: 1609343315286687744
+  references:
+    version: 2
+    RefIds:
+    - rid: 1609343315286687744
+      type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
+      data:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes: []
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: -5048631755769649023, guid: 80cc41bbbe90035428ebb96946abce7b,
+          type: 3}
+        _NormalizedStartTime: NaN
 --- !u!114 &-1237515139493486604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,7 +170,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
-  m_Name: Idle
+  m_Name: IdleL
   m_EditorClassIdentifier: 
   _Transition:
     rid: 1609343240932950021
@@ -204,6 +233,7 @@ MonoBehaviour:
   _Definition:
     _Transitions:
     - {fileID: -1237515139493486604}
+    - {fileID: -3527362819005395903}
     - {fileID: -4676789515798329813}
     - {fileID: 8269135969601451288}
     - {fileID: -613736580003927102}
@@ -216,22 +246,24 @@ MonoBehaviour:
     _Aliases:
     - _Name: {fileID: 11400000, guid: e080e4a005dcb7c47b71b7217c1e44b2, type: 2}
       _Index: 0
-    - _Name: {fileID: 11400000, guid: 787e4e53402c6b141b958c85857d99bb, type: 2}
+    - _Name: {fileID: 11400000, guid: d3bd29706dbf5c249a2161d1dc6210b4, type: 2}
       _Index: 1
-    - _Name: {fileID: 11400000, guid: 3997fcecd2b0db04bb077248eccb6c70, type: 2}
+    - _Name: {fileID: 11400000, guid: 787e4e53402c6b141b958c85857d99bb, type: 2}
       _Index: 2
-    - _Name: {fileID: 11400000, guid: cd8614c33b5e91d489beb07de8d7112f, type: 2}
+    - _Name: {fileID: 11400000, guid: 3997fcecd2b0db04bb077248eccb6c70, type: 2}
       _Index: 3
-    - _Name: {fileID: 11400000, guid: 470dbfabfb96aa442a71a295e3d66d15, type: 2}
+    - _Name: {fileID: 11400000, guid: cd8614c33b5e91d489beb07de8d7112f, type: 2}
       _Index: 4
-    - _Name: {fileID: 11400000, guid: 1b561666096556d4ab8df624c35d0472, type: 2}
+    - _Name: {fileID: 11400000, guid: 470dbfabfb96aa442a71a295e3d66d15, type: 2}
       _Index: 5
-    - _Name: {fileID: 11400000, guid: ff9f31ba1724cd34187efff0895d0615, type: 2}
+    - _Name: {fileID: 11400000, guid: 1b561666096556d4ab8df624c35d0472, type: 2}
       _Index: 6
-    - _Name: {fileID: 11400000, guid: a1aa8de1168235f438639d24b093dc33, type: 2}
+    - _Name: {fileID: 11400000, guid: ff9f31ba1724cd34187efff0895d0615, type: 2}
       _Index: 7
-    - _Name: {fileID: 11400000, guid: 3f47afb1acfa38d4b8269baf2b2079ba, type: 2}
+    - _Name: {fileID: 11400000, guid: a1aa8de1168235f438639d24b093dc33, type: 2}
       _Index: 8
+    - _Name: {fileID: 11400000, guid: 3f47afb1acfa38d4b8269baf2b2079ba, type: 2}
+      _Index: 9
     _AliasAllTransitions: 1
 --- !u!114 &71537367975672513
 MonoBehaviour:
@@ -311,7 +343,14 @@ MonoBehaviour:
         - {fileID: -4483162228018015910, guid: a590d1b5767d5d54386b34c9f7f7fe21, type: 3}
         - {fileID: 2227134355851379932, guid: 6bfdfe863d273e34fb7091837f71c882, type: 3}
         - {fileID: 1964287270537140565, guid: 326a77dad90a09949bf4d2533bf2ab1b, type: 3}
-        - {fileID: -5048631755769649023, guid: 66e38452873e557408553dfd4c808a3f, type: 3}
+        - {fileID: 7780823655367860879, guid: 8b45cba6e566e0847aa0b9eee86847b9, type: 3}
+        - {fileID: 3294030700477107961, guid: 4d7f9f4e56a29a64f8593579968c0f26, type: 3}
+        - {fileID: 3194471228096159417, guid: 142f8279fe034964ca70c9142a5fbaf1, type: 3}
+        - {fileID: 5258337069520913136, guid: 2fed787bd99a9a34db7bcebafe6a3c18, type: 3}
+        - {fileID: -3667253587308142363, guid: daa2b7d465591a649912e31c8bed5f50, type: 3}
+        - {fileID: 7290230622943338602, guid: c6928073f3fa6424380dbb8b4fc4359f, type: 3}
+        - {fileID: 1827226128182048838, guid: db0a463e01ccdef4a9f42b417e66f4db, type: 3}
+        - {fileID: 3337434087754633193, guid: a2d73bf5694658d4a93f5796ffe5fb5b, type: 3}
         _Speeds: []
         _SynchronizeChildren: 
         _Thresholds:
@@ -323,7 +362,14 @@ MonoBehaviour:
         - {x: -0.5, y: -0.5}
         - {x: -1, y: 0}
         - {x: -0.5, y: 0.5}
-        - {x: 0, y: 0}
+        - {x: 0, y: 2}
+        - {x: 1.5, y: 1.5}
+        - {x: 2, y: 0}
+        - {x: 1.5, y: -1.5}
+        - {x: 0, y: -2}
+        - {x: -1.5, y: -1.5}
+        - {x: -2, y: 0}
+        - {x: -1.5, y: 1.5}
         _DefaultParameter: {x: 1, y: 0}
         _Type: 0
         _ParameterNameX: {fileID: 11400000, guid: ac471ab640645ef49bd0608d5edd20f5,
@@ -357,5 +403,34 @@ MonoBehaviour:
           _Callbacks: []
           _Names: []
         _Clip: {fileID: 5271736363738221749, guid: fde4813f79e8ecc43865c6a8330f5a97,
+          type: 3}
+        _NormalizedStartTime: NaN
+--- !u!114 &9030389947592137924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
+  m_Name: A_MOD_BL_Idle_Standing_Masc
+  m_EditorClassIdentifier: 
+  _Transition:
+    rid: 1609343304212938754
+  references:
+    version: 2
+    RefIds:
+    - rid: 1609343304212938754
+      type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
+      data:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes: []
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: -5048631755769649023, guid: 66e38452873e557408553dfd4c808a3f,
           type: 3}
         _NormalizedStartTime: NaN

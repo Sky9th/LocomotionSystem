@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 全局 Locomotion 注册器。负责协调各角色的 LocomotionAgent，并将关键快照同步到 GameContext。
+/// Global locomotion registry that coordinates all active LocomotionAgents and
+/// propagates key snapshots into the GameContext.
 /// </summary>
 [DisallowMultipleComponent]
 public class LocomotionManager : BaseService

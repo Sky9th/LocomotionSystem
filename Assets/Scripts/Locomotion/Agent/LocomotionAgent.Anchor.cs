@@ -1,12 +1,10 @@
 using UnityEngine;
 
 /// <summary>
-/// Foot placement helpers for LocomotionAgent: sampling left/right foot positions
-/// and determining which foot is currently leading along the character's forward axis.
+/// Anchor rotation and alignment helpers for LocomotionAgent.
 /// </summary>
 public partial class LocomotionAgent : MonoBehaviour
 {
-
     private void UpdateAnchorRotation()
     {
         if (followAnchor != null)
@@ -19,6 +17,13 @@ public partial class LocomotionAgent : MonoBehaviour
             euler.y += LastLookAction.Delta.x;
             followAnchor.rotation = Quaternion.Euler(euler);
         }
+    }
+
+    private void AlignPlayerToModel()
+    {
+        var worldPos = modelRoot.position;
+        transform.position = worldPos;
+        modelRoot.localPosition = Vector3.zero;
     }
     
 }

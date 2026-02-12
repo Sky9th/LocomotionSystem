@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// 角色当前的移动快照。首版聚焦 Idle/Walk，所以只存储位置、速度、朝向与地面信息。
+/// Immutable snapshot describing the player's locomotion state at a given frame.
 /// </summary>
 [Serializable]
 public struct SPlayerLocomotion
@@ -18,7 +18,10 @@ public struct SPlayerLocomotion
         SGroundContact groundContact,
         float turnAngle,
         bool isTurning,
-        bool isLeftFootOnFront)
+        bool isLeftFootOnFront,
+        EPostureState posture,
+        EMovementGait gait,
+        ELocomotionCondition condition)
     {
         Position = position;
         Velocity = velocity;
@@ -31,6 +34,9 @@ public struct SPlayerLocomotion
         TurnAngle = turnAngle;
         IsTurning = isTurning;
         IsLeftFootOnFront = isLeftFootOnFront;
+        Posture = posture;
+        Gait = gait;
+        Condition = condition;
     }
 
     public Vector3 Position { get; }
@@ -45,6 +51,15 @@ public struct SPlayerLocomotion
     public bool IsTurning { get; }
     public bool IsLeftFootOnFront { get; }
 
+    /// <summary>Current posture (e.g. Standing / Crouching / Prone).</summary>
+    public EPostureState Posture { get; }
+
+    /// <summary>Current movement gait (Idle / Walk / Run / Sprint / Crawl).</summary>
+    public EMovementGait Gait { get; }
+
+    /// <summary>Additional locomotion condition modifiers (e.g. injured, heavy load).</summary>
+    public ELocomotionCondition Condition { get; }
+
     public float Speed => Velocity.magnitude;
     public bool HasMovement => Velocity.sqrMagnitude > Mathf.Epsilon;
     public bool IsGrounded => GroundContact.IsGrounded;
@@ -56,9 +71,12 @@ public struct SPlayerLocomotion
         Vector3.forward,
         Vector2.zero,
         Vector2.zero,
-        ELocomotionState.Idle,
+        ELocomotionState.GroundedIdle,
         SGroundContact.None,
         0f,
         false,
-        true);
+        true,
+        EPostureState.Standing,
+        EMovementGait.Idle,
+        ELocomotionCondition.Normal);
 }

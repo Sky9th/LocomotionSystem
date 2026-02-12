@@ -37,9 +37,11 @@ public partial class LocomotionAgent : MonoBehaviour
 
         Vector2 localVelocity = CalculateLocalVelocity(currentVelocity);
 
-        ELocomotionState state = currentVelocity.sqrMagnitude > Mathf.Epsilon
-            ? ELocomotionState.Walk
-            : ELocomotionState.Idle;
+        // Split into orthogonal layers: high-level state + gait + posture + condition.
+        EMovementGait gait = ResolveMovementGait(currentVelocity);
+        EPostureState posture = ResolvePostureState();
+        ELocomotionCondition condition = ResolveLocomotionCondition();
+        ELocomotionState state = ResolveHighLevelState(gait, lastGroundContact);
 
         lastGroundContact = new SGroundContact(true, transform.position, Vector3.up);
 
@@ -59,9 +61,92 @@ public partial class LocomotionAgent : MonoBehaviour
             lastGroundContact,
             currentTurnAngle,
             isTurningInPlace,
-            isLeftFootOnFront);
+            isLeftFootOnFront,
+            posture,
+            gait,
+            condition);
 
         PushSnapshot(snapshot);
+    }
+
+    /// <summary>
+    /// Derive movement gait (Idle/Walk/Run/Sprint/Crawl) from current speed only.
+    /// </summary>
+    private EMovementGait ResolveMovementGait(Vector3 velocity)
+    {
+        float speed = velocity.magnitude;
+        if (speed <= Mathf.Epsilon)
+        {
+            return EMovementGait.Idle;
+        }
+
+        // Use MoveSpeed from config as a reference to split
+        // the range [0, MoveSpeed] into three rough bands: Walk / Run / Sprint.
+        float maxSpeed = Mathf.Max(config.MoveSpeed, 0.01f);
+        float walkThreshold = maxSpeed * 0.4f;
+        float runThreshold = maxSpeed * 0.8f;
+
+        if (speed < walkThreshold)
+        {
+            return EMovementGait.Walk;
+        }
+
+        if (speed < runThreshold)
+        {
+            return EMovementGait.Run;
+        }
+
+        return EMovementGait.Sprint;
+    }
+
+    /// <summary>
+    /// Currently treats all posture as Standing; will be refined when
+    /// crouch/prone inputs are integrated.
+    /// </summary>
+    private EPostureState ResolvePostureState()
+    {
+        return EPostureState.Standing;
+    }
+
+    /// <summary>
+    /// Currently always returns Normal; future implementations can map health or debuffs
+    /// into different locomotion conditions (injured, heavy load, etc.).
+    /// </summary>
+    private ELocomotionCondition ResolveLocomotionCondition()
+    {
+        return ELocomotionCondition.Normal;
+    }
+
+    /// <summary>
+    /// Derive a coarse high-level locomotion state from gait and ground contact.
+    /// This is intended for broad Animator/FSM branching, while the detailed
+    /// behaviour is driven by posture, gait, and condition.
+    /// </summary>
+    private static ELocomotionState ResolveHighLevelState(EMovementGait gait, SGroundContact contact)
+    {
+        if (!contact.IsGrounded)
+        {
+            return ELocomotionState.Airborne;
+        }
+
+        if (gait == EMovementGait.Idle)
+        {
+            return ELocomotionState.GroundedIdle;
+        }
+
+        return ELocomotionState.GroundedMoving;
+    }
+
+    private void DrawDebugVectors()
+    {
+        if (!drawDebugVectors)
+        {
+            return;
+        }
+
+        Debug.DrawRay(transform.position, LocomotionHeading * debugForwardLength, Color.cyan);
+        Debug.DrawRay(transform.position, LookDirection * debugForwardLength, Color.yellow);
+        Debug.DrawRay(transform.position, latestSnapshot.BodyForward * debugForwardLength, Color.magenta);
     }
 
     private Vector2 CalculateLocalVelocity(Vector3 worldVelocity)

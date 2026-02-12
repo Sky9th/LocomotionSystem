@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d773a40f44b054c499f696bebcd40971, type: 3}
   m_Name: Alias
   m_EditorClassIdentifier: 
-  idle: {fileID: 11400000, guid: e080e4a005dcb7c47b71b7217c1e44b2, type: 2}
+  idleL: {fileID: 11400000, guid: e080e4a005dcb7c47b71b7217c1e44b2, type: 2}
+  idleR: {fileID: 11400000, guid: d3bd29706dbf5c249a2161d1dc6210b4, type: 2}
   walkMixer: {fileID: 11400000, guid: ff9f31ba1724cd34187efff0895d0615, type: 2}
   walkForward: {fileID: 11400000, guid: 7586f0ea360e41443b4b55a39d70707a, type: 2}
   walkLeft: {fileID: 11400000, guid: 9a2e14ed79e7af041b736d6a1e986d64, type: 2}

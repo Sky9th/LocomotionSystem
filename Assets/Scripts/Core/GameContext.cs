@@ -32,8 +32,6 @@ public class GameContext : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
-        Instance = this;
     }
 
     private void OnDestroy()
@@ -58,6 +56,7 @@ public class GameContext : MonoBehaviour
             return;
         }
 
+        Instance = this;
         isInitialized = true;
 
         if (logDebugInfo)

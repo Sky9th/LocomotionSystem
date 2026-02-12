@@ -6,16 +6,6 @@ using UnityEngine;
 /// </summary>
 public partial class LocomotionAgent : MonoBehaviour
 {
-    private void FixedUpdate()
-    {
-        if (!autoRegister || isRegistered)
-        {
-            return;
-        }
-
-        TryRegisterWithManager();
-    }
-
     public bool TryRegisterWithManager()
     {
         if (isRegistered)
@@ -62,5 +52,15 @@ public partial class LocomotionAgent : MonoBehaviour
     {
         moveActionHandler?.Unsubscribe();
         lookActionHandler?.Unsubscribe();
+    }
+
+    private LocomotionManager FindManagerInScene()
+    {
+        if (GameContext.Instance != null && GameContext.Instance.TryResolveService(out LocomotionManager resolved))
+        {
+            return resolved;
+        }
+
+        return FindObjectOfType<LocomotionManager>();
     }
 }
