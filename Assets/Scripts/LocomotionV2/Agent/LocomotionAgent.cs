@@ -21,6 +21,10 @@ namespace Game.Locomotion.Agent
         [SerializeField] private Transform followAnchor;
         [SerializeField] private Transform modelRoot;
 
+        [Header("Animation")]
+        [SerializeField] private Animator animator;
+        [SerializeField] private bool autoResolveAnimator = true;
+
         [Header("Config")]
         [SerializeField] private LocomotionConfigProfile config;
         [SerializeField, Min(0f)] private float groundRayLength = 1.5f;
@@ -38,6 +42,15 @@ namespace Game.Locomotion.Agent
 
         // Latest locomotion snapshot for this character.
         private SPlayerLocomotion snapshot = SPlayerLocomotion.Default;
+
+        // Encapsulated movement state (velocity + local velocity helpers).
+        private readonly LocomotionMovementState movementState = new LocomotionMovementState();
+
+        // Encapsulated turn state logic.
+        private readonly LocomotionTurnState turnState = new LocomotionTurnState();
+
+        // Encapsulated foot placement state.
+        private readonly LocomotionFootState footState = new LocomotionFootState();
 
         // Centralized input module (subscribes & buffers IAactions).
         private LocomotionInputModule inputModule;
@@ -62,6 +75,10 @@ namespace Game.Locomotion.Agent
             }
             
             ResolveRigReferencesIfNeeded();
+            if (animator == null && autoResolveAnimator)
+            {
+                animator = GetComponentInChildren<Animator>();
+            }
             InitializeSnapshot();
         }
 
@@ -92,6 +109,10 @@ namespace Game.Locomotion.Agent
             // keep consuming stale locomotion data from a disabled agent.
             inputModule?.Unsubscribe();
             InitializeSnapshot();
+
+            movementState.Reset();
+            turnState.Reset();
+            footState.Reset();
         }
 
         /// <summary>
@@ -108,29 +129,53 @@ namespace Game.Locomotion.Agent
             // apply a minimal Idle/Walk decision with localVelocity output.
 
             SPlayerMoveIAction moveAction = SPlayerMoveIAction.None;
-            if (inputModule != null && inputModule.TryGetAction(out SPlayerMoveIAction buffered))
-            {
-                moveAction = buffered;
-            }
+            SPlayerLookIAction lookAction = SPlayerLookIAction.None;
+            inputModule?.GetLatestInput(out moveAction, out lookAction);
 
-            Vector3 position = modelRoot.transform.position;
+            // Rotate the camera / follow anchor based on look input
+            // before deriving locomotion heading and head look angles.
+            LocomotionCameraAnchorLogic.UpdateAnchorRotation(followAnchor, lookAction, config);
+
+            Vector3 position = modelRoot != null ? modelRoot.position : transform.position;
             Vector3 bodyForward = modelRoot != null ? modelRoot.forward : transform.forward;
-            Vector3 locomotionHeading = GetLocomotionHeading();
+            Vector3 locomotionHeading = LocomotionHeading.Evaluate(followAnchor, transform);
 
-            SGroundContact groundContact = GroundDetection.SampleGround(position, groundRayLength, groundLayerMask);
+            float maxSlopeAngle = config != null ? config.MaxGroundSlopeAngle : 0f;
+            SGroundContact groundContact = LocomotionGroundDetection.SampleGround(position, groundRayLength, groundLayerMask, maxSlopeAngle);
 
-            // Compute simple world-space planar velocity from heading,
-            // input intensity and the shared locomotion config.
-            Vector3 velocity = LocomotionKinematics.ComputePlanarVelocity(locomotionHeading, moveAction, config);
+            // Update world and local velocities via the movement state.
+            movementState.Update(
+                locomotionHeading,
+                moveAction,
+                config,
+                deltaTime,
+                out Vector3 velocity,
+                out Vector2 localVelocity);
 
-            // Minimal logic: evaluate discrete locomotion mode and
-            // corresponding local planar velocity in a single step.
+            // Minimal logic: evaluate discrete locomotion mode.
             LocomotionModeLogic.Evaluate(
                 velocity,
                 groundContact,
-                moveAction,
-                out Vector2 localVelocity,
+                config,
                 out SLocomotionDiscreteState mode);
+
+            // Evaluate turning angle and state based on the
+            // difference between the body forward and the desired
+            // locomotion heading, using the shared turn state logic.
+            turnState.Update(bodyForward, locomotionHeading, config, deltaTime);
+
+            Vector2 lookDirection = LocomotionHeadLook.Evaluate(
+                followAnchor,
+                modelRoot,
+                transform,
+                config);
+
+            // Update foot placement state.
+            footState.Update(
+                animator,
+                modelRoot,
+                transform,
+                locomotionHeading);
 
             snapshot = new SPlayerLocomotion(
                 position,
@@ -138,12 +183,12 @@ namespace Game.Locomotion.Agent
                 locomotionHeading: locomotionHeading,
                 bodyForward: bodyForward,
                 localVelocity: localVelocity,
-                lookDirection: Vector2.zero,
+                lookDirection: lookDirection,
                 state: mode.State,
                 groundContact: groundContact,
-                turnAngle: 0f,
-                isTurning: false,
-                isLeftFootOnFront: true,
+                turnAngle: turnState.TurnAngle,
+                isTurning: turnState.IsTurningInPlace,
+                isLeftFootOnFront: footState.IsLeftFootOnFront,
                 posture: mode.Posture,
                 gait: mode.Gait,
                 condition: mode.Condition);
@@ -155,7 +200,11 @@ namespace Game.Locomotion.Agent
         {
             Vector3 position = transform.position;
             Vector3 bodyForward = modelRoot != null ? modelRoot.forward : transform.forward;
-            Vector3 locomotionHeading = GetLocomotionHeading();
+            Vector3 locomotionHeading = LocomotionHeading.Evaluate(followAnchor, transform);
+
+            movementState.Reset();
+            turnState.Reset();
+            footState.Reset();
 
             snapshot = new SPlayerLocomotion(
                 position,
@@ -168,7 +217,7 @@ namespace Game.Locomotion.Agent
                 groundContact: SGroundContact.None,
                 turnAngle: 0f,
                 isTurning: false,
-                isLeftFootOnFront: true,
+                isLeftFootOnFront: footState.IsLeftFootOnFront,
                 posture: EPostureState.Standing,
                 gait: EMovementGait.Idle,
                 condition: ELocomotionCondition.Normal);
@@ -178,7 +227,11 @@ namespace Game.Locomotion.Agent
 
         private void PushSnapshot()
         {
-            GameContext.Instance.UpdateSnapshot(snapshot);
+            GameContext context = GameContext.Instance;
+            if (context != null)
+            {
+                context.UpdateSnapshot(snapshot);
+            }
         }
 
         private void EnsureInputModuleCreated()
@@ -210,19 +263,6 @@ namespace Game.Locomotion.Agent
             }
         }
 
-        private Vector3 GetLocomotionHeading()
-        {
-            Transform source = followAnchor != null ? followAnchor : transform;
-            Vector3 forward = source.forward;
-            forward.y = 0f;
-            if (forward.sqrMagnitude <= Mathf.Epsilon)
-            {
-                return Vector3.forward;
-            }
-
-            return forward.normalized;
-        }
-
         private void OnDrawGizmosSelected()
         {
             if (!drawDebugGizmos)
@@ -230,7 +270,7 @@ namespace Game.Locomotion.Agent
                 return;
             }
             Vector3 origin = modelRoot != null ? modelRoot.position : transform.position;
-            Vector3 forward = GetLocomotionHeading();
+            Vector3 forward = LocomotionHeading.Evaluate(followAnchor, transform);
 
             // Draw locomotion heading in a color based on the high-level state.
             Color headingColor = Color.cyan;

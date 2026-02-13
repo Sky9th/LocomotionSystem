@@ -13,6 +13,9 @@ public class LocomotionConfigProfile : ScriptableObject
     [SerializeField, Min(0f)] private float moveSpeed = 4f;
     [SerializeField, Min(0f)] private float acceleration = 5f;
 
+    [Header("Ground Settings")]
+    [SerializeField, Range(0f, 89f)] private float maxGroundSlopeAngle = 55f;
+
     [Header("Head Look Limits")]
     [SerializeField, Range(0f, 90f)] private float maxHeadYawDegrees = 75f;
     [SerializeField, Range(0f, 90f)] private float maxHeadPitchDegrees = 75f;
@@ -31,6 +34,7 @@ public class LocomotionConfigProfile : ScriptableObject
 
     public float MoveSpeed => moveSpeed;
     public float Acceleration => acceleration;
+    public float MaxGroundSlopeAngle => maxGroundSlopeAngle;
     public float MaxHeadYawDegrees => maxHeadYawDegrees;
     public float MaxHeadPitchDegrees => maxHeadPitchDegrees;
     public float HeadLookSmoothingSpeed => headLookSmoothingSpeed;

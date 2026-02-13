@@ -10,9 +10,9 @@ namespace Game.Locomotion.Computation
     /// Slope angles, step heights and materials will be added later
     /// as configuration grows.
     /// </summary>
-    internal static class GroundDetection
+    internal static class LocomotionGroundDetection
     {
-        internal static SGroundContact SampleGround(Vector3 origin, float rayLength, int layerMask)
+        internal static SGroundContact SampleGround(Vector3 origin, float rayLength, int layerMask, float maxSlopeAngleDegrees)
         {
             if (rayLength <= 0f)
             {
@@ -22,6 +22,15 @@ namespace Game.Locomotion.Computation
             Ray ray = new Ray(origin, Vector3.down);
             if (Physics.Raycast(ray, out RaycastHit hitInfo, rayLength, layerMask, QueryTriggerInteraction.Ignore))
             {
+                if (maxSlopeAngleDegrees > 0f)
+                {
+                    float slopeAngle = Vector3.Angle(hitInfo.normal, Vector3.up);
+                    if (slopeAngle > maxSlopeAngleDegrees)
+                    {
+                        return SGroundContact.None;
+                    }
+                }
+
                 return new SGroundContact(true, hitInfo.point, hitInfo.normal);
             }
 
