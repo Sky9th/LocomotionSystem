@@ -11,12 +11,11 @@ namespace Game.Locomotion.Logic
         internal static void Evaluate(
             Vector3 velocity,
             SGroundContact groundContact,
-            SPlayerMoveIAction moveAction,
-            out Vector2 localVelocity,
+            LocomotionConfigProfile config,
             out SLocomotionDiscreteState discreteState)
         {
-            // Derive local planar velocity and gait from input only.
-            BasicLocomotionLogic.EvaluateBasicLocomotion(moveAction, out localVelocity, out EMovementGait gait);
+            // Derive gait from world-space velocity and config.
+            EMovementGait gait = LocomotionGaitLogic.ResolveMovementGait(velocity, config);
 
             // Derive high-level locomotion state from velocity and ground contact.
             ELocomotionState state = LocomotionStateLogic.ResolveHighLevelState(velocity, groundContact);

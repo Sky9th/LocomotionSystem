@@ -6,13 +6,12 @@ namespace Game.Locomotion.Computation
     /// Minimal kinematics helper for Locomotion v2.
     ///
     /// Converts high-level move input and configuration values into
-    /// planar world-space velocity. This initial version implements
-    /// a very simple "desiredSpeed = MoveSpeed * inputMagnitude"
-    /// behaviour without acceleration or gravity.
+    /// planar world-space velocity. Exposes helpers for computing a
+    /// desired velocity and then smoothing towards it over time.
     /// </summary>
     internal static class LocomotionKinematics
     {
-        internal static Vector3 ComputePlanarVelocity(
+        internal static Vector3 ComputeDesiredPlanarVelocity(
             Vector3 locomotionHeading,
             SPlayerMoveIAction moveAction,
             LocomotionConfigProfile config)
@@ -33,8 +32,24 @@ namespace Game.Locomotion.Computation
             {
                 heading = Vector3.forward;
             }
-
             return heading.normalized * speed;
+        }
+
+        internal static Vector3 SmoothVelocity(
+            Vector3 currentVelocity,
+            Vector3 desiredVelocity,
+            float acceleration,
+            float deltaTime)
+        {
+            if (acceleration <= 0f || deltaTime <= 0f)
+            {
+                return desiredVelocity;
+            }
+
+            // Move current velocity towards desired velocity with a
+            // simple acceleration-limited step.
+            float maxDelta = acceleration * deltaTime;
+            return Vector3.MoveTowards(currentVelocity, desiredVelocity, maxDelta);
         }
     }
 }

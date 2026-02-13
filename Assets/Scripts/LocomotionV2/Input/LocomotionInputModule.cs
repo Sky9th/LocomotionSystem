@@ -16,6 +16,9 @@ namespace Game.Locomotion.Input
         private readonly Agent.LocomotionAgent owner;
         private readonly Dictionary<Type, object> actionBuffer = new();
 
+        private SPlayerMoveIAction lastMoveAction = SPlayerMoveIAction.None;
+        private SPlayerLookIAction lastLookAction = SPlayerLookIAction.None;
+
         private EventDispatcher eventDispatcher;
         private bool isSubscribed;
 
@@ -37,6 +40,7 @@ namespace Game.Locomotion.Input
             }
 
             eventDispatcher.Subscribe<SPlayerMoveIAction>(OnMoveAction);
+            eventDispatcher.Subscribe<SPlayerLookIAction>(OnLookAction);
 
             isSubscribed = true;
         }
@@ -49,6 +53,7 @@ namespace Game.Locomotion.Input
             }
 
             eventDispatcher.Unsubscribe<SPlayerMoveIAction>(OnMoveAction);
+            eventDispatcher.Unsubscribe<SPlayerLookIAction>(OnLookAction);
 
             eventDispatcher = null;
             isSubscribed = false;
@@ -61,23 +66,24 @@ namespace Game.Locomotion.Input
             {
                 return;
             }
+            lastMoveAction = action;
             actionBuffer[typeof(SPlayerMoveIAction)] = action;
         }
 
-        /// <summary>
-        /// Attempts to retrieve the latest buffered IAction of the requested type.
-        /// </summary>
-        internal bool TryGetAction<TAction>(out TAction action)
-            where TAction : struct
+        private void OnLookAction(SPlayerLookIAction action, MetaStruct meta)
         {
-            if (actionBuffer.TryGetValue(typeof(TAction), out object boxed) && boxed is TAction typed)
+            if (owner == null || !owner.isActiveAndEnabled)
             {
-                action = typed;
-                return true;
+                return;
             }
+            lastLookAction = action;
+            actionBuffer[typeof(SPlayerLookIAction)] = action;
+        }
 
-            action = default;
-            return false;
+        internal void GetLatestInput(out SPlayerMoveIAction moveAction, out SPlayerLookIAction lookAction)
+        {
+            moveAction = lastMoveAction;
+            lookAction = lastLookAction;
         }
 
         private static bool TryResolveDispatcher(out EventDispatcher dispatcher)

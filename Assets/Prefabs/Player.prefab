@@ -92,9 +92,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 238fb252770836b4baa3b824d26fb274, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  followAnchor: {fileID: 0}
-  modelRoot: {fileID: 0}
+  followAnchor: {fileID: 3954816038181264415}
+  modelRoot: {fileID: 7880520753254052221}
+  animator: {fileID: 0}
+  autoResolveAnimator: 1
   config: {fileID: 11400000, guid: d254e0574a65f2f4f8cec62548948e01, type: 2}
+  groundRayLength: 1.5
+  groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
   isPlayer: 1
   autoSubscribeInput: 1
   drawDebugGizmos: 1
