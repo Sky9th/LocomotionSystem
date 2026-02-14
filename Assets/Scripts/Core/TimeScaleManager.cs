@@ -18,7 +18,7 @@ public class TimeScaleManager : BaseService
         return true;
     }
 
-    protected override void SubscribeToDispatcher()
+    protected override void OnSubscriptionsActivated()
     {
         Dispatcher.Subscribe<STimeScaleIAction>(HandleTimeScaleRequested);
     }
@@ -27,7 +27,7 @@ public class TimeScaleManager : BaseService
     {
         float clamped = Mathf.Clamp(action.TargetScale, minScale, maxScale);
         Time.timeScale = clamped;
-        Debug.Log($"[TimeScaleService] Applied time scale: {clamped}", this);
+        Debug.Log($"[TimeScaleManager] Applied time scale: {clamped}", this);
     }
 
     private void OnDisable()
@@ -51,5 +51,13 @@ public class TimeScaleManager : BaseService
         {
             Time.timeScale = defaultScale;
         }
+    }
+
+    protected override void OnServicesReady()
+    {
+    }
+
+    protected override void OnDispatcherAttached()
+    {
     }
 }

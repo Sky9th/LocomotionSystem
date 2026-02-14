@@ -137,7 +137,7 @@ public abstract class BaseService : MonoBehaviour
 
         Dispatcher = dispatcher;
         subscriptionsActivated = false;
-        OnDispatcherAvailable();
+        OnDispatcherAttached();
     }
 
     internal void ActivateSubscriptions()
@@ -159,7 +159,7 @@ public abstract class BaseService : MonoBehaviour
             return;
         }
 
-        SubscribeToDispatcher();
+        OnSubscriptionsActivated();
         subscriptionsActivated = true;
     }
 
@@ -168,9 +168,7 @@ public abstract class BaseService : MonoBehaviour
     /// and activated their subscriptions. Use this for any final initialization that
     /// relies on other services being fully ready.
     /// </summary>
-    protected virtual void OnInitialized()
-    {
-    }
+    protected abstract void OnServicesReady();
 
     /// <summary>
     /// Internal entry point used by GameManager to notify services that the
@@ -183,15 +181,23 @@ public abstract class BaseService : MonoBehaviour
             return;
         }
 
-        OnInitialized();
+        OnServicesReady();
         isInitialized = true;
     }
 
-    protected virtual void OnDispatcherAvailable()
+    /// <summary>
+    /// Phase 2: called when the shared EventDispatcher has been attached,
+    /// but before any subscriptions are activated.
+    /// </summary>
+    protected virtual void OnDispatcherAttached()
     {
     }
 
-    protected virtual void SubscribeToDispatcher()
+    /// <summary>
+    /// Phase 3: called when GameManager activates dispatcher subscriptions
+    /// for this service. Override to register event listeners on Dispatcher.
+    /// </summary>
+    protected virtual void OnSubscriptionsActivated()
     {
     }
 }

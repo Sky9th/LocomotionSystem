@@ -623,6 +623,52 @@ MonoBehaviour:
   overlaysRoot: {fileID: 3778964946338435573}
   screenConfig: {fileID: 11400000, guid: a55c187a2c7307042a9377bc770ab78a, type: 2}
   overlayConfig: {fileID: 11400000, guid: fd5330b5cbc414f4ab531032dd661f34, type: 2}
+--- !u!1 &6974227687109179904
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3156936994726040493}
+  - component: {fileID: 5837086406208072246}
+  m_Layer: 0
+  m_Name: PlayerManger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3156936994726040493
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6974227687109179904}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3894078953817663475}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5837086406208072246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6974227687109179904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bbae2fefb804dd4a81e63708894d735, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayerPrefab: {fileID: 8667043660662020576, guid: 4c0627a5cad7b734c8c24cbdadfe712f,
+    type: 3}
 --- !u!1 &6987912418579276946
 GameObject:
   m_ObjectHideFlags: 0
@@ -661,6 +707,7 @@ Transform:
   - {fileID: 2503843411843990897}
   - {fileID: 2374476992311174463}
   - {fileID: 16914245774299700}
+  - {fileID: 3156936994726040493}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8178644711629412702
@@ -675,16 +722,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35d0f891bf553564299c95cdbd1a14db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerPrefab: {fileID: 8667043660662020576, guid: 4c0627a5cad7b734c8c24cbdadfe712f,
-    type: 3}
   gameContext: {fileID: 0}
   eventDispatcher: {fileID: 0}
   gameState: {fileID: 0}
-  inputManager: {fileID: 0}
-  cameraManager: {fileID: 0}
-  locomotionManager: {fileID: 0}
-  timeScaleService: {fileID: 0}
-  uiService: {fileID: 0}
   lockCursorWhenPlaying: 1
 --- !u!1 &7008490145074102192
 GameObject:
