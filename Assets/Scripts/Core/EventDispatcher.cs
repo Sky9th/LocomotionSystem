@@ -90,6 +90,10 @@ public class EventDispatcher : BaseService
         inspectorListeners.Clear();
     }
 
+    protected override void OnServicesReady()
+    {
+    }
+
     private void RefreshInspectorListeners()
     {
         inspectorListeners.Clear();

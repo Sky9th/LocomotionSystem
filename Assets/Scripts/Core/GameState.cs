@@ -11,6 +11,8 @@ public class GameState : BaseService
 	[Header("State Options")]
 	[SerializeField] private EGameState initialState = EGameState.Initializing;
 	[SerializeField] private bool logTransitions;
+	[Header("Cursor Options")]
+	[SerializeField] private bool lockCursorWhenPlaying = true;
 
 	private bool hasInitialized;
 	[SerializeField] private EGameState currentState;
@@ -38,11 +40,14 @@ public class GameState : BaseService
 		return true;
 	}
 
-	protected override void OnDispatcherAvailable()
+	protected override void OnServicesReady()
 	{
-		base.OnDispatcherAvailable();
+	}
+
+	protected override void OnDispatcherAttached()
+	{
 		hasInitialized = true;
-		PublishStateChange(new SGameState(currentState, previousState));
+		ApplyState(currentState, force: true);
 	}
 
 	/// <summary>
@@ -77,6 +82,8 @@ public class GameState : BaseService
 		previousState = currentState;
 		currentState = nextState;
 
+		ApplyCursorMode(currentState);
+
 		var snapshot = new SGameState(currentState, previousState);
 		Logger.Log($"GameState transitioning: {previousState} -> {currentState}");
 		PushSnapshot(snapshot);
@@ -88,6 +95,65 @@ public class GameState : BaseService
 		}
 
 		return true;
+	}
+
+	protected override void OnSubscriptionsActivated()
+	{
+		base.OnSubscriptionsActivated();
+		if (Dispatcher != null)
+		{
+			Dispatcher.Subscribe<SUIEscapeIAction>(HandleEscapeIntent);
+		}
+	}
+
+	private void OnDestroy()
+	{
+		if (Dispatcher != null)
+		{
+			Dispatcher.Unsubscribe<SUIEscapeIAction>(HandleEscapeIntent);
+		}
+	}
+
+	private void HandleEscapeIntent(SUIEscapeIAction payload, MetaStruct meta)
+	{
+		if (!payload.IsPressed)
+		{
+			return;
+		}
+
+		switch (currentState)
+		{
+			case EGameState.MainMenu:
+				RequestState(EGameState.Playing);
+				break;
+			case EGameState.Playing:
+				RequestState(EGameState.MainMenu);
+				break;
+		}
+	}
+
+	private void ApplyCursorMode(EGameState state)
+	{
+		switch (state)
+		{
+			case EGameState.MainMenu:
+			case EGameState.Paused:
+				SetCursorVisibility(true, CursorLockMode.None);
+				break;
+			case EGameState.Playing:
+				var targetLock = lockCursorWhenPlaying ? CursorLockMode.Locked : CursorLockMode.Confined;
+				SetCursorVisibility(false, targetLock);
+				break;
+			default:
+				SetCursorVisibility(true, CursorLockMode.None);
+				break;
+		}
+	}
+
+	private void SetCursorVisibility(bool isVisible, CursorLockMode lockMode)
+	{
+		Cursor.visible = isVisible;
+		Cursor.lockState = lockMode;
 	}
 
 	private void PushSnapshot(SGameState snapshot)

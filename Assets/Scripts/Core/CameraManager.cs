@@ -23,6 +23,24 @@ public class CameraManager : BaseService
     private bool hasSnapshot;
     public CinemachineVirtualCamera ActiveVirtualCamera => ResolveActiveVirtualCamera();
 
+    protected override void OnSubscriptionsActivated()
+    {
+        base.OnSubscriptionsActivated();
+
+        if (Dispatcher != null)
+        {
+            Dispatcher.Subscribe<PlayerSpawnedEvent>(HandlePlayerSpawned);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (Dispatcher != null)
+        {
+            Dispatcher.Unsubscribe<PlayerSpawnedEvent>(HandlePlayerSpawned);
+        }
+    }
+
     protected override bool OnRegister(GameContext context)
     {
         if (autoLocateBrain && cameraBrain == null)
@@ -52,14 +70,12 @@ public class CameraManager : BaseService
         }
 
         context.RegisterService(this);
-
-        PushSnapshot();
         return true;
     }
-
-    protected override void SubscribeToDispatcher()
+    
+    protected override void OnServicesReady()
     {
-        // CameraManager no longer consumes look actions directly; LocomotionAgent handles follow rotation.
+        PushSnapshot();
     }
 
     private CinemachineBrain FindFirstBrain()
@@ -155,6 +171,31 @@ public class CameraManager : BaseService
         return hasSnapshot;
     }
 
+    private void HandlePlayerSpawned(PlayerSpawnedEvent payload, MetaStruct meta)
+    {
+        if (payload == null || !payload.IsLocalPlayer)
+        {
+            return;
+        }
+
+        Transform root = payload.Root;
+        if (root == null)
+        {
+            return;
+        }
+
+		var anchor = root.Find(CommonConstants.FollowAnchorChildName);
+		if (anchor == null)
+		{
+			SetFollowTarget(root, retargetActiveCamera: true);
+			SetLookAtTarget(root, retargetActiveCamera: true);
+			return;
+		}
+
+        SetFollowTarget(anchor, retargetActiveCamera: true);
+        SetLookAtTarget(anchor, retargetActiveCamera: true);
+    }
+
     private CinemachineVirtualCamera ResolveActiveVirtualCamera()
     {
         if (cameraBrain != null && cameraBrain.ActiveVirtualCamera is CinemachineVirtualCamera typed)
@@ -164,5 +205,4 @@ public class CameraManager : BaseService
 
         return defaultVirtualCamera;
     }
-
 }

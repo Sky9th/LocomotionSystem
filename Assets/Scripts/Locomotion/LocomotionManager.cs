@@ -22,13 +22,15 @@ public class LocomotionManager : BaseService
     protected override bool OnRegister(GameContext context)
     {
         context.RegisterService(this);
-
+        return true;
+    }
+    
+    protected override void OnServicesReady()
+    {
         if (defaultPlayerAgent != null)
         {
             defaultPlayerAgent.TryRegisterWithManager();
         }
-
-        return true;
     }
 
     internal bool RegisterComponent(LocomotionAgent agent)

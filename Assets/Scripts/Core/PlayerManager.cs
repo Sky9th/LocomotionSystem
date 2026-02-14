@@ -4,31 +4,46 @@ using UnityEngine;
 /// Maintains high-level player wiring, including syncing the Player root with the animated Model child.
 /// </summary>
 [DisallowMultipleComponent]
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : BaseService
 {
-    [Header("Rig References")]
-    [SerializeField] private Transform modelRoot;
 
-    [Header("Alignment")]
-    [SerializeField] private bool keepPlayerAlignedWithModel = true;
+    [SerializeField] private GameObject PlayerPrefab;
 
-    private void Awake()
+    protected override void OnServicesReady()
     {
-        if (modelRoot == null)
-        {
-            var model = transform.Find("Model");
-            if (model != null)
-            {
-                modelRoot = model;
-            }
-        }
+        CreatePlayer();
     }
 
-    private void LateUpdate()
+    protected override bool OnRegister(GameContext context)
     {
-        if (!keepPlayerAlignedWithModel || modelRoot == null)
+        context.RegisterService(this);
+        return true;
+    }
+
+    private void CreatePlayer()
+    {
+        if (PlayerPrefab == null)
         {
+            Debug.LogError("PlayerPrefab reference is missing in PlayerManager.", this);
             return;
+        }
+
+        GameObject playerInstance = Instantiate(PlayerPrefab);
+        playerInstance.name = PlayerPrefab.name;
+
+        // Broadcast a spawn snapshot so other systems can react
+        // (camera follow, UI hooks, etc.). Also push it into the
+        // GameContext snapshot registry for easy lookup.
+        var playerSnapshot = SPlayer.FromTransform(playerInstance.transform, isLocalPlayer: true);
+
+        if (GameContext != null)
+        {
+            GameContext.UpdateSnapshot(playerSnapshot);
+        }
+
+        if (Dispatcher != null)
+        {
+            Dispatcher.Publish(new PlayerSpawnedEvent(playerInstance.transform, isLocalPlayer: true));
         }
     }
 }
