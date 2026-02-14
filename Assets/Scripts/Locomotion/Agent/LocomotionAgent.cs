@@ -62,13 +62,13 @@ public partial class LocomotionAgent : MonoBehaviour
             manager = FindManagerInScene();
         }
 
-        var model = transform.Find("Model");
+        var model = transform.Find(CommonConstants.ModelChildName);
         if (model != null)
         {
             modelRoot = model;
         }
 
-        var follow = transform.Find("Follow");
+        var follow = transform.Find(CommonConstants.FollowAnchorChildName);
         if (follow != null)
         {
             followAnchor = follow;
@@ -97,7 +97,7 @@ public partial class LocomotionAgent : MonoBehaviour
             return;
         }
 
-        float deltaTime = GameTime.Delta;
+        float deltaTime = TimeConstants.Delta;
         if (deltaTime <= Mathf.Epsilon)
         {
             return;

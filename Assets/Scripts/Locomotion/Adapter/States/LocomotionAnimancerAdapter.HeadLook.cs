@@ -22,8 +22,8 @@ namespace Game.Locomotion.Adapter
         float normalizedYaw = Mathf.Clamp(headLook.x / maxYaw, -1f, 1f);
         float normalizedPitch = Mathf.Clamp(headLook.y / maxPitch, -1f, 1f);
 
-        smoothedYaw = Mathf.MoveTowards(smoothedYaw, normalizedYaw, headYawSpeed * GameTime.Delta);
-        smoothedPitch = Mathf.MoveTowards(smoothedPitch, normalizedPitch, headPitchSpeed * GameTime.Delta);
+        smoothedYaw = Mathf.MoveTowards(smoothedYaw, normalizedYaw, headYawSpeed * TimeConstants.Delta);
+        smoothedPitch = Mathf.MoveTowards(smoothedPitch, normalizedPitch, headPitchSpeed * TimeConstants.Delta);
 
         var mixerState = (Vector2MixerState)headLayer.TryPlay(alias.lookMixer);
 
