@@ -10,7 +10,7 @@ using UnityEngine;
 /// - Register(GameContext): cache context, build lookup tables, record initial active states.
 /// - AttachDispatcher(EventDispatcher): cache dispatcher reference (no subscriptions yet).
 /// - ActivateSubscriptions(): future extension point for input / UI events.
-/// - OnInitialized(): restore default visible screens/overlays based on initial activeSelf.
+/// - OnServicesReady(): restore default visible screens/overlays based on initial activeSelf.
 /// </summary>
 public class UIManager : BaseService
 {
@@ -154,10 +154,8 @@ public class UIManager : BaseService
     /// It will scan all known elements and automatically show any whose
     /// logical Visible flag is true (for example LocomotionDebugOverlay).
     /// </summary>
-    protected override void OnInitialized()
+    protected override void OnServicesReady()
     {
-        base.OnInitialized();
-
         // Activate the first screen which is marked as logically visible.
         foreach (var pair in screensById)
         {

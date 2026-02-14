@@ -23,9 +23,9 @@ public class InputManager : BaseService
         return true;
     }
 
-    protected override void OnDispatcherAvailable()
+    protected override void OnDispatcherAttached()
     {
-        base.OnDispatcherAvailable();
+        base.OnDispatcherAttached();
         ConfigureActions();
 
         if (isActiveAndEnabled)
@@ -36,7 +36,7 @@ public class InputManager : BaseService
         SyncInitialGameState();
     }
 
-    protected override void SubscribeToDispatcher()
+    protected override void OnSubscriptionsActivated()
     {
         Dispatcher.Subscribe<SGameState>(HandleGameStateChanged);
     }
@@ -167,5 +167,9 @@ public class InputManager : BaseService
                 handler.Enable();
             }
         }
+    }
+
+    protected override void OnServicesReady()
+    {
     }
 }

@@ -20,7 +20,7 @@ public partial class LocomotionAgent : MonoBehaviour
 
     private void SimulateLocomotion()
     {
-        float deltaTime = GameTime.Delta;
+        float deltaTime = TimeConstants.Delta;
 
         UpdateLocomotionHeading();
         UpdateFootFrontState();

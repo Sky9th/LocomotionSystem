@@ -94,7 +94,7 @@ namespace Game.Locomotion.Agent
 
         private void Update()
         {
-            float deltaTime = GameTime.Delta;
+            float deltaTime = TimeConstants.Delta;
             if (deltaTime <= Mathf.Epsilon)
             {
                 return;
@@ -246,21 +246,21 @@ namespace Game.Locomotion.Agent
         {
             if (modelRoot == null)
             {
-                Transform model = transform.Find("Model");
-                if (model != null)
-                {
-                    modelRoot = model;
-                }
-            }
-
-            if (followAnchor == null)
+            Transform model = transform.Find(CommonConstants.ModelChildName);
+            if (model != null)
             {
-                Transform follow = transform.Find("Follow");
-                if (follow != null)
-                {
-                    followAnchor = follow;
-                }
+                modelRoot = model;
             }
+        }
+
+        if (followAnchor == null)
+        {
+            Transform follow = transform.Find(CommonConstants.FollowAnchorChildName);
+            if (follow != null)
+            {
+                followAnchor = follow;
+            }
+        }
         }
 
         private void OnDrawGizmosSelected()

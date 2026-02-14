@@ -6,7 +6,7 @@ using UnityEngine;
 /// place to retrieve delta times and avoid scattering direct
 /// Time.* calls throughout the codebase.
 /// </summary>
-public static class GameTime
+public static class TimeConstants
 {
     /// <summary>
     /// Scaled delta time for frame-based simulation.
