@@ -43,8 +43,8 @@ public partial class LocomotionAgent : MonoBehaviour
     public bool IsPlayer => markAsPlayer;
     public bool IsRegistered => isRegistered;
     public SPlayerLocomotion Snapshot => latestSnapshot;
-    public SPlayerMoveIAction LastMoveAction => TryGetIAction(out SPlayerMoveIAction action) ? action : SPlayerMoveIAction.None;
-    public SPlayerLookIAction LastLookAction => TryGetIAction(out SPlayerLookIAction action) ? action : SPlayerLookIAction.None;
+    public SMoveIAction LastMoveAction => TryGetIAction(out SMoveIAction action) ? action : SMoveIAction.None;
+    public SLookIAction LastLookAction => TryGetIAction(out SLookIAction action) ? action : SLookIAction.None;
     public Vector3 LocomotionHeading => latestSnapshot.LocomotionHeading;
     public Vector2 LookDirection => latestSnapshot.LookDirection;
     public float HeadLookSmoothingSpeed => config.HeadLookSmoothingSpeed;

@@ -19,7 +19,7 @@ public class IAPlayerProne : InputActionHandler
         }
 
         bool rawInput = context.ReadValue<bool>();
-        SPlayerProneIAction intent = new SPlayerProneIAction(rawInput);
+        SProneIAction intent = new SProneIAction(rawInput);
         eventDispatcher.Publish(intent);
     }
 }

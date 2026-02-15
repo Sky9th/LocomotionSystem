@@ -6,9 +6,9 @@ using UnityEngine;
 /// Stored under Structs/IActions so every subsystem observes the same DTO layout.
 /// </summary>
 [Serializable]
-public struct SPlayerProneIAction
+public struct SProneIAction
 {
-    public SPlayerProneIAction(bool wantProne)
+    public SProneIAction(bool wantProne)
     {
         WantProne = wantProne;
     }
@@ -20,5 +20,5 @@ public struct SPlayerProneIAction
 
     public bool HasInput => WantProne;
 
-    public static SPlayerProneIAction None => new SPlayerProneIAction(false);
+    public static SProneIAction None => new SProneIAction(false);
 }

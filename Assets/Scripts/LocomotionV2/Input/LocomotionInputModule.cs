@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Game.Locomotion.Agent;
 
 namespace Game.Locomotion.Input
 {
@@ -8,26 +7,58 @@ namespace Game.Locomotion.Input
     /// Central input module for LocomotionAgentV2.
     ///
     /// - Subscribes to global EventDispatcher once.
-    /// - Buffers the latest IAction payloads per type.
-    /// - Exposes a type-safe TryGetAction API for the agent.
+    /// - For each received IAction payload, forwards it into the owning
+    ///   LocomotionAgent's internal input buffer via TryPutAction.
+    /// - Does not maintain its own IAction buffer.
     /// </summary>
     internal sealed class LocomotionInputModule
     {
-        private readonly Agent.LocomotionAgent owner;
-        private readonly Dictionary<Type, object> actionBuffer = new();
+        private readonly struct InputActionSubscription
+        {
+            public readonly Action<EventDispatcher> Subscribe;
+            public readonly Action<EventDispatcher> Unsubscribe;
 
-        private SPlayerMoveIAction lastMoveAction = SPlayerMoveIAction.None;
-        private SPlayerLookIAction lastLookAction = SPlayerLookIAction.None;
-        private SPlayerCrouchIAction lastCrouchAction = SPlayerCrouchIAction.None;
-        private SPlayerProneIAction lastProneAction = SPlayerProneIAction.None;
-        private SPlayerJumpIAction lastJumpAction = SPlayerJumpIAction.None;
-        private SPlayerStandIAction lastStandAction = SPlayerStandIAction.None;
+            public InputActionSubscription(Action<EventDispatcher> subscribe, Action<EventDispatcher> unsubscribe)
+            {
+                Subscribe = subscribe;
+                Unsubscribe = unsubscribe;
+            }
+        }
+
+        private readonly Game.Locomotion.Agent.LocomotionAgent owner;
+        private readonly Dictionary<Type, InputActionSubscription> subscriptions = new();
         private EventDispatcher eventDispatcher;
         private bool isSubscribed;
 
-        internal LocomotionInputModule(Agent.LocomotionAgent owner)
+        internal LocomotionInputModule(Game.Locomotion.Agent.LocomotionAgent owner)
         {
             this.owner = owner;
+
+            // Register all IAction payload types this module cares about.
+            RegisterAction<SMoveIAction>();
+            RegisterAction<SLookIAction>();
+            RegisterAction<SCrouchIAction>();
+            RegisterAction<SProneIAction>();
+            RegisterAction<SRunIAction>();
+            RegisterAction<SStandIAction>();
+            RegisterAction<SWalkIAction>();
+            RegisterAction<SSprintIAction>();
+            RegisterAction<SJumpIAction>();
+
+            // Seed the agent's input buffer with sensible defaults so
+            // downstream code can assume a value is always present.
+            if (owner != null)
+            {
+                owner.TryPutAction(SMoveIAction.None);
+                owner.TryPutAction(SLookIAction.None);
+                owner.TryPutAction(SCrouchIAction.None);
+                owner.TryPutAction(SProneIAction.None);
+                owner.TryPutAction(SRunIAction.None);
+                owner.TryPutAction(SStandIAction.None);
+                owner.TryPutAction(SWalkIAction.None);
+                owner.TryPutAction(SSprintIAction.None);
+                owner.TryPutAction(SJumpIAction.None);
+            }
         }
 
         internal void Subscribe()
@@ -42,12 +73,10 @@ namespace Game.Locomotion.Input
                 return;
             }
 
-            eventDispatcher.Subscribe<SPlayerMoveIAction>(OnMoveAction);
-            eventDispatcher.Subscribe<SPlayerLookIAction>(OnLookAction);
-            eventDispatcher.Subscribe<SPlayerCrouchIAction>(OnCrouchAction);
-            eventDispatcher.Subscribe<SPlayerProneIAction>(OnProneAction);
-            eventDispatcher.Subscribe<SPlayerJumpIAction>(OnJumpAction);
-            eventDispatcher.Subscribe<SPlayerStandIAction>(OnStandAction);
+            foreach (var entry in subscriptions.Values)
+            {
+                entry.Subscribe(eventDispatcher);
+            }
 
             isSubscribed = true;
         }
@@ -59,69 +88,29 @@ namespace Game.Locomotion.Input
                 return;
             }
 
-            eventDispatcher.Unsubscribe<SPlayerMoveIAction>(OnMoveAction);
-            eventDispatcher.Unsubscribe<SPlayerLookIAction>(OnLookAction);
-            eventDispatcher.Unsubscribe<SPlayerCrouchIAction>(OnCrouchAction);
-            eventDispatcher.Unsubscribe<SPlayerProneIAction>(OnProneAction);
-            eventDispatcher.Unsubscribe<SPlayerJumpIAction>(OnJumpAction);
-            eventDispatcher.Unsubscribe<SPlayerStandIAction>(OnStandAction);
+            foreach (var entry in subscriptions.Values)
+            {
+                entry.Unsubscribe(eventDispatcher);
+            }
             eventDispatcher = null;
             isSubscribed = false;
-            actionBuffer.Clear();
         }
-
-        private void OnStandAction(SPlayerStandIAction action, MetaStruct @struct)
+        
+        private void RegisterAction<TPayload>() where TPayload : struct
         {
-            lastStandAction = action;
-            actionBuffer[typeof(SPlayerStandIAction)] = action;
-        }
-
-        private void OnJumpAction(SPlayerJumpIAction action, MetaStruct @struct)
-        {
-            lastJumpAction = action;
-            actionBuffer[typeof(SPlayerJumpIAction)] = action;
-        }
-
-        private void OnProneAction(SPlayerProneIAction action, MetaStruct @struct)
-        {
-            lastProneAction = action;
-            actionBuffer[typeof(SPlayerProneIAction)] = action;
-        }
-
-        private void OnCrouchAction(SPlayerCrouchIAction action, MetaStruct @struct)
-        {
-            lastCrouchAction = action;
-            actionBuffer[typeof(SPlayerCrouchIAction)] = action;
-        }
-
-        private void OnMoveAction(SPlayerMoveIAction action, MetaStruct meta)
-        {
-            if (owner == null || !owner.isActiveAndEnabled)
+            void Handler(TPayload payload, MetaStruct meta)
             {
-                return;
-            }
-            lastMoveAction = action;
-            actionBuffer[typeof(SPlayerMoveIAction)] = action;
-        }
+                if (owner == null || !owner.isActiveAndEnabled)
+                {
+                    return;
+                }
 
-        private void OnLookAction(SPlayerLookIAction action, MetaStruct meta)
-        {
-            if (owner == null || !owner.isActiveAndEnabled)
-            {
-                return;
+                owner.TryPutAction(payload);
             }
-            lastLookAction = action;
-            actionBuffer[typeof(SPlayerLookIAction)] = action;
-        }
 
-        internal void GetLatestInput(out SPlayerMoveIAction moveAction, out SPlayerLookIAction lookAction, out SPlayerCrouchIAction crouchAction, out SPlayerProneIAction proneAction, out SPlayerJumpIAction jumpAction, out SPlayerStandIAction standAction)
-        {
-            moveAction = lastMoveAction;
-            lookAction = lastLookAction;
-            crouchAction = lastCrouchAction;
-            proneAction = lastProneAction;
-            jumpAction = lastJumpAction;
-            standAction = lastStandAction;
+            subscriptions[typeof(TPayload)] = new InputActionSubscription(
+                subscribe: dispatcher => dispatcher.Subscribe<TPayload>(Handler),
+                unsubscribe: dispatcher => dispatcher.Unsubscribe<TPayload>(Handler));
         }
 
         private static bool TryResolveDispatcher(out EventDispatcher dispatcher)

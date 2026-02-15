@@ -16,12 +16,16 @@ namespace Game.Locomotion.Animation.Layers
     {
         private StringAsset lastPlayedAlias;
 
+        private AnimancerState currentState;
+
         public void Update(in LocomotionAnimationContext context)
         {
             AnimancerStringProfile alias = context.Alias;
             AnimancerComponent animancer = context.Animancer;
             SPlayerLocomotion snapshot = context.Snapshot;
             LocomotionAnimationProfile profile = context.Profile;
+            Vector2 planarVelocity = snapshot.LocalVelocity;
+            Logger.Log($"BaseLocomotionLayer Update: planarVelocity={planarVelocity}, turnAngle={snapshot.TurnAngle}, state={snapshot.State}, gait={snapshot.Gait}");
             if (animancer == null || alias == null || profile == null)
             {
                 return;
@@ -111,8 +115,16 @@ namespace Game.Locomotion.Animation.Layers
                 // Use the Transition Library configuration for fades.
                 // When using a Transition Library, the TryPlay(object key)
                 // overload is the one that goes through Graph.Transitions.
-                baseLayer.TryPlay(nextAlias);
+                currentState = baseLayer.TryPlay(nextAlias);
                 lastPlayedAlias = nextAlias;
+            }
+
+            // For grounded movement, update 2D mixer parameter directly,
+            // mirroring the legacy adapter behaviour where walkMixer is
+            // a Vector2MixerState driven by snapshot.LocalVelocity.
+            if (stateLayer == ELocomotionState.GroundedMoving && currentState is Vector2MixerState vector2Mixer)
+            {
+                vector2Mixer.Parameter = planarVelocity.normalized;
             }
         }
     }

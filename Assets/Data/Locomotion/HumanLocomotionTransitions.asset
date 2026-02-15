@@ -245,14 +245,14 @@ MonoBehaviour:
           _Callbacks: []
           _Names: []
         _Animations:
-        - {fileID: 3180091239257839516, guid: e74a9b6c87f97144988f72a74b359f06, type: 3}
-        - {fileID: 1827226128182048838, guid: b982f3686334e9248b6b2020e5682d9e, type: 3}
-        - {fileID: 1827226128182048838, guid: 4699ac7f1156bfc4dba616d9b3a05234, type: 3}
-        - {fileID: 5258337069520913136, guid: 2fed787bd99a9a34db7bcebafe6a3c18, type: 3}
-        - {fileID: -3667253587308142363, guid: daa2b7d465591a649912e31c8bed5f50, type: 3}
-        - {fileID: 7290230622943338602, guid: c6928073f3fa6424380dbb8b4fc4359f, type: 3}
-        - {fileID: 1827226128182048838, guid: d294a4226e928db4fbbd933c19ccf5a1, type: 3}
-        - {fileID: 3337434087754633193, guid: a2d73bf5694658d4a93f5796ffe5fb5b, type: 3}
+        - {fileID: 3207581474486471986, guid: 79ed9e8a16b41e0449bc51eb50abc2b7, type: 3}
+        - {fileID: -4861951862888191942, guid: dc85fd7b4f8e2974480ce86f8f3ba00f, type: 3}
+        - {fileID: -4754882571507298525, guid: 9c3bebb4740e41143abc27920a286c27, type: 3}
+        - {fileID: 2854982617563831404, guid: b91030e5ac0e6b7488f1551b05c85642, type: 3}
+        - {fileID: 6086865153644956319, guid: c599ea085320b1b42b0d2e8da156e65a, type: 3}
+        - {fileID: 1855215685996801345, guid: c55b99e1fb0d1d64bbc5544227d756d1, type: 3}
+        - {fileID: -7029796462581923624, guid: cc191a8921b99f444b122395cc86eb97, type: 3}
+        - {fileID: -207648942798453203, guid: 660a5f634633bd345ac21d66d523ca1b, type: 3}
         _Speeds: []
         _SynchronizeChildren: 
         _Thresholds:
@@ -264,7 +264,7 @@ MonoBehaviour:
         - {x: -0.5, y: -0.5}
         - {x: -1, y: 0}
         - {x: -0.5, y: 0.5}
-        _DefaultParameter: {x: 0, y: 0}
+        _DefaultParameter: {x: 0, y: 1}
         _Type: 0
         _ParameterNameX: {fileID: 0}
         _ParameterNameY: {fileID: 0}

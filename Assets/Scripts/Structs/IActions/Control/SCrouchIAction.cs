@@ -6,9 +6,9 @@ using UnityEngine;
 /// Stored under Structs/IActions so every subsystem observes the same DTO layout.
 /// </summary>
 [Serializable]
-public struct SPlayerCrouchIAction
+public struct SCrouchIAction
 {
-    public SPlayerCrouchIAction(bool wantCrouch)
+    public SCrouchIAction(bool wantCrouch)
     {
         WantCrouch = wantCrouch;
     }
@@ -20,5 +20,5 @@ public struct SPlayerCrouchIAction
 
     public bool HasInput => WantCrouch;
 
-    public static SPlayerCrouchIAction None => new SPlayerCrouchIAction(false);
+    public static SCrouchIAction None => new SCrouchIAction(false);
 }

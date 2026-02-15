@@ -1,12 +1,12 @@
 using UnityEngine;
 
-internal sealed class MoveActionHandler : ActionHandler<SPlayerMoveIAction>
+internal sealed class MoveActionHandler : ActionHandler<SMoveIAction>
 {
     internal MoveActionHandler(LocomotionAgent owner) : base(owner)
     {
     }
 
-    protected override void Execute(SPlayerMoveIAction action, MetaStruct meta)
+    protected override void Execute(SMoveIAction action, MetaStruct meta)
     {
         Owner.BufferIAction(action);
     }

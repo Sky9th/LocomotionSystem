@@ -25,7 +25,7 @@ namespace Game.Locomotion.LegacyControl
 
         public void Update(
             Vector3 locomotionHeading,
-            SPlayerMoveIAction moveAction,
+            SMoveIAction moveAction,
             LocomotionConfigProfile config,
             float deltaTime,
             out Vector3 worldVelocity,
