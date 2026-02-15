@@ -18,7 +18,10 @@ namespace Game.Locomotion.Input
 
         private SPlayerMoveIAction lastMoveAction = SPlayerMoveIAction.None;
         private SPlayerLookIAction lastLookAction = SPlayerLookIAction.None;
-
+        private SPlayerCrouchIAction lastCrouchAction = SPlayerCrouchIAction.None;
+        private SPlayerProneIAction lastProneAction = SPlayerProneIAction.None;
+        private SPlayerJumpIAction lastJumpAction = SPlayerJumpIAction.None;
+        private SPlayerStandIAction lastStandAction = SPlayerStandIAction.None;
         private EventDispatcher eventDispatcher;
         private bool isSubscribed;
 
@@ -41,6 +44,10 @@ namespace Game.Locomotion.Input
 
             eventDispatcher.Subscribe<SPlayerMoveIAction>(OnMoveAction);
             eventDispatcher.Subscribe<SPlayerLookIAction>(OnLookAction);
+            eventDispatcher.Subscribe<SPlayerCrouchIAction>(OnCrouchAction);
+            eventDispatcher.Subscribe<SPlayerProneIAction>(OnProneAction);
+            eventDispatcher.Subscribe<SPlayerJumpIAction>(OnJumpAction);
+            eventDispatcher.Subscribe<SPlayerStandIAction>(OnStandAction);
 
             isSubscribed = true;
         }
@@ -54,10 +61,37 @@ namespace Game.Locomotion.Input
 
             eventDispatcher.Unsubscribe<SPlayerMoveIAction>(OnMoveAction);
             eventDispatcher.Unsubscribe<SPlayerLookIAction>(OnLookAction);
-
+            eventDispatcher.Unsubscribe<SPlayerCrouchIAction>(OnCrouchAction);
+            eventDispatcher.Unsubscribe<SPlayerProneIAction>(OnProneAction);
+            eventDispatcher.Unsubscribe<SPlayerJumpIAction>(OnJumpAction);
+            eventDispatcher.Unsubscribe<SPlayerStandIAction>(OnStandAction);
             eventDispatcher = null;
             isSubscribed = false;
             actionBuffer.Clear();
+        }
+
+        private void OnStandAction(SPlayerStandIAction action, MetaStruct @struct)
+        {
+            lastStandAction = action;
+            actionBuffer[typeof(SPlayerStandIAction)] = action;
+        }
+
+        private void OnJumpAction(SPlayerJumpIAction action, MetaStruct @struct)
+        {
+            lastJumpAction = action;
+            actionBuffer[typeof(SPlayerJumpIAction)] = action;
+        }
+
+        private void OnProneAction(SPlayerProneIAction action, MetaStruct @struct)
+        {
+            lastProneAction = action;
+            actionBuffer[typeof(SPlayerProneIAction)] = action;
+        }
+
+        private void OnCrouchAction(SPlayerCrouchIAction action, MetaStruct @struct)
+        {
+            lastCrouchAction = action;
+            actionBuffer[typeof(SPlayerCrouchIAction)] = action;
         }
 
         private void OnMoveAction(SPlayerMoveIAction action, MetaStruct meta)
@@ -80,10 +114,14 @@ namespace Game.Locomotion.Input
             actionBuffer[typeof(SPlayerLookIAction)] = action;
         }
 
-        internal void GetLatestInput(out SPlayerMoveIAction moveAction, out SPlayerLookIAction lookAction)
+        internal void GetLatestInput(out SPlayerMoveIAction moveAction, out SPlayerLookIAction lookAction, out SPlayerCrouchIAction crouchAction, out SPlayerProneIAction proneAction, out SPlayerJumpIAction jumpAction, out SPlayerStandIAction standAction)
         {
             moveAction = lastMoveAction;
             lookAction = lastLookAction;
+            crouchAction = lastCrouchAction;
+            proneAction = lastProneAction;
+            jumpAction = lastJumpAction;
+            standAction = lastStandAction;
         }
 
         private static bool TryResolveDispatcher(out EventDispatcher dispatcher)

@@ -19,6 +19,7 @@ namespace Game.Locomotion.Computation
                 return SGroundContact.None;
             }
 
+            origin.y += 0.1f;
             Ray ray = new Ray(origin, Vector3.down);
             if (Physics.Raycast(ray, out RaycastHit hitInfo, rayLength, layerMask, QueryTriggerInteraction.Ignore))
             {

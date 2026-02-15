@@ -1,7 +1,9 @@
 using System;
 using UnityEngine;
 using Game.Locomotion.Input;
-using Game.Locomotion.Logic;
+using Game.Locomotion.Computation;
+using Game.Locomotion.State.Core;
+using Game.Locomotion.State.Controllers;
 using Game.Locomotion.Computation;
 
 namespace Game.Locomotion.Agent
@@ -21,10 +23,6 @@ namespace Game.Locomotion.Agent
         [SerializeField] private Transform followAnchor;
         [SerializeField] private Transform modelRoot;
 
-        [Header("Animation")]
-        [SerializeField] private Animator animator;
-        [SerializeField] private bool autoResolveAnimator = true;
-
         [Header("Config")]
         [SerializeField] private LocomotionConfigProfile config;
         [SerializeField, Min(0f)] private float groundRayLength = 1.5f;
@@ -43,17 +41,20 @@ namespace Game.Locomotion.Agent
         // Latest locomotion snapshot for this character.
         private SPlayerLocomotion snapshot = SPlayerLocomotion.Default;
 
-        // Encapsulated movement state (velocity + local velocity helpers).
-        private readonly LocomotionMovementState movementState = new LocomotionMovementState();
-
-        // Encapsulated turn state logic.
-        private readonly LocomotionTurnState turnState = new LocomotionTurnState();
-
-        // Encapsulated foot placement state.
-        private readonly LocomotionFootState footState = new LocomotionFootState();
-
         // Centralized input module (subscribes & buffers IAactions).
         private LocomotionInputModule inputModule;
+
+        // New v2 state controller (currently using the Human archetype).
+        private ILocomotionController locomotionController;
+
+        // Last evaluated discrete locomotion state used to seed
+        // the next frame's state context.
+        private SLocomotionDiscreteState lastDiscreteState =
+            new SLocomotionDiscreteState(
+                ELocomotionState.GroundedIdle,
+                EPostureState.Standing,
+                EMovementGait.Idle,
+                ELocomotionCondition.Normal);
 
         /// <summary>Whether this agent represents the primary player.</summary>
         public bool IsPlayer => isPlayer;
@@ -75,17 +76,13 @@ namespace Game.Locomotion.Agent
             }
             
             ResolveRigReferencesIfNeeded();
-            if (animator == null && autoResolveAnimator)
-            {
-                animator = GetComponentInChildren<Animator>();
-            }
-            InitializeSnapshot();
         }
 
         private void OnEnable()
         {
+            EnsureLocomotionControllerCreated();
             EnsureInputModuleCreated();
-
+            InitializeSnapshot();
             if (autoSubscribeInput)
             {
                 inputModule?.Subscribe();
@@ -109,10 +106,6 @@ namespace Game.Locomotion.Agent
             // keep consuming stale locomotion data from a disabled agent.
             inputModule?.Unsubscribe();
             InitializeSnapshot();
-
-            movementState.Reset();
-            turnState.Reset();
-            footState.Reset();
         }
 
         /// <summary>
@@ -121,77 +114,81 @@ namespace Game.Locomotion.Agent
         /// </summary>
         private void Simulate(float deltaTime)
         {
-            // TODO V2: Wire up Input / Logic / Computation modules here
-            // to generate a complete locomotion snapshot.
-
-            // Current phase: keep the snapshot in sync with the Transform,
-            // read move intent from the centralized input module, and
-            // apply a minimal Idle/Walk decision with localVelocity output.
-
             SPlayerMoveIAction moveAction = SPlayerMoveIAction.None;
             SPlayerLookIAction lookAction = SPlayerLookIAction.None;
-            inputModule?.GetLatestInput(out moveAction, out lookAction);
+            SPlayerCrouchIAction crouchAction = SPlayerCrouchIAction.None;
+            SPlayerProneIAction proneAction = SPlayerProneIAction.None;
+            SPlayerJumpIAction jumpAction = SPlayerJumpIAction.None;
+            SPlayerStandIAction standAction = SPlayerStandIAction.None;
+            inputModule?.GetLatestInput(out moveAction, out lookAction, out crouchAction, out proneAction, out jumpAction, out standAction);
 
-            // Rotate the camera / follow anchor based on look input
-            // before deriving locomotion heading and head look angles.
-            LocomotionCameraAnchorLogic.UpdateAnchorRotation(followAnchor, lookAction, config);
+            // Apply look input to rotate the follow anchor so that
+            // subsequent heading and head-look computations are
+            // based on the updated camera orientation.
+            LocomotionCameraAnchor.UpdateRotation(
+                followAnchor,
+                lookAction,
+                config);
 
             Vector3 position = modelRoot != null ? modelRoot.position : transform.position;
             Vector3 bodyForward = modelRoot != null ? modelRoot.forward : transform.forward;
             Vector3 locomotionHeading = LocomotionHeading.Evaluate(followAnchor, transform);
 
             float maxSlopeAngle = config != null ? config.MaxGroundSlopeAngle : 0f;
-            SGroundContact groundContact = LocomotionGroundDetection.SampleGround(position, groundRayLength, groundLayerMask, maxSlopeAngle);
+            SGroundContact groundContact = LocomotionGroundDetection.SampleGround(
+                position,
+                groundRayLength,
+                groundLayerMask,
+                maxSlopeAngle);
 
-            // Update world and local velocities via the movement state.
-            movementState.Update(
-                locomotionHeading,
-                moveAction,
-                config,
-                deltaTime,
-                out Vector3 velocity,
-                out Vector2 localVelocity);
-
-            // Minimal logic: evaluate discrete locomotion mode.
-            LocomotionModeLogic.Evaluate(
+            Vector3 velocity = Vector3.zero;
+            var stateContext = new LocomotionStateContext(
                 velocity,
+                bodyForward,
+                locomotionHeading,
                 groundContact,
                 config,
-                out SLocomotionDiscreteState mode);
+                lastDiscreteState,
+                moveAction,
+                lookAction,
+                crouchAction,
+                proneAction,
+                jumpAction,
+                standAction);
 
-            // Evaluate turning angle and state based on the
-            // difference between the body forward and the desired
-            // locomotion heading, using the shared turn state logic.
-            turnState.Update(bodyForward, locomotionHeading, config, deltaTime);
+            if (locomotionController != null)
+            {
+                // 1) Evaluate discrete state and all state-related outputs via the controller.
+                SLocomotionDiscreteState mode = locomotionController.UpdateDiscreteState(in stateContext, deltaTime);
+                lastDiscreteState = mode;
 
-            Vector2 lookDirection = LocomotionHeadLook.Evaluate(
-                followAnchor,
-                modelRoot,
-                transform,
-                config);
+                // 2) Evaluate head look from follow anchor towards the body.
+                Vector2 lookDirection = LocomotionHeadLook.Evaluate(
+                    followAnchor,
+                    modelRoot,
+                    transform,
+                    config);
 
-            // Update foot placement state.
-            footState.Update(
-                animator,
-                modelRoot,
-                transform,
-                locomotionHeading);
+                float turnAngle = locomotionController.CurrentTurnAngle;
+                bool isTurningInPlace = locomotionController.IsTurningInPlace;
 
-            snapshot = new SPlayerLocomotion(
-                position,
-                velocity: velocity,
-                locomotionHeading: locomotionHeading,
-                bodyForward: bodyForward,
-                localVelocity: localVelocity,
-                lookDirection: lookDirection,
-                state: mode.State,
-                groundContact: groundContact,
-                turnAngle: turnState.TurnAngle,
-                isTurning: turnState.IsTurningInPlace,
-                isLeftFootOnFront: footState.IsLeftFootOnFront,
-                posture: mode.Posture,
-                gait: mode.Gait,
-                condition: mode.Condition);
+                // 3) Assemble the external locomotion snapshot DTO.
+                snapshot = new SPlayerLocomotion(
+                    position,
+                    velocity: velocity,
+                    locomotionHeading: locomotionHeading,
+                    bodyForward: bodyForward,
+                    localVelocity: Vector2.zero,
+                    lookDirection: lookDirection,
+                    discreteState: mode,
+                    groundContact: groundContact,
+                    turnAngle: turnAngle,
+                    isTurning: isTurningInPlace,
+                    isLeftFootOnFront: false,
+                    posture: mode.Posture,
+                    gait: mode.Gait,
+                    condition: mode.Condition);
+            }
 
             PushSnapshot();
         }
@@ -202,10 +199,6 @@ namespace Game.Locomotion.Agent
             Vector3 bodyForward = modelRoot != null ? modelRoot.forward : transform.forward;
             Vector3 locomotionHeading = LocomotionHeading.Evaluate(followAnchor, transform);
 
-            movementState.Reset();
-            turnState.Reset();
-            footState.Reset();
-
             snapshot = new SPlayerLocomotion(
                 position,
                 velocity: Vector3.zero,
@@ -213,11 +206,15 @@ namespace Game.Locomotion.Agent
                 bodyForward: bodyForward,
                 localVelocity: Vector2.zero,
                 lookDirection: Vector2.zero,
-                state: ELocomotionState.GroundedIdle,
+                discreteState: new SLocomotionDiscreteState(
+                    ELocomotionState.GroundedIdle,
+                    EPostureState.Standing,
+                    EMovementGait.Idle,
+                    ELocomotionCondition.Normal),
                 groundContact: SGroundContact.None,
                 turnAngle: 0f,
                 isTurning: false,
-                isLeftFootOnFront: footState.IsLeftFootOnFront,
+                isLeftFootOnFront: true,
                 posture: EPostureState.Standing,
                 gait: EMovementGait.Idle,
                 condition: ELocomotionCondition.Normal);
@@ -239,6 +236,15 @@ namespace Game.Locomotion.Agent
             if (inputModule == null)
             {
                 inputModule = new LocomotionInputModule(this);
+            }
+        }
+
+        private void EnsureLocomotionControllerCreated()
+        {
+            if (locomotionController == null)
+            {
+                // For now we always use the Human archetype.
+                locomotionController = new HumanLocomotionController();
             }
         }
 
