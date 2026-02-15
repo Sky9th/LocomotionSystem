@@ -21,22 +21,31 @@ namespace Game.Locomotion.State.Core
         public readonly Vector3 LocomotionHeading;
 
         /// <summary>Aggregated planar movement intent for this frame.</summary>
-        public readonly SPlayerMoveIAction MoveAction;
+        public readonly SMoveIAction MoveAction;
 
         /// <summary>Aggregated look intent for this frame.</summary>
-        public readonly SPlayerLookIAction LookAction;
+        public readonly SLookIAction LookAction;
 
         /// <summary>Discrete crouch intent for this frame.</summary>
-        public readonly SPlayerCrouchIAction CrouchAction;
+        public readonly SCrouchIAction CrouchAction;
 
         /// <summary>Discrete prone intent for this frame.</summary>
-        public readonly SPlayerProneIAction ProneAction;
+        public readonly SProneIAction ProneAction;
+
+        /// <summary>Discrete walk intent for this frame.</summary>
+        public readonly SWalkIAction WalkAction;
+
+        /// <summary>Discrete run intent for this frame.</summary>
+        public readonly SRunIAction RunAction;
+
+        /// <summary>Discrete sprint intent for this frame.</summary>
+        public readonly SSprintIAction SprintAction;
 
         /// <summary>Discrete jump intent for this frame.</summary>
-        public readonly SPlayerJumpIAction JumpAction;
+        public readonly SJumpIAction JumpAction;
 
         /// <summary>Discrete stand intent for this frame.</summary>
-        public readonly SPlayerStandIAction StandAction;
+        public readonly SStandIAction StandAction;
 
         /// <summary>Current ground contact information.</summary>
         public readonly SGroundContact GroundContact;
@@ -54,12 +63,15 @@ namespace Game.Locomotion.State.Core
             SGroundContact groundContact,
             LocomotionConfigProfile config,
             SLocomotionDiscreteState previousState,
-            SPlayerMoveIAction moveAction,
-            SPlayerLookIAction lookAction,
-            SPlayerCrouchIAction crouchAction,
-            SPlayerProneIAction proneAction,
-            SPlayerJumpIAction jumpAction,
-            SPlayerStandIAction standAction)
+            SMoveIAction moveAction,
+            SLookIAction lookAction,
+            SCrouchIAction crouchAction,
+            SProneIAction proneAction,
+            SWalkIAction walkAction,
+            SRunIAction runAction,
+            SSprintIAction sprintAction,
+            SJumpIAction jumpAction,
+            SStandIAction standAction)
         {
             Velocity = velocity;
             BodyForward = bodyForward;
@@ -72,6 +84,9 @@ namespace Game.Locomotion.State.Core
             LookAction = lookAction;
             CrouchAction = crouchAction;
             ProneAction = proneAction;
+            WalkAction = walkAction;
+            RunAction = runAction;
+            SprintAction = sprintAction;
             JumpAction = jumpAction;
             StandAction = standAction;
         }

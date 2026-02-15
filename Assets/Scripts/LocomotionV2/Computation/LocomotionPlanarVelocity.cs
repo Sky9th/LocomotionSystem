@@ -11,7 +11,7 @@ namespace Game.Locomotion.Computation
         internal static void Evaluate(
             Vector3 worldVelocity,
             Vector3 locomotionHeading,
-            SPlayerMoveIAction moveAction,
+            SMoveIAction moveAction,
             ref Vector2 lastMoveInput,
             out Vector2 localVelocity)
         {

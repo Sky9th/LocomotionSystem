@@ -1,10 +1,10 @@
-internal sealed class LookActionHandler : ActionHandler<SPlayerLookIAction>
+internal sealed class LookActionHandler : ActionHandler<SLookIAction>
 {
     internal LookActionHandler(LocomotionAgent owner) : base(owner)
     {
     }
 
-    protected override void Execute(SPlayerLookIAction action, MetaStruct meta)
+    protected override void Execute(SLookIAction action, MetaStruct meta)
     {
         Owner.BufferIAction(action);
     }

@@ -4,12 +4,12 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// Translates the "Move" action map into a world-space locomotion intent. The
+/// Translates the "Sprint" action map into a world-space locomotion intent. The
 /// action never touches physics directly; it simply reports structured data back
 /// to the InputManager for further dispatch.
 /// </summary>
-[CreateAssetMenu(menuName = "Inputs/Player/IA Player Crouch")]
-public class IAPlayerCrouch : InputActionHandler
+[CreateAssetMenu(menuName = "Inputs/Player/IA Player Sprint")]
+public class IAPlayerSprint : InputActionHandler
 {
 
     protected override void Execute(InputAction.CallbackContext context)
@@ -18,8 +18,11 @@ public class IAPlayerCrouch : InputActionHandler
         {
             return;
         }
+
         bool rawInput = context.ReadValue<bool>();
-        SCrouchIAction intent = new SCrouchIAction(rawInput);
+
+        SSprintIAction intent = new SSprintIAction(rawInput);
+
         eventDispatcher.Publish(intent);
     }
 }

@@ -206,37 +206,57 @@
 - 不直接访问 MonoBehaviour 或 Unity 组件（如 Animator），一切依赖通过参数传入。
 
 ### 4. 动画模块（Animation Module）
-
-**目的：**
+ 把各种来源的输入统一标准化为不可变的 IAction 结构；
+ 将 IAction 映射为"高层控制意图"并通过统一接口写入 Agent；
+ 不直接修改 Agent 的状态机或物理数据。
 - 只读 `SPlayerLocomotion` 等快照 + 配置，驱动 Animancer，不参与逻辑决策和物理计算；
 - 支持复杂分层（基础移动、原地转身、空中、上半身、Additive 等），同时保持结构清晰、易于扩展和测试。
 
 **目录 & 命名空间：**
 - 目录：
   - `Assets/Scripts/LocomotionV2/Animation/`
+
+- `ILocomotionControlSink`：
+  - 位置：`Assets/Scripts/LocomotionV2/Input/ILocomotionControlSink.cs`
+  - 命名空间：`Game.Locomotion.Input`
+  - 职责：
+    - 抽象一套与来源无关的控制接口，例如：
+      - `SetMoveInput(Vector2 rawInput, Vector3 worldDirection)`
+      - `SetLookInput(Vector2 delta)`
+      - `SetCrouch(bool wantCrouch)` / `SetProne(bool wantProne)` / `SetRun(bool wantRun)` / `SetStand(bool wantStand)`
+    - 由 `LocomotionAgent` 实现，使“玩家输入 / AI 行为 / 脚本驱动”等都可以通过同一入口施加控制意图；
+    - 屏蔽 EventDispatcher、IAction 等细节，Agent 只感知高层意图。
     - `Core/`
-    - `Layers/`
     - `Config/`
     - `Presenters/`
-- 命名空间：
+    - 将收到的输入转为 `TAction` 结构，并翻译为对 `ILocomotionControlSink` 的调用（例如把 `SPlayerLookIAction` 转成 `SetLookInput` 调用）；
   - 核心控制器与上下文：`Game.Locomotion.Animation.Core`
   - 各动画层实现：`Game.Locomotion.Animation.Layers`
   - 动画参数配置：`Game.Locomotion.Animation.Config`
+
+- 具体实现（当前版本）：
+  - `LocomotionInputModule`：
+    - 位置：`Assets/Scripts/LocomotionV2/Input/LocomotionInputModule.cs`
+    - 命名空间：`Game.Locomotion.Input`
+    - 职责：
+      - 集中订阅全局 `EventDispatcher` 中与 Locomotion 相关的所有 IAction（如 `SPlayerMoveIAction`、`SPlayerLookIAction` 等）；
+      - 将最新 IAction 按类型缓存在内部（`Dictionary<Type, object>`）；
+      - 根据当前设计逐步演进为：收到 IAction 时直接调用 `ILocomotionControlSink`，不再由 Agent 主动拉取 IAction；
+      - 对外不暴露 EventDispatcher，仅由 Agent 创建和持有该模块实例。
   - MonoBehaviour 桥接层：`Game.Locomotion.Animation.Presenters`
 
-#### 4.1 Presenter 层（场景桥接，MonoBehaviour）
-
-**LocomotionAnimancerPresenter**（建议命名）：
-- 位置：`Animation/Presenters/LocomotionAnimancerPresenter.cs`
+ 只允许通过 `ILocomotionControlSink` 传递控制意图，例如：
+  - `SetMoveInput` / `SetLookInput` / `SetCrouch` 等；
+ 不访问或修改 Agent 的内部状态机字段和物理数据；
+ IAction 作为输入层的标准 DTO，可以被多个子系统订阅，但 Agent 自身只依赖 `ILocomotionControlSink`。
 - 命名空间：`Game.Locomotion.Animation.Presenters`
 - 职责：
-  - 挂在与 v2 `LocomotionAgent` 同一角色上；
   - 持有引用：
     - `Game.Locomotion.Agent.LocomotionAgent agent`
     - `NamedAnimancerComponent animancer`
     - `AnimancerStringProfile animancerStringProfile`
-    - `LocomotionAnimationProfile animationProfile`
-  - 在 `Awake/OnEnable` 中创建并初始化动画控制器：
+    - 本帧的移动/视角/姿态等输入（通常由 Agent 内部根据 `ILocomotionControlSink` 收集的控制状态组装为 IAction，传入状态机）；
+    - 配置 Profile 等。
     - `controller = new LocomotionAnimationController(animancer, animancerStringProfile, animationProfile);`
   - 在 `Update` 或 `LateUpdate` 中：
     - 读取最新 `agent.Snapshot`；

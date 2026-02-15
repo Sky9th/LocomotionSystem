@@ -14,7 +14,7 @@ namespace Game.Locomotion.Computation
     {
         internal static void UpdateRotation(
             Transform followAnchor,
-            SPlayerLookIAction lookAction,
+            SLookIAction lookAction,
             LocomotionConfigProfile config)
         {
             if (followAnchor == null)

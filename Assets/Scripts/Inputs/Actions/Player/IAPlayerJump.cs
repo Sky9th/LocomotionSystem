@@ -19,7 +19,7 @@ public class IAPlayerJump : InputActionHandler
         }
 
         bool rawInput = context.ReadValue<bool>();
-        SPlayerJumpIAction intent = new SPlayerJumpIAction(rawInput);
+        SJumpIAction intent = new SJumpIAction(rawInput);
         eventDispatcher.Publish(intent);
     }
 }

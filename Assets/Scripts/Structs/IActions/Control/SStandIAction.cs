@@ -6,9 +6,9 @@ using UnityEngine;
 /// Stored under Structs/IActions so every subsystem observes the same DTO layout.
 /// </summary>
 [Serializable]
-public struct SPlayerStandIAction
+public struct SStandIAction
 {
-    public SPlayerStandIAction(bool wantStand)
+    public SStandIAction(bool wantStand)
     {
         WantStand = wantStand;
     }
@@ -20,5 +20,5 @@ public struct SPlayerStandIAction
 
     public bool HasInput => WantStand;
 
-    public static SPlayerStandIAction None => new SPlayerStandIAction(false);
+    public static SStandIAction None => new SStandIAction(false);
 }

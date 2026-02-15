@@ -6,9 +6,9 @@ using UnityEngine;
 /// Stored under Structs/IActions so every subsystem observes the same DTO layout.
 /// </summary>
 [Serializable]
-public struct SPlayerJumpIAction
+public struct SJumpIAction
 {
-    public SPlayerJumpIAction(bool wantJump)
+    public SJumpIAction(bool wantJump)
     {
         WantJump = wantJump;
     }
@@ -20,5 +20,5 @@ public struct SPlayerJumpIAction
 
     public bool HasInput => WantJump;
 
-    public static SPlayerJumpIAction None => new SPlayerJumpIAction(false);
+    public static SJumpIAction None => new SJumpIAction(false);
 }

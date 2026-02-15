@@ -8,8 +8,8 @@ using UnityEngine.InputSystem;
 /// action never touches physics directly; it simply reports structured data back
 /// to the InputManager for further dispatch.
 /// </summary>
-[CreateAssetMenu(menuName = "Inputs/Player/IA Player Crouch")]
-public class IAPlayerCrouch : InputActionHandler
+[CreateAssetMenu(menuName = "Inputs/Player/IA Player Walk")]
+public class IAPlayerWalk : InputActionHandler
 {
 
     protected override void Execute(InputAction.CallbackContext context)
@@ -18,8 +18,11 @@ public class IAPlayerCrouch : InputActionHandler
         {
             return;
         }
+
         bool rawInput = context.ReadValue<bool>();
-        SCrouchIAction intent = new SCrouchIAction(rawInput);
+
+        SWalkIAction intent = new SWalkIAction(rawInput);
+
         eventDispatcher.Publish(intent);
     }
 }

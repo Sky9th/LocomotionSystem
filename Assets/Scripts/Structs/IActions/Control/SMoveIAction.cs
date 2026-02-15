@@ -6,9 +6,9 @@ using UnityEngine;
 /// Stored under Structs/IActions so every subsystem observes the same DTO layout.
 /// </summary>
 [Serializable]
-public struct SPlayerMoveIAction
+public struct SMoveIAction
 {
-    public SPlayerMoveIAction(Vector2 rawInput, Vector3 worldDirection)
+    public SMoveIAction(Vector2 rawInput, Vector3 worldDirection)
     {
         RawInput = rawInput;
         WorldDirection = worldDirection;
@@ -19,7 +19,7 @@ public struct SPlayerMoveIAction
 
     public bool HasInput => RawInput.sqrMagnitude > Mathf.Epsilon;
 
-    public static SPlayerMoveIAction None => new SPlayerMoveIAction(
+    public static SMoveIAction None => new SMoveIAction(
         Vector2.zero,
         Vector3.zero);
 }

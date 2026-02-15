@@ -19,7 +19,7 @@ public class IAPlayerStand : InputActionHandler
             return;
         }
         bool rawInput = context.ReadValue<bool>();
-        SPlayerStandIAction intent = new SPlayerStandIAction(rawInput);
+        SStandIAction intent = new SStandIAction(rawInput);
         eventDispatcher.Publish(intent);
     }
 }

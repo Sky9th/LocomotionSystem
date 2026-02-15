@@ -13,7 +13,7 @@ namespace Game.Locomotion.Computation
     {
         internal static Vector3 ComputeDesiredPlanarVelocity(
             Vector3 locomotionHeading,
-            SPlayerMoveIAction moveAction,
+            SMoveIAction moveAction,
             LocomotionConfigProfile config)
         {
             if (config == null || !moveAction.HasInput)

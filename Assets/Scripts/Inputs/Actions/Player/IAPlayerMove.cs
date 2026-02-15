@@ -36,7 +36,7 @@ public class IAPlayerMove : InputActionHandler
         }
 
         Vector3 worldDirection = CalculateWorldDirection(rawInput);
-        SPlayerMoveIAction intent = new SPlayerMoveIAction(rawInput, worldDirection);
+        SMoveIAction intent = new SMoveIAction(rawInput, worldDirection);
 
         eventDispatcher.Publish(intent);
     }
