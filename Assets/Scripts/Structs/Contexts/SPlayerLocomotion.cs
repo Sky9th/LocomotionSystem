@@ -14,7 +14,7 @@ public struct SPlayerLocomotion
         Vector3 bodyForward,
         Vector2 localVelocity,
         Vector2 lookDirection,
-        ELocomotionState state,
+        SLocomotionDiscreteState discreteState,
         SGroundContact groundContact,
         float turnAngle,
         bool isTurning,
@@ -29,7 +29,7 @@ public struct SPlayerLocomotion
         BodyForward = bodyForward.sqrMagnitude > Mathf.Epsilon ? bodyForward.normalized : Vector3.forward;
         LocalVelocity = localVelocity;
         LookDirection = lookDirection;
-        State = state;
+        DiscreteState = discreteState;
         GroundContact = groundContact;
         TurnAngle = turnAngle;
         IsTurning = isTurning;
@@ -45,7 +45,8 @@ public struct SPlayerLocomotion
     public Vector3 BodyForward { get; }
     public Vector2 LocalVelocity { get; }
     public Vector2 LookDirection { get; }
-    public ELocomotionState State { get; }
+    public SLocomotionDiscreteState DiscreteState { get; }
+    public ELocomotionState State => DiscreteState.State;
     public SGroundContact GroundContact { get; }
     public float TurnAngle { get; }
     public bool IsTurning { get; }
@@ -71,7 +72,11 @@ public struct SPlayerLocomotion
         Vector3.forward,
         Vector2.zero,
         Vector2.zero,
-        ELocomotionState.GroundedIdle,
+        new SLocomotionDiscreteState(
+            ELocomotionState.GroundedIdle,
+            EPostureState.Standing,
+            EMovementGait.Idle,
+            ELocomotionCondition.Normal),
         SGroundContact.None,
         0f,
         false,

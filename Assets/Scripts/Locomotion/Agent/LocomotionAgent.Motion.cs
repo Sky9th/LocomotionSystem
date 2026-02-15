@@ -57,7 +57,7 @@ public partial class LocomotionAgent : MonoBehaviour
             bodyForward,
             localVelocity,
             lookDirection,
-            state,
+            new SLocomotionDiscreteState(state, posture, gait, condition),
             lastGroundContact,
             currentTurnAngle,
             isTurningInPlace,

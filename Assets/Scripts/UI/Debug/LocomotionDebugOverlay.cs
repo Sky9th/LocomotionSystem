@@ -55,7 +55,10 @@ public class LocomotionDebugOverlay : UIOverlayBase
         builder.Clear();
         builder.AppendLine("Locomotion Snapshot");
         builder.AppendLine("-------------------");
-        builder.Append("State: ").AppendLine(snapshot.State.ToString());
+         builder.Append("State: ").AppendLine(snapshot.State.ToString());
+         builder.Append("Posture: ").AppendLine(snapshot.Posture.ToString());
+         builder.Append("Gait: ").AppendLine(snapshot.Gait.ToString());
+         builder.Append("Condition: ").AppendLine(snapshot.Condition.ToString());
         builder.Append("Position: ").Append(snapshot.Position.ToString("F2")).AppendLine();
         builder.Append("Velocity: ").Append(snapshot.Velocity.ToString("F2")).Append(" (speed=")
                .Append(snapshot.Speed.ToString("F2")).AppendLine(")");
