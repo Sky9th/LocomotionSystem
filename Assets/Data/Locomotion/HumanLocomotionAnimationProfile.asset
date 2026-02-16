@@ -26,3 +26,9 @@ MonoBehaviour:
   turnCompletionAngle: 15
   walkTurnSpeed: 360
   hardLandingVelocity: -8
+  modeProfiles:
+  - {fileID: 11400000, guid: 383305d100e9697428b7cd6e20d74d58, type: 2}
+  - {fileID: 11400000, guid: fb2ccb53295ca8b41b27149af5b8a53d, type: 2}
+  - {fileID: 11400000, guid: 28722d7d4ec13e7468058cd87b52f4c9, type: 2}
+  defaultInPlaceTurnSpeed: 360
+  defaultMovingTurnSpeed: 360

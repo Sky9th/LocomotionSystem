@@ -68,7 +68,29 @@ namespace Game.Locomotion.Animation.Presenters
             }
 
             float deltaTime = Time.deltaTime;
-            controller.UpdateAnimations(agent.Snapshot, deltaTime);
+            SPlayerLocomotion snapshot = agent.Snapshot;
+            controller.UpdateAnimations(snapshot, deltaTime);
+
+            // Apply model rotation for grounded movement based on the
+            // current turn angle and the configured per-mode turn
+            // speeds. This keeps orientation control close to the
+            // presentation layer while locomotion logic remains in
+            // the state and computation modules.
+            if (animationProfile != null && snapshot.State == ELocomotionState.GroundedMoving)
+            {
+                bool isMoving = snapshot.Gait != EMovementGait.Idle;
+                float turnSpeed = animationProfile.GetTurnSpeed(snapshot.Posture, snapshot.Gait, isMoving);
+                float absAngle = Mathf.Abs(snapshot.TurnAngle);
+                if (turnSpeed > 0f && absAngle > Mathf.Epsilon)
+                {
+                    float maxStep = turnSpeed * deltaTime;
+                    float step = Mathf.Min(maxStep, absAngle);
+                    float deltaAngle = Mathf.Sign(snapshot.TurnAngle) * step;
+
+                    Transform modelRoot = agent.ModelRoot != null ? agent.ModelRoot : agent.transform;
+                    modelRoot.rotation = Quaternion.AngleAxis(deltaAngle, Vector3.up) * modelRoot.rotation;
+                }
+            }
         }
     }
 }
