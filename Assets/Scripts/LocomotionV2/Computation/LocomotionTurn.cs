@@ -19,11 +19,34 @@ namespace Game.Locomotion.Computation
         public bool IsTurningInPlace => isTurningInPlace;
 
         /// <summary>
-        /// Update the internal turning state and return the current turn
-        /// angle and whether the character should be considered "turning
-        /// in place" given the high-level discrete locomotion state.
+        /// Computes the signed turn delta in degrees for this frame given
+        /// a maximum turn speed in degrees per second and the frame's
+        /// deltaTime. The result will never exceed the remaining angle
+        /// towards the desired heading.
+        ///
+        /// Call <see cref="Update"/> first each frame so that the
+        /// internal <see cref="TurnAngle"/> reflects the latest
+        /// desired heading before invoking this method.
         /// </summary>
-        public void Update(
+        public float EvaluateTurnDelta(float maxTurnSpeed, float deltaTime)
+        {
+            float absAngle = Mathf.Abs(turnAngle);
+            if (absAngle <= Mathf.Epsilon || maxTurnSpeed <= 0f || deltaTime <= 0f)
+            {
+                return 0f;
+            }
+
+            float maxStep = maxTurnSpeed * deltaTime;
+            float step = Mathf.Min(maxStep, absAngle);
+            return Mathf.Sign(turnAngle) * step;
+        }
+
+        /// <summary>
+        /// Evaluates the current planar turn angle and updates the
+        /// internal "turn in place" state machine based on the
+        /// supplied context.
+        /// </summary>
+        public void Evaluate(
             Vector3 bodyForward,
             Vector3 locomotionHeading,
             LocomotionConfigProfile config,

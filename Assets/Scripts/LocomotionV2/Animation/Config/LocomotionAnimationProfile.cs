@@ -34,5 +34,37 @@ namespace Game.Locomotion.Animation.Config
 
         [Header("Airborne")]
         public float hardLandingVelocity = -8f;
+
+        [Header("Turn Speeds By Mode")]
+        public LocomotionModeProfile[] modeProfiles;
+        [Min(0f)] public float defaultInPlaceTurnSpeed = 360f;
+        [Min(0f)] public float defaultMovingTurnSpeed = 360f;
+
+        /// <summary>
+        /// Returns the configured turn speed in degrees per second
+        /// for the given posture and gait. If no matching mode is
+        /// found, a default in-place or moving speed is used.
+        /// </summary>
+        public float GetTurnSpeed(EPostureState posture, EMovementGait gait, bool isMoving)
+        {
+            if (modeProfiles != null && isMoving)
+            {
+                for (int i = 0; i < modeProfiles.Length; i++)
+                {
+                    LocomotionModeProfile mode = modeProfiles[i];
+                    if (mode == null)
+                    {
+                        continue;
+                    }
+
+                    if (mode.Posture == posture && mode.Gait == gait)
+                    {
+                        return mode.MovingTurnSpeed;
+                    }
+                }
+            }
+
+            return defaultMovingTurnSpeed;
+        }
     }
 }

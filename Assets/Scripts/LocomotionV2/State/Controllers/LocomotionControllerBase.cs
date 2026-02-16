@@ -50,7 +50,7 @@ namespace Game.Locomotion.State.Controllers
             // and the directional information contained in the context.
             if (context.Config != null)
             {
-                turnHelper.Update(
+                turnHelper.Evaluate(
                     context.BodyForward,
                     context.LocomotionHeading,
                     context.Config,

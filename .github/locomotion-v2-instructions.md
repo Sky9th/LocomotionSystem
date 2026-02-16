@@ -46,12 +46,13 @@
 
 - 挂载在角色（玩家或 AI）上，作为 **唯一入口** 和「编排者」。
 - 负责：
-  - 与LocomotionManager进行注册交互
+  - 与 LocomotionManager 进行注册交互；
   - 聚合输入模块产出的「期望运动指令」（例如期望移动方向、强度、姿态/步态请求）。
-  - 调用状态模块更新 Posture / Gait / Condition 等离散状态。
-  - 调用计算模块生成连续的运动数据（速度、转身角度、地面接触信息等）。
+  - 构建 `LocomotionStateContext`，调用 **状态模块（LocomotionController）** 更新 Posture / Gait / Condition 等离散状态；
+  - 调用 **计算模块（Computation）** 生成连续的运动数据（速度、地面接触信息、转身角度等），但具体算法和阈值由专门的静态/轻量组件实现；
   - 组装并推送 `SPlayerLocomotion` 快照给外部（包括动画模块和其他系统）。
 - 不直接执行任何动画播放逻辑，也不直接操作 Animator / Animancer；只输出可观测的数据。
+- 不在内部硬编码 locomotion 规则（例如「什么姿态下用什么步态」「多大角度开始原地转身」等），这些规则应集中到 **状态模块 + 配置 Profile + 计算模块** 中，由 Agent 通过组合调用使用。
 
 ### 生命周期（建议）
 
@@ -108,7 +109,8 @@
   - 步态（Gait）：Idle / Walk / Run / Sprint / Crawl 等；
   - 条件（Condition）：Normal / InjuredLight / InjuredHeavy 等；
   - 以及未来可拓展的其他维度（如 WeaponStance、CoverState 等）。
-- 根据输入、当前地面状态、体力等信息，驱动各维度状态机演化，但不直接计算连续速度向量。
+- 根据输入、当前地面状态、体力等信息，驱动各维度状态机演化；
+- 可以依赖 Computation 模块（例如 `LocomotionTurn`）来计算与状态强相关但仍属「逻辑决策」的连续量（如转身角度、是否处于原地转身状态等），但 **不直接访问 Transform / Animator 等具体表现对象**。
 
 **位置 & 命名空间：**
 - 目录：`Assets/Scripts/LocomotionV2/State/`
@@ -127,12 +129,17 @@
 - 统一状态控制接口：
   - `ILocomotionController`：
     - 由 Agent 持有，代表“这一角色当前使用的完整 Locomotion 行为集”（例如 Human、Zombie 等不同 Archetype）。
-    - 提供 `UpdateDiscreteState(...)` 等接口，输入标准化上下文，输出一帧离散状态快照。
+    - 提供 `UpdateDiscreteState(...)` 等接口，输入标准化上下文，输出一帧离散状态快照；
+    - 在需要时可以维护与离散状态紧密相关的轻量连续输出（如 `TurnAngle`、`IsTurningInPlace` 等），作为对动画/移动层的高层引导信号，但 **不直接修改世界空间 Transform**。
 
 - 抽象基类：
   - `LocomotionControllerBase`：
     - 实现 `ILocomotionController` 的通用部分，内部持有一个 `LocomotionStateMachine`；
-    - 子类通过重写工厂/组装方法，决定使用哪些状态层（Layer）来构建具体的状态机。
+    - 子类通过重写工厂/组装方法，决定使用哪些状态层（Layer）来构建具体的状态机；
+    - 集中承载与 **Locomotion 规则** 相关的决策逻辑，例如：
+      - 姿态/步态/条件之间的转换条件；
+      - 不同姿态 + 步态组合对应的转身模式、转身速度选择（基于配置 Profile）；
+    - 保持与 UnityEngine 组件解耦：不引用具体角色的 Transform/Animator，只依赖 `LocomotionStateContext` 和配置数据进行决策。
 
 - 核心状态机与状态层：
   - `LocomotionStateMachine`：
@@ -170,15 +177,17 @@
 - 输入：
   - 上一帧离散状态；
   - 输入模块提供的 IAction（移动方向/强度等）；
-  - 计算模块或 Agent 提供的辅助信息（是否贴地、速度大小等）；
+  - 计算模块或 Agent 提供的辅助信息（是否贴地、速度大小、朝向、期望行进方向等）；
   - 统一封装为 `LocomotionStateContext`。
 - 逻辑：
   - Agent 调用 `ILocomotionController.UpdateDiscreteState(context)`；
   - `LocomotionControllerBase` 内部转交给 `LocomotionStateMachine`；
-  - 状态机驱动各状态层的 `Update(context)`，汇总成新的离散状态。
+  - 状态机驱动各状态层的 `Update(context)`，汇总成新的离散状态；
+  - 需要时，Controller 可以使用 Computation 模块（如 `LocomotionTurn`）基于 `BodyForward` 与 `LocomotionHeading` 计算转身角度和「是否原地转身」等连续控制量，并通过只读属性暴露给外部。
 - 输出：
   - 新一帧的姿态 / 步态 / 条件 / 高层 Phase 状态；
-  - 组合为 `SLocomotionDiscreteState`，并最终写入 `SPlayerLocomotion` 供动画和其他系统读取。
+  - 与状态密切相关的高层连续控制输出（如 `TurnAngle`、`IsTurningInPlace`）；
+  - 组合为 `SLocomotionDiscreteState` 并与其他连续数据一起写入 `SPlayerLocomotion`，供动画、移动和其他系统只读使用。
 
 ### 3. 计算模块（Computation Module）
 
