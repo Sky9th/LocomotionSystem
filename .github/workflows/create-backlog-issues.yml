@@ -1,0 +1,120 @@
+name: Create Backlog Issues
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run — print issue details without creating anything"
+        type: boolean
+        default: true
+
+jobs:
+  create-issues:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+
+    steps:
+      - name: Create backlog issues via GitHub API
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const dryRun = ${{ inputs.dry_run }};
+
+            const tasks = [
+              { title: "资源系统框架",    priority: "P0", labels: ["P0","基础"], estimate: 20, description: "物品数据结构 仓库 背包 鼠标拾取" },
+              { title: "生存指标",        priority: "P0", labels: ["P0","基础"], estimate: 44, description: "饥饿/口渴/体力/生命 基础消耗恢复" },
+              { title: "建造系统原型",    priority: "P0", labels: ["P0","基础"], estimate: 48, description: "网格化建造 放置/拆除 消耗材料 返还50%" },
+              { title: "丧尸基础AI",      priority: "P0", labels: ["P0","基础"], estimate: 48, description: "NavMesh 视觉感知 追逐 攻击" },
+              { title: "玩家基础控制",    priority: "P0", labels: ["P0","基础"], estimate: 48, description: "鼠标移动 交互 UI框架 格子背包" },
+              { title: "地图原型",        priority: "P0", labels: ["P0","基础"], estimate: 28, description: "用Synty资产搭建测试场景" },
+              { title: "NPC基础AI",       priority: "P1", labels: ["P1","NPC"],  estimate: 32, description: "玩家指令模式 框选 移动/攻击/工作" },
+              { title: "NPC任务分配",     priority: "P1", labels: ["P1","NPC"],  estimate: 48, description: "UI指派固定工作 自动产出" },
+              { title: "NPC招募",         priority: "P1", labels: ["P1","NPC"],  estimate: 36, description: "解救幸存者 对话加入" },
+              { title: "战斗系统基础",    priority: "P1", labels: ["P1","战斗"], estimate: 36, description: "近战武器 普通攻击 伤害计算" },
+              { title: "武器切换与技能栏", priority: "P1", labels: ["P1","战斗"], estimate: 44, description: "背包切换武器 技能栏更新" },
+              { title: "熟练度系统基础",  priority: "P1", labels: ["P1","战斗"], estimate: 36, description: "武器类型熟练度 显示等级" },
+              { title: "农业系统",        priority: "P1", labels: ["P1","农业"], estimate: 56, description: "农田建造 播种 生长 收获 留种" },
+              { title: "工具系统",        priority: "P1", labels: ["P1","工具"], estimate: 56, description: "斧/镐/锤/锄/锯/厨具 耐久 维修" },
+              { title: "热武器基础",      priority: "P1", labels: ["P1","战斗"], estimate: 24, description: "手枪 消耗弹药 噪音吸引" },
+              { title: "烹饪系统",        priority: "P2", labels: ["P2","烹饪"], estimate: 32, description: "篝火 2种基础食谱" },
+              { title: "科技树界面",      priority: "P2", labels: ["P2","科技"], estimate: 32, description: "列表式UI 显示节点 详情" },
+              { title: "图纸系统",        priority: "P2", labels: ["P2","科技"], estimate: 64, description: "图纸物品 学习消耗 解锁效果" },
+              { title: "尸潮触发机制",    priority: "P2", labels: ["P2","尸潮"], estimate: 48, description: "每日伪随机 概率动态调整" },
+              { title: "尸潮规模与构成",  priority: "P2", labels: ["P2","尸潮"], estimate: 24, description: "简单公式 天数×系数" },
+              { title: "尸潮行为",        priority: "P2", labels: ["P2","尸潮"], estimate: 40, description: "向据点移动 攻击建筑 掉落" },
+            ];
+
+            // Ensure required labels exist (create if missing)
+            const labelDefs = [
+              { name: "P0",   color: "d73a4a" },
+              { name: "P1",   color: "e4e669" },
+              { name: "P2",   color: "0075ca" },
+              { name: "基础", color: "c2e0c6" },
+              { name: "NPC",  color: "bfdadc" },
+              { name: "战斗", color: "ee0701" },
+              { name: "农业", color: "84b6eb" },
+              { name: "工具", color: "e6e6e6" },
+              { name: "烹饪", color: "f9d0c4" },
+              { name: "科技", color: "d4c5f9" },
+              { name: "尸潮", color: "b60205" },
+            ];
+
+            if (!dryRun) {
+              for (const label of labelDefs) {
+                try {
+                  await github.rest.issues.getLabel({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    name: label.name,
+                  });
+                } catch (e) {
+                  if (e.status === 404) {
+                    await github.rest.issues.createLabel({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      name: label.name,
+                      color: label.color,
+                    });
+                    core.info(`Created label: ${label.name}`);
+                  } else {
+                    throw e;
+                  }
+                }
+              }
+            }
+
+            // Create issues
+            for (const task of tasks) {
+              const issueTitle = `[Task] ${task.title}`;
+              const issueBody = [
+                `**Priority:** ${task.priority}`,
+                `**Estimate:** ${task.estimate}h`,
+                `**Labels:** ${task.labels.join(", ")}`,
+                ``,
+                `## Description`,
+                task.description,
+                ``,
+                `## Acceptance Criteria`,
+                `- [ ] (fill in before starting)`,
+              ].join("\n");
+
+              if (dryRun) {
+                core.info(`[DRY-RUN] Would create issue: "${issueTitle}" (labels: ${task.labels.join(", ")})`);
+              } else {
+                const result = await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: issueTitle,
+                  body: issueBody,
+                  labels: task.labels,
+                });
+                core.info(`Created issue #${result.data.number}: ${issueTitle}`);
+              }
+            }
+
+            if (dryRun) {
+              core.info("Dry-run complete. No issues were created. Re-run with 'dry_run: false' to create them.");
+            } else {
+              core.info("All 21 issues created successfully.");
+            }
