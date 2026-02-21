@@ -4,7 +4,22 @@ This directory contains helper scripts for importing the Project 3 backlog into 
 
 ---
 
-## `create_issues.sh`
+## 方式一（推荐）：GitHub Actions 工作流 — 无需本地环境
+
+无需安装任何工具，直接在 GitHub 网页端操作即可创建全部 Issue：
+
+1. 打开仓库页面，点击顶部 **Actions** 标签页。
+2. 在左侧列表中选择 **Create Backlog Issues**。
+3. 点击右侧 **Run workflow** 按钮。
+4. 确认参数：
+   - **Dry run**（默认 `true`）：勾选时只打印日志，不创建 Issue，安全预览用。
+   - 取消勾选 **Dry run** 后点击 **Run workflow**，即可自动创建全部 21 个 Issue 并生成所需标签。
+
+> 工作流文件位于 `.github/workflows/create-backlog-issues.yml`，会自动处理标签创建，无需任何额外准备。
+
+---
+
+## 方式二（本地备选）：`create_issues.sh`
 
 Batch-creates all 21 backlog tasks as GitHub Issues using the [GitHub CLI (`gh`)](https://cli.github.com/).
 
@@ -72,6 +87,6 @@ bash scripts/create_issues.sh --repo Sky9th/LocomotionSystem
 
 ---
 
-## Manual Alternative
+## 方式三：手动粘贴
 
-If you prefer not to use the script, see `docs/project3-backlog.md` for a table overview and copy-pastable issue bodies for each task. You can paste those directly into the GitHub issue creation UI.
+如果不想使用任何脚本，参见 `docs/project3-backlog.md`，其中提供了每个任务的完整 Issue 正文，可直接粘贴到 GitHub Issue 创建界面。
