@@ -5,6 +5,7 @@ using Game.Locomotion.Computation;
 using Game.Locomotion.State.Core;
 using Game.Locomotion.State.Controllers;
 using Game.Locomotion.Input;
+using Game.Locomotion.Animation.Config;
 
 namespace Game.Locomotion.Agent
 {
@@ -24,7 +25,7 @@ namespace Game.Locomotion.Agent
         [SerializeField] private Transform modelRoot;
 
         [Header("Config")]
-        [SerializeField] private LocomotionConfigProfile config;
+        [SerializeField] private LocomotionAnimationProfile config;
         [SerializeField, Min(0f)] private float groundRayLength = 1.5f;
         [SerializeField] private LayerMask groundLayerMask = ~0;
 
@@ -123,7 +124,7 @@ namespace Game.Locomotion.Agent
         {
             if (config == null)
             {
-                Debug.LogError($"{nameof(LocomotionAgent)} on '{name}' requires a {nameof(LocomotionConfigProfile)}.", this);
+                Debug.LogError($"{nameof(LocomotionAgent)} on '{name}' requires a {nameof(LocomotionAnimationProfile)}.", this);
             }
             
             ResolveRigReferencesIfNeeded();
@@ -232,9 +233,8 @@ namespace Game.Locomotion.Agent
                 acceleration,
                 deltaTime);
 
-            Vector3 velocity = currentVelocity;
             var stateContext = new LocomotionStateContext(
-                velocity,
+                currentVelocity,
                 bodyForward,
                 locomotionHeading,
                 groundContact,
@@ -264,12 +264,11 @@ namespace Game.Locomotion.Agent
                     config);
 
                 float turnAngle = locomotionController.CurrentTurnAngle;
-                bool isTurningInPlace = locomotionController.IsTurningInPlace;
 
                 // 3) Assemble the external locomotion snapshot DTO.
                 // Derive local planar velocity using the shared helper.
                 LocomotionPlanarVelocity.Evaluate(
-                    velocity,
+                    currentVelocity,
                     locomotionHeading,
                     moveAction,
                     ref lastMoveInput,
@@ -277,7 +276,7 @@ namespace Game.Locomotion.Agent
 
                 snapshot = new SPlayerLocomotion(
                     position,
-                    velocity: velocity,
+                    velocity: currentVelocity,
                     locomotionHeading: locomotionHeading,
                     bodyForward: bodyForward,
                     localVelocity: localVelocity,
@@ -285,7 +284,10 @@ namespace Game.Locomotion.Agent
                     discreteState: mode,
                     groundContact: groundContact,
                     turnAngle: turnAngle,
-                    isTurning: isTurningInPlace,
+                    isTurningInPlace: locomotionController.IsTurningInPlace,
+                    isTurningInWalk: locomotionController.IsTurningInWalk,
+                    isTurningInRun: locomotionController.IsTurningInRun,
+                    isTurningInSprint: locomotionController.IsTurningInSprint,
                     isLeftFootOnFront: false,
                     posture: mode.Posture,
                     gait: mode.Gait,
@@ -318,7 +320,10 @@ namespace Game.Locomotion.Agent
                     ELocomotionCondition.Normal),
                 groundContact: SGroundContact.None,
                 turnAngle: 0f,
-                isTurning: false,
+                isTurningInPlace: false,
+                isTurningInWalk: false,
+                isTurningInRun: false,
+                isTurningInSprint: false,
                 isLeftFootOnFront: true,
                 posture: EPostureState.Standing,
                 gait: EMovementGait.Idle,

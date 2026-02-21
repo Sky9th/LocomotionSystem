@@ -1,4 +1,5 @@
 using UnityEngine;
+using Game.Locomotion.Animation.Config;
 
 namespace Game.Locomotion.Computation
 {
@@ -10,13 +11,13 @@ namespace Game.Locomotion.Computation
     internal sealed class LocomotionTurn
     {
         private float turnAngle;
-        private bool isTurningInPlace;
+        private bool isTurning;
         private float turnStateCooldown;
         private float lastDesiredYaw;
         private float lookStabilityTimer;
 
         public float TurnAngle => turnAngle;
-        public bool IsTurningInPlace => isTurningInPlace;
+        public bool IsTurningInPlace => isTurning;
 
         /// <summary>
         /// Computes the signed turn delta in degrees for this frame given
@@ -49,11 +50,11 @@ namespace Game.Locomotion.Computation
         public void Evaluate(
             Vector3 bodyForward,
             Vector3 locomotionHeading,
-            LocomotionConfigProfile config,
+            LocomotionAnimationProfile config,
             float deltaTime,
             in SLocomotionDiscreteState discreteState,
             out float turnAngle,
-            out bool isTurningInPlaceOutput)
+            out bool isTurningOut)
         {
             // Compute the current signed planar turn angle.
             turnAngle = EvaluateTurnAngle(bodyForward, locomotionHeading);
@@ -68,7 +69,7 @@ namespace Game.Locomotion.Computation
                 locomotionHeading,
                 config,
                 deltaTime,
-                ref isTurningInPlace,
+                ref isTurning,
                 ref turnStateCooldown,
                 ref lastDesiredYaw,
                 ref lookStabilityTimer);
@@ -77,12 +78,10 @@ namespace Game.Locomotion.Computation
             // effectively idle on the ground. This keeps the concept out
             // of the top-level phase enum while still giving animation a
             // clear signal to branch on.
-            bool isTurningInPlaceIdle =
-                isTurningInPlace &&
-                discreteState.State == ELocomotionState.GroundedIdle &&
-                discreteState.Gait == EMovementGait.Idle;
-
-            isTurningInPlaceOutput = isTurningInPlaceIdle;
+            isTurningOut =
+                isTurning &&
+                (discreteState.State == ELocomotionState.GroundedIdle ||
+                discreteState.State == ELocomotionState.GroundedMoving);
         }
 
         private static float EvaluateTurnAngle(Vector3 bodyForward, Vector3 locomotionHeading)
@@ -106,9 +105,9 @@ namespace Game.Locomotion.Computation
         private static void UpdateTurnState(
             float currentTurnAngle,
             Vector3 locomotionHeading,
-            LocomotionConfigProfile config,
+            LocomotionAnimationProfile config,
             float deltaTime,
-            ref bool isTurningInPlace,
+            ref bool isTurning,
             ref float turnStateCooldown,
             ref float lastDesiredYaw,
             ref float lookStabilityTimer)
@@ -149,14 +148,14 @@ namespace Game.Locomotion.Computation
             bool lookIsStable = lookStabilityTimer >= lookStabilityDuration;
             bool shouldCompleteTurn = absAngle <= turnCompletionAngle;
 
-            if (!isTurningInPlace && wantsTurn && turnStateCooldown <= 0f && lookIsStable)
+            if (!isTurning && wantsTurn && turnStateCooldown <= 0f && lookIsStable)
             {
-                isTurningInPlace = true;
+                isTurning = true;
                 turnStateCooldown = turnDebounceDuration;
             }
-            else if (isTurningInPlace && shouldCompleteTurn)
+            else if (isTurning && shouldCompleteTurn)
             {
-                isTurningInPlace = false;
+                isTurning = false;
                 turnStateCooldown = turnDebounceDuration;
             }
         }

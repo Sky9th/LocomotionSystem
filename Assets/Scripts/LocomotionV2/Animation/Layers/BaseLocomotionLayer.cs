@@ -48,7 +48,7 @@ namespace Game.Locomotion.Animation.Layers
                 float absAngle = Mathf.Abs(angle);
                 float exitAngle = profile.turnExitAngle;
 
-                if (snapshot.IsTurning && (exitAngle <= 0f || absAngle > exitAngle))
+                if (snapshot.IsTurningInPlace && (exitAngle <= 0f || absAngle > exitAngle))
                 {
                     bool isRightTurn = angle > 0f;
                     bool use180 = absAngle > 90f;
@@ -97,7 +97,28 @@ namespace Game.Locomotion.Animation.Layers
                 }
                 else if (snapshot.Gait == EMovementGait.Run)
                 {
-                    nextAlias = alias.runMixer;
+                    float angle = snapshot.TurnAngle;
+                    float absAngle = Mathf.Abs(angle);
+                    float exitAngle = profile.turnExitAngle;
+
+                    if (snapshot.IsTurningInRun && (exitAngle <= 0f || absAngle > exitAngle))
+                    {
+                        bool isRightTurn = angle > 0f;
+                        bool use180 = absAngle > 90f;
+
+                        if (isRightTurn && use180)
+                        {
+                            nextAlias = alias.turnInRun180R;
+                        }
+                        else if (!isRightTurn && use180)
+                        {
+                            nextAlias = alias.turnInRun180L;
+                        }
+                    }
+                    else
+                    {
+                        nextAlias = alias.runMixer;
+                    }
                 }
                 else if (snapshot.Gait == EMovementGait.Sprint)
                 {

@@ -78,6 +78,10 @@ namespace Game.Locomotion.Animation.Presenters
             // the state and computation modules.
             if (animationProfile != null && snapshot.State == ELocomotionState.GroundedMoving)
             {
+                if(snapshot.IsTurningInWalk || snapshot.IsTurningInRun || snapshot.IsTurningInSprint)
+                {
+                    return;
+                }
                 bool isMoving = snapshot.Gait != EMovementGait.Idle;
                 float turnSpeed = animationProfile.GetTurnSpeed(snapshot.Posture, snapshot.Gait, isMoving);
                 float absAngle = Mathf.Abs(snapshot.TurnAngle);

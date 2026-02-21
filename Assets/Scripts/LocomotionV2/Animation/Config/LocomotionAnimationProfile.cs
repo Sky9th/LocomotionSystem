@@ -13,6 +13,13 @@ namespace Game.Locomotion.Animation.Config
         menuName = "Game/Locomotion/Animation Profile")]
     public sealed class LocomotionAnimationProfile : ScriptableObject
     {
+        [Header("Motion Settings")]
+        [Min(0f)] public float moveSpeed = 4f;
+        [Min(0f)] public float acceleration = 5f;
+
+        [Header("Ground Settings")]
+        [Range(0f, 89f)] public float maxGroundSlopeAngle = 55f;
+
         [Header("Movement Speeds")]
         [Min(0f)] public float walkSpeedThreshold = 1f;
         [Min(0f)] public float runSpeedThreshold = 3f;
