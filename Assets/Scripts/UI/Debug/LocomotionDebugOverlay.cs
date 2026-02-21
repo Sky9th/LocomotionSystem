@@ -67,7 +67,7 @@ public class LocomotionDebugOverlay : UIOverlayBase
          builder.Append("BodyForward: ").Append(snapshot.BodyForward.ToString("F2")).AppendLine();
         builder.Append("LookDir: ").Append(snapshot.LookDirection.ToString("F2")).AppendLine();
         builder.Append("IsGrounded: ").Append(snapshot.IsGrounded).AppendLine();
-        builder.Append("IsTurning: ").Append(snapshot.IsTurning)
+        builder.Append("IsTurning: ").Append(snapshot.IsTurningInPlace || snapshot.IsTurningInWalk || snapshot.IsTurningInRun || snapshot.IsTurningInSprint).AppendLine()
                .Append("  TurnAngle: ").Append(snapshot.TurnAngle.ToString("F1")).AppendLine();
         builder.Append("LeftFootFront: ").Append(snapshot.IsLeftFootOnFront).AppendLine();
 

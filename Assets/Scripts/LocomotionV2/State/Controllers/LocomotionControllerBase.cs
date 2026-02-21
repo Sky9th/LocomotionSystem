@@ -41,6 +41,9 @@ namespace Game.Locomotion.State.Controllers
 
         public float CurrentTurnAngle { get; private set; }
         public bool IsTurningInPlace { get; private set; }
+        public bool IsTurningInWalk { get; private set; }
+        public bool IsTurningInRun { get; private set; }
+        public bool IsTurningInSprint { get; private set; }
 
         public SLocomotionDiscreteState UpdateDiscreteState(in LocomotionStateContext context, float deltaTime)
         {
@@ -57,10 +60,13 @@ namespace Game.Locomotion.State.Controllers
                     deltaTime,
                     in currentState,
                     out float turnAngle,
-                    out bool isTurningInPlace);
+                    out bool isTurning);
 
                 CurrentTurnAngle = turnAngle;
-                IsTurningInPlace = isTurningInPlace;
+                IsTurningInPlace = currentState.Gait == EMovementGait.Idle && isTurning;
+                IsTurningInWalk = currentState.Gait == EMovementGait.Walk && isTurning;
+                IsTurningInRun = currentState.Gait == EMovementGait.Run && isTurning;
+                IsTurningInSprint = currentState.Gait == EMovementGait.Sprint && isTurning;
             }
 
             return currentState;

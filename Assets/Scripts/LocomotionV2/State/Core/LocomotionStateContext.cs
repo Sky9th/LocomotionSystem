@@ -1,4 +1,5 @@
 using UnityEngine;
+using Game.Locomotion.Animation.Config;
 
 namespace Game.Locomotion.State.Core
 {
@@ -51,7 +52,7 @@ namespace Game.Locomotion.State.Core
         public readonly SGroundContact GroundContact;
 
         /// <summary>Configuration profile driving locomotion thresholds.</summary>
-        public readonly LocomotionConfigProfile Config;
+        public readonly LocomotionAnimationProfile Config;
 
         /// <summary>Last frame's discrete locomotion state, if available.</summary>
         public readonly SLocomotionDiscreteState PreviousState;
@@ -61,7 +62,7 @@ namespace Game.Locomotion.State.Core
             Vector3 bodyForward,
             Vector3 locomotionHeading,
             SGroundContact groundContact,
-            LocomotionConfigProfile config,
+            LocomotionAnimationProfile config,
             SLocomotionDiscreteState previousState,
             SMoveIAction moveAction,
             SLookIAction lookAction,

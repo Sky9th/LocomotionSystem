@@ -23,6 +23,10 @@ MonoBehaviour:
   walkBackward: {fileID: 11400000, guid: 56ad804a1ae7bf640bf0570c6d50b6c4, type: 2}
   turnInWalk180L: {fileID: 11400000, guid: 3f47afb1acfa38d4b8269baf2b2079ba, type: 2}
   turnInWalk180R: {fileID: 11400000, guid: a1aa8de1168235f438639d24b093dc33, type: 2}
+  turnInRun180L: {fileID: 11400000, guid: 5380fa5ab8613ea4782a64c709bbb167, type: 2}
+  turnInRun180R: {fileID: 11400000, guid: a1837ef6596ff904bbc9686f48d80d01, type: 2}
+  turnInSprint180L: {fileID: 11400000, guid: 2120b39ce2714204ea5e0fe5624ddfd4, type: 2}
+  turnInSprint180R: {fileID: 11400000, guid: eb29250394b787b41898db0591441b0e, type: 2}
   turnInPlace90L: {fileID: 11400000, guid: 3997fcecd2b0db04bb077248eccb6c70, type: 2}
   turnInPlace90R: {fileID: 11400000, guid: cd8614c33b5e91d489beb07de8d7112f, type: 2}
   turnInPlace180L: {fileID: 11400000, guid: 470dbfabfb96aa442a71a295e3d66d15, type: 2}

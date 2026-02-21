@@ -1,4 +1,5 @@
 using UnityEngine;
+using Game.Locomotion.Animation.Config;
 
 namespace Game.Locomotion.Computation
 {
@@ -15,7 +16,7 @@ namespace Game.Locomotion.Computation
         internal static void UpdateRotation(
             Transform followAnchor,
             SLookIAction lookAction,
-            LocomotionConfigProfile config)
+            LocomotionAnimationProfile config)
         {
             if (followAnchor == null)
             {

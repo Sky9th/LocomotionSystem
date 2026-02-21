@@ -1,4 +1,5 @@
 using UnityEngine;
+using Game.Locomotion.Animation.Config;
 
 namespace Game.Locomotion.Computation
 {
@@ -12,7 +13,7 @@ namespace Game.Locomotion.Computation
             Transform followAnchor,
             Transform modelRoot,
             Transform rootTransform,
-            LocomotionConfigProfile config)
+            LocomotionAnimationProfile config)
         {
             if (followAnchor == null)
             {

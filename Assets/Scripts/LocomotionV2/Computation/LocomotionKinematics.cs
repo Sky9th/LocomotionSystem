@@ -1,5 +1,7 @@
 using UnityEngine;
 
+using Game.Locomotion.Animation.Config;
+
 namespace Game.Locomotion.Computation
 {
     /// <summary>
@@ -14,7 +16,7 @@ namespace Game.Locomotion.Computation
         internal static Vector3 ComputeDesiredPlanarVelocity(
             Vector3 locomotionHeading,
             SMoveIAction moveAction,
-            LocomotionConfigProfile config)
+            LocomotionAnimationProfile config)
         {
             if (config == null || !moveAction.HasInput)
             {

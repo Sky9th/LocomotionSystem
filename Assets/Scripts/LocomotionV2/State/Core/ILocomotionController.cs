@@ -31,6 +31,9 @@ namespace Game.Locomotion.State.Core
 
         /// <summary>Whether the character is currently performing an in-place turn.</summary>
         bool IsTurningInPlace { get; }
+        bool IsTurningInWalk { get; }
+        bool IsTurningInRun { get; }
+        bool IsTurningInSprint { get; }
 
         /// <summary>
         /// Evaluate and return a new discrete locomotion state for the
