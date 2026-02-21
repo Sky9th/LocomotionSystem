@@ -1,0 +1,353 @@
+name: Setup Project Issues
+
+on:
+  push:
+    branches:
+      - copilot/create-github-issues
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+  projects: write
+
+jobs:
+  create-project-tasks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create labels, issues and project items
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = 'Sky9th';
+            const repo = 'LocomotionSystem';
+            const projectNumber = 3;
+
+            // ── Task definitions ──────────────────────────────────────────
+            const tasks = [
+              { title: '资源系统框架',    priority: 'P0', labels: ['基础'], estimate: 20, description: '物品数据结构 仓库 背包 鼠标拾取' },
+              { title: '生存指标',        priority: 'P0', labels: ['基础'], estimate: 44, description: '饥饿/口渴/体力/生命 基础消耗恢复' },
+              { title: '建造系统原型',    priority: 'P0', labels: ['基础'], estimate: 48, description: '网格化建造 放置/拆除 消耗材料 返还50%' },
+              { title: '丧尸基础AI',      priority: 'P0', labels: ['基础'], estimate: 48, description: 'NavMesh 视觉感知 追逐 攻击' },
+              { title: '玩家基础控制',    priority: 'P0', labels: ['基础'], estimate: 48, description: '鼠标移动 交互 UI框架 格子背包' },
+              { title: '地图原型',        priority: 'P0', labels: ['基础'], estimate: 28, description: '用Synty资产搭建测试场景' },
+              { title: 'NPC基础AI',       priority: 'P1', labels: ['NPC'],  estimate: 32, description: '玩家指令模式 框选 移动/攻击/工作' },
+              { title: 'NPC任务分配',     priority: 'P1', labels: ['NPC'],  estimate: 48, description: 'UI指派固定工作 自动产出' },
+              { title: 'NPC招募',         priority: 'P1', labels: ['NPC'],  estimate: 36, description: '解救幸存者 对话加入' },
+              { title: '战斗系统基础',    priority: 'P1', labels: ['战斗'], estimate: 36, description: '近战武器 普通攻击 伤害计算' },
+              { title: '武器切换与技能栏', priority: 'P1', labels: ['战斗'], estimate: 44, description: '背包切换武器 技能栏更新' },
+              { title: '熟练度系统基础',  priority: 'P1', labels: ['战斗'], estimate: 36, description: '武器类型熟练度 显示等级' },
+              { title: '农业系统',        priority: 'P1', labels: ['农业'], estimate: 56, description: '农田建造 播种 生长 收获 留种' },
+              { title: '工具系统',        priority: 'P1', labels: ['工具'], estimate: 56, description: '斧/镐/锤/锄/锯/厨具 耐久 维修' },
+              { title: '热武器基础',      priority: 'P1', labels: ['战斗'], estimate: 24, description: '手枪 消耗弹药 噪音吸引' },
+              { title: '烹饪系统',        priority: 'P2', labels: ['烹饪'], estimate: 32, description: '篝火 2种基础食谱' },
+              { title: '科技树界面',      priority: 'P2', labels: ['科技'], estimate: 32, description: '列表式UI 显示节点 详情' },
+              { title: '图纸系统',        priority: 'P2', labels: ['科技'], estimate: 64, description: '图纸物品 学习消耗 解锁效果' },
+              { title: '尸潮触发机制',    priority: 'P2', labels: ['尸潮'], estimate: 48, description: '每日伪随机 概率动态调整' },
+              { title: '尸潮规模与构成',  priority: 'P2', labels: ['尸潮'], estimate: 24, description: '简单公式 天数×系数' },
+              { title: '尸潮行为',        priority: 'P2', labels: ['尸潮'], estimate: 40, description: '向据点移动 攻击建筑 掉落' },
+            ];
+
+            // ── Label definitions ─────────────────────────────────────────
+            const labelDefs = [
+              { name: '基础', color: '0075ca', description: '核心基础系统' },
+              { name: 'NPC',  color: 'e4e669', description: 'NPC系统' },
+              { name: '战斗', color: 'd93f0b', description: '战斗系统' },
+              { name: '农业', color: '0e8a16', description: '农业系统' },
+              { name: '工具', color: 'fbca04', description: '工具系统' },
+              { name: '烹饪', color: 'c5def5', description: '烹饪系统' },
+              { name: '科技', color: 'f9d0c4', description: '科技树系统' },
+              { name: '尸潮', color: 'b60205', description: '尸潮事件系统' },
+            ];
+
+            // ── Helper: sleep ─────────────────────────────────────────────
+            const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+            // ── Step 1: Create / update labels ────────────────────────────
+            core.info('=== Step 1: Creating labels ===');
+            for (const label of labelDefs) {
+              try {
+                await github.rest.issues.createLabel({ owner, repo, ...label });
+                core.info(`  ✓ Created label "${label.name}"`);
+              } catch (e) {
+                if (e.status === 422) {
+                  try {
+                    await github.rest.issues.updateLabel({ owner, repo, name: label.name, color: label.color, description: label.description });
+                    core.info(`  ↻ Updated label "${label.name}"`);
+                  } catch (e2) {
+                    core.warning(`  ✗ Could not update label "${label.name}": ${e2.message}`);
+                  }
+                } else {
+                  core.warning(`  ✗ Could not create label "${label.name}": ${e.message}`);
+                }
+              }
+            }
+
+            // ── Step 2: Query project fields ──────────────────────────────
+            core.info('\n=== Step 2: Fetching project info ===');
+            const GET_PROJECT = `
+              query GetProject($login: String!, $number: Int!) {
+                user(login: $login) {
+                  projectV2(number: $number) {
+                    id
+                    title
+                    fields(first: 30) {
+                      nodes {
+                        ... on ProjectV2Field {
+                          id name dataType
+                        }
+                        ... on ProjectV2SingleSelectField {
+                          id name dataType
+                          options { id name }
+                        }
+                        ... on ProjectV2IterationField {
+                          id name dataType
+                        }
+                      }
+                    }
+                  }
+                }
+              }`;
+
+            let projectId = null;
+            let statusFieldId = null, statusTodoOptionId = null;
+            let priorityFieldId = null;
+            const priorityOptionIds = {};
+            let estimateFieldId = null;
+
+            try {
+              const pData = await github.graphql(GET_PROJECT, { login: owner, number: projectNumber });
+              const proj = pData.user.projectV2;
+              projectId = proj.id;
+              core.info(`  Project: "${proj.title}" (${projectId})`);
+
+              for (const f of proj.fields.nodes) {
+                if (!f.name) continue;
+                core.info(`  Field: "${f.name}" [${f.dataType}]`);
+                if (f.name === 'Status') {
+                  statusFieldId = f.id;
+                  const opt = (f.options || []).find(o => o.name === 'Todo');
+                  statusTodoOptionId = opt ? opt.id : null;
+                  core.info(`    Status field found, Todo option: ${statusTodoOptionId || 'NOT FOUND'}`);
+                } else if (f.name === 'Priority') {
+                  priorityFieldId = f.id;
+                  for (const o of (f.options || [])) {
+                    priorityOptionIds[o.name] = o.id;
+                  }
+                  core.info(`    Priority field found, options: ${JSON.stringify(priorityOptionIds)}`);
+                } else if (f.name === 'Estimate' || f.name === 'Estimate (hours)') {
+                  estimateFieldId = f.id;
+                  core.info(`    Estimate field found`);
+                }
+              }
+            } catch (e) {
+              core.error(`  Failed to query project: ${e.message}`);
+            }
+
+            // ── Step 3: Create missing project fields ─────────────────────
+            if (projectId) {
+              const CREATE_FIELD = `
+                mutation CreateField($projectId: ID!, $dataType: ProjectV2CustomFieldType!, $name: String!) {
+                  createProjectV2Field(input: { projectId: $projectId, dataType: $dataType, name: $name }) {
+                    projectV2Field {
+                      ... on ProjectV2Field       { id name dataType }
+                      ... on ProjectV2SingleSelectField { id name dataType options { id name } }
+                    }
+                  }
+                }`;
+
+              if (!estimateFieldId) {
+                core.info('\n  Creating "Estimate" number field...');
+                try {
+                  const r = await github.graphql(CREATE_FIELD, { projectId, dataType: 'NUMBER', name: 'Estimate' });
+                  estimateFieldId = r.createProjectV2Field.projectV2Field.id;
+                  core.info(`  ✓ Created Estimate field: ${estimateFieldId}`);
+                } catch (e) {
+                  core.warning(`  ✗ Could not create Estimate field: ${e.message}`);
+                }
+              }
+
+              if (!priorityFieldId) {
+                core.info('  Creating "Priority" single-select field...');
+                try {
+                  const r = await github.graphql(CREATE_FIELD, { projectId, dataType: 'SINGLE_SELECT', name: 'Priority' });
+                  const field = r.createProjectV2Field.projectV2Field;
+                  priorityFieldId = field.id;
+                  core.info(`  ✓ Created Priority field: ${priorityFieldId}`);
+                  // Options (P0/P1/P2) must be added via update after creation
+                  // Re-fetch to get option IDs after adding them
+                } catch (e) {
+                  core.warning(`  ✗ Could not create Priority field: ${e.message}`);
+                }
+              }
+
+              // If Priority field exists but P0/P1/P2 options are missing, add them
+              if (priorityFieldId && Object.keys(priorityOptionIds).length < 3) {
+                core.info('  Ensuring P0/P1/P2 options on Priority field...');
+                const ADD_OPTION = `
+                  mutation AddOption($projectId: ID!, $fieldId: ID!, $name: String!, $color: ProjectV2SingleSelectFieldOptionColor!) {
+                    updateProjectV2Field(input: {
+                      projectId: $projectId,
+                      fieldId: $fieldId,
+                      singleSelectOptions: [{ name: $name, color: $color, description: "" }]
+                    }) {
+                      projectV2Field {
+                        ... on ProjectV2SingleSelectField { id options { id name } }
+                      }
+                    }
+                  }`;
+
+                // Re-query to get current options, then send the full list
+                const UPDATE_PRIORITY = `
+                  mutation UpdatePriority($projectId: ID!, $fieldId: ID!) {
+                    updateProjectV2Field(input: {
+                      projectId: $projectId,
+                      fieldId: $fieldId,
+                      singleSelectOptions: [
+                        { name: "P0", color: RED,    description: "Critical" },
+                        { name: "P1", color: YELLOW, description: "High" },
+                        { name: "P2", color: GREEN,  description: "Normal" }
+                      ]
+                    }) {
+                      projectV2Field {
+                        ... on ProjectV2SingleSelectField {
+                          id
+                          options { id name }
+                        }
+                      }
+                    }
+                  }`;
+                try {
+                  const r = await github.graphql(UPDATE_PRIORITY, { projectId, fieldId: priorityFieldId });
+                  const opts = r.updateProjectV2Field.projectV2Field.options || [];
+                  for (const o of opts) priorityOptionIds[o.name] = o.id;
+                  core.info(`  ✓ Priority options set: ${JSON.stringify(priorityOptionIds)}`);
+                } catch (e) {
+                  core.warning(`  ✗ Could not set Priority options: ${e.message}`);
+                }
+              }
+
+              // Ensure Status field has "Todo" option
+              if (statusFieldId && !statusTodoOptionId) {
+                core.info('  Querying Status options to find "Todo"...');
+                try {
+                  const r2 = await github.graphql(GET_PROJECT, { login: owner, number: projectNumber });
+                  for (const f of r2.user.projectV2.fields.nodes) {
+                    if (f.name === 'Status') {
+                      const opt = (f.options || []).find(o => o.name === 'Todo');
+                      statusTodoOptionId = opt ? opt.id : null;
+                    }
+                  }
+                  core.info(`  Todo option: ${statusTodoOptionId || 'still not found'}`);
+                } catch (e) {
+                  core.warning(`  ✗ Re-fetch failed: ${e.message}`);
+                }
+              }
+            }
+
+            // ── Step 4: Create issues + add to project ────────────────────
+            core.info('\n=== Step 4: Creating issues ===');
+            const ADD_ITEM = `
+              mutation AddItem($projectId: ID!, $contentId: ID!) {
+                addProjectV2ItemById(input: { projectId: $projectId, contentId: $contentId }) {
+                  item { id }
+                }
+              }`;
+            const SET_SINGLE = `
+              mutation SetSingle($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
+                updateProjectV2ItemFieldValue(input: {
+                  projectId: $projectId, itemId: $itemId, fieldId: $fieldId,
+                  value: { singleSelectOptionId: $optionId }
+                }) { projectV2Item { id } }
+              }`;
+            const SET_NUMBER = `
+              mutation SetNumber($projectId: ID!, $itemId: ID!, $fieldId: ID!, $number: Float!) {
+                updateProjectV2ItemFieldValue(input: {
+                  projectId: $projectId, itemId: $itemId, fieldId: $fieldId,
+                  value: { number: $number }
+                }) { projectV2Item { id } }
+              }`;
+
+            const results = [];
+
+            for (const task of tasks) {
+              const issueBody = [
+                '## 任务描述',
+                '',
+                task.description,
+                '',
+                '---',
+                '',
+                `**优先级**: ${task.priority}`,
+                `**预估工时**: ${task.estimate}h`,
+              ].join('\n');
+
+              let issueNumber = null, issueUrl = null, issueNodeId = null;
+
+              // Create issue
+              try {
+                const resp = await github.rest.issues.create({
+                  owner, repo,
+                  title: task.title,
+                  body: issueBody,
+                  labels: task.labels,
+                });
+                issueNumber  = resp.data.number;
+                issueUrl     = resp.data.html_url;
+                issueNodeId  = resp.data.node_id;
+                core.info(`  ✓ #${issueNumber} ${task.title}`);
+              } catch (e) {
+                core.error(`  ✗ Failed to create issue "${task.title}": ${e.message}`);
+                continue;
+              }
+
+              // Add to project
+              let itemId = null;
+              if (projectId && issueNodeId) {
+                try {
+                  const r = await github.graphql(ADD_ITEM, { projectId, contentId: issueNodeId });
+                  itemId = r.addProjectV2ItemById.item.id;
+                } catch (e) {
+                  core.warning(`    ✗ Could not add #${issueNumber} to project: ${e.message}`);
+                }
+              }
+
+              // Set Status = Todo
+              if (itemId && statusFieldId && statusTodoOptionId) {
+                try {
+                  await github.graphql(SET_SINGLE, { projectId, itemId, fieldId: statusFieldId, optionId: statusTodoOptionId });
+                } catch (e) {
+                  core.warning(`    ✗ Could not set Status on #${issueNumber}: ${e.message}`);
+                }
+              }
+
+              // Set Priority
+              if (itemId && priorityFieldId && priorityOptionIds[task.priority]) {
+                try {
+                  await github.graphql(SET_SINGLE, { projectId, itemId, fieldId: priorityFieldId, optionId: priorityOptionIds[task.priority] });
+                } catch (e) {
+                  core.warning(`    ✗ Could not set Priority on #${issueNumber}: ${e.message}`);
+                }
+              }
+
+              // Set Estimate
+              if (itemId && estimateFieldId) {
+                try {
+                  await github.graphql(SET_NUMBER, { projectId, itemId, fieldId: estimateFieldId, number: task.estimate });
+                } catch (e) {
+                  core.warning(`    ✗ Could not set Estimate on #${issueNumber}: ${e.message}`);
+                }
+              }
+
+              results.push({ number: issueNumber, title: task.title, url: issueUrl, priority: task.priority, estimate: task.estimate, addedToProject: !!itemId });
+              await sleep(300); // avoid secondary rate limits
+            }
+
+            // ── Final summary ─────────────────────────────────────────────
+            core.info('\n=== SUMMARY ===');
+            core.info(`Project: https://github.com/users/${owner}/projects/${projectNumber}`);
+            core.info('');
+            for (const r of results) {
+              core.info(`[${r.priority}] #${r.number} ${r.title} (${r.estimate}h) → ${r.url} | project: ${r.addedToProject ? '✓' : '✗'}`);
+            }
