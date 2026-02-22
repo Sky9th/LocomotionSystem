@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Animancer;
 using UnityEngine;
 
@@ -13,7 +10,7 @@ public class AnimancerStringProfile : ScriptableObject
     public StringAsset idleR;
     public StringAsset walkMixer;
     public StringAsset runMixer;
-    public StringAsset sprintMixer;
+    public StringAsset sprint;
     public StringAsset walkForward;
     public StringAsset walkLeft;
     public StringAsset walkRight;

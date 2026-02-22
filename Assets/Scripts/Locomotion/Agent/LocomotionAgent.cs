@@ -48,15 +48,15 @@ namespace Game.Locomotion.Agent
 
         // Per-agent IAction buffer keyed by payload type.
         private readonly Dictionary<Type, object> inputActionBuffer = new();
+        private readonly Dictionary<Type, object> lastInputActionBuffer = new();
 
-        // New v2 state controller (currently using the Human archetype).
-        private ILocomotionController locomotionController;
+        // New v2 locomotion state controller (currently using the Human archetype).
+        private ILocomotionStateController locomotionStateController;
 
         // Smoothed world-space velocity and last non-zero move input
         // used to derive local planar velocity.
         private Vector3 currentVelocity = Vector3.zero;
         private Vector2 currentLocalVelocity = Vector2.zero;
-        private Vector2 lastMoveInput = Vector2.zero;
 
         // Last evaluated discrete locomotion state used to seed
         // the next frame's state context.
@@ -85,14 +85,17 @@ namespace Game.Locomotion.Agent
         /// </summary>
         internal void TryPutAction<TAction>(TAction action) where TAction : struct
         {
-            inputActionBuffer[typeof(TAction)] = action;
+            if (action.Equals(default(TAction)))
+            {
+                inputActionBuffer.Remove(typeof(TAction));
+            }
+            else
+            {
+                lastInputActionBuffer[typeof(TAction)] = inputActionBuffer.ContainsKey(typeof(TAction)) ? (TAction)inputActionBuffer[typeof(TAction)] : default;
+                inputActionBuffer[typeof(TAction)] = action;
+            }
         }
-
-        /// <summary>
-        /// Tries to read the latest buffered IAction of the given type.
-        /// Returns false and a default-initialized action when the type
-        /// has never been seen for this agent.
-        /// </summary>
+        
         internal bool TryGetAction<TAction>(out TAction action) where TAction : struct
         {
             if (inputActionBuffer.TryGetValue(typeof(TAction), out object boxed) && boxed is TAction typed)
@@ -100,25 +103,19 @@ namespace Game.Locomotion.Agent
                 action = typed;
                 return true;
             }
-
             action = default;
             return false;
         }
 
-        /// <summary>
-        /// Returns the latest buffered IAction of the given type. Assumes
-        /// that upstream modules have populated the buffer with a sensible
-        /// default value (for example the static None value) during
-        /// initialization and subscription.
-        /// </summary>
-        internal TAction GetAction<TAction>() where TAction : struct
+        internal bool TryGetLastAction<TAction>(out TAction action) where TAction : struct
         {
-            if (inputActionBuffer.TryGetValue(typeof(TAction), out object boxed) && boxed is TAction typed)
+            if (lastInputActionBuffer.TryGetValue(typeof(TAction), out object boxed) && boxed is TAction typed)
             {
-                return typed;
+                action = typed;
+                return true;
             }
-
-            return default;
+            action = default;
+            return false;
         }
 
         private void Awake()
@@ -189,15 +186,16 @@ namespace Game.Locomotion.Agent
             // Read the latest buffered IAactions produced by upstream
             // input/AI modules. InputModule is responsible for seeding
             // sensible defaults so we can assume each type is present.
-            SMoveIAction moveAction = GetAction<SMoveIAction>();
-            SLookIAction lookAction = GetAction<SLookIAction>();
-            SCrouchIAction crouchAction = GetAction<SCrouchIAction>();
-            SProneIAction proneAction = GetAction<SProneIAction>();
-            SWalkIAction walkAction = GetAction<SWalkIAction>();
-            SRunIAction runAction = GetAction<SRunIAction>();
-            SSprintIAction sprintAction = GetAction<SSprintIAction>();
-            SJumpIAction jumpAction = GetAction<SJumpIAction>();
-            SStandIAction standAction = GetAction<SStandIAction>();
+            TryGetAction(out SMoveIAction moveAction);
+            TryGetLastAction(out SMoveIAction lastMoveAction);
+            TryGetAction(out SLookIAction lookAction);
+            TryGetAction(out SCrouchIAction crouchAction);
+            TryGetAction(out SProneIAction proneAction);
+            TryGetAction(out SWalkIAction walkAction);
+            TryGetAction(out SRunIAction runAction);
+            TryGetAction(out SSprintIAction sprintAction);
+            TryGetAction(out SJumpIAction jumpAction);
+            TryGetAction(out SStandIAction standAction);
 
 
             // Apply look input to rotate the follow anchor so that
@@ -225,7 +223,7 @@ namespace Game.Locomotion.Agent
             // the actual movement speed normalized by MoveSpeed without
             // per-gait speed caps.
             Vector2 desiredLocalVelocity = LocomotionKinematics.ComputeDesiredPlanarVelocity(
-                moveAction,
+                moveAction.Equals(SMoveIAction.None) ? lastMoveAction : moveAction,
                 config);
             float acceleration = config != null ? config.acceleration : 0f;
             currentLocalVelocity = LocomotionKinematics.SmoothVelocity(
@@ -241,7 +239,7 @@ namespace Game.Locomotion.Agent
                 currentLocalVelocity,
                 locomotionHeading);
 
-            var stateContext = new LocomotionStateContext(
+            var stateContext = new SLocomotionStateContext(
                 currentVelocity,
                 bodyForward,
                 locomotionHeading,
@@ -258,10 +256,10 @@ namespace Game.Locomotion.Agent
                 jumpAction,
                 standAction);
 
-            if (locomotionController != null)
+            if (locomotionStateController != null)
             {
                 // 1) Evaluate discrete state and all state-related outputs via the controller.
-                SLocomotionDiscreteState mode = locomotionController.UpdateDiscreteState(in stateContext, deltaTime);
+                SLocomotionDiscreteState mode = locomotionStateController.UpdateDiscreteState(in stateContext, deltaTime);
                 lastDiscreteState = mode;
 
                 // 2) Evaluate head look from follow anchor towards the body.
@@ -271,7 +269,7 @@ namespace Game.Locomotion.Agent
                     transform,
                     config);
 
-                float turnAngle = locomotionController.CurrentTurnAngle;
+                float turnAngle = locomotionStateController.CurrentTurnAngle;
 
                 // 3) Assemble the external locomotion snapshot DTO.
                 snapshot = new SLocomotion(
@@ -287,10 +285,10 @@ namespace Game.Locomotion.Agent
                     discreteState: mode,
                     groundContact: groundContact,
                     turnAngle: turnAngle,
-                    isTurningInPlace: locomotionController.IsTurningInPlace,
-                    isTurningInWalk: locomotionController.IsTurningInWalk,
-                    isTurningInRun: locomotionController.IsTurningInRun,
-                    isTurningInSprint: locomotionController.IsTurningInSprint,
+                    isTurningInPlace: locomotionStateController.IsTurningInPlace,
+                    isTurningInWalk: locomotionStateController.IsTurningInWalk,
+                    isTurningInRun: locomotionStateController.IsTurningInRun,
+                    isTurningInSprint: locomotionStateController.IsTurningInSprint,
                     isLeftFootOnFront: false,
                     posture: mode.Posture,
                     gait: mode.Gait,
@@ -308,7 +306,6 @@ namespace Game.Locomotion.Agent
 
             currentVelocity = Vector3.zero;
             currentLocalVelocity = Vector2.zero;
-            lastMoveInput = Vector2.zero;
 
             snapshot = new SLocomotion(
                 position,
@@ -350,10 +347,10 @@ namespace Game.Locomotion.Agent
 
         private void EnsureLocomotionControllerCreated()
         {
-            if (locomotionController == null)
+            if (locomotionStateController == null)
             {
                 // For now we always use the Human archetype.
-                locomotionController = new HumanLocomotionController();
+                locomotionStateController = new HumanLocomotionStateController();
             }
         }
 

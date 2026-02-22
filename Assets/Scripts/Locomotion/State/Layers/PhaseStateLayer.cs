@@ -18,7 +18,7 @@ namespace Game.Locomotion.State.Layers
             Current = defaultState;
         }
 
-        public void Update(in LocomotionStateContext context)
+        public void Update(in SLocomotionStateContext context)
         {
             if (!context.GroundContact.IsGrounded)
             {

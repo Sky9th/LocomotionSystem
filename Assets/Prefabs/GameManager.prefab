@@ -50,6 +50,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6bbab9c561509af44a4e4b2c2a749982, type: 2}
   - {fileID: 11400000, guid: 99babbaf43a9ca845af56e5630c93d66, type: 2}
   - {fileID: 11400000, guid: 251d29253f5b1794891c79b95fc6191e, type: 2}
+  - {fileID: 11400000, guid: 0881f918bc760034c9798b12d005f853, type: 2}
+  - {fileID: 11400000, guid: 3fa90155b8d7d4a4c988178eff707d2b, type: 2}
+  - {fileID: 11400000, guid: 7692693fb45cbec4285a6fee9cb7724b, type: 2}
+  - {fileID: 11400000, guid: 46b351c7f488dbb488edf3a486ec57fb, type: 2}
+  - {fileID: 11400000, guid: d3651902b20d0514d8468ca575232bf6, type: 2}
 --- !u!1 &1175424615136475373
 GameObject:
   m_ObjectHideFlags: 0
@@ -152,53 +157,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!1 &1925739274853388745
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5709929696532263525}
-  - component: {fileID: 2333077700768052690}
-  m_Layer: 0
-  m_Name: LocomotionManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5709929696532263525
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1925739274853388745}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 3894078953817663475}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2333077700768052690
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1925739274853388745}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3a13c2bb41b0c44689ba9be96aa8f44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  logRegistrations: 0
-  defaultPlayerAgent: {fileID: 0}
-  inspectorAgents: []
 --- !u!1 &2544498287888904649
 GameObject:
   m_ObjectHideFlags: 0
@@ -323,7 +281,7 @@ Transform:
   m_GameObject: {fileID: 3152192695488761682}
   serializedVersion: 2
   m_LocalRotation: {x: 0.03506043, y: -0.95769334, z: 0.13282421, w: -0.2528873}
-  m_LocalPosition: {x: -1.1742797, y: 2.845039, z: 9.133162}
+  m_LocalPosition: {x: -1.9218912, y: -4.3136663, z: 10.718609}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -430,7 +388,7 @@ Transform:
   m_GameObject: {fileID: 4898776649688329902}
   serializedVersion: 2
   m_LocalRotation: {x: 0.03506043, y: -0.95769334, z: 0.13282421, w: -0.2528873}
-  m_LocalPosition: {x: -1.1742797, y: 2.845039, z: 9.133162}
+  m_LocalPosition: {x: -1.9218924, y: -4.3136654, z: 10.718614}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -703,7 +661,6 @@ Transform:
   - {fileID: 4532451855670478352}
   - {fileID: 2122121698974375300}
   - {fileID: 7468209249527062644}
-  - {fileID: 5709929696532263525}
   - {fileID: 2503843411843990897}
   - {fileID: 2374476992311174463}
   - {fileID: 16914245774299700}
@@ -725,7 +682,6 @@ MonoBehaviour:
   gameContext: {fileID: 0}
   eventDispatcher: {fileID: 0}
   gameState: {fileID: 0}
-  lockCursorWhenPlaying: 1
 --- !u!1 &7008490145074102192
 GameObject:
   m_ObjectHideFlags: 0
@@ -772,6 +728,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initialState: 10
   logTransitions: 0
+  lockCursorWhenPlaying: 1
   currentState: 0
   previousState: 0
 --- !u!1 &7829246681269074910

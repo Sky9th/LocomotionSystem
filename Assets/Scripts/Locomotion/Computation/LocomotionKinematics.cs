@@ -23,7 +23,7 @@ namespace Game.Locomotion.Computation
             SMoveIAction moveAction,
             LocomotionAnimationProfile config)
         {
-            if (config == null || !moveAction.HasInput)
+            if (moveAction.Equals(SMoveIAction.None) || !moveAction.HasInput || config == null)
             {
                 return Vector2.zero;
             }

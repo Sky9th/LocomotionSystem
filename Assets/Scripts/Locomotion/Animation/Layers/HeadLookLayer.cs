@@ -13,9 +13,17 @@ namespace Game.Locomotion.Animation.Layers
     /// </summary>
     internal sealed class HeadLookLayer : ILocomotionAnimationLayer
     {
+        private const string HeadLayerName = "HeadLook";
+
         private bool mixerInitialized;
         private float smoothedYaw;
         private float smoothedPitch;
+
+        private SLocomotionAnimationLayerSnapshot lastSnapshot;
+
+        public string LayerName => HeadLayerName;
+
+        public SLocomotionAnimationLayerSnapshot AnimationSnapshot => lastSnapshot;
 
         public void Update(in LocomotionAnimationContext context)
         {
@@ -71,6 +79,14 @@ namespace Game.Locomotion.Animation.Layers
             }
 
             state.Parameter = new Vector2(smoothedYaw, smoothedPitch);
+
+            // Head look currently does not distinguish turn animations so
+            // IsTurnAnimation is always false and we don't track clip alias.
+            lastSnapshot = new SLocomotionAnimationLayerSnapshot(
+                layerName: HeadLayerName,
+                alias: alias.lookMixer,
+                normalizedTime: 0f,
+                isTurnAnimation: false);
         }
     }
 }

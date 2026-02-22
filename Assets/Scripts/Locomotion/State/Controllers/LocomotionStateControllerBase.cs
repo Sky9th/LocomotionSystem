@@ -5,14 +5,14 @@ using Game.Locomotion.Computation;
 namespace Game.Locomotion.State.Controllers
 {
     /// <summary>
-    /// Base implementation of <see cref="ILocomotionController"/>.
+    /// Base implementation of <see cref="ILocomotionStateController"/>.
     ///
     /// Owns a <see cref="LocomotionStateMachine"/> and forwards
     /// evaluation requests to it. Concrete archetype controllers
     /// can override <see cref="CreateStateMachine"/> to customise
     /// how the state machine is built without changing the Agent.
     /// </summary>
-    internal abstract class LocomotionControllerBase : ILocomotionController
+    internal abstract class LocomotionStateControllerBase : ILocomotionStateController
     {
         protected readonly LocomotionStateMachine StateMachine;
 
@@ -20,7 +20,7 @@ namespace Game.Locomotion.State.Controllers
 
         private readonly LocomotionTurn turnHelper = new LocomotionTurn();
 
-        protected LocomotionControllerBase()
+        protected LocomotionStateControllerBase()
         {
             StateMachine = CreateStateMachine();
 
@@ -45,7 +45,7 @@ namespace Game.Locomotion.State.Controllers
         public bool IsTurningInRun { get; private set; }
         public bool IsTurningInSprint { get; private set; }
 
-        public SLocomotionDiscreteState UpdateDiscreteState(in LocomotionStateContext context, float deltaTime)
+        public SLocomotionDiscreteState UpdateDiscreteState(in SLocomotionStateContext context, float deltaTime)
         {
             currentState = StateMachine.Evaluate(in context);
 

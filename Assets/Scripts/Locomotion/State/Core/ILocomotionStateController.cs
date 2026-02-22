@@ -7,9 +7,9 @@ namespace Game.Locomotion.State.Core
     ///
     /// Represents a complete locomotion rule set for a given archetype
     /// (Human, Zombie, etc.) and exposes a single entry point to evaluate
-    /// discrete locomotion state from a <see cref="LocomotionStateContext"/>.
+    /// discrete locomotion state from a <see cref="SLocomotionStateContext"/>.
     /// </summary>
-    internal interface ILocomotionController
+    internal interface ILocomotionStateController
     {
         /// <summary>Latest evaluated discrete locomotion state.</summary>
         SLocomotionDiscreteState CurrentState { get; }
@@ -41,6 +41,6 @@ namespace Game.Locomotion.State.Core
         /// resulting state in <see cref="CurrentState"/> and update any
         /// additional state-related outputs such as turning information.
         /// </summary>
-        SLocomotionDiscreteState UpdateDiscreteState(in LocomotionStateContext context, float deltaTime);
+        SLocomotionDiscreteState UpdateDiscreteState(in SLocomotionStateContext context, float deltaTime);
     }
 }

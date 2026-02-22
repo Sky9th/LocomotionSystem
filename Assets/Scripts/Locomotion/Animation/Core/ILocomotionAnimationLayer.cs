@@ -7,6 +7,13 @@ namespace Game.Locomotion.Animation.Core
     /// </summary>
     internal interface ILocomotionAnimationLayer
     {
+        /// <summary>Logical name of this locomotion animation layer.</summary>
+        string LayerName { get; }
+
+        /// <summary>Update this animation layer for the current frame.</summary>
         void Update(in LocomotionAnimationContext context);
+
+        /// <summary>Latest animation snapshot produced by this layer.</summary>
+        SLocomotionAnimationLayerSnapshot AnimationSnapshot { get; }
     }
 }

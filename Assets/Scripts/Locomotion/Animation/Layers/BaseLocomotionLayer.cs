@@ -9,14 +9,28 @@ namespace Game.Locomotion.Animation.Layers
     /// <summary>
     /// Base locomotion layer responsible for idle / walk / run / sprint
     /// style movement based on the locomotion snapshot's gait, posture
-    /// and planar speed. The initial version is a stub and will be
-    /// implemented in later iterations.
+    /// and planar speed.
     /// </summary>
     internal sealed class BaseLocomotionLayer : ILocomotionAnimationLayer
     {
+        private const string BaseLayerName = "BaseLocomotion";
+
         private StringAsset lastPlayedAlias;
 
         private AnimancerState currentState;
+
+        private SLocomotionAnimationLayerSnapshot lastSnapshot;
+
+        // Prevent immediately re-entering a turn animation while the
+        // higher level locomotion logic still reports "turning" after
+        // a turn clip has already completed. This avoids getting stuck
+        // in a loop of back-to-back turn clips when the player keeps
+        // rotating the camera.
+        private bool turnCooldownActive;
+
+        public string LayerName => BaseLayerName;
+
+        public SLocomotionAnimationLayerSnapshot AnimationSnapshot => lastSnapshot;
 
         public void Update(in LocomotionAnimationContext context)
         {
@@ -42,95 +56,53 @@ namespace Game.Locomotion.Animation.Layers
             AnimancerLayer baseLayer = animancer.Layers[0];
 
             ELocomotionState stateLayer = snapshot.State;
-            StringAsset nextAlias = null;
+            StringAsset baseAlias = GetBaseLocomotionAlias(stateLayer, snapshot.Gait, alias);
+            StringAsset nextAlias = baseAlias;
+
+            bool isAnyTurning = snapshot.IsTurningInPlace ||
+                                snapshot.IsTurningInWalk ||
+                                snapshot.IsTurningInRun ||
+                                snapshot.IsTurningInSprint;
+
+            // Once the logical layer stops reporting any turning, we
+            // lift the cooldown so a new turn can be started later.
+            if (!isAnyTurning)
+            {
+                turnCooldownActive = false;
+            }
 
             if (stateLayer == ELocomotionState.GroundedIdle)
             {
-                // Idle and turn-in-place.
-                float angle = snapshot.TurnAngle;
-                float absAngle = Mathf.Abs(angle);
-                float exitAngle = profile.turnExitAngle;
-
-                if (snapshot.IsTurningInPlace && (exitAngle <= 0f || absAngle > exitAngle))
+                StringAsset idleTurnAlias = SelectIdleTurnAlias(in snapshot, alias, profile);
+                if (idleTurnAlias != null)
                 {
-                    bool isRightTurn = angle > 0f;
-                    bool use180 = absAngle > 90f;
-
-                    if (isRightTurn)
-                    {
-                        // Right turn.
-                        StringAsset desired = use180 ? alias.turnInPlace180R : alias.turnInPlace90R;
-
-                        // If we are already playing a 180 turn, do not
-                        // downgrade to a 90 turn mid-animation.
-                        if (!use180 && lastPlayedAlias == alias.turnInPlace180R)
-                        {
-                            desired = alias.turnInPlace180R;
-                        }
-
-                        nextAlias = desired;
-                    }
-                    else
-                    {
-                        // Left turn.
-                        StringAsset desired = use180 ? alias.turnInPlace180L : alias.turnInPlace90L;
-
-                        // If we are already playing a 180 turn, do not
-                        // downgrade to a 90 turn mid-animation.
-                        if (!use180 && lastPlayedAlias == alias.turnInPlace180L)
-                        {
-                            desired = alias.turnInPlace180L;
-                        }
-
-                        nextAlias = desired;
-                    }
-                }
-                else
-                {
-                    // Plain idle.
-                    nextAlias = alias.idleL;
+                    nextAlias = idleTurnAlias;
                 }
             }
             else if (stateLayer == ELocomotionState.GroundedMoving)
             {
-                // TODO: Play walk / run / sprint animation based on gait.
-                if (snapshot.Gait == EMovementGait.Walk)
-                {
-                    nextAlias = alias.walkMixer;
-                }
-                else if (snapshot.Gait == EMovementGait.Run)
-                {
-                    float angle = snapshot.TurnAngle;
-                    float absAngle = Mathf.Abs(angle);
-                    float exitAngle = profile.turnExitAngle;
-
-                    if (snapshot.IsTurningInRun && (exitAngle <= 0f || absAngle > exitAngle))
-                    {
-                        bool isRightTurn = angle > 0f;
-                        bool use180 = absAngle > 90f;
-
-                        if (isRightTurn && use180)
-                        {
-                            nextAlias = alias.turnInRun180R;
-                        }
-                        else if (!isRightTurn && use180)
-                        {
-                            nextAlias = alias.turnInRun180L;
-                        }
-                    }
-                    else
-                    {
-                        nextAlias = alias.runMixer;
-                    }
-                }
-                else if (snapshot.Gait == EMovementGait.Sprint)
-                {
-                    nextAlias = alias.sprintMixer;
-                }
+                nextAlias = SelectMovingAlias(in snapshot, alias, profile, baseAlias);
             }
             else if (stateLayer == ELocomotionState.Airborne)
             {
                 // TODO: Play jump / fall animation based on condition.
+            }
+
+            // If we have just finished a turn animation, immediately
+            // fall back to the appropriate base locomotion clip even if
+            // the higher level locomotion logic still reports a large
+            // turn angle. This prevents the character from getting stuck
+            // on the last frame of a turn clip.
+            if (IsTurnAlias(lastPlayedAlias, alias) && HasAnimationCompleted(currentState))
+            {
+                // Mark cooldown so we don't immediately re-enter another
+                // turn clip on the next frame while IsTurning* is still
+                // being reported by the locomotion state controller.
+                turnCooldownActive = true;
+
+                // Fall back to the base locomotion clip for the current
+                // locomotion state and gait.
+                nextAlias = baseAlias;
             }
 
             if (nextAlias != null && nextAlias != lastPlayedAlias)
@@ -162,6 +134,179 @@ namespace Game.Locomotion.Animation.Layers
                     vector2Mixer.Parameter = parameter;
                 }
             }
+
+            float normalizedTime = currentState != null ? (float)currentState.NormalizedTime : 0f;
+            bool isTurnAnimation = IsTurnAlias(lastPlayedAlias, alias);
+            lastSnapshot = new SLocomotionAnimationLayerSnapshot(
+                layerName: BaseLayerName,
+                alias: lastPlayedAlias,
+                normalizedTime: normalizedTime,
+                isTurnAnimation: isTurnAnimation);
+        }
+
+        private static bool HasAnimationCompleted(AnimancerState state)
+        {
+            if (state == null)
+            {
+                return false;
+            }
+
+            float normalizedTime = (float)state.NormalizedTime;
+            Logger.Log($"Current turn animation normalized time: {normalizedTime}");
+            return normalizedTime >= 0.99f;
+        }
+
+        private static StringAsset GetBaseLocomotionAlias(ELocomotionState stateLayer, EMovementGait gait, AnimancerStringProfile profile)
+        {
+            if (profile == null)
+            {
+                return null;
+            }
+
+            switch (stateLayer)
+            {
+                case ELocomotionState.GroundedIdle:
+                    return profile.idleL;
+
+                case ELocomotionState.GroundedMoving:
+                    switch (gait)
+                    {
+                        case EMovementGait.Walk:
+                            return profile.walkMixer;
+                        case EMovementGait.Run:
+                            return profile.runMixer;
+                        case EMovementGait.Sprint:
+                            return profile.sprint;
+                    }
+                    break;
+            }
+
+            return null;
+        }
+
+        private StringAsset SelectIdleTurnAlias(in SLocomotion snapshot, AnimancerStringProfile profile, LocomotionAnimationProfile animationProfile)
+        {
+            if (profile == null || animationProfile == null)
+            {
+                return null;
+            }
+
+            float angle = snapshot.TurnAngle;
+            float absAngle = Mathf.Abs(angle);
+            float exitAngle = animationProfile.turnExitAngle;
+
+            if (!ShouldEnterTurn(snapshot.IsTurningInPlace, turnCooldownActive, absAngle, exitAngle))
+            {
+                return null;
+            }
+
+            bool isRightTurn = angle > 0f;
+            bool use180 = absAngle > 90f;
+
+            if (isRightTurn)
+            {
+                // Right turn.
+                StringAsset desired = use180 ? profile.turnInPlace180R : profile.turnInPlace90R;
+
+                // If we are already playing a 180 turn, do not
+                // downgrade to a 90 turn mid-animation.
+                if (!use180 && lastPlayedAlias == profile.turnInPlace180R)
+                {
+                    desired = profile.turnInPlace180R;
+                }
+
+                return desired;
+            }
+
+            // Left turn.
+            StringAsset leftDesired = use180 ? profile.turnInPlace180L : profile.turnInPlace90L;
+
+            // If we are already playing a 180 turn, do not
+            // downgrade to a 90 turn mid-animation.
+            if (!use180 && lastPlayedAlias == profile.turnInPlace180L)
+            {
+                leftDesired = profile.turnInPlace180L;
+            }
+
+            return leftDesired;
+        }
+
+        private StringAsset SelectMovingAlias(in SLocomotion snapshot, AnimancerStringProfile profile, LocomotionAnimationProfile animationProfile, StringAsset defaultAlias)
+        {
+            if (profile == null || animationProfile == null)
+            {
+                return defaultAlias;
+            }
+
+            float angle = snapshot.TurnAngle;
+            float absAngle = Mathf.Abs(angle);
+            float exitAngle = animationProfile.turnExitAngle;
+            bool isRightTurn = angle > 0f;
+
+            switch (snapshot.Gait)
+            {
+                case EMovementGait.Walk:
+                    if (ShouldEnterTurn(snapshot.IsTurningInWalk, turnCooldownActive, absAngle, exitAngle))
+                    {
+                        return isRightTurn ? profile.turnInWalk180R : profile.turnInWalk180L;
+                    }
+                    break;
+
+                case EMovementGait.Run:
+                    if (ShouldEnterTurn(snapshot.IsTurningInRun, turnCooldownActive, absAngle, exitAngle))
+                    {
+                        return isRightTurn ? profile.turnInRun180R : profile.turnInRun180L;
+                    }
+                    break;
+
+                case EMovementGait.Sprint:
+                    if (ShouldEnterTurn(snapshot.IsTurningInSprint, turnCooldownActive, absAngle, exitAngle))
+                    {
+                        return isRightTurn ? profile.turnInSprint180R : profile.turnInSprint180L;
+                    }
+                    break;
+            }
+
+            return defaultAlias;
+        }
+
+        private static bool ShouldEnterTurn(bool isTurning, bool cooldownActive, float absAngle, float exitAngle)
+        {
+            if (!isTurning)
+            {
+                return false;
+            }
+
+            if (cooldownActive)
+            {
+                return false;
+            }
+
+            if (exitAngle > 0f && absAngle <= exitAngle)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool IsTurnAlias(StringAsset alias, AnimancerStringProfile profile)
+        {
+            if (profile == null || alias == null)
+            {
+                return false;
+            }
+
+            return alias == profile.turnInPlace90L ||
+                   alias == profile.turnInPlace90R ||
+                   alias == profile.turnInPlace180L ||
+                   alias == profile.turnInPlace180R ||
+                   alias == profile.turnInWalk180L ||
+                   alias == profile.turnInWalk180R ||
+                   alias == profile.turnInRun180L ||
+                   alias == profile.turnInRun180R ||
+                   alias == profile.turnInSprint180L ||
+                   alias == profile.turnInSprint180R;
         }
     }
 }
