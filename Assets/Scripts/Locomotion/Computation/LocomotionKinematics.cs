@@ -8,33 +8,59 @@ namespace Game.Locomotion.Computation
     /// Minimal kinematics helper for Locomotion v2.
     ///
     /// Converts high-level move input and configuration values into
-    /// planar world-space velocity. Exposes helpers for computing a
-    /// desired velocity and then smoothing towards it over time.
+    /// planar velocities. Exposes helpers for computing a desired
+    /// local planar velocity and converting it to world-space, as
+    /// well as smoothing towards that velocity over time.
     /// </summary>
     internal static class LocomotionKinematics
     {
-        internal static Vector3 ComputeDesiredPlanarVelocity(
-            Vector3 locomotionHeading,
+        /// <summary>
+        /// Computes the desired planar velocity in character-local space
+        /// based on move input and configuration. X is strafe (left/right)
+        /// and Y is forward/back.
+        /// </summary>
+        internal static Vector2 ComputeDesiredPlanarVelocity(
             SMoveIAction moveAction,
             LocomotionAnimationProfile config)
         {
             if (config == null || !moveAction.HasInput)
             {
-                return Vector3.zero;
+                return Vector2.zero;
             }
 
-            // Use the magnitude of the input vector as an intensity factor
-            // and scale it by the configured move speed.
-            float intensity = Mathf.Clamp01(moveAction.RawInput.magnitude);
-            float speed = intensity * config.MoveSpeed;
+            // Derive local planar velocity from raw move input so that
+            // pressing A, for example, results in a purely leftward
+            // local velocity.
+            Vector2 input = moveAction.RawInput;
+            float intensity = Mathf.Clamp01(input.magnitude);
+            float speed = intensity * config.moveSpeed;
 
-            Vector3 heading = locomotionHeading;
-            heading.y = 0f;
-            if (heading.sqrMagnitude <= Mathf.Epsilon)
+            if (input.sqrMagnitude > Mathf.Epsilon)
             {
-                heading = Vector3.forward;
+                input = input.normalized;
             }
-            return heading.normalized * speed;
+
+            return input * speed;
+        }
+
+        /// <summary>
+        /// Converts a local-space planar velocity into world-space using
+        /// the given locomotion heading as the forward axis.
+        /// </summary>
+        internal static Vector3 ConvertLocalToWorldPlanarVelocity(
+            Vector2 localVelocity,
+            Vector3 locomotionHeading)
+        {
+            Vector3 forward = locomotionHeading;
+            forward.y = 0f;
+            if (forward.sqrMagnitude <= Mathf.Epsilon)
+            {
+                forward = Vector3.forward;
+            }
+            forward.Normalize();
+
+            Vector3 right = Vector3.Cross(Vector3.up, forward);
+            return forward * localVelocity.y + right * localVelocity.x;
         }
 
         internal static Vector3 SmoothVelocity(

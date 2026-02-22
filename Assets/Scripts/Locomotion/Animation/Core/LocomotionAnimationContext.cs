@@ -10,14 +10,14 @@ namespace Game.Locomotion.Animation.Core
     /// </summary>
     internal readonly struct LocomotionAnimationContext
     {
-        public readonly SPlayerLocomotion Snapshot;
+        public readonly SLocomotion Snapshot;
         public readonly float DeltaTime;
         public readonly NamedAnimancerComponent Animancer;
         public readonly AnimancerStringProfile Alias;
         public readonly LocomotionAnimationProfile Profile;
 
         public LocomotionAnimationContext(
-            SPlayerLocomotion snapshot,
+            SLocomotion snapshot,
             float deltaTime,
             NamedAnimancerComponent animancer,
             AnimancerStringProfile alias,

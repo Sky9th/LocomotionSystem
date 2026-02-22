@@ -40,7 +40,7 @@ namespace Game.Locomotion.Agent
         [SerializeField, Min(0.1f)] private float debugForwardLength = 2f;
 
         // Latest locomotion snapshot for this character.
-        private SPlayerLocomotion snapshot = SPlayerLocomotion.Default;
+        private SLocomotion snapshot = SLocomotion.Default;
 
         // Centralized input module (subscribes global IAactions and forwards
         // them into this agent's internal buffer).
@@ -55,6 +55,7 @@ namespace Game.Locomotion.Agent
         // Smoothed world-space velocity and last non-zero move input
         // used to derive local planar velocity.
         private Vector3 currentVelocity = Vector3.zero;
+        private Vector2 currentLocalVelocity = Vector2.zero;
         private Vector2 lastMoveInput = Vector2.zero;
 
         // Last evaluated discrete locomotion state used to seed
@@ -70,7 +71,7 @@ namespace Game.Locomotion.Agent
         public bool IsPlayer => isPlayer;
 
         /// <summary>Latest locomotion snapshot computed by this agent.</summary>
-        public SPlayerLocomotion Snapshot => snapshot;
+        public SLocomotion Snapshot => snapshot;
 
         /// <summary>Anchor transform used as camera / desired heading reference.</summary>
         public Transform FollowAnchor => followAnchor;
@@ -211,27 +212,34 @@ namespace Game.Locomotion.Agent
             Vector3 bodyForward = modelRoot != null ? modelRoot.forward : transform.forward;
             Vector3 locomotionHeading = LocomotionHeading.Evaluate(followAnchor, transform);
 
-            float maxSlopeAngle = config != null ? config.MaxGroundSlopeAngle : 0f;
+            float maxSlopeAngle = config != null ? config.maxGroundSlopeAngle : 0f;
             SGroundContact groundContact = LocomotionGroundDetection.SampleGround(
                 position,
                 groundRayLength,
                 groundLayerMask,
                 maxSlopeAngle);
 
-            // Compute desired planar velocity from move input and
-            // MoveSpeed, then smooth towards it using the configured
-            // acceleration. This keeps the actual movement speed
-            // normalized by MoveSpeed without per-gait speed caps.
-            Vector3 desiredVelocity = LocomotionKinematics.ComputeDesiredPlanarVelocity(
-                locomotionHeading,
+            // Compute desired local planar velocity from move input and
+            // MoveSpeed, then convert it to world-space and smooth
+            // towards it using the configured acceleration. This keeps
+            // the actual movement speed normalized by MoveSpeed without
+            // per-gait speed caps.
+            Vector2 desiredLocalVelocity = LocomotionKinematics.ComputeDesiredPlanarVelocity(
                 moveAction,
                 config);
-            float acceleration = config != null ? config.Acceleration : 0f;
-            currentVelocity = LocomotionKinematics.SmoothVelocity(
-                currentVelocity,
-                desiredVelocity,
+            float acceleration = config != null ? config.acceleration : 0f;
+            currentLocalVelocity = LocomotionKinematics.SmoothVelocity(
+                currentLocalVelocity,
+                desiredLocalVelocity,
                 acceleration,
                 deltaTime);
+
+            Vector3 desiredVelocity = LocomotionKinematics.ConvertLocalToWorldPlanarVelocity(
+                desiredLocalVelocity,
+                locomotionHeading);
+            currentVelocity = LocomotionKinematics.ConvertLocalToWorldPlanarVelocity(
+                currentLocalVelocity,
+                locomotionHeading);
 
             var stateContext = new LocomotionStateContext(
                 currentVelocity,
@@ -266,20 +274,15 @@ namespace Game.Locomotion.Agent
                 float turnAngle = locomotionController.CurrentTurnAngle;
 
                 // 3) Assemble the external locomotion snapshot DTO.
-                // Derive local planar velocity using the shared helper.
-                LocomotionPlanarVelocity.Evaluate(
-                    currentVelocity,
-                    locomotionHeading,
-                    moveAction,
-                    ref lastMoveInput,
-                    out Vector2 localVelocity);
-
-                snapshot = new SPlayerLocomotion(
+                snapshot = new SLocomotion(
                     position,
-                    velocity: currentVelocity,
+                    desiredLocalVelocity: desiredLocalVelocity,
+                    actualLocalVelocity: currentLocalVelocity,
+                    desiredPlanarVelocity: desiredVelocity,
+                    actualPlanarVelocity: currentVelocity,
+                    actualSpeed: currentVelocity.magnitude,
                     locomotionHeading: locomotionHeading,
                     bodyForward: bodyForward,
-                    localVelocity: localVelocity,
                     lookDirection: lookDirection,
                     discreteState: mode,
                     groundContact: groundContact,
@@ -304,14 +307,18 @@ namespace Game.Locomotion.Agent
             Vector3 locomotionHeading = LocomotionHeading.Evaluate(followAnchor, transform);
 
             currentVelocity = Vector3.zero;
+            currentLocalVelocity = Vector2.zero;
             lastMoveInput = Vector2.zero;
 
-            snapshot = new SPlayerLocomotion(
+            snapshot = new SLocomotion(
                 position,
-                velocity: Vector3.zero,
+                desiredLocalVelocity: Vector2.zero,
+                actualLocalVelocity: Vector2.zero,
+                desiredPlanarVelocity: Vector3.zero,
+                actualPlanarVelocity: Vector3.zero,
+                actualSpeed: 0f,
                 locomotionHeading: locomotionHeading,
                 bodyForward: bodyForward,
-                localVelocity: Vector2.zero,
                 lookDirection: Vector2.zero,
                 discreteState: new SLocomotionDiscreteState(
                     ELocomotionState.GroundedIdle,

@@ -29,7 +29,7 @@ namespace Game.Locomotion.Animation.Core
             this.layers = layers ?? Array.Empty<ILocomotionAnimationLayer>();
         }
 
-        public void UpdateAnimations(SPlayerLocomotion snapshot, float deltaTime)
+        public void UpdateAnimations(SLocomotion snapshot, float deltaTime)
         {
             if (animancer == null || alias == null || profile == null)
             {

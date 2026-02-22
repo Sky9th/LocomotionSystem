@@ -40,7 +40,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1947580238982052747}
-  - component: {fileID: 6472117511268014734}
   - component: {fileID: 2838104954811850373}
   - component: {fileID: 734908337582309742}
   m_Layer: 0
@@ -67,19 +66,6 @@ Transform:
   - {fileID: 3954816038181264415}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6472117511268014734
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8667043660662020576}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7bbae2fefb804dd4a81e63708894d735, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PlayerPrefab: {fileID: 0}
 --- !u!114 &2838104954811850373
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94,7 +80,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   followAnchor: {fileID: 3954816038181264415}
   modelRoot: {fileID: 7880520753254052221}
-  config: {fileID: 11400000, guid: d254e0574a65f2f4f8cec62548948e01, type: 2}
+  config: {fileID: 11400000, guid: 264e4d30fb02cbb4b93aefb446d194ea, type: 2}
   groundRayLength: 1.5
   groundLayerMask:
     serializedVersion: 2
@@ -253,7 +239,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!136 &5731044568329433362
 CapsuleCollider:

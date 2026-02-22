@@ -43,7 +43,7 @@ public class PlayerManager : BaseService
 
         if (Dispatcher != null)
         {
-            Dispatcher.Publish(new PlayerSpawnedEvent(playerInstance.transform, isLocalPlayer: true));
+            Dispatcher.Publish(new SPlayerSpawnedEvent(playerInstance.transform, isLocalPlayer: true));
         }
     }
 }

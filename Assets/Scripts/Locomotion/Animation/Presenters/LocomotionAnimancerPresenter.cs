@@ -68,7 +68,7 @@ namespace Game.Locomotion.Animation.Presenters
             }
 
             float deltaTime = Time.deltaTime;
-            SPlayerLocomotion snapshot = agent.Snapshot;
+            SLocomotion snapshot = agent.Snapshot;
             controller.UpdateAnimations(snapshot, deltaTime);
 
             // Apply model rotation for grounded movement based on the

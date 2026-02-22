@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7974e62be0c32494cab3584e2c26f94c, type: 3}
   m_Name: HumanLocomotionAnimationProfile
   m_EditorClassIdentifier: 
+  moveSpeed: 4
+  acceleration: 10
+  maxGroundSlopeAngle: 55
   walkSpeedThreshold: 1
   runSpeedThreshold: 3
   sprintSpeedThreshold: 5
