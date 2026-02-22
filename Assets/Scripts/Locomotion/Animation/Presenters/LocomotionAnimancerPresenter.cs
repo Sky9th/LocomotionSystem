@@ -1,10 +1,10 @@
 using UnityEngine;
 using Animancer;
-using Animancer.TransitionLibraries;
 using Game.Locomotion.Agent;
 using Game.Locomotion.Animation.Config;
 using Game.Locomotion.Animation.Core;
 using Game.Locomotion.Animation.Layers;
+using System.Collections.Generic;
 
 namespace Game.Locomotion.Animation.Presenters
 {
@@ -19,7 +19,7 @@ namespace Game.Locomotion.Animation.Presenters
     public sealed class LocomotionAnimancerPresenter : MonoBehaviour
     {
         [Header("Dependencies")]
-        [SerializeField] private Game.Locomotion.Agent.LocomotionAgent agent;
+        [SerializeField] private LocomotionAgent agent;
         [SerializeField] private NamedAnimancerComponent animancer;
         [SerializeField] private AnimancerStringProfile animancerStringProfile;
         [SerializeField] private LocomotionAnimationProfile animationProfile;
@@ -29,11 +29,24 @@ namespace Game.Locomotion.Animation.Presenters
 
         private LocomotionAnimationController controller;
 
+        public IReadOnlyDictionary<string, SLocomotionAnimationLayerSnapshot> AnimationSnapshots
+        {
+            get
+            {
+                if (controller == null)
+                {
+                    return null;
+                }
+
+                return controller.AnimationSnapshots;
+            }
+        }
+
         private void Awake()
         {
             if (agent == null)
             {
-                agent = GetComponent<Game.Locomotion.Agent.LocomotionAgent>();
+                agent = GetComponent<LocomotionAgent>();
             }
 
             if (animancer == null)
@@ -78,10 +91,26 @@ namespace Game.Locomotion.Animation.Presenters
             // the state and computation modules.
             if (animationProfile != null && snapshot.State == ELocomotionState.GroundedMoving)
             {
-                if(snapshot.IsTurningInWalk || snapshot.IsTurningInRun || snapshot.IsTurningInSprint)
+                bool isTurning = snapshot.IsTurningInWalk || snapshot.IsTurningInRun || snapshot.IsTurningInSprint;
+
+                if (isTurning)
                 {
-                    return;
+                    // Only suppress presenter-driven rotation while a
+                    // dedicated turn animation is actually playing on
+                    // the base locomotion layer. Once the animation has
+                    // finished (and BaseLocomotionLayer has blended
+                    // back to the gait mixer), allow this presenter to
+                    // rotate the model even if the logical state still
+                    // reports IsTurning = true.
+                    var snapshots = controller.AnimationSnapshots;
+                    if (snapshots != null &&
+                        snapshots.TryGetValue("BaseLocomotion", out SLocomotionAnimationLayerSnapshot baseSnapshot) &&
+                        baseSnapshot.IsTurnAnimation)
+                    {
+                        return;
+                    }
                 }
+
                 bool isMoving = snapshot.Gait != EMovementGait.Idle;
                 float turnSpeed = animationProfile.GetTurnSpeed(snapshot.Posture, snapshot.Gait, isMoving);
                 float absAngle = Mathf.Abs(snapshot.TurnAngle);

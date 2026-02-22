@@ -15,7 +15,7 @@ namespace Game.Locomotion.State.Layers
             Current = defaultState;
         }
 
-        public void Update(in LocomotionStateContext context)
+        public void Update(in SLocomotionStateContext context)
         {
             // Start from previous frame's posture so that lack of input
             // keeps the current posture.

@@ -19,9 +19,9 @@ public class IAPlayerSprint : InputActionHandler
             return;
         }
 
-        bool rawInput = context.ReadValue<bool>();
+        bool isPressed = context.ReadValueAsButton();
 
-        SSprintIAction intent = new SSprintIAction(rawInput);
+        SSprintIAction intent = new SSprintIAction(isPressed, context.phase);
 
         eventDispatcher.Publish(intent);
     }

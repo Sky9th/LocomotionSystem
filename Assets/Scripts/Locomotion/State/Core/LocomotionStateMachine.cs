@@ -48,7 +48,7 @@ namespace Game.Locomotion.State.Core
         /// Evaluate all layers for the given context and return the
         /// aggregated discrete locomotion state.
         /// </summary>
-        public SLocomotionDiscreteState Evaluate(in LocomotionStateContext context)
+        public SLocomotionDiscreteState Evaluate(in SLocomotionStateContext context)
         {
             phaseLayer.Update(in context);
             gaitLayer.Update(in context);

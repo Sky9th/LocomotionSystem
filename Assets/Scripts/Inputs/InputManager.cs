@@ -26,7 +26,7 @@ public class InputManager : BaseService
     protected override void OnDispatcherAttached()
     {
         base.OnDispatcherAttached();
-        ConfigureActions();
+        InitializeInputHandlers();
 
         if (isActiveAndEnabled)
         {
@@ -41,7 +41,7 @@ public class InputManager : BaseService
         Dispatcher.Subscribe<SGameState>(HandleGameStateChanged);
     }
 
-    private void ConfigureActions()
+    private void InitializeInputHandlers()
     {
         if (actionsConfigured)
         {

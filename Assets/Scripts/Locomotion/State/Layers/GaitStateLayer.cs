@@ -1,5 +1,6 @@
 using UnityEngine;
 using Game.Locomotion.State.Core;
+using UnityEngine.InputSystem;
 
 namespace Game.Locomotion.State.Layers
 {
@@ -17,56 +18,31 @@ namespace Game.Locomotion.State.Layers
             Current = defaultState;
         }
 
-        public void Update(in LocomotionStateContext context)
+        public void Update(in SLocomotionStateContext context)
         {
             // No move input means the character should be considered idle.
-            if (!context.MoveAction.HasInput)
+            if (!context.MoveAction.Equals(SMoveIAction.None))
             {
-                Current = EMovementGait.Idle;
-                return;
-            }
+                if(context.MoveAction.Phase == InputActionPhase.Canceled)
+                {
+                    Current = EMovementGait.Idle;
+                } 
+                else if (context.MoveAction.Phase == InputActionPhase.Performed)
+                {
+                    EMovementGait gait = Current;
+                    if (gait == EMovementGait.Idle)
+                    {
+                        gait = EMovementGait.Run;
+                    }
 
-            // Start from the previous gait; if we are transitioning from
-            // Idle into movement without any explicit gait input yet,
-            // default to Run as the baseline moving gait.
-            EMovementGait gait = Current;
-            if (gait == EMovementGait.Idle)
-            {
-                gait = EMovementGait.Run;
-            }
+                    if (context.SprintAction.HasInput && context.SprintAction.Phase == InputActionPhase.Performed)
+                    {
+                        gait = gait == EMovementGait.Sprint ? EMovementGait.Run : EMovementGait.Sprint;
+                    }
 
-            // Walk and Sprint act as toggle buttons around the default
-            // Run gait.
-            if (context.WalkAction.HasInput)
-            {
-                gait = gait == EMovementGait.Walk ? EMovementGait.Run : EMovementGait.Walk;
+                    Current = gait;
+                }
             }
-
-            if (context.SprintAction.HasInput)
-            {
-                gait = gait == EMovementGait.Sprint ? EMovementGait.Run : EMovementGait.Sprint;
-            }
-
-            // Optional: an explicit Run input can be used as a quick
-            // way to reset back to the baseline running gait.
-            if (context.RunAction.HasInput)
-            {
-                gait = EMovementGait.Run;
-            }
-
-            // Apply simple posture-based constraints so that prone cannot
-            // move and crouch cannot sprint.
-            EPostureState previousPosture = context.PreviousState.Posture;
-            if (previousPosture == EPostureState.Prone)
-            {
-                gait = EMovementGait.Idle;
-            }
-            else if (previousPosture == EPostureState.Crouching && gait == EMovementGait.Sprint)
-            {
-                gait = EMovementGait.Run;
-            }
-
-            Current = gait;
         }
     }
 }

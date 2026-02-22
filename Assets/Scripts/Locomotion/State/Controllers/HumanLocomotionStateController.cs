@@ -9,7 +9,7 @@ namespace Game.Locomotion.State.Controllers
     /// but acts as a clear extension point for future human-specific
     /// posture or condition logic.
     /// </summary>
-    internal sealed class HumanLocomotionController : LocomotionControllerBase
+    internal sealed class HumanLocomotionStateController : LocomotionStateControllerBase
     {
         protected override LocomotionStateMachine CreateStateMachine()
         {

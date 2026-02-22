@@ -66,10 +66,13 @@ public class LocomotionDebugOverlay : UIOverlayBase
              .Append(snapshot.ActualSpeed.ToString("F2")).AppendLine(")");
          builder.Append("LocomotionHeading: ").Append(snapshot.LocomotionHeading.ToString("F2")).AppendLine();
          builder.Append("BodyForward: ").Append(snapshot.BodyForward.ToString("F2")).AppendLine();
-        builder.Append("LookDir: ").Append(snapshot.LookDirection.ToString("F2")).AppendLine();
-        builder.Append("IsGrounded: ").Append(snapshot.IsGrounded).AppendLine();
-        builder.Append("IsTurning: ").Append(snapshot.IsTurningInPlace || snapshot.IsTurningInWalk || snapshot.IsTurningInRun || snapshot.IsTurningInSprint).AppendLine()
-               .Append("  TurnAngle: ").Append(snapshot.TurnAngle.ToString("F1")).AppendLine();
+         builder.Append("LookDir: ").Append(snapshot.LookDirection.ToString("F2")).AppendLine();
+         builder.Append("IsGrounded: ").Append(snapshot.IsGrounded).AppendLine();
+         builder.Append("Turning [InPlace=").Append(snapshot.IsTurningInPlace)
+             .Append(", Walk=").Append(snapshot.IsTurningInWalk)
+             .Append(", Run=").Append(snapshot.IsTurningInRun)
+             .Append(", Sprint=").Append(snapshot.IsTurningInSprint)
+             .Append("] Angle=").Append(snapshot.TurnAngle.ToString("F1")).AppendLine();
         builder.Append("LeftFootFront: ").Append(snapshot.IsLeftFootOnFront).AppendLine();
 
         text.text = builder.ToString();

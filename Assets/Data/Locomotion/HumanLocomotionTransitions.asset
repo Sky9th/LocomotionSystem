@@ -380,6 +380,7 @@ MonoBehaviour:
     - {fileID: -7281958960604446398}
     - {fileID: 8118410883589941551}
     - {fileID: -255853764271627376}
+    - {fileID: 2308508199983405240}
     - {fileID: 71537367975672513}
     - {fileID: -3786755868950054941}
     - {fileID: 3923892537285329872}
@@ -418,10 +419,20 @@ MonoBehaviour:
       _Index: 7
     - _Name: {fileID: 11400000, guid: 4d421bfff7925be4abdd7c83a80f86f7, type: 2}
       _Index: 8
-    - _Name: {fileID: 11400000, guid: a1aa8de1168235f438639d24b093dc33, type: 2}
+    - _Name: {fileID: 11400000, guid: 81dc043bb8e405d418aa0fb44a3da25f, type: 2}
       _Index: 9
-    - _Name: {fileID: 11400000, guid: 3f47afb1acfa38d4b8269baf2b2079ba, type: 2}
+    - _Name: {fileID: 11400000, guid: a1aa8de1168235f438639d24b093dc33, type: 2}
       _Index: 10
+    - _Name: {fileID: 11400000, guid: 3f47afb1acfa38d4b8269baf2b2079ba, type: 2}
+      _Index: 11
+    - _Name: {fileID: 11400000, guid: 5380fa5ab8613ea4782a64c709bbb167, type: 2}
+      _Index: 12
+    - _Name: {fileID: 11400000, guid: a1837ef6596ff904bbc9686f48d80d01, type: 2}
+      _Index: 13
+    - _Name: {fileID: 11400000, guid: 2120b39ce2714204ea5e0fe5624ddfd4, type: 2}
+      _Index: 14
+    - _Name: {fileID: 11400000, guid: eb29250394b787b41898db0591441b0e, type: 2}
+      _Index: 15
     _AliasAllTransitions: 1
 --- !u!114 &71537367975672513
 MonoBehaviour:
@@ -450,6 +461,35 @@ MonoBehaviour:
           _Callbacks: []
           _Names: []
         _Clip: {fileID: 1827226128182048838, guid: 340de400a4ea14b4b9d10f172bf44322,
+          type: 3}
+        _NormalizedStartTime: NaN
+--- !u!114 &2308508199983405240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
+  m_Name: Sprint
+  m_EditorClassIdentifier: 
+  _Transition:
+    rid: 1609343580809461762
+  references:
+    version: 2
+    RefIds:
+    - rid: 1609343580809461762
+      type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
+      data:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes: []
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: -2141252149630718149, guid: f5f88ba834ff2f845893f706ccfca542,
           type: 3}
         _NormalizedStartTime: NaN
 --- !u!114 &3923892537285329872
