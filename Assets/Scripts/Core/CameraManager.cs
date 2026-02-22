@@ -29,7 +29,7 @@ public class CameraManager : BaseService
 
         if (Dispatcher != null)
         {
-            Dispatcher.Subscribe<PlayerSpawnedEvent>(HandlePlayerSpawned);
+            Dispatcher.Subscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
         }
     }
 
@@ -37,7 +37,7 @@ public class CameraManager : BaseService
     {
         if (Dispatcher != null)
         {
-            Dispatcher.Unsubscribe<PlayerSpawnedEvent>(HandlePlayerSpawned);
+            Dispatcher.Unsubscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
         }
     }
 
@@ -171,7 +171,7 @@ public class CameraManager : BaseService
         return hasSnapshot;
     }
 
-    private void HandlePlayerSpawned(PlayerSpawnedEvent payload, MetaStruct meta)
+    private void HandlePlayerSpawned(SPlayerSpawnedEvent payload, MetaStruct meta)
     {
         if (payload == null || !payload.IsLocalPlayer)
         {

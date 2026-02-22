@@ -22,10 +22,13 @@ namespace Game.Locomotion.Animation.Layers
         {
             AnimancerStringProfile alias = context.Alias;
             AnimancerComponent animancer = context.Animancer;
-            SPlayerLocomotion snapshot = context.Snapshot;
+            SLocomotion snapshot = context.Snapshot;
             LocomotionAnimationProfile profile = context.Profile;
-            Vector2 planarVelocity = snapshot.LocalVelocity;
-            Logger.Log($"BaseLocomotionLayer Update: planarVelocity={planarVelocity}, turnAngle={snapshot.TurnAngle}, state={snapshot.State}, gait={snapshot.Gait}");
+            // Use the actual local planar velocity from the snapshot so
+            // that animation directly reflects the intended strafe/forward
+            // input in character-local space.
+            Vector2 planarVelocity = snapshot.ActualLocalVelocity;
+
             if (animancer == null || alias == null || profile == null)
             {
                 return;
@@ -132,7 +135,7 @@ namespace Game.Locomotion.Animation.Layers
 
             if (nextAlias != null && nextAlias != lastPlayedAlias)
             {
-                Logger.Log($"Playing base locomotion animation: {nextAlias},{snapshot.TurnAngle}");
+                Logger.Log($"Playing base locomotion animation: {nextAlias}");
                 // Use the Transition Library configuration for fades.
                 // When using a Transition Library, the TryPlay(object key)
                 // overload is the one that goes through Graph.Transitions.
@@ -142,10 +145,22 @@ namespace Game.Locomotion.Animation.Layers
 
             // For grounded movement, update 2D mixer parameter directly,
             // mirroring the legacy adapter behaviour where walkMixer is
-            // a Vector2MixerState driven by snapshot.LocalVelocity.
+            // a Vector2MixerState driven by the local planar velocity.
             if (stateLayer == ELocomotionState.GroundedMoving && currentState is Vector2MixerState vector2Mixer)
             {
-                vector2Mixer.Parameter = planarVelocity.normalized;
+                float maxMoveSpeed = profile.moveSpeed;
+                if (maxMoveSpeed > 0f)
+                {
+                    Vector2 parameter = planarVelocity / maxMoveSpeed;
+
+                    // Clamp magnitude to 1 so it fits the mixer input range.
+                    if (parameter.sqrMagnitude > 1f)
+                    {
+                        parameter.Normalize();
+                    }
+
+                    vector2Mixer.Parameter = parameter;
+                }
             }
         }
     }

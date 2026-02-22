@@ -5,14 +5,17 @@ using UnityEngine;
 /// Immutable snapshot describing the player's locomotion state at a given frame.
 /// </summary>
 [Serializable]
-public struct SPlayerLocomotion
+public struct SLocomotion
 {
-    public SPlayerLocomotion(
+    public SLocomotion(
         Vector3 position,
-        Vector3 velocity,
+        Vector2 desiredLocalVelocity,
+        Vector3 desiredPlanarVelocity,
+        Vector2 actualLocalVelocity,
+        Vector3 actualPlanarVelocity,
+        float actualSpeed,
         Vector3 locomotionHeading,
         Vector3 bodyForward,
-        Vector2 localVelocity,
         Vector2 lookDirection,
         SLocomotionDiscreteState discreteState,
         SGroundContact groundContact,
@@ -27,10 +30,13 @@ public struct SPlayerLocomotion
         ELocomotionCondition condition)
     {
         Position = position;
-        Velocity = velocity;
+        DesiredLocalVelocity = desiredLocalVelocity;
+        ActualLocalVelocity = actualLocalVelocity;
+        DesiredPlanarVelocity = desiredPlanarVelocity;
+        ActualPlanarVelocity = actualPlanarVelocity;
+        ActualSpeed = actualSpeed;
         LocomotionHeading = locomotionHeading.sqrMagnitude > Mathf.Epsilon ? locomotionHeading.normalized : Vector3.forward;
         BodyForward = bodyForward.sqrMagnitude > Mathf.Epsilon ? bodyForward.normalized : Vector3.forward;
-        LocalVelocity = localVelocity;
         LookDirection = lookDirection;
         DiscreteState = discreteState;
         GroundContact = groundContact;
@@ -46,10 +52,13 @@ public struct SPlayerLocomotion
     }
 
     public Vector3 Position { get; }
-    public Vector3 Velocity { get; }
+    public Vector2 DesiredLocalVelocity { get; }
+    public Vector2 ActualLocalVelocity { get; }
+    public Vector3 DesiredPlanarVelocity { get; }
+    public Vector3 ActualPlanarVelocity { get; }
+    public float ActualSpeed { get; }
     public Vector3 LocomotionHeading { get; }
     public Vector3 BodyForward { get; }
-    public Vector2 LocalVelocity { get; }
     public Vector2 LookDirection { get; }
     public SLocomotionDiscreteState DiscreteState { get; }
     public ELocomotionState State => DiscreteState.State;
@@ -69,17 +78,17 @@ public struct SPlayerLocomotion
 
     /// <summary>Additional locomotion condition modifiers (e.g. injured, heavy load).</summary>
     public ELocomotionCondition Condition { get; }
-
-    public float Speed => Velocity.magnitude;
-    public bool HasMovement => Velocity.sqrMagnitude > Mathf.Epsilon;
     public bool IsGrounded => GroundContact.IsGrounded;
 
-    public static SPlayerLocomotion Default => new SPlayerLocomotion(
+    public static SLocomotion Default => new SLocomotion(
         Vector3.zero,
-        Vector3.zero,
-        Vector3.forward,
-        Vector3.forward,
         Vector2.zero,
+        Vector3.zero,
+        Vector2.zero,
+        Vector3.zero,
+        0f,
+        Vector3.forward,
+        Vector3.forward,
         Vector2.zero,
         new SLocomotionDiscreteState(
             ELocomotionState.GroundedIdle,

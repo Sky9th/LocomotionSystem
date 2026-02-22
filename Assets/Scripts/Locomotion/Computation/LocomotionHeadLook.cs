@@ -45,8 +45,8 @@ namespace Game.Locomotion.Computation
             float yaw = NormalizeAngle180(euler.y);
             float pitch = -NormalizeAngle180(euler.x);
 
-            float maxYaw = config != null ? config.MaxHeadYawDegrees : 0f;
-            float maxPitch = config != null ? config.MaxHeadPitchDegrees : 0f;
+            float maxYaw = config != null ? config.maxHeadYawDegrees : 0f;
+            float maxPitch = config != null ? config.maxHeadPitchDegrees : 0f;
 
             if (maxYaw > 0f)
             {

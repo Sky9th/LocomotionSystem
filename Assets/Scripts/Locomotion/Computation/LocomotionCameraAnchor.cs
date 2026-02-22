@@ -32,7 +32,7 @@ namespace Game.Locomotion.Computation
             euler.z = 0f;
 
             float pitch = NormalizeAngle180(euler.x);
-            float maxPitch = config != null ? config.MaxHeadPitchDegrees : 0f;
+            float maxPitch = config != null ? config.maxHeadPitchDegrees : 0f;
 
             pitch += lookAction.Delta.y;
             if (maxPitch > 0f)

@@ -27,7 +27,7 @@ namespace Game.Locomotion.Animation
             this.animancerStringProfile = animancerStringProfile;
         }
 
-        public void PlayLocomotionState(SPlayerLocomotion snapshot)
+        public void PlayLocomotionState(SLocomotion snapshot)
         {
             animancer.TryPlay(animancerStringProfile.idleL);
         }

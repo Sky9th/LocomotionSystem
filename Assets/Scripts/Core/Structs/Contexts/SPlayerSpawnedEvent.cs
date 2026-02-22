@@ -5,9 +5,9 @@ using UnityEngine;
 /// Contains direct references so high-level systems (camera, UI, etc.) can
 /// immediately bind to the correct transforms without additional lookups.
 /// </summary>
-public sealed class PlayerSpawnedEvent
+public sealed class SPlayerSpawnedEvent
 {
-    public PlayerSpawnedEvent(Transform root, bool isLocalPlayer)
+    public SPlayerSpawnedEvent(Transform root, bool isLocalPlayer)
     {
         Root = root;
         IsLocalPlayer = isLocalPlayer;

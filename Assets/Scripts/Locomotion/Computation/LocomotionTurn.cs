@@ -121,11 +121,11 @@ namespace Game.Locomotion.Computation
 
             float desiredYaw = Mathf.Atan2(desiredForward.x, desiredForward.z) * Mathf.Rad2Deg;
             float yawDelta = Mathf.Abs(Mathf.DeltaAngle(desiredYaw, lastDesiredYaw));
-            float lookStabilityAngle = config.LookStabilityAngle;
-            float lookStabilityDuration = config.LookStabilityDuration;
-            float turnEnterAngle = config.TurnEnterAngle;
-            float turnCompletionAngle = config.TurnCompletionAngle;
-            float turnDebounceDuration = config.TurnDebounceDuration;
+            float lookStabilityAngle = config.lookStabilityAngle;
+            float lookStabilityDuration = config.lookStabilityDuration;
+            float turnEnterAngle = config.turnEnterAngle;
+            float turnCompletionAngle = config.turnCompletionAngle;
+            float turnDebounceDuration = config.turnDebounceDuration;
 
             if (yawDelta <= lookStabilityAngle)
             {

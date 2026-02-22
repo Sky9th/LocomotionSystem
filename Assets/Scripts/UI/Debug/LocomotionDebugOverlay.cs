@@ -46,7 +46,7 @@ public class LocomotionDebugOverlay : UIOverlayBase
             return;
         }
 
-        if (GameContext == null || !GameContext.TryGetSnapshot(out SPlayerLocomotion snapshot))
+        if (GameContext == null || !GameContext.TryGetSnapshot(out SLocomotion snapshot))
         {
             text.text = "Locomotion: <no snapshot>";
             return;
@@ -59,10 +59,11 @@ public class LocomotionDebugOverlay : UIOverlayBase
          builder.Append("Posture: ").AppendLine(snapshot.Posture.ToString());
          builder.Append("Gait: ").AppendLine(snapshot.Gait.ToString());
          builder.Append("Condition: ").AppendLine(snapshot.Condition.ToString());
-        builder.Append("Position: ").Append(snapshot.Position.ToString("F2")).AppendLine();
-        builder.Append("Velocity: ").Append(snapshot.Velocity.ToString("F2")).Append(" (speed=")
-               .Append(snapshot.Speed.ToString("F2")).AppendLine(")");
-        builder.Append("LocalVelocity: ").Append(snapshot.LocalVelocity.ToString("F2")).AppendLine();
+         builder.Append("Position: ").Append(snapshot.Position.ToString("F2")).AppendLine();
+         builder.Append("DesiredLocalVelocity: ").Append(snapshot.DesiredLocalVelocity.ToString("F2")).AppendLine();
+         builder.Append("DesiredPlanarVelocity: ").Append(snapshot.DesiredPlanarVelocity.ToString("F2")).AppendLine();
+         builder.Append("ActualPlanarVelocity: ").Append(snapshot.ActualPlanarVelocity.ToString("F2")).Append(" (speed=")
+             .Append(snapshot.ActualSpeed.ToString("F2")).AppendLine(")");
          builder.Append("LocomotionHeading: ").Append(snapshot.LocomotionHeading.ToString("F2")).AppendLine();
          builder.Append("BodyForward: ").Append(snapshot.BodyForward.ToString("F2")).AppendLine();
         builder.Append("LookDir: ").Append(snapshot.LookDirection.ToString("F2")).AppendLine();
