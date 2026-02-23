@@ -1,5 +1,5 @@
-using Game.Locomotion.Animation.Config;
 using UnityEngine;
+using Game.Locomotion.Config;
 
 internal readonly struct SLocomotionStateContext
 {
@@ -42,19 +42,15 @@ internal readonly struct SLocomotionStateContext
     /// <summary>Current ground contact information.</summary>
     public readonly SGroundContact GroundContact;
 
-    /// <summary>Configuration profile driving locomotion thresholds.</summary>
-    public readonly LocomotionAnimationProfile Config;
-
-    /// <summary>Last frame's discrete locomotion state, if available.</summary>
-    public readonly SLocomotionDiscreteState PreviousState;
+    /// <summary>Core locomotion capability profile driving simulation thresholds.</summary>
+    public readonly LocomotionProfile Profile;
 
     public SLocomotionStateContext(
         Vector3 velocity,
         Vector3 bodyForward,
         Vector3 locomotionHeading,
         SGroundContact groundContact,
-        LocomotionAnimationProfile config,
-        SLocomotionDiscreteState previousState,
+        LocomotionProfile profile,
         SMoveIAction moveAction,
         SLookIAction lookAction,
         SCrouchIAction crouchAction,
@@ -69,8 +65,7 @@ internal readonly struct SLocomotionStateContext
         BodyForward = bodyForward;
         LocomotionHeading = locomotionHeading;
         GroundContact = groundContact;
-        Config = config;
-        PreviousState = previousState;
+        Profile = profile;
 
         MoveAction = moveAction;
         LookAction = lookAction;

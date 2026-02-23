@@ -19,7 +19,7 @@ namespace Game.Locomotion.State.Layers
         {
             // Start from previous frame's posture so that lack of input
             // keeps the current posture.
-            EPostureState posture = context.PreviousState.Posture;
+            EPostureState posture;
 
             // Explicit stand intent has the highest priority.
             if (context.StandAction.HasInput)
@@ -33,6 +33,10 @@ namespace Game.Locomotion.State.Layers
             else if (context.CrouchAction.HasInput)
             {
                 posture = EPostureState.Crouching;
+            }
+            else
+            {
+                posture = Current;
             }
 
             Current = posture;

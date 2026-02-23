@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Animancer;
 using Game.Locomotion.Animation.Config;
+using Game.Locomotion.Config;
 
 namespace Game.Locomotion.Animation.Core
 {
@@ -14,6 +15,7 @@ namespace Game.Locomotion.Animation.Core
     {
         private readonly NamedAnimancerComponent animancer;
         private readonly AnimancerStringProfile alias;
+        private readonly LocomotionProfile locomotionProfile;
         private readonly LocomotionAnimationProfile profile;
         private readonly ILocomotionAnimationLayer[] layers;
         private readonly Dictionary<string, SLocomotionAnimationLayerSnapshot> layerSnapshots;
@@ -21,11 +23,13 @@ namespace Game.Locomotion.Animation.Core
         public LocomotionAnimationController(
             NamedAnimancerComponent animancer,
             AnimancerStringProfile alias,
+            LocomotionProfile locomotionProfile,
             LocomotionAnimationProfile profile,
             params ILocomotionAnimationLayer[] layers)
         {
             this.animancer = animancer;
             this.alias = alias;
+            this.locomotionProfile = locomotionProfile;
             this.profile = profile;
             this.layers = layers ?? Array.Empty<ILocomotionAnimationLayer>();
             layerSnapshots = new Dictionary<string, SLocomotionAnimationLayerSnapshot>(this.layers.Length);
@@ -35,7 +39,7 @@ namespace Game.Locomotion.Animation.Core
 
         public void UpdateAnimations(SLocomotion snapshot, float deltaTime)
         {
-            if (animancer == null || alias == null || profile == null)
+            if (animancer == null || alias == null || profile == null || locomotionProfile == null)
             {
                 return;
             }
@@ -45,7 +49,8 @@ namespace Game.Locomotion.Animation.Core
                 deltaTime,
                 animancer,
                 alias,
-                profile);
+                profile,
+                locomotionProfile);
 
             if (layers == null)
             {

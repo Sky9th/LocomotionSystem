@@ -15,3 +15,5 @@ MonoBehaviour:
   posture: 0
   gait: 3
   movingTurnSpeed: 150
+  enterAngle: 135
+  exitAngle: 20

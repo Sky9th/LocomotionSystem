@@ -1,7 +1,5 @@
 using UnityEngine;
 
-using Game.Locomotion.Animation.Config;
-
 namespace Game.Locomotion.Computation
 {
     /// <summary>
@@ -21,9 +19,9 @@ namespace Game.Locomotion.Computation
         /// </summary>
         internal static Vector2 ComputeDesiredPlanarVelocity(
             SMoveIAction moveAction,
-            LocomotionAnimationProfile config)
+            float moveSpeed)
         {
-            if (moveAction.Equals(SMoveIAction.None) || !moveAction.HasInput || config == null)
+            if (moveAction.Equals(SMoveIAction.None) || !moveAction.HasInput || moveSpeed <= 0f)
             {
                 return Vector2.zero;
             }
@@ -33,7 +31,7 @@ namespace Game.Locomotion.Computation
             // local velocity.
             Vector2 input = moveAction.RawInput;
             float intensity = Mathf.Clamp01(input.magnitude);
-            float speed = intensity * config.moveSpeed;
+            float speed = intensity * moveSpeed;
 
             if (input.sqrMagnitude > Mathf.Epsilon)
             {

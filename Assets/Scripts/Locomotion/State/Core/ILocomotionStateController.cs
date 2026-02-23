@@ -26,21 +26,11 @@ namespace Game.Locomotion.State.Core
         /// <summary>Current locomotion condition (Normal / Injured ...).</summary>
         ELocomotionCondition CurrentCondition { get; }
 
-        /// <summary>Current signed planar turn angle in degrees.</summary>
-        float CurrentTurnAngle { get; }
-
-        /// <summary>Whether the character is currently performing an in-place turn.</summary>
-        bool IsTurningInPlace { get; }
-        bool IsTurningInWalk { get; }
-        bool IsTurningInRun { get; }
-        bool IsTurningInSprint { get; }
-
         /// <summary>
-        /// Evaluate and return a new discrete locomotion state for the
-        /// supplied context. Implementations are expected to cache the
-        /// resulting state in <see cref="CurrentState"/> and update any
-        /// additional state-related outputs such as turning information.
+        /// Evaluate a full locomotion state frame (discrete state +
+        /// turning information) for the supplied context.
         /// </summary>
-        SLocomotionDiscreteState UpdateDiscreteState(in SLocomotionStateContext context, float deltaTime);
+        SLocomotionStateFrame Evaluate(in SLocomotionStateContext context, float deltaTime);
+
     }
 }

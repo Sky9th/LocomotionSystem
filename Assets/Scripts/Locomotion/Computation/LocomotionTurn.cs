@@ -1,91 +1,32 @@
 using UnityEngine;
-using Game.Locomotion.Animation.Config;
+using Game.Locomotion.Config;
 
 namespace Game.Locomotion.Computation
 {
     /// <summary>
-    /// Helper used by the v2 locomotion pipeline to evaluate the planar
-    /// turn angle and maintain a lightweight "turn in place" state
-    /// machine, keeping this logic out of the Agent and state layers.
+    /// Stateless helper used by the v2 locomotion pipeline to evaluate
+    /// planar turning. All temporal data is stored in an external
+    /// <see cref="SLocomotionTurnState"/> owned by the caller.
     /// </summary>
-    internal sealed class LocomotionTurn
+    internal static class LocomotionTurn
     {
-        private float turnAngle;
-        private bool isTurning;
-        private float turnStateCooldown;
-        private float lastDesiredYaw;
-        private float lookStabilityTimer;
-
-        public float TurnAngle => turnAngle;
-        public bool IsTurningInPlace => isTurning;
-
-        /// <summary>
-        /// Computes the signed turn delta in degrees for this frame given
-        /// a maximum turn speed in degrees per second and the frame's
-        /// deltaTime. The result will never exceed the remaining angle
-        /// towards the desired heading.
-        ///
-        /// Call <see cref="Update"/> first each frame so that the
-        /// internal <see cref="TurnAngle"/> reflects the latest
-        /// desired heading before invoking this method.
-        /// </summary>
-        public float EvaluateTurnDelta(float maxTurnSpeed, float deltaTime)
-        {
-            float absAngle = Mathf.Abs(turnAngle);
-            if (absAngle <= Mathf.Epsilon || maxTurnSpeed <= 0f || deltaTime <= 0f)
-            {
-                return 0f;
-            }
-
-            float maxStep = maxTurnSpeed * deltaTime;
-            float step = Mathf.Min(maxStep, absAngle);
-            return Mathf.Sign(turnAngle) * step;
-        }
 
         /// <summary>
         /// Evaluates the current planar turn angle and updates the
         /// internal "turn in place" state machine based on the
         /// supplied context.
         /// </summary>
-        public void Evaluate(
+        public static void Evaluate(
+            ref SLocomotionTurnState state,
             Vector3 bodyForward,
             Vector3 locomotionHeading,
-            LocomotionAnimationProfile config,
+            LocomotionProfile profile,
             float deltaTime,
             in SLocomotionDiscreteState discreteState,
             out float turnAngle,
             out bool isTurningOut)
         {
-            // Compute the current signed planar turn angle.
-            turnAngle = EvaluateTurnAngle(bodyForward, locomotionHeading);
-            turnAngle = Mathf.Clamp(turnAngle, -180f, 180f);
-            this.turnAngle = turnAngle;
-
-            // Drive the in-place turn state using the same rules as the
-            // legacy controller, but implemented locally so the v2
-            // pipeline does not depend on Logic/Legacy namespaces.
-            UpdateTurnState(
-                this.turnAngle,
-                locomotionHeading,
-                config,
-                deltaTime,
-                ref isTurning,
-                ref turnStateCooldown,
-                ref lastDesiredYaw,
-                ref lookStabilityTimer);
-
-            // Only treat the character as turning in place when they are
-            // effectively idle on the ground. This keeps the concept out
-            // of the top-level phase enum while still giving animation a
-            // clear signal to branch on.
-            isTurningOut =
-                isTurning &&
-                (discreteState.State == ELocomotionState.GroundedIdle ||
-                discreteState.State == ELocomotionState.GroundedMoving);
-        }
-
-        private static float EvaluateTurnAngle(Vector3 bodyForward, Vector3 locomotionHeading)
-        {
+            // Compute the current signed planar turn angle on the XZ plane.
             Vector3 bodyFlat = bodyForward;
             Vector3 headingFlat = locomotionHeading;
             bodyFlat.y = 0f;
@@ -93,25 +34,48 @@ namespace Game.Locomotion.Computation
 
             if (bodyFlat.sqrMagnitude <= Mathf.Epsilon || headingFlat.sqrMagnitude <= Mathf.Epsilon)
             {
-                return 0f;
+                state.TurnAngle = 0f;
+                turnAngle = 0f;
+                isTurningOut = false;
+                return;
             }
 
             bodyFlat.Normalize();
             headingFlat.Normalize();
 
-            return Vector3.SignedAngle(bodyFlat, headingFlat, Vector3.up);
+            float signedAngle = Vector3.SignedAngle(bodyFlat, headingFlat, Vector3.up);
+            signedAngle = Mathf.Clamp(signedAngle, -180f, 180f);
+            state.TurnAngle = signedAngle;
+            turnAngle = signedAngle;
+
+            // Drive the in-place turn state using the same rules as the
+            // legacy controller, but implemented locally so the v2
+            // pipeline does not depend on Logic/Legacy namespaces.
+            UpdateTurnState(
+                locomotionHeading,
+                profile,
+                in discreteState,
+                deltaTime,
+                ref state);
+
+            // Only treat the character as turning in place when they are
+            // effectively idle on the ground. This keeps the concept out
+            // of the top-level phase enum while still giving animation a
+            // clear signal to branch on.
+            isTurningOut =
+                state.IsTurning &&
+                (discreteState.State == ELocomotionState.GroundedIdle ||
+                discreteState.State == ELocomotionState.GroundedMoving);
         }
 
         private static void UpdateTurnState(
-            float currentTurnAngle,
             Vector3 locomotionHeading,
-            LocomotionAnimationProfile config,
+            LocomotionProfile profile,
+            in SLocomotionDiscreteState discreteState,
             float deltaTime,
-            ref bool isTurning,
-            ref float turnStateCooldown,
-            ref float lastDesiredYaw,
-            ref float lookStabilityTimer)
+            ref SLocomotionTurnState stateRef)
         {
+            float currentTurnAngle = stateRef.TurnAngle;
             Vector3 desiredForward = locomotionHeading;
             desiredForward.y = 0f;
             if (desiredForward.sqrMagnitude <= Mathf.Epsilon)
@@ -120,43 +84,45 @@ namespace Game.Locomotion.Computation
             }
 
             float desiredYaw = Mathf.Atan2(desiredForward.x, desiredForward.z) * Mathf.Rad2Deg;
-            float yawDelta = Mathf.Abs(Mathf.DeltaAngle(desiredYaw, lastDesiredYaw));
-            float lookStabilityAngle = config.lookStabilityAngle;
-            float lookStabilityDuration = config.lookStabilityDuration;
-            float turnEnterAngle = config.turnEnterAngle;
-            float turnCompletionAngle = config.turnCompletionAngle;
-            float turnDebounceDuration = config.turnDebounceDuration;
+            float yawDelta = Mathf.Abs(Mathf.DeltaAngle(desiredYaw, stateRef.LastDesiredYaw));
+
+            float lookStabilityAngle = profile != null ? profile.lookStabilityAngle : 0f;
+            float lookStabilityDuration = profile != null ? profile.lookStabilityDuration : 0f;
+            float turnDebounceDuration = profile != null ? profile.turnDebounceDuration : 0f;
+
+            float turnEnterAngle = profile != null ? profile.turnEnterAngle : 0f;
+            float turnCompletionAngle = profile != null ? profile.turnCompletionAngle : 0f;
 
             if (yawDelta <= lookStabilityAngle)
             {
-                lookStabilityTimer += deltaTime;
+                stateRef.LookStabilityTimer += deltaTime;
             }
             else
             {
-                lookStabilityTimer = 0f;
+                stateRef.LookStabilityTimer = 0f;
             }
-            lastDesiredYaw = desiredYaw;
+            stateRef.LastDesiredYaw = desiredYaw;
 
-            if (turnStateCooldown > 0f)
+            if (stateRef.Cooldown > 0f)
             {
-                turnStateCooldown -= deltaTime;
+                stateRef.Cooldown -= deltaTime;
             }
 
             float absAngle = Mathf.Abs(currentTurnAngle);
 
             bool wantsTurn = absAngle >= turnEnterAngle;
-            bool lookIsStable = lookStabilityTimer >= lookStabilityDuration;
+            bool lookIsStable = stateRef.LookStabilityTimer >= lookStabilityDuration;
             bool shouldCompleteTurn = absAngle <= turnCompletionAngle;
 
-            if (!isTurning && wantsTurn && turnStateCooldown <= 0f && lookIsStable)
+            if (!stateRef.IsTurning && wantsTurn && stateRef.Cooldown <= 0f && lookIsStable)
             {
-                isTurning = true;
-                turnStateCooldown = turnDebounceDuration;
+                stateRef.IsTurning = true;
+                stateRef.Cooldown = turnDebounceDuration;
             }
-            else if (isTurning && shouldCompleteTurn)
+            else if (stateRef.IsTurning && shouldCompleteTurn)
             {
-                isTurning = false;
-                turnStateCooldown = turnDebounceDuration;
+                stateRef.IsTurning = false;
+                stateRef.Cooldown = turnDebounceDuration;
             }
         }
     }

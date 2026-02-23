@@ -20,10 +20,7 @@ public struct SLocomotion
         SLocomotionDiscreteState discreteState,
         SGroundContact groundContact,
         float turnAngle,
-        bool isTurningInPlace,
-        bool isTurningInWalk,
-        bool isTurningInRun,
-        bool isTurningInSprint,
+        bool isTurning,
         bool isLeftFootOnFront,
         EPostureState posture,
         EMovementGait gait,
@@ -41,10 +38,7 @@ public struct SLocomotion
         DiscreteState = discreteState;
         GroundContact = groundContact;
         TurnAngle = turnAngle;
-        IsTurningInPlace = isTurningInPlace;
-        IsTurningInWalk = isTurningInWalk;
-        IsTurningInRun = isTurningInRun;
-        IsTurningInSprint = isTurningInSprint;
+        IsTurning = isTurning;
         IsLeftFootOnFront = isLeftFootOnFront;
         Posture = posture;
         Gait = gait;
@@ -64,10 +58,7 @@ public struct SLocomotion
     public ELocomotionState State => DiscreteState.State;
     public SGroundContact GroundContact { get; }
     public float TurnAngle { get; }
-    public bool IsTurningInPlace { get; }
-    public bool IsTurningInWalk { get; }
-    public bool IsTurningInRun { get; }
-    public bool IsTurningInSprint { get; }
+    public bool IsTurning { get; }
     public bool IsLeftFootOnFront { get; }
 
     /// <summary>Current posture (e.g. Standing / Crouching / Prone).</summary>
@@ -97,9 +88,6 @@ public struct SLocomotion
             ELocomotionCondition.Normal),
         SGroundContact.None,
         0f,
-        false,
-        false,
-        false,
         false,
         true,
         EPostureState.Standing,

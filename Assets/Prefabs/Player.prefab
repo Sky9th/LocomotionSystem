@@ -80,7 +80,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   followAnchor: {fileID: 3954816038181264415}
   modelRoot: {fileID: 7880520753254052221}
-  config: {fileID: 11400000, guid: 264e4d30fb02cbb4b93aefb446d194ea, type: 2}
+  locomotionProfile: {fileID: 11400000, guid: ccdb968c11d7a5e479471e93c3666d31, type: 2}
   groundRayLength: 1.5
   groundLayerMask:
     serializedVersion: 2
@@ -89,6 +89,12 @@ MonoBehaviour:
   autoSubscribeInput: 1
   drawDebugGizmos: 1
   debugForwardLength: 2
+  climbRayDistance: 1.2
+  climbForwardClearance: 0.2
+  climbGroundProbeDownDistance: 1.5
+  climbObstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!114 &734908337582309742
 MonoBehaviour:
   m_ObjectHideFlags: 0
