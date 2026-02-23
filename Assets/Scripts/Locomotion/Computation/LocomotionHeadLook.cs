@@ -1,5 +1,5 @@
 using UnityEngine;
-using Game.Locomotion.Animation.Config;
+using Game.Locomotion.Config;
 
 namespace Game.Locomotion.Computation
 {
@@ -13,7 +13,7 @@ namespace Game.Locomotion.Computation
             Transform followAnchor,
             Transform modelRoot,
             Transform rootTransform,
-            LocomotionAnimationProfile config)
+            LocomotionProfile locomotionProfile)
         {
             if (followAnchor == null)
             {
@@ -45,8 +45,8 @@ namespace Game.Locomotion.Computation
             float yaw = NormalizeAngle180(euler.y);
             float pitch = -NormalizeAngle180(euler.x);
 
-            float maxYaw = config != null ? config.maxHeadYawDegrees : 0f;
-            float maxPitch = config != null ? config.maxHeadPitchDegrees : 0f;
+            float maxYaw = locomotionProfile != null ? locomotionProfile.maxHeadYawDegrees : 0f;
+            float maxPitch = locomotionProfile != null ? locomotionProfile.maxHeadPitchDegrees : 0f;
 
             if (maxYaw > 0f)
             {

@@ -2,6 +2,7 @@ using Animancer;
 using Game.Locomotion.Animation.Config;
 using Game.Locomotion.Animation.Core;
 using Game.Locomotion.State.Layers;
+using Game.Locomotion.Config;
 using UnityEngine;
 
 namespace Game.Locomotion.Animation.Layers
@@ -38,12 +39,13 @@ namespace Game.Locomotion.Animation.Layers
             AnimancerComponent animancer = context.Animancer;
             SLocomotion snapshot = context.Snapshot;
             LocomotionAnimationProfile profile = context.Profile;
+            LocomotionProfile locomotionProfile = context.LocomotionProfile;
             // Use the actual local planar velocity from the snapshot so
             // that animation directly reflects the intended strafe/forward
             // input in character-local space.
             Vector2 planarVelocity = snapshot.ActualLocalVelocity;
 
-            if (animancer == null || alias == null || profile == null)
+            if (animancer == null || alias == null || profile == null || locomotionProfile == null)
             {
                 return;
             }
@@ -59,10 +61,7 @@ namespace Game.Locomotion.Animation.Layers
             StringAsset baseAlias = GetBaseLocomotionAlias(stateLayer, snapshot.Gait, alias);
             StringAsset nextAlias = baseAlias;
 
-            bool isAnyTurning = snapshot.IsTurningInPlace ||
-                                snapshot.IsTurningInWalk ||
-                                snapshot.IsTurningInRun ||
-                                snapshot.IsTurningInSprint;
+            bool isAnyTurning = snapshot.IsTurning;
 
             // Once the logical layer stops reporting any turning, we
             // lift the cooldown so a new turn can be started later.
@@ -107,7 +106,6 @@ namespace Game.Locomotion.Animation.Layers
 
             if (nextAlias != null && nextAlias != lastPlayedAlias)
             {
-                Logger.Log($"Playing base locomotion animation: {nextAlias}");
                 // Use the Transition Library configuration for fades.
                 // When using a Transition Library, the TryPlay(object key)
                 // overload is the one that goes through Graph.Transitions.
@@ -120,7 +118,7 @@ namespace Game.Locomotion.Animation.Layers
             // a Vector2MixerState driven by the local planar velocity.
             if (stateLayer == ELocomotionState.GroundedMoving && currentState is Vector2MixerState vector2Mixer)
             {
-                float maxMoveSpeed = profile.moveSpeed;
+                float maxMoveSpeed = locomotionProfile.moveSpeed;
                 if (maxMoveSpeed > 0f)
                 {
                     Vector2 parameter = planarVelocity / maxMoveSpeed;
@@ -152,7 +150,6 @@ namespace Game.Locomotion.Animation.Layers
             }
 
             float normalizedTime = (float)state.NormalizedTime;
-            Logger.Log($"Current turn animation normalized time: {normalizedTime}");
             return normalizedTime >= 0.99f;
         }
 
@@ -193,9 +190,8 @@ namespace Game.Locomotion.Animation.Layers
 
             float angle = snapshot.TurnAngle;
             float absAngle = Mathf.Abs(angle);
-            float exitAngle = animationProfile.turnExitAngle;
 
-            if (!ShouldEnterTurn(snapshot.IsTurningInPlace, turnCooldownActive, absAngle, exitAngle))
+            if (!ShouldEnterTurn(snapshot.IsTurning, turnCooldownActive, absAngle))
             {
                 return null;
             }
@@ -240,27 +236,26 @@ namespace Game.Locomotion.Animation.Layers
 
             float angle = snapshot.TurnAngle;
             float absAngle = Mathf.Abs(angle);
-            float exitAngle = animationProfile.turnExitAngle;
             bool isRightTurn = angle > 0f;
 
             switch (snapshot.Gait)
             {
                 case EMovementGait.Walk:
-                    if (ShouldEnterTurn(snapshot.IsTurningInWalk, turnCooldownActive, absAngle, exitAngle))
+                    if (ShouldEnterTurn(snapshot.IsTurning, turnCooldownActive, absAngle))
                     {
                         return isRightTurn ? profile.turnInWalk180R : profile.turnInWalk180L;
                     }
                     break;
 
                 case EMovementGait.Run:
-                    if (ShouldEnterTurn(snapshot.IsTurningInRun, turnCooldownActive, absAngle, exitAngle))
+                    if (ShouldEnterTurn(snapshot.IsTurning, turnCooldownActive, absAngle))
                     {
                         return isRightTurn ? profile.turnInRun180R : profile.turnInRun180L;
                     }
                     break;
 
                 case EMovementGait.Sprint:
-                    if (ShouldEnterTurn(snapshot.IsTurningInSprint, turnCooldownActive, absAngle, exitAngle))
+                    if (ShouldEnterTurn(snapshot.IsTurning, turnCooldownActive, absAngle))
                     {
                         return isRightTurn ? profile.turnInSprint180R : profile.turnInSprint180L;
                     }
@@ -270,7 +265,7 @@ namespace Game.Locomotion.Animation.Layers
             return defaultAlias;
         }
 
-        private static bool ShouldEnterTurn(bool isTurning, bool cooldownActive, float absAngle, float exitAngle)
+        private bool ShouldEnterTurn(bool isTurning, bool cooldownActive, float absAngle)
         {
             if (!isTurning)
             {
@@ -282,15 +277,10 @@ namespace Game.Locomotion.Animation.Layers
                 return false;
             }
 
-            if (exitAngle > 0f && absAngle <= exitAngle)
-            {
-                return false;
-            }
-
             return true;
         }
 
-        private static bool IsTurnAlias(StringAsset alias, AnimancerStringProfile profile)
+        private bool IsTurnAlias(StringAsset alias, AnimancerStringProfile profile)
         {
             if (profile == null || alias == null)
             {

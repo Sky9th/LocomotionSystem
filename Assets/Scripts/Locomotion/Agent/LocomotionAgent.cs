@@ -5,7 +5,7 @@ using Game.Locomotion.Computation;
 using Game.Locomotion.State.Core;
 using Game.Locomotion.State.Controllers;
 using Game.Locomotion.Input;
-using Game.Locomotion.Animation.Config;
+using Game.Locomotion.Config;
 
 namespace Game.Locomotion.Agent
 {
@@ -18,14 +18,14 @@ namespace Game.Locomotion.Agent
     /// full locomotion computation or animation integration.
     /// </summary>
     [DisallowMultipleComponent]
-    public class LocomotionAgent : MonoBehaviour
+    public partial class LocomotionAgent : MonoBehaviour
     {
         [Header("Rig References")]
         [SerializeField] private Transform followAnchor;
         [SerializeField] private Transform modelRoot;
 
         [Header("Config")]
-        [SerializeField] private LocomotionAnimationProfile config;
+        [SerializeField] private LocomotionProfile locomotionProfile;
         [SerializeField, Min(0f)] private float groundRayLength = 1.5f;
         [SerializeField] private LayerMask groundLayerMask = ~0;
 
@@ -34,10 +34,6 @@ namespace Game.Locomotion.Agent
 
         [Header("Input")]
         [SerializeField] private bool autoSubscribeInput = true;
-
-        [Header("Debug")]
-        [SerializeField] private bool drawDebugGizmos = true;
-        [SerializeField, Min(0.1f)] private float debugForwardLength = 2f;
 
         // Latest locomotion snapshot for this character.
         private SLocomotion snapshot = SLocomotion.Default;
@@ -53,19 +49,14 @@ namespace Game.Locomotion.Agent
         // New v2 locomotion state controller (currently using the Human archetype).
         private ILocomotionStateController locomotionStateController;
 
+        // Dedicated helper for planar turning logic so that state
+        // controllers can focus purely on discrete locomotion state.
+        // private readonly LocomotionTurn turnHelper = new LocomotionTurn();
+
         // Smoothed world-space velocity and last non-zero move input
         // used to derive local planar velocity.
         private Vector3 currentVelocity = Vector3.zero;
         private Vector2 currentLocalVelocity = Vector2.zero;
-
-        // Last evaluated discrete locomotion state used to seed
-        // the next frame's state context.
-        private SLocomotionDiscreteState lastDiscreteState =
-            new SLocomotionDiscreteState(
-                ELocomotionState.GroundedIdle,
-                EPostureState.Standing,
-                EMovementGait.Idle,
-                ELocomotionCondition.Normal);
 
         /// <summary>Whether this agent represents the primary player.</summary>
         public bool IsPlayer => isPlayer;
@@ -78,6 +69,9 @@ namespace Game.Locomotion.Agent
 
         /// <summary>Root transform of the visual character model.</summary>
         public Transform ModelRoot => modelRoot;
+
+        /// <summary>Core locomotion capability profile used by this agent.</summary>
+        public LocomotionProfile Profile => locomotionProfile;
 
         /// <summary>
         /// Called by input/AI modules to push the latest IAction payload
@@ -120,11 +114,6 @@ namespace Game.Locomotion.Agent
 
         private void Awake()
         {
-            if (config == null)
-            {
-                Debug.LogError($"{nameof(LocomotionAgent)} on '{name}' requires a {nameof(LocomotionAnimationProfile)}.", this);
-            }
-            
             ResolveRigReferencesIfNeeded();
         }
 
@@ -204,13 +193,13 @@ namespace Game.Locomotion.Agent
             LocomotionCameraAnchor.UpdateRotation(
                 followAnchor,
                 lookAction,
-                config);
+                locomotionProfile);
 
             Vector3 position = modelRoot != null ? modelRoot.position : transform.position;
             Vector3 bodyForward = modelRoot != null ? modelRoot.forward : transform.forward;
             Vector3 locomotionHeading = LocomotionHeading.Evaluate(followAnchor, transform);
 
-            float maxSlopeAngle = config != null ? config.maxGroundSlopeAngle : 0f;
+            float maxSlopeAngle = locomotionProfile != null ? locomotionProfile.maxGroundSlopeAngle : 0f;
             SGroundContact groundContact = LocomotionGroundDetection.SampleGround(
                 position,
                 groundRayLength,
@@ -222,10 +211,12 @@ namespace Game.Locomotion.Agent
             // towards it using the configured acceleration. This keeps
             // the actual movement speed normalized by MoveSpeed without
             // per-gait speed caps.
+            float moveSpeed = locomotionProfile != null ? locomotionProfile.moveSpeed : 0f;
             Vector2 desiredLocalVelocity = LocomotionKinematics.ComputeDesiredPlanarVelocity(
                 moveAction.Equals(SMoveIAction.None) ? lastMoveAction : moveAction,
-                config);
-            float acceleration = config != null ? config.acceleration : 0f;
+                moveSpeed);
+
+            float acceleration = locomotionProfile != null ? locomotionProfile.acceleration : 0f;
             currentLocalVelocity = LocomotionKinematics.SmoothVelocity(
                 currentLocalVelocity,
                 desiredLocalVelocity,
@@ -244,8 +235,7 @@ namespace Game.Locomotion.Agent
                 bodyForward,
                 locomotionHeading,
                 groundContact,
-                config,
-                lastDiscreteState,
+                locomotionProfile,
                 moveAction,
                 lookAction,
                 crouchAction,
@@ -258,18 +248,19 @@ namespace Game.Locomotion.Agent
 
             if (locomotionStateController != null)
             {
-                // 1) Evaluate discrete state and all state-related outputs via the controller.
-                SLocomotionDiscreteState mode = locomotionStateController.UpdateDiscreteState(in stateContext, deltaTime);
-                lastDiscreteState = mode;
+                // 1) Evaluate full locomotion state (discrete + turn)
+                // via the state controller.
+                SLocomotionStateFrame stateFrame = locomotionStateController.Evaluate(in stateContext, deltaTime);
+                SLocomotionDiscreteState mode = stateFrame.DiscreteState;
+                float turnAngle = stateFrame.TurnAngle;
+                bool isTurning = stateFrame.IsTurning;
 
                 // 2) Evaluate head look from follow anchor towards the body.
                 Vector2 lookDirection = LocomotionHeadLook.Evaluate(
                     followAnchor,
                     modelRoot,
                     transform,
-                    config);
-
-                float turnAngle = locomotionStateController.CurrentTurnAngle;
+                    locomotionProfile);
 
                 // 3) Assemble the external locomotion snapshot DTO.
                 snapshot = new SLocomotion(
@@ -285,10 +276,7 @@ namespace Game.Locomotion.Agent
                     discreteState: mode,
                     groundContact: groundContact,
                     turnAngle: turnAngle,
-                    isTurningInPlace: locomotionStateController.IsTurningInPlace,
-                    isTurningInWalk: locomotionStateController.IsTurningInWalk,
-                    isTurningInRun: locomotionStateController.IsTurningInRun,
-                    isTurningInSprint: locomotionStateController.IsTurningInSprint,
+                    isTurning: isTurning,
                     isLeftFootOnFront: false,
                     posture: mode.Posture,
                     gait: mode.Gait,
@@ -324,10 +312,7 @@ namespace Game.Locomotion.Agent
                     ELocomotionCondition.Normal),
                 groundContact: SGroundContact.None,
                 turnAngle: 0f,
-                isTurningInPlace: false,
-                isTurningInWalk: false,
-                isTurningInRun: false,
-                isTurningInSprint: false,
+                isTurning: false,
                 isLeftFootOnFront: true,
                 posture: EPostureState.Standing,
                 gait: EMovementGait.Idle,
@@ -392,42 +377,5 @@ namespace Game.Locomotion.Agent
         }
         }
 
-        private void OnDrawGizmosSelected()
-        {
-            if (!drawDebugGizmos)
-            {
-                return;
-            }
-            Vector3 origin = modelRoot != null ? modelRoot.position : transform.position;
-            Vector3 forward = LocomotionHeading.Evaluate(followAnchor, transform);
-
-            // Draw locomotion heading in a color based on the high-level state.
-            Color headingColor = Color.cyan;
-            switch (snapshot.State)
-            {
-                case ELocomotionState.GroundedMoving:
-                    headingColor = Color.green;
-                    break;
-                case ELocomotionState.Airborne:
-                    headingColor = Color.yellow;
-                    break;
-            }
-
-            Gizmos.color = headingColor;
-            Gizmos.DrawLine(origin, origin + forward * debugForwardLength);
-
-            // Visualize ground detection ray and contact point.
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawLine(origin, origin + Vector3.down * groundRayLength);
-
-            if (snapshot.GroundContact.IsGrounded)
-            {
-                Gizmos.color = Color.white;
-                Vector3 contactPoint = snapshot.GroundContact.ContactPoint;
-                Vector3 contactNormal = snapshot.GroundContact.ContactNormal.normalized;
-                Gizmos.DrawSphere(contactPoint, 0.03f);
-                Gizmos.DrawLine(contactPoint, contactPoint + contactNormal * 0.3f);
-            }
-        }
     }
 }

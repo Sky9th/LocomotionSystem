@@ -53,8 +53,17 @@ namespace Game.Locomotion.Animation.Layers
 
             Vector2 look = context.Snapshot.LookDirection;
 
-            float maxYaw = Mathf.Max(1e-3f, profile.maxHeadYawDegrees);
-            float maxPitch = Mathf.Max(1e-3f, profile.maxHeadPitchDegrees);
+            // Prefer locomotion capability limits so animation mapping
+            // stays consistent with simulation. Fall back to small
+            // non-zero defaults to avoid divide-by-zero.
+            float maxYaw = 1e-3f;
+            float maxPitch = 1e-3f;
+
+            if (context.LocomotionProfile != null)
+            {
+                maxYaw = Mathf.Max(maxYaw, context.LocomotionProfile.maxHeadYawDegrees);
+                maxPitch = Mathf.Max(maxPitch, context.LocomotionProfile.maxHeadPitchDegrees);
+            }
 
             float targetYaw = Mathf.Clamp(look.x / maxYaw, -1f, 1f);
             float targetPitch = Mathf.Clamp(look.y / maxPitch, -1f, 1f);

@@ -1,5 +1,5 @@
 using UnityEngine;
-using Game.Locomotion.Animation.Config;
+using Game.Locomotion.Config;
 
 namespace Game.Locomotion.Computation
 {
@@ -16,7 +16,7 @@ namespace Game.Locomotion.Computation
         internal static void UpdateRotation(
             Transform followAnchor,
             SLookIAction lookAction,
-            LocomotionAnimationProfile config)
+            LocomotionProfile locomotionProfile)
         {
             if (followAnchor == null)
             {
@@ -32,16 +32,19 @@ namespace Game.Locomotion.Computation
             euler.z = 0f;
 
             float pitch = NormalizeAngle180(euler.x);
-            float maxPitch = config != null ? config.maxHeadPitchDegrees : 0f;
+            float maxPitch = locomotionProfile != null ? locomotionProfile.maxHeadPitchDegrees : 0f;
 
-            pitch += lookAction.Delta.y;
+            float rotationSpeed = locomotionProfile != null ? locomotionProfile.headLookRotationSpeed : 1f;
+            Vector2 lookDelta = lookAction.Delta * rotationSpeed;
+
+            pitch += lookDelta.y;
             if (maxPitch > 0f)
             {
                 pitch = Mathf.Clamp(pitch, -maxPitch, maxPitch);
             }
 
             euler.x = pitch;
-            euler.y += lookAction.Delta.x;
+            euler.y += lookDelta.x;
 
             followAnchor.rotation = Quaternion.Euler(euler);
         }

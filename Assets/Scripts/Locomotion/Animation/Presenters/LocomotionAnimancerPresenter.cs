@@ -4,6 +4,7 @@ using Game.Locomotion.Agent;
 using Game.Locomotion.Animation.Config;
 using Game.Locomotion.Animation.Core;
 using Game.Locomotion.Animation.Layers;
+using Game.Locomotion.Config;
 using System.Collections.Generic;
 
 namespace Game.Locomotion.Animation.Presenters
@@ -54,7 +55,7 @@ namespace Game.Locomotion.Animation.Presenters
                 animancer = GetComponentInChildren<NamedAnimancerComponent>();
             }
 
-            if (animancer != null && animancerStringProfile != null && animationProfile != null)
+            if (animancer != null && animancerStringProfile != null && animationProfile != null && agent != null && agent.Profile != null)
             {
                 // Configure the dedicated head layer (index 1) to use the
                 // supplied AvatarMask so head look only affects the upper body.
@@ -67,6 +68,7 @@ namespace Game.Locomotion.Animation.Presenters
                 controller = new LocomotionAnimationController(
                     animancer,
                     animancerStringProfile,
+                    agent.Profile,
                     animationProfile,
                     new BaseLocomotionLayer(),
                     new HeadLookLayer());
@@ -91,7 +93,7 @@ namespace Game.Locomotion.Animation.Presenters
             // the state and computation modules.
             if (animationProfile != null && snapshot.State == ELocomotionState.GroundedMoving)
             {
-                bool isTurning = snapshot.IsTurningInWalk || snapshot.IsTurningInRun || snapshot.IsTurningInSprint;
+                bool isTurning = snapshot.IsTurning;
 
                 if (isTurning)
                 {
