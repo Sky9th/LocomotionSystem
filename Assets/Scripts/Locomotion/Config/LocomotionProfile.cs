@@ -26,11 +26,6 @@ namespace Game.Locomotion.Config
         [Range(0f, 90f)] public float maxHeadPitchDegrees = 75f;
         [Min(0f)] public float headLookRotationSpeed = 1f;
 
-        [Header("Climb Settings")]
-        [Min(0f)] public float stepClimbHeight = 0.4f;
-        [Min(0f)] public float vaultHeight = 1.0f;
-        [Min(0f)] public float climbHeight = 1.6f;
-
         [Header("Turn In Place")]
         [Range(0f, 180f)] public float turnEnterAngle = 65f;
         [Range(0f, 180f)] public float turnExitAngle = 20f;

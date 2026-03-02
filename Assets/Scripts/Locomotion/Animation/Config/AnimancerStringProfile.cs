@@ -8,8 +8,12 @@ public class AnimancerStringProfile : ScriptableObject
     [Header("Clips")]
     public StringAsset idleL;
     public StringAsset idleR;
+    public StringAsset idleToRun180L;
+    public StringAsset idleToRun180R;
     public StringAsset walkMixer;
     public StringAsset runMixer;
+    public StringAsset runUp;
+    public StringAsset runDown;
     public StringAsset sprint;
     public StringAsset walkForward;
     public StringAsset walkLeft;

@@ -12,6 +12,12 @@ internal readonly struct SLocomotionStateContext
     /// <summary>Desired locomotion heading in world space (Y flattened).</summary>
     public readonly Vector3 LocomotionHeading;
 
+    /// <summary>Current ground contact information.</summary>
+    public readonly SGroundContact GroundContact;
+
+    /// <summary>Core locomotion capability profile driving simulation thresholds.</summary>
+    public readonly LocomotionProfile Profile;
+
     /// <summary>Aggregated planar movement intent for this frame.</summary>
     public readonly SMoveIAction MoveAction;
 
@@ -39,12 +45,6 @@ internal readonly struct SLocomotionStateContext
     /// <summary>Discrete stand intent for this frame.</summary>
     public readonly SStandIAction StandAction;
 
-    /// <summary>Current ground contact information.</summary>
-    public readonly SGroundContact GroundContact;
-
-    /// <summary>Core locomotion capability profile driving simulation thresholds.</summary>
-    public readonly LocomotionProfile Profile;
-
     public SLocomotionStateContext(
         Vector3 velocity,
         Vector3 bodyForward,
@@ -66,7 +66,6 @@ internal readonly struct SLocomotionStateContext
         LocomotionHeading = locomotionHeading;
         GroundContact = groundContact;
         Profile = profile;
-
         MoveAction = moveAction;
         LookAction = lookAction;
         CrouchAction = crouchAction;

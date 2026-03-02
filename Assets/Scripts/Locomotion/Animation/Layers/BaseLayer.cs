@@ -12,14 +12,14 @@ namespace Game.Locomotion.Animation.Layers
     /// style movement based on the locomotion snapshot's gait, posture
     /// and planar speed.
     /// </summary>
-    internal sealed class BaseLocomotionLayer : ILocomotionAnimationLayer
+    internal sealed class BaseLayer : ILocomotionAnimationLayer
     {
         private const string BaseLayerName = "BaseLocomotion";
+        public int LayerIndex => 0;
+        public AnimancerLayer Layer { get; set; }
 
         private StringAsset lastPlayedAlias;
-
         private AnimancerState currentState;
-
         private SLocomotionAnimationLayerSnapshot lastSnapshot;
 
         // Prevent immediately re-entering a turn animation while the
@@ -33,10 +33,14 @@ namespace Game.Locomotion.Animation.Layers
 
         public SLocomotionAnimationLayerSnapshot AnimationSnapshot => lastSnapshot;
 
+        public BaseLayer(AnimancerLayer layer)
+        {
+            Layer = layer;
+        }
+
         public void Update(in LocomotionAnimationContext context)
         {
             AnimancerStringProfile alias = context.Alias;
-            AnimancerComponent animancer = context.Animancer;
             SLocomotion snapshot = context.Snapshot;
             LocomotionAnimationProfile profile = context.Profile;
             LocomotionProfile locomotionProfile = context.LocomotionProfile;
@@ -45,20 +49,8 @@ namespace Game.Locomotion.Animation.Layers
             // input in character-local space.
             Vector2 planarVelocity = snapshot.ActualLocalVelocity;
 
-            if (animancer == null || alias == null || profile == null || locomotionProfile == null)
-            {
-                return;
-            }
-
-            if (animancer.Layers.Count == 0)
-            {
-                return;
-            }
-
-            AnimancerLayer baseLayer = animancer.Layers[0];
-
             ELocomotionState stateLayer = snapshot.State;
-            StringAsset baseAlias = GetBaseLocomotionAlias(stateLayer, snapshot.Gait, alias);
+            StringAsset baseAlias = ResolveBaseLocomotionAlias(stateLayer, snapshot.Gait, alias);
             StringAsset nextAlias = baseAlias;
 
             bool isAnyTurning = snapshot.IsTurning;
@@ -87,20 +79,56 @@ namespace Game.Locomotion.Animation.Layers
                 // TODO: Play jump / fall animation based on condition.
             }
 
-            // If we have just finished a turn animation, immediately
-            // fall back to the appropriate base locomotion clip even if
-            // the higher level locomotion logic still reports a large
-            // turn angle. This prevents the character from getting stuck
-            // on the last frame of a turn clip.
-            if (IsTurnAlias(lastPlayedAlias, alias) && HasAnimationCompleted(currentState))
-            {
-                // Mark cooldown so we don't immediately re-enter another
-                // turn clip on the next frame while IsTurning* is still
-                // being reported by the locomotion state controller.
-                turnCooldownActive = true;
+            // --- Micro-FSM gating (uninterruptible segments) ---
+            bool wantsMove = stateLayer == ELocomotionState.GroundedMoving;
 
-                // Fall back to the base locomotion clip for the current
-                // locomotion state and gait.
+            // While a turn-in-place clip is active, keep it playing until completion.
+            // If the user starts moving during the turn, immediately transition into
+            // IdleToRun (and lock that too) instead of jumping directly to a gait mixer.
+            if (IsTurnInPlaceAlias(lastPlayedAlias, alias))
+            {
+                if (wantsMove)
+                {
+                    StringAsset idleToRunAlias = ResolveIdleToRunAliasFromTurn(lastPlayedAlias, alias);
+                    if (idleToRunAlias != null)
+                    {
+                        turnCooldownActive = true;
+                        nextAlias = idleToRunAlias;
+                    }
+                }
+                else
+                {
+                    if (!HasAnimationCompleted(currentState))
+                    {
+                        nextAlias = lastPlayedAlias;
+                    }
+                    else
+                    {
+                        turnCooldownActive = true;
+                        nextAlias = baseAlias;
+                    }
+                }
+            }
+
+            // While IdleToRun is playing, do not allow any other animations.
+            if (IsIdleToRunAlias(lastPlayedAlias, alias))
+            {
+                if (!HasAnimationCompleted(currentState))
+                {
+                    nextAlias = lastPlayedAlias;
+                }
+                else
+                {
+                    nextAlias = baseAlias;
+                }
+            }
+
+            // Keep legacy behaviour for non-turn-in-place turn clips (turn-in-walk/run/sprint):
+            // once completed, fall back to the appropriate base locomotion clip even if
+            // the higher level locomotion logic still reports turning.
+            if (!IsTurnInPlaceAlias(lastPlayedAlias, alias) && IsTurnAlias(lastPlayedAlias, alias) && HasAnimationCompleted(currentState))
+            {
+                turnCooldownActive = true;
                 nextAlias = baseAlias;
             }
 
@@ -109,7 +137,7 @@ namespace Game.Locomotion.Animation.Layers
                 // Use the Transition Library configuration for fades.
                 // When using a Transition Library, the TryPlay(object key)
                 // overload is the one that goes through Graph.Transitions.
-                currentState = baseLayer.TryPlay(nextAlias);
+                currentState = Layer.TryPlay(nextAlias);
                 lastPlayedAlias = nextAlias;
             }
 
@@ -153,9 +181,9 @@ namespace Game.Locomotion.Animation.Layers
             return normalizedTime >= 0.99f;
         }
 
-        private static StringAsset GetBaseLocomotionAlias(ELocomotionState stateLayer, EMovementGait gait, AnimancerStringProfile profile)
+        private StringAsset ResolveBaseLocomotionAlias(ELocomotionState stateLayer, EMovementGait gait, AnimancerStringProfile alias)
         {
-            if (profile == null)
+            if (alias == null)
             {
                 return null;
             }
@@ -163,19 +191,66 @@ namespace Game.Locomotion.Animation.Layers
             switch (stateLayer)
             {
                 case ELocomotionState.GroundedIdle:
-                    return profile.idleL;
+                    return alias.idleL;
 
                 case ELocomotionState.GroundedMoving:
                     switch (gait)
                     {
                         case EMovementGait.Walk:
-                            return profile.walkMixer;
+                            return alias.walkMixer;
                         case EMovementGait.Run:
-                            return profile.runMixer;
+                            return alias.runMixer;
                         case EMovementGait.Sprint:
-                            return profile.sprint;
+                            return alias.sprint;
                     }
                     break;
+            }
+
+            return null;
+        }
+
+        private static bool IsIdleToRunAlias(StringAsset alias, AnimancerStringProfile profile)
+        {
+            if (profile == null || alias == null)
+            {
+                return false;
+            }
+
+            return alias == profile.idleToRun180L ||
+                   alias == profile.idleToRun180R;
+        }
+
+        private static bool IsTurnInPlaceAlias(StringAsset alias, AnimancerStringProfile profile)
+        {
+            if (profile == null || alias == null)
+            {
+                return false;
+            }
+
+            return alias == profile.turnInPlace90L ||
+                   alias == profile.turnInPlace90R ||
+                   alias == profile.turnInPlace180L ||
+                   alias == profile.turnInPlace180R;
+        }
+
+        private static StringAsset ResolveIdleToRunAliasFromTurn(StringAsset lastTurnAlias, AnimancerStringProfile profile)
+        {
+            if (profile == null || lastTurnAlias == null)
+            {
+                return null;
+            }
+
+            bool wasLeftTurn = lastTurnAlias == profile.turnInPlace90L || lastTurnAlias == profile.turnInPlace180L;
+            bool wasRightTurn = lastTurnAlias == profile.turnInPlace90R || lastTurnAlias == profile.turnInPlace180R;
+
+            if (wasLeftTurn)
+            {
+                return profile.idleToRun180L;
+            }
+
+            if (wasRightTurn)
+            {
+                return profile.idleToRun180R;
             }
 
             return null;

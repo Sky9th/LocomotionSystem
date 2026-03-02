@@ -1,3 +1,5 @@
+using Animancer;
+
 namespace Game.Locomotion.Animation.Core
 {
     /// <summary>
@@ -7,6 +9,9 @@ namespace Game.Locomotion.Animation.Core
     /// </summary>
     internal interface ILocomotionAnimationLayer
     {
+
+        AnimancerLayer Layer { get; set; }
+        int LayerIndex { get; }
         /// <summary>Logical name of this locomotion animation layer.</summary>
         string LayerName { get; }
 

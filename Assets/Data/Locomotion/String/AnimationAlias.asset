@@ -14,9 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   idleL: {fileID: 11400000, guid: e080e4a005dcb7c47b71b7217c1e44b2, type: 2}
   idleR: {fileID: 11400000, guid: d3bd29706dbf5c249a2161d1dc6210b4, type: 2}
+  idleToRun180L: {fileID: 11400000, guid: ec0724b67e41e7c4b91d5aa7220fb6ab, type: 2}
+  idleToRun180R: {fileID: 11400000, guid: 75be3615ca1444c41a390819a8266640, type: 2}
   walkMixer: {fileID: 11400000, guid: ff9f31ba1724cd34187efff0895d0615, type: 2}
   runMixer: {fileID: 11400000, guid: 4d421bfff7925be4abdd7c83a80f86f7, type: 2}
-  sprintMixer: {fileID: 11400000, guid: 81dc043bb8e405d418aa0fb44a3da25f, type: 2}
+  runUp: {fileID: 11400000, guid: 3bcb863f5ecd5ad42adec675105a47e6, type: 2}
+  runDown: {fileID: 11400000, guid: 54803cced0f94b3488ab1bf55d4de0ea, type: 2}
+  sprint: {fileID: 11400000, guid: 81dc043bb8e405d418aa0fb44a3da25f, type: 2}
   walkForward: {fileID: 11400000, guid: 7586f0ea360e41443b4b55a39d70707a, type: 2}
   walkLeft: {fileID: 11400000, guid: 9a2e14ed79e7af041b736d6a1e986d64, type: 2}
   walkRight: {fileID: 11400000, guid: 78d540f0e2e5bc34ab555420c224a019, type: 2}

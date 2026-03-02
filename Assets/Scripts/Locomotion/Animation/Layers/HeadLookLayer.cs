@@ -14,6 +14,8 @@ namespace Game.Locomotion.Animation.Layers
     internal sealed class HeadLookLayer : ILocomotionAnimationLayer
     {
         private const string HeadLayerName = "HeadLook";
+        public int LayerIndex => 1;
+        public AnimancerLayer Layer { get; set; }
 
         private bool mixerInitialized;
         private float smoothedYaw;
@@ -24,6 +26,11 @@ namespace Game.Locomotion.Animation.Layers
         public string LayerName => HeadLayerName;
 
         public SLocomotionAnimationLayerSnapshot AnimationSnapshot => lastSnapshot;
+
+        public HeadLookLayer(AnimancerLayer layer)
+        {
+            Layer = layer;
+        }
 
         public void Update(in LocomotionAnimationContext context)
         {
@@ -42,10 +49,8 @@ namespace Game.Locomotion.Animation.Layers
                 return;
             }
 
-            AnimancerLayer headLayer = animancer.Layers[1];
-
             // Head look uses a Vector2 mixer where X = yaw, Y = pitch.
-            var state = headLayer.TryPlay(alias.lookMixer) as Vector2MixerState;
+            var state = Layer.TryPlay(alias.lookMixer) as Vector2MixerState;
             if (state == null)
             {
                 return;
