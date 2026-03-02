@@ -18,7 +18,7 @@ namespace Game.Locomotion.Animation.Config
 
         [Header("Turn Speeds By Mode")]
         public LocomotionModeProfile[] modeProfiles;
-        [Min(0f)] public float defaultInPlaceTurnSpeed = 360f;
+        [Min(0f)] public float defaultInPlaceTurnSpeed = 100f;
         [Min(0f)] public float defaultMovingTurnSpeed = 360f;
 
         /// <summary>
@@ -28,7 +28,12 @@ namespace Game.Locomotion.Animation.Config
         /// </summary>
         public float GetTurnSpeed(EPostureState posture, EMovementGait gait, bool isMoving)
         {
-            if (modeProfiles != null && isMoving)
+            if (!isMoving)
+            {
+                return defaultInPlaceTurnSpeed;
+            }
+
+            if (modeProfiles != null)
             {
                 for (int i = 0; i < modeProfiles.Length; i++)
                 {
