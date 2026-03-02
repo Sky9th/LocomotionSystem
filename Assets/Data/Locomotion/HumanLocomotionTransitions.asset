@@ -55,36 +55,7 @@ MonoBehaviour:
           _NormalizedTimes: []
           _Callbacks: []
           _Names: []
-        _Clip: {fileID: 1827226128182048838, guid: 901e76eaff2c72649bea72cd033d8818,
-          type: 3}
-        _NormalizedStartTime: NaN
---- !u!114 &-7281958960604446398
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
-  m_Name: TurnInPlaceR180
-  m_EditorClassIdentifier: 
-  _Transition:
-    rid: 1609343240932950029
-  references:
-    version: 2
-    RefIds:
-    - rid: 1609343240932950029
-      type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
-      data:
-        _FadeDuration: 0.25
-        _Speed: 1
-        _Events:
-          _NormalizedTimes: []
-          _Callbacks: []
-          _Names: []
-        _Clip: {fileID: 7389978470482366679, guid: 5125176f85932cf408d29be76966fe94,
+        _Clip: {fileID: 1827226128182048838, guid: c178c186dd39cb149b58dc694c5d2acf,
           type: 3}
         _NormalizedStartTime: NaN
 --- !u!114 &-6767794499353085001
@@ -143,35 +114,6 @@ MonoBehaviour:
           _Callbacks: []
           _Names: []
         _Clip: {fileID: 1827226128182048838, guid: 488a426db90fd034f806c5b966b88344,
-          type: 3}
-        _NormalizedStartTime: NaN
---- !u!114 &-5686787643896996578
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
-  m_Name: TurnInPlaceL180
-  m_EditorClassIdentifier: 
-  _Transition:
-    rid: 1609343240932950028
-  references:
-    version: 2
-    RefIds:
-    - rid: 1609343240932950028
-      type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
-      data:
-        _FadeDuration: 0.25
-        _Speed: 1
-        _Events:
-          _NormalizedTimes: []
-          _Callbacks: []
-          _Names: []
-        _Clip: {fileID: -6356340604553270176, guid: 11fb0234f9e7b234d90f02fee2aaf100,
           type: 3}
         _NormalizedStartTime: NaN
 --- !u!114 &-5632947427273203277
@@ -360,7 +302,7 @@ MonoBehaviour:
           _NormalizedTimes: []
           _Callbacks: []
           _Names: []
-        _Clip: {fileID: 786506915467791735, guid: 4aa5befc0d756164fa29e294897c2613,
+        _Clip: {fileID: 8036710987384964144, guid: 4d75bab848fd72a48bc0705fe9590b2b,
           type: 3}
         _NormalizedStartTime: NaN
 --- !u!114 &-255853764271627376
@@ -434,8 +376,6 @@ MonoBehaviour:
     - {fileID: -4676789515798329813}
     - {fileID: 8269135969601451288}
     - {fileID: -613736580003927102}
-    - {fileID: -5686787643896996578}
-    - {fileID: -7281958960604446398}
     - {fileID: 8118410883589941551}
     - {fileID: -255853764271627376}
     - {fileID: 2308508199983405240}
@@ -456,12 +396,36 @@ MonoBehaviour:
     - _From: 4
       _To: 0
       _Fade: 0.25
-    - _From: 5
-      _To: 0
-      _Fade: 0.25
-    - _From: 6
-      _To: 0
-      _Fade: 0.25
+    - _From: 3
+      _To: 16
+      _Fade: 0.1
+    - _From: 4
+      _To: 16
+      _Fade: 0.1
+    - _From: 3
+      _To: 17
+      _Fade: 0.1
+    - _From: 4
+      _To: 17
+      _Fade: 0.1
+    - _From: 16
+      _To: 5
+      _Fade: 0.2
+    - _From: 16
+      _To: 6
+      _Fade: 0.2
+    - _From: 16
+      _To: 7
+      _Fade: 0.2
+    - _From: 17
+      _To: 5
+      _Fade: 0.2
+    - _From: 17
+      _To: 6
+      _Fade: 0.2
+    - _From: 17
+      _To: 7
+      _Fade: 0.2
     _Aliases:
     - _Name: {fileID: 11400000, guid: e080e4a005dcb7c47b71b7217c1e44b2, type: 2}
       _Index: 0
@@ -473,33 +437,33 @@ MonoBehaviour:
       _Index: 3
     - _Name: {fileID: 11400000, guid: cd8614c33b5e91d489beb07de8d7112f, type: 2}
       _Index: 4
-    - _Name: {fileID: 11400000, guid: 470dbfabfb96aa442a71a295e3d66d15, type: 2}
-      _Index: 5
-    - _Name: {fileID: 11400000, guid: 1b561666096556d4ab8df624c35d0472, type: 2}
-      _Index: 6
     - _Name: {fileID: 11400000, guid: ff9f31ba1724cd34187efff0895d0615, type: 2}
-      _Index: 7
+      _Index: 5
     - _Name: {fileID: 11400000, guid: 4d421bfff7925be4abdd7c83a80f86f7, type: 2}
-      _Index: 8
+      _Index: 6
     - _Name: {fileID: 11400000, guid: 81dc043bb8e405d418aa0fb44a3da25f, type: 2}
-      _Index: 9
+      _Index: 7
     - _Name: {fileID: 11400000, guid: a1aa8de1168235f438639d24b093dc33, type: 2}
-      _Index: 10
+      _Index: 8
     - _Name: {fileID: 11400000, guid: 3f47afb1acfa38d4b8269baf2b2079ba, type: 2}
-      _Index: 11
+      _Index: 9
     - _Name: {fileID: 11400000, guid: 5380fa5ab8613ea4782a64c709bbb167, type: 2}
-      _Index: 12
+      _Index: 10
     - _Name: {fileID: 11400000, guid: a1837ef6596ff904bbc9686f48d80d01, type: 2}
-      _Index: 13
+      _Index: 11
     - _Name: {fileID: 11400000, guid: 2120b39ce2714204ea5e0fe5624ddfd4, type: 2}
-      _Index: 14
+      _Index: 12
     - _Name: {fileID: 11400000, guid: eb29250394b787b41898db0591441b0e, type: 2}
-      _Index: 15
+      _Index: 13
     - _Name: {fileID: 11400000, guid: 3bcb863f5ecd5ad42adec675105a47e6, type: 2}
-      _Index: 16
+      _Index: 14
     - _Name: {fileID: 11400000, guid: 54803cced0f94b3488ab1bf55d4de0ea, type: 2}
+      _Index: 15
+    - _Name: {fileID: 11400000, guid: ec0724b67e41e7c4b91d5aa7220fb6ab, type: 2}
+      _Index: 16
+    - _Name: {fileID: 11400000, guid: 75be3615ca1444c41a390819a8266640, type: 2}
       _Index: 17
-    _AliasAllTransitions: 0
+    _AliasAllTransitions: 1
 --- !u!114 &71537367975672513
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -642,7 +606,7 @@ MonoBehaviour:
           _NormalizedTimes: []
           _Callbacks: []
           _Names: []
-        _Clip: {fileID: 1827226128182048838, guid: bedf77fb6e106484cac812acc29a5b51,
+        _Clip: {fileID: 1827226128182048838, guid: 315547aa7538ddb4aa6dc186112aadac,
           type: 3}
         _NormalizedStartTime: NaN
 --- !u!114 &6329991998728917179
@@ -697,14 +661,14 @@ MonoBehaviour:
         _Speeds: []
         _SynchronizeChildren: 
         _Thresholds:
-        - {x: 0, y: 0}
-        - {x: 0, y: 0}
-        - {x: 0, y: 0}
-        - {x: 0, y: 0}
-        - {x: 0, y: 0}
-        - {x: 0, y: 0}
-        - {x: 0, y: 0}
-        - {x: 0, y: 0}
+        - {x: 0, y: 1}
+        - {x: 0.5, y: 0.5}
+        - {x: 1, y: 0}
+        - {x: 0.5, y: -0.5}
+        - {x: 0, y: -1}
+        - {x: -0.5, y: -0.5}
+        - {x: -1, y: 0}
+        - {x: -0.5, y: 0.5}
         _DefaultParameter: {x: 0, y: 0}
         _Type: 0
         _ParameterNameX: {fileID: 0}
@@ -735,7 +699,7 @@ MonoBehaviour:
           _NormalizedTimes: []
           _Callbacks: []
           _Names: []
-        _Clip: {fileID: 5271736363738221749, guid: fde4813f79e8ecc43865c6a8330f5a97,
+        _Clip: {fileID: -5982596486038227052, guid: 8c25eb5d9e0f7994da357be57b189985,
           type: 3}
         _NormalizedStartTime: NaN
 --- !u!114 &9030389947592137924

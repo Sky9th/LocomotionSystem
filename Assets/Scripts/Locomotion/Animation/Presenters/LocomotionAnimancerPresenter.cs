@@ -4,6 +4,7 @@ using Game.Locomotion.Agent;
 using Game.Locomotion.Animation.Config;
 using Game.Locomotion.Animation.Core;
 using Game.Locomotion.Animation.Layers;
+using Game.Locomotion.Animation.Layers.Base;
 using Game.Locomotion.Config;
 using System.Collections.Generic;
 
@@ -75,7 +76,7 @@ namespace Game.Locomotion.Animation.Presenters
                     animancerStringProfile,
                     agent.Profile,
                     animationProfile,
-                    new BaseLayer(baseLayer),
+                    new BaseLayerFsm(baseLayer),
                     new HeadLookLayer(headLayer),
                     new FootLayer(footLayer));
             }
@@ -97,12 +98,18 @@ namespace Game.Locomotion.Animation.Presenters
 
         private void ApplyPresenterDrivenTurnRotationIfNeeded(SLocomotion snapshot, float deltaTime)
         {
-            // Apply model rotation for grounded movement based on the
-            // current turn angle and the configured per-mode turn
-            // speeds. This keeps orientation control close to the
-            // presentation layer while locomotion logic remains in
+            // Apply model rotation based on the current turn angle and the
+            // configured turn speeds. This keeps orientation control close
+            // to the presentation layer while locomotion logic remains in
             // the state and computation modules.
-            if (animationProfile == null || snapshot.State != ELocomotionState.GroundedMoving)
+            if (animationProfile == null)
+            {
+                return;
+            }
+
+            bool isGroundedIdle = snapshot.State == ELocomotionState.GroundedIdle;
+            bool isGroundedMoving = snapshot.State == ELocomotionState.GroundedMoving;
+            if (!isGroundedIdle && !isGroundedMoving)
             {
                 return;
             }
@@ -110,20 +117,24 @@ namespace Game.Locomotion.Animation.Presenters
             bool isTurning = snapshot.IsTurning;
             if (isTurning)
             {
-                // Only suppress presenter-driven rotation while a
-                // dedicated turn animation is actually playing on
-                // the base locomotion layer. Once the animation has
-                // finished (and BaseLocomotionLayer has blended
-                // back to the gait mixer), allow this presenter to
-                // rotate the model even if the logical state still
-                // reports IsTurning = true.
-                var snapshots = controller.AnimationSnapshots;
-                if (snapshots != null &&
-                    snapshots.TryGetValue("BaseLocomotion", out SLocomotionAnimationLayerSnapshot baseSnapshot) &&
-                    baseSnapshot.IsTurnAnimation)
+                // When moving, optionally suppress presenter-driven rotation while a
+                // dedicated turn animation is playing (in case it uses root motion).
+                // When idle, turn-in-place is non-root-motion so we always allow
+                // code-driven rotation.
+                if (isGroundedMoving)
                 {
-                    return;
+                    var snapshots = controller.AnimationSnapshots;
+                    if (snapshots != null &&
+                        snapshots.TryGetValue("BaseLocomotion", out SLocomotionAnimationLayerSnapshot baseSnapshot) &&
+                        baseSnapshot.IsTurnAnimation)
+                    {
+                        return;
+                    }
                 }
+            }
+            else
+            {
+                return;
             }
 
             bool isMoving = snapshot.Gait != EMovementGait.Idle;
