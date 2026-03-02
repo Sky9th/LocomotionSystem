@@ -13,13 +13,11 @@ MonoBehaviour:
   m_Name: HumanLocomotionProfile
   m_EditorClassIdentifier: 
   moveSpeed: 4
-  acceleration: 5
+  acceleration: 15
   maxGroundSlopeAngle: 55
   maxHeadYawDegrees: 75
   maxHeadPitchDegrees: 75
-  stepClimbHeight: 0.4
-  vaultHeight: 1
-  climbHeight: 1.6
+  headLookRotationSpeed: 0.25
   turnEnterAngle: 65
   turnExitAngle: 20
   turnDebounceDuration: 0.25

@@ -29,6 +29,11 @@ namespace Game.Locomotion.Agent
         [SerializeField, Min(0f)] private float groundRayLength = 1.5f;
         [SerializeField] private LayerMask groundLayerMask = ~0;
 
+        [Header("Grounding")]
+        [SerializeField] private bool enableGroundLocking = true;
+        [SerializeField] private float groundLockVerticalOffset = 0f;
+        [SerializeField, Min(0f)] private float groundLockMaxStepPerFrame = 0.25f;
+
         [Header("Identity")]
         [SerializeField] private bool isPlayer;
 
@@ -147,6 +152,11 @@ namespace Game.Locomotion.Agent
             // stay behind. Align the Agent to the model each frame so
             // that followAnchor moves together with the visual.
             AlignToModelRootPosition();
+
+            // Root motion typically runs before LateUpdate, so this is
+            // the safest place to apply a post-root-motion grounding
+            // correction (program takes over the Y axis).
+            ApplyGroundLockIfEnabled();
         }
 
         private void OnDisable()
@@ -354,6 +364,44 @@ namespace Game.Locomotion.Agent
             Vector3 worldPos = modelRoot.position;
             transform.position = worldPos;
             modelRoot.localPosition = Vector3.zero;
+        }
+
+        private void ApplyGroundLockIfEnabled()
+        {
+            if (!enableGroundLocking)
+            {
+                return;
+            }
+
+            Vector3 origin = transform.position;
+            float maxSlopeAngle = locomotionProfile != null ? locomotionProfile.maxGroundSlopeAngle : 0f;
+            SGroundContact groundContact = LocomotionGroundDetection.SampleGround(
+                origin,
+                groundRayLength,
+                groundLayerMask,
+                maxSlopeAngle);
+
+            if (!groundContact.IsGrounded)
+            {
+                return;
+            }
+
+            float targetY = groundContact.ContactPoint.y + groundLockVerticalOffset;
+            Vector3 position = transform.position;
+            float deltaY = targetY - position.y;
+
+            if (groundLockMaxStepPerFrame > 0f)
+            {
+                deltaY = Mathf.Clamp(deltaY, -groundLockMaxStepPerFrame, groundLockMaxStepPerFrame);
+            }
+
+            if (Mathf.Abs(deltaY) <= Mathf.Epsilon)
+            {
+                return;
+            }
+
+            position.y += deltaY;
+            transform.position = position;
         }
 
         private void ResolveRigReferencesIfNeeded()

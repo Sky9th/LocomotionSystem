@@ -9,6 +9,8 @@ public class PlayerManager : BaseService
 
     [SerializeField] private GameObject PlayerPrefab;
 
+    [SerializeField] private GameObject PlayerStartAnchor;
+
     protected override void OnServicesReady()
     {
         CreatePlayer();
@@ -22,14 +24,18 @@ public class PlayerManager : BaseService
 
     private void CreatePlayer()
     {
-        if (PlayerPrefab == null)
+
+        if (PlayerStartAnchor == null)
         {
-            Debug.LogError("PlayerPrefab reference is missing in PlayerManager.", this);
-            return;
+            PlayerStartAnchor = GameObject.Find("PlayerStart");
         }
 
         GameObject playerInstance = Instantiate(PlayerPrefab);
         playerInstance.name = PlayerPrefab.name;
+        if (PlayerStartAnchor != null)
+        {
+            playerInstance.transform.SetPositionAndRotation(PlayerStartAnchor.transform.position, PlayerStartAnchor.transform.rotation);
+        }
 
         // Broadcast a spawn snapshot so other systems can react
         // (camera follow, UI hooks, etc.). Also push it into the
