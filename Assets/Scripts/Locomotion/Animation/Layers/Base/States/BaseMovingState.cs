@@ -8,9 +8,9 @@ using UnityEngine;
 
 namespace Game.Locomotion.Animation.Layers.Base
 {
-    internal sealed class BaseMovingState : LocomotionLayerFsmState<BaseLayerFsm>
+    internal sealed class BaseMovingState : LocomotionLayerFsmState<BaseLayer>
     {
-        public BaseMovingState(BaseLayerFsm owner) : base(owner)
+        public BaseMovingState(BaseLayer owner) : base(owner)
         {
         }
 

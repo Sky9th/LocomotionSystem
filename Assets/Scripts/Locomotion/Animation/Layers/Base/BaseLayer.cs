@@ -5,7 +5,6 @@ using Game.Locomotion.Animation.Core;
 using Game.Locomotion.Animation.Layers.Core;
 using Game.Locomotion.Agent;
 using Game.Locomotion.Config;
-using Game.Locomotion.State.Layers;
 using System.Collections.Generic;
 
 namespace Game.Locomotion.Animation.Layers.Base
@@ -25,14 +24,14 @@ namespace Game.Locomotion.Animation.Layers.Base
     /// Note: This layer is intentionally introduced alongside the legacy implementation
     /// for incremental migration.
     /// </summary>
-    internal sealed class BaseLayerFsm : ILocomotionAnimationLayer
+    internal sealed class BaseLayer : ILocomotionAnimationLayer
     {
         private const string BaseLayerName = "BaseLocomotion";
 
         public int LayerIndex => 0;
         public AnimancerLayer Layer { get; set; }
 
-        private readonly StateMachine<BaseStateKey, LocomotionLayerFsmState<BaseLayerFsm>> stateMachine;
+        private readonly StateMachine<BaseStateKey, LocomotionLayerFsmState<BaseLayer>> stateMachine;
         private readonly BaseIdleState idleState;
         private readonly BaseTurnInPlaceState turnInPlaceState;
         private readonly BaseIdleToMovingState idleToMovingState;
@@ -57,7 +56,7 @@ namespace Game.Locomotion.Animation.Layers.Base
         internal float DeltaTime => context.DeltaTime;
         internal ILocomotionModelRotator ModelRotator => context.ModelRotator;
 
-        public BaseLayerFsm(AnimancerLayer layer)
+        public BaseLayer(AnimancerLayer layer)
         {
             Layer = layer;
 
@@ -67,7 +66,7 @@ namespace Game.Locomotion.Animation.Layers.Base
             idleToMovingState = new BaseIdleToMovingState(this);
             turnInMovingState = new BaseTurnInMovingState(this);
 
-            stateMachine = new StateMachine<BaseStateKey, LocomotionLayerFsmState<BaseLayerFsm>>();
+            stateMachine = new StateMachine<BaseStateKey, LocomotionLayerFsmState<BaseLayer>>();
             stateMachine.Dictionary[BaseStateKey.Idle] = idleState;
             stateMachine.Dictionary[BaseStateKey.TurnInPlace] = turnInPlaceState;
             stateMachine.Dictionary[BaseStateKey.IdleToMoving] = idleToMovingState;
@@ -113,6 +112,22 @@ namespace Game.Locomotion.Animation.Layers.Base
             BaseStateKey previousKey = stateMachine.CurrentKey;
             stateMachine.ForceSetState(key);
             return !EqualityComparer<BaseStateKey>.Default.Equals(previousKey, stateMachine.CurrentKey);
+        }
+
+        internal void PlayFromStart(StringAsset alias)
+        {
+            if (alias == null)
+            {
+                return;
+            }
+
+            currentState = Layer.TryPlay(alias);
+            lastPlayedAlias = alias;
+
+            if (currentState != null)
+            {
+                currentState.NormalizedTime = 0f;
+            }
         }
 
         internal void PlayIfChanged(StringAsset nextAlias)

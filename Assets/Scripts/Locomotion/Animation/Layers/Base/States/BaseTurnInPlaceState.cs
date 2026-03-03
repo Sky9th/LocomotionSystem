@@ -8,11 +8,11 @@ using UnityEngine;
 
 namespace Game.Locomotion.Animation.Layers.Base
 {
-    internal sealed class BaseTurnInPlaceState : LocomotionLayerFsmState<BaseLayerFsm>
+    internal sealed class BaseTurnInPlaceState : LocomotionLayerFsmState<BaseLayer>
     {
         private StringAsset selectedAlias;
 
-        public BaseTurnInPlaceState(BaseLayerFsm owner) : base(owner)
+        public BaseTurnInPlaceState(BaseLayer owner) : base(owner)
         {
         }
 
