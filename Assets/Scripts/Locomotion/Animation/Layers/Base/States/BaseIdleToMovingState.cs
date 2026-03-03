@@ -1,8 +1,10 @@
-using UnityEngine;
+using Game.Locomotion.Animation.Layers.Base.Conditions;
+using Game.Locomotion.Animation.Layers.Core;
+using Game.Locomotion.State.Layers;
 
 namespace Game.Locomotion.Animation.Layers.Base
 {
-    internal sealed class BaseIdleToMovingState : BaseLayerFsmState
+    internal sealed class BaseIdleToMovingState : LocomotionLayerFsmState<BaseLayerFsm>
     {
         public BaseIdleToMovingState(BaseLayerFsm owner) : base(owner)
         {
@@ -28,13 +30,15 @@ namespace Game.Locomotion.Animation.Layers.Base
 
         public override void Tick()
         {
-            if (Owner.Snapshot.State == ELocomotionState.GroundedIdle)
+            var conditionContext = Owner.context;
+
+            if (conditionContext.Snapshot.State == ELocomotionState.GroundedIdle)
             {
                 Owner.TrySetState(BaseStateKey.Idle);
                 return;
             }
 
-            if (Owner.Snapshot.State == ELocomotionState.GroundedMoving)
+            if (default(CanEnterMovingStateCondition).Evaluate(in conditionContext))
             {
                 Owner.TrySetState(BaseStateKey.Moving);
                 return;
@@ -47,8 +51,22 @@ namespace Game.Locomotion.Animation.Layers.Base
             }
         }
 
-        public override bool CanEnterState => Owner.Snapshot.State == ELocomotionState.GroundedMoving;
+        public override bool CanEnterState
+        {
+            get
+            {
+                var conditionContext = Owner.context;
+                return default(CanEnterIdleToMovingStateCondition).Evaluate(in conditionContext);
+            }
+        }
 
-        public override bool CanExitState => !Owner.Snapshot.IsTurning;
+        public override bool CanExitState
+        {
+            get
+            {
+                var conditionContext = Owner.context;
+                return default(CanExitIdleToMovingStateCondition).Evaluate(in conditionContext);
+            }
+        }
     }
 }

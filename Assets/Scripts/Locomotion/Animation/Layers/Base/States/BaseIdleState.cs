@@ -1,8 +1,10 @@
 using Animancer;
+using Game.Locomotion.Animation.Layers.Core;
+using Game.Locomotion.Animation.Layers.Base.Conditions;
 
 namespace Game.Locomotion.Animation.Layers.Base
 {
-    internal sealed class BaseIdleState : BaseLayerFsmState
+    internal sealed class BaseIdleState : LocomotionLayerFsmState<BaseLayerFsm>
     {
         public BaseIdleState(BaseLayerFsm owner) : base(owner)
         {
@@ -15,8 +17,10 @@ namespace Game.Locomotion.Animation.Layers.Base
 
         public override void Tick()
         {
+            var conditionContext = Owner.context;
+
             // Let the FSM drive its own transitions.
-            if (Owner.Snapshot.State == ELocomotionState.GroundedMoving)
+            if (default(CanEnterIdleToMovingStateCondition).Evaluate(in conditionContext))
             {
                 if (Owner.TrySetState(BaseStateKey.IdleToMoving))
                 {
@@ -24,7 +28,7 @@ namespace Game.Locomotion.Animation.Layers.Base
                 }
             }
 
-            if (Owner.Snapshot.State == ELocomotionState.GroundedIdle && Owner.Snapshot.IsTurning)
+            if (default(CanEnterTurnInPlaceStateCondition).Evaluate(in conditionContext))
             {
                 if (Owner.TrySetState(BaseStateKey.TurnInPlace))
                 {

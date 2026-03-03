@@ -1,12 +1,14 @@
 using System.Diagnostics;
 using Animancer;
 using Game.Locomotion.Animation.Config;
+using Game.Locomotion.Animation.Layers.Base.Conditions;
+using Game.Locomotion.Animation.Layers.Core;
 using Game.Locomotion.State.Layers;
 using UnityEngine;
 
 namespace Game.Locomotion.Animation.Layers.Base
 {
-    internal sealed class BaseTurnInMovingState : BaseLayerFsmState
+    internal sealed class BaseTurnInMovingState : LocomotionLayerFsmState<BaseLayerFsm>
     {
         private StringAsset selectedAlias;
 
@@ -18,7 +20,8 @@ namespace Game.Locomotion.Animation.Layers.Base
         {
             get
             {
-                return true;
+                var conditionContext = Owner.context;
+                return default(CanEnterTurnInMovingStateCondition).Evaluate(in conditionContext);
             }
         }
 
@@ -43,13 +46,16 @@ namespace Game.Locomotion.Animation.Layers.Base
 
         public override void Tick()
         {
-            if (Owner.Snapshot.State != ELocomotionState.GroundedMoving && !Owner.Snapshot.IsTurning)
+            SLocomotion snapshot = Owner.Snapshot;
+            var conditionContext = Owner.context;
+
+            if (default(CanEnterMovingStateCondition).Evaluate(in conditionContext) && !conditionContext.Snapshot.IsTurning)
             {
                 Owner.TrySetState(BaseStateKey.Moving);
                 return;
             }
 
-            if (Owner.Snapshot.State != ELocomotionState.GroundedIdle && !Owner.Snapshot.IsTurning)
+            if (!default(CanEnterMovingStateCondition).Evaluate(in conditionContext) && !conditionContext.Snapshot.IsTurning)
             {
                 Owner.TrySetState(BaseStateKey.Idle);
                 return;
@@ -57,7 +63,7 @@ namespace Game.Locomotion.Animation.Layers.Base
 
             if (Owner.HasCurrentAnimationCompleted())
             {
-                if (Owner.Snapshot.State == ELocomotionState.GroundedMoving)
+                if (snapshot.State == ELocomotionState.GroundedMoving)
                 {
                     Owner.TrySetState(BaseStateKey.Moving);
                 }
