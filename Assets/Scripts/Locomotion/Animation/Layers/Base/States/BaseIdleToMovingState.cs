@@ -1,5 +1,6 @@
 using Game.Locomotion.Animation.Layers.Base.Conditions;
 using Game.Locomotion.Animation.Layers.Core;
+using Game.Locomotion.Animation.Conditions;
 using Game.Locomotion.State.Layers;
 
 namespace Game.Locomotion.Animation.Layers.Base
@@ -30,17 +31,13 @@ namespace Game.Locomotion.Animation.Layers.Base
 
         public override void Tick()
         {
-            var conditionContext = Owner.context;
-
-            if (conditionContext.Snapshot.State == ELocomotionState.GroundedIdle)
+            if (Owner.TrySetState(BaseStateKey.Idle))
             {
-                Owner.TrySetState(BaseStateKey.Idle);
                 return;
             }
 
-            if (default(CanEnterMovingStateCondition).Evaluate(in conditionContext))
+            if (Owner.TrySetState(BaseStateKey.Moving))
             {
-                Owner.TrySetState(BaseStateKey.Moving);
                 return;
             }
             
@@ -56,7 +53,7 @@ namespace Game.Locomotion.Animation.Layers.Base
             get
             {
                 var conditionContext = Owner.context;
-                return default(CanEnterIdleToMovingStateCondition).Evaluate(in conditionContext);
+                return conditionContext.Check<CanEnterIdleToMovingStateCondition>();
             }
         }
 
@@ -65,7 +62,7 @@ namespace Game.Locomotion.Animation.Layers.Base
             get
             {
                 var conditionContext = Owner.context;
-                return default(CanExitIdleToMovingStateCondition).Evaluate(in conditionContext);
+                return conditionContext.Check<CanExitIdleToMovingStateCondition>();
             }
         }
     }
