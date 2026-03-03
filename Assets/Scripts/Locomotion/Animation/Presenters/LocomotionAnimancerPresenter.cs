@@ -76,6 +76,7 @@ namespace Game.Locomotion.Animation.Presenters
                     animancerStringProfile,
                     agent.Profile,
                     animationProfile,
+                    agent,
                     new BaseLayerFsm(baseLayer),
                     new HeadLookLayer(headLayer),
                     new FootLayer(footLayer));
@@ -92,65 +93,6 @@ namespace Game.Locomotion.Animation.Presenters
             float deltaTime = Time.deltaTime;
             SLocomotion snapshot = agent.Snapshot;
             controller.UpdateAnimations(snapshot, deltaTime);
-
-            ApplyPresenterDrivenTurnRotationIfNeeded(snapshot, deltaTime);
-        }
-
-        private void ApplyPresenterDrivenTurnRotationIfNeeded(SLocomotion snapshot, float deltaTime)
-        {
-            // Apply model rotation based on the current turn angle and the
-            // configured turn speeds. This keeps orientation control close
-            // to the presentation layer while locomotion logic remains in
-            // the state and computation modules.
-            if (animationProfile == null)
-            {
-                return;
-            }
-
-            bool isGroundedIdle = snapshot.State == ELocomotionState.GroundedIdle;
-            bool isGroundedMoving = snapshot.State == ELocomotionState.GroundedMoving;
-            if (!isGroundedIdle && !isGroundedMoving)
-            {
-                return;
-            }
-
-            bool isTurning = snapshot.IsTurning;
-            if (isTurning)
-            {
-                // When moving, optionally suppress presenter-driven rotation while a
-                // dedicated turn animation is playing (in case it uses root motion).
-                // When idle, turn-in-place is non-root-motion so we always allow
-                // code-driven rotation.
-                if (isGroundedMoving)
-                {
-                    var snapshots = controller.AnimationSnapshots;
-                    if (snapshots != null &&
-                        snapshots.TryGetValue("BaseLocomotion", out SLocomotionAnimationLayerSnapshot baseSnapshot) &&
-                        baseSnapshot.IsTurnAnimation)
-                    {
-                        return;
-                    }
-                }
-            }
-            else
-            {
-                return;
-            }
-
-            bool isMoving = snapshot.Gait != EMovementGait.Idle;
-            float turnSpeed = animationProfile.GetTurnSpeed(snapshot.Posture, snapshot.Gait, isMoving);
-            float absAngle = Mathf.Abs(snapshot.TurnAngle);
-            if (turnSpeed <= 0f || absAngle <= Mathf.Epsilon)
-            {
-                return;
-            }
-
-            float maxStep = turnSpeed * deltaTime;
-            float step = Mathf.Min(maxStep, absAngle);
-            float deltaAngle = Mathf.Sign(snapshot.TurnAngle) * step;
-
-            Transform modelRoot = agent.ModelRoot != null ? agent.ModelRoot : agent.transform;
-            modelRoot.rotation = Quaternion.AngleAxis(deltaAngle, Vector3.up) * modelRoot.rotation;
         }
     }
 }

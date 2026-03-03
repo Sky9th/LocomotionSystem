@@ -2,9 +2,9 @@ using Animancer;
 using Animancer.FSM;
 using Game.Locomotion.Animation.Config;
 using Game.Locomotion.Animation.Core;
+using Game.Locomotion.Agent;
 using Game.Locomotion.Config;
 using Game.Locomotion.State.Layers;
-using UnityEngine;
 using System.Collections.Generic;
 
 namespace Game.Locomotion.Animation.Layers.Base
@@ -52,6 +52,9 @@ namespace Game.Locomotion.Animation.Layers.Base
         internal AnimancerStringProfile AliasProfile => context.Alias;
         internal SLocomotion Snapshot => context.Snapshot;
         internal LocomotionProfile LocomotionProfile => context.LocomotionProfile;
+        internal LocomotionAnimationProfile AnimationProfile => context.Profile;
+        internal float DeltaTime => context.DeltaTime;
+        internal ILocomotionModelRotator ModelRotator => context.ModelRotator;
 
         public BaseLayerFsm(AnimancerLayer layer)
         {
@@ -81,12 +84,10 @@ namespace Game.Locomotion.Animation.Layers.Base
             stateMachine.CurrentState?.Tick();
 
             float normalizedTime = currentState != null ? (float)currentState.NormalizedTime : 0f;
-            bool isTurnAnimation = IsTurnAlias(lastPlayedAlias, AliasProfile);
             lastSnapshot = new SLocomotionAnimationLayerSnapshot(
                 layerName: BaseLayerName,
                 alias: lastPlayedAlias,
-                normalizedTime: normalizedTime,
-                isTurnAnimation: isTurnAnimation);
+                normalizedTime: normalizedTime);
         }
 
         private void EnsureInitialized()
@@ -143,23 +144,5 @@ namespace Game.Locomotion.Animation.Layers.Base
             return normalizedTime >= 0.99f;
         }
 
-        private static bool IsTurnAlias(StringAsset alias, AnimancerStringProfile profile)
-        {
-            if (profile == null || alias == null)
-            {
-                return false;
-            }
-
-            return alias == profile.turnInPlace90L ||
-                   alias == profile.turnInPlace90R ||
-                   alias == profile.turnInPlace180L ||
-                   alias == profile.turnInPlace180R ||
-                   alias == profile.turnInWalk180L ||
-                   alias == profile.turnInWalk180R ||
-                   alias == profile.turnInRun180L ||
-                   alias == profile.turnInRun180R ||
-                   alias == profile.turnInSprint180L ||
-                   alias == profile.turnInSprint180R;
-        }
     }
 }

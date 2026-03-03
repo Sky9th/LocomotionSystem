@@ -99,8 +99,7 @@ namespace Game.Locomotion.Animation.Layers
             lastSnapshot = new SLocomotionAnimationLayerSnapshot(
                 layerName: HeadLayerName,
                 alias: alias.lookMixer,
-                normalizedTime: 0f,
-                isTurnAnimation: false);
+                normalizedTime: 0f);
         }
     }
 }

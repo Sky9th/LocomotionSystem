@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Animancer;
+using Game.Locomotion.Agent;
 using Game.Locomotion.Animation.Config;
 using Game.Locomotion.Config;
 
@@ -17,6 +18,7 @@ namespace Game.Locomotion.Animation.Core
         private readonly AnimancerStringProfile alias;
         private readonly LocomotionProfile locomotionProfile;
         private readonly LocomotionAnimationProfile profile;
+        private readonly ILocomotionModelRotator modelRotator;
         private readonly ILocomotionAnimationLayer[] layers;
         private readonly Dictionary<string, SLocomotionAnimationLayerSnapshot> layerSnapshots;
 
@@ -25,12 +27,14 @@ namespace Game.Locomotion.Animation.Core
             AnimancerStringProfile alias,
             LocomotionProfile locomotionProfile,
             LocomotionAnimationProfile profile,
+            ILocomotionModelRotator modelRotator,
             params ILocomotionAnimationLayer[] layers)
         {
             this.animancer = animancer;
             this.alias = alias;
             this.locomotionProfile = locomotionProfile;
             this.profile = profile;
+            this.modelRotator = modelRotator;
             this.layers = layers ?? Array.Empty<ILocomotionAnimationLayer>();
             layerSnapshots = new Dictionary<string, SLocomotionAnimationLayerSnapshot>(this.layers.Length);
         }
@@ -50,7 +54,8 @@ namespace Game.Locomotion.Animation.Core
                 animancer,
                 alias,
                 profile,
-                locomotionProfile);
+                locomotionProfile,
+                modelRotator);
 
             if (layers == null)
             {

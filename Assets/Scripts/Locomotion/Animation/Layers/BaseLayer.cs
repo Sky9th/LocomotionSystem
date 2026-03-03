@@ -166,8 +166,7 @@ namespace Game.Locomotion.Animation.Layers
             lastSnapshot = new SLocomotionAnimationLayerSnapshot(
                 layerName: BaseLayerName,
                 alias: lastPlayedAlias,
-                normalizedTime: normalizedTime,
-                isTurnAnimation: isTurnAnimation);
+                normalizedTime: normalizedTime);
         }
 
         private static bool HasAnimationCompleted(AnimancerState state)

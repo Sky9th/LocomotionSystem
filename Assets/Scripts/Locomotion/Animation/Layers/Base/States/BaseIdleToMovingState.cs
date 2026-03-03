@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Game.Locomotion.Animation.Layers.Base
 {
     internal sealed class BaseIdleToMovingState : BaseLayerFsmState

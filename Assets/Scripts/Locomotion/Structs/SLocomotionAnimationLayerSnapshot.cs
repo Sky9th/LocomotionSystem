@@ -11,13 +11,11 @@ public struct SLocomotionAnimationLayerSnapshot
     public SLocomotionAnimationLayerSnapshot(
         string layerName,
         StringAsset alias,
-        float normalizedTime,
-        bool isTurnAnimation)
+        float normalizedTime)
     {
         LayerName = layerName;
         Alias = alias;
         NormalizedTime = normalizedTime;
-        IsTurnAnimation = isTurnAnimation;
     }
 
     /// <summary>Logical name of the locomotion animation layer that produced this snapshot.</summary>
@@ -28,7 +26,4 @@ public struct SLocomotionAnimationLayerSnapshot
 
     /// <summary>Current normalized time of the animation on this layer.</summary>
     public float NormalizedTime { get; }
-
-    /// <summary>True if this layer is currently playing a turn animation.</summary>
-    public bool IsTurnAnimation { get; }
 }

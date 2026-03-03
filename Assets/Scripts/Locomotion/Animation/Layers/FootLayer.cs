@@ -54,8 +54,7 @@ namespace Game.Locomotion.Animation.Layers
             lastSnapshot = new SLocomotionAnimationLayerSnapshot(
                 layerName: FootstepLayerName,
                 alias: lastPlayedAlias,
-                normalizedTime: normalizedTime,
-                isTurnAnimation: false);
+                normalizedTime: normalizedTime);
         }
     }
 }

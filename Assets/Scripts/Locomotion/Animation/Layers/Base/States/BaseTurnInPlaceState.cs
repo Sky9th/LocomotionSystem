@@ -71,13 +71,37 @@ namespace Game.Locomotion.Animation.Layers.Base
 
         public override void Tick()
         {
+            SLocomotion snapshot = Owner.Snapshot;
+
             // If we started moving, exit immediately (the owning layer will
             // pick the correct locomotion animation for movement).
-            if (Owner.Snapshot.State == ELocomotionState.GroundedMoving)
+            if (snapshot.State == ELocomotionState.GroundedMoving)
             {
                 Logger.Log("Exiting turn since we started moving.");
                 Owner.TrySetState(BaseStateKey.IdleToMoving);
                 return;
+            }
+
+            if (!snapshot.IsTurning)
+            {
+                Owner.TrySetState(BaseStateKey.Idle);
+                return;
+            }
+
+            var animationProfile = Owner.AnimationProfile;
+            var modelRotator = Owner.ModelRotator;
+            if (animationProfile != null && modelRotator != null)
+            {
+                bool isMoving = snapshot.Gait != EMovementGait.Idle;
+                float turnSpeed = animationProfile.GetTurnSpeed(snapshot.Posture, snapshot.Gait, isMoving);
+                float absAngle = Mathf.Abs(snapshot.TurnAngle);
+                if (turnSpeed > 0f && absAngle > Mathf.Epsilon)
+                {
+                    float maxStep = turnSpeed * Owner.DeltaTime;
+                    float step = Mathf.Min(maxStep, absAngle);
+                    float deltaAngle = Mathf.Sign(snapshot.TurnAngle) * step;
+                    modelRotator.RotateModelYaw(deltaAngle);
+                }
             }
 
             // Once the turn clip finishes, exit back to idle.
