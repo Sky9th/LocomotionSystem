@@ -3,6 +3,7 @@ using Animancer;
 using Game.Locomotion.Animation.Config;
 using Game.Locomotion.Animation.Layers.Base.Conditions;
 using Game.Locomotion.Animation.Layers.Core;
+using Game.Locomotion.Animation.Conditions;
 using Game.Locomotion.State.Layers;
 using UnityEngine;
 
@@ -21,7 +22,7 @@ namespace Game.Locomotion.Animation.Layers.Base
             get
             {
                 var conditionContext = Owner.context;
-                return default(CanEnterTurnInMovingStateCondition).Evaluate(in conditionContext);
+                return conditionContext.Check<CanEnterTurnInMovingStateCondition>();
             }
         }
 
@@ -47,17 +48,14 @@ namespace Game.Locomotion.Animation.Layers.Base
         public override void Tick()
         {
             SLocomotion snapshot = Owner.Snapshot;
-            var conditionContext = Owner.context;
 
-            if (default(CanEnterMovingStateCondition).Evaluate(in conditionContext) && !conditionContext.Snapshot.IsTurning)
+            if (Owner.TrySetState(BaseStateKey.Moving))
             {
-                Owner.TrySetState(BaseStateKey.Moving);
                 return;
             }
 
-            if (!default(CanEnterMovingStateCondition).Evaluate(in conditionContext) && !conditionContext.Snapshot.IsTurning)
+            if (Owner.TrySetState(BaseStateKey.Idle))
             {
-                Owner.TrySetState(BaseStateKey.Idle);
                 return;
             }
 
@@ -65,11 +63,11 @@ namespace Game.Locomotion.Animation.Layers.Base
             {
                 if (snapshot.State == ELocomotionState.GroundedMoving)
                 {
-                    Owner.TrySetState(BaseStateKey.Moving);
+                    Owner.ForceSetState(BaseStateKey.Moving);
                 }
                 else
                 {
-                    Owner.TrySetState(BaseStateKey.Idle);
+                    Owner.ForceSetState(BaseStateKey.Idle);
                 }
             }
         }

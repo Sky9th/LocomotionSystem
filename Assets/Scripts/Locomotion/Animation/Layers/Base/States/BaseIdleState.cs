@@ -1,6 +1,7 @@
 using Animancer;
 using Game.Locomotion.Animation.Layers.Core;
 using Game.Locomotion.Animation.Layers.Base.Conditions;
+using Game.Locomotion.Animation.Conditions;
 
 namespace Game.Locomotion.Animation.Layers.Base
 {
@@ -10,6 +11,15 @@ namespace Game.Locomotion.Animation.Layers.Base
         {
         }
 
+        public override bool CanEnterState
+        {
+            get
+            {
+                var conditionContext = Owner.context;
+                return conditionContext.Check<CanEnterIdleStateCondition>();
+            }
+        }
+
         public override void OnEnterState()
         {
             Owner.Play(Owner.AliasProfile != null ? Owner.AliasProfile.idleL : null);
@@ -17,23 +27,20 @@ namespace Game.Locomotion.Animation.Layers.Base
 
         public override void Tick()
         {
-            var conditionContext = Owner.context;
-
             // Let the FSM drive its own transitions.
-            if (default(CanEnterIdleToMovingStateCondition).Evaluate(in conditionContext))
+            if (Owner.TrySetState(BaseStateKey.TurnInPlace))
             {
-                if (Owner.TrySetState(BaseStateKey.IdleToMoving))
-                {
-                    return;
-                }
+                return;
             }
 
-            if (default(CanEnterTurnInPlaceStateCondition).Evaluate(in conditionContext))
+            if (Owner.TrySetState(BaseStateKey.IdleToMoving))
             {
-                if (Owner.TrySetState(BaseStateKey.TurnInPlace))
-                {
-                    return;
-                }
+                return;
+            }
+
+            if (Owner.TrySetState(BaseStateKey.Moving))
+            {
+                return;
             }
 
             StringAsset idleAlias = Owner.AliasProfile != null ? Owner.AliasProfile.idleL : null;

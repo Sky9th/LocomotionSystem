@@ -107,6 +107,13 @@ namespace Game.Locomotion.Animation.Layers.Base
             stateMachine.TrySetState(key);
             return !EqualityComparer<BaseStateKey>.Default.Equals(previousKey, stateMachine.CurrentKey);
         }
+        
+        internal bool ForceSetState(BaseStateKey key)
+        {
+            BaseStateKey previousKey = stateMachine.CurrentKey;
+            stateMachine.ForceSetState(key);
+            return !EqualityComparer<BaseStateKey>.Default.Equals(previousKey, stateMachine.CurrentKey);
+        }
 
         internal void PlayIfChanged(StringAsset nextAlias)
         {

@@ -4,9 +4,9 @@ using Game.Locomotion.State.Layers;
 
 namespace Game.Locomotion.Animation.Layers.Base.Conditions
 {
-    internal readonly struct CanEnterMovingStateCondition : ICheck<LocomotionAnimationContext>
+    internal readonly struct CanEnterIdleStateCondition : ICheck<LocomotionAnimationContext>
     {
         public bool Evaluate(in LocomotionAnimationContext context)
-            => context.Snapshot.State == ELocomotionState.GroundedMoving && !context.Snapshot.IsTurning;
+            => context.Snapshot.State == ELocomotionState.GroundedIdle;
     }
 }

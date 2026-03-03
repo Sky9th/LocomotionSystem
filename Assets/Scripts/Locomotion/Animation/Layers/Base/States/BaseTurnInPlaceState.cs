@@ -2,6 +2,7 @@ using Animancer;
 using Game.Locomotion.Animation.Config;
 using Game.Locomotion.Animation.Layers.Base.Conditions;
 using Game.Locomotion.Animation.Layers.Core;
+using Game.Locomotion.Animation.Conditions;
 using Game.Locomotion.State.Layers;
 using UnityEngine;
 
@@ -19,14 +20,8 @@ namespace Game.Locomotion.Animation.Layers.Base
         {
             get
             {
-                if (Owner.AliasProfile == null)
-                {
-                    return false;
-                }
-
-                SLocomotion snapshot = Owner.Snapshot;
                 var conditionContext = Owner.context;
-                if (!default(CanEnterTurnInPlaceStateCondition).Evaluate(in conditionContext))
+                if (!conditionContext.Check<CanEnterTurnInPlaceStateCondition>())
                 {
                     return false;
                 }
@@ -43,12 +38,17 @@ namespace Game.Locomotion.Animation.Layers.Base
                 // or if higher-level logic indicates we started moving.
                 var conditionContext = Owner.context;
 
-                if (default(CanEnterMovingStateCondition).Evaluate(in conditionContext))
+                if (conditionContext.Check<CanEnterIdleToMovingStateCondition>())
                 {
                     return true;
                 }
 
-                if (default(CanExitTurnInPlaceByAngleCondition).Evaluate(in conditionContext))
+                if (conditionContext.Check<CanEnterMovingStateCondition>())
+                {
+                    return true;
+                }
+
+                if (conditionContext.Check<CanExitTurnInPlaceByAngleCondition>())
                 {
                     Logger.Log($"Allowing early exit from turn since turn angle {Owner.Snapshot.TurnAngle} is below exit threshold.");
                     return true;
@@ -72,22 +72,6 @@ namespace Game.Locomotion.Animation.Layers.Base
         public override void Tick()
         {
             SLocomotion snapshot = Owner.Snapshot;
-            var conditionContext = Owner.context;
-
-            // If we started moving, exit immediately (the owning layer will
-            // pick the correct locomotion animation for movement).
-            if (default(CanEnterMovingStateCondition).Evaluate(in conditionContext))
-            {
-                Logger.Log("Exiting turn since we started moving.");
-                Owner.TrySetState(BaseStateKey.IdleToMoving);
-                return;
-            }
-
-            if (default(CanExitTurnInPlaceByTurnFlagCondition).Evaluate(in conditionContext))
-            {
-                Owner.TrySetState(BaseStateKey.Idle);
-                return;
-            }
 
             TurnAngleStepRotationApplier.TryApply(
                 Owner.AnimationProfile,
@@ -95,17 +79,24 @@ namespace Game.Locomotion.Animation.Layers.Base
                 in snapshot,
                 Owner.DeltaTime);
 
-            // Once the turn clip finishes, exit back to idle.
-            if (Owner.HasCurrentAnimationCompleted())
-            {
-                Owner.TrySetState(BaseStateKey.Idle);
-                return;
-            }
-
             // Keep playing the selected alias while locked.
             if (selectedAlias != null)
             {
                 Owner.PlayIfChanged(selectedAlias);
+            }
+
+            // Transition priority while turning in place:
+            // 1) Started moving -> IdleToMoving
+            // 2) Finished turning -> Idle
+            if (Owner.TrySetState(BaseStateKey.IdleToMoving))
+            {
+                Logger.Log("Exiting turn since we started moving.");
+                return;
+            }
+
+            if (Owner.TrySetState(BaseStateKey.Idle))
+            {
+                return;
             }
         }
 

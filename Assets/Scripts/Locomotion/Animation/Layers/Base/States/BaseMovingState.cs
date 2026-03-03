@@ -3,6 +3,7 @@ using Game.Locomotion.State.Layers;
 using Game.Locomotion.Config;
 using Game.Locomotion.Animation.Layers.Base.Conditions;
 using Game.Locomotion.Animation.Layers.Core;
+using Game.Locomotion.Animation.Conditions;
 using UnityEngine;
 
 namespace Game.Locomotion.Animation.Layers.Base
@@ -18,25 +19,21 @@ namespace Game.Locomotion.Animation.Layers.Base
             get
             {
                 var conditionContext = Owner.context;
-                return default(CanEnterMovingStateCondition).Evaluate(in conditionContext);
+                return conditionContext.Check<CanEnterMovingStateCondition>();
             }
         }
 
         public override void Tick()
         {
-            var conditionContext = Owner.context;
-
-            if (!default(CanEnterMovingStateCondition).Evaluate(in conditionContext))
+            if (Owner.TrySetState(BaseStateKey.TurnInMoving))
             {
-                Owner.TrySetState(BaseStateKey.Idle);
-                return;
-            }
-
-            if (default(CanEnterTurnInMovingStateCondition).Evaluate(in conditionContext))
-            {
-                Owner.TrySetState(BaseStateKey.TurnInMoving);
                 return;
             } 
+
+            if (Owner.TrySetState(BaseStateKey.Idle))
+            {
+                return;
+            }
 
             StringAsset desired = ResolveMovingAlias(Owner.AliasProfile, Owner.Snapshot.Gait);
             if (desired != null)
