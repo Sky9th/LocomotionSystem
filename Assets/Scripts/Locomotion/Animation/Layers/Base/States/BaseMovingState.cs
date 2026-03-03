@@ -1,27 +1,38 @@
 using Animancer;
 using Game.Locomotion.State.Layers;
 using Game.Locomotion.Config;
+using Game.Locomotion.Animation.Layers.Base.Conditions;
+using Game.Locomotion.Animation.Layers.Core;
 using UnityEngine;
 
 namespace Game.Locomotion.Animation.Layers.Base
 {
-    internal sealed class BaseMovingState : BaseLayerFsmState
+    internal sealed class BaseMovingState : LocomotionLayerFsmState<BaseLayerFsm>
     {
         public BaseMovingState(BaseLayerFsm owner) : base(owner)
         {
         }
 
-        public override bool CanEnterState => Owner.Snapshot.State == ELocomotionState.GroundedMoving;
+        public override bool CanEnterState
+        {
+            get
+            {
+                var conditionContext = Owner.context;
+                return default(CanEnterMovingStateCondition).Evaluate(in conditionContext);
+            }
+        }
 
         public override void Tick()
         {
-            if (Owner.Snapshot.State != ELocomotionState.GroundedMoving)
+            var conditionContext = Owner.context;
+
+            if (!default(CanEnterMovingStateCondition).Evaluate(in conditionContext))
             {
                 Owner.TrySetState(BaseStateKey.Idle);
                 return;
             }
 
-            if (Owner.Snapshot.IsTurning)
+            if (default(CanEnterTurnInMovingStateCondition).Evaluate(in conditionContext))
             {
                 Owner.TrySetState(BaseStateKey.TurnInMoving);
                 return;
@@ -82,21 +93,11 @@ namespace Game.Locomotion.Animation.Layers.Base
 
             vector2Mixer.Parameter = parameter;
 
-            var animationProfile = Owner.AnimationProfile;
-            var modelRotator = Owner.ModelRotator;
-            if (animationProfile != null && modelRotator != null)
-            {
-                bool isMoving = snapshot.Gait != EMovementGait.Idle;
-                float turnSpeed = animationProfile.GetTurnSpeed(snapshot.Posture, snapshot.Gait, isMoving);
-                float absAngle = Mathf.Abs(snapshot.TurnAngle);
-                if (turnSpeed > 0f && absAngle > Mathf.Epsilon)
-                {
-                    float maxStep = turnSpeed * Owner.DeltaTime;
-                    float step = Mathf.Min(maxStep, absAngle);
-                    float deltaAngle = Mathf.Sign(snapshot.TurnAngle) * step;
-                    modelRotator.RotateModelYaw(deltaAngle);
-                }
-            }
+            TurnAngleStepRotationApplier.TryApply(
+                Owner.AnimationProfile,
+                Owner.ModelRotator,
+                in snapshot,
+                Owner.DeltaTime);
         }
 
         private static StringAsset ResolveMovingAlias(AnimancerStringProfile aliasProfile, EMovementGait gait)

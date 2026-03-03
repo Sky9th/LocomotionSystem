@@ -2,6 +2,7 @@ using Animancer;
 using Animancer.FSM;
 using Game.Locomotion.Animation.Config;
 using Game.Locomotion.Animation.Core;
+using Game.Locomotion.Animation.Layers.Core;
 using Game.Locomotion.Agent;
 using Game.Locomotion.Config;
 using Game.Locomotion.State.Layers;
@@ -31,7 +32,7 @@ namespace Game.Locomotion.Animation.Layers.Base
         public int LayerIndex => 0;
         public AnimancerLayer Layer { get; set; }
 
-        private readonly StateMachine<BaseStateKey, BaseLayerFsmState> stateMachine;
+        private readonly StateMachine<BaseStateKey, LocomotionLayerFsmState<BaseLayerFsm>> stateMachine;
         private readonly BaseIdleState idleState;
         private readonly BaseTurnInPlaceState turnInPlaceState;
         private readonly BaseIdleToMovingState idleToMovingState;
@@ -66,7 +67,7 @@ namespace Game.Locomotion.Animation.Layers.Base
             idleToMovingState = new BaseIdleToMovingState(this);
             turnInMovingState = new BaseTurnInMovingState(this);
 
-            stateMachine = new StateMachine<BaseStateKey, BaseLayerFsmState>();
+            stateMachine = new StateMachine<BaseStateKey, LocomotionLayerFsmState<BaseLayerFsm>>();
             stateMachine.Dictionary[BaseStateKey.Idle] = idleState;
             stateMachine.Dictionary[BaseStateKey.TurnInPlace] = turnInPlaceState;
             stateMachine.Dictionary[BaseStateKey.IdleToMoving] = idleToMovingState;

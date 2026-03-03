@@ -1,11 +1,13 @@
 using Animancer;
 using Game.Locomotion.Animation.Config;
+using Game.Locomotion.Animation.Layers.Base.Conditions;
+using Game.Locomotion.Animation.Layers.Core;
 using Game.Locomotion.State.Layers;
 using UnityEngine;
 
 namespace Game.Locomotion.Animation.Layers.Base
 {
-    internal sealed class BaseTurnInPlaceState : BaseLayerFsmState
+    internal sealed class BaseTurnInPlaceState : LocomotionLayerFsmState<BaseLayerFsm>
     {
         private StringAsset selectedAlias;
 
@@ -23,12 +25,8 @@ namespace Game.Locomotion.Animation.Layers.Base
                 }
 
                 SLocomotion snapshot = Owner.Snapshot;
-                if (snapshot.State != ELocomotionState.GroundedIdle)
-                {
-                    return false;
-                }
-
-                if (!snapshot.IsTurning)
+                var conditionContext = Owner.context;
+                if (!default(CanEnterTurnInPlaceStateCondition).Evaluate(in conditionContext))
                 {
                     return false;
                 }
@@ -43,12 +41,14 @@ namespace Game.Locomotion.Animation.Layers.Base
             {
                 // Allow leaving the turn segment if the animation is complete
                 // or if higher-level logic indicates we started moving.
-                if (Owner.Snapshot.State == ELocomotionState.GroundedMoving)
+                var conditionContext = Owner.context;
+
+                if (default(CanEnterMovingStateCondition).Evaluate(in conditionContext))
                 {
                     return true;
                 }
 
-                if (Mathf.Abs(Owner.Snapshot.TurnAngle) < Owner.context.LocomotionProfile.turnExitAngle)
+                if (default(CanExitTurnInPlaceByAngleCondition).Evaluate(in conditionContext))
                 {
                     Logger.Log($"Allowing early exit from turn since turn angle {Owner.Snapshot.TurnAngle} is below exit threshold.");
                     return true;
@@ -72,37 +72,28 @@ namespace Game.Locomotion.Animation.Layers.Base
         public override void Tick()
         {
             SLocomotion snapshot = Owner.Snapshot;
+            var conditionContext = Owner.context;
 
             // If we started moving, exit immediately (the owning layer will
             // pick the correct locomotion animation for movement).
-            if (snapshot.State == ELocomotionState.GroundedMoving)
+            if (default(CanEnterMovingStateCondition).Evaluate(in conditionContext))
             {
                 Logger.Log("Exiting turn since we started moving.");
                 Owner.TrySetState(BaseStateKey.IdleToMoving);
                 return;
             }
 
-            if (!snapshot.IsTurning)
+            if (default(CanExitTurnInPlaceByTurnFlagCondition).Evaluate(in conditionContext))
             {
                 Owner.TrySetState(BaseStateKey.Idle);
                 return;
             }
 
-            var animationProfile = Owner.AnimationProfile;
-            var modelRotator = Owner.ModelRotator;
-            if (animationProfile != null && modelRotator != null)
-            {
-                bool isMoving = snapshot.Gait != EMovementGait.Idle;
-                float turnSpeed = animationProfile.GetTurnSpeed(snapshot.Posture, snapshot.Gait, isMoving);
-                float absAngle = Mathf.Abs(snapshot.TurnAngle);
-                if (turnSpeed > 0f && absAngle > Mathf.Epsilon)
-                {
-                    float maxStep = turnSpeed * Owner.DeltaTime;
-                    float step = Mathf.Min(maxStep, absAngle);
-                    float deltaAngle = Mathf.Sign(snapshot.TurnAngle) * step;
-                    modelRotator.RotateModelYaw(deltaAngle);
-                }
-            }
+            TurnAngleStepRotationApplier.TryApply(
+                Owner.AnimationProfile,
+                Owner.ModelRotator,
+                in snapshot,
+                Owner.DeltaTime);
 
             // Once the turn clip finishes, exit back to idle.
             if (Owner.HasCurrentAnimationCompleted())
