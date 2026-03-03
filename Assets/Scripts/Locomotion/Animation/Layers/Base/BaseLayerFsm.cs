@@ -13,8 +13,9 @@ namespace Game.Locomotion.Animation.Layers.Base
     {
         Idle,
         TurnInPlace,
+        TurnInMoving,
         IdleToMoving,
-        Moving,
+        Moving
     }
 
     /// <summary>
@@ -35,6 +36,7 @@ namespace Game.Locomotion.Animation.Layers.Base
         private readonly BaseTurnInPlaceState turnInPlaceState;
         private readonly BaseIdleToMovingState idleToMovingState;
         private readonly BaseMovingState moveState;
+        private readonly BaseTurnInMovingState turnInMovingState;
 
         private StringAsset lastPlayedAlias;
         private AnimancerState currentState;
@@ -59,12 +61,14 @@ namespace Game.Locomotion.Animation.Layers.Base
             turnInPlaceState = new BaseTurnInPlaceState(this);
             moveState = new BaseMovingState(this);
             idleToMovingState = new BaseIdleToMovingState(this);
+            turnInMovingState = new BaseTurnInMovingState(this);
 
             stateMachine = new StateMachine<BaseStateKey, BaseLayerFsmState>();
             stateMachine.Dictionary[BaseStateKey.Idle] = idleState;
             stateMachine.Dictionary[BaseStateKey.TurnInPlace] = turnInPlaceState;
             stateMachine.Dictionary[BaseStateKey.IdleToMoving] = idleToMovingState;
             stateMachine.Dictionary[BaseStateKey.Moving] = moveState;
+            stateMachine.Dictionary[BaseStateKey.TurnInMoving] = turnInMovingState;
         }
 
         public void Update(in LocomotionAnimationContext context)
