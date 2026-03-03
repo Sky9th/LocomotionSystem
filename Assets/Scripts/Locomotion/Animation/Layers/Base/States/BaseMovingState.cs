@@ -71,7 +71,9 @@ namespace Game.Locomotion.Animation.Layers.Base
                 return;
             }
 
-            Vector2 planarVelocity = Owner.Snapshot.ActualLocalVelocity;
+            SLocomotion snapshot = Owner.Snapshot;
+
+            Vector2 planarVelocity = snapshot.ActualLocalVelocity;
             Vector2 parameter = planarVelocity / maxMoveSpeed;
             if (parameter.sqrMagnitude > 1f)
             {
@@ -79,6 +81,22 @@ namespace Game.Locomotion.Animation.Layers.Base
             }
 
             vector2Mixer.Parameter = parameter;
+
+            var animationProfile = Owner.AnimationProfile;
+            var modelRotator = Owner.ModelRotator;
+            if (animationProfile != null && modelRotator != null)
+            {
+                bool isMoving = snapshot.Gait != EMovementGait.Idle;
+                float turnSpeed = animationProfile.GetTurnSpeed(snapshot.Posture, snapshot.Gait, isMoving);
+                float absAngle = Mathf.Abs(snapshot.TurnAngle);
+                if (turnSpeed > 0f && absAngle > Mathf.Epsilon)
+                {
+                    float maxStep = turnSpeed * Owner.DeltaTime;
+                    float step = Mathf.Min(maxStep, absAngle);
+                    float deltaAngle = Mathf.Sign(snapshot.TurnAngle) * step;
+                    modelRotator.RotateModelYaw(deltaAngle);
+                }
+            }
         }
 
         private static StringAsset ResolveMovingAlias(AnimancerStringProfile aliasProfile, EMovementGait gait)

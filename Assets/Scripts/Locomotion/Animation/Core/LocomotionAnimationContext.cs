@@ -1,5 +1,6 @@
 using Animancer;
 using Animancer.TransitionLibraries;
+using Game.Locomotion.Agent;
 using Game.Locomotion.Animation.Config;
 using Game.Locomotion.Config;
 
@@ -17,6 +18,7 @@ namespace Game.Locomotion.Animation.Core
         public readonly AnimancerStringProfile Alias;
         public readonly LocomotionAnimationProfile Profile;
         public readonly LocomotionProfile LocomotionProfile;
+        public readonly ILocomotionModelRotator ModelRotator;
 
         public LocomotionAnimationContext(
             SLocomotion snapshot,
@@ -24,7 +26,8 @@ namespace Game.Locomotion.Animation.Core
             NamedAnimancerComponent animancer,
             AnimancerStringProfile alias,
             LocomotionAnimationProfile profile,
-            LocomotionProfile locomotionProfile)
+            LocomotionProfile locomotionProfile,
+            ILocomotionModelRotator modelRotator)
         {
             Snapshot = snapshot;
             DeltaTime = deltaTime;
@@ -32,6 +35,7 @@ namespace Game.Locomotion.Animation.Core
             Alias = alias;
             Profile = profile;
             LocomotionProfile = locomotionProfile;
+            ModelRotator = modelRotator;
         }
     }
 }

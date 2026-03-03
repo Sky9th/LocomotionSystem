@@ -18,7 +18,7 @@ namespace Game.Locomotion.Agent
     /// full locomotion computation or animation integration.
     /// </summary>
     [DisallowMultipleComponent]
-    public partial class LocomotionAgent : MonoBehaviour
+    public partial class LocomotionAgent : MonoBehaviour, ILocomotionModelRotator
     {
         [Header("Rig References")]
         [SerializeField] private Transform followAnchor;
@@ -77,6 +77,12 @@ namespace Game.Locomotion.Agent
 
         /// <summary>Core locomotion capability profile used by this agent.</summary>
         public LocomotionProfile Profile => locomotionProfile;
+
+        public void RotateModelYaw(float deltaAngleDegrees)
+        {
+            Transform root = modelRoot != null ? modelRoot : transform;
+            root.rotation = Quaternion.AngleAxis(deltaAngleDegrees, Vector3.up) * root.rotation;
+        }
 
         /// <summary>
         /// Called by input/AI modules to push the latest IAction payload
