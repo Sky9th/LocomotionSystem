@@ -8,7 +8,14 @@ namespace Game.Locomotion.Animation.Layers.Base
 
         public override void OnEnterState()
         {
-            Owner.Play(Owner.AliasProfile.idleToRun180L);
+            if (Owner.Snapshot.TurnAngle > 0)
+            {
+                Owner.Play(Owner.AliasProfile.idleToRun180R);
+            } 
+            else
+            {
+                Owner.Play(Owner.AliasProfile.idleToRun180L);
+            }
         }
 
         public override void OnExitState()
@@ -38,7 +45,7 @@ namespace Game.Locomotion.Animation.Layers.Base
             }
         }
 
-        public override bool CanEnterState => Owner.Snapshot.State == ELocomotionState.GroundedMoving && Owner.Snapshot.IsTurning;
+        public override bool CanEnterState => Owner.Snapshot.State == ELocomotionState.GroundedMoving;
 
         public override bool CanExitState => !Owner.Snapshot.IsTurning;
     }

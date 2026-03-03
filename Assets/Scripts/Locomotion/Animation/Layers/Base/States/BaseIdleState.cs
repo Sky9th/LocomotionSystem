@@ -16,9 +16,9 @@ namespace Game.Locomotion.Animation.Layers.Base
         public override void Tick()
         {
             // Let the FSM drive its own transitions.
-            if (Owner.Snapshot.State == ELocomotionState.GroundedMoving && !Owner.Snapshot.IsTurning)
+            if (Owner.Snapshot.State == ELocomotionState.GroundedMoving)
             {
-                if (Owner.TrySetState(BaseStateKey.Moving))
+                if (Owner.TrySetState(BaseStateKey.IdleToMoving))
                 {
                     return;
                 }

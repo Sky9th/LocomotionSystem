@@ -21,6 +21,12 @@ namespace Game.Locomotion.Animation.Layers.Base
                 return;
             }
 
+            if (Owner.Snapshot.IsTurning)
+            {
+                Owner.TrySetState(BaseStateKey.TurnInMoving);
+                return;
+            } 
+
             StringAsset desired = ResolveMovingAlias(Owner.AliasProfile, Owner.Snapshot.Gait);
             if (desired != null)
             {

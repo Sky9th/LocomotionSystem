@@ -88,7 +88,6 @@ namespace Game.Locomotion.Computation
 
             float lookStabilityAngle = profile != null ? profile.lookStabilityAngle : 0f;
             float lookStabilityDuration = profile != null ? profile.lookStabilityDuration : 0f;
-            float turnDebounceDuration = profile != null ? profile.turnDebounceDuration : 0f;
 
             float turnEnterAngle = profile != null ? profile.turnEnterAngle : 0f;
             float turnCompletionAngle = profile != null ? profile.turnCompletionAngle : 0f;
@@ -103,26 +102,19 @@ namespace Game.Locomotion.Computation
             }
             stateRef.LastDesiredYaw = desiredYaw;
 
-            if (stateRef.Cooldown > 0f)
-            {
-                stateRef.Cooldown -= deltaTime;
-            }
-
             float absAngle = Mathf.Abs(currentTurnAngle);
 
             bool wantsTurn = absAngle >= turnEnterAngle;
             bool lookIsStable = stateRef.LookStabilityTimer >= lookStabilityDuration;
             bool shouldCompleteTurn = absAngle <= turnCompletionAngle;
 
-            if (!stateRef.IsTurning && wantsTurn && stateRef.Cooldown <= 0f && lookIsStable)
+            if (!stateRef.IsTurning && wantsTurn && lookIsStable)
             {
                 stateRef.IsTurning = true;
-                stateRef.Cooldown = turnDebounceDuration;
             }
             else if (stateRef.IsTurning && shouldCompleteTurn)
             {
                 stateRef.IsTurning = false;
-                stateRef.Cooldown = turnDebounceDuration;
             }
         }
     }
