@@ -9,11 +9,11 @@ using UnityEngine;
 
 namespace Game.Locomotion.Animation.Layers.Base
 {
-    internal sealed class BaseTurnInMovingState : LocomotionLayerFsmState<BaseLayerFsm>
+    internal sealed class BaseTurnInMovingState : LocomotionLayerFsmState<BaseLayer>
     {
         private StringAsset selectedAlias;
 
-        public BaseTurnInMovingState(BaseLayerFsm owner) : base(owner)
+        public BaseTurnInMovingState(BaseLayer owner) : base(owner)
         {
         }
 
@@ -63,12 +63,18 @@ namespace Game.Locomotion.Animation.Layers.Base
             {
                 if (snapshot.State == ELocomotionState.GroundedMoving)
                 {
+                    if (snapshot.IsTurning)
+                    {
+                        selectedAlias = ResolveTurnAlias(Owner.AliasProfile, snapshot.TurnAngle);
+                        Owner.PlayFromStart(selectedAlias);
+                        return;
+                    }
+
                     Owner.ForceSetState(BaseStateKey.Moving);
+                    return;
                 }
-                else
-                {
-                    Owner.ForceSetState(BaseStateKey.Idle);
-                }
+
+                Owner.ForceSetState(BaseStateKey.Idle);
             }
         }
 

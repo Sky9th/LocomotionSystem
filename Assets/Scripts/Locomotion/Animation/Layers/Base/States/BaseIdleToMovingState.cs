@@ -5,9 +5,9 @@ using Game.Locomotion.State.Layers;
 
 namespace Game.Locomotion.Animation.Layers.Base
 {
-    internal sealed class BaseIdleToMovingState : LocomotionLayerFsmState<BaseLayerFsm>
+    internal sealed class BaseIdleToMovingState : LocomotionLayerFsmState<BaseLayer>
     {
-        public BaseIdleToMovingState(BaseLayerFsm owner) : base(owner)
+        public BaseIdleToMovingState(BaseLayer owner) : base(owner)
         {
         }
 

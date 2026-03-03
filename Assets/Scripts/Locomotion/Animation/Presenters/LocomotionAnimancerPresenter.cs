@@ -77,7 +77,7 @@ namespace Game.Locomotion.Animation.Presenters
                     agent.Profile,
                     animationProfile,
                     agent,
-                    new BaseLayerFsm(baseLayer),
+                    new BaseLayer(baseLayer),
                     new HeadLookLayer(headLayer),
                     new FootLayer(footLayer));
             }

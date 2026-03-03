@@ -18,9 +18,9 @@ MonoBehaviour:
   maxHeadYawDegrees: 75
   maxHeadPitchDegrees: 75
   headLookRotationSpeed: 0.25
-  turnEnterAngle: 65
+  turnEnterAngle: 35
   turnExitAngle: 20
   turnDebounceDuration: 0.25
   lookStabilityAngle: 2
-  lookStabilityDuration: 0.15
+  lookStabilityDuration: 0.05
   turnCompletionAngle: 5
