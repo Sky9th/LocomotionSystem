@@ -25,8 +25,6 @@ namespace Game.Locomotion.Animation.Layers.Base
 
         public override void OnExitState()
         {
-            // Ensure the next state starts with the correct animation if we were interrupted.
-            Logger.Log($"IdleToMoving state exiting. Interrupted: {!Owner.HasCurrentAnimationCompleted()}");
         }
 
         public override void Tick()
@@ -43,7 +41,14 @@ namespace Game.Locomotion.Animation.Layers.Base
             
             if (Owner.HasCurrentAnimationCompleted())
             {
-                Owner.TrySetState(BaseStateKey.Moving);
+                if (Owner.Snapshot.DiscreteState.Phase == ELocomotionPhase.GroundedMoving)
+                {
+                    Owner.ForceSetState(BaseStateKey.Moving);
+                }
+                else
+                {
+                    Owner.ForceSetState(BaseStateKey.Idle);
+                }
                 return;
             }
         }
