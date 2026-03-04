@@ -26,7 +26,7 @@ namespace Game.Locomotion.Animation.Config
         /// for the given posture and gait. If no matching mode is
         /// found, a default in-place or moving speed is used.
         /// </summary>
-        public float GetTurnSpeed(EPostureState posture, EMovementGait gait, bool isMoving)
+        public float GetTurnSpeed(EPosture posture, EMovementGait gait, bool isMoving)
         {
             if (!isMoving)
             {

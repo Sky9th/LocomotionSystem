@@ -1,9 +1,9 @@
 /// <summary>
-/// High-level locomotion state used to roughly categorize the current behaviour.
+/// High-level locomotion phase used to roughly categorize the current behaviour.
 /// Detailed posture (standing/crouching/prone), gait (walk/run/sprint/crawl) and condition
-/// are represented by EPostureState, EMovementGait and ELocomotionCondition.
+/// are represented by EPosture, EMovementGait and ELocomotionCondition.
 /// </summary>
-public enum ELocomotionState
+public enum ELocomotionPhase
 {
     /// <summary>On the ground with no significant movement (typically corresponds to Idle).</summary>
     GroundedIdle = 0,

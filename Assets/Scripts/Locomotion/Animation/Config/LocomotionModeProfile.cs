@@ -13,7 +13,7 @@ namespace Game.Locomotion.Animation.Config
     public sealed class LocomotionModeProfile : ScriptableObject
     {
         [Header("Locomotion Mode Key")]
-        [SerializeField] private EPostureState posture = EPostureState.Standing;
+        [SerializeField] private EPosture posture = EPosture.Standing;
         [SerializeField] private EMovementGait gait = EMovementGait.Walk;
 
         [Header("Turn Speeds (deg/sec)")]
@@ -24,7 +24,7 @@ namespace Game.Locomotion.Animation.Config
         [SerializeField, Range(0f, 180f)] private float exitAngle = 20f;
 
         /// <summary>Posture this mode is configured for.</summary>
-        public EPostureState Posture => posture;
+        public EPosture Posture => posture;
 
         /// <summary>Gait this mode is configured for.</summary>
         public EMovementGait Gait => gait;

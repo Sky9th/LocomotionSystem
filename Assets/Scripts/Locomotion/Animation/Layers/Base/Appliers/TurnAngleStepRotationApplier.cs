@@ -17,14 +17,14 @@ namespace Game.Locomotion.Animation.Layers.Base
                 return false;
             }
 
-            float absAngle = Mathf.Abs(snapshot.TurnAngle);
+            float absAngle = Mathf.Abs(snapshot.Agent.TurnAngle);
             if (absAngle <= Mathf.Epsilon)
             {
                 return false;
             }
 
-            bool isMoving = snapshot.Gait != EMovementGait.Idle;
-            float turnSpeed = animationProfile.GetTurnSpeed(snapshot.Posture, snapshot.Gait, isMoving);
+            bool isMoving = snapshot.DiscreteState.Gait != EMovementGait.Idle;
+            float turnSpeed = animationProfile.GetTurnSpeed(snapshot.DiscreteState.Posture, snapshot.DiscreteState.Gait, isMoving);
             if (turnSpeed <= 0f)
             {
                 return false;
@@ -32,7 +32,7 @@ namespace Game.Locomotion.Animation.Layers.Base
 
             float maxStep = turnSpeed * deltaTime;
             float step = Mathf.Min(maxStep, absAngle);
-            float deltaAngle = Mathf.Sign(snapshot.TurnAngle) * step;
+            float deltaAngle = Mathf.Sign(snapshot.Agent.TurnAngle) * step;
             modelRotator.RotateModelYaw(deltaAngle);
             return true;
         }

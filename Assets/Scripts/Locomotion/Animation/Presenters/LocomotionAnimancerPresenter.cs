@@ -34,6 +34,10 @@ namespace Game.Locomotion.Animation.Presenters
 
         private LocomotionAnimationController controller;
 
+        private SLocomotionAnimation lastAnimation;
+
+        public SLocomotionAnimation LastAnimation => lastAnimation;
+
         public IReadOnlyDictionary<string, SLocomotionAnimationLayerSnapshot> AnimationSnapshots
         {
             get
@@ -83,16 +87,53 @@ namespace Game.Locomotion.Animation.Presenters
             }
         }
 
-        private void Update()
+        /// <summary>
+        /// Evaluates locomotion animations for the given snapshot and returns the animation output.
+        /// Intended to be called by <see cref="LocomotionAgent"/> so the agent can publish a single merged snapshot.
+        /// </summary>
+        public SLocomotionAnimation Evaluate(in SLocomotion snapshot, float deltaTime)
         {
-            if (controller == null || agent == null)
+            if (controller == null)
             {
-                return;
+                lastAnimation = default;
+                return lastAnimation;
             }
 
-            float deltaTime = Time.deltaTime;
-            SLocomotion snapshot = agent.Snapshot;
             controller.UpdateAnimations(snapshot, deltaTime);
+            lastAnimation = BuildAnimationSnapshot(controller.AnimationSnapshots);
+
+            return lastAnimation;
+        }
+
+        private static SLocomotionAnimation BuildAnimationSnapshot(
+            IReadOnlyDictionary<string, SLocomotionAnimationLayerSnapshot> layerSnapshots)
+        {
+            if (layerSnapshots == null)
+            {
+                return default;
+            }
+
+            SLocomotionAnimationLayerSnapshot baseLayer = default;
+            SLocomotionAnimationLayerSnapshot headLookLayer = default;
+            SLocomotionAnimationLayerSnapshot footstepLayer = default;
+
+            // Keep this mapping minimal and stable; layer names are owned by the layers.
+            if (layerSnapshots.TryGetValue("BaseLocomotion", out var baseSnapshot))
+            {
+                baseLayer = baseSnapshot;
+            }
+
+            if (layerSnapshots.TryGetValue("HeadLook", out var headSnapshot))
+            {
+                headLookLayer = headSnapshot;
+            }
+
+            if (layerSnapshots.TryGetValue("Footstep", out var footSnapshot))
+            {
+                footstepLayer = footSnapshot;
+            }
+
+            return new SLocomotionAnimation(baseLayer, headLookLayer, footstepLayer);
         }
     }
 }

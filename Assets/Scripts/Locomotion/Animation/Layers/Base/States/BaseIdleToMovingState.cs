@@ -1,7 +1,7 @@
 using Game.Locomotion.Animation.Layers.Base.Conditions;
 using Game.Locomotion.Animation.Layers.Core;
 using Game.Locomotion.Animation.Conditions;
-using Game.Locomotion.State.Layers;
+using Game.Locomotion.Discrete.Aspects;
 
 namespace Game.Locomotion.Animation.Layers.Base
 {
@@ -13,7 +13,7 @@ namespace Game.Locomotion.Animation.Layers.Base
 
         public override void OnEnterState()
         {
-            if (Owner.Snapshot.TurnAngle > 0)
+            if (Owner.Snapshot.Agent.TurnAngle > 0)
             {
                 Owner.Play(Owner.AliasProfile.idleToRun180R);
             } 

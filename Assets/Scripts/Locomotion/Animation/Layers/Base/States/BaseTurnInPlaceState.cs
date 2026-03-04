@@ -3,7 +3,7 @@ using Game.Locomotion.Animation.Config;
 using Game.Locomotion.Animation.Layers.Base.Conditions;
 using Game.Locomotion.Animation.Layers.Core;
 using Game.Locomotion.Animation.Conditions;
-using Game.Locomotion.State.Layers;
+using Game.Locomotion.Discrete.Aspects;
 using UnityEngine;
 
 namespace Game.Locomotion.Animation.Layers.Base
@@ -50,7 +50,7 @@ namespace Game.Locomotion.Animation.Layers.Base
 
                 if (conditionContext.Check<CanExitTurnInPlaceByAngleCondition>())
                 {
-                    Logger.Log($"Allowing early exit from turn since turn angle {Owner.Snapshot.TurnAngle} is below exit threshold.");
+                    Logger.Log($"Allowing early exit from turn since turn angle {Owner.Snapshot.Agent.TurnAngle} is below exit threshold.");
                     return true;
                 }
 
@@ -60,7 +60,7 @@ namespace Game.Locomotion.Animation.Layers.Base
 
         public override void OnEnterState()
         {
-            selectedAlias = ResolveTurnAlias(Owner.AliasProfile, Owner.Snapshot.TurnAngle);
+            selectedAlias = ResolveTurnAlias(Owner.AliasProfile, Owner.Snapshot.Agent.TurnAngle);
             Owner.Play(selectedAlias);
         }
 
