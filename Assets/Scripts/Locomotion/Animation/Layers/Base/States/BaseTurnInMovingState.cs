@@ -4,7 +4,7 @@ using Game.Locomotion.Animation.Config;
 using Game.Locomotion.Animation.Layers.Base.Conditions;
 using Game.Locomotion.Animation.Layers.Core;
 using Game.Locomotion.Animation.Conditions;
-using Game.Locomotion.State.Layers;
+using Game.Locomotion.Discrete.Aspects;
 using UnityEngine;
 
 namespace Game.Locomotion.Animation.Layers.Base
@@ -36,7 +36,7 @@ namespace Game.Locomotion.Animation.Layers.Base
 
         public override void OnEnterState()
         {
-            selectedAlias = ResolveTurnAlias(Owner.AliasProfile, Owner.Snapshot.TurnAngle);
+            selectedAlias = ResolveTurnAlias(Owner.AliasProfile, Owner.Snapshot.Agent.TurnAngle);
             Owner.Play(selectedAlias);
         }
 
@@ -61,11 +61,11 @@ namespace Game.Locomotion.Animation.Layers.Base
 
             if (Owner.HasCurrentAnimationCompleted())
             {
-                if (snapshot.State == ELocomotionState.GroundedMoving)
+                if (snapshot.DiscreteState.Phase == ELocomotionPhase.GroundedMoving)
                 {
-                    if (snapshot.IsTurning)
+                    if (snapshot.DiscreteState.IsTurning)
                     {
-                        selectedAlias = ResolveTurnAlias(Owner.AliasProfile, snapshot.TurnAngle);
+                        selectedAlias = ResolveTurnAlias(Owner.AliasProfile, snapshot.Agent.TurnAngle);
                         Owner.PlayFromStart(selectedAlias);
                         return;
                     }
@@ -81,7 +81,7 @@ namespace Game.Locomotion.Animation.Layers.Base
         private StringAsset ResolveTurnAlias(AnimancerStringProfile alias, float angle)
         {
             bool isRightTurn = angle > 0f;
-            switch (Owner.Snapshot.Gait)
+            switch (Owner.Snapshot.DiscreteState.Gait)
             {
                 case EMovementGait.Walk:
                     return isRightTurn
@@ -96,7 +96,7 @@ namespace Game.Locomotion.Animation.Layers.Base
                         ? alias.turnInSprint180R
                         : alias.turnInSprint180L;
                 default:
-                    Logger.LogWarning($"Unsupported gait {Owner.Snapshot.Gait} in turn resolver.");
+                    Logger.LogWarning($"Unsupported gait {Owner.Snapshot.DiscreteState.Gait} in turn resolver.");
                     return null;
             }
         }

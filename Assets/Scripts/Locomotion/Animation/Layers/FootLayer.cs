@@ -1,6 +1,6 @@
 using Animancer;
 using Game.Locomotion.Animation.Core;
-using Game.Locomotion.State.Layers;
+using Game.Locomotion.Discrete.Aspects;
 
 namespace Game.Locomotion.Animation.Layers
 {

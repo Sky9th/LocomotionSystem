@@ -7,9 +7,9 @@ namespace Game.Locomotion.Input
     /// Central input module for LocomotionAgentV2.
     ///
     /// - Subscribes to global EventDispatcher once.
-    /// - For each received IAction payload, forwards it into the owning
-    ///   LocomotionAgent's internal input buffer via TryPutAction.
-    /// - Does not maintain its own IAction buffer.
+    /// - Aggregates received IAction payloads into a single
+    ///   <see cref="SLocomotionInputActions"/> value.
+    /// - Exposes the latest aggregated input to the owning Agent.
     /// </summary>
     internal sealed class LocomotionInputModule
     {
@@ -30,9 +30,22 @@ namespace Game.Locomotion.Input
         private EventDispatcher eventDispatcher;
         private bool isSubscribed;
 
+        private SMoveIAction moveAction;
+        private SMoveIAction lastMoveAction;
+        private SLookIAction lookAction;
+        private SCrouchIAction crouchAction;
+        private SProneIAction proneAction;
+        private SWalkIAction walkAction;
+        private SRunIAction runAction;
+        private SSprintIAction sprintAction;
+        private SJumpIAction jumpAction;
+        private SStandIAction standAction;
+
         internal LocomotionInputModule(Game.Locomotion.Agent.LocomotionAgent owner)
         {
             this.owner = owner;
+
+            Reset();
 
             // Register all IAction payload types this module cares about.
             RegisterAction<SMoveIAction>();
@@ -45,20 +58,35 @@ namespace Game.Locomotion.Input
             RegisterAction<SSprintIAction>();
             RegisterAction<SJumpIAction>();
 
-            // Seed the agent's input buffer with sensible defaults so
-            // downstream code can assume a value is always present.
-            if (owner != null)
-            {
-                owner.TryPutAction(SMoveIAction.None);
-                owner.TryPutAction(SLookIAction.None);
-                owner.TryPutAction(SCrouchIAction.None);
-                owner.TryPutAction(SProneIAction.None);
-                owner.TryPutAction(SRunIAction.None);
-                owner.TryPutAction(SStandIAction.None);
-                owner.TryPutAction(SWalkIAction.None);
-                owner.TryPutAction(SSprintIAction.None);
-                owner.TryPutAction(SJumpIAction.None);
-            }
+        }
+
+        internal void Reset()
+        {
+            moveAction = SMoveIAction.None;
+            lastMoveAction = SMoveIAction.None;
+            lookAction = SLookIAction.None;
+            crouchAction = SCrouchIAction.None;
+            proneAction = SProneIAction.None;
+            walkAction = SWalkIAction.None;
+            runAction = SRunIAction.None;
+            sprintAction = SSprintIAction.None;
+            jumpAction = SJumpIAction.None;
+            standAction = SStandIAction.None;
+        }
+
+        internal void ReadActions(out SLocomotionInputActions actions)
+        {
+            actions = new SLocomotionInputActions(
+                moveAction,
+                lastMoveAction,
+                lookAction,
+                crouchAction,
+                proneAction,
+                walkAction,
+                runAction,
+                sprintAction,
+                jumpAction,
+                standAction);
         }
 
         internal void Subscribe()
@@ -105,12 +133,71 @@ namespace Game.Locomotion.Input
                     return;
                 }
 
-                owner.TryPutAction(payload);
+                PutAction(payload);
             }
 
             subscriptions[typeof(TPayload)] = new InputActionSubscription(
                 subscribe: dispatcher => dispatcher.Subscribe<TPayload>(Handler),
                 unsubscribe: dispatcher => dispatcher.Unsubscribe<TPayload>(Handler));
+        }
+
+        private void PutAction<TPayload>(TPayload payload) where TPayload : struct
+        {
+            // Keep this explicit and type-safe to preserve intent.
+            if (typeof(TPayload) == typeof(SMoveIAction))
+            {
+                lastMoveAction = moveAction;
+                moveAction = (SMoveIAction)(object)payload;
+                return;
+            }
+
+            if (typeof(TPayload) == typeof(SLookIAction))
+            {
+                lookAction = (SLookIAction)(object)payload;
+                return;
+            }
+
+            if (typeof(TPayload) == typeof(SCrouchIAction))
+            {
+                crouchAction = (SCrouchIAction)(object)payload;
+                return;
+            }
+
+            if (typeof(TPayload) == typeof(SProneIAction))
+            {
+                proneAction = (SProneIAction)(object)payload;
+                return;
+            }
+
+            if (typeof(TPayload) == typeof(SWalkIAction))
+            {
+                walkAction = (SWalkIAction)(object)payload;
+                return;
+            }
+
+            if (typeof(TPayload) == typeof(SRunIAction))
+            {
+                runAction = (SRunIAction)(object)payload;
+                return;
+            }
+
+            if (typeof(TPayload) == typeof(SSprintIAction))
+            {
+                sprintAction = (SSprintIAction)(object)payload;
+                return;
+            }
+
+            if (typeof(TPayload) == typeof(SJumpIAction))
+            {
+                jumpAction = (SJumpIAction)(object)payload;
+                return;
+            }
+
+            if (typeof(TPayload) == typeof(SStandIAction))
+            {
+                standAction = (SStandIAction)(object)payload;
+                return;
+            }
         }
 
         private static bool TryResolveDispatcher(out EventDispatcher dispatcher)

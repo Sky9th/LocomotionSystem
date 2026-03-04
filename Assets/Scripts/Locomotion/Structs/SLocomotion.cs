@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Game.Locomotion.Discrete.Structs;
 
 /// <summary>
 /// Immutable snapshot describing the player's locomotion state at a given frame.
@@ -8,89 +9,31 @@ using UnityEngine;
 public struct SLocomotion
 {
     public SLocomotion(
-        Vector3 position,
-        Vector2 desiredLocalVelocity,
-        Vector3 desiredPlanarVelocity,
-        Vector2 actualLocalVelocity,
-        Vector3 actualPlanarVelocity,
-        float actualSpeed,
-        Vector3 locomotionHeading,
-        Vector3 bodyForward,
-        Vector2 lookDirection,
-        SLocomotionDiscreteState discreteState,
-        SGroundContact groundContact,
-        float turnAngle,
-        bool isTurning,
-        bool isLeftFootOnFront,
-        EPostureState posture,
-        EMovementGait gait,
-        ELocomotionCondition condition)
+        SLocomotionAgent agent,
+        SLocomotionDiscrete discreteState,
+        SLocomotionAnimation animation = default)
     {
-        Position = position;
-        DesiredLocalVelocity = desiredLocalVelocity;
-        ActualLocalVelocity = actualLocalVelocity;
-        DesiredPlanarVelocity = desiredPlanarVelocity;
-        ActualPlanarVelocity = actualPlanarVelocity;
-        ActualSpeed = actualSpeed;
-        LocomotionHeading = locomotionHeading.sqrMagnitude > Mathf.Epsilon ? locomotionHeading.normalized : Vector3.forward;
-        BodyForward = bodyForward.sqrMagnitude > Mathf.Epsilon ? bodyForward.normalized : Vector3.forward;
-        LookDirection = lookDirection;
+        Agent = agent;
         DiscreteState = discreteState;
-        GroundContact = groundContact;
-        TurnAngle = turnAngle;
-        IsTurning = isTurning;
-        IsLeftFootOnFront = isLeftFootOnFront;
-        Posture = posture;
-        Gait = gait;
-        Condition = condition;
+        Animation = animation;
     }
 
-    public Vector3 Position { get; }
-    public Vector2 DesiredLocalVelocity { get; }
-    public Vector2 ActualLocalVelocity { get; }
-    public Vector3 DesiredPlanarVelocity { get; }
-    public Vector3 ActualPlanarVelocity { get; }
-    public float ActualSpeed { get; }
-    public Vector3 LocomotionHeading { get; }
-    public Vector3 BodyForward { get; }
-    public Vector2 LookDirection { get; }
-    public SLocomotionDiscreteState DiscreteState { get; }
-    public ELocomotionState State => DiscreteState.State;
-    public SGroundContact GroundContact { get; }
-    public float TurnAngle { get; }
-    public bool IsTurning { get; }
-    public bool IsLeftFootOnFront { get; }
+    public SLocomotionAgent Agent { get; }
+    public SLocomotionDiscrete DiscreteState { get; }
 
-    /// <summary>Current posture (e.g. Standing / Crouching / Prone).</summary>
-    public EPostureState Posture { get; }
-
-    /// <summary>Current movement gait (Idle / Walk / Run / Sprint / Crawl).</summary>
-    public EMovementGait Gait { get; }
-
-    /// <summary>Additional locomotion condition modifiers (e.g. injured, heavy load).</summary>
-    public ELocomotionCondition Condition { get; }
-    public bool IsGrounded => GroundContact.IsGrounded;
+    /// <summary>
+    /// Optional animation output produced by the locomotion animation module.
+    /// Kept as a structured sub-snapshot to reduce clutter on the root DTO.
+    /// </summary>
+    public SLocomotionAnimation Animation { get; }
 
     public static SLocomotion Default => new SLocomotion(
-        Vector3.zero,
-        Vector2.zero,
-        Vector3.zero,
-        Vector2.zero,
-        Vector3.zero,
-        0f,
-        Vector3.forward,
-        Vector3.forward,
-        Vector2.zero,
-        new SLocomotionDiscreteState(
-            ELocomotionState.GroundedIdle,
-            EPostureState.Standing,
+        SLocomotionAgent.Default,
+        new SLocomotionDiscrete(
+            ELocomotionPhase.GroundedIdle,
+            EPosture.Standing,
             EMovementGait.Idle,
-            ELocomotionCondition.Normal),
-        SGroundContact.None,
-        0f,
-        false,
-        true,
-        EPostureState.Standing,
-        EMovementGait.Idle,
-        ELocomotionCondition.Normal);
+            ELocomotionCondition.Normal,
+            isTurning: false),
+        SLocomotionAnimation.None);
 }

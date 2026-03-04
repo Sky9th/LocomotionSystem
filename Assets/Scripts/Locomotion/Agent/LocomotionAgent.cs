@@ -1,11 +1,12 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using Game.Locomotion.Computation;
-using Game.Locomotion.State.Core;
-using Game.Locomotion.State.Controllers;
+using Game.Locomotion.Discrete.Coordination;
+using Game.Locomotion.Discrete.Interface;
+using Game.Locomotion.Discrete.Structs;
 using Game.Locomotion.Input;
 using Game.Locomotion.Config;
+using Game.Locomotion.Animation.Presenters;
 
 namespace Game.Locomotion.Agent
 {
@@ -37,6 +38,9 @@ namespace Game.Locomotion.Agent
         [Header("Identity")]
         [SerializeField] private bool isPlayer;
 
+        [Header("Animation")]
+        [SerializeField] private LocomotionAnimancerPresenter animancerPresenter;
+
         [Header("Input")]
         [SerializeField] private bool autoSubscribeInput = true;
 
@@ -47,16 +51,8 @@ namespace Game.Locomotion.Agent
         // them into this agent's internal buffer).
         private LocomotionInputModule inputModule;
 
-        // Per-agent IAction buffer keyed by payload type.
-        private readonly Dictionary<Type, object> inputActionBuffer = new();
-        private readonly Dictionary<Type, object> lastInputActionBuffer = new();
-
-        // New v2 locomotion state controller (currently using the Human archetype).
-        private ILocomotionStateController locomotionStateController;
-
-        // Dedicated helper for planar turning logic so that state
-        // controllers can focus purely on discrete locomotion state.
-        // private readonly LocomotionTurn turnHelper = new LocomotionTurn();
+        // New v2 locomotion discrete coordinator (currently using the Human archetype).
+        private ILocomotionCoordinator locomotionCoordinator;
 
         // Smoothed world-space velocity and last non-zero move input
         // used to derive local planar velocity.
@@ -84,48 +80,14 @@ namespace Game.Locomotion.Agent
             root.rotation = Quaternion.AngleAxis(deltaAngleDegrees, Vector3.up) * root.rotation;
         }
 
-        /// <summary>
-        /// Called by input/AI modules to push the latest IAction payload
-        /// into this agent's per-type input buffer.
-        /// </summary>
-        internal void TryPutAction<TAction>(TAction action) where TAction : struct
-        {
-            if (action.Equals(default(TAction)))
-            {
-                inputActionBuffer.Remove(typeof(TAction));
-            }
-            else
-            {
-                lastInputActionBuffer[typeof(TAction)] = inputActionBuffer.ContainsKey(typeof(TAction)) ? (TAction)inputActionBuffer[typeof(TAction)] : default;
-                inputActionBuffer[typeof(TAction)] = action;
-            }
-        }
-        
-        internal bool TryGetAction<TAction>(out TAction action) where TAction : struct
-        {
-            if (inputActionBuffer.TryGetValue(typeof(TAction), out object boxed) && boxed is TAction typed)
-            {
-                action = typed;
-                return true;
-            }
-            action = default;
-            return false;
-        }
-
-        internal bool TryGetLastAction<TAction>(out TAction action) where TAction : struct
-        {
-            if (lastInputActionBuffer.TryGetValue(typeof(TAction), out object boxed) && boxed is TAction typed)
-            {
-                action = typed;
-                return true;
-            }
-            action = default;
-            return false;
-        }
-
         private void Awake()
         {
             ResolveRigReferencesIfNeeded();
+
+            if (animancerPresenter == null)
+            {
+                animancerPresenter = GetComponent<LocomotionAnimancerPresenter>();
+            }
         }
 
         private void OnEnable()
@@ -170,7 +132,7 @@ namespace Game.Locomotion.Agent
             // Reset to a safe default state so external systems do not
             // keep consuming stale locomotion data from a disabled agent.
             inputModule?.Unsubscribe();
-            inputActionBuffer.Clear();
+            inputModule?.Reset();
             InitializeSnapshot();
         }
 
@@ -188,27 +150,16 @@ namespace Game.Locomotion.Agent
         /// </summary>
         private void Simulate(float deltaTime)
         {
-            // Read the latest buffered IAactions produced by upstream
-            // input/AI modules. InputModule is responsible for seeding
-            // sensible defaults so we can assume each type is present.
-            TryGetAction(out SMoveIAction moveAction);
-            TryGetLastAction(out SMoveIAction lastMoveAction);
-            TryGetAction(out SLookIAction lookAction);
-            TryGetAction(out SCrouchIAction crouchAction);
-            TryGetAction(out SProneIAction proneAction);
-            TryGetAction(out SWalkIAction walkAction);
-            TryGetAction(out SRunIAction runAction);
-            TryGetAction(out SSprintIAction sprintAction);
-            TryGetAction(out SJumpIAction jumpAction);
-            TryGetAction(out SStandIAction standAction);
-
+            // Read aggregated input from the Input module.
+            SLocomotionInputActions inputActions = SLocomotionInputActions.None;
+            inputModule?.ReadActions(out inputActions);
 
             // Apply look input to rotate the follow anchor so that
             // subsequent heading and head-look computations are
             // based on the updated camera orientation.
             LocomotionCameraAnchor.UpdateRotation(
                 followAnchor,
-                lookAction,
+                inputActions.LookAction,
                 locomotionProfile);
 
             Vector3 position = modelRoot != null ? modelRoot.position : transform.position;
@@ -229,7 +180,7 @@ namespace Game.Locomotion.Agent
             // per-gait speed caps.
             float moveSpeed = locomotionProfile != null ? locomotionProfile.moveSpeed : 0f;
             Vector2 desiredLocalVelocity = LocomotionKinematics.ComputeDesiredPlanarVelocity(
-                moveAction.Equals(SMoveIAction.None) ? lastMoveAction : moveAction,
+                inputActions.MoveAction.Equals(SMoveIAction.None) ? inputActions.LastMoveAction : inputActions.MoveAction,
                 moveSpeed);
 
             float acceleration = locomotionProfile != null ? locomotionProfile.acceleration : 0f;
@@ -246,30 +197,32 @@ namespace Game.Locomotion.Agent
                 currentLocalVelocity,
                 locomotionHeading);
 
-            var stateContext = new SLocomotionStateContext(
-                currentVelocity,
-                bodyForward,
-                locomotionHeading,
-                groundContact,
-                locomotionProfile,
-                moveAction,
-                lookAction,
-                crouchAction,
-                proneAction,
-                walkAction,
-                runAction,
-                sprintAction,
-                jumpAction,
-                standAction);
-
-            if (locomotionStateController != null)
+            if (locomotionCoordinator != null)
             {
-                // 1) Evaluate full locomotion state (discrete + turn)
-                // via the state controller.
-                SLocomotionStateFrame stateFrame = locomotionStateController.Evaluate(in stateContext, deltaTime);
-                SLocomotionDiscreteState mode = stateFrame.DiscreteState;
-                float turnAngle = stateFrame.TurnAngle;
-                bool isTurning = stateFrame.IsTurning;
+                // 1) Evaluate discrete state.
+                // turnAngle is an Agent probe; whether we are "turning in place"
+                // is evaluated by Discrete and aggregated into DiscreteState.
+                float turnAngle = LocomotionKinematics.ComputeSignedPlanarTurnAngle(bodyForward, locomotionHeading);
+
+                var agentProbeSnapshot = new SLocomotionAgent(
+                    position,
+                    desiredLocalVelocity,
+                    desiredVelocity,
+                    currentLocalVelocity,
+                    currentVelocity,
+                    currentVelocity.magnitude,
+                    locomotionHeading,
+                    bodyForward,
+                    Vector2.zero,
+                    groundContact,
+                    turnAngle,
+                    isLeftFootOnFront: false);
+
+                SLocomotionDiscrete mode = locomotionCoordinator.Evaluate(
+                    in agentProbeSnapshot,
+                    locomotionProfile,
+                    in inputActions,
+                    deltaTime);
 
                 // 2) Evaluate head look from follow anchor towards the body.
                 Vector2 lookDirection = LocomotionHeadLook.Evaluate(
@@ -279,24 +232,27 @@ namespace Game.Locomotion.Agent
                     locomotionProfile);
 
                 // 3) Assemble the external locomotion snapshot DTO.
-                snapshot = new SLocomotion(
+                var agentSnapshot = new SLocomotionAgent(
                     position,
-                    desiredLocalVelocity: desiredLocalVelocity,
-                    actualLocalVelocity: currentLocalVelocity,
-                    desiredPlanarVelocity: desiredVelocity,
-                    actualPlanarVelocity: currentVelocity,
-                    actualSpeed: currentVelocity.magnitude,
-                    locomotionHeading: locomotionHeading,
-                    bodyForward: bodyForward,
-                    lookDirection: lookDirection,
-                    discreteState: mode,
-                    groundContact: groundContact,
-                    turnAngle: turnAngle,
-                    isTurning: isTurning,
-                    isLeftFootOnFront: false,
-                    posture: mode.Posture,
-                    gait: mode.Gait,
-                    condition: mode.Condition);
+                    desiredLocalVelocity,
+                    desiredVelocity,
+                    currentLocalVelocity,
+                    currentVelocity,
+                    currentVelocity.magnitude,
+                    locomotionHeading,
+                    bodyForward,
+                    lookDirection,
+                    groundContact,
+                    turnAngle,
+                    isLeftFootOnFront: false);
+
+                // Assemble once: core + discrete + (optional) animation output.
+                var baseSnapshot = new SLocomotion(agentSnapshot, mode);
+                SLocomotionAnimation animation = animancerPresenter != null
+                    ? animancerPresenter.Evaluate(in baseSnapshot, deltaTime)
+                    : default;
+
+                snapshot = new SLocomotion(agentSnapshot, mode, animation);
             }
 
             PushSnapshot();
@@ -311,28 +267,28 @@ namespace Game.Locomotion.Agent
             currentVelocity = Vector3.zero;
             currentLocalVelocity = Vector2.zero;
 
-            snapshot = new SLocomotion(
+            var agentSnapshot = new SLocomotionAgent(
                 position,
-                desiredLocalVelocity: Vector2.zero,
-                actualLocalVelocity: Vector2.zero,
-                desiredPlanarVelocity: Vector3.zero,
-                actualPlanarVelocity: Vector3.zero,
-                actualSpeed: 0f,
-                locomotionHeading: locomotionHeading,
-                bodyForward: bodyForward,
-                lookDirection: Vector2.zero,
-                discreteState: new SLocomotionDiscreteState(
-                    ELocomotionState.GroundedIdle,
-                    EPostureState.Standing,
+                Vector2.zero,
+                Vector3.zero,
+                Vector2.zero,
+                Vector3.zero,
+                0f,
+                locomotionHeading,
+                bodyForward,
+                Vector2.zero,
+                SGroundContact.None,
+                0f,
+                true);
+
+            snapshot = new SLocomotion(
+                agentSnapshot,
+                new SLocomotionDiscrete(
+                    ELocomotionPhase.GroundedIdle,
+                    EPosture.Standing,
                     EMovementGait.Idle,
-                    ELocomotionCondition.Normal),
-                groundContact: SGroundContact.None,
-                turnAngle: 0f,
-                isTurning: false,
-                isLeftFootOnFront: true,
-                posture: EPostureState.Standing,
-                gait: EMovementGait.Idle,
-                condition: ELocomotionCondition.Normal);
+                    ELocomotionCondition.Normal,
+                    isTurning: false));
 
             PushSnapshot();
         }
@@ -348,10 +304,10 @@ namespace Game.Locomotion.Agent
 
         private void EnsureLocomotionControllerCreated()
         {
-            if (locomotionStateController == null)
+            if (locomotionCoordinator == null)
             {
                 // For now we always use the Human archetype.
-                locomotionStateController = new HumanLocomotionStateController();
+                locomotionCoordinator = new HumanLocomotionCoordinator();
             }
         }
 

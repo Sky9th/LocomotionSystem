@@ -30,12 +30,12 @@ namespace Game.Locomotion.Agent
 
             // Draw locomotion heading in a color based on the high-level state.
             Color headingColor = Color.cyan;
-            switch (snapshot.State)
+            switch (snapshot.DiscreteState.Phase)
             {
-                case ELocomotionState.GroundedMoving:
+                case ELocomotionPhase.GroundedMoving:
                     headingColor = Color.green;
                     break;
-                case ELocomotionState.Airborne:
+                case ELocomotionPhase.Airborne:
                     headingColor = Color.yellow;
                     break;
             }
@@ -45,11 +45,10 @@ namespace Game.Locomotion.Agent
             // Visualize ground detection ray and contact point.
             DrawDebugArrowLine(origin, origin + Vector3.down * groundRayLength, Color.magenta, "Ground Ray");
 
-            if (snapshot.GroundContact.IsGrounded)
+            if (snapshot.Agent.GroundContact.IsGrounded)
             {
-                Vector3 contactPoint = snapshot.GroundContact.ContactPoint;
-                Vector3 contactNormal = snapshot.GroundContact.ContactNormal.normalized;
-                Gizmos.DrawSphere(contactPoint, 0.03f);
+                Vector3 contactPoint = snapshot.Agent.GroundContact.ContactPoint;
+                Vector3 contactNormal = snapshot.Agent.GroundContact.ContactNormal.normalized;
                 DrawDebugArrowLine(contactPoint, contactPoint + contactNormal * 0.3f, Color.white, "Ground Normal");
             }
         }

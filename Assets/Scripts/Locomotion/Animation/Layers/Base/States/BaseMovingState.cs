@@ -1,5 +1,5 @@
 using Animancer;
-using Game.Locomotion.State.Layers;
+using Game.Locomotion.Discrete.Aspects;
 using Game.Locomotion.Config;
 using Game.Locomotion.Animation.Layers.Base.Conditions;
 using Game.Locomotion.Animation.Layers.Core;
@@ -35,7 +35,7 @@ namespace Game.Locomotion.Animation.Layers.Base
                 return;
             }
 
-            StringAsset desired = ResolveMovingAlias(Owner.AliasProfile, Owner.Snapshot.Gait);
+            StringAsset desired = ResolveMovingAlias(Owner.AliasProfile, Owner.Snapshot.DiscreteState.Gait);
             if (desired != null)
             {
                 Owner.PlayIfChanged(desired);
@@ -81,7 +81,7 @@ namespace Game.Locomotion.Animation.Layers.Base
 
             SLocomotion snapshot = Owner.Snapshot;
 
-            Vector2 planarVelocity = snapshot.ActualLocalVelocity;
+            Vector2 planarVelocity = snapshot.Agent.ActualLocalVelocity;
             Vector2 parameter = planarVelocity / maxMoveSpeed;
             if (parameter.sqrMagnitude > 1f)
             {

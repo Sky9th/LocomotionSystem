@@ -61,6 +61,31 @@ namespace Game.Locomotion.Computation
             return forward * localVelocity.y + right * localVelocity.x;
         }
 
+        /// <summary>
+        /// Computes the signed planar angle (XZ) between current body forward
+        /// and desired locomotion heading. Positive values mean turning right.
+        /// </summary>
+        internal static float ComputeSignedPlanarTurnAngle(
+            Vector3 bodyForward,
+            Vector3 locomotionHeading)
+        {
+            Vector3 bodyFlat = bodyForward;
+            Vector3 headingFlat = locomotionHeading;
+            bodyFlat.y = 0f;
+            headingFlat.y = 0f;
+
+            if (bodyFlat.sqrMagnitude <= Mathf.Epsilon || headingFlat.sqrMagnitude <= Mathf.Epsilon)
+            {
+                return 0f;
+            }
+
+            bodyFlat.Normalize();
+            headingFlat.Normalize();
+
+            float signedAngle = Vector3.SignedAngle(bodyFlat, headingFlat, Vector3.up);
+            return Mathf.Clamp(signedAngle, -180f, 180f);
+        }
+
         internal static Vector3 SmoothVelocity(
             Vector3 currentVelocity,
             Vector3 desiredVelocity,
