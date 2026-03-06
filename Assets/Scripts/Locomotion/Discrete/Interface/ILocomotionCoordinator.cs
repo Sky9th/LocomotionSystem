@@ -33,7 +33,7 @@ namespace Game.Locomotion.Discrete.Interface
         /// Evaluate the discrete locomotion state.
         /// </summary>
         SLocomotionDiscrete Evaluate(
-            in SLocomotionAgent agent,
+            in SLocomotionMotor agent,
             LocomotionProfile profile,
             in SLocomotionInputActions actions,
             float deltaTime);

@@ -35,6 +35,11 @@ namespace Game.Locomotion.Animation.Layers.Base
                 return;
             }
 
+            if (Owner.TrySetState(BaseStateKey.AirLoop))
+            {
+                return;
+            }
+
             StringAsset desired = ResolveMovingAlias(Owner.AliasProfile, Owner.Snapshot.DiscreteState.Gait);
             if (desired != null)
             {
@@ -81,7 +86,7 @@ namespace Game.Locomotion.Animation.Layers.Base
 
             SLocomotion snapshot = Owner.Snapshot;
 
-            Vector2 planarVelocity = snapshot.Agent.ActualLocalVelocity;
+            Vector2 planarVelocity = snapshot.Motor.ActualLocalVelocity;
             Vector2 parameter = planarVelocity / maxMoveSpeed;
             if (parameter.sqrMagnitude > 1f)
             {
@@ -97,7 +102,7 @@ namespace Game.Locomotion.Animation.Layers.Base
                 Owner.DeltaTime);
         }
 
-        private static StringAsset ResolveMovingAlias(AnimancerStringProfile aliasProfile, EMovementGait gait)
+        private static StringAsset ResolveMovingAlias(LocomotionAliasProfile aliasProfile, EMovementGait gait)
         {
             if (aliasProfile == null)
             {

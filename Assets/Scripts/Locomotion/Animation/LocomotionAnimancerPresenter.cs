@@ -5,7 +5,6 @@ using Game.Locomotion.Animation.Config;
 using Game.Locomotion.Animation.Core;
 using Game.Locomotion.Animation.Layers;
 using Game.Locomotion.Animation.Layers.Base;
-using Game.Locomotion.Config;
 using System.Collections.Generic;
 
 namespace Game.Locomotion.Animation.Presenters
@@ -23,7 +22,7 @@ namespace Game.Locomotion.Animation.Presenters
         [Header("Dependencies")]
         [SerializeField] private LocomotionAgent agent;
         [SerializeField] private NamedAnimancerComponent animancer;
-        [SerializeField] private AnimancerStringProfile animancerStringProfile;
+        [SerializeField] private LocomotionAliasProfile animancerStringProfile;
         [SerializeField] private LocomotionAnimationProfile animationProfile;
 
         [Header("Head Look")]

@@ -7,9 +7,9 @@ using UnityEngine;
 /// (pose, kinematics and derived probes such as ground contact).
 /// </summary>
 [Serializable]
-public struct SLocomotionAgent
+public struct SLocomotionMotor
 {
-    public SLocomotionAgent(
+    public SLocomotionMotor(
         Vector3 position,
         Vector2 desiredLocalVelocity,
         Vector3 desiredPlanarVelocity,
@@ -52,7 +52,7 @@ public struct SLocomotionAgent
 
     public bool IsGrounded => GroundContact.IsGrounded;
 
-    public static SLocomotionAgent Default => new SLocomotionAgent(
+    public static SLocomotionMotor Default => new SLocomotionMotor(
         Vector3.zero,
         Vector2.zero,
         Vector3.zero,

@@ -15,6 +15,12 @@ MonoBehaviour:
   moveSpeed: 4
   acceleration: 15
   maxGroundSlopeAngle: 55
+  groundRayLength: 0.25
+  groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  enableGroundLocking: 1
+  groundLockVerticalOffset: 0
   maxHeadYawDegrees: 75
   maxHeadPitchDegrees: 75
   headLookRotationSpeed: 0.25

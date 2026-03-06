@@ -8,7 +8,7 @@ namespace Game.Locomotion.Animation.Layers.Base
     {
         public static bool TryApply(
             LocomotionAnimationProfile animationProfile,
-            ILocomotionModelRotator modelRotator,
+            ILocomotionModelTransformer modelRotator,
             in SLocomotion snapshot,
             float deltaTime)
         {
@@ -17,7 +17,7 @@ namespace Game.Locomotion.Animation.Layers.Base
                 return false;
             }
 
-            float absAngle = Mathf.Abs(snapshot.Agent.TurnAngle);
+            float absAngle = Mathf.Abs(snapshot.Motor.TurnAngle);
             if (absAngle <= Mathf.Epsilon)
             {
                 return false;
@@ -32,7 +32,7 @@ namespace Game.Locomotion.Animation.Layers.Base
 
             float maxStep = turnSpeed * deltaTime;
             float step = Mathf.Min(maxStep, absAngle);
-            float deltaAngle = Mathf.Sign(snapshot.Agent.TurnAngle) * step;
+            float deltaAngle = Mathf.Sign(snapshot.Motor.TurnAngle) * step;
             modelRotator.RotateModelYaw(deltaAngle);
             return true;
         }

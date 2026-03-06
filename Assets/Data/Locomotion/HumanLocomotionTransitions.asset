@@ -389,6 +389,8 @@ MonoBehaviour:
     - {fileID: 1005784850119394493}
     - {fileID: 4176786600016712184}
     - {fileID: -8926689441363961759}
+    - {fileID: 7593088155109255119}
+    - {fileID: 7540415855591462860}
     _Modifiers:
     - _From: 3
       _To: 0
@@ -623,6 +625,64 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _Library: {fileID: 11400000}
   _TransitionSortMode: 0
+--- !u!114 &7540415855591462860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
+  m_Name: AirLand
+  m_EditorClassIdentifier: 
+  _Transition:
+    rid: 2858904083088277505
+  references:
+    version: 2
+    RefIds:
+    - rid: 2858904083088277505
+      type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
+      data:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes: []
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: 1827226128182048838, guid: bbebb4f4873b0114b96e0cc358e40f47,
+          type: 3}
+        _NormalizedStartTime: NaN
+--- !u!114 &7593088155109255119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
+  m_Name: AirLoop
+  m_EditorClassIdentifier: 
+  _Transition:
+    rid: 2858904083088277504
+  references:
+    version: 2
+    RefIds:
+    - rid: 2858904083088277504
+      type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
+      data:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes: []
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: 1827226128182048838, guid: 4e10d2a660caf984f9352d5f7b9a748a,
+          type: 3}
+        _NormalizedStartTime: NaN
 --- !u!114 &8118410883589941551
 MonoBehaviour:
   m_ObjectHideFlags: 0

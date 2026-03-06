@@ -102,5 +102,20 @@ namespace Game.Locomotion.Computation
             float maxDelta = acceleration * deltaTime;
             return Vector3.MoveTowards(currentVelocity, desiredVelocity, maxDelta);
         }
+
+        internal static Vector2 SmoothVelocity(
+            Vector2 currentVelocity,
+            Vector2 desiredVelocity,
+            float acceleration,
+            float deltaTime)
+        {
+            if (acceleration <= 0f || deltaTime <= 0f)
+            {
+                return desiredVelocity;
+            }
+
+            float maxDelta = acceleration * deltaTime;
+            return Vector2.MoveTowards(currentVelocity, desiredVelocity, maxDelta);
+        }
     }
 }

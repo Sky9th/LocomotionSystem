@@ -20,6 +20,6 @@ namespace Game.Locomotion.Discrete.Interface
         /// Update the internal state using the supplied data.
         /// Implementations should write into <see cref="Current"/>.
         /// </summary>
-        void Update(in SLocomotionAgent agent, in Game.Locomotion.Input.SLocomotionInputActions actions);
+        void Update(in SLocomotionMotor agent, in Game.Locomotion.Input.SLocomotionInputActions actions);
     }
 }

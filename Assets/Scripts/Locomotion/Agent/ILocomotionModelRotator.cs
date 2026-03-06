@@ -1,7 +1,8 @@
 namespace Game.Locomotion.Agent
 {
-    public interface ILocomotionModelRotator
+    public interface ILocomotionModelTransformer
     {
         void RotateModelYaw(float deltaAngleDegrees);
+
     }
 }

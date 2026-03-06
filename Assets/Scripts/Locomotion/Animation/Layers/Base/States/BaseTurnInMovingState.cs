@@ -36,7 +36,7 @@ namespace Game.Locomotion.Animation.Layers.Base
 
         public override void OnEnterState()
         {
-            selectedAlias = ResolveTurnAlias(Owner.AliasProfile, Owner.Snapshot.Agent.TurnAngle);
+            selectedAlias = ResolveTurnAlias(Owner.AliasProfile, Owner.Snapshot.Motor.TurnAngle);
             Owner.Play(selectedAlias);
         }
 
@@ -59,13 +59,18 @@ namespace Game.Locomotion.Animation.Layers.Base
                 return;
             }
 
+            if (Owner.TrySetState(BaseStateKey.AirLoop))
+            {
+                return;
+            }
+
             if (Owner.HasCurrentAnimationCompleted())
             {
                 if (snapshot.DiscreteState.Phase == ELocomotionPhase.GroundedMoving)
                 {
                     if (snapshot.DiscreteState.IsTurning)
                     {
-                        selectedAlias = ResolveTurnAlias(Owner.AliasProfile, snapshot.Agent.TurnAngle);
+                        selectedAlias = ResolveTurnAlias(Owner.AliasProfile, snapshot.Motor.TurnAngle);
                         Owner.PlayFromStart(selectedAlias);
                         return;
                     }
@@ -78,7 +83,7 @@ namespace Game.Locomotion.Animation.Layers.Base
             }
         }
 
-        private StringAsset ResolveTurnAlias(AnimancerStringProfile alias, float angle)
+        private StringAsset ResolveTurnAlias(LocomotionAliasProfile alias, float angle)
         {
             bool isRightTurn = angle > 0f;
             switch (Owner.Snapshot.DiscreteState.Gait)

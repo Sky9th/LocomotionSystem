@@ -2,12 +2,14 @@ using Animancer;
 using UnityEngine;
 
 [CreateAssetMenu(
-    menuName = "Locomotion/Animancer/Alias String Profile")]
-public class AnimancerStringProfile : ScriptableObject
+    menuName = "Locomotion/Animancer/Locomotion Alias Profile")]
+public class LocomotionAliasProfile : ScriptableObject
 {
     [Header("Clips")]
     public StringAsset idleL;
     public StringAsset idleR;
+    public StringAsset AirLoop;
+    public StringAsset AirLand;
     public StringAsset idleToRun180L;
     public StringAsset idleToRun180R;
     public StringAsset walkMixer;

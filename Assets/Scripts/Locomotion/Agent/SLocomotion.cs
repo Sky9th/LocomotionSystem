@@ -9,16 +9,16 @@ using Game.Locomotion.Discrete.Structs;
 public struct SLocomotion
 {
     public SLocomotion(
-        SLocomotionAgent agent,
+        SLocomotionMotor motor,
         SLocomotionDiscrete discreteState,
         SLocomotionAnimation animation = default)
     {
-        Agent = agent;
+        Motor = motor;
         DiscreteState = discreteState;
         Animation = animation;
     }
 
-    public SLocomotionAgent Agent { get; }
+    public SLocomotionMotor Motor { get; }
     public SLocomotionDiscrete DiscreteState { get; }
 
     /// <summary>
@@ -28,7 +28,7 @@ public struct SLocomotion
     public SLocomotionAnimation Animation { get; }
 
     public static SLocomotion Default => new SLocomotion(
-        SLocomotionAgent.Default,
+        SLocomotionMotor.Default,
         new SLocomotionDiscrete(
             ELocomotionPhase.GroundedIdle,
             EPosture.Standing,

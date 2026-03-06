@@ -5,7 +5,7 @@ namespace Game.Locomotion.Input
     /// <summary>
     /// Aggregated per-step locomotion input actions.
     ///
-    /// This is intentionally separate from <see cref="SLocomotionAgent"/>:
+    /// This is intentionally separate from <see cref="SLocomotionMotor"/>:
     /// - Agent publishes kinematics and probes.
     /// - Input publishes player intent.
     /// </summary>

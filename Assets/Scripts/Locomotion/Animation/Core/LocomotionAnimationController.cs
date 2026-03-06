@@ -15,19 +15,19 @@ namespace Game.Locomotion.Animation.Core
     internal sealed class LocomotionAnimationController
     {
         private readonly NamedAnimancerComponent animancer;
-        private readonly AnimancerStringProfile alias;
+        private readonly LocomotionAliasProfile alias;
         private readonly LocomotionProfile locomotionProfile;
         private readonly LocomotionAnimationProfile profile;
-        private readonly ILocomotionModelRotator modelRotator;
+        private readonly ILocomotionModelTransformer modelRotator;
         private readonly ILocomotionAnimationLayer[] layers;
         private readonly Dictionary<string, SLocomotionAnimationLayerSnapshot> layerSnapshots;
 
         public LocomotionAnimationController(
             NamedAnimancerComponent animancer,
-            AnimancerStringProfile alias,
+            LocomotionAliasProfile alias,
             LocomotionProfile locomotionProfile,
             LocomotionAnimationProfile profile,
-            ILocomotionModelRotator modelRotator,
+            ILocomotionModelTransformer modelRotator,
             params ILocomotionAnimationLayer[] layers)
         {
             this.animancer = animancer;

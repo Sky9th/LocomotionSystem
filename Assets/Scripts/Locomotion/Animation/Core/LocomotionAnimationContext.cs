@@ -15,19 +15,19 @@ namespace Game.Locomotion.Animation.Core
         public readonly SLocomotion Snapshot;
         public readonly float DeltaTime;
         public readonly NamedAnimancerComponent Animancer;
-        public readonly AnimancerStringProfile Alias;
+        public readonly LocomotionAliasProfile Alias;
         public readonly LocomotionAnimationProfile Profile;
         public readonly LocomotionProfile LocomotionProfile;
-        public readonly ILocomotionModelRotator ModelRotator;
+        public readonly ILocomotionModelTransformer ModelRotator;
 
         public LocomotionAnimationContext(
             SLocomotion snapshot,
             float deltaTime,
             NamedAnimancerComponent animancer,
-            AnimancerStringProfile alias,
+            LocomotionAliasProfile alias,
             LocomotionAnimationProfile profile,
             LocomotionProfile locomotionProfile,
-            ILocomotionModelRotator modelRotator)
+            ILocomotionModelTransformer modelRotator)
         {
             Snapshot = snapshot;
             DeltaTime = deltaTime;
