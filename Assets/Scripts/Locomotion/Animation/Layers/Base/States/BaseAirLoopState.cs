@@ -11,7 +11,7 @@ namespace Game.Locomotion.Animation.Layers.Base
         {
         }
 
-        public override bool CanEnterState => !Owner.Snapshot.Motor.IsGrounded;
+        public override bool CanEnterState => !Owner.Snapshot.Motor.GroundContact.IsGrounded;
 
         public override void OnEnterState()
         {

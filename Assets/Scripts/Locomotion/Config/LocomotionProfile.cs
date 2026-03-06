@@ -25,6 +25,10 @@ namespace Game.Locomotion.Config
         [Min(0f)] public float groundRayLength = 0.1f;
         public LayerMask groundLayerMask = ~0;
 
+        [Header("Ground Stand Probe")]
+        public Vector3 groundStandBoxHalfExtents = new Vector3(0.2f, 0.05f, 0.2f);
+        [Min(0f)] public float groundStandBoxCastDistance = 0.1f;
+
         [Header("Ground Lock")]
         public bool enableGroundLocking = true;
         public float groundLockVerticalOffset = 0f;

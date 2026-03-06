@@ -85,9 +85,13 @@ namespace Game.Locomotion.Agent
             float maxSlopeAngle = profile != null ? profile.maxGroundSlopeAngle : 0f;
             float groundRayLength = profile != null ? profile.groundRayLength : 0f;
             LayerMask groundLayerMask = profile != null ? profile.groundLayerMask : ~0;
-            SGroundContact groundContact = LocomotionGroundDetection.SampleGround(
+            Vector3 standBoxHalfExtents = profile != null ? profile.groundStandBoxHalfExtents : Vector3.zero;
+            float standBoxCastDistance = profile != null ? profile.groundStandBoxCastDistance : 0f;
+            SGroundContact groundContact = LocomotionGroundDetection.EvaluateGroundContact(
                 position,
                 groundRayLength,
+                standBoxHalfExtents,
+                standBoxCastDistance,
                 groundLayerMask,
                 maxSlopeAngle);
 

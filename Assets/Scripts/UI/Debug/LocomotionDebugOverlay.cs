@@ -54,6 +54,16 @@ public class LocomotionDebugOverlay : UIOverlayBase
 
         static string FormatBool(bool value) => value ? "True" : "False";
 
+        static string FormatDistance(float value)
+        {
+            if (float.IsPositiveInfinity(value))
+            {
+                return "<inf>";
+            }
+
+            return value.ToString("F3");
+        }
+
         static string FormatLayerSnapshot(SLocomotionAnimationLayerSnapshot layer)
         {
             string layerName = string.IsNullOrEmpty(layer.LayerName) ? "<none>" : layer.LayerName;
@@ -84,7 +94,7 @@ public class LocomotionDebugOverlay : UIOverlayBase
         AppendKeyValue("IsTurning", FormatBool(snapshot.DiscreteState.IsTurning));
 
         builder.AppendLine();
-        builder.AppendLine("[Agent]");
+        builder.AppendLine("[Motor]");
         AppendKeyValue("Position", snapshot.Motor.Position.ToString("F2"));
         AppendKeyValue("DesiredLocalVelocity", snapshot.Motor.DesiredLocalVelocity.ToString("F2"));
         AppendKeyValue("DesiredPlanarVelocity", snapshot.Motor.DesiredPlanarVelocity.ToString("F2"));
@@ -98,6 +108,8 @@ public class LocomotionDebugOverlay : UIOverlayBase
         AppendKeyValue("IsLeftFootOnFront", FormatBool(snapshot.Motor.IsLeftFootOnFront));
 
         AppendKeyValue("Ground.IsGrounded", FormatBool(snapshot.Motor.GroundContact.IsGrounded));
+        AppendKeyValue("Ground.DistanceToGround", FormatDistance(snapshot.Motor.GroundContact.DistanceToGround));
+        AppendKeyValue("Ground.IsWalkableSlope", FormatBool(snapshot.Motor.GroundContact.IsWalkableSlope));
         AppendKeyValue("Ground.ContactPoint", snapshot.Motor.GroundContact.ContactPoint.ToString("F2"));
         AppendKeyValue("Ground.ContactNormal", snapshot.Motor.GroundContact.ContactNormal.ToString("F2"));
 
