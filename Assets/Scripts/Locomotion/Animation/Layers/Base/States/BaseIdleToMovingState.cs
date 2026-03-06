@@ -13,7 +13,7 @@ namespace Game.Locomotion.Animation.Layers.Base
 
         public override void OnEnterState()
         {
-            if (Owner.Snapshot.Agent.TurnAngle > 0)
+            if (Owner.Snapshot.Motor.TurnAngle > 0)
             {
                 Owner.Play(Owner.AliasProfile.idleToRun180R);
             } 
@@ -35,6 +35,11 @@ namespace Game.Locomotion.Animation.Layers.Base
             }
 
             if (Owner.TrySetState(BaseStateKey.Moving))
+            {
+                return;
+            }
+
+            if (Owner.TrySetState(BaseStateKey.AirLoop))
             {
                 return;
             }

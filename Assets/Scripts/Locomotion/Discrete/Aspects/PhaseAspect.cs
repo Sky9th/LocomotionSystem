@@ -19,7 +19,7 @@ namespace Game.Locomotion.Discrete.Aspects
             Current = defaultState;
         }
 
-        public void Update(in SLocomotionAgent agent, in SLocomotionInputActions actions)
+        public void Update(in SLocomotionMotor agent, in SLocomotionInputActions actions)
         {
             if (!agent.GroundContact.IsGrounded)
             {

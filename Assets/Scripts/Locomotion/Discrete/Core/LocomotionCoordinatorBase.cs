@@ -12,8 +12,7 @@ namespace Game.Locomotion.Discrete.Core
     ///
     /// Owns a <see cref="LocomotionGraph"/> and forwards
     /// evaluation requests to it. Concrete archetype controllers
-    /// can override <see cref="CreateGraph"/> to customise
-    /// how the state machine is built without changing the Agent.
+    /// provide a graph instance via the base constructor.
     /// </summary>
     internal abstract class LocomotionCoordinatorBase : ILocomotionCoordinator
     {
@@ -27,9 +26,9 @@ namespace Game.Locomotion.Discrete.Core
 
         private SLocomotionDiscrete currentState;
 
-        protected LocomotionCoordinatorBase()
+        protected LocomotionCoordinatorBase(LocomotionGraph graph)
         {
-            Graph = CreateGraph();
+            Graph = graph;
 
             // Safe default state before the first evaluation.
             currentState = new SLocomotionDiscrete(
@@ -48,20 +47,21 @@ namespace Game.Locomotion.Discrete.Core
         public ELocomotionCondition CurrentCondition => currentState.Condition;
 
         public SLocomotionDiscrete Evaluate(
-            in SLocomotionAgent agent,
+            in SLocomotionMotor motor,
             LocomotionProfile profile,
             in SLocomotionInputActions actions,
             float deltaTime)
         {
-            SLocomotionDiscrete discrete = EvaluateDiscreteState(in agent, in actions, deltaTime);
+            currentState = Graph.Evaluate(in motor, in actions);
+            SLocomotionDiscrete discrete = currentState;
 
             bool isTurning = false;
 
             if (profile != null)
             {
                 isTurning = EvaluateIsTurningInPlace(
-                    agent.TurnAngle,
-                    agent.LocomotionHeading,
+                    motor.TurnAngle,
+                    motor.LocomotionHeading,
                     profile,
                     deltaTime,
                     in discrete);
@@ -84,29 +84,7 @@ namespace Game.Locomotion.Discrete.Core
             float deltaTime,
             in SLocomotionDiscrete discreteState)
         {
-            UpdateTurnState(
-                locomotionHeading,
-                profile,
-                deltaTime,
-                turnAngle,
-                ref lastDesiredYaw,
-                ref lookStabilityTimer,
-                ref isTurningState);
-
-            return isTurningState &&
-                (discreteState.Phase == ELocomotionPhase.GroundedIdle ||
-                 discreteState.Phase == ELocomotionPhase.GroundedMoving);
-        }
-
-        private static void UpdateTurnState(
-            Vector3 locomotionHeading,
-            LocomotionProfile profile,
-            float deltaTime,
-            float currentTurnAngle,
-            ref float lastDesiredYaw,
-            ref float lookStabilityTimer,
-            ref bool isTurningState)
-        {
+            
             Vector3 desiredForward = locomotionHeading;
             desiredForward.y = 0f;
             if (desiredForward.sqrMagnitude <= Mathf.Epsilon)
@@ -133,7 +111,7 @@ namespace Game.Locomotion.Discrete.Core
             }
             lastDesiredYaw = desiredYaw;
 
-            float absAngle = Mathf.Abs(currentTurnAngle);
+            float absAngle = Mathf.Abs(turnAngle);
 
             bool wantsTurn = absAngle >= turnEnterAngle;
             bool lookIsStable = lookStabilityTimer >= lookStabilityDuration;
@@ -147,24 +125,14 @@ namespace Game.Locomotion.Discrete.Core
             {
                 isTurningState = false;
             }
+
+            return isTurningState &&
+                (discreteState.Phase == ELocomotionPhase.GroundedIdle ||
+                 discreteState.Phase == ELocomotionPhase.GroundedMoving);
         }
 
-        /// <summary>
-        /// Evaluates and caches the discrete locomotion state using
-        /// the underlying <see cref="LocomotionGraph"/>.
-        /// Can be overridden by derived controllers to customize
-        /// how discrete states are produced.
-        /// </summary>
-        protected virtual SLocomotionDiscrete EvaluateDiscreteState(in SLocomotionAgent agent, in SLocomotionInputActions actions, float deltaTime)
-        {
-            currentState = Graph.Evaluate(in agent, in actions);
-            return currentState;
-        }
-
-        /// <summary>
-        /// Factory hook used by derived controllers to construct
-        /// a specific state machine configuration for this archetype.
-        /// </summary>
-        protected abstract LocomotionGraph CreateGraph();
+        // Note: Previously we had overridable hooks (CreateGraph/EvaluateDiscreteState).
+        // With the current single-archetype setup those were redundant, so the
+        // graph is injected via the constructor and evaluation is inlined.
     }
 }

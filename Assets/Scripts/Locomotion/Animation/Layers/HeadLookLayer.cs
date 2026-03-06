@@ -56,7 +56,7 @@ namespace Game.Locomotion.Animation.Layers
                 return;
             }
 
-            Vector2 look = context.Snapshot.Agent.LookDirection;
+            Vector2 look = context.Snapshot.Motor.LookDirection;
 
             // Prefer locomotion capability limits so animation mapping
             // stays consistent with simulation. Fall back to small

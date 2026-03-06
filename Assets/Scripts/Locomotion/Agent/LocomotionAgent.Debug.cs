@@ -43,12 +43,13 @@ namespace Game.Locomotion.Agent
             DrawDebugArrowLine(origin, origin + forward * debugForwardLength, headingColor, "Heading");
 
             // Visualize ground detection ray and contact point.
+            float groundRayLength = locomotionProfile != null ? locomotionProfile.groundRayLength : 0f;
             DrawDebugArrowLine(origin, origin + Vector3.down * groundRayLength, Color.magenta, "Ground Ray");
 
-            if (snapshot.Agent.GroundContact.IsGrounded)
+            if (snapshot.Motor.GroundContact.IsGrounded)
             {
-                Vector3 contactPoint = snapshot.Agent.GroundContact.ContactPoint;
-                Vector3 contactNormal = snapshot.Agent.GroundContact.ContactNormal.normalized;
+                Vector3 contactPoint = snapshot.Motor.GroundContact.ContactPoint;
+                Vector3 contactNormal = snapshot.Motor.GroundContact.ContactNormal.normalized;
                 DrawDebugArrowLine(contactPoint, contactPoint + contactNormal * 0.3f, Color.white, "Ground Normal");
             }
         }

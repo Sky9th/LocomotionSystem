@@ -21,6 +21,14 @@ namespace Game.Locomotion.Config
         [Header("Ground Settings")]
         [Range(0f, 89f)] public float maxGroundSlopeAngle = 55f;
 
+        [Header("Ground Probe")]
+        [Min(0f)] public float groundRayLength = 0.1f;
+        public LayerMask groundLayerMask = ~0;
+
+        [Header("Ground Lock")]
+        public bool enableGroundLocking = true;
+        public float groundLockVerticalOffset = 0f;
+
         [Header("Head Look Limits")]
         [Range(0f, 90f)] public float maxHeadYawDegrees = 75f;
         [Range(0f, 90f)] public float maxHeadPitchDegrees = 75f;

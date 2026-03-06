@@ -85,21 +85,21 @@ public class LocomotionDebugOverlay : UIOverlayBase
 
         builder.AppendLine();
         builder.AppendLine("[Agent]");
-        AppendKeyValue("Position", snapshot.Agent.Position.ToString("F2"));
-        AppendKeyValue("DesiredLocalVelocity", snapshot.Agent.DesiredLocalVelocity.ToString("F2"));
-        AppendKeyValue("DesiredPlanarVelocity", snapshot.Agent.DesiredPlanarVelocity.ToString("F2"));
-        AppendKeyValue("ActualLocalVelocity", snapshot.Agent.ActualLocalVelocity.ToString("F2"));
-        AppendKeyValue("ActualPlanarVelocity", snapshot.Agent.ActualPlanarVelocity.ToString("F2"));
-        AppendKeyValue("ActualSpeed", snapshot.Agent.ActualSpeed.ToString("F2"));
-        AppendKeyValue("LocomotionHeading", snapshot.Agent.LocomotionHeading.ToString("F2"));
-        AppendKeyValue("BodyForward", snapshot.Agent.BodyForward.ToString("F2"));
-        AppendKeyValue("LookDirection", snapshot.Agent.LookDirection.ToString("F2"));
-        AppendKeyValue("TurnAngle", snapshot.Agent.TurnAngle.ToString("F1"));
-        AppendKeyValue("IsLeftFootOnFront", FormatBool(snapshot.Agent.IsLeftFootOnFront));
+        AppendKeyValue("Position", snapshot.Motor.Position.ToString("F2"));
+        AppendKeyValue("DesiredLocalVelocity", snapshot.Motor.DesiredLocalVelocity.ToString("F2"));
+        AppendKeyValue("DesiredPlanarVelocity", snapshot.Motor.DesiredPlanarVelocity.ToString("F2"));
+        AppendKeyValue("ActualLocalVelocity", snapshot.Motor.ActualLocalVelocity.ToString("F2"));
+        AppendKeyValue("ActualPlanarVelocity", snapshot.Motor.ActualPlanarVelocity.ToString("F2"));
+        AppendKeyValue("ActualSpeed", snapshot.Motor.ActualSpeed.ToString("F2"));
+        AppendKeyValue("LocomotionHeading", snapshot.Motor.LocomotionHeading.ToString("F2"));
+        AppendKeyValue("BodyForward", snapshot.Motor.BodyForward.ToString("F2"));
+        AppendKeyValue("LookDirection", snapshot.Motor.LookDirection.ToString("F2"));
+        AppendKeyValue("TurnAngle", snapshot.Motor.TurnAngle.ToString("F1"));
+        AppendKeyValue("IsLeftFootOnFront", FormatBool(snapshot.Motor.IsLeftFootOnFront));
 
-        AppendKeyValue("Ground.IsGrounded", FormatBool(snapshot.Agent.GroundContact.IsGrounded));
-        AppendKeyValue("Ground.ContactPoint", snapshot.Agent.GroundContact.ContactPoint.ToString("F2"));
-        AppendKeyValue("Ground.ContactNormal", snapshot.Agent.GroundContact.ContactNormal.ToString("F2"));
+        AppendKeyValue("Ground.IsGrounded", FormatBool(snapshot.Motor.GroundContact.IsGrounded));
+        AppendKeyValue("Ground.ContactPoint", snapshot.Motor.GroundContact.ContactPoint.ToString("F2"));
+        AppendKeyValue("Ground.ContactNormal", snapshot.Motor.GroundContact.ContactNormal.ToString("F2"));
 
         builder.AppendLine();
         builder.AppendLine("[Animation]");

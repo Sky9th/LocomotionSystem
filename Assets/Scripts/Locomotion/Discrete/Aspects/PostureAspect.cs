@@ -16,7 +16,7 @@ namespace Game.Locomotion.Discrete.Aspects
             Current = defaultState;
         }
 
-        public void Update(in SLocomotionAgent agent, in SLocomotionInputActions actions)
+        public void Update(in SLocomotionMotor agent, in SLocomotionInputActions actions)
         {
             // Start from previous frame's posture so that lack of input
             // keeps the current posture.

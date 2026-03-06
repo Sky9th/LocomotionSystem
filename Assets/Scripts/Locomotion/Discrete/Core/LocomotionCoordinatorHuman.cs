@@ -9,11 +9,10 @@ namespace Game.Locomotion.Discrete.Coordination
     /// but acts as a clear extension point for future human-specific
     /// posture or condition logic.
     /// </summary>
-    internal sealed class HumanLocomotionCoordinator : LocomotionCoordinatorBase
+    internal sealed class LocomotionCoordinatorHuman : LocomotionCoordinatorBase
     {
-        protected override LocomotionGraph CreateGraph()
+        internal LocomotionCoordinatorHuman() : base(new LocomotionGraph())
         {
-            return new LocomotionGraph();
         }
     }
 }

@@ -50,7 +50,7 @@ namespace Game.Locomotion.Animation.Layers.Base
 
                 if (conditionContext.Check<CanExitTurnInPlaceByAngleCondition>())
                 {
-                    Logger.Log($"Allowing early exit from turn since turn angle {Owner.Snapshot.Agent.TurnAngle} is below exit threshold.");
+                    Logger.Log($"Allowing early exit from turn since turn angle {Owner.Snapshot.Motor.TurnAngle} is below exit threshold.");
                     return true;
                 }
 
@@ -60,7 +60,7 @@ namespace Game.Locomotion.Animation.Layers.Base
 
         public override void OnEnterState()
         {
-            selectedAlias = ResolveTurnAlias(Owner.AliasProfile, Owner.Snapshot.Agent.TurnAngle);
+            selectedAlias = ResolveTurnAlias(Owner.AliasProfile, Owner.Snapshot.Motor.TurnAngle);
             Owner.Play(selectedAlias);
         }
 
@@ -71,6 +71,12 @@ namespace Game.Locomotion.Animation.Layers.Base
 
         public override void Tick()
         {
+
+            if (Owner.TrySetState(BaseStateKey.AirLoop))
+            {
+                return;
+            }
+            
             SLocomotion snapshot = Owner.Snapshot;
 
             TurnAngleStepRotationApplier.TryApply(
@@ -100,7 +106,7 @@ namespace Game.Locomotion.Animation.Layers.Base
             }
         }
 
-        private static StringAsset ResolveTurnAlias(AnimancerStringProfile alias, float angle)
+        private static StringAsset ResolveTurnAlias(LocomotionAliasProfile alias, float angle)
         {
             if (alias == null)
             {

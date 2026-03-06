@@ -43,6 +43,11 @@ namespace Game.Locomotion.Animation.Layers.Base
                 return;
             }
 
+            if (Owner.TrySetState(BaseStateKey.AirLoop))
+            {
+                return;
+            }
+
             StringAsset idleAlias = Owner.AliasProfile != null ? Owner.AliasProfile.idleL : null;
             Owner.PlayIfChanged(idleAlias);
         }

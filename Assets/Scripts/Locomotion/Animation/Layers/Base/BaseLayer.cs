@@ -15,7 +15,9 @@ namespace Game.Locomotion.Animation.Layers.Base
         TurnInPlace,
         TurnInMoving,
         IdleToMoving,
-        Moving
+        Moving,
+        AirLoop,
+        AirLand
     }
 
     /// <summary>
@@ -37,7 +39,8 @@ namespace Game.Locomotion.Animation.Layers.Base
         private readonly BaseIdleToMovingState idleToMovingState;
         private readonly BaseMovingState moveState;
         private readonly BaseTurnInMovingState turnInMovingState;
-
+        private readonly BaseAirLoopState airLoopState;
+        private readonly BaseAirLandState airLandState;
         private StringAsset lastPlayedAlias;
         private AnimancerState currentState;
         private SLocomotionAnimationLayerSnapshot lastSnapshot;
@@ -49,12 +52,12 @@ namespace Game.Locomotion.Animation.Layers.Base
 
         public SLocomotionAnimationLayerSnapshot AnimationSnapshot => lastSnapshot;
 
-        internal AnimancerStringProfile AliasProfile => context.Alias;
+        internal LocomotionAliasProfile AliasProfile => context.Alias;
         internal SLocomotion Snapshot => context.Snapshot;
         internal LocomotionProfile LocomotionProfile => context.LocomotionProfile;
         internal LocomotionAnimationProfile AnimationProfile => context.Profile;
         internal float DeltaTime => context.DeltaTime;
-        internal ILocomotionModelRotator ModelRotator => context.ModelRotator;
+        internal ILocomotionModelTransformer ModelRotator => context.ModelRotator;
 
         public BaseLayer(AnimancerLayer layer)
         {
@@ -65,6 +68,8 @@ namespace Game.Locomotion.Animation.Layers.Base
             moveState = new BaseMovingState(this);
             idleToMovingState = new BaseIdleToMovingState(this);
             turnInMovingState = new BaseTurnInMovingState(this);
+            airLoopState = new BaseAirLoopState(this);
+            airLandState = new BaseAirLandState(this);
 
             stateMachine = new StateMachine<BaseStateKey, LocomotionLayerFsmState<BaseLayer>>();
             stateMachine.Dictionary[BaseStateKey.Idle] = idleState;
@@ -72,6 +77,8 @@ namespace Game.Locomotion.Animation.Layers.Base
             stateMachine.Dictionary[BaseStateKey.IdleToMoving] = idleToMovingState;
             stateMachine.Dictionary[BaseStateKey.Moving] = moveState;
             stateMachine.Dictionary[BaseStateKey.TurnInMoving] = turnInMovingState;
+            stateMachine.Dictionary[BaseStateKey.AirLoop] = airLoopState;
+            stateMachine.Dictionary[BaseStateKey.AirLand] = airLandState;
         }
 
         public void Update(in LocomotionAnimationContext context)

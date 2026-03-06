@@ -85,7 +85,11 @@ MonoBehaviour:
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  enableGroundLocking: 1
+  groundLockVerticalOffset: 0
+  groundLockMaxStepPerFrame: 0
   isPlayer: 1
+  animancerPresenter: {fileID: 0}
   autoSubscribeInput: 1
   drawDebugGizmos: 1
   debugForwardLength: 2
@@ -107,7 +111,7 @@ MonoBehaviour:
     type: 2}
   animationProfile: {fileID: 11400000, guid: 264e4d30fb02cbb4b93aefb446d194ea, type: 2}
   headMask: {fileID: 31900000, guid: 91a8c24c60bd42e4d9b539ff6d537342, type: 2}
-  footstepMask: {fileID: 31900000, guid: f651dcec4c7c1f24896fff756d009351, type: 2}
+  footMask: {fileID: 0}
 --- !u!1001 &7698765721122133654
 PrefabInstance:
   m_ObjectHideFlags: 0
