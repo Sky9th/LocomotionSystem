@@ -21,6 +21,9 @@ namespace Game.Locomotion.Animation.Config
         [Min(0f)] public float defaultInPlaceTurnSpeed = 100f;
         [Min(0f)] public float defaultMovingTurnSpeed = 360f;
 
+        [Header("Airborne")]
+        public float landDistanceThreshold = 0.5f;
+
         /// <summary>
         /// Returns the configured turn speed in degrees per second
         /// for the given posture and gait. If no matching mode is

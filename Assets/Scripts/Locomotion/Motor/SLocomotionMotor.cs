@@ -50,8 +50,6 @@ public struct SLocomotionMotor
     public float TurnAngle { get; }
     public bool IsLeftFootOnFront { get; }
 
-    public bool IsGrounded => GroundContact.IsGrounded;
-
     public static SLocomotionMotor Default => new SLocomotionMotor(
         Vector3.zero,
         Vector2.zero,

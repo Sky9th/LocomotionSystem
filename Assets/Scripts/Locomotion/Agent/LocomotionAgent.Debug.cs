@@ -46,12 +46,36 @@ namespace Game.Locomotion.Agent
             float groundRayLength = locomotionProfile != null ? locomotionProfile.groundRayLength : 0f;
             DrawDebugArrowLine(origin, origin + Vector3.down * groundRayLength, Color.magenta, "Ground Ray");
 
+            // Visualize standing box probe.
+            if (locomotionProfile != null)
+            {
+                Vector3 halfExtents = locomotionProfile.groundStandBoxHalfExtents;
+                float castDistance = locomotionProfile.groundStandBoxCastDistance;
+                if (halfExtents.sqrMagnitude > Mathf.Epsilon && castDistance > Mathf.Epsilon)
+                {
+                    Gizmos.color = Color.blue;
+                    Vector3 boxOrigin = origin + Vector3.up * 0.1f;
+                    Gizmos.DrawWireCube(boxOrigin, halfExtents * 2f);
+                    Gizmos.DrawWireCube(boxOrigin + Vector3.down * castDistance, halfExtents * 2f);
+                }
+            }
+
             if (snapshot.Motor.GroundContact.IsGrounded)
             {
                 Vector3 contactPoint = snapshot.Motor.GroundContact.ContactPoint;
                 Vector3 contactNormal = snapshot.Motor.GroundContact.ContactNormal.normalized;
                 DrawDebugArrowLine(contactPoint, contactPoint + contactNormal * 0.3f, Color.white, "Ground Normal");
             }
+
+#if UNITY_EDITOR
+            // Ground probe values.
+            {
+                var contact = snapshot.Motor.GroundContact;
+                string text = $"Dist:{contact.DistanceToGround:0.###}  Grounded:{contact.IsGrounded}  Walkable:{contact.IsWalkableSlope}";
+                Handles.color = Color.white;
+                Handles.Label(origin + Vector3.up * 0.15f, text);
+            }
+#endif
         }
 
         /// <summary>
