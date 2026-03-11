@@ -1,12 +1,11 @@
-using System;
 using UnityEngine;
-using Game.Locomotion.Computation;
 using Game.Locomotion.Discrete.Coordination;
-using Game.Locomotion.Discrete.Interface;
 using Game.Locomotion.Discrete.Structs;
 using Game.Locomotion.Input;
 using Game.Locomotion.Config;
 using Game.Locomotion.Animation.Presenters;
+using Game.Locomotion.Discrete.Interface;
+using Game.Locomotion.Motor;
 
 namespace Game.Locomotion.Agent
 {
@@ -19,10 +18,9 @@ namespace Game.Locomotion.Agent
     /// full locomotion computation or animation integration.
     /// </summary>
     [DisallowMultipleComponent]
-    public partial class LocomotionAgent : MonoBehaviour, ILocomotionModelTransformer
+    public partial class LocomotionAgent : MonoBehaviour
     {
         [Header("Rig References")]
-        [SerializeField] private Transform followAnchor;
         [SerializeField] private Transform modelRoot;
 
         [Header("Config")]
@@ -49,6 +47,7 @@ namespace Game.Locomotion.Agent
 
         // Motor module owning per-agent kinematic state and transform corrections.
         private LocomotionMotor motor;
+        internal LocomotionMotor Motor => motor;
 
         /// <summary>Whether this agent represents the primary player.</summary>
         public bool IsPlayer => isPlayer;
@@ -56,20 +55,11 @@ namespace Game.Locomotion.Agent
         /// <summary>Latest locomotion snapshot computed by this agent.</summary>
         public SLocomotion Snapshot => snapshot;
 
-        /// <summary>Anchor transform used as camera / desired heading reference.</summary>
-        public Transform FollowAnchor => followAnchor;
-
         /// <summary>Root transform of the visual character model.</summary>
         public Transform ModelRoot => modelRoot;
 
         /// <summary>Core locomotion capability profile used by this agent.</summary>
         public LocomotionProfile Profile => locomotionProfile;
-
-        public void RotateModelYaw(float deltaAngleDegrees)
-        {
-            Transform root = modelRoot != null ? modelRoot : transform;
-            root.rotation = Quaternion.AngleAxis(deltaAngleDegrees, Vector3.up) * root.rotation;
-        }
 
         private void Awake()
         {
@@ -77,14 +67,14 @@ namespace Game.Locomotion.Agent
 
             if (animancerPresenter == null)
             {
-                animancerPresenter = GetComponent<LocomotionAnimancerPresenter>();
+                animancerPresenter = GetComponentInChildren<LocomotionAnimancerPresenter>();
             }
         }
 
         private void OnEnable()
         {
-            EnsureLocomotionControllerCreated();
             EnsureMotorCreated();
+            EnsureLocomotionControllerCreated();
             EnsureInputModuleCreated();
             if (autoSubscribeInput)
             {
@@ -112,22 +102,6 @@ namespace Game.Locomotion.Agent
             motor?.Reset();
         }
 
-        private void EnsureInputModuleCreated()
-        {
-            if (inputModule == null)
-            {
-                inputModule = new LocomotionInputModule(this);
-            }
-        }
-
-        private void EnsureMotorCreated()
-        {
-            if (motor == null)
-            {
-                motor = new LocomotionMotor();
-            }
-        }
-
         /// <summary>
         /// Per-frame simulation entry. In the initial version this only keeps
         /// the snapshot in sync with the Transform, without real kinematics.
@@ -138,31 +112,35 @@ namespace Game.Locomotion.Agent
             SLocomotionInputActions inputActions = SLocomotionInputActions.None;
             inputModule?.ReadActions(out inputActions);
 
+            bool hasCameraControl = false;
+            SCameraContext cameraControl = default;
+            inputModule?.ReadCameraControl(out hasCameraControl, out cameraControl);
+
+            Vector3 viewForward = hasCameraControl
+                ? (cameraControl.AnchorRotation * Vector3.forward)
+                : Vector3.zero;
+
             // Evaluate motor output (pose + kinematics + probes).
             SLocomotionMotor motorOutput = motor.Evaluate(
-                transform,
-                followAnchor,
-                modelRoot,
+                locomotionProfile,
+                in inputActions,
+                viewForward,
+                deltaTime);
+
+            SLocomotionDiscrete mode = locomotionCoordinator.Evaluate(
+                in motorOutput,
                 locomotionProfile,
                 in inputActions,
                 deltaTime);
 
-            if (locomotionCoordinator != null)
-            {
-                SLocomotionDiscrete mode = locomotionCoordinator.Evaluate(
-                    in motorOutput,
-                    locomotionProfile,
-                    in inputActions,
-                    deltaTime);
+            // Assemble once: core + discrete + (optional) animation output.
+            var baseSnapshot = new SLocomotion(motorOutput, mode);
+            SLocomotionAnimation animation = animancerPresenter != null
+                ? animancerPresenter.Evaluate(in baseSnapshot, deltaTime)
+                : default;
 
-                // Assemble once: core + discrete + (optional) animation output.
-                var baseSnapshot = new SLocomotion(motorOutput, mode);
-                SLocomotionAnimation animation = animancerPresenter != null
-                    ? animancerPresenter.Evaluate(in baseSnapshot, deltaTime)
-                    : default;
+            snapshot = new SLocomotion(motorOutput, mode, animation);
 
-                snapshot = new SLocomotion(motorOutput, mode, animation);
-            }
 
             PushSnapshot();
         }
@@ -173,6 +151,11 @@ namespace Game.Locomotion.Agent
             if (context != null)
             {
                 context.UpdateSnapshot(snapshot);
+
+                if (context.TryResolveService(out EventDispatcher dispatcher))
+                {
+                    dispatcher.Publish(snapshot);
+                }
             }
         }
 
@@ -185,6 +168,22 @@ namespace Game.Locomotion.Agent
             }
         }
 
+        private void EnsureInputModuleCreated()
+        {
+            if (inputModule == null)
+            {
+                inputModule = new LocomotionInputModule(this);
+            }
+        }
+
+        private void EnsureMotorCreated()
+        {
+            if (motor == null)
+            {
+                motor = new LocomotionMotor(transform, modelRoot, locomotionProfile);
+            }
+        }
+
         private void ResolveRigReferencesIfNeeded()
         {
             if (modelRoot == null)
@@ -193,15 +192,6 @@ namespace Game.Locomotion.Agent
                 if (model != null)
                 {
                     modelRoot = model;
-                }
-            }
-
-            if (followAnchor == null)
-            {
-                Transform follow = transform.Find(CommonConstants.FollowAnchorChildName);
-                if (follow != null)
-                {
-                    followAnchor = follow;
                 }
             }
         }

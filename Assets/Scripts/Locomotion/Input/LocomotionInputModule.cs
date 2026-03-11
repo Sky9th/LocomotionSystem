@@ -41,6 +41,9 @@ namespace Game.Locomotion.Input
         private SJumpIAction jumpAction;
         private SStandIAction standAction;
 
+        private SCameraContext cameraControl;
+        private bool hasCameraControl;
+
         internal LocomotionInputModule(Game.Locomotion.Agent.LocomotionAgent owner)
         {
             this.owner = owner;
@@ -58,6 +61,8 @@ namespace Game.Locomotion.Input
             RegisterAction<SSprintIAction>();
             RegisterAction<SJumpIAction>();
 
+            RegisterAction<SCameraContext>();
+
         }
 
         internal void Reset()
@@ -72,6 +77,9 @@ namespace Game.Locomotion.Input
             sprintAction = SSprintIAction.None;
             jumpAction = SJumpIAction.None;
             standAction = SStandIAction.None;
+
+            cameraControl = default;
+            hasCameraControl = false;
         }
 
         internal void ReadActions(out SLocomotionInputActions actions)
@@ -87,6 +95,12 @@ namespace Game.Locomotion.Input
                 sprintAction,
                 jumpAction,
                 standAction);
+        }
+
+        internal void ReadCameraControl(out bool hasControl, out SCameraContext control)
+        {
+            hasControl = hasCameraControl;
+            control = cameraControl;
         }
 
         internal void Subscribe()
@@ -196,6 +210,16 @@ namespace Game.Locomotion.Input
             if (typeof(TPayload) == typeof(SStandIAction))
             {
                 standAction = (SStandIAction)(object)payload;
+                return;
+            }
+
+            if (typeof(TPayload) == typeof(SCameraContext))
+            {
+                if (owner != null && owner.IsPlayer)
+                {
+                    cameraControl = (SCameraContext)(object)payload;
+                    hasCameraControl = true;
+                }
                 return;
             }
         }

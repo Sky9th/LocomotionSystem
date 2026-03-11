@@ -1,5 +1,9 @@
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 namespace Game.Locomotion.Computation
 {
     /// <summary>
@@ -12,7 +16,6 @@ namespace Game.Locomotion.Computation
     /// </summary>
     internal static class LocomotionGroundDetection
     {
-        private const float CastOriginVerticalOffset = 0.1f;
 
         private static bool TrySampleDistanceByRay(
             Vector3 origin,
@@ -25,12 +28,7 @@ namespace Game.Locomotion.Computation
             distanceToGround = float.PositiveInfinity;
             point = Vector3.zero;
             normal = Vector3.up;
-            if (rayLength <= 0f)
-            {
-                return false;
-            }
 
-            origin.y += CastOriginVerticalOffset;
             Ray ray = new Ray(origin, Vector3.down);
             if (!Physics.Raycast(ray, out RaycastHit hitInfo, rayLength, layerMask, QueryTriggerInteraction.Ignore))
             {
@@ -39,7 +37,7 @@ namespace Game.Locomotion.Computation
 
             point = hitInfo.point;
             normal = hitInfo.normal;
-            distanceToGround = Mathf.Max(0f, hitInfo.distance - CastOriginVerticalOffset);
+            distanceToGround = Mathf.Max(0f, hitInfo.distance);
             return true;
         }
 
@@ -61,17 +59,7 @@ namespace Game.Locomotion.Computation
             point = Vector3.zero;
             normal = Vector3.up;
             isWalkableSlope = false;
-            if (castDistance <= 0f)
-            {
-                return false;
-            }
 
-            if (halfExtents.x <= 0f || halfExtents.y <= 0f || halfExtents.z <= 0f)
-            {
-                return false;
-            }
-
-            origin.y += CastOriginVerticalOffset;
             if (!Physics.BoxCast(
                     origin,
                     halfExtents,
@@ -97,55 +85,57 @@ namespace Game.Locomotion.Computation
         /// - a box cast (standing-on-ground state, more stable)
         /// </summary>
         internal static SGroundContact EvaluateGroundContact(
-            Vector3 origin,
-            float distanceRayLength,
+            Vector3 distanceReferenceOrigin,
+            Vector3 rayOrigin,
+            float rayLength,
+            Vector3 standProbeOrigin,
             Vector3 standBoxHalfExtents,
-            float standBoxCastDistance,
+            float standProbeDistance,
             int layerMask,
             float maxSlopeAngleDegrees)
         {
+            SGroundContact groundContact;
+
             // 1) Standing test first (stable contact). If standing, evaluate slope.
-            bool isStanding = TrySampleStandingByBox(
-                origin,
+            bool isGrounded = TrySampleStandingByBox(
+                standProbeOrigin,
                 standBoxHalfExtents,
-                standBoxCastDistance,
+                standProbeDistance,
                 layerMask,
                 maxSlopeAngleDegrees,
                 out Vector3 boxPoint,
                 out Vector3 boxNormal,
                 out bool boxWalkable);
 
-            if (isStanding)
+            if (TrySampleDistanceByRay(
+                rayOrigin,
+                rayLength,
+                layerMask,
+                out float rayDistance,
+                out Vector3 rayPoint,
+                out Vector3 rayNormal))
             {
-                // When standing, distance-to-ground should be treated as 0.
-                // (If callers want a more detailed separation value later, we can
-                // add an optional "standing separation" output separately.)
-                return new SGroundContact(
-                    isGrounded: true,
-                    distanceToGround: 0f,
+                rayDistance = Mathf.Max(0f, distanceReferenceOrigin.y - rayPoint.y);
+
+                if (isGrounded)
+                {
+                    rayPoint.y = boxPoint.y;
+                    rayNormal = boxNormal;
+                }
+
+                groundContact = new SGroundContact(
+                    isGrounded: isGrounded,
+                    distanceToGround: rayDistance,
                     isWalkableSlope: boxWalkable,
-                    point: boxPoint,
-                    normal: boxNormal);
+                    point: rayPoint,
+                    normal: rayNormal);
             }
-
-            // 2) If not standing, measure distance to ground via ray.
-                if (!TrySampleDistanceByRay(
-                    origin,
-                    distanceRayLength,
-                    layerMask,
-                    out float rayDistance,
-                    out Vector3 rayPoint,
-                    out Vector3 rayNormal))
+            else
             {
-                return SGroundContact.None;
+                groundContact = SGroundContact.None;
             }
 
-            return new SGroundContact(
-                isGrounded: false,
-                distanceToGround: rayDistance,
-                isWalkableSlope: false,
-                point: rayPoint,
-                normal: rayNormal);
+            return groundContact;
         }
 
         /// <summary>

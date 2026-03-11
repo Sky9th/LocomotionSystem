@@ -19,3 +19,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 28722d7d4ec13e7468058cd87b52f4c9, type: 2}
   defaultInPlaceTurnSpeed: 189
   defaultMovingTurnSpeed: 360
+  landDistanceThreshold: 5

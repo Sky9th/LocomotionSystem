@@ -5,6 +5,7 @@ using Game.Locomotion.Animation.Layers.Base.Conditions;
 using Game.Locomotion.Animation.Layers.Core;
 using Game.Locomotion.Animation.Conditions;
 using Game.Locomotion.Discrete.Aspects;
+using Game.Locomotion.Config;
 using UnityEngine;
 
 namespace Game.Locomotion.Animation.Layers.Base
@@ -49,6 +50,12 @@ namespace Game.Locomotion.Animation.Layers.Base
         {
             SLocomotion snapshot = Owner.Snapshot;
 
+            if (!IsForwardOnlyIntent(snapshot.Motor.DesiredLocalVelocity, Owner.context.LocomotionProfile))
+            {
+                Owner.ForceSetState(BaseStateKey.Moving);
+                return;
+            }
+
             if (Owner.TrySetState(BaseStateKey.Moving))
             {
                 return;
@@ -81,6 +88,15 @@ namespace Game.Locomotion.Animation.Layers.Base
 
                 Owner.ForceSetState(BaseStateKey.Idle);
             }
+        }
+
+        private static bool IsForwardOnlyIntent(Vector2 desiredLocalVelocity, LocomotionProfile locomotionProfile)
+        {
+            float moveSpeed = locomotionProfile != null ? locomotionProfile.moveSpeed : 0f;
+            float forwardThreshold = moveSpeed > 0f ? moveSpeed * 0.9f : 0.01f;
+            float lateralThreshold = moveSpeed > 0f ? moveSpeed * 0.1f : 0.01f;
+
+            return desiredLocalVelocity.y >= forwardThreshold && Mathf.Abs(desiredLocalVelocity.x) <= lateralThreshold;
         }
 
         private StringAsset ResolveTurnAlias(LocomotionAliasProfile alias, float angle)

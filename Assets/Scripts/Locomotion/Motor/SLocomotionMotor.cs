@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Game.Locomotion.Computation;
 
 /// <summary>
 /// Aggregated output produced by <see cref="Game.Locomotion.Agent.LocomotionAgent"/>.
@@ -20,6 +21,7 @@ public struct SLocomotionMotor
         Vector3 bodyForward,
         Vector2 lookDirection,
         SGroundContact groundContact,
+        SForwardObstacleDetection forwardObstacleDetection,
         float turnAngle,
         bool isLeftFootOnFront)
     {
@@ -33,6 +35,7 @@ public struct SLocomotionMotor
         BodyForward = bodyForward.sqrMagnitude > Mathf.Epsilon ? bodyForward.normalized : Vector3.forward;
         LookDirection = lookDirection;
         GroundContact = groundContact;
+        ForwardObstacleDetection = forwardObstacleDetection;
         TurnAngle = turnAngle;
         IsLeftFootOnFront = isLeftFootOnFront;
     }
@@ -47,6 +50,7 @@ public struct SLocomotionMotor
     public Vector3 BodyForward { get; }
     public Vector2 LookDirection { get; }
     public SGroundContact GroundContact { get; }
+    public SForwardObstacleDetection ForwardObstacleDetection { get; }
     public float TurnAngle { get; }
     public bool IsLeftFootOnFront { get; }
 
@@ -61,6 +65,7 @@ public struct SLocomotionMotor
         Vector3.forward,
         Vector2.zero,
         SGroundContact.None,
+        SForwardObstacleDetection.None,
         0f,
         true);
 }
