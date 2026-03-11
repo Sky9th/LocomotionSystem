@@ -207,8 +207,11 @@ MonoBehaviour:
   defaultVirtualCamera: {fileID: 4999858131537071451}
   autoLocateBrain: 1
   autoLocateDefaultVirtualCamera: 1
-  followTarget: {fileID: 0}
-  lookAtTarget: {fileID: 0}
+  localPlayerAnchor: {fileID: 0}
+  followPlanarOnly: 1
+  verticalOffset: 1.7
+  gameProfile: {fileID: 11400000, guid: 165700f895aa32f47a390326acbdd5a3, type: 2}
+  maxPitchDegrees: 75
 --- !u!1 &2918370783056918767
 GameObject:
   m_ObjectHideFlags: 0
@@ -835,11 +838,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6043bde05a7fc4cba197d06915c1e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damping: {x: 1, y: 1, z: 1}
+  Damping: {x: 1, y: 0.2, z: 1}
   ShoulderOffset: {x: 0, y: 0, z: 0}
   VerticalArmLength: 0.4
   CameraSide: 1
-  CameraDistance: 3.95
+  CameraDistance: 3.67
   CameraCollisionFilter:
     serializedVersion: 2
     m_Bits: 0

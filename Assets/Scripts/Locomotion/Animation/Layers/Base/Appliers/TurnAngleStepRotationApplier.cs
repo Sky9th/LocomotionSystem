@@ -1,5 +1,5 @@
-using Game.Locomotion.Agent;
 using Game.Locomotion.Animation.Config;
+using Game.Locomotion.Motor;
 using UnityEngine;
 
 namespace Game.Locomotion.Animation.Layers.Base
@@ -8,11 +8,11 @@ namespace Game.Locomotion.Animation.Layers.Base
     {
         public static bool TryApply(
             LocomotionAnimationProfile animationProfile,
-            ILocomotionModelTransformer modelRotator,
+            LocomotionMotor motor,
             in SLocomotion snapshot,
             float deltaTime)
         {
-            if (animationProfile == null || modelRotator == null)
+            if (animationProfile == null || motor == null)
             {
                 return false;
             }
@@ -33,7 +33,7 @@ namespace Game.Locomotion.Animation.Layers.Base
             float maxStep = turnSpeed * deltaTime;
             float step = Mathf.Min(maxStep, absAngle);
             float deltaAngle = Mathf.Sign(snapshot.Motor.TurnAngle) * step;
-            modelRotator.RotateModelYaw(deltaAngle);
+            motor.ApplyDeltaRotation(Quaternion.AngleAxis(deltaAngle, Vector3.up));
             return true;
         }
     }

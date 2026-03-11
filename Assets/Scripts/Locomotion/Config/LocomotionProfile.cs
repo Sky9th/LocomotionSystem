@@ -18,20 +18,22 @@ namespace Game.Locomotion.Config
         [Min(0f)] public float moveSpeed = 4f;
         [Min(0f)] public float acceleration = 5f;
 
-        [Header("Ground Settings")]
+        [Header("Ground")]
         [Range(0f, 89f)] public float maxGroundSlopeAngle = 55f;
-
-        [Header("Ground Probe")]
-        [Min(0f)] public float groundRayLength = 0.1f;
         public LayerMask groundLayerMask = ~0;
+        public Vector3 groundStandBoxHalfExtents = new Vector3(0.15f, 0.03f, 0.15f);
+        [Min(0f)] public float groundRayLength = 10f;
+        [Min(0f)] public float groundReacquireDebounceDuration = 0f;
 
-        [Header("Ground Stand Probe")]
-        public Vector3 groundStandBoxHalfExtents = new Vector3(0.2f, 0.05f, 0.2f);
-        [Min(0f)] public float groundStandBoxCastDistance = 0.1f;
-
-        [Header("Ground Lock")]
         public bool enableGroundLocking = true;
         public float groundLockVerticalOffset = 0f;
+        public float groundDetectVerticalOffset = 0.01f;
+
+        [Header("Obstacle")]
+        public LayerMask obstacleLayerMask = ~0;
+        [Min(0f)] public float obstacleProbeVerticalOffset = 0.15f;
+        [Min(0f)] public float obstacleProbeDistance = 0.75f;
+        [Min(0f)] public float obstacleMaxClimbHeight = 2f;
 
         [Header("Head Look Limits")]
         [Range(0f, 90f)] public float maxHeadYawDegrees = 75f;

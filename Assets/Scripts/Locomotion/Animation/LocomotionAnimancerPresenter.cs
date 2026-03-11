@@ -6,6 +6,7 @@ using Game.Locomotion.Animation.Core;
 using Game.Locomotion.Animation.Layers;
 using Game.Locomotion.Animation.Layers.Base;
 using System.Collections.Generic;
+using Game.Locomotion.Motor;
 
 namespace Game.Locomotion.Animation.Presenters
 {
@@ -24,6 +25,11 @@ namespace Game.Locomotion.Animation.Presenters
         [SerializeField] private NamedAnimancerComponent animancer;
         [SerializeField] private LocomotionAliasProfile animancerStringProfile;
         [SerializeField] private LocomotionAnimationProfile animationProfile;
+
+        [Header("Root Motion")]
+        [SerializeField] private Animator animator;
+        [SerializeField] private bool forwardRootMotion = true;
+        [SerializeField] private bool applyRootMotionPlanarPositionOnly = true;
 
         [Header("Head Look")]
         [SerializeField] private AvatarMask headMask;
@@ -50,19 +56,25 @@ namespace Game.Locomotion.Animation.Presenters
             }
         }
 
-        private void Awake()
+        private void Start()
         {
             if (agent == null)
             {
-                agent = GetComponent<LocomotionAgent>();
+                agent = GetComponentInParent<LocomotionAgent>();
             }
 
             if (animancer == null)
             {
-                animancer = GetComponentInChildren<NamedAnimancerComponent>();
+                animancer = GetComponent<NamedAnimancerComponent>();
             }
 
-            if (animancer != null && animancerStringProfile != null && animationProfile != null && agent != null && agent.Profile != null)
+            if (animator == null)
+            {
+                animator = GetComponent<Animator>();
+            }
+
+            LocomotionMotor motor = agent != null ? agent.Motor : null;
+            if (animancer != null && animancerStringProfile != null && animationProfile != null && agent != null && agent.Profile != null && motor != null)
             {
                 // Ensure the graph has enough layers for: base (0), head (1), footsteps (2).
                 animancer.Layers.SetMinCount(3);
@@ -79,11 +91,36 @@ namespace Game.Locomotion.Animation.Presenters
                     animancerStringProfile,
                     agent.Profile,
                     animationProfile,
-                    agent,
+                    motor,
                     new BaseLayer(baseLayer),
                     new HeadLookLayer(headLayer),
                     new FootLayer(footLayer));
             }
+        }
+
+        private void OnAnimatorMove()
+        {
+            if (!forwardRootMotion)
+            {
+                return;
+            }
+
+            if (animator == null || agent == null)
+            {
+                return;
+            }
+
+            LocomotionMotor motor = agent.Motor;
+            if (motor == null)
+            {
+                return;
+            }
+
+            Vector3 deltaPosition = animator.deltaPosition;
+            Quaternion deltaRotation = animator.deltaRotation;
+
+            motor.ApplyDeltaPosition(deltaPosition);
+            motor.ApplyDeltaRotation(deltaRotation);
         }
 
         /// <summary>

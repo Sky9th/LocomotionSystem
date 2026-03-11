@@ -1,10 +1,6 @@
 using UnityEngine;
 using Game.Locomotion.Computation;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 namespace Game.Locomotion.Agent
 {
     /// <summary>
@@ -18,6 +14,7 @@ namespace Game.Locomotion.Agent
         [SerializeField] private bool drawDebugGizmos = true;
         [SerializeField, Min(0.1f)] private float debugForwardLength = 2f;
 
+#if UNITY_EDITOR
         private void OnDrawGizmosSelected()
         {
             if (!drawDebugGizmos)
@@ -25,8 +22,7 @@ namespace Game.Locomotion.Agent
                 return;
             }
 
-            Vector3 origin = modelRoot != null ? modelRoot.position : transform.position;
-            Vector3 forward = LocomotionHeading.Evaluate(followAnchor, transform);
+            Vector3 forward = snapshot.Motor.LocomotionHeading;
 
             // Draw locomotion heading in a color based on the high-level state.
             Color headingColor = Color.cyan;
@@ -40,89 +36,85 @@ namespace Game.Locomotion.Agent
                     break;
             }
 
-            DrawDebugArrowLine(origin, origin + forward * debugForwardLength, headingColor, "Heading");
+            GizmoDebugUtility.DrawArrowLine(transform.position, transform.position + forward * debugForwardLength, headingColor, "Heading");
 
-            // Visualize ground detection ray and contact point.
-            float groundRayLength = locomotionProfile != null ? locomotionProfile.groundRayLength : 0f;
-            DrawDebugArrowLine(origin, origin + Vector3.down * groundRayLength, Color.magenta, "Ground Ray");
+            /// Ground Debug
+            float detectVerticalOffset = Profile.groundDetectVerticalOffset;
+            Vector3 rayOrigin = transform.position + Vector3.up * detectVerticalOffset;
+            Vector3 standProbeHalfExtents = Profile.groundStandBoxHalfExtents;
+            Vector3 standProbeOrigin = rayOrigin;
+            float boxCastDistance = standProbeHalfExtents.y + detectVerticalOffset;
+            Vector3 boxCastEnd = standProbeOrigin + Vector3.down * boxCastDistance;
+            Vector3 boxCastVolumeCenter = (standProbeOrigin + boxCastEnd) * 0.5f;
+            Vector3 boxCastVolumeSize = new Vector3(
+                standProbeHalfExtents.x * 2f,
+                standProbeHalfExtents.y * 2f + boxCastDistance,
+                standProbeHalfExtents.z * 2f);
 
-            // Visualize standing box probe.
-            if (locomotionProfile != null)
+            GizmoDebugUtility.DrawSphere(rayOrigin, 0.01f, Color.red, "Ground Ray Origin");
+            GizmoDebugUtility.DrawArrowLine(rayOrigin, rayOrigin + Profile.groundRayLength * Vector3.down, Color.blue, "Ground Detect Ray");
+            GizmoDebugUtility.DrawSphere(
+                standProbeOrigin,
+                0.015f,
+                Color.cyan,
+                "Ground Probe Start");
+            GizmoDebugUtility.DrawWireBox(
+                boxCastVolumeCenter,
+                boxCastVolumeSize,
+                Color.yellow,
+                "Ground Probe Sweep");
+
+            if (snapshot.Motor.GroundContact.ContactPoint != Vector3.zero)
             {
-                Vector3 halfExtents = locomotionProfile.groundStandBoxHalfExtents;
-                float castDistance = locomotionProfile.groundStandBoxCastDistance;
-                if (halfExtents.sqrMagnitude > Mathf.Epsilon && castDistance > Mathf.Epsilon)
+                GizmoDebugUtility.DrawSphere(snapshot.Motor.GroundContact.ContactPoint, 0.05f, Color.green, "Ground Contact Point");
+            }
+            /// Ground Debug end
+
+            /// Obstacle Debug
+            Vector3 obstacleForward = snapshot.Motor.LocomotionHeading;
+            if (obstacleForward.sqrMagnitude <= Mathf.Epsilon)
+            {
+                obstacleForward = transform.forward;
+            }
+
+            obstacleForward.y = 0f;
+            if (obstacleForward.sqrMagnitude > Mathf.Epsilon)
+            {
+                obstacleForward.Normalize();
+            }
+
+            Vector3 obstacleProbeOrigin = transform.position + Vector3.up * Mathf.Max(0f, Profile.obstacleProbeVerticalOffset);
+            Vector3 obstacleProbeEnd = obstacleProbeOrigin + obstacleForward * Profile.obstacleProbeDistance;
+
+            GizmoDebugUtility.DrawSphere(obstacleProbeOrigin, 0.02f, new Color(1f, 0.5f, 0f), "Obstacle Probe Origin");
+            GizmoDebugUtility.DrawArrowLine(obstacleProbeOrigin, obstacleProbeEnd, new Color(1f, 0.5f, 0f), "Obstacle Detect Ray");
+
+            if (snapshot.Motor.ForwardObstacleDetection.HasHit)
+            {
+                GizmoDebugUtility.DrawSphere(snapshot.Motor.ForwardObstacleDetection.Point, 0.05f, Color.magenta, "Obstacle Hit Point");
+                GizmoDebugUtility.DrawArrowLine(
+                    snapshot.Motor.ForwardObstacleDetection.Point,
+                    snapshot.Motor.ForwardObstacleDetection.Point + snapshot.Motor.ForwardObstacleDetection.Normal * 0.3f,
+                    Color.red,
+                    "Obstacle Hit Normal");
+
+                if (snapshot.Motor.ForwardObstacleDetection.HasTopSurface)
                 {
-                    Gizmos.color = Color.blue;
-                    Vector3 boxOrigin = origin + Vector3.up * 0.1f;
-                    Gizmos.DrawWireCube(boxOrigin, halfExtents * 2f);
-                    Gizmos.DrawWireCube(boxOrigin + Vector3.down * castDistance, halfExtents * 2f);
+                    Vector3 topProbeOrigin = snapshot.Motor.ForwardObstacleDetection.Point + obstacleForward * 0.05f;
+                    topProbeOrigin.y = transform.position.y + Profile.obstacleMaxClimbHeight + 0.05f;
+
+                    GizmoDebugUtility.DrawArrowLine(
+                        topProbeOrigin,
+                        snapshot.Motor.ForwardObstacleDetection.TopPoint,
+                        Color.white,
+                        "Obstacle Height Probe");
+                    GizmoDebugUtility.DrawSphere(snapshot.Motor.ForwardObstacleDetection.TopPoint, 0.05f, Color.green, "Obstacle Top Point");
                 }
             }
-
-            if (snapshot.Motor.GroundContact.IsGrounded)
-            {
-                Vector3 contactPoint = snapshot.Motor.GroundContact.ContactPoint;
-                Vector3 contactNormal = snapshot.Motor.GroundContact.ContactNormal.normalized;
-                DrawDebugArrowLine(contactPoint, contactPoint + contactNormal * 0.3f, Color.white, "Ground Normal");
-            }
-
-#if UNITY_EDITOR
-            // Ground probe values.
-            {
-                var contact = snapshot.Motor.GroundContact;
-                string text = $"Dist:{contact.DistanceToGround:0.###}  Grounded:{contact.IsGrounded}  Walkable:{contact.IsWalkableSlope}";
-                Handles.color = Color.white;
-                Handles.Label(origin + Vector3.up * 0.15f, text);
-            }
-#endif
+            /// Obstacle Debug end
         }
 
-        /// <summary>
-        /// Draws a gizmo line with an arrow head at the end and an optional label.
-        /// Used by all locomotion debug drawing so that direction and naming
-        /// are consistent across different probes.
-        /// </summary>
-        private void DrawDebugArrowLine(Vector3 from, Vector3 to, Color color, string label = null)
-        {
-            if (from == to)
-            {
-                return;
-            }
-
-            Gizmos.color = color;
-            Gizmos.DrawLine(from, to);
-
-            Vector3 direction = to - from;
-            float length = direction.magnitude;
-            if (length <= Mathf.Epsilon)
-            {
-                return;
-            }
-
-            Vector3 dirNormalized = direction / length;
-            const float arrowSize = 0.15f;
-            const float arrowAngle = 20f;
-
-            Quaternion rotLeft = Quaternion.AngleAxis(arrowAngle, Vector3.up);
-            Quaternion rotRight = Quaternion.AngleAxis(-arrowAngle, Vector3.up);
-
-            Vector3 leftDir = rotLeft * -dirNormalized;
-            Vector3 rightDir = rotRight * -dirNormalized;
-
-            Gizmos.DrawLine(to, to + leftDir * arrowSize);
-            Gizmos.DrawLine(to, to + rightDir * arrowSize);
-
-#if UNITY_EDITOR
-            if (!string.IsNullOrEmpty(label))
-            {
-                Vector3 midPoint = (from + to) * 0.5f;
-                Handles.color = Color.white;
-                Handles.Label(midPoint, label);
-            }
-#endif
-        }
-
-        // Note: Traversal/climb probing debug was removed.
     }
+#endif
+
 }

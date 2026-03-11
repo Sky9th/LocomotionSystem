@@ -97,7 +97,7 @@ namespace Game.Locomotion.Animation.Layers.Base
 
             TurnAngleStepRotationApplier.TryApply(
                 Owner.AnimationProfile,
-                Owner.ModelRotator,
+                Owner.Transformer,
                 in snapshot,
                 Owner.DeltaTime);
         }

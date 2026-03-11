@@ -113,6 +113,22 @@ public class LocomotionDebugOverlay : UIOverlayBase
         AppendKeyValue("Ground.ContactPoint", snapshot.Motor.GroundContact.ContactPoint.ToString("F2"));
         AppendKeyValue("Ground.ContactNormal", snapshot.Motor.GroundContact.ContactNormal.ToString("F2"));
 
+        AppendKeyValue("Obstacle.HasHit", FormatBool(snapshot.Motor.ForwardObstacleDetection.HasHit));
+        AppendKeyValue("Obstacle.HasTopSurface", FormatBool(snapshot.Motor.ForwardObstacleDetection.HasTopSurface));
+        AppendKeyValue("Obstacle.IsSlope", FormatBool(snapshot.Motor.ForwardObstacleDetection.IsSlope));
+        AppendKeyValue("Obstacle.IsObstacle", FormatBool(snapshot.Motor.ForwardObstacleDetection.IsObstacle));
+        AppendKeyValue("Obstacle.CanClimb", FormatBool(snapshot.Motor.ForwardObstacleDetection.CanClimb));
+        AppendKeyValue("Obstacle.CanVault", FormatBool(snapshot.Motor.ForwardObstacleDetection.CanVault));
+        AppendKeyValue("Obstacle.CanStepOver", FormatBool(snapshot.Motor.ForwardObstacleDetection.CanStepOver));
+        AppendKeyValue("Obstacle.Distance", FormatDistance(snapshot.Motor.ForwardObstacleDetection.Distance));
+        AppendKeyValue("Obstacle.Height", FormatDistance(snapshot.Motor.ForwardObstacleDetection.ObstacleHeight));
+        AppendKeyValue("Obstacle.SurfaceAngle", snapshot.Motor.ForwardObstacleDetection.SurfaceAngle.ToString("F1"));
+        AppendKeyValue("Obstacle.Point", snapshot.Motor.ForwardObstacleDetection.Point.ToString("F2"));
+        AppendKeyValue("Obstacle.Normal", snapshot.Motor.ForwardObstacleDetection.Normal.ToString("F2"));
+        AppendKeyValue("Obstacle.TopPoint", snapshot.Motor.ForwardObstacleDetection.TopPoint.ToString("F2"));
+        AppendKeyValue("Obstacle.TopNormal", snapshot.Motor.ForwardObstacleDetection.TopNormal.ToString("F2"));
+        AppendKeyValue("Obstacle.HitLayer", snapshot.Motor.ForwardObstacleDetection.HitLayer.ToString());
+
         builder.AppendLine();
         builder.AppendLine("[Animation]");
         AppendKeyValue("HasAny", FormatBool(snapshot.Animation.HasAny));

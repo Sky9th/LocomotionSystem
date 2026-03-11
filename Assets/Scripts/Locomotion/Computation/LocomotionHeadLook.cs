@@ -9,18 +9,28 @@ namespace Game.Locomotion.Computation
     /// </summary>
     internal static class LocomotionHeadLook
     {
+        internal static Vector3 EvaluatePlanarHeading(Vector3 viewForward, Transform rootTransform)
+        {
+            Vector3 forward = viewForward.sqrMagnitude > Mathf.Epsilon
+                ? viewForward
+                : (rootTransform != null ? rootTransform.forward : Vector3.forward);
+
+            forward.y = 0f;
+            if (forward.sqrMagnitude <= Mathf.Epsilon)
+            {
+                return Vector3.forward;
+            }
+
+            return forward.normalized;
+        }
+
         internal static Vector2 Evaluate(
-            Transform followAnchor,
+            Vector3 viewForward,
             Transform modelRoot,
             Transform rootTransform,
             LocomotionProfile locomotionProfile)
         {
-            if (followAnchor == null)
-            {
-                return Vector2.zero;
-            }
-
-            Vector3 rawForward = followAnchor.forward;
+            Vector3 rawForward = viewForward;
             if (rawForward.sqrMagnitude <= Mathf.Epsilon)
             {
                 return Vector2.zero;

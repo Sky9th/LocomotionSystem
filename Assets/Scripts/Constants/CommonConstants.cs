@@ -6,5 +6,5 @@
 public static class CommonConstants
 {
     public const string ModelChildName = "Model";
-    public const string FollowAnchorChildName = "Anchor";
+    public const string FollowAnchorName = "Anchor";
 }

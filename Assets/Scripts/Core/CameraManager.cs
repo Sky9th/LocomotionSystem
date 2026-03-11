@@ -6,6 +6,7 @@ using UnityEngine;
 /// camera snapshot in sync with GameContext so other systems can query
 /// deterministic pose/FOV data without touching scene objects directly.
 /// </summary>
+[DefaultExecutionOrder(-400)]
 [DisallowMultipleComponent]
 public class CameraManager : BaseService
 {
@@ -15,13 +16,32 @@ public class CameraManager : BaseService
     [SerializeField] private bool autoLocateBrain = true;
     [SerializeField] private bool autoLocateDefaultVirtualCamera = true;
 
-    [Header("Runtime Targets")]
-    [SerializeField] private Transform followTarget;
-    [SerializeField] private Transform lookAtTarget;
+    [Header("Local Player Anchor")]
+    [SerializeField] private Transform localPlayerAnchor;
+    [SerializeField] private bool followPlanarOnly = true;
+    [SerializeField] private float verticalOffset;
+    [SerializeField] private GameProfile gameProfile;
+    [SerializeField, Range(0f, 90f)] private float maxPitchDegrees = 75f;
+
+    private Vector3 lastLocomotionPosition;
+    private bool hasLocomotionPosition;
+    private float anchorLockedY;
+    private bool hasLockedAnchorY;
+    private SLookIAction lastLookAction;
+    private Vector2 lastAppliedLookDelta;
 
     private SCameraContext lastSnapshot;
     private bool hasSnapshot;
-    public CinemachineVirtualCamera ActiveVirtualCamera => ResolveActiveVirtualCamera();
+
+    private void Update()
+    {
+        TickLocalPlayerAnchor();
+    }
+
+    private void LateUpdate()
+    {
+        PushCameraSnapshotToContext();
+    }
 
     protected override void OnSubscriptionsActivated()
     {
@@ -29,7 +49,8 @@ public class CameraManager : BaseService
 
         if (Dispatcher != null)
         {
-            Dispatcher.Subscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
+            Dispatcher.Subscribe<SLocomotion>(HandleLocomotionSnapshot);
+            Dispatcher.Subscribe<SLookIAction>(HandleLook);
         }
     }
 
@@ -37,15 +58,49 @@ public class CameraManager : BaseService
     {
         if (Dispatcher != null)
         {
-            Dispatcher.Unsubscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
+            Dispatcher.Unsubscribe<SLocomotion>(HandleLocomotionSnapshot);
+            Dispatcher.Unsubscribe<SLookIAction>(HandleLook);
         }
     }
 
     protected override bool OnRegister(GameContext context)
     {
+        ValidateConfiguration();
+
+        if (!EnsureCinemachineBrain())
+        {
+            return false;
+        }
+
+        EnsureDefaultVirtualCamera();
+        InitializeDefaultRig();
+
+        context.RegisterService(this);
+        return true;
+    }
+    
+    protected override void OnServicesReady()
+    {
+        PushCameraSnapshotToContext();
+        localPlayerAnchor = GameObject.Find(CommonConstants.FollowAnchorName)?.transform;
+
+        defaultVirtualCamera.Follow = localPlayerAnchor;
+        defaultVirtualCamera.LookAt = localPlayerAnchor;
+    }
+
+    private void ValidateConfiguration()
+    {
+        if (gameProfile == null)
+        {
+            Debug.LogError("CameraManager is missing a GameProfile reference. Please assign one in the inspector.", this);
+        }
+    }
+
+    private bool EnsureCinemachineBrain()
+    {
         if (autoLocateBrain && cameraBrain == null)
         {
-            cameraBrain = FindFirstBrain();
+            cameraBrain = FindCinemachineBrain();
         }
 
         if (cameraBrain == null)
@@ -54,31 +109,30 @@ public class CameraManager : BaseService
             return false;
         }
 
+        return true;
+    }
+
+    private void EnsureDefaultVirtualCamera()
+    {
         if (autoLocateDefaultVirtualCamera && defaultVirtualCamera == null)
         {
             defaultVirtualCamera = GetComponentInChildren<CinemachineVirtualCamera>(true);
         }
+    }
 
+    private void InitializeDefaultRig()
+    {
         if (defaultVirtualCamera != null)
         {
-            BindTargets(defaultVirtualCamera);
+            ApplySerializedTargets(defaultVirtualCamera);
             defaultVirtualCamera.gameObject.SetActive(true);
-        }
-        else
-        {
-            Debug.LogWarning("CameraManager does not have a default virtual camera assigned.", this);
+            return;
         }
 
-        context.RegisterService(this);
-        return true;
-    }
-    
-    protected override void OnServicesReady()
-    {
-        PushSnapshot();
+        Debug.LogWarning("CameraManager does not have a default virtual camera assigned.", this);
     }
 
-    private CinemachineBrain FindFirstBrain()
+    private CinemachineBrain FindCinemachineBrain()
     {
         var mainCamera = Camera.main;
         if (mainCamera != null && mainCamera.TryGetComponent(out CinemachineBrain brainOnMain))
@@ -89,13 +143,7 @@ public class CameraManager : BaseService
         return FindObjectOfType<CinemachineBrain>();
     }
 
-    private void LateUpdate()
-    {
-        PushSnapshot();
-    }
-
-
-    private void PushSnapshot()
+    private void PushCameraSnapshotToContext()
     {
         if (cameraBrain == null)
         {
@@ -108,60 +156,31 @@ public class CameraManager : BaseService
             return;
         }
 
+        Vector3 anchorPosition = localPlayerAnchor != null ? localPlayerAnchor.position : outputCamera.transform.position;
+        Quaternion anchorRotation = localPlayerAnchor != null ? localPlayerAnchor.rotation : outputCamera.transform.rotation;
+
         lastSnapshot = new SCameraContext(
             outputCamera.transform.position,
             outputCamera.transform.rotation,
-            outputCamera.fieldOfView,
-            outputCamera.nearClipPlane,
-            outputCamera.farClipPlane,
-            outputCamera.orthographic,
-            outputCamera.orthographicSize);
+            anchorPosition,
+            anchorRotation,
+            lastAppliedLookDelta);
 
         hasSnapshot = true;
         GameContext.UpdateSnapshot(lastSnapshot);
     }
 
-    private void BindTargets(CinemachineVirtualCamera virtualCamera)
+    private void ApplySerializedTargets(CinemachineVirtualCamera virtualCamera)
     {
         if (virtualCamera == null)
         {
             return;
         }
 
-        if (followTarget != null)
+        if (localPlayerAnchor != null)
         {
-            virtualCamera.Follow = followTarget;
-        }
-
-        if (lookAtTarget != null)
-        {
-            virtualCamera.LookAt = lookAtTarget;
-        }
-    }
-
-    public void SetFollowTarget(Transform target, bool retargetActiveCamera = true)
-    {
-        followTarget = target;
-        if (retargetActiveCamera)
-        {
-            var activeCamera = ResolveActiveVirtualCamera();
-            if (activeCamera != null)
-            {
-                activeCamera.Follow = followTarget;
-            }
-        }
-    }
-
-    public void SetLookAtTarget(Transform target, bool retargetActiveCamera = true)
-    {
-        lookAtTarget = target;
-        if (retargetActiveCamera)
-        {
-            var activeCamera = ResolveActiveVirtualCamera();
-            if (activeCamera != null)
-            {
-                activeCamera.LookAt = lookAtTarget;
-            }
+            virtualCamera.Follow = localPlayerAnchor;
+            virtualCamera.LookAt = localPlayerAnchor;
         }
     }
 
@@ -171,38 +190,114 @@ public class CameraManager : BaseService
         return hasSnapshot;
     }
 
-    private void HandlePlayerSpawned(SPlayerSpawnedEvent payload, MetaStruct meta)
+    private void HandleLocomotionSnapshot(SLocomotion payload, MetaStruct meta)
     {
-        if (payload == null || !payload.IsLocalPlayer)
+        lastLocomotionPosition = payload.Motor.Position;
+        hasLocomotionPosition = true;
+
+        if (!hasLockedAnchorY && localPlayerAnchor != null)
         {
-            return;
+            anchorLockedY = localPlayerAnchor.position.y;
+            hasLockedAnchorY = true;
         }
-
-        Transform root = payload.Root;
-        if (root == null)
-        {
-            return;
-        }
-
-		var anchor = root.Find(CommonConstants.FollowAnchorChildName);
-		if (anchor == null)
-		{
-			SetFollowTarget(root, retargetActiveCamera: true);
-			SetLookAtTarget(root, retargetActiveCamera: true);
-			return;
-		}
-
-        SetFollowTarget(anchor, retargetActiveCamera: true);
-        SetLookAtTarget(anchor, retargetActiveCamera: true);
     }
 
-    private CinemachineVirtualCamera ResolveActiveVirtualCamera()
+    private void HandleLook(SLookIAction payload, MetaStruct meta)
     {
-        if (cameraBrain != null && cameraBrain.ActiveVirtualCamera is CinemachineVirtualCamera typed)
+        lastLookAction = payload;
+    }
+
+    private void TickLocalPlayerAnchor()
+    {
+        if (localPlayerAnchor == null)
         {
-            return typed;
+            return;
         }
 
-        return defaultVirtualCamera;
+        if (!hasLocomotionPosition)
+        {
+            return;
+        }
+
+        Vector3 targetPosition = lastLocomotionPosition;
+        targetPosition.y = lastLocomotionPosition.y + verticalOffset;
+        localPlayerAnchor.position = targetPosition;
+
+        ApplyLookRotationToAnchor(localPlayerAnchor, lastLookAction, out Vector2 appliedLookDelta);
+        lastAppliedLookDelta = appliedLookDelta;
+
+        if (Dispatcher != null)
+        {
+            var outputCamera = cameraBrain != null ? cameraBrain.OutputCamera : null;
+            if (outputCamera != null)
+            {
+                Dispatcher.Publish(new SCameraContext(
+                    outputCamera.transform.position,
+                    outputCamera.transform.rotation,
+                    localPlayerAnchor.position,
+                    localPlayerAnchor.rotation,
+                    appliedLookDelta));
+            }
+            else
+            {
+                Dispatcher.Publish(new SCameraContext(
+                    localPlayerAnchor.position,
+                    localPlayerAnchor.rotation,
+                    localPlayerAnchor.position,
+                    localPlayerAnchor.rotation,
+                    appliedLookDelta));
+            }
+        }
+
+        lastLookAction = SLookIAction.None;
+    }
+
+    private void ApplyLookRotationToAnchor(Transform anchor, SLookIAction lookAction, out Vector2 appliedLookDelta)
+    {
+        appliedLookDelta = Vector2.zero;
+
+        if (anchor == null)
+        {
+            return;
+        }
+
+        if (!lookAction.HasDelta)
+        {
+            return;
+        }
+
+        float rotationSpeed = gameProfile != null ? gameProfile.cameraLookRotationSpeed : 1f;
+        Vector2 lookDelta = lookAction.Delta * rotationSpeed;
+        appliedLookDelta = lookDelta;
+
+        Vector3 euler = anchor.rotation.eulerAngles;
+        euler.z = 0f;
+
+        float pitch = NormalizeAngle180(euler.x);
+        pitch += lookDelta.y;
+        if (maxPitchDegrees > 0f)
+        {
+            pitch = Mathf.Clamp(pitch, -maxPitchDegrees, maxPitchDegrees);
+        }
+
+        euler.x = pitch;
+        euler.y += lookDelta.x;
+
+        anchor.rotation = Quaternion.Euler(euler);
+    }
+
+    private static float NormalizeAngle180(float angle)
+    {
+        angle %= 360f;
+        if (angle > 180f)
+        {
+            angle -= 360f;
+        }
+        else if (angle < -180f)
+        {
+            angle += 360f;
+        }
+
+        return angle;
     }
 }

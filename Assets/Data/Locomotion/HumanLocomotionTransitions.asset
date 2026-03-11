@@ -428,6 +428,18 @@ MonoBehaviour:
     - _From: 17
       _To: 7
       _Fade: 0.2
+    - _From: 18
+      _To: 18
+      _Fade: 0.01
+    - _From: 19
+      _To: 18
+      _Fade: 0.01
+    - _From: 18
+      _To: 19
+      _Fade: 0.01
+    - _From: 19
+      _To: 19
+      _Fade: 0.01
     _Aliases:
     - _Name: {fileID: 11400000, guid: e080e4a005dcb7c47b71b7217c1e44b2, type: 2}
       _Index: 0

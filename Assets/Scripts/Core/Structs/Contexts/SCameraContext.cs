@@ -3,37 +3,54 @@ using UnityEngine;
 
 /// <summary>
 /// Immutable snapshot describing the currently active gameplay camera.
-/// Shared via GameContext so any subsystem can reason about camera pose/FOV deterministically.
+/// Shared via GameContext so any subsystem can reason about camera and anchor poses deterministically.
 /// </summary>
 [Serializable]
 public struct SCameraContext
 {
     public SCameraContext(
-        Vector3 position,
-        Quaternion rotation,
-        float fieldOfView,
-        float nearClipPlane,
-        float farClipPlane,
-        bool isOrthographic,
-        float orthographicSize)
+        Vector3 cameraPosition,
+        Quaternion cameraRotation,
+        Vector3 anchorPosition,
+        Quaternion anchorRotation,
+        Vector2 lookDelta)
     {
-        Position = position;
-        Rotation = rotation;
-        FieldOfView = fieldOfView;
-        NearClipPlane = nearClipPlane;
-        FarClipPlane = farClipPlane;
-        IsOrthographic = isOrthographic;
-        OrthographicSize = orthographicSize;
+        CameraPosition = cameraPosition;
+        CameraRotation = cameraRotation;
+        AnchorPosition = anchorPosition;
+        AnchorRotation = anchorRotation;
+        LookDelta = lookDelta;
     }
 
-    public Vector3 Position { get; }
-    public Quaternion Rotation { get; }
-    public float FieldOfView { get; }
-    public float NearClipPlane { get; }
-    public float FarClipPlane { get; }
-    public bool IsOrthographic { get; }
-    public float OrthographicSize { get; }
+    public SCameraContext(
+        Vector3 cameraPosition,
+        Quaternion cameraRotation,
+        Vector2 lookDelta)
+    {
+        CameraPosition = cameraPosition;
+        CameraRotation = cameraRotation;
+        AnchorPosition = cameraPosition;
+        AnchorRotation = cameraRotation;
+        LookDelta = lookDelta;
+    }
 
-    public Vector3 Forward => Rotation * Vector3.forward;
-    public Vector3 Up => Rotation * Vector3.up;
+    /// <summary>
+    /// World-space pose of the currently active rendered camera.
+    /// </summary>
+    public Vector3 CameraPosition { get; }
+    public Quaternion CameraRotation { get; }
+
+    /// <summary>
+    /// Authoritative gameplay anchor pose (used for heading/look).
+    /// </summary>
+    public Vector3 AnchorPosition { get; }
+    public Quaternion AnchorRotation { get; }
+
+    /// <summary>
+    /// Applied look delta for this frame (X = yaw, Y = pitch), after CameraManager tuning.
+    /// </summary>
+    public Vector2 LookDelta { get; }
+
+    public float YawDelta => LookDelta.x;
+    public float PitchDelta => LookDelta.y;
 }

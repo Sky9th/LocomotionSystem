@@ -3,8 +3,8 @@ using Animancer.FSM;
 using Game.Locomotion.Animation.Config;
 using Game.Locomotion.Animation.Core;
 using Game.Locomotion.Animation.Layers.Core;
-using Game.Locomotion.Agent;
 using Game.Locomotion.Config;
+using Game.Locomotion.Motor;
 using System.Collections.Generic;
 
 namespace Game.Locomotion.Animation.Layers.Base
@@ -57,7 +57,7 @@ namespace Game.Locomotion.Animation.Layers.Base
         internal LocomotionProfile LocomotionProfile => context.LocomotionProfile;
         internal LocomotionAnimationProfile AnimationProfile => context.Profile;
         internal float DeltaTime => context.DeltaTime;
-        internal ILocomotionModelTransformer ModelRotator => context.ModelRotator;
+        internal LocomotionMotor Transformer => context.Transformer;
 
         public BaseLayer(AnimancerLayer layer)
         {
