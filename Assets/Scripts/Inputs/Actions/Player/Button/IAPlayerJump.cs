@@ -18,8 +18,10 @@ public class IAPlayerJump : InputActionHandler
             return;
         }
 
-        bool rawInput = context.ReadValue<bool>();
-        SJumpIAction intent = new SJumpIAction(rawInput);
+        Logger.Log($"[IAPlayerJump] Executing with context: {context}");
+
+        bool rawInput = context.ReadValueAsButton();
+        SJumpIAction intent = SJumpIAction.CreateEvent(rawInput, context.phase);
         eventDispatcher.Publish(intent);
     }
 }

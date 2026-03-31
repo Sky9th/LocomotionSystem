@@ -116,7 +116,7 @@ MonoBehaviour:
         _Clip: {fileID: 1827226128182048838, guid: 488a426db90fd034f806c5b966b88344,
           type: 3}
         _NormalizedStartTime: NaN
---- !u!114 &-5632947427273203277
+--- !u!114 &-6288212282297558050
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -126,14 +126,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
-  m_Name: RunUp
+  m_Name: ClimbUp0_5meter
   m_EditorClassIdentifier: 
   _Transition:
-    rid: 1609343715948888064
+    rid: 2858904353494007810
   references:
     version: 2
     RefIds:
-    - rid: 1609343715948888064
+    - rid: 2858904353494007810
       type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
       data:
         _FadeDuration: 0.25
@@ -142,8 +142,7 @@ MonoBehaviour:
           _NormalizedTimes: []
           _Callbacks: []
           _Names: []
-        _Clip: {fileID: 8915460573673650367, guid: 17ca9ad77f68cb04aaae8c33fffaa703,
-          type: 3}
+        _Clip: {fileID: 7400000, guid: 1b726232bf890ce4db61d617c0669391, type: 3}
         _NormalizedStartTime: NaN
 --- !u!114 &-4676789515798329813
 MonoBehaviour:
@@ -172,10 +171,10 @@ MonoBehaviour:
           _Callbacks: []
           _Names: []
         _Animations:
-        - {fileID: 3068510199649783275, guid: 5fa3e15c53ed6eb4e86539a2809b481e, type: 3}
-        - {fileID: 683597571334327635, guid: 5fa3e15c53ed6eb4e86539a2809b481e, type: 3}
-        - {fileID: -1706797500725867822, guid: 5fa3e15c53ed6eb4e86539a2809b481e, type: 3}
-        - {fileID: -3677299682021922460, guid: 5fa3e15c53ed6eb4e86539a2809b481e, type: 3}
+        - {fileID: 9067093048684652814, guid: 52591e0977d1f804b90b742b3b9543e1, type: 3}
+        - {fileID: 1178167638873134046, guid: 52591e0977d1f804b90b742b3b9543e1, type: 3}
+        - {fileID: -8481709605947105597, guid: 52591e0977d1f804b90b742b3b9543e1, type: 3}
+        - {fileID: 1827226128182048838, guid: 52591e0977d1f804b90b742b3b9543e1, type: 3}
         _Speeds: []
         _SynchronizeChildren: 
         _Thresholds:
@@ -244,7 +243,7 @@ MonoBehaviour:
           _NormalizedTimes: []
           _Callbacks: []
           _Names: []
-        _Clip: {fileID: -5048631755769649023, guid: 80cc41bbbe90035428ebb96946abce7b,
+        _Clip: {fileID: 1827226128182048838, guid: a4b8f2deec6a99945987cfc59b1b4e54,
           type: 3}
         _NormalizedStartTime: NaN
 --- !u!114 &-1237515139493486604
@@ -273,7 +272,7 @@ MonoBehaviour:
           _NormalizedTimes: []
           _Callbacks: []
           _Names: []
-        _Clip: {fileID: -5048631755769649023, guid: 66e38452873e557408553dfd4c808a3f,
+        _Clip: {fileID: 1827226128182048838, guid: a4b8f2deec6a99945987cfc59b1b4e54,
           type: 3}
         _NormalizedStartTime: NaN
 --- !u!114 &-613736580003927102
@@ -302,7 +301,7 @@ MonoBehaviour:
           _NormalizedTimes: []
           _Callbacks: []
           _Names: []
-        _Clip: {fileID: 8036710987384964144, guid: 4d75bab848fd72a48bc0705fe9590b2b,
+        _Clip: {fileID: -7907625089131043427, guid: 166fc5b81017a9a408c183f1aa1c70d4,
           type: 3}
         _NormalizedStartTime: NaN
 --- !u!114 &-255853764271627376
@@ -332,15 +331,15 @@ MonoBehaviour:
           _Callbacks: []
           _Names: []
         _Animations:
-        - {fileID: 3207581474486471986, guid: 79ed9e8a16b41e0449bc51eb50abc2b7, type: 3}
-        - {fileID: -4861951862888191942, guid: dc85fd7b4f8e2974480ce86f8f3ba00f, type: 3}
-        - {fileID: -4754882571507298525, guid: 9c3bebb4740e41143abc27920a286c27, type: 3}
-        - {fileID: 2854982617563831404, guid: b91030e5ac0e6b7488f1551b05c85642, type: 3}
-        - {fileID: 6086865153644956319, guid: c599ea085320b1b42b0d2e8da156e65a, type: 3}
-        - {fileID: 1855215685996801345, guid: c55b99e1fb0d1d64bbc5544227d756d1, type: 3}
-        - {fileID: -7029796462581923624, guid: cc191a8921b99f444b122395cc86eb97, type: 3}
-        - {fileID: -207648942798453203, guid: 660a5f634633bd345ac21d66d523ca1b, type: 3}
-        - {fileID: -5048631755769649023, guid: 66e38452873e557408553dfd4c808a3f, type: 3}
+        - {fileID: 7780823655367860879, guid: 8b45cba6e566e0847aa0b9eee86847b9, type: 3}
+        - {fileID: 3294030700477107961, guid: 4d7f9f4e56a29a64f8593579968c0f26, type: 3}
+        - {fileID: 3194471228096159417, guid: 142f8279fe034964ca70c9142a5fbaf1, type: 3}
+        - {fileID: -1925020262594177485, guid: dcef476ac03697046bb93b54a8b41f93, type: 3}
+        - {fileID: -3667253587308142363, guid: daa2b7d465591a649912e31c8bed5f50, type: 3}
+        - {fileID: 7290230622943338602, guid: c6928073f3fa6424380dbb8b4fc4359f, type: 3}
+        - {fileID: -456978929971914800, guid: c48231f97edaf1044984637616d8f3b5, type: 3}
+        - {fileID: 3337434087754633193, guid: a2d73bf5694658d4a93f5796ffe5fb5b, type: 3}
+        - {fileID: 1827226128182048838, guid: a4b8f2deec6a99945987cfc59b1b4e54, type: 3}
         _Speeds: []
         _SynchronizeChildren: 
         _Thresholds:
@@ -385,12 +384,13 @@ MonoBehaviour:
     - {fileID: -6437673183224997264}
     - {fileID: -9197982290902480243}
     - {fileID: -6767794499353085001}
-    - {fileID: -5632947427273203277}
-    - {fileID: 1005784850119394493}
     - {fileID: 4176786600016712184}
     - {fileID: -8926689441363961759}
     - {fileID: 7593088155109255119}
     - {fileID: 7540415855591462860}
+    - {fileID: 5843972931482457015}
+    - {fileID: 2380433029849792603}
+    - {fileID: -6288212282297558050}
     _Modifiers:
     - _From: 3
       _To: 0
@@ -399,46 +399,46 @@ MonoBehaviour:
       _To: 0
       _Fade: 0.25
     - _From: 3
-      _To: 16
+      _To: 14
       _Fade: 0.1
     - _From: 4
-      _To: 16
+      _To: 14
       _Fade: 0.1
     - _From: 3
-      _To: 17
+      _To: 15
       _Fade: 0.1
     - _From: 4
-      _To: 17
+      _To: 15
       _Fade: 0.1
-    - _From: 16
+    - _From: 14
       _To: 5
       _Fade: 0.2
-    - _From: 16
+    - _From: 14
       _To: 6
       _Fade: 0.2
-    - _From: 16
+    - _From: 14
       _To: 7
       _Fade: 0.2
-    - _From: 17
+    - _From: 15
       _To: 5
       _Fade: 0.2
-    - _From: 17
+    - _From: 15
       _To: 6
       _Fade: 0.2
-    - _From: 17
+    - _From: 15
       _To: 7
       _Fade: 0.2
-    - _From: 18
-      _To: 18
+    - _From: 16
+      _To: 16
       _Fade: 0.01
-    - _From: 19
-      _To: 18
+    - _From: 17
+      _To: 16
       _Fade: 0.01
-    - _From: 18
-      _To: 19
+    - _From: 16
+      _To: 17
       _Fade: 0.01
-    - _From: 19
-      _To: 19
+    - _From: 17
+      _To: 17
       _Fade: 0.01
     _Aliases:
     - _Name: {fileID: 11400000, guid: e080e4a005dcb7c47b71b7217c1e44b2, type: 2}
@@ -469,14 +469,20 @@ MonoBehaviour:
       _Index: 12
     - _Name: {fileID: 11400000, guid: eb29250394b787b41898db0591441b0e, type: 2}
       _Index: 13
-    - _Name: {fileID: 11400000, guid: 3bcb863f5ecd5ad42adec675105a47e6, type: 2}
-      _Index: 14
-    - _Name: {fileID: 11400000, guid: 54803cced0f94b3488ab1bf55d4de0ea, type: 2}
-      _Index: 15
     - _Name: {fileID: 11400000, guid: ec0724b67e41e7c4b91d5aa7220fb6ab, type: 2}
-      _Index: 16
+      _Index: 14
     - _Name: {fileID: 11400000, guid: 75be3615ca1444c41a390819a8266640, type: 2}
+      _Index: 15
+    - _Name: {fileID: 11400000, guid: cd1fc2f7b1ba8124c9f81caabd265f4e, type: 2}
+      _Index: 16
+    - _Name: {fileID: 11400000, guid: 3dc11fcc4a19dc543ad1d25e674089c0, type: 2}
       _Index: 17
+    - _Name: {fileID: 11400000, guid: 815417521fd13164db793b16b3720cf0, type: 2}
+      _Index: 18
+    - _Name: {fileID: 11400000, guid: ac13d17d7aae7b34a961324f37505e59, type: 2}
+      _Index: 19
+    - _Name: {fileID: 11400000, guid: 76b8536ae91de044c95cdba975ad97fb, type: 2}
+      _Index: 20
     _AliasAllTransitions: 1
 --- !u!114 &71537367975672513
 MonoBehaviour:
@@ -507,35 +513,6 @@ MonoBehaviour:
         _Clip: {fileID: 1827226128182048838, guid: 340de400a4ea14b4b9d10f172bf44322,
           type: 3}
         _NormalizedStartTime: NaN
---- !u!114 &1005784850119394493
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
-  m_Name: RunDowm
-  m_EditorClassIdentifier: 
-  _Transition:
-    rid: 1609343715948888065
-  references:
-    version: 2
-    RefIds:
-    - rid: 1609343715948888065
-      type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
-      data:
-        _FadeDuration: 0.25
-        _Speed: 1
-        _Events:
-          _NormalizedTimes: []
-          _Callbacks: []
-          _Names: []
-        _Clip: {fileID: -6053552993754730322, guid: 104bce34aab364c48862839896bae4e6,
-          type: 3}
-        _NormalizedStartTime: NaN
 --- !u!114 &2308508199983405240
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -562,8 +539,36 @@ MonoBehaviour:
           _NormalizedTimes: []
           _Callbacks: []
           _Names: []
-        _Clip: {fileID: -2141252149630718149, guid: f5f88ba834ff2f845893f706ccfca542,
+        _Clip: {fileID: 1827226128182048838, guid: d2995d8a62be0ce42a4e73698b62b275,
           type: 3}
+        _NormalizedStartTime: NaN
+--- !u!114 &2380433029849792603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
+  m_Name: ClimbUp2meter
+  m_EditorClassIdentifier: 
+  _Transition:
+    rid: 2858904353494007809
+  references:
+    version: 2
+    RefIds:
+    - rid: 2858904353494007809
+      type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
+      data:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes: []
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: 7400000, guid: 07c819299c7db764f9ac3ec34769623d, type: 3}
         _NormalizedStartTime: NaN
 --- !u!114 &3923892537285329872
 MonoBehaviour:
@@ -622,6 +627,34 @@ MonoBehaviour:
           _Names: []
         _Clip: {fileID: 1827226128182048838, guid: 315547aa7538ddb4aa6dc186112aadac,
           type: 3}
+        _NormalizedStartTime: NaN
+--- !u!114 &5843972931482457015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
+  m_Name: ClimbUp1meter
+  m_EditorClassIdentifier: 
+  _Transition:
+    rid: 2858904353494007808
+  references:
+    version: 2
+    RefIds:
+    - rid: 2858904353494007808
+      type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
+      data:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes: []
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: 7400000, guid: cddb5e2ddb6160440b8847958ce2f629, type: 3}
         _NormalizedStartTime: NaN
 --- !u!114 &6329991998728917179
 MonoBehaviour:
@@ -722,14 +755,15 @@ MonoBehaviour:
           _Callbacks: []
           _Names: []
         _Animations:
-        - {fileID: -4009464807177172532, guid: d70eb4ab1865041448de7674821f7f7c, type: 3}
-        - {fileID: -6468842943480885880, guid: 22474272c34027542935c52a6b3076a9, type: 3}
-        - {fileID: 5444290685379613686, guid: 39af0c355008d9e4fb65c6f31833aa9d, type: 3}
-        - {fileID: -5844879506735206853, guid: cfdb7f8e095db4d498dc8c2a7f6d0cab, type: 3}
-        - {fileID: 2047457311872533986, guid: 09948e8810a0e0646b66917960899107, type: 3}
-        - {fileID: -4483162228018015910, guid: a590d1b5767d5d54386b34c9f7f7fe21, type: 3}
-        - {fileID: 2227134355851379932, guid: 6bfdfe863d273e34fb7091837f71c882, type: 3}
-        - {fileID: 1964287270537140565, guid: 326a77dad90a09949bf4d2533bf2ab1b, type: 3}
+        - {fileID: 268468600737035814, guid: 478462c18c5fec84da94ea6ea124f43e, type: 3}
+        - {fileID: -2279926737316218522, guid: 7c07d50a779cf1f43ba72c949a704141, type: 3}
+        - {fileID: 802457851498259386, guid: 0739f6ae9951f6145a18b25e6bcec33b, type: 3}
+        - {fileID: 4185526236446005653, guid: 32d971e33d87860449674254c1205cc9, type: 3}
+        - {fileID: 1827226128182048838, guid: a74912d595c2d934b82146ebbd5ea36f, type: 3}
+        - {fileID: -760711298244733929, guid: 7aa331ef78c2528458e6dcbef46ca152, type: 3}
+        - {fileID: -4027460238950740640, guid: d550111e2f74bcb4d95555f4a31fb227, type: 3}
+        - {fileID: 4185526236446005653, guid: 32d971e33d87860449674254c1205cc9, type: 3}
+        - {fileID: 1827226128182048838, guid: a4b8f2deec6a99945987cfc59b1b4e54, type: 3}
         _Speeds: []
         _SynchronizeChildren: 
         _Thresholds:
@@ -741,6 +775,7 @@ MonoBehaviour:
         - {x: -0.5, y: -0.5}
         - {x: -1, y: 0}
         - {x: -0.5, y: 0.5}
+        - {x: 0, y: 0}
         _DefaultParameter: {x: 0, y: 0}
         _Type: 0
         _ParameterNameX: {fileID: 0}
@@ -771,7 +806,7 @@ MonoBehaviour:
           _NormalizedTimes: []
           _Callbacks: []
           _Names: []
-        _Clip: {fileID: -5982596486038227052, guid: 8c25eb5d9e0f7994da357be57b189985,
+        _Clip: {fileID: -7153580490683583532, guid: d4342a09c276df546b23b157ac03e0f6,
           type: 3}
         _NormalizedStartTime: NaN
 --- !u!114 &9030389947592137924

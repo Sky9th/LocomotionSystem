@@ -14,8 +14,6 @@ public class LocomotionAliasProfile : ScriptableObject
     public StringAsset idleToRun180R;
     public StringAsset walkMixer;
     public StringAsset runMixer;
-    public StringAsset runUp;
-    public StringAsset runDown;
     public StringAsset sprint;
     public StringAsset walkForward;
     public StringAsset walkLeft;
@@ -36,6 +34,9 @@ public class LocomotionAliasProfile : ScriptableObject
     public StringAsset lookDown;
     public StringAsset lookLeft;
     public StringAsset lookRight;
+    public StringAsset ClimbUp1meter;
+    public StringAsset ClimbUp2meter;
+    public StringAsset ClimbUp0_5meter;
 
     [Header("Parameters")]
     public StringAsset HeadLookX;

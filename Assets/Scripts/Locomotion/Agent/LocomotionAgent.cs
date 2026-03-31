@@ -133,13 +133,15 @@ namespace Game.Locomotion.Agent
                 in inputActions,
                 deltaTime);
 
+            SLocomotionTraversal traversal = locomotionCoordinator.CurrentTraversal;
+
             // Assemble once: core + discrete + (optional) animation output.
-            var baseSnapshot = new SLocomotion(motorOutput, mode);
+            var baseSnapshot = new SLocomotion(motorOutput, mode, traversal);
             SLocomotionAnimation animation = animancerPresenter != null
                 ? animancerPresenter.Evaluate(in baseSnapshot, deltaTime)
                 : default;
 
-            snapshot = new SLocomotion(motorOutput, mode, animation);
+            snapshot = new SLocomotion(motorOutput, mode, traversal, animation);
 
 
             PushSnapshot();

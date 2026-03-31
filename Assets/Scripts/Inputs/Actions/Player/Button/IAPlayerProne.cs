@@ -18,8 +18,8 @@ public class IAPlayerProne : InputActionHandler
             return;
         }
 
-        bool rawInput = context.ReadValue<bool>();
-        SProneIAction intent = new SProneIAction(rawInput);
+        bool rawInput = context.ReadValueAsButton();
+        SProneIAction intent = SProneIAction.CreateEvent(rawInput, context.phase);
         eventDispatcher.Publish(intent);
     }
 }

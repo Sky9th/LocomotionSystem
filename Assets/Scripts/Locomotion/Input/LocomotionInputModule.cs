@@ -95,6 +95,14 @@ namespace Game.Locomotion.Input
                 sprintAction,
                 jumpAction,
                 standAction);
+
+            crouchAction = crouchAction.ClearFrameSignals();
+            proneAction = proneAction.ClearFrameSignals();
+            walkAction = walkAction.ClearFrameSignals();
+            runAction = runAction.ClearFrameSignals();
+            sprintAction = sprintAction.ClearFrameSignals();
+            jumpAction = jumpAction.ClearFrameSignals();
+            standAction = standAction.ClearFrameSignals();
         }
 
         internal void ReadCameraControl(out bool hasControl, out SCameraContext control)

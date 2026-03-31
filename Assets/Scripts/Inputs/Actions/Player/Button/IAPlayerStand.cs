@@ -4,12 +4,12 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// Translates the "Sprint" action map into a world-space locomotion intent. The
+/// Translates the "Move" action map into a world-space locomotion intent. The
 /// action never touches physics directly; it simply reports structured data back
 /// to the InputManager for further dispatch.
 /// </summary>
-[CreateAssetMenu(menuName = "Inputs/Player/IA Player Sprint")]
-public class IAPlayerSprint : InputActionHandler
+[CreateAssetMenu(menuName = "Inputs/Player/IA Player Stand")]
+public class IAPlayerStand : InputActionHandler
 {
 
     protected override void Execute(InputAction.CallbackContext context)
@@ -18,11 +18,8 @@ public class IAPlayerSprint : InputActionHandler
         {
             return;
         }
-
-        bool isPressed = context.ReadValueAsButton();
-
-        SSprintIAction intent = new SSprintIAction(isPressed, context.phase);
-
+        bool rawInput = context.ReadValueAsButton();
+        SStandIAction intent = SStandIAction.CreateEvent(rawInput, context.phase);
         eventDispatcher.Publish(intent);
     }
 }

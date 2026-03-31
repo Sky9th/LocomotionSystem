@@ -17,6 +17,9 @@ namespace Game.Locomotion.Discrete.Interface
         /// <summary>Latest evaluated discrete locomotion state.</summary>
         SLocomotionDiscrete CurrentState { get; }
 
+        /// <summary>Latest evaluated traversal snapshot.</summary>
+        SLocomotionTraversal CurrentTraversal { get; }
+
         /// <summary>Current high-level locomotion phase (Grounded / Airborne ...).</summary>
         ELocomotionPhase CurrentPhase { get; }
 

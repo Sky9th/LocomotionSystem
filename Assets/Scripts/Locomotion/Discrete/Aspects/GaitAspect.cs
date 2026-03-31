@@ -36,7 +36,7 @@ namespace Game.Locomotion.Discrete.Aspects
                         gait = EMovementGait.Run;
                     }
 
-                    if (actions.SprintAction.HasInput && actions.SprintAction.Phase == InputActionPhase.Performed)
+                    if (actions.SprintAction.Button.IsRequested)
                     {
                         gait = gait == EMovementGait.Sprint ? EMovementGait.Run : EMovementGait.Sprint;
                     }

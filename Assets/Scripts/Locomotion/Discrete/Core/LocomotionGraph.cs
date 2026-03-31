@@ -40,12 +40,7 @@ namespace Game.Locomotion.Discrete.Core
             gaitAspect.Reset(EMovementGait.Idle);
             postureAspect.Reset(EPosture.Standing);
 
-            currentState = new SLocomotionDiscrete(
-                ELocomotionPhase.GroundedIdle,
-                EPosture.Standing,
-                EMovementGait.Idle,
-                ELocomotionCondition.Normal,
-                isTurning: false);
+            currentState = SLocomotionDiscrete.Default;
         }
 
         /// <summary>
@@ -63,7 +58,12 @@ namespace Game.Locomotion.Discrete.Core
             EPosture posture = postureAspect.Current;
             ELocomotionCondition condition = ELocomotionCondition.Normal;
 
-            currentState = new SLocomotionDiscrete(phase, posture, gait, condition, isTurning: false);
+            currentState = new SLocomotionDiscrete(
+                phase,
+                posture,
+                gait,
+                condition,
+                isTurning: false);
             return currentState;
         }
     }
