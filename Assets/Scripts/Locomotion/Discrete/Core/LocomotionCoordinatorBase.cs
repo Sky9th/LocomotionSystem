@@ -4,6 +4,7 @@ using Game.Locomotion.Discrete.Interface;
 using Game.Locomotion.Discrete.Structs;
 using Game.Locomotion.Config;
 using Game.Locomotion.Input;
+using Game.Locomotion.Computation;
 
 namespace Game.Locomotion.Discrete.Core
 {
@@ -25,21 +26,19 @@ namespace Game.Locomotion.Discrete.Core
         private bool isTurningState;
 
         private SLocomotionDiscrete currentState;
+        private SLocomotionTraversal currentTraversal;
 
         protected LocomotionCoordinatorBase(LocomotionGraph graph)
         {
             Graph = graph;
 
             // Safe default state before the first evaluation.
-            currentState = new SLocomotionDiscrete(
-                ELocomotionPhase.GroundedIdle,
-                EPosture.Standing,
-                EMovementGait.Idle,
-                ELocomotionCondition.Normal,
-                isTurning: false);
+            currentState = SLocomotionDiscrete.Default;
+            currentTraversal = SLocomotionTraversal.None;
         }
 
         public SLocomotionDiscrete CurrentState => currentState;
+        public SLocomotionTraversal CurrentTraversal => currentTraversal;
 
         public ELocomotionPhase CurrentPhase => currentState.Phase;
         public EPosture CurrentPosture => currentState.Posture;
@@ -54,6 +53,7 @@ namespace Game.Locomotion.Discrete.Core
         {
             currentState = Graph.Evaluate(in motor, in actions);
             SLocomotionDiscrete discrete = currentState;
+            currentTraversal = EvaluateTraversal(in motor, in actions, in discrete);
 
             bool isTurning = false;
 
@@ -75,6 +75,39 @@ namespace Game.Locomotion.Discrete.Core
                 isTurning);
 
             return currentState;
+        }
+
+        private static SLocomotionTraversal EvaluateTraversal(
+            in SLocomotionMotor motor,
+            in SLocomotionInputActions actions,
+            in SLocomotionDiscrete discreteState)
+        {
+            if (discreteState.Phase != ELocomotionPhase.GroundedIdle
+                && discreteState.Phase != ELocomotionPhase.GroundedMoving)
+            {
+                return SLocomotionTraversal.None;
+            }
+
+            SButtonInputState jumpButton = actions.JumpAction.Button;
+            bool wantsTraversal = jumpButton.IsRequested || jumpButton.IsPressed;
+            if (!wantsTraversal)
+            {
+                return SLocomotionTraversal.None;
+            }
+
+            SForwardObstacleDetection obstacle = motor.ForwardObstacleDetection;
+            if (!obstacle.CanClimb)
+            {
+                return SLocomotionTraversal.None;
+            }
+
+            return new SLocomotionTraversal(
+                ELocomotionTraversalType.Climb,
+                ELocomotionTraversalStage.Requested,
+                obstacle.ObstacleHeight,
+                obstacle.Point,
+                obstacle.TopPoint,
+                obstacle.Direction);
         }
 
         private bool EvaluateIsTurningInPlace(

@@ -11,15 +11,26 @@ public struct SLocomotion
     public SLocomotion(
         SLocomotionMotor motor,
         SLocomotionDiscrete discreteState,
+        SLocomotionTraversal traversal,
         SLocomotionAnimation animation = default)
     {
         Motor = motor;
         DiscreteState = discreteState;
+        Traversal = traversal;
         Animation = animation;
+    }
+
+    public SLocomotion(
+        SLocomotionMotor motor,
+        SLocomotionDiscrete discreteState,
+        SLocomotionAnimation animation = default)
+        : this(motor, discreteState, SLocomotionTraversal.None, animation)
+    {
     }
 
     public SLocomotionMotor Motor { get; }
     public SLocomotionDiscrete DiscreteState { get; }
+    public SLocomotionTraversal Traversal { get; }
 
     /// <summary>
     /// Optional animation output produced by the locomotion animation module.
@@ -29,11 +40,7 @@ public struct SLocomotion
 
     public static SLocomotion Default => new SLocomotion(
         SLocomotionMotor.Default,
-        new SLocomotionDiscrete(
-            ELocomotionPhase.GroundedIdle,
-            EPosture.Standing,
-            EMovementGait.Idle,
-            ELocomotionCondition.Normal,
-            isTurning: false),
+        SLocomotionDiscrete.Default,
+        SLocomotionTraversal.None,
         SLocomotionAnimation.None);
 }

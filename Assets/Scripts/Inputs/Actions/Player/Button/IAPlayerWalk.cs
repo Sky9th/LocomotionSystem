@@ -8,8 +8,8 @@ using UnityEngine.InputSystem;
 /// action never touches physics directly; it simply reports structured data back
 /// to the InputManager for further dispatch.
 /// </summary>
-[CreateAssetMenu(menuName = "Inputs/Player/IA Player Stand")]
-public class IAPlayerStand : InputActionHandler
+[CreateAssetMenu(menuName = "Inputs/Player/IA Player Walk")]
+public class IAPlayerWalk : InputActionHandler
 {
 
     protected override void Execute(InputAction.CallbackContext context)
@@ -18,8 +18,11 @@ public class IAPlayerStand : InputActionHandler
         {
             return;
         }
-        bool rawInput = context.ReadValue<bool>();
-        SStandIAction intent = new SStandIAction(rawInput);
+
+        bool rawInput = context.ReadValueAsButton();
+
+        SWalkIAction intent = SWalkIAction.CreateEvent(rawInput, context.phase);
+
         eventDispatcher.Publish(intent);
     }
 }

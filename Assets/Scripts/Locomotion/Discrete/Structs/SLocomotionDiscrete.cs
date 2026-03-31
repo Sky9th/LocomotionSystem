@@ -28,5 +28,14 @@ namespace Game.Locomotion.Discrete.Structs
         public EMovementGait Gait { get; }
         public ELocomotionCondition Condition { get; }
         public bool IsTurning { get; }
+
+        public static SLocomotionDiscrete Default => new SLocomotionDiscrete(
+            ELocomotionPhase.GroundedIdle,
+            EPosture.Standing,
+            EMovementGait.Idle,
+            ELocomotionCondition.Normal,
+            isTurning: false);
+
+        public static SLocomotionDiscrete None => Default;
     }
 }

@@ -23,15 +23,15 @@ namespace Game.Locomotion.Discrete.Aspects
             EPosture posture;
 
             // Explicit stand intent has the highest priority.
-            if (actions.StandAction.HasInput)
+            if (actions.StandAction.Button.IsRequested)
             {
                 posture = EPosture.Standing;
             }
-            else if (actions.ProneAction.HasInput)
+            else if (actions.ProneAction.Button.IsRequested)
             {
                 posture = EPosture.Prone;
             }
-            else if (actions.CrouchAction.HasInput)
+            else if (actions.CrouchAction.Button.IsRequested)
             {
                 posture = EPosture.Crouching;
             }
