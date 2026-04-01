@@ -11,7 +11,10 @@ namespace Game.Locomotion.Discrete.Coordination
     /// </summary>
     internal sealed class LocomotionCoordinatorHuman : LocomotionCoordinatorBase
     {
-        internal LocomotionCoordinatorHuman() : base(new LocomotionGraph())
+        internal LocomotionCoordinatorHuman() : base(
+            new LocomotionGraph(),
+            new LocomotionTraversalGraph(),
+            new LocomotionTurningGraph())
         {
         }
     }
