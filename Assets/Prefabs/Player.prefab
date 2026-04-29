@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1947580238982052747}
   - component: {fileID: 5085968444530936421}
   - component: {fileID: 3610630312856158315}
-  - component: {fileID: 2838104954811850373}
+  - component: {fileID: 8721387818594905132}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -85,7 +85,7 @@ CapsuleCollider:
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
---- !u!114 &2838104954811850373
+--- !u!114 &8721387818594905132
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -94,16 +94,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 8667043660662020576}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 238fb252770836b4baa3b824d26fb274, type: 3}
+  m_Script: {fileID: 11500000, guid: a3c27899a95d0c943baf562b6b160204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelRoot: {fileID: 7880520753254052221}
-  locomotionProfile: {fileID: 11400000, guid: ccdb968c11d7a5e479471e93c3666d31, type: 2}
-  isPlayer: 1
-  animancerPresenter: {fileID: 0}
+  isPlayer: 0
+  characterProfile: {fileID: 11400000, guid: 19080c489b2a47c4f85047f53e6224f6, type: 2}
   autoSubscribeInput: 1
-  drawDebugGizmos: 1
-  debugForwardLength: 2
 --- !u!1001 &7698765721122133654
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -460,10 +456,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 2514341874839075585}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: bfa42ba6d484e4e448024c9acf736ce9,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 822586493403798398}
   m_SourcePrefab: {fileID: 100100000, guid: bfa42ba6d484e4e448024c9acf736ce9, type: 3}
 --- !u!95 &4304622158265510663 stripped
 Animator:
@@ -495,28 +487,6 @@ MonoBehaviour:
   _PlayAutomatically: 1
   _Animations:
   - {fileID: 1827226128182048838, guid: a4b8f2deec6a99945987cfc59b1b4e54, type: 3}
---- !u!114 &822586493403798398
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7356325924075039687}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 629cdc6e5db7c78469178ff692a8d218, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  agent: {fileID: 0}
-  animancer: {fileID: 0}
-  animancerStringProfile: {fileID: 11400000, guid: f85ef9e02053e3542b741c132b6f8f5c,
-    type: 2}
-  animationProfile: {fileID: 11400000, guid: 264e4d30fb02cbb4b93aefb446d194ea, type: 2}
-  animator: {fileID: 0}
-  forwardRootMotion: 1
-  applyRootMotionPlanarPositionOnly: 1
-  headMask: {fileID: 31900000, guid: 91a8c24c60bd42e4d9b539ff6d537342, type: 2}
-  footMask: {fileID: 0}
 --- !u!4 &7880520753254052221 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: bfa42ba6d484e4e448024c9acf736ce9,
