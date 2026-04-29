@@ -23,10 +23,6 @@ public class CameraManager : BaseService
     [SerializeField] private GameProfile gameProfile;
     [SerializeField, Range(0f, 90f)] private float maxPitchDegrees = 75f;
 
-    private Vector3 lastLocomotionPosition;
-    private bool hasLocomotionPosition;
-    private float anchorLockedY;
-    private bool hasLockedAnchorY;
     private SLookIAction lastLookAction;
     private Vector2 lastAppliedLookDelta;
 
@@ -49,7 +45,6 @@ public class CameraManager : BaseService
 
         if (Dispatcher != null)
         {
-            Dispatcher.Subscribe<SLocomotion>(HandleLocomotionSnapshot);
             Dispatcher.Subscribe<SLookIAction>(HandleLook);
         }
     }
@@ -58,7 +53,6 @@ public class CameraManager : BaseService
     {
         if (Dispatcher != null)
         {
-            Dispatcher.Unsubscribe<SLocomotion>(HandleLocomotionSnapshot);
             Dispatcher.Unsubscribe<SLookIAction>(HandleLook);
         }
     }
@@ -190,18 +184,6 @@ public class CameraManager : BaseService
         return hasSnapshot;
     }
 
-    private void HandleLocomotionSnapshot(SLocomotion payload, MetaStruct meta)
-    {
-        lastLocomotionPosition = payload.Motor.Position;
-        hasLocomotionPosition = true;
-
-        if (!hasLockedAnchorY && localPlayerAnchor != null)
-        {
-            anchorLockedY = localPlayerAnchor.position.y;
-            hasLockedAnchorY = true;
-        }
-    }
-
     private void HandleLook(SLookIAction payload, MetaStruct meta)
     {
         lastLookAction = payload;
@@ -209,18 +191,13 @@ public class CameraManager : BaseService
 
     private void TickLocalPlayerAnchor()
     {
-        if (localPlayerAnchor == null)
-        {
-            return;
-        }
+        if (localPlayerAnchor == null) return;
 
-        if (!hasLocomotionPosition)
-        {
-            return;
-        }
+        GameContext context = GameContext.Instance;
+        if (context == null || !context.TryGetSnapshot(out SCharacterSnapshot snapshot)) return;
 
-        Vector3 targetPosition = lastLocomotionPosition;
-        targetPosition.y = lastLocomotionPosition.y + verticalOffset;
+        Vector3 targetPosition = snapshot.Kinematic.Position;
+        targetPosition.y = snapshot.Kinematic.Position.y + verticalOffset;
         localPlayerAnchor.position = targetPosition;
 
         ApplyLookRotationToAnchor(localPlayerAnchor, lastLookAction, out Vector2 appliedLookDelta);
