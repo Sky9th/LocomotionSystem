@@ -50,25 +50,20 @@ namespace Game.Character.Components
 
             var ctx = new CharacterFrameContext();
 
-            // Step 1: read input
             inputModule.ReadActions(out ctx.Input);
 
-            // Step 2: read camera → viewForward
             inputModule.ReadCameraControl(out var cameraControl);
             Vector3 viewForward = isPlayer
                 ? (cameraControl.AnchorRotation * Vector3.forward)
                 : Vector3.zero;
 
-            // Step 3: evaluate kinematic
             ctx.Kinematic = characterKinematic.Evaluate(characterProfile, viewForward, deltaTime);
 
             // Step 4: simulate locomotion (TODO)
 
             var snapshot = new SCharacterSnapshot(
                 ctx.Kinematic,
-                SLocomotionMotor.Default,
-                SLocomotionDiscrete.Default,
-                SLocomotionTraversal.None);
+                new SLocomotionState(SLocomotionMotor.Default, SLocomotionDiscrete.Default));
 
             context.UpdateSnapshot(snapshot);
         }

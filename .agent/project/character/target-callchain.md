@@ -71,11 +71,14 @@ CharacterActor.Update() [0]
   ┌─ Step 3: 计算 Kinematic ─────────────────────────────
   │  ctx.Kinematic = characterKinematic.Evaluate(profile, viewForward, dt)
   │    → ctx.Kinematic  [SCharacterKinematic]
-  │        .Position                 = actorTransform.position (地面锁定后)
-  │        .BodyForward              = actorTransform.forward (水平)
-  │        .LookDirection            = CharacterHeadLook.Evaluate()
-  │        .GroundContact            = CharacterGroundDetection + 稳定化
-  │        .ForwardObstacleDetection = CharacterObstacleDetection.TryDetect()
+  └──────────────────────────────────────────────────────
+
+  ┌─ Step 3.5: 计算 Traversal ────────────────────────────
+  │  ctx.Traversal = traversalGraph.Evaluate(in ctx.Kinematic, in ctx.Input, dt)
+  │    → ctx.Traversal  [SLocomotionTraversal]
+  │        Idle → (IsGrounded + Jump + CanClimb) → Requested
+  │        Requested → Committed (1帧后) or Canceled
+  │        Committed → Completed (0.45s后)
   └──────────────────────────────────────────────────────
 
   ┌─ Step 4: 仿真 Locomotion ────────────────────────────
@@ -151,8 +154,8 @@ CharacterAnimationController.Update() [0]
 
 ```
 帧 N:
-  CharacterActor → Simulate → TraversalGraph → Requested
-  → SCharacterSnapshot.Traversal = {Type=Climb, Stage=Requested, Height=1.2}
+  CharacterActor → TraversalGraph.Evaluate → Requested
+  → ctx.Traversal = {Type=Climb, Stage=Requested, Height=1.2}
 
 帧 N+1:
   AnimationController → Arbiter.EvaluatePending()
