@@ -8,6 +8,5 @@ namespace Game.Character.Components
         public SCharacterKinematic Kinematic;
         public SLocomotionMotor Motor;
         public SLocomotionDiscrete Discrete;
-        public SLocomotionTraversal Traversal;
     }
 }
