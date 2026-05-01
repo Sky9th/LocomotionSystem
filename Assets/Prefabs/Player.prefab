@@ -99,6 +99,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isPlayer: 0
   characterProfile: {fileID: 11400000, guid: 19080c489b2a47c4f85047f53e6224f6, type: 2}
+  locomotionProfile: {fileID: 11400000, guid: 2658baef4b1928c4ca79d1e7b70ab09a, type: 2}
   autoSubscribeInput: 1
 --- !u!1001 &7698765721122133654
 PrefabInstance:

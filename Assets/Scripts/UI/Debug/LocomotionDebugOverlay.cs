@@ -37,10 +37,15 @@ public class LocomotionDebugOverlay : UIOverlayBase
         void KV(StringBuilder sb, string k, string v) => sb.AppendLine($"{k,-24}: {v}");
 
         var kin = snapshot.Kinematic;
+        var mot = snapshot.Locomotion.Motor;
+        var disc = snapshot.Locomotion.Discrete;
 
         summaryBuilder.Clear()
-            .Append("GROUND ").Append(f(kin.GroundContact.IsGrounded))
-            .Append(" | OBSTACLE ").Append(f(kin.ForwardObstacleDetection.HasHit));
+            .Append("PHASE ").Append(disc.Phase)
+            .Append(" | GAIT ").Append(disc.Gait)
+            .Append(" | POSTURE ").Append(disc.Posture)
+            .Append(" | TURN ").Append(f(disc.IsTurning))
+            .Append(" | GROUND ").Append(f(kin.GroundContact.IsGrounded));
 
         leftBuilder.Clear();
         Header(leftBuilder, "Kinematic");
@@ -48,6 +53,18 @@ public class LocomotionDebugOverlay : UIOverlayBase
         KV(leftBuilder, "BodyForward", kin.BodyForward.ToString("F2"));
         KV(leftBuilder, "Heading", kin.LocomotionHeading.ToString("F2"));
         KV(leftBuilder, "LookDirection", kin.LookDirection.ToString("F2"));
+        leftBuilder.AppendLine();
+        Header(leftBuilder, "Motor");
+        KV(leftBuilder, "DesiredLocalVel", mot.DesiredLocalVelocity.ToString("F2"));
+        KV(leftBuilder, "ActualLocalVel", mot.ActualLocalVelocity.ToString("F2"));
+        KV(leftBuilder, "PlanarVel", mot.ActualPlanarVelocity.ToString("F2"));
+        KV(leftBuilder, "TurnAngle", mot.TurnAngle.ToString("F1"));
+        leftBuilder.AppendLine();
+        Header(leftBuilder, "State");
+        KV(leftBuilder, "Phase", disc.Phase.ToString());
+        KV(leftBuilder, "Gait", disc.Gait.ToString());
+        KV(leftBuilder, "Posture", disc.Posture.ToString());
+        KV(leftBuilder, "IsTurning", f(disc.IsTurning));
 
         rightBuilder.Clear();
         Header(rightBuilder, "Ground");
