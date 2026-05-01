@@ -59,12 +59,7 @@ namespace Game.Character.Components
 
             ctx.Kinematic = characterKinematic.Evaluate(characterProfile, viewForward, deltaTime);
 
-            // Step 4: simulate locomotion (TODO)
-
-            var snapshot = new SCharacterSnapshot(
-                ctx.Kinematic,
-                new SLocomotionState(SLocomotionMotor.Default, SLocomotionDiscrete.Default));
-
+            var snapshot = new SCharacterSnapshot(ctx.Kinematic);
             context.UpdateSnapshot(snapshot);
         }
     }

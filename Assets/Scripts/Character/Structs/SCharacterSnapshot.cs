@@ -4,14 +4,12 @@ using UnityEngine;
 [Serializable]
 public struct SCharacterSnapshot
 {
-    public SCharacterSnapshot(SCharacterKinematic kinematic, SLocomotionState locomotion)
+    public SCharacterSnapshot(SCharacterKinematic kinematic)
     {
         Kinematic = kinematic;
-        Locomotion = locomotion;
     }
 
     public SCharacterKinematic Kinematic { get; }
-    public SLocomotionState Locomotion { get; }
 
-    public static SCharacterSnapshot Default => new(SCharacterKinematic.Default, SLocomotionState.Default);
+    public static SCharacterSnapshot Default => new(SCharacterKinematic.Default);
 }
