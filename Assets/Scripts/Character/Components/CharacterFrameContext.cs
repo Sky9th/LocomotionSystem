@@ -6,5 +6,7 @@ namespace Game.Character.Components
     {
         public SCharacterInputActions Input;
         public SCharacterKinematic Kinematic;
+        public SCharacterMotor Motor;
+        public SCharacterDiscrete Discrete;
     }
 }

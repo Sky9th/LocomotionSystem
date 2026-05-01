@@ -2,6 +2,7 @@ using UnityEngine;
 using Game.Character.Config;
 using Game.Character.Input;
 using Game.Character.Kinematic;
+using Game.Character.Locomotion;
 
 namespace Game.Character.Components
 {
@@ -14,6 +15,9 @@ namespace Game.Character.Components
         [Header("Config")]
         [SerializeField] private CharacterProfile characterProfile;
 
+        [Header("Locomotion")]
+        [SerializeField] private LocomotionProfile locomotionProfile;
+
         [Header("Input")]
         [SerializeField] private bool autoSubscribeInput = true;
 
@@ -21,11 +25,13 @@ namespace Game.Character.Components
 
         private CharacterInputModule inputModule;
         private CharacterKinematic characterKinematic;
+        private ILocomotionSimulator locomotionSimulator;
 
         private void Awake()
         {
             inputModule = new CharacterInputModule(this);
             characterKinematic = new CharacterKinematic(transform, transform, characterProfile);
+            locomotionSimulator = new GroundLocomotion();
         }
 
         private void OnEnable()
@@ -59,7 +65,12 @@ namespace Game.Character.Components
 
             ctx.Kinematic = characterKinematic.Evaluate(characterProfile, viewForward, deltaTime);
 
-            var snapshot = new SCharacterSnapshot(ctx.Kinematic);
+            locomotionSimulator.Simulate(ref ctx, locomotionProfile, deltaTime);
+
+            var snapshot = new SCharacterSnapshot(
+                ctx.Kinematic,
+                new SLocomotionState(ctx.Motor, ctx.Discrete));
+
             context.UpdateSnapshot(snapshot);
         }
     }
