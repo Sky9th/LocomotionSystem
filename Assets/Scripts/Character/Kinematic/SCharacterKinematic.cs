@@ -4,11 +4,12 @@ using UnityEngine;
 [Serializable]
 public struct SCharacterKinematic
 {
-    public SCharacterKinematic(Vector3 position, Vector3 bodyForward, Vector2 lookDirection,
-        SGroundContact groundContact, SForwardObstacleDetection forwardObstacleDetection)
+    public SCharacterKinematic(Vector3 position, Vector3 bodyForward, Vector3 locomotionHeading,
+        Vector2 lookDirection, SGroundContact groundContact, SForwardObstacleDetection forwardObstacleDetection)
     {
         Position = position;
         BodyForward = bodyForward.sqrMagnitude > Mathf.Epsilon ? bodyForward.normalized : Vector3.forward;
+        LocomotionHeading = locomotionHeading.sqrMagnitude > Mathf.Epsilon ? locomotionHeading.normalized : Vector3.forward;
         LookDirection = lookDirection;
         GroundContact = groundContact;
         ForwardObstacleDetection = forwardObstacleDetection;
@@ -16,11 +17,12 @@ public struct SCharacterKinematic
 
     public Vector3 Position { get; }
     public Vector3 BodyForward { get; }
+    public Vector3 LocomotionHeading { get; }
     public Vector2 LookDirection { get; }
     public SGroundContact GroundContact { get; }
     public SForwardObstacleDetection ForwardObstacleDetection { get; }
 
     public static SCharacterKinematic Default => new(
-        Vector3.zero, Vector3.forward, Vector2.zero,
+        Vector3.zero, Vector3.forward, Vector3.forward, Vector2.zero,
         SGroundContact.None, SForwardObstacleDetection.None);
 }

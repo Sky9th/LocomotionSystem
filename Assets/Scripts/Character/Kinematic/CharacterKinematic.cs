@@ -44,7 +44,7 @@ namespace Game.Character.Kinematic
                 profile.obstacleLayerMask, profile.obstacleMaxClimbHeight,
                 profile.maxGroundSlopeAngle, out var obstacle);
 
-            return new SCharacterKinematic(position, bodyForward, lookDirection, groundContact, obstacle);
+            return new SCharacterKinematic(position, bodyForward, heading, lookDirection, groundContact, obstacle);
         }
 
         private SGroundContact EvaluateGroundContactAndApplyConstraints(
