@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Game.Character.Components;
 using Game.Character.Config;
 
 namespace Game.Character.Kinematic
@@ -8,16 +9,16 @@ namespace Game.Character.Kinematic
     {
         private readonly Transform actorTransform;
         private readonly Transform modelRoot;
-        private readonly Rigidbody actorRigidbody;
+        private readonly CharacterRig characterRig;
 
         private SGroundContact previousRawGroundContact;
         private SGroundContact previousGroundContact;
 
-        internal CharacterKinematic(Transform actorTransform, Transform modelRoot, CharacterProfile profile)
+        internal CharacterKinematic(Transform actorTransform, Transform modelRoot, CharacterRig characterRig)
         {
             this.actorTransform = actorTransform;
             this.modelRoot = modelRoot;
-            actorRigidbody = actorTransform.GetComponent<Rigidbody>();
+            this.characterRig = characterRig;
         }
 
         internal void Reset()
@@ -51,13 +52,13 @@ namespace Game.Character.Kinematic
             CharacterProfile profile, float deltaTime, ref Vector3 position)
         {
             var contact = EvaluateStableGroundContact(profile, position, deltaTime);
-            UpdateFreezePositionY(profile.enableGroundLocking && contact.IsGrounded);
+            characterRig.FreezePositionY(profile.enableGroundLocking && contact.IsGrounded);
 
             if (profile.enableGroundLocking && contact.IsGrounded)
             {
                 var pos = actorTransform.position;
                 pos.y = contact.ContactPoint.y + profile.groundLockVerticalOffset;
-                actorTransform.position = pos;
+                characterRig.SetGroundedY(pos.y);
                 position = pos;
             }
             else position = actorTransform.position;
@@ -96,14 +97,6 @@ namespace Game.Character.Kinematic
             var canReacquire = debounce <= 0f || prevStable.IsGrounded || prevStable.StateDuration >= debounce;
             var candidate = raw.IsGrounded && canReacquire ? raw : raw.WithIsGrounded(false);
             return Accumulate(candidate, prevStable, dt);
-        }
-
-        private void UpdateFreezePositionY(bool grounded)
-        {
-            if (actorRigidbody == null) return;
-            var c = actorRigidbody.constraints;
-            var next = grounded ? c | RigidbodyConstraints.FreezePositionY : c & ~RigidbodyConstraints.FreezePositionY;
-            if (next != c) actorRigidbody.constraints = next;
         }
     }
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using Game.Character.Animation.Components;
 using Game.Character.Config;
 using Game.Character.Input;
 using Game.Character.Kinematic;
@@ -24,14 +25,23 @@ namespace Game.Character.Components
         public bool IsPlayer => isPlayer;
 
         private CharacterInputModule inputModule;
+        private CharacterRig characterRig;
         private CharacterKinematic characterKinematic;
         private ILocomotionSimulator locomotionSimulator;
+        private AnimationBrain characterAnimation;
 
         private void Awake()
         {
+            characterAnimation = GetComponentInChildren<AnimationBrain>();
+            characterRig = new CharacterRig(transform, characterAnimation?.transform ?? transform);
             inputModule = new CharacterInputModule(this);
-            characterKinematic = new CharacterKinematic(transform, transform, characterProfile);
+            characterKinematic = new CharacterKinematic(transform, transform, characterRig);
             locomotionSimulator = new GroundLocomotion();
+        }
+
+        private void Start()
+        {
+            characterAnimation?.SetRig(characterRig);
         }
 
         private void OnEnable()
@@ -71,6 +81,7 @@ namespace Game.Character.Components
                 ctx.Kinematic,
                 new SLocomotionState(ctx.Motor, ctx.Discrete));
 
+            characterAnimation?.Apply(in snapshot);
             context.UpdateSnapshot(snapshot);
         }
     }
