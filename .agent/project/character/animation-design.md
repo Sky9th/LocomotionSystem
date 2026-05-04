@@ -430,3 +430,138 @@ internal sealed class CharacterRig
 | 默认 Driver | ✅ |
 | CharacterRig | ✅ |
 | 动画资源 (Animancer 原生) | ✅ |
+| LocomotionDriver + BaseLayer | ⬜ (设计定稿) |
+
+---
+
+## 12. LocomotionDriver + BaseLayer
+
+### 12.1 目录结构
+
+```
+Animation/Drivers/Locomotion/
+├── LocomotionDriver.cs                    ← Driver 入口, 实现 ICharacterAnimationDriver
+├── LocomotionLayerFsmState.cs             ← 抽象基类, 继承 Animancer.FSM.State, 加 abstract Tick()
+├── BaseLayer.cs                           ← 7状态FSM: Update/TrySetState/Play/ApplyTurnStepRotation
+├── BaseStateKey.cs                        ← enum (Idle/TurnInPlace/IdleToMoving/Moving/TurnInMoving/AirLoop/AirLand)
+└── States/
+    ├── BaseIdleState.cs
+    ├── BaseTurnInPlaceState.cs
+    ├── BaseIdleToMovingState.cs
+    ├── BaseMovingState.cs
+    ├── BaseTurnInMovingState.cs
+    ├── BaseAirLoopState.cs
+    └── BaseAirLandState.cs
+```
+
+11 文件。旧 ~25 文件。
+
+### 12.2 LocomotionDriver
+
+```
+实现 ICharacterAnimationDriver (通过 BaseCharacterAnimationDriver)
+Continuous Driver: BuildRequest 替代为不需要 (Drive 中直接驱 FSM)
+
+构造函数/OnEnable:
+  持有: Brain → FullBodyLayer, HeadLookLayer, FootLayer
+  创建: new BaseLayer(fullBodyLayer, aliasProfile, animProfile, characterRig)
+  持有: LocomotionAliasProfile, LocomotionAnimationProfile (自己的 [SerializeField])
+
+Drive(snapshot, dt):
+  → baseLayer.Update(snapshot, dt)
+  → HeadLook更新: Vector2Mixer 驱动
+
+OnInterrupted/OnResumed:
+  → isActive flag 切换
+```
+
+### 12.3 LocomotionLayerFsmState
+
+```csharp
+abstract class LocomotionLayerFsmState<TOwner> : Animancer.FSM.State
+{
+    protected readonly TOwner Owner;
+    public abstract void Tick();
+}
+```
+
+Animancer 的 `State` 提供 `CanEnter/CanExit/OnEnter/OnExit`。我们加 `Tick()`。
+
+### 12.4 BaseLayer
+
+```
+字段:
+  AnimancerLayer layer
+  StateMachine<BaseStateKey, LocomotionLayerFsmState<BaseLayer>> fsm
+  SCharacterSnapshot snapshot             ← 每帧 Update 时缓存
+  float deltaTime
+  LocomotionAliasProfile alias
+  LocomotionAnimationProfile animProfile
+  CharacterRig rig
+  StringAsset lastPlayedAlias
+  AnimancerState currentAnimState
+
+构造:
+  BaseLayer(layer, alias, animProfile, rig)
+    → 创建 7 State 实例 (传 this)
+    → 注册到 StateMachine
+
+Update(snapshot, dt):
+   缓存 (snapshot, dt) → EnsureInitialized → fsm.CurrentState.Tick()
+
+方法:
+  TrySetState(key) / ForceSetState(key)
+  Play(alias) / PlayIfChanged(alias) / PlayFromStart(alias)
+  HasCompleted() → currentAnimState.NormalizedTime >= 0.99f
+  ApplyTurnStepRotation() → 读 TurnAngle → rig.ApplyRotation
+
+属性 (State 可读):
+  Snapshot → this.snapshot
+  DeltaTime → this.deltaTime
+  Alias / AnimProfile / Rig
+```
+
+### 12.5 State 内联条件示例
+
+```
+旧: context.Check<CanEnterMovingStateCondition>()
+新: Snapshot.Locomotion.Discrete.Phase == GroundedMoving 
+    && !Snapshot.Locomotion.Discrete.IsTurning
+```
+
+### 12.6 各 State 的 CanEnter
+
+| State | 条件 |
+|---|---|
+| Idle | `Phase == GroundedIdle && !IsTurning` |
+| TurnInPlace | `Phase == GroundedIdle && IsTurning` |
+| IdleToMoving | `Phase == GroundedMoving && IsTurning` (从 Idle 启动) |
+| Moving | `Phase == GroundedMoving && !IsTurning` |
+| TurnInMoving | `Phase == GroundedMoving && IsTurning && 前向意图` |
+| AirLoop | `Phase == Airborne` |
+| AirLand | `DistanceToGround < 0.5m` |
+
+### 12.7 各 State 的 Clip 选择
+
+| State | Clip | 额外 |
+|---|---|---|
+| Idle | `alias.idleL`/`idleR` | |
+| TurnInPlace | `alias.turnInPlace90L/R` | `ApplyTurnStepRotation()` |
+| IdleToMoving | `alias.idleToRun180L/R` | 播完 → Moving |
+| Moving | `alias.walkMixer/runMixer/sprint` | `Vector2Mixer.Parameter` + `ApplyTurnStepRotation()` |
+| TurnInMoving | `alias.turnInWalk/Run/Sprint180L/R` | `ApplyTurnStepRotation()` |
+| AirLoop | `alias.AirLoop` | |
+| AirLand | `alias.AirLand` | 播完 → Idle/Moving/TurnInPlace |
+
+### 12.8 旧→新文件变化
+
+| 旧 (~25 files) | 新 (11 files) |
+|---|---|
+| `LocomotionAnimationController.cs` | ❌ 删除 |
+| `LocomotionAnimationContext.cs` | ❌ 删除 |
+| `ILocomotionAnimationLayer.cs` | ❌ 简化后保留必要部分在 BaseLayer |
+| `Conditions/*` (8 files) | ❌ 删除 (Animancer.CanEnterState 内联) |
+| `Appliers/*` | 并入 `BaseLayer.ApplyTurnStepRotation()` |
+| `HeadLookLayer.cs` / `FootLayer.cs` | Controller 内部 private 方法 |
+| `Structs/SLocomotionAnimation*.cs` (2) | ❌ 删除 |
+| `BaseLayer.cs` + 7 States | 重构 |

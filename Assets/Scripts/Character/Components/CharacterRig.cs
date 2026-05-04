@@ -24,6 +24,7 @@ namespace Game.Character.Components
 
         // ── Root (physics) ──
         internal void ApplyPosition(Vector3 delta) => root.position += delta;
+        internal void ApplyPositionPlanar(Vector3 delta) => root.position += new Vector3(delta.x, 0f, delta.z);
         internal void ApplyRotation(Quaternion delta) => root.rotation *= delta;
         internal void SetGroundedY(float y) => root.position = new Vector3(root.position.x, y, root.position.z);
 

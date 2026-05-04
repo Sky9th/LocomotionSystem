@@ -38,6 +38,7 @@ namespace Game.Character.Animation.Components
         private AnimancerLayer footstepLayer;
         private DriverArbiter fullBodyArbiter;
         private CharacterRig characterRig;
+        internal CharacterRig CharacterRig => characterRig;
 
         public NamedAnimancerComponent Animancer => animancer;
         public AnimancerLayer FullBodyLayer => fullBodyLayer;
@@ -84,11 +85,11 @@ namespace Game.Character.Animation.Components
 
             var delta = animator.deltaPosition;
             if (applyRootMotionPlanarPositionOnly)
-                characterRig.ApplyModelPositionPlanar(delta);
+                characterRig.ApplyPositionPlanar(delta);
             else
-                characterRig.ApplyModelPosition(delta);
+                characterRig.ApplyPosition(delta);
 
-            characterRig.ApplyModelRotation(animator.deltaRotation);
+            characterRig.ApplyRotation(animator.deltaRotation);
         }
 
         internal void RegisterDriver(ICharacterAnimationDriver driver)

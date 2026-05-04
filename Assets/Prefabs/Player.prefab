@@ -519,8 +519,8 @@ MonoBehaviour:
   upperBodyMask: {fileID: 0}
   additiveMask: {fileID: 0}
   facialMask: {fileID: 0}
-  headMask: {fileID: 0}
-  footMask: {fileID: 0}
+  headMask: {fileID: 31900000, guid: 91a8c24c60bd42e4d9b539ff6d537342, type: 2}
+  footMask: {fileID: 31900000, guid: f651dcec4c7c1f24896fff756d009351, type: 2}
 --- !u!114 &8695948931337691276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -533,8 +533,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ad8ce702429dcc479a1183287959468, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testClip: {fileID: 1827226128182048838, guid: a4b8f2deec6a99945987cfc59b1b4e54,
-    type: 3}
+  aliasProfile: {fileID: 11400000, guid: f85ef9e02053e3542b741c132b6f8f5c, type: 2}
+  animationProfile: {fileID: 11400000, guid: 264e4d30fb02cbb4b93aefb446d194ea, type: 2}
+  locomotionProfile: {fileID: 11400000, guid: ccdb968c11d7a5e479471e93c3666d31, type: 2}
 --- !u!114 &2783184157824111690
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -542,7 +543,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7356325924075039687}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b1c2d3d3341284e418e0778d64fe04de, type: 3}
   m_Name: 
