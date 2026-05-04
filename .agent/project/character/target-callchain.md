@@ -1,45 +1,94 @@
-# Character 模块——目标调用链
+# Character 模块——完整架构与调用链
 
-## 1. 核心
-
-- `CharacterFrameContext` 在同帧内逐级传递数据
-- 子系统不访问 `GameContext`（不读不写）
-- CharacterActor 统一组装 `SCharacterSnapshot` 并推送
+> 更新时间: 2025-04-29
+> Step 1-5 ✅ | Animation 框架 ✅ | Driver 待建
 
 ---
 
-## 2. 初始化
+## 1. 目录结构
+
+```
+Character/
+├── Components/
+│   ├── CharacterActor.cs              (MB) 组合根
+│   ├── CharacterFrameContext.cs       (struct) 内部数据总线
+│   └── CharacterRig.cs               (纯 C#) 物理实体入口
+│
+├── Config/
+│   └── CharacterProfile.cs            (SO)
+│
+├── Animation/                         ← 动画子系统
+│   ├── Components/
+│   │   └── CharacterAnimationController.cs  (MB) [ExecutionOrder(10)]
+│   ├── DriverArbiter.cs               ← 仲裁器
+│   ├── Drivers/
+│   │   ├── ICharacterAnimationDriver.cs   ← 接口
+│   │   ├── BaseCharacterAnimationDriver.cs ← Component 基类
+│   │   └── Locomotion/ ([待建])
+│   │       └── LocomotionDriver.cs, BaseLayer.cs, States/
+│   ├── Requests/
+│   │   ├── AnimationRequest.cs
+│   │   ├── OnInterruptedBehavior.cs
+│   │   └── OnCompleteBehavior.cs
+│   └── Config/
+│       ├── LocomotionAliasProfile.cs
+│       ├── LocomotionAnimationProfile.cs
+│       └── LocomotionModeProfile.cs
+│
+├── Input/
+│   ├── CharacterInputModule.cs
+│   └── SCharacterInputActions.cs
+│
+├── Kinematic/
+│   ├── CharacterKinematic.cs
+│   ├── SCharacterKinematic.cs
+│   ├── CharacterGroundDetection.cs
+│   ├── CharacterObstacleDetection.cs
+│   ├── CharacterHeadLook.cs
+│   ├── SGroundContact.cs
+│   └── SForwardObstacleDetection.cs
+│
+├── Locomotion/
+│   ├── ILocomotionSimulator.cs
+│   ├── GroundLocomotion.cs
+│   ├── Motor.cs
+│   ├── Stance.cs
+│   ├── SCharacterMotor.cs
+│   ├── SCharacterDiscrete.cs
+│   ├── SLocomotionState.cs
+│   └── Config/LocomotionProfile.cs
+│
+├── Enums/LocomotionEnums.cs
+│
+└── Structs/SCharacterSnapshot.cs
+```
+
+---
+
+## 2. 初始化链路
 
 ```
 GameManager.Awake() [-500]
   └── PlayerManager.CreatePlayer()
-       └── Instantiate(Player.prefab)
 
-       CharacterAnimationController.Awake()
-         └── ConfigureRuntimeLayers() → 6 层 + 4 Arbiter
+    CharacterAnimationController.Awake()  [ExecutionOrder 10]
+      └── ConfigureRuntimeLayers() → 6 层 + fullBodyArbiter
 
-       CharacterLocomotion.Awake()
-         └── modelRoot 解析
+    CharacterActor.Awake()
+      ├── characterAnimation = GetComponentInChildren<CharacterAnimationController>()
+      ├── characterRig = new CharacterRig(transform, characterAnimation.transform)
+      ├── inputModule = new CharacterInputModule(this)
+      ├── characterKinematic = new CharacterKinematic(transform, transform, characterRig)
+      └── locomotionSimulator = new GroundLocomotion()
 
-       CharacterActor.Awake()
-         ├── characterAnimation = GetComponent<CharacterAnimationController>()
-         ├── locomotion = GetComponentInChildren<CharacterLocomotion>()
-         ├── inputModule = new CharacterInputModule(this)
-         └── characterKinematic = new CharacterKinematic(transform, locomotion.ModelRoot, profile)
+    LocomotionDriver.OnEnable()   ← Component 自注册
+      └── controller.RegisterDriver(this) → fullBodyArbiter.RegisterDriver
 
-       CharacterActor.OnEnable()
-         └── inputModule.Subscribe()
+    CharacterActor.OnEnable()
+      └── inputModule.Subscribe()
 
-       CharacterLocomotion.OnEnable()
-         ├── motor = new LocomotionMotor(transform)
-         └── coordinator = new LocomotionCoordinatorHuman()
-
-       CharacterActor.Start()
-         ├── locomotion.Initialize(characterAnimation)
-         │     └── new LocomotionDriver(motor, profile, alias, animProfile)
-         │     └── controller.RegisterDriver()
-         ├── characterAnimation.CreateTraversalDriver(alias)
-         └── characterAnimation.SetMotor(motor)
+    CharacterActor.Start()
+      └── characterAnimation.SetRig(characterRig)
 ```
 
 ---
@@ -58,119 +107,139 @@ CharacterActor.Update() [0]
 
   var ctx = new CharacterFrameContext();
 
-  ┌─ Step 1: 读取输入 ──────────────────────────────────
-  │  inputModule.ReadActions(out ctx.Input);
-  │    → ctx.Input  [SCharacterInputActions]
-  └──────────────────────────────────────────────────────
+  ┌─ Step 1: 读取输入 ──────────────────
+  │  inputModule.ReadActions(out ctx.Input)
+  └─────────────────────────────────────
 
-  ┌─ Step 2: 读取相机 (外部数据, 来自 GameContext) ──────
-  │  GameContext.TryGetSnapshot(out SCameraContext camera);
+  ┌─ Step 2: 读取相机 ──────────────────
+  │  inputModule.ReadCameraControl(out cameraControl)
   │  viewForward = isPlayer ? camera.AnchorRotation * forward : zero
-  └──────────────────────────────────────────────────────
+  └─────────────────────────────────────
 
-  ┌─ Step 3: 计算 Kinematic ─────────────────────────────
-  │  ctx.Kinematic = characterKinematic.Evaluate(profile, viewForward, dt)
-  │    → ctx.Kinematic  [SCharacterKinematic]
-  └──────────────────────────────────────────────────────
+  ┌─ Step 3: 计算 Kinematic ────────────
+  │  ctx.Kinematic = characterKinematic.Evaluate(characterProfile, viewForward, dt)
+  └─────────────────────────────────────
 
-  ┌─ Step 3.5: 计算 Traversal ────────────────────────────
-  │  ctx.Traversal = traversalGraph.Evaluate(in ctx.Kinematic, in ctx.Input, dt)
-  │    → ctx.Traversal  [SLocomotionTraversal]
-  │        Idle → (IsGrounded + Jump + CanClimb) → Requested
-  │        Requested → Committed (1帧后) or Canceled
-  │        Committed → Completed (0.45s后)
-  └──────────────────────────────────────────────────────
+  ┌─ Step 4: 仿真 Locomotion ───────────
+  │  locomotionSimulator.Simulate(ref ctx, locomotionProfile, dt)
+  │    → Motor.Evaluate → ctx.Motor
+  │    → Stance.Evaluate → ctx.Discrete
+  └─────────────────────────────────────
 
-  ┌─ Step 4: 仿真 Locomotion ────────────────────────────
-  │  locomotion.Simulate(ref ctx, profile, viewForward, dt)
-  │
-  │    ┌─ ctx.Motor = motor.Evaluate(in ctx.Kinematic, profile, in ctx.Input, viewForward, dt)
-  │    │    → ctx.Motor  [SLocomotionMotor]
-  │    │        .DesiredLocalVelocity  = LocomotionKinematics.ComputeDesiredPlanarVelocity()
-  │    │        .ActualLocalVelocity   = SmoothVelocity()
-  │    │        .LocomotionHeading     = CharacterHeadLook.EvaluatePlanarHeading()
-  │    │        .TurnAngle             = SignedAngle(BodyForward, LocomotionHeading)
-  │    │
-  │    └─ ctx.Discrete = coordinator.Evaluate(in ctx.Kinematic, in ctx.Motor, profile, in ctx.Input, dt)
-  │         → ctx.Discrete  [SLocomotionDiscrete]
-  │             .Phase     = PhaseAspect (GroundContact.IsGrounded + 速度)
-  │             .Gait      = GaitAspect (MoveAction + Sprint/Run toggle)
-  │             .Posture   = PostureAspect (Crouch/Prone/Stand button)
-  │             .IsTurning = TurningGraph (TurnAngle + 稳定检测)
-  │
-  │         → ctx.Traversal  [SLocomotionTraversal]
-  │             Idle → (Jump + CanClimb) → Requested
-  │             Requested → Committed (1帧后) or Canceled
-  │             Committed → Completed (0.45s后)
-  └──────────────────────────────────────────────────────
-
-  ┌─ Step 5: 组装 & 推送 ────────────────────────────────
-  │  snapshot = new SCharacterSnapshot(
-  │      ctx.Kinematic, ctx.Motor, ctx.Discrete, ctx.Traversal)
-  │
-  │  GameContext.UpdateSnapshot(snapshot);
-  │  Dispatcher.Publish(snapshot);
-  └──────────────────────────────────────────────────────
+  ┌─ Step 5: 组装 & 推送 ───────────────
+  │  snapshot = new SCharacterSnapshot(ctx.Kinematic,
+  │              new SLocomotionState(ctx.Motor, ctx.Discrete))
+  │  characterAnimation.Apply(in snapshot)
+  │  GameContext.UpdateSnapshot(snapshot)
+  └─────────────────────────────────────
 
 
 ═══════════════════════════════════════════════════════════
-CharacterAnimationController.Update() [0]
+CharacterAnimationController.Apply(in snapshot)  [EO 10]
 ═══════════════════════════════════════════════════════════
 
-  GameContext.TryGetSnapshot(out SCharacterSnapshot snapshot);
+  fullBodyArbiter.Resolve(snapshot, dt)
 
-  fullBodyArbiter.Update(dt)
+    ┌─ 1. 处理请求队列 ──────────────────────
+    │  foreach SubmitRequest (Driver 主动提交)
+    │    → 裁决 → Accept/Reject
+    │    → OnInterrupted / OnResumed
+    │  清空队列
     │
-    ├── EvaluatePending()
-    │    └── TraversalDriver.BuildRequest(snapshot)
-    │         → snapshot.Traversal.Stage == Requested + Type == Climb?
-    │         → 是 → CharacterAnimationRequest(ClimbUp*) → AcceptRequest
-    │                ├── InterruptActive() → LocomotionDriver.OnInterrupted()
-    │                └── layer.Play(ClimbUp*)
-    │         → 否 → return null
+    ├─ 2. 检查动画完成 ──────────────────────
+    │  NormalizedTime >= 0.99 → Complete/Stay
     │
-    └── ActivateDefault() → LocomotionDriver.OnResumed()
+    └─ 3. ActiveDriver.Drive(snapshot, dt) ──
+         └── LocomotionDriver.Drive(snapshot, dt)
+              └── BaseLayer.Update(snapshot, dt)
+                   └── FSM.Tick → Play / PlayMixer / TurnStep
 
-    ActiveDriver.Update(snapshot, dt)
-      └── LocomotionDriver.Update(snapshot, dt)
-           └── BaseLayer.FSM.Tick(snapshot)
-                ├── Phase==GroundedMoving → Play(runMixer)
-                ├── HeadLookLayer.Update(snapshot.Kinematic.LookDirection)
-                └── FootLayer.Update()
+  UpdateHeadLook(snapshot)  [stub]
 
 
 ═══════════════════════════════════════════════════════════
 [Animation Phase] OnAnimatorMove
 ═══════════════════════════════════════════════════════════
 
-  CharacterAnimationController.OnAnimatorMove()
-    └── motor.ApplyDeltaPosition(animator.deltaPosition)
-         motor.ApplyDeltaRotation(animator.deltaRotation)
+  characterRig.ApplyModelPosition(animator.deltaPosition)
+  characterRig.ApplyModelRotation(animator.deltaRotation)
 ```
 
 ---
 
-## 4. 攀爬中断链路
+## 4. Driver 钩子模型
+
+```
+Driver (Component, 主动):
+  Update()                     → 自己检测条件 → SubmitRequest(this, request)
+  Drive(snapshot, dt)          → Arbiter 调用 → 驱动动画逻辑
+  OnInterrupted(by)            → 被别人的请求打断
+  OnResumed()                  → 恢复为 Active
+  OnEnable()                   → RegisterDriver → Arbiter
+  OnDisable()                  → UnregisterDriver → Arbiter
+
+Arbiter (纯调度):
+  RegisterDriver / UnregisterDriver
+  SubmitRequest → 入队, 本帧处理
+  Release       → Driver 自己结束自己
+  Resolve       → 队列处理 → 完成检查 → Drive
+```
+
+---
+
+## 5. 场景示例
+
+### Locomotion (Continuous)
 
 ```
 帧 N:
-  CharacterActor → TraversalGraph.Evaluate → Requested
-  → ctx.Traversal = {Type=Climb, Stage=Requested, Height=1.2}
+  Arbiter.Resolve:
+    请求队列空 → 激活 LocomotionDriver → Drive(snapshot)
+      → BaseLayer.Tick → Play(runMixer)
+```
 
-帧 N+1:
-  AnimationController → Arbiter.EvaluatePending()
-    → TraversalDriver.BuildRequest(snapshot)
-    → ResolveClimbAlias(1.2) → ClimbUp2meter
-    → CharacterAnimationRequest(ClimbUp2meter, Priority=Traversal)
-    → AcceptRequest
-      ├── LocomotionDriver.OnInterrupted() → isActive=false
-      └── layer.Play(ClimbUp2meter)
+### Traversal 中断 Locomotion
 
-帧 N+2 ~ K: 动画播放中
-  Locomotion 仿真: TraversalGraph.Evaluate → Requested → Committed
-  Coordinator: discreteState = CreateActionControlled() → Phase=Idle, Gait=Idle
+```
+帧 N:
+  TraversalDriver.Update():
+    检测条件 → SubmitRequest(ClimbUp, R=10)
 
-帧 K: 动画完成
-  Arbiter → NormalizedTime >= 0.99 → CompleteActive()
-  → TransitionToDefault → LocomotionDriver.OnResumed() → isActive=true
+  Arbiter.Resolve:
+    队列: [ClimbUp(R=10)]
+    ActiveRequest==null → Accept
+    Interrupt Locomotion → Play(ClimbUp)
+
+帧 N+1~K: 动画播放中
+
+帧 K: NormalizedTime>=0.99 → Complete → Resume → Locomotion.Resumed → Drive
+```
+
+### Dance (Self-Release)
+
+```
+帧 N:
+  DanceDriver.Update():
+    检测 → SubmitRequest(DanceMixer, R=100, OnComplete=Stay)
+
+  Arbiter.Resolve → Accept → Play(DanceMixer)
+
+帧 M (取消):
+  DanceDriver.Update():
+    检测取消键 → Arbiter.Release(this)
+
+  Arbiter → 恢复默认 → Locomotion.Resumed → Drive
+```
+
+### Dance 被打断
+
+```
+帧 M (Death 请求):
+  DeathDriver.Update():
+    SubmitRequest(Death, R=999)
+
+  Arbiter.Resolve:
+    999 >= 100 → Accept
+    DanceDriver.OnInterrupted(deathRequest)
+    Play(Death)
 ```

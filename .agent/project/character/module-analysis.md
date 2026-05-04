@@ -295,9 +295,55 @@ CharacterActor.Start()
 
 ## 8. 目标架构
 
-### 8.1 目录结构
+### 8.1 目录结构（当前）
 
 ```
+Character/
+├── Components/                            ← 仅 MonoBehaviour
+│   ├── CharacterActor.cs                  ← 组合根
+│   └── CharacterFrameContext.cs           ← 内部数据总线 (struct)
+│
+├── Config/
+│   └── CharacterProfile.cs               ← Character 层 SO (地面/障碍物/头部)
+│
+├── Animation/                             ← 动画子系统 (待建)
+│   ├── Components/
+│   ├── Drivers/
+│   ├── Requests/
+│   └── Config/
+│       ├── LocomotionAliasProfile.cs
+│       ├── LocomotionAnimationProfile.cs
+│       └── LocomotionModeProfile.cs
+│
+├── Input/                                 ← 输入子系统
+│   ├── CharacterInputModule.cs
+│   └── SCharacterInputActions.cs
+│
+├── Kinematic/                             ← 物理运动数据
+│   ├── CharacterKinematic.cs
+│   ├── SCharacterKinematic.cs
+│   ├── SGroundContact.cs
+│   ├── SForwardObstacleDetection.cs
+│   ├── CharacterGroundDetection.cs
+│   ├── CharacterObstacleDetection.cs
+│   └── CharacterHeadLook.cs
+│
+├── Locomotion/                            ← 仿真 Locomotion 子系统
+│   ├── ILocomotionSimulator.cs            ← 接口 (支持替换实现)
+│   ├── GroundLocomotion.cs                ← 默认编排器
+│   ├── Motor.cs                           ← 速度计算 + 4 static helpers
+│   ├── Stance.cs                          ← Phase/Gait/Posture/IsTurning
+│   ├── SCharacterMotor.cs                 ← 运动数据 (4字段)
+│   ├── SCharacterDiscrete.cs              ← 状态标签 (4字段)
+│   ├── SLocomotionState.cs                ← 包装 Motor + Discrete
+│   └── Config/
+│       └── LocomotionProfile.cs           ← SO (moveSpeed/accel/turning/capabilities)
+│
+├── Structs/
+│   └── SCharacterSnapshot.cs              ← 对外唯一快照
+│
+└── Enums/
+    └── LocomotionEnums.cs                 ← Phase/Posture/Gait
 Character/
 ├── Components/                            ← 仅 MonoBehaviour
 │   └── CharacterActor.cs
@@ -364,15 +410,14 @@ Character/
         └── LocomotionProfile.cs
 ```
 
-### 8.2 区分：仿真 vs 动画
+### 8.2 仿真 Locomotion vs 动画 Locomotion
 
-| | 仿真 Locomotion | 动画 Locomotion |
+| | 仿真 Locomotion | 动画 Locomotion (待建) |
 |---|---|---|
-| 目录 | `Character/Locomotion/` | `Character/Animation/Drivers/` + `Layers/Locomotion/` |
-| 入口 | `CharacterLocomotion` | `LocomotionDriver` |
-| 做什么 | 计算速度、状态、转向角 | 选择动画 clip、驱动 FSM |
-| 可暂停 | 攀爬时锁定 Phase=Idle | 攀爬时被 Arbiter 中断 |
-| 对外输出 | `SCharacterSnapshot` | 无 (驱动 Animancer) |
+| 目录 | `Character/Locomotion/` | `Character/Animation/Drivers/` |
+| 入口 | `GroundLocomotion : ILocomotionSimulator` | `LocomotionDriver : ICharacterAnimationDriver` |
+| 做什么 | 计算速度、Phase/Gait/Posture/IsTurning | 选择动画 clip、驱动 BaseLayer FSM |
+| 对外输出 | `SCharacterMotor` + `SCharacterDiscrete` → `SCharacterSnapshot.Locomotion` | 无 (驱动 Animancer) |
 
 ### 8.3 命名空间规则
 
@@ -426,51 +471,40 @@ CharacterActor
     → characterAnimation.CreateTraversalDriver(alias)    ← Animation 内部创建
 ```
 
-### 8.6 数据流（修正后）
+### 8.6 数据流（当前实现）
 
 ```
-CharacterActor.Update()
-  │
-  ├── Step 1: inputModule.ReadActions(out ctx.Input)
-  ├── Step 2: GameContext.TryGetSnapshot<SCameraContext>() → viewForward
-  ├── Step 3: ctx.Kinematic = characterKinematic.Evaluate(profile, viewForward, dt)
-  ├── Step 4: locomotion.Simulate(ref ctx, profile, viewForward, dt)
-  │            ├── ctx.Motor = motor.Evaluate(...)
-  │            ├── ctx.Discrete = coordinator.Evaluate(...)
-  │            └── ctx.Traversal = coordinator.CurrentTraversal
-  │
-  └── Step 5: snapshot = new SCharacterSnapshot(ctx.Kinematic, ctx.Motor, ctx.Discrete, ctx.Traversal)
-       ├── GameContext.UpdateSnapshot(snapshot)              ← 唯一对外出口
-       └── Dispatcher.Publish(snapshot)                      ← 外部 Event
-
-CharacterLocomotion.Simulate(ref ctx, profile, viewForward, dt)
-  └── 纯函数, 不访问 GameContext, 不访问 Dispatcher
-
-CharacterAnimationController.Update() (同帧, 读 GameContext)
-  └── fullBodyArbiter.Update()
-       ├── TraversalDriver.BuildRequest() → 有新请求?
-       └── LocomotionDriver.Update(snapshot, dt)             ← 参数传入
-            └── BaseLayer FSM.Tick(snapshot)
+CharacterActor.Update()                  ← Steps 1-5 已实现
+  ├── inputModule.ReadActions() → ctx.Input
+  ├── camera → viewForward
+  ├── ctx.Kinematic = characterKinematic.Evaluate(profile, viewForward, dt)
+  ├── locomotionSimulator.Simulate(ref ctx, locomotionProfile, dt)
+  │     ├── motor.Evaluate() → ctx.Motor       [SCharacterMotor]
+  │     └── stance.Evaluate() → ctx.Discrete   [SCharacterDiscrete]
+  ├── snapshot = new SCharacterSnapshot(ctx.Kinematic,
+  │              new SLocomotionState(ctx.Motor, ctx.Discrete))
+  └── GameContext.UpdateSnapshot(snapshot)
 ```
 
-| 变化 | 旧 | 新 |
+| Step | 状态 | 产出 |
 |---|---|---|
-| Locomotion 获取 kinematic/input | `GameContext.TryGetSnapshot()` | `ref ctx` 参数 |
-| Locomotion 发布快照 | `PushSnapshot()` 直接操作 Context | 无副作用, 填充 ctx 返回 |
-| Driver 获取 snapshot | `GameContext.TryGetSnapshot()` | 参数 `Update(snapshot, dt)` [需改接口] |
-| Driver 创建 | CharacterActor `new LocomotionDriver()` | `Locomotion.Initialize()` 自注册 |
-| 对外快照数 | 2 个 (`SCharacterKinematic` + `SLocomotion`) | 1 个 (`SCharacterSnapshot`) |
+| 1: Input | ✅ | SCharacterInputActions |
+| 2: Camera | ✅ | viewForward |
+| 3: Kinematic | ✅ | SCharacterKinematic (Position/BodyForward/Heading/Look/Ground/Obstacle) |
+| 4: Locomotion | ✅ | SCharacterMotor (Desired/Actual/Velocity/TurnAngle) + SCharacterDiscrete (Phase/Gait/Posture/IsTurning) |
+| 5: Snapshot | ✅ | SCharacterSnapshot → GameContext |
 
-### 8.7 实施步骤
+### 8.7 实施状态
 
-| Phase | 内容 | 复杂度 |
+| Phase | 内容 | 状态 |
 |---|---|---|
-| A | 命名空间迁移: `Game.Locomotion.*` → `Game.Character.Locomotion.*` | 中 |
-| B | 动画层目录重组: Layers 从 Locomotion 移到 Animation | 中 |
-| C | Driver 创建权责: Locomotion.Initialize(controller) 自注册 | 低 |
-| D | CharacterLocomotion 参数化: Simulate 改为纯参数，返回数据 | 低 |
-| E | 统一快照: `SLocomotion` → `SCharacterSnapshot`，CharacterActor 唯一出口 | 低 |
-| F | Kinematic/Probes 子目录整理 | 低 |
+| A | 命名空间统一 + 目录重组 | ✅ |
+| B | 数据结构 (SCharacterSnapshot + 子 struct) | ✅ |
+| C | Step 1-3: Input + Kinematic | ✅ |
+| D | Step 4: Locomotion 仿真 (Motor + Stance) | ✅ |
+| E | Step 5: CharacterActor 统一出口 | ✅ |
+| F | Animation 模块 (CharacterAnimationController + Drivers + BaseLayer FSM) | ⬜ |
+| G | Traversal 模块 | ⬜ |
 
 ### 8.8 Kinematic 模块职责边界
 
