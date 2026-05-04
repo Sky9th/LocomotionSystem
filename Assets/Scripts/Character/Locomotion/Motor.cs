@@ -11,7 +11,7 @@ namespace Game.Character.Locomotion
             in SCharacterKinematic kin, in SCharacterInputActions inp,
             LocomotionProfile profile, float dt)
         {
-            var move = inp.MoveAction.HasInput ? inp.MoveAction : inp.LastMoveAction;
+            var move = inp.MoveAction.Equals(SMoveIAction.None) ? inp.LastMoveAction : inp.MoveAction;
             var desired = ComputeDesired(move, profile.moveSpeed);
             currentLocalVelocity = Smooth(currentLocalVelocity, desired, profile.acceleration, dt);
             var planar = ConvertToWorld(currentLocalVelocity, kin.LocomotionHeading);

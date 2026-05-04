@@ -75,8 +75,8 @@ namespace Game.Character.Kinematic
                 position,
                 position + Vector3.up * offset,
                 Mathf.Max(0f, profile.groundRayLength),
-                position + Vector3.up * offset,
-                halfExt, halfExt.y + offset,
+                position + Vector3.up * (offset + halfExt.y),
+                halfExt, halfExt.y * 2f + offset,
                 profile.groundLayerMask, profile.maxGroundSlopeAngle);
 
             contact = Accumulate(contact, previousRawGroundContact, deltaTime);
