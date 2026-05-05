@@ -8,7 +8,7 @@ using Game.Character.Locomotion;
 namespace Game.Character.Components
 {
     [DisallowMultipleComponent]
-    public sealed class CharacterActor : MonoBehaviour
+    public partial class CharacterActor : MonoBehaviour
     {
         [Header("Identity")]
         [SerializeField] private bool isPlayer;
@@ -34,15 +34,13 @@ namespace Game.Character.Components
         {
             characterAnimation = GetComponentInChildren<AnimationBrain>();
             characterRig = new CharacterRig(transform, characterAnimation?.transform ?? transform);
+            characterAnimation?.SetRig(characterRig);
             inputModule = new CharacterInputModule(this);
             characterKinematic = new CharacterKinematic(transform, transform, characterRig);
             locomotionSimulator = new GroundLocomotion();
         }
 
-        private void Start()
-        {
-            characterAnimation?.SetRig(characterRig);
-        }
+        private void Start() { }
 
         private void OnEnable()
         {

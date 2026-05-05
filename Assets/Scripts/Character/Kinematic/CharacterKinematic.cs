@@ -54,12 +54,11 @@ namespace Game.Character.Kinematic
             var contact = EvaluateStableGroundContact(profile, position, deltaTime);
             characterRig.FreezePositionY(profile.enableGroundLocking && contact.IsGrounded);
 
-            if (profile.enableGroundLocking && contact.IsGrounded)
+            if (profile.enableGroundLocking && !float.IsPositiveInfinity(contact.DistanceToGround) && contact.DistanceToGround < 0.5f)
             {
-                var pos = actorTransform.position;
-                pos.y = contact.ContactPoint.y + profile.groundLockVerticalOffset;
-                characterRig.SetGroundedY(pos.y);
-                position = pos;
+                var newY = contact.ContactPoint.y + profile.groundLockVerticalOffset;
+                characterRig.SetGroundedY(newY);
+                position.y = newY;
             }
             else position = actorTransform.position;
 

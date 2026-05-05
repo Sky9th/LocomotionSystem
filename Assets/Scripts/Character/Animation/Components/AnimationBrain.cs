@@ -83,12 +83,7 @@ namespace Game.Character.Animation.Components
         {
             if (!forwardRootMotion || animator == null || characterRig == null) return;
 
-            var delta = animator.deltaPosition;
-            if (applyRootMotionPlanarPositionOnly)
-                characterRig.ApplyPositionPlanar(delta);
-            else
-                characterRig.ApplyPosition(delta);
-
+            characterRig.ApplyPositionPlanar(animator.deltaPosition);
             characterRig.ApplyRotation(animator.deltaRotation);
         }
 
