@@ -20,7 +20,7 @@ namespace Game.Character.Animation.Drivers
         protected override void OnEnable()
         {
             base.OnEnable();
-            baseLayer = new BaseLayer(brain?.FullBodyLayer, aliasProfile, locomotionProfile);
+            baseLayer = new BaseLayer(brain?.FullBodyLayer, aliasProfile, animationProfile, locomotionProfile, brain?.CharacterRig);
             headLookLayer = brain?.HeadLookLayer;
 
             if (headLookLayer != null && aliasProfile?.lookMixer != null)

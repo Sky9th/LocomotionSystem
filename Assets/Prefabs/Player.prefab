@@ -97,10 +97,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c27899a95d0c943baf562b6b160204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPlayer: 0
+  isPlayer: 1
   characterProfile: {fileID: 11400000, guid: 19080c489b2a47c4f85047f53e6224f6, type: 2}
   locomotionProfile: {fileID: 11400000, guid: 2658baef4b1928c4ca79d1e7b70ab09a, type: 2}
   autoSubscribeInput: 1
+  drawDebugGizmos: 1
+  debugArrowLength: 2
 --- !u!1001 &7698765721122133654
 PrefabInstance:
   m_ObjectHideFlags: 0

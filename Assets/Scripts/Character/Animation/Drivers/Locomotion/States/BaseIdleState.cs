@@ -14,6 +14,8 @@ namespace Game.Character.Animation.Drivers
 
         public override void Tick()
         {
+            if (Owner.TrySetState(BaseStateKey.TurnInPlace)) return;
+            if (Owner.TrySetState(BaseStateKey.IdleToMoving)) return;
             if (Owner.TrySetState(BaseStateKey.Moving)) return;
             if (Owner.TrySetState(BaseStateKey.AirLoop)) return;
             Owner.PlayIfChanged(Owner.Alias.idleL);

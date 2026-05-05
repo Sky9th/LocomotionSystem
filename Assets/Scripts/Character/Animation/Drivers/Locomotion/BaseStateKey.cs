@@ -4,6 +4,10 @@ namespace Game.Character.Animation.Drivers
     {
         Idle,
         Moving,
-        AirLoop
+        TurnInPlace,
+        IdleToMoving,
+        TurnInMoving,
+        AirLoop,
+        AirLand
     }
 }
