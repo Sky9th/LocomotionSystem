@@ -76,6 +76,7 @@ namespace Game.Character.Components
             locomotionSimulator.Simulate(ref ctx, locomotionProfile, deltaTime);
 
             var snapshot = new SCharacterSnapshot(
+                ctx.Input,
                 ctx.Kinematic,
                 new SLocomotionState(ctx.Motor, ctx.Discrete));
 

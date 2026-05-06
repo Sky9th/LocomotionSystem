@@ -90,6 +90,11 @@ namespace Game.Character.Animation.Drivers
             return true;
         }
 
+        internal void InvalidateAnimationCache()
+        {
+            lastPlayedAlias = null;
+        }
+
         internal void Play(StringAsset alias)
         {
             if (alias == null) return;

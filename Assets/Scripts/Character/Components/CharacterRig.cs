@@ -9,6 +9,10 @@ namespace Game.Character.Components
         private readonly Rigidbody rigidbody;
         private readonly CapsuleCollider capsule;
 
+        private bool suppressGroundLock;
+
+        internal bool SuppressGroundLock => suppressGroundLock;
+
         internal CharacterRig(Transform root, Transform model)
         {
             this.root = root;
@@ -40,6 +44,18 @@ namespace Game.Character.Components
             if (capsule == null) return;
             capsule.height = height;
             capsule.center = center;
+        }
+
+        internal void SetSuppressGroundLock(bool suppress)
+        {
+            suppressGroundLock = suppress;
+            if (suppress) FreezePositionY(false);
+        }
+
+        internal void IgnoreCollisionWith(Collider other, bool ignore)
+        {
+            if (capsule != null && other != null)
+                Physics.IgnoreCollision(capsule, other, ignore);
         }
     }
 }

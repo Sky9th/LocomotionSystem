@@ -35,7 +35,7 @@ namespace Game.Character.Kinematic
                 }
             }
 
-            var obstacleHeight = hasTopSurface ? Mathf.Max(0f, topPoint.y - hit.point.y) : float.PositiveInfinity;
+            var obstacleHeight = hasTopSurface ? Mathf.Max(0f, topPoint.y - actorPosition.y) : float.PositiveInfinity;
             var canClimb = isObstacle && hasTopSurface && obstacleHeight <= maxClimbHeight;
 
             result = new SForwardObstacleDetection(

@@ -68,10 +68,17 @@ namespace Game.Character.Animation
 
         public void Resolve(in SCharacterSnapshot snapshot, float dt)
         {
+            EvaluateDrivers(snapshot, dt);
             ProcessQueue();
             CheckCompletion();
             activeDriver?.Drive(snapshot, dt);
             ActivateDefaultIfNeeded();
+        }
+
+        private void EvaluateDrivers(in SCharacterSnapshot snapshot, float dt)
+        {
+            foreach (var driver in drivers)
+                driver.Evaluate(snapshot, dt);
         }
 
         private void ProcessQueue()
@@ -103,6 +110,7 @@ namespace Game.Character.Animation
             activeDriver = driver;
             activeRequest = request;
             activeCompleted = false;
+            driver.OnStarted();
 
             if (request.HasClip) layer.Play(request.Clip, request.FadeIn);
             else if (request.HasAlias) layer.TryPlay(request.Alias);
@@ -116,6 +124,7 @@ namespace Game.Character.Animation
             {
                 if (activeRequest.OnComplete == OnCompleteBehavior.Resume)
                 {
+                    activeDriver.OnCompleted();
                     layer.Stop();
                     activeRequest = null;
                     activeDriver = defaultDriver;
