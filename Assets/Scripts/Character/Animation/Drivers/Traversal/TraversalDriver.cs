@@ -1,49 +1,80 @@
 using UnityEngine;
 using Animancer;
 using Game.Character.Animation.Requests;
+using Game.Locomotion.Animation.Config;
 
 namespace Game.Character.Animation.Drivers
 {
     public sealed class TraversalDriver : BaseCharacterAnimationDriver
     {
-        [SerializeField] private AnimationClip climbClip;
+        [SerializeField] private LocomotionAliasProfile aliasProfile;
 
-        private bool wasJumpPressed;
+        private Collider obstacleCollider;
 
         public override int ChannelMask => 1 << 0; // FullBody
 
-        protected override void OnEnable()
+        public override void Evaluate(in SCharacterSnapshot snapshot, float dt)
         {
-            base.OnEnable();
+            if (aliasProfile == null) return;
+
+            if (!snapshot.Input.JumpAction.Button.IsRequested) return;
+
+            var phase = snapshot.Locomotion.Discrete.Phase;
+            if (phase != ELocomotionPhase.GroundedIdle && phase != ELocomotionPhase.GroundedMoving)
+                return;
+
+            var obstacle = snapshot.Kinematic.ForwardObstacleDetection;
+            if (!obstacle.CanClimb) return;
+
+            var alias = ResolveClimbAlias(obstacle.ObstacleHeight);
+            if (alias == null) return;
+
+            brain?.SubmitRequest(this, new AnimationRequest
+            {
+                Alias = alias,
+                Tags = 0x01,
+                Resistance = 10,
+                FadeIn = 0.1f,
+                FadeOut = 0.15f,
+                OnComplete = OnCompleteBehavior.Resume,
+                OnInterrupted = OnInterruptedBehavior.Resume,
+                ChannelMask = 1 << 0
+            });
+            obstacleCollider = obstacle.Collider;
         }
 
-        public override void Drive(in SCharacterSnapshot snapshot, float dt)
+        public override void Drive(in SCharacterSnapshot snapshot, float dt) { }
+
+        // TODO: 攀爬动画的Y轴位移不足以让胶囊体完全越过障碍物，
+        // 胶囊体仍会被挤出回弹。后续方案：攀爬期间临时缩小胶囊体高度
+        // 或切换为 isKinematic 彻底脱离物理。
+        public override void OnStarted()
         {
-            // OneShot: 只在 Active 时被调用, 不需要 Tick
+            brain?.CharacterRig?.SetSuppressGroundLock(true);
+            brain?.CharacterRig?.IgnoreCollisionWith(obstacleCollider, true);
         }
 
-        public override void OnInterrupted(AnimationRequest by) { }
+        public override void OnCompleted()
+        {
+            brain?.CharacterRig?.SetSuppressGroundLock(false);
+            brain?.CharacterRig?.IgnoreCollisionWith(obstacleCollider, false);
+            obstacleCollider = null;
+        }
+
+        public override void OnInterrupted(AnimationRequest by)
+        {
+            brain?.CharacterRig?.SetSuppressGroundLock(false);
+            brain?.CharacterRig?.IgnoreCollisionWith(obstacleCollider, false);
+            obstacleCollider = null;
+        }
+
         public override void OnResumed() { }
 
-        private void Update()
+        private StringAsset ResolveClimbAlias(float obstacleHeight)
         {
-            var inp = UnityEngine.InputSystem.Keyboard.current;
-            if (inp == null) return;
-
-            bool pressed = inp.spaceKey.wasPressedThisFrame;
-            if (pressed && !wasJumpPressed && climbClip != null)
-            {
-                brain?.SubmitRequest(this, new AnimationRequest
-                {
-                    Clip = climbClip,
-                    Tags = 0x01,
-                    Resistance = 10,
-                    OnComplete = OnCompleteBehavior.Resume,
-                    OnInterrupted = OnInterruptedBehavior.Resume,
-                    ChannelMask = 1 << 0
-                });
-            }
-            wasJumpPressed = pressed;
+            //if (obstacleHeight <= 0.6f) return aliasProfile.ClimbUp0_5meter;
+            if (obstacleHeight <= 1.1f) return aliasProfile.ClimbUp1meter;
+            return aliasProfile.ClimbUp2meter;
         }
     }
 }

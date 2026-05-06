@@ -30,12 +30,19 @@ namespace Game.Character.Animation.Drivers
             }
         }
 
+        public override void Evaluate(in SCharacterSnapshot snapshot, float dt) { }
+        public override void OnStarted() { }
+        public override void OnCompleted() { }
+
         public override void Drive(in SCharacterSnapshot snapshot, float dt)
         {
             baseLayer.Update(snapshot, dt);
         }
 
         public override void OnInterrupted(AnimationRequest by) { }
-        public override void OnResumed() { }
+        public override void OnResumed()
+        {
+            baseLayer.InvalidateAnimationCache();
+        }
     }
 }

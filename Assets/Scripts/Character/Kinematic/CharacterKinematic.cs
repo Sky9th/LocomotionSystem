@@ -52,6 +52,13 @@ namespace Game.Character.Kinematic
             CharacterProfile profile, float deltaTime, ref Vector3 position)
         {
             var contact = EvaluateStableGroundContact(profile, position, deltaTime);
+
+            if (characterRig.SuppressGroundLock)
+            {
+                position = actorTransform.position;
+                return contact;
+            }
+
             characterRig.FreezePositionY(profile.enableGroundLocking && contact.IsGrounded);
 
             if (profile.enableGroundLocking && !float.IsPositiveInfinity(contact.DistanceToGround) && contact.DistanceToGround < 0.5f)
