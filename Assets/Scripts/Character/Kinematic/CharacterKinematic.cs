@@ -56,7 +56,7 @@ namespace Game.Character.Kinematic
             if (characterRig.SuppressGroundLock)
             {
                 position = actorTransform.position;
-                return contact;
+                return contact.WithIsGrounded(true);
             }
 
             characterRig.FreezePositionY(profile.enableGroundLocking && contact.IsGrounded);

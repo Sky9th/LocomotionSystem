@@ -1,5 +1,3 @@
-using Animancer;
-
 namespace Game.Character.Animation.Drivers
 {
     internal sealed class BaseAirLoopState : LocomotionLayerFsmState<BaseLayer>
@@ -7,12 +5,27 @@ namespace Game.Character.Animation.Drivers
         public BaseAirLoopState(BaseLayer owner) : base(owner) { }
 
         public override bool CanEnterState
-            => !Owner.Snapshot.Kinematic.GroundContact.IsGrounded;
+        {
+            get
+            {
+                var contact = Owner.Snapshot.Kinematic.GroundContact;
+                return !contact.IsGrounded
+                    && contact.DistanceToGround >= Owner.AnimProfile.landMinFallDistance;
+            }
+        }
 
-        public override void OnEnterState() => Owner.Play(Owner.Alias.AirLoop);
+        public override void OnEnterState()
+        {
+            Owner.Play(Owner.Alias.AirLoop);
+            Owner.AirborneStartY = Owner.Snapshot.Kinematic.Position.y;
+            Owner.MaxFallDistance = 0f;
+        }
 
         public override void Tick()
         {
+            float fall = Owner.AirborneStartY - Owner.Snapshot.Kinematic.Position.y;
+            if (fall > Owner.MaxFallDistance) Owner.MaxFallDistance = fall;
+
             if (Owner.TrySetState(BaseStateKey.AirLand)) return;
         }
     }

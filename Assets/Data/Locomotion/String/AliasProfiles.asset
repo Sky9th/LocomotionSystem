@@ -15,13 +15,11 @@ MonoBehaviour:
   idleL: {fileID: 11400000, guid: e080e4a005dcb7c47b71b7217c1e44b2, type: 2}
   idleR: {fileID: 11400000, guid: d3bd29706dbf5c249a2161d1dc6210b4, type: 2}
   AirLoop: {fileID: 11400000, guid: cd1fc2f7b1ba8124c9f81caabd265f4e, type: 2}
-  AirLand: {fileID: 11400000, guid: 3dc11fcc4a19dc543ad1d25e674089c0, type: 2}
+  LandHard: {fileID: 11400000, guid: 3dc11fcc4a19dc543ad1d25e674089c0, type: 2}
   idleToRun180L: {fileID: 11400000, guid: ec0724b67e41e7c4b91d5aa7220fb6ab, type: 2}
   idleToRun180R: {fileID: 11400000, guid: 75be3615ca1444c41a390819a8266640, type: 2}
   walkMixer: {fileID: 11400000, guid: ff9f31ba1724cd34187efff0895d0615, type: 2}
   runMixer: {fileID: 11400000, guid: 4d421bfff7925be4abdd7c83a80f86f7, type: 2}
-  runUp: {fileID: 11400000, guid: 3bcb863f5ecd5ad42adec675105a47e6, type: 2}
-  runDown: {fileID: 11400000, guid: 54803cced0f94b3488ab1bf55d4de0ea, type: 2}
   sprint: {fileID: 11400000, guid: 81dc043bb8e405d418aa0fb44a3da25f, type: 2}
   walkForward: {fileID: 11400000, guid: 7586f0ea360e41443b4b55a39d70707a, type: 2}
   walkLeft: {fileID: 11400000, guid: 9a2e14ed79e7af041b736d6a1e986d64, type: 2}
@@ -42,6 +40,14 @@ MonoBehaviour:
   lookDown: {fileID: 11400000, guid: 04b1295a12916d443b050bed1c0f8ea1, type: 2}
   lookLeft: {fileID: 11400000, guid: 3c65621d9f13c00458b9d674acc1fe36, type: 2}
   lookRight: {fileID: 11400000, guid: 0ff9d00494bd0c7479022d69f11724ec, type: 2}
+  ClimbUp1meter: {fileID: 11400000, guid: 815417521fd13164db793b16b3720cf0, type: 2}
+  ClimbUp2meter: {fileID: 11400000, guid: ac13d17d7aae7b34a961324f37505e59, type: 2}
+  ClimbUpHalfMeter: {fileID: 11400000, guid: 76b8536ae91de044c95cdba975ad97fb, type: 2}
+  ClimbDown1meter: {fileID: 11400000, guid: e925cf63b3e102e26a9ee37ae82ada5c, type: 2}
+  ClimbDown2meter: {fileID: 11400000, guid: 222194444babd756f2e7debfcb41210e, type: 2}
+  LandLight: {fileID: 11400000, guid: 2e461ac8a6d7a48c9a01cdd40b2596f3, type: 2}
+  LandMedium: {fileID: 11400000, guid: 81d7bd12d593e2546f8512a6cd7b5b17, type: 2}
+  LandFromWall: {fileID: 11400000, guid: 6342e8ff732983491784058cf5192e9d, type: 2}
   HeadLookX: {fileID: 11400000, guid: 8ab2d9352c085d24ab83203d54124dda, type: 2}
   HeadLookY: {fileID: 11400000, guid: 2369aff4318fad545aeea5c349718d6b, type: 2}
   VelocityX: {fileID: 11400000, guid: ac471ab640645ef49bd0608d5edd20f5, type: 2}

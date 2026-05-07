@@ -58,6 +58,35 @@ MonoBehaviour:
         _Clip: {fileID: 1827226128182048838, guid: c178c186dd39cb149b58dc694c5d2acf,
           type: 3}
         _NormalizedStartTime: NaN
+--- !u!114 &-8537303748443549453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
+  m_Name: LandMedium
+  m_EditorClassIdentifier: 
+  _Transition:
+    rid: 9022338602346217476
+  references:
+    version: 2
+    RefIds:
+    - rid: 9022338602346217476
+      type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
+      data:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes: []
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: 1827226128182048838, guid: 01a2c0611b846ae488900dbd757e5cdf,
+          type: 3}
+        _NormalizedStartTime: NaN
 --- !u!114 &-6767794499353085001
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,7 +155,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
-  m_Name: ClimbUp0_5meter
+  m_Name: ClimbUpHalfMeter
   m_EditorClassIdentifier: 
   _Transition:
     rid: 2858904353494007810
@@ -246,6 +275,35 @@ MonoBehaviour:
         _Clip: {fileID: 1827226128182048838, guid: a4b8f2deec6a99945987cfc59b1b4e54,
           type: 3}
         _NormalizedStartTime: NaN
+--- !u!114 &-3241646572591848360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
+  m_Name: LandLight
+  m_EditorClassIdentifier: 
+  _Transition:
+    rid: 9022338602346217475
+  references:
+    version: 2
+    RefIds:
+    - rid: 9022338602346217475
+      type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
+      data:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes: []
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: 1827226128182048838, guid: 96cb056c41ac8744d9ae2abb67f15824,
+          type: 3}
+        _NormalizedStartTime: NaN
 --- !u!114 &-1237515139493486604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -273,6 +331,64 @@ MonoBehaviour:
           _Callbacks: []
           _Names: []
         _Clip: {fileID: 1827226128182048838, guid: a4b8f2deec6a99945987cfc59b1b4e54,
+          type: 3}
+        _NormalizedStartTime: NaN
+--- !u!114 &-1054402864967431652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
+  m_Name: LandHard
+  m_EditorClassIdentifier: 
+  _Transition:
+    rid: 9022338602346217477
+  references:
+    version: 2
+    RefIds:
+    - rid: 9022338602346217477
+      type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
+      data:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes: []
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: 1827226128182048838, guid: 74e027a4ab3d6894bb476673fc977d83,
+          type: 3}
+        _NormalizedStartTime: NaN
+--- !u!114 &-962016281532673904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
+  m_Name: AirLoop
+  m_EditorClassIdentifier: 
+  _Transition:
+    rid: 9022338602346217479
+  references:
+    version: 2
+    RefIds:
+    - rid: 9022338602346217479
+      type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
+      data:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes: []
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: 1827226128182048838, guid: b0eabba3ef2d67d49a0bd0894e54a762,
           type: 3}
         _NormalizedStartTime: NaN
 --- !u!114 &-613736580003927102
@@ -386,11 +502,14 @@ MonoBehaviour:
     - {fileID: -6767794499353085001}
     - {fileID: 4176786600016712184}
     - {fileID: -8926689441363961759}
-    - {fileID: 7593088155109255119}
-    - {fileID: 7540415855591462860}
     - {fileID: 5843972931482457015}
     - {fileID: 2380433029849792603}
     - {fileID: -6288212282297558050}
+    - {fileID: -3241646572591848360}
+    - {fileID: -8537303748443549453}
+    - {fileID: -1054402864967431652}
+    - {fileID: 8412347132064684248}
+    - {fileID: -962016281532673904}
     _Modifiers:
     - _From: 3
       _To: 0
@@ -428,18 +547,6 @@ MonoBehaviour:
     - _From: 15
       _To: 7
       _Fade: 0.2
-    - _From: 16
-      _To: 16
-      _Fade: 0.01
-    - _From: 17
-      _To: 16
-      _Fade: 0.01
-    - _From: 16
-      _To: 17
-      _Fade: 0.01
-    - _From: 17
-      _To: 17
-      _Fade: 0.01
     _Aliases:
     - _Name: {fileID: 11400000, guid: e080e4a005dcb7c47b71b7217c1e44b2, type: 2}
       _Index: 0
@@ -473,16 +580,22 @@ MonoBehaviour:
       _Index: 14
     - _Name: {fileID: 11400000, guid: 75be3615ca1444c41a390819a8266640, type: 2}
       _Index: 15
-    - _Name: {fileID: 11400000, guid: cd1fc2f7b1ba8124c9f81caabd265f4e, type: 2}
-      _Index: 16
-    - _Name: {fileID: 11400000, guid: 3dc11fcc4a19dc543ad1d25e674089c0, type: 2}
-      _Index: 17
     - _Name: {fileID: 11400000, guid: 815417521fd13164db793b16b3720cf0, type: 2}
-      _Index: 18
+      _Index: 16
     - _Name: {fileID: 11400000, guid: ac13d17d7aae7b34a961324f37505e59, type: 2}
-      _Index: 19
+      _Index: 17
     - _Name: {fileID: 11400000, guid: 76b8536ae91de044c95cdba975ad97fb, type: 2}
+      _Index: 18
+    - _Name: {fileID: 11400000, guid: 2e461ac8a6d7a48c9a01cdd40b2596f3, type: 2}
+      _Index: 19
+    - _Name: {fileID: 11400000, guid: 81d7bd12d593e2546f8512a6cd7b5b17, type: 2}
       _Index: 20
+    - _Name: {fileID: 11400000, guid: 3dc11fcc4a19dc543ad1d25e674089c0, type: 2}
+      _Index: 21
+    - _Name: {fileID: 11400000, guid: 6342e8ff732983491784058cf5192e9d, type: 2}
+      _Index: 22
+    - _Name: {fileID: 11400000, guid: cd1fc2f7b1ba8124c9f81caabd265f4e, type: 2}
+      _Index: 23
     _AliasAllTransitions: 1
 --- !u!114 &71537367975672513
 MonoBehaviour:
@@ -670,64 +783,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _Library: {fileID: 11400000}
   _TransitionSortMode: 0
---- !u!114 &7540415855591462860
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
-  m_Name: AirLand
-  m_EditorClassIdentifier: 
-  _Transition:
-    rid: 2858904083088277505
-  references:
-    version: 2
-    RefIds:
-    - rid: 2858904083088277505
-      type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
-      data:
-        _FadeDuration: 0.25
-        _Speed: 1
-        _Events:
-          _NormalizedTimes: []
-          _Callbacks: []
-          _Names: []
-        _Clip: {fileID: 1827226128182048838, guid: bbebb4f4873b0114b96e0cc358e40f47,
-          type: 3}
-        _NormalizedStartTime: NaN
---- !u!114 &7593088155109255119
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
-  m_Name: AirLoop
-  m_EditorClassIdentifier: 
-  _Transition:
-    rid: 2858904083088277504
-  references:
-    version: 2
-    RefIds:
-    - rid: 2858904083088277504
-      type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
-      data:
-        _FadeDuration: 0.25
-        _Speed: 1
-        _Events:
-          _NormalizedTimes: []
-          _Callbacks: []
-          _Names: []
-        _Clip: {fileID: 1827226128182048838, guid: 4e10d2a660caf984f9352d5f7b9a748a,
-          type: 3}
-        _NormalizedStartTime: NaN
 --- !u!114 &8118410883589941551
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -809,7 +864,7 @@ MonoBehaviour:
         _Clip: {fileID: -7153580490683583532, guid: d4342a09c276df546b23b157ac03e0f6,
           type: 3}
         _NormalizedStartTime: NaN
---- !u!114 &9030389947592137924
+--- !u!114 &8412347132064684248
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -819,14 +874,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5a8877f26e7a6a43aaf06fade1a064a, type: 3}
-  m_Name: A_MOD_BL_Idle_Standing_Masc
+  m_Name: LandFromWall
   m_EditorClassIdentifier: 
   _Transition:
-    rid: 1609343304212938754
+    rid: 9022338602346217478
   references:
     version: 2
     RefIds:
-    - rid: 1609343304212938754
+    - rid: 9022338602346217478
       type: {class: ClipTransition, ns: Animancer, asm: Kybernetik.Animancer}
       data:
         _FadeDuration: 0.25
@@ -835,6 +890,5 @@ MonoBehaviour:
           _NormalizedTimes: []
           _Callbacks: []
           _Names: []
-        _Clip: {fileID: -5048631755769649023, guid: 66e38452873e557408553dfd4c808a3f,
-          type: 3}
+        _Clip: {fileID: 7400000, guid: 96b7317fdf106be49823c9c9bf66f7f3, type: 3}
         _NormalizedStartTime: NaN

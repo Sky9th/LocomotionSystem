@@ -8,8 +8,6 @@ public class LocomotionAliasProfile : ScriptableObject
     [Header("Clips")]
     public StringAsset idleL;
     public StringAsset idleR;
-    public StringAsset AirLoop;
-    public StringAsset AirLand;
     public StringAsset idleToRun180L;
     public StringAsset idleToRun180R;
     public StringAsset walkMixer;
@@ -26,7 +24,7 @@ public class LocomotionAliasProfile : ScriptableObject
     public StringAsset turnInSprint180L;
     public StringAsset turnInSprint180R;
     public StringAsset turnInPlace90L;
-    public StringAsset turnInPlace90R; 
+    public StringAsset turnInPlace90R;
     public StringAsset turnInPlace180L;
     public StringAsset turnInPlace180R;
     public StringAsset lookMixer;
@@ -36,7 +34,14 @@ public class LocomotionAliasProfile : ScriptableObject
     public StringAsset lookRight;
     public StringAsset ClimbUp1meter;
     public StringAsset ClimbUp2meter;
-    public StringAsset ClimbUp0_5meter;
+    public StringAsset ClimbUpHalfMeter;
+    public StringAsset ClimbDown1meter;
+    public StringAsset ClimbDown2meter;
+    public StringAsset LandLight;
+    public StringAsset LandMedium;
+    public StringAsset LandHard;
+    public StringAsset LandFromWall;
+    public StringAsset AirLoop;
 
     [Header("Parameters")]
     public StringAsset HeadLookX;

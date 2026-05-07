@@ -10,6 +10,7 @@ namespace Game.Character.Components
         private readonly CapsuleCollider capsule;
 
         private bool suppressGroundLock;
+        private bool wasKinematic;
 
         internal bool SuppressGroundLock => suppressGroundLock;
 
@@ -56,6 +57,20 @@ namespace Game.Character.Components
         {
             if (capsule != null && other != null)
                 Physics.IgnoreCollision(capsule, other, ignore);
+        }
+
+        internal void SetKinematic(bool kinematic)
+        {
+            if (rigidbody == null) return;
+            if (kinematic)
+            {
+                wasKinematic = rigidbody.isKinematic;
+                rigidbody.isKinematic = true;
+            }
+            else
+            {
+                rigidbody.isKinematic = wasKinematic;
+            }
         }
     }
 }
