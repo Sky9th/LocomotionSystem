@@ -23,6 +23,9 @@ namespace Game.Character.Animation.Drivers
         internal float DeltaTime => deltaTime;
         internal AnimancerLayer Layer { get; }
 
+        internal float AirborneStartY;
+        internal float MaxFallDistance;
+
         internal BaseLayer(AnimancerLayer layer, LocomotionAliasProfile alias, LocomotionAnimationProfile animProfile,
             LocomotionProfile locoProfile, CharacterRig rig)
         {

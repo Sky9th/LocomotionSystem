@@ -24,6 +24,15 @@ namespace Game.Locomotion.Animation.Config
         [Header("Airborne")]
         public float landDistanceThreshold = 0.5f;
 
+        [Header("Landing Levels")]
+        [Tooltip("坠落距离低于此值不触发落地动画，直接回 Idle")]
+        public float landMinFallDistance = 0.2f;
+        public float landLightMaxFallDistance = 1.0f;
+        public float landMediumMaxFallDistance = 3.0f;
+        public float landLightTriggerDistance = 0.3f;
+        public float landMediumTriggerDistance = 0.6f;
+        public float landHardTriggerDistance = 1.0f;
+
         /// <summary>
         /// Returns the configured turn speed in degrees per second
         /// for the given posture and gait. If no matching mode is
