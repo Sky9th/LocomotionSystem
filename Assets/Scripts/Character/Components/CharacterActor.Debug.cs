@@ -65,18 +65,15 @@ namespace Game.Character.Components
 
         private void DrawGround(Vector3 pos, SCharacterKinematic kin)
         {
-            float offset = characterProfile.groundDetectVerticalOffset;
-            float rayLen = characterProfile.groundRayLength;
-            var halfExt = characterProfile.groundStandBoxHalfExtents;
+            float probeHeight = characterProfile.groundProbeHeight;
+            float probeRadius = characterProfile.groundProbeRadius;
 
-            var rayOrigin = pos + Vector3.up * offset;
-            GizmoDebugUtility.DrawArrowLine(rayOrigin, rayOrigin + Vector3.down * rayLen, Color.blue, "Ground Ray");
+            var origin = pos + Vector3.up * probeHeight;
+            var maxDist = probeHeight + 10f;
+            GizmoDebugUtility.DrawArrowLine(origin, origin + Vector3.down * maxDist, Color.blue, "Ground Probe");
 
-            var boxOrigin = pos + Vector3.up * (offset + halfExt.y);
-            float boxDist = halfExt.y * 2f + offset;
-            var boxCenter = (boxOrigin + (boxOrigin + Vector3.down * boxDist)) * 0.5f;
             Gizmos.color = new Color(1f, 1f, 0f, 0.3f);
-            Gizmos.DrawCube(boxCenter, new Vector3(halfExt.x * 2f, halfExt.y * 2f + boxDist, halfExt.z * 2f));
+            Gizmos.DrawSphere(origin, probeRadius);
 
             if (kin.GroundContact.IsGrounded)
             {

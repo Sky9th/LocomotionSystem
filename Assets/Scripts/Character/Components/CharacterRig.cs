@@ -37,7 +37,10 @@ namespace Game.Character.Components
         {
             if (rigidbody == null) return;
             var c = rigidbody.constraints;
-            rigidbody.constraints = freeze ? c | RigidbodyConstraints.FreezePositionY : c & ~RigidbodyConstraints.FreezePositionY;
+            if (freeze)
+                rigidbody.constraints = c | RigidbodyConstraints.FreezePositionY;
+            else
+                rigidbody.constraints = c & ~RigidbodyConstraints.FreezePositionY;
         }
 
         internal void SetCapsuleHeight(float height, Vector3 center)
@@ -57,6 +60,11 @@ namespace Game.Character.Components
         {
             if (capsule != null && other != null)
                 Physics.IgnoreCollision(capsule, other, ignore);
+        }
+
+        internal void ZeroVelocity()
+        {
+            if (rigidbody != null) rigidbody.velocity = Vector3.zero;
         }
 
         internal void SetKinematic(bool kinematic)
