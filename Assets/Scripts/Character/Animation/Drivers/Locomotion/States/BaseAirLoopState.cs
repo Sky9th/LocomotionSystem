@@ -19,6 +19,7 @@ namespace Game.Character.Animation.Drivers
             Owner.Play(Owner.Alias.AirLoop);
             Owner.AirborneStartY = Owner.Snapshot.Kinematic.Position.y;
             Owner.MaxFallDistance = 0f;
+            Owner.Rig?.SetSuppressGroundLock(true);
         }
 
         public override void Tick()
