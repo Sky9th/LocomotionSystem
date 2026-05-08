@@ -125,7 +125,6 @@ namespace Game.Character.Animation
                 if (activeRequest.OnComplete == OnCompleteBehavior.Resume)
                 {
                     activeDriver.OnCompleted();
-                    layer.Stop();
                     activeRequest = null;
                     activeDriver = defaultDriver;
                     defaultDriver?.OnResumed();

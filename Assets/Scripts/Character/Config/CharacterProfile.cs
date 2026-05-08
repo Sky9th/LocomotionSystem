@@ -12,6 +12,7 @@ namespace Game.Character.Config
         [Min(0f)] public float groundRayLength = 10f;
         [Min(0f)] public float groundReacquireDebounceDuration;
         public bool enableGroundLocking = true;
+        public float groundLockMaxDistance = 0.15f;
         public float groundLockVerticalOffset;
         public float groundDetectVerticalOffset = 0.01f;
 

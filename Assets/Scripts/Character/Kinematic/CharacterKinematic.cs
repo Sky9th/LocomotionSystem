@@ -61,7 +61,7 @@ namespace Game.Character.Kinematic
 
             characterRig.FreezePositionY(profile.enableGroundLocking && contact.IsGrounded);
 
-            if (profile.enableGroundLocking && !float.IsPositiveInfinity(contact.DistanceToGround) && contact.DistanceToGround < 0.5f)
+            if (profile.enableGroundLocking && !float.IsPositiveInfinity(contact.DistanceToGround) && contact.DistanceToGround < profile.groundLockMaxDistance)
             {
                 var newY = contact.ContactPoint.y + profile.groundLockVerticalOffset;
                 characterRig.SetGroundedY(newY);

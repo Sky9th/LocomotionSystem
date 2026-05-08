@@ -80,7 +80,7 @@ namespace Game.Character.Locomotion
             var turnDone = absAngle <= profile.turnCompletionAngle;
 
             if (!isTurning && wantsTurn && lookStable) isTurning = true;
-            else if (isTurning && turnDone) isTurning = false;
+            else if (isTurning && (turnDone || !wantsTurn)) isTurning = false;
 
             return isTurning;
         }

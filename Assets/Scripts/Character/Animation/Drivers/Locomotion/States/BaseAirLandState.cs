@@ -49,7 +49,9 @@ namespace Game.Character.Animation.Drivers
 
             if (Owner.TrySetState(BaseStateKey.Idle)) return;
             if (Owner.TrySetState(BaseStateKey.Moving)) return;
+            if (Owner.TrySetState(BaseStateKey.IdleToMoving)) return;
             if (Owner.TrySetState(BaseStateKey.TurnInPlace)) return;
+            Owner.ForceSetState(BaseStateKey.Idle);
         }
     }
 }
