@@ -100,25 +100,36 @@ internal interface ICharacterAnimationDriver
 class AnimationRequest
 {
     // 播放什么
-    public AnimationClip Clip / StringAsset Alias;   // 二选一
+    public AnimationClip Clip / StringAsset Alias;
     public float FadeIn;
     public float FadeOut;
 
     // 协商 (后来者读我, 自己判断)
-    public int Tags;              // 位标记 (Movement|Combat|Reaction|Cinematic|...)
-    public int Resistance;        // 0~N, 被打断难度
+    public int Tags;
+    public int Resistance;
 
-    // 打断行为
-    public OnInterruptedBehavior Behavior;  // Resume / Cancel
+    // 打断行为 (Arbiter 调度: Resume=恢复默认, Cancel=丢弃)
+    public OnInterruptedBehavior Behavior;
+
+    // 生命周期回调 (业务逻辑: 锁Y/关HeadLook等)
+    public Action OnStarted;
+    public Action OnCompleted;
+    public Action OnInterrupted;
 
     // 占哪层
-    public int ChannelMask;       // FullBody | UpperBody | ...
+    public int ChannelMask;
 }
 
 enum OnInterruptedBehavior { Resume, Cancel }
 ```
 
-无 Priority。无固定枚举层级表。后来者读 ActiveRequest 的 Tags+Resistance，自己做中断决策。
+### 回调触发时机
+
+| 回调 | Arbiter 触发点 |
+|---|---|
+| `OnStarted` | `AcceptRequest()` — 新请求接手 Layer |
+| `OnCompleted` | `CheckCompletion()` — 动画播完 (NormalizedTime>=0.99) |
+| `OnInterrupted` | `AcceptRequest()` — 被新请求顶替时, 旧请求的回调 |
 
 ---
 
@@ -142,11 +153,12 @@ Resolve(snapshot, dt):
 1. 处理请求队列:
    foreach (queue 中的请求 → 按 Resistance 排序)
      与 ActiveRequest 比较 → 裁决 → Accept/Reject
-     通知 OnInterrupted / OnResumed
+     AcceptRequest: 旧请求.OnInterrupted?.Invoke() → 新请求.OnStarted?.Invoke()
    清空队列
 
 2. 检查动画完成:
    NormalizedTime >= 0.99 → OnComplete 判定 → Resume/Stay
+   完成时: ActiveRequest.OnCompleted?.Invoke()
 
 3. Drive: activeDriver?.Drive(snapshot, dt)
 ```
