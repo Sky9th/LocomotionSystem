@@ -42,7 +42,7 @@ namespace Game.Character.Kinematic
             CharacterObstacleDetection.TryDetectForwardObstacle(
                 position, heading,
                 profile.obstacleProbeVerticalOffset, profile.obstacleProbeDistance,
-                profile.obstacleLayerMask, profile.obstacleMaxClimbHeight,
+                profile.obstacleLayerMask, profile.obstacleMinClimbHeight, profile.obstacleMaxClimbHeight,
                 profile.maxGroundSlopeAngle, out var obstacle);
 
             return new SCharacterKinematic(position, bodyForward, heading, lookDirection, groundContact, obstacle);
@@ -61,10 +61,11 @@ namespace Game.Character.Kinematic
 
             characterRig.FreezePositionY(profile.enableGroundLocking && contact.IsGrounded);
 
-            if (profile.enableGroundLocking && !float.IsPositiveInfinity(contact.DistanceToGround) && contact.DistanceToGround < profile.groundLockMaxDistance)
+            if (contact.IsGrounded && profile.enableGroundLocking && contact.DistanceToGround < profile.groundLockMaxDistance)
             {
                 var newY = contact.ContactPoint.y + profile.groundLockVerticalOffset;
                 characterRig.SetGroundedY(newY);
+                characterRig.ZeroVelocity();
                 position.y = newY;
             }
             else position = actorTransform.position;
@@ -74,15 +75,8 @@ namespace Game.Character.Kinematic
 
         private SGroundContact EvaluateStableGroundContact(CharacterProfile profile, Vector3 position, float deltaTime)
         {
-            var offset = profile.groundDetectVerticalOffset;
-            var halfExt = profile.groundStandBoxHalfExtents;
-
             var contact = CharacterGroundDetection.EvaluateGroundContact(
-                position,
-                position + Vector3.up * offset,
-                Mathf.Max(0f, profile.groundRayLength),
-                position + Vector3.up * (offset + halfExt.y),
-                halfExt, halfExt.y * 2f + offset,
+                position, profile.groundProbeHeight, profile.groundProbeRadius,
                 profile.groundLayerMask, profile.maxGroundSlopeAngle);
 
             contact = Accumulate(contact, previousRawGroundContact, deltaTime);

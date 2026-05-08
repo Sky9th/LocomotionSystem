@@ -6,7 +6,7 @@ namespace Game.Character.Kinematic
     {
         internal static bool TryDetectForwardObstacle(
             Vector3 actorPosition, Vector3 forward, float probeVerticalOffset,
-            float probeDistance, int layerMask, float maxClimbHeight, float maxSlopeAngleDegrees,
+            float probeDistance, int layerMask, float minClimbHeight, float maxClimbHeight, float maxSlopeAngleDegrees,
             out SForwardObstacleDetection result)
         {
             result = SForwardObstacleDetection.None;
@@ -26,8 +26,8 @@ namespace Game.Character.Kinematic
             if (isObstacle)
             {
                 var topOrigin = hit.point + forward * 0.05f;
-                topOrigin.y = actorPosition.y + maxClimbHeight + 0.05f;
-                if (Physics.Raycast(topOrigin, Vector3.down, out var topHit, maxClimbHeight * 2f, layerMask, QueryTriggerInteraction.Ignore))
+                topOrigin.y = actorPosition.y + maxClimbHeight * 2f;
+                if (Physics.Raycast(topOrigin, Vector3.down, out var topHit, maxClimbHeight * 3f, layerMask, QueryTriggerInteraction.Ignore))
                 {
                     hasTopSurface = true;
                     topPoint = topHit.point;
@@ -36,7 +36,8 @@ namespace Game.Character.Kinematic
             }
 
             var obstacleHeight = hasTopSurface ? Mathf.Max(0f, topPoint.y - actorPosition.y) : float.PositiveInfinity;
-            var canClimb = isObstacle && hasTopSurface && obstacleHeight <= maxClimbHeight;
+            var canClimb = isObstacle && hasTopSurface
+                && obstacleHeight >= minClimbHeight && obstacleHeight <= maxClimbHeight;
 
             result = new SForwardObstacleDetection(
                 hasHit: true,
