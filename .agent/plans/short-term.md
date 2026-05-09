@@ -7,9 +7,9 @@
 ## 路线总览
 
 ```
-Phase 1 ──────→ Phase 2 ──────→ Phase 3 ──────→ Phase 4
-Locomotion完结   生存指标+HUD    战斗基础        动画增强
-(预计2-3周)     (预计3-5周)    (预计4-6周)     (预计3-4周)
+Phase 1 ──→ Phase 1.5 ──→ Phase 2 ──→ Phase 3 ──→ Phase 4
+Loco完结   音效骨架     生存+HUD    战斗基础     动画增强
+(1-2周)    (1周)        (3-5周)    (4-6周)     (3-4周)
 ```
 
 ---
@@ -18,12 +18,28 @@ Locomotion完结   生存指标+HUD    战斗基础        动画增强
 
 **目标**: 运动系统达到可封装里程碑。
 
-| 任务 | 说明 |
+| 任务 | 状态 |
 |------|------|
-| HeadLook | Vector2Mixer 已创建，`UpdateHeadLook()` 空壳，需实现偏航/俯仰平滑、钳位 |
-| Footstep | Layer 6 + mask 已绑，需实现 FootLayer 驱动，根据前导脚切换左右脚步声 |
+| HeadLook (归一化/平滑/冻结) | ✅ 完成 |
+| Footstep (Animancer事件注入 + Debug) | ✅ 代码完成，待配合音效 |
 
-**可玩增量**: 角色动画更完整，头部随视线转向，走路有脚步声
+**可玩增量**: 角色动画完整，头部随视线转向
+
+---
+
+## Phase 1.5: 音效系统骨架 + 脚步声落地
+
+**目标**: 搭建音效系统最小骨架，让脚步声真正"听见"。
+
+| 子项 | 说明 |
+|------|------|
+| AudioManager 骨架 | Channel 音量字典 + SetVolume/Mute |
+| AudioChannel 组件 | 挂 AudioSource，注册到 AudioManager |
+| CharacterAudio 组件 | 挂 CharacterActor，持有 footstepClips[]，PlayFootstep(isRight) |
+| 接线 | BaseLayer 事件回调 → CharacterAudio.PlayFootstep |
+
+**改动范围**: `Assets/Scripts/Audio/` (新目录)，`BaseLayer` 改 1 行（Debug → CharacterAudio）
+**可玩增量**: 走路听到脚步声，音效系统可扩展
 
 ---
 

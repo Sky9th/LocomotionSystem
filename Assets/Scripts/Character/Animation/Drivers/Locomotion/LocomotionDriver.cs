@@ -36,5 +36,7 @@ namespace Game.Character.Animation.Drivers
         {
             baseLayer.InvalidateAnimationCache();
         }
+
+        internal BaseLayer BaseLayer => baseLayer;
     }
 }
