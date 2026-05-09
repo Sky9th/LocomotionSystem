@@ -8,12 +8,11 @@ namespace Game.Character.Animation.Drivers
 {
     public sealed class LocomotionDriver : BaseCharacterAnimationDriver
     {
-        [SerializeField] private LocomotionAliasProfile aliasProfile;
+        [SerializeField] private AnimationAliasProfile aliasProfile;
         [SerializeField] private LocomotionAnimationProfile animationProfile;
         [SerializeField] private LocomotionProfile locomotionProfile;
 
         private BaseLayer baseLayer;
-        private AnimancerLayer headLookLayer;
 
         public override int ChannelMask => 1 << 0;
 
@@ -21,13 +20,6 @@ namespace Game.Character.Animation.Drivers
         {
             base.OnEnable();
             baseLayer = new BaseLayer(brain?.FullBodyLayer, aliasProfile, animationProfile, locomotionProfile, brain?.CharacterRig);
-            headLookLayer = brain?.HeadLookLayer;
-
-            if (headLookLayer != null && aliasProfile?.lookMixer != null)
-            {
-                var mixer = headLookLayer.TryPlay(aliasProfile.lookMixer) as Vector2MixerState;
-                if (mixer != null) { mixer.Parameter = Vector2.zero; }
-            }
         }
 
         public override void Evaluate(in SCharacterSnapshot snapshot, float dt) { }

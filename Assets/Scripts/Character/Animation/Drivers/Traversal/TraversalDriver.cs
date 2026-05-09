@@ -7,7 +7,7 @@ namespace Game.Character.Animation.Drivers
 {
     public sealed class TraversalDriver : BaseCharacterAnimationDriver
     {
-        [SerializeField] private LocomotionAliasProfile aliasProfile;
+        [SerializeField] private AnimationAliasProfile aliasProfile;
 
         private Collider obstacleCollider;
         private Vector3 topPoint;

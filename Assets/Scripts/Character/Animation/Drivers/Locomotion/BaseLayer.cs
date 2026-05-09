@@ -15,7 +15,7 @@ namespace Game.Character.Animation.Drivers
         private StringAsset lastPlayedAlias;
         private AnimancerState currentAnimState;
 
-        internal LocomotionAliasProfile Alias { get; }
+        internal AnimationAliasProfile Alias { get; }
         internal LocomotionAnimationProfile AnimProfile { get; }
         internal LocomotionProfile LocoProfile { get; }
         internal CharacterRig Rig { get; }
@@ -26,7 +26,7 @@ namespace Game.Character.Animation.Drivers
         internal float AirborneStartY;
         internal float MaxFallDistance;
 
-        internal BaseLayer(AnimancerLayer layer, LocomotionAliasProfile alias, LocomotionAnimationProfile animProfile,
+        internal BaseLayer(AnimancerLayer layer, AnimationAliasProfile alias, LocomotionAnimationProfile animProfile,
             LocomotionProfile locoProfile, CharacterRig rig)
         {
             Layer = layer;

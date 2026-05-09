@@ -516,6 +516,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animancer: {fileID: 0}
   animator: {fileID: 0}
+  aliasProfile: {fileID: 11400000, guid: f85ef9e02053e3542b741c132b6f8f5c, type: 2}
   forwardRootMotion: 1
   applyRootMotionPlanarPositionOnly: 1
   upperBodyMask: {fileID: 0}
@@ -537,7 +538,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   aliasProfile: {fileID: 11400000, guid: f85ef9e02053e3542b741c132b6f8f5c, type: 2}
   animationProfile: {fileID: 11400000, guid: 264e4d30fb02cbb4b93aefb446d194ea, type: 2}
-  locomotionProfile: {fileID: 11400000, guid: ccdb968c11d7a5e479471e93c3666d31, type: 2}
+  locomotionProfile: {fileID: 11400000, guid: 2658baef4b1928c4ca79d1e7b70ab09a, type: 2}
 --- !u!114 &2783184157824111690
 MonoBehaviour:
   m_ObjectHideFlags: 0
