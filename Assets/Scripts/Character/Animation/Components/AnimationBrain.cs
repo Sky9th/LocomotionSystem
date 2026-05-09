@@ -11,6 +11,7 @@ namespace Game.Character.Animation.Components
     [DisallowMultipleComponent]
     public sealed class AnimationBrain : MonoBehaviour
     {
+        // ── Constants ──
         public const int TotalLayerCount = 6;
         public const int FullBody  = 0;
         public const int UpperBody = 1;
@@ -19,6 +20,7 @@ namespace Game.Character.Animation.Components
         public const int HeadLook  = 4;
         public const int Footstep  = 5;
 
+        // ── Serialized ──
         [Header("Dependencies")]
         [SerializeField] private NamedAnimancerComponent animancer;
         [SerializeField] private Animator animator;
@@ -29,7 +31,6 @@ namespace Game.Character.Animation.Components
 
         [Header("Root Motion")]
         [SerializeField] private bool forwardRootMotion = true;
-        [SerializeField] private bool applyRootMotionPlanarPositionOnly = true;
 
         [Header("Masks")]
         [SerializeField] private AvatarMask upperBodyMask;
@@ -38,26 +39,33 @@ namespace Game.Character.Animation.Components
         [SerializeField] private AvatarMask headMask;
         [SerializeField] private AvatarMask footMask;
 
+        // ── Animation Layers ──
         private AnimancerLayer fullBodyLayer;
         private AnimancerLayer headLookLayer;
         private AnimancerLayer footstepLayer;
+
+        // ── Core State ──
         private DriverArbiter fullBodyArbiter;
         private CharacterRig characterRig;
+
+        // ── Head Look ──
         private Vector2MixerState headLookMixer;
         private bool headLookInitialized;
         private float headLookSmoothedYaw;
         private float headLookSmoothedPitch;
-        internal CharacterRig CharacterRig => characterRig;
 
+        // ── Public Accessors ──
+        internal CharacterRig CharacterRig => characterRig;
         public NamedAnimancerComponent Animancer => animancer;
         public AnimancerLayer FullBodyLayer => fullBodyLayer;
         public AnimancerLayer HeadLookLayer => headLookLayer;
+
+        // ── Lifecycle ──
 
         private void Awake()
         {
             if (animancer == null) animancer = GetComponentInChildren<NamedAnimancerComponent>();
             if (animator == null) animator = GetComponentInChildren<Animator>();
-
             if (animancer == null) return;
 
             animancer.Layers.SetMinCount(TotalLayerCount);
@@ -72,10 +80,22 @@ namespace Game.Character.Animation.Components
             footstepLayer = BindLayer(Footstep, footMask);
 
             if (headLookLayer != null && aliasProfile != null && aliasProfile.lookMixer != null)
-            {
                 headLookMixer = headLookLayer.TryPlay(aliasProfile.lookMixer) as Vector2MixerState;
-            }
         }
+
+        private void OnAnimatorMove()
+        {
+            if (!forwardRootMotion || animator == null || characterRig == null) return;
+
+            if (characterRig.SuppressGroundLock)
+                characterRig.ApplyPosition(animator.deltaPosition);
+            else
+                characterRig.ApplyPositionPlanar(animator.deltaPosition);
+
+            characterRig.ApplyRotation(animator.deltaRotation);
+        }
+
+        // ── Core API ──
 
         internal void SetRig(CharacterRig rig)
         {
@@ -87,6 +107,8 @@ namespace Game.Character.Animation.Components
             fullBodyArbiter.Resolve(snapshot, Time.deltaTime);
             UpdateHeadLook(snapshot);
         }
+
+        // ── Head Look ──
 
         private void UpdateHeadLook(in SCharacterSnapshot snapshot)
         {
@@ -104,7 +126,6 @@ namespace Game.Character.Animation.Components
 
             headLookSmoothedYaw   = Mathf.MoveTowards(headLookSmoothedYaw,   target.x, step);
             headLookSmoothedPitch = Mathf.MoveTowards(headLookSmoothedPitch, target.y, step);
-
             headLookMixer.Parameter = new Vector2(headLookSmoothedYaw, headLookSmoothedPitch);
         }
 
@@ -120,17 +141,7 @@ namespace Game.Character.Animation.Components
             }
         }
 
-        private void OnAnimatorMove()
-        {
-            if (!forwardRootMotion || animator == null || characterRig == null) return;
-
-            if (characterRig.SuppressGroundLock)
-                characterRig.ApplyPosition(animator.deltaPosition);
-            else
-                characterRig.ApplyPositionPlanar(animator.deltaPosition);
-
-            characterRig.ApplyRotation(animator.deltaRotation);
-        }
+        // ── Driver Management ──
 
         internal void RegisterDriver(ICharacterAnimationDriver driver)
         {
@@ -151,6 +162,8 @@ namespace Game.Character.Animation.Components
         {
             fullBodyArbiter?.Release(driver);
         }
+
+        // ── Helpers ──
 
         private AnimancerLayer BindLayer(int index, AvatarMask mask)
         {

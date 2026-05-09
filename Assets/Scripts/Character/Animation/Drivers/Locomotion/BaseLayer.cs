@@ -26,6 +26,9 @@ namespace Game.Character.Animation.Drivers
         internal float AirborneStartY;
         internal float MaxFallDistance;
 
+        internal System.Action FootstepCallback;
+        private AnimancerState injectedMixer;
+
         internal BaseLayer(AnimancerLayer layer, AnimationAliasProfile alias, LocomotionAnimationProfile animProfile,
             LocomotionProfile locoProfile, CharacterRig rig)
         {
@@ -103,12 +106,35 @@ namespace Game.Character.Animation.Drivers
             if (alias == null) return;
             currentAnimState = Layer.TryPlay(alias);
             lastPlayedAlias = alias;
+            InjectFootstepEvents();
         }
 
         internal void PlayIfChanged(StringAsset alias)
         {
             if (alias == null || alias == lastPlayedAlias) return;
             Play(alias);
+        }
+
+        private void InjectFootstepEvents()
+        {
+            if (currentAnimState == null || currentAnimState == injectedMixer) return;
+
+            var mixer = currentAnimState as MixerState<Vector2>;
+            if (mixer == null) return;
+
+            injectedMixer = mixer;
+
+            for (int i = 0; i < mixer.ChildCount; i++)
+            {
+                var child = mixer.GetChild(i);
+                if (child == null) continue;
+
+                if (child.Events(this, out var events))
+                {
+                    events.Add(0.12f, () => FootstepCallback?.Invoke());
+                    events.Add(0.62f, () => FootstepCallback?.Invoke());
+                }
+            }
         }
     }
 }

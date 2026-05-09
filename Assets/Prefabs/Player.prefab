@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 5085968444530936421}
   - component: {fileID: 3610630312856158315}
   - component: {fileID: 8721387818594905132}
+  - component: {fileID: 7275533382615058559}
+  - component: {fileID: 2855815212552599960}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -103,6 +105,116 @@ MonoBehaviour:
   autoSubscribeInput: 1
   drawDebugGizmos: 1
   debugArrowLength: 2
+--- !u!114 &7275533382615058559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8667043660662020576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad47c03117f688e4f8bbe972db7f7d91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  footSource: {fileID: 2855815212552599960}
+  config: {fileID: 11400000, guid: d1bb8260fedfef848a12a32d3f139759, type: 2}
+--- !u!82 &2855815212552599960
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8667043660662020576}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 0
+  MinDistance: 3
+  MaxDistance: 5
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1001 &7698765721122133654
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -462,7 +574,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: bfa42ba6d484e4e448024c9acf736ce9,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 474305987094054208}
+      addedObject: {fileID: 8124664188583930696}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: bfa42ba6d484e4e448024c9acf736ce9,
         type: 3}
       insertIndex: -1
@@ -502,7 +614,7 @@ MonoBehaviour:
   _PlayAutomatically: 1
   _Animations:
   - {fileID: 1827226128182048838, guid: a4b8f2deec6a99945987cfc59b1b4e54, type: 3}
---- !u!114 &474305987094054208
+--- !u!114 &8124664188583930696
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -517,8 +629,8 @@ MonoBehaviour:
   animancer: {fileID: 0}
   animator: {fileID: 0}
   aliasProfile: {fileID: 11400000, guid: f85ef9e02053e3542b741c132b6f8f5c, type: 2}
+  animationProfile: {fileID: 0}
   forwardRootMotion: 1
-  applyRootMotionPlanarPositionOnly: 1
   upperBodyMask: {fileID: 0}
   additiveMask: {fileID: 0}
   facialMask: {fileID: 0}
