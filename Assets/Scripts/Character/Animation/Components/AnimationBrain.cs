@@ -3,6 +3,7 @@ using Animancer;
 using Game.Character.Animation.Drivers;
 using Game.Character.Animation.Requests;
 using Game.Character.Components;
+using Game.Locomotion.Animation.Config;
 
 namespace Game.Character.Animation.Components
 {
@@ -22,6 +23,10 @@ namespace Game.Character.Animation.Components
         [SerializeField] private NamedAnimancerComponent animancer;
         [SerializeField] private Animator animator;
 
+        [Header("Animation Config")]
+        [SerializeField] private AnimationAliasProfile aliasProfile;
+        [SerializeField] private LocomotionAnimationProfile animationProfile;
+
         [Header("Root Motion")]
         [SerializeField] private bool forwardRootMotion = true;
         [SerializeField] private bool applyRootMotionPlanarPositionOnly = true;
@@ -38,6 +43,10 @@ namespace Game.Character.Animation.Components
         private AnimancerLayer footstepLayer;
         private DriverArbiter fullBodyArbiter;
         private CharacterRig characterRig;
+        private Vector2MixerState headLookMixer;
+        private bool headLookInitialized;
+        private float headLookSmoothedYaw;
+        private float headLookSmoothedPitch;
         internal CharacterRig CharacterRig => characterRig;
 
         public NamedAnimancerComponent Animancer => animancer;
@@ -61,6 +70,11 @@ namespace Game.Character.Animation.Components
             BindLayer(Facial, facialMask);
             headLookLayer = BindLayer(HeadLook, headMask);
             footstepLayer = BindLayer(Footstep, footMask);
+
+            if (headLookLayer != null && aliasProfile != null && aliasProfile.lookMixer != null)
+            {
+                headLookMixer = headLookLayer.TryPlay(aliasProfile.lookMixer) as Vector2MixerState;
+            }
         }
 
         internal void SetRig(CharacterRig rig)
@@ -76,7 +90,34 @@ namespace Game.Character.Animation.Components
 
         private void UpdateHeadLook(in SCharacterSnapshot snapshot)
         {
-            // TODO: 需 LocomotionAliasProfile.lookMixer — LocomotionDriver 初始化时设置 Vector2Mixer
+            if (headLookMixer == null) return;
+
+            if (!headLookInitialized)
+            {
+                FreezeHeadLookChildren();
+                headLookInitialized = true;
+            }
+
+            Vector2 target = snapshot.Kinematic.LookDirection;
+            float speed = animationProfile != null ? animationProfile.headLookSmoothingSpeed : 12f;
+            float step = speed * Time.deltaTime;
+
+            headLookSmoothedYaw   = Mathf.MoveTowards(headLookSmoothedYaw,   target.x, step);
+            headLookSmoothedPitch = Mathf.MoveTowards(headLookSmoothedPitch, target.y, step);
+
+            headLookMixer.Parameter = new Vector2(headLookSmoothedYaw, headLookSmoothedPitch);
+        }
+
+        private void FreezeHeadLookChildren()
+        {
+            if (headLookMixer == null) return;
+            for (int i = 0; i < headLookMixer.ChildCount; i++)
+            {
+                var child = headLookMixer.GetChild(i);
+                child.Speed = 0f;
+                child.Weight = 1f;
+                child.NormalizedTime = 1f;
+            }
         }
 
         private void OnAnimatorMove()

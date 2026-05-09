@@ -33,9 +33,9 @@ namespace Game.Character.Kinematic
             float maxYaw   = profile != null ? Mathf.Max(1e-3f, profile.maxHeadYawDegrees)   : 1e-3f;
             float maxPitch = profile != null ? Mathf.Max(1e-3f, profile.maxHeadPitchDegrees) : 1e-3f;
 
-            return new Vector2(
-                Mathf.Clamp(yaw,   -maxYaw,   maxYaw),
-                Mathf.Clamp(pitch, -maxPitch, maxPitch));
+            float normYaw   = Mathf.Clamp(yaw   / maxYaw,   -1f, 1f);
+            float normPitch = Mathf.Clamp(pitch / maxPitch, -1f, 1f);
+            return new Vector2(normYaw, normPitch);
         }
 
         private static float NormalizeAngle180(float angle)

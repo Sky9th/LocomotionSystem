@@ -1,7 +1,7 @@
-# LocomotionSystem - Project Context
+# RedDust - Project Context
 
 ## Project
-Unity URP 第三人称角色运动系统重构。`feature/character-module-rebuild` 分支。
+俯视角末世生存种田流游戏。Unity URP，`feature/character-module-rebuild` 分支。
 
 ## Documentation
 - `.agent/README.md` — 文档目录约定

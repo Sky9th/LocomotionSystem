@@ -2,8 +2,8 @@ using Animancer;
 using UnityEngine;
 
 [CreateAssetMenu(
-    menuName = "Locomotion/Animancer/Locomotion Alias Profile")]
-public class LocomotionAliasProfile : ScriptableObject
+    menuName = "Game/Animation Alias Profile")]
+public class AnimationAliasProfile : ScriptableObject
 {
     [Header("Clips")]
     public StringAsset idleL;
