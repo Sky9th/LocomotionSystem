@@ -17,7 +17,6 @@ MonoBehaviour:
   IsFolder: 0
   Def: {fileID: 11400000, guid: a4daa9f1e55be4b4f81b14abf9dba4ff, type: 2}
   Children: []
-  CustomBehaviors: []
   OverrideValue: -1
 --- !u!114 &-5797870434453000154
 MonoBehaviour:
@@ -36,7 +35,6 @@ MonoBehaviour:
   IsFolder: 0
   Def: {fileID: 11400000, guid: 2b29b84b657bfdd408d274d655c2b094, type: 2}
   Children: []
-  CustomBehaviors: []
   OverrideValue: -1
 --- !u!114 &-5705263274914252253
 MonoBehaviour:
@@ -55,7 +53,6 @@ MonoBehaviour:
   IsFolder: 0
   Def: {fileID: 11400000, guid: befc5ed4dee7a074f84a6bc67d32925d, type: 2}
   Children: []
-  CustomBehaviors: []
   OverrideValue: -1
 --- !u!114 &-5630233022448061582
 MonoBehaviour:
@@ -74,7 +71,6 @@ MonoBehaviour:
   IsFolder: 0
   Def: {fileID: 11400000, guid: d5e1a2fae1ffaef459e7f777c38b42cf, type: 2}
   Children: []
-  CustomBehaviors: []
   OverrideValue: -1
 --- !u!114 &-4303218649138815959
 MonoBehaviour:
@@ -93,7 +89,6 @@ MonoBehaviour:
   IsFolder: 0
   Def: {fileID: 11400000, guid: 9508941f67b8f664b9d196d76914aceb, type: 2}
   Children: []
-  CustomBehaviors: []
   OverrideValue: -1
 --- !u!114 &11400000
 MonoBehaviour:
@@ -132,7 +127,6 @@ MonoBehaviour:
   - {fileID: -5705263274914252253}
   - {fileID: 7626621218763939440}
   - {fileID: -4303218649138815959}
-  CustomBehaviors: []
   OverrideValue: -1
 --- !u!114 &5437572723275028357
 MonoBehaviour:
@@ -155,7 +149,6 @@ MonoBehaviour:
   - {fileID: 7628254802551670545}
   - {fileID: -5871485965552576521}
   - {fileID: 8349451903572128925}
-  CustomBehaviors: []
   OverrideValue: -1
 --- !u!114 &7626621218763939440
 MonoBehaviour:
@@ -174,7 +167,6 @@ MonoBehaviour:
   IsFolder: 0
   Def: {fileID: 11400000, guid: 207483bfbd44b044cabea451050abbd9, type: 2}
   Children: []
-  CustomBehaviors: []
   OverrideValue: -1
 --- !u!114 &7628254802551670545
 MonoBehaviour:
@@ -193,7 +185,6 @@ MonoBehaviour:
   IsFolder: 0
   Def: {fileID: 11400000, guid: 7a15ed3ce1391104db43f19f8560db13, type: 2}
   Children: []
-  CustomBehaviors: []
   OverrideValue: -1
 --- !u!114 &8349451903572128925
 MonoBehaviour:
@@ -212,5 +203,4 @@ MonoBehaviour:
   IsFolder: 0
   Def: {fileID: 11400000, guid: 47db3ebc61e4d9a4898b7b1de8318e0a, type: 2}
   Children: []
-  CustomBehaviors: []
   OverrideValue: -1

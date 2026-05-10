@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: StatDef_Intelligence
   m_EditorClassIdentifier: 
   Id: Intelligence
-  Type: 1
   Min: 1
   Max: 10
   Default: 5
-  Behaviors: []

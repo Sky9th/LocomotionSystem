@@ -17,7 +17,6 @@ MonoBehaviour:
   IsFolder: 0
   Def: {fileID: 11400000, guid: d5e1a2fae1ffaef459e7f777c38b42cf, type: 2}
   Children: []
-  CustomBehaviors: []
   OverrideValue: 100
 --- !u!114 &11400000
 MonoBehaviour:

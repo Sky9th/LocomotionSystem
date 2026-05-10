@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: StatDef_Stamina
   m_EditorClassIdentifier: 
   Id: Stamina
-  Type: 0
   Min: 0
   Max: 100
   Default: 100
-  Behaviors: []

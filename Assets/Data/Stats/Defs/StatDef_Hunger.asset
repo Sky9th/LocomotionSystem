@@ -13,8 +13,13 @@ MonoBehaviour:
   m_Name: StatDef_Hunger
   m_EditorClassIdentifier: 
   Id: Hunger
-  Type: 0
   Min: 0
   Max: 100
   Default: 100
-  Behaviors: []
+  isConsumable: 1
+  consumeRate: 2
+  consumeInterval: 0
+  isRestorable: 0
+  restoreRate: 0
+  restoreInterval: 0
+  isCumulative: 0

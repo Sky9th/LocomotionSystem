@@ -1,8 +1,10 @@
 # 全量 Stats 结构树
 
-> 日期: 2026-05-10
+> 日期: 2026-05-11
 > 用途: 设计 SO 管理方案的结构化参考
 > 关联: `stats-system.md`
+> 能力标注: Consumable = IStatConsumable, Cumulative = IStatCumulative, Derived = IStatDerived
+> 未标注 = 纯 Min/Max/Default（无特殊接口）
 
 ```
 Game Stats
