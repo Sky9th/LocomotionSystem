@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7974e62be0c32494cab3584e2c26f94c, type: 3}
-  m_Name: HumanLocomotionAnimationProfile
+  m_Name: AnimationProfile
   m_EditorClassIdentifier: 
   headLookSmoothingSpeed: 12
   modeProfiles:
@@ -20,3 +20,9 @@ MonoBehaviour:
   defaultInPlaceTurnSpeed: 189
   defaultMovingTurnSpeed: 360
   landDistanceThreshold: 5
+  landMinFallDistance: 0.2
+  landLightMaxFallDistance: 1
+  landMediumMaxFallDistance: 3
+  landLightTriggerDistance: 0.3
+  landMediumTriggerDistance: 0.6
+  landHardTriggerDistance: 1

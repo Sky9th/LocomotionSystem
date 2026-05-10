@@ -10,12 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d773a40f44b054c499f696bebcd40971, type: 3}
-  m_Name: AliasProfiles
+  m_Name: AnimationAliasProfile
   m_EditorClassIdentifier: 
   idleL: {fileID: 11400000, guid: e080e4a005dcb7c47b71b7217c1e44b2, type: 2}
   idleR: {fileID: 11400000, guid: d3bd29706dbf5c249a2161d1dc6210b4, type: 2}
-  AirLoop: {fileID: 11400000, guid: cd1fc2f7b1ba8124c9f81caabd265f4e, type: 2}
-  LandHard: {fileID: 11400000, guid: 3dc11fcc4a19dc543ad1d25e674089c0, type: 2}
   idleToRun180L: {fileID: 11400000, guid: ec0724b67e41e7c4b91d5aa7220fb6ab, type: 2}
   idleToRun180R: {fileID: 11400000, guid: 75be3615ca1444c41a390819a8266640, type: 2}
   walkMixer: {fileID: 11400000, guid: ff9f31ba1724cd34187efff0895d0615, type: 2}
@@ -47,7 +45,9 @@ MonoBehaviour:
   ClimbDown2meter: {fileID: 11400000, guid: 222194444babd756f2e7debfcb41210e, type: 2}
   LandLight: {fileID: 11400000, guid: 2e461ac8a6d7a48c9a01cdd40b2596f3, type: 2}
   LandMedium: {fileID: 11400000, guid: 81d7bd12d593e2546f8512a6cd7b5b17, type: 2}
+  LandHard: {fileID: 11400000, guid: 3dc11fcc4a19dc543ad1d25e674089c0, type: 2}
   LandFromWall: {fileID: 11400000, guid: 6342e8ff732983491784058cf5192e9d, type: 2}
+  AirLoop: {fileID: 11400000, guid: cd1fc2f7b1ba8124c9f81caabd265f4e, type: 2}
   HeadLookX: {fileID: 11400000, guid: 8ab2d9352c085d24ab83203d54124dda, type: 2}
   HeadLookY: {fileID: 11400000, guid: 2369aff4318fad545aeea5c349718d6b, type: 2}
   VelocityX: {fileID: 11400000, guid: ac471ab640645ef49bd0608d5edd20f5, type: 2}
