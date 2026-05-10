@@ -4,6 +4,8 @@ using Game.Character.Config;
 using Game.Character.Input;
 using Game.Character.Kinematic;
 using Game.Character.Locomotion;
+using Game.Character.Stats;
+using Game.Stats;
 
 namespace Game.Character.Components
 {
@@ -19,16 +21,21 @@ namespace Game.Character.Components
         [Header("Locomotion")]
         [SerializeField] private LocomotionProfile locomotionProfile;
 
+        [Header("Stats")]
+        [SerializeField] private StatsTreeSO statsTree;
+
         [Header("Input")]
         [SerializeField] private bool autoSubscribeInput = true;
 
         public bool IsPlayer => isPlayer;
+        internal float PlanarSpeed { get; private set; }
 
         private CharacterInputModule inputModule;
         private CharacterRig characterRig;
         private CharacterKinematic characterKinematic;
         private ILocomotionSimulator locomotionSimulator;
         private AnimationBrain characterAnimation;
+        private CharacterStats stats;
 
         private void Awake()
         {
@@ -38,6 +45,23 @@ namespace Game.Character.Components
             inputModule = new CharacterInputModule(this);
             characterKinematic = new CharacterKinematic(transform, transform, characterRig);
             locomotionSimulator = new GroundLocomotion();
+
+            stats = new CharacterStats(statsTree);
+
+            DumpStatsTree();
+        }
+
+        private void DumpStatsTree()
+        {
+            if (statsTree == null) { Debug.Log("[StatsTree] null"); return; }
+            var resolved = statsTree.Resolve();
+            var sb = new System.Text.StringBuilder($"[StatsTree] {statsTree.name} — {resolved.Count} stats\n");
+            foreach (var r in resolved)
+            {
+                var val = r.HasOverride ? r.OverrideDefault : (r.Def != null ? r.Def.Default : 0f);
+                sb.AppendLine($"  ✅ {r.Def.Id}  ({val})");
+            }
+            Debug.Log(sb.ToString());
         }
 
         private void Start() { }
@@ -74,6 +98,9 @@ namespace Game.Character.Components
             ctx.Kinematic = characterKinematic.Evaluate(characterProfile, viewForward, deltaTime);
 
             locomotionSimulator.Simulate(ref ctx, locomotionProfile, deltaTime);
+
+            PlanarSpeed = ctx.Motor.ActualPlanarVelocity.magnitude;
+            stats?.TickAll(deltaTime);
 
             var snapshot = new SCharacterSnapshot(
                 ctx.Input,

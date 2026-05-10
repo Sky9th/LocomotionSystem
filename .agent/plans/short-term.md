@@ -8,59 +8,60 @@
 
 ```
 Phase 1 ──→ Phase 1.5 ──→ Phase 2 ──→ Phase 3 ──→ Phase 4
-Loco完结   音效骨架     生存+HUD    战斗基础     动画增强
-(1-2周)    (1周)        (3-5周)    (4-6周)     (3-4周)
+Loco完结   音效骨架     数值系统     生存+HUD    战斗基础
+(已完成)    (已完成)     (进行中)    (后续)      (后续)
 ```
 
 ---
 
-## Phase 1: LocomotionSystem 完结
+## Phase 1: LocomotionSystem 完结 ✅
 
 **目标**: 运动系统达到可封装里程碑。
 
 | 任务 | 状态 |
 |------|------|
-| HeadLook (归一化/平滑/冻结) | ✅ 完成 |
-| Footstep (Animancer事件注入 + Debug) | ✅ 代码完成，待配合音效 |
-
-**可玩增量**: 角色动画完整，头部随视线转向
+| HeadLook (归一化/平滑/冻结) | ✅ |
+| Footstep (Animancer事件注入) | ✅ |
 
 ---
 
-## Phase 1.5: 音效系统骨架 + 脚步声落地
+## Phase 1.5: 音效系统骨架 ✅
 
-**目标**: 搭建音效系统最小骨架，让脚步声真正"听见"。
+**目标**: 搭建音效系统最小骨架。
 
-| 子项 | 说明 |
+| 子项 | 状态 |
 |------|------|
-| AudioManager 骨架 | Channel 音量字典 + SetVolume/Mute |
-| AudioChannel 组件 | 挂 AudioSource，注册到 AudioManager |
-| CharacterAudio 组件 | 挂 CharacterActor，持有 footstepClips[]，PlayFootstep(isRight) |
-| 接线 | BaseLayer 事件回调 → CharacterAudio.PlayFootstep |
-
-**改动范围**: `Assets/Scripts/Audio/` (新目录)，`BaseLayer` 改 1 行（Debug → CharacterAudio）
-**可玩增量**: 走路听到脚步声，音效系统可扩展
+| AudioSetSO / AudioRequest / AudioResponse | ✅ |
+| AudioChannel (static) | ✅ |
+| CharacterAudio + FootstepSetSO | ✅ |
+| 脚步回路接通 | ✅ |
 
 ---
 
-## Phase 2: 角色生存状态
+## Phase 2: 通用数值系统 🔄
 
-**目标**: CharacterActor 上扩展生存系统，角色有血有肉。
+**目标**: 项目级 Stats 基础设施，角色作为首批消费者。
 
-| 指标 | 消耗 | 恢复 | 归零后果 |
-|------|------|------|---------|
-| 饥饿 | 持续下降 | 吃东西 | HP 下降 |
-| 口渴 | 持续下降 | 喝水 | HP 下降 |
-| 体力 | 跑/跳消耗 | 休息 | 无法冲刺 |
-| HP | 受伤 | 医疗 | 死亡 |
+### 已完成
 
-| 配套 | 说明 |
+| 功能 | 状态 |
 |------|------|
-| 状态 HUD | 四指标 + 当前装备，读 GameContext 只刷新 |
-| 数据流 | CharacterActor → Snapshot → GameContext → UI |
+| StatsTreeSO + StatsNodeSO (树形SO) | ✅ |
+| InheritsFrom 继承 + Resolve() | ✅ |
+| ResolvedStat 不修改原始 SO | ✅ |
+| StatDefSO + StatInstance + StatFactory | ✅ |
+| CharacterStats 容器 + Actor 接入 | ✅ |
+| StatsTreeWindow EditorWindow | ✅ |
+| 基本 StatDef (HP/Hunger/Thirst/Stamina + 6 Attributes) | ✅ |
+| Debug 打印 | ✅ |
 
-**优势**: 改动集中在 `Character/Components/`，不外扩
-**可玩增量**: 捡到食物要吃，受伤要治，角色有生存压力
+### 待完成
+
+| 功能 | 说明 |
+|------|------|
+| BindAll 自动接线 | ConditionId → 条件表, DepleteTarget → 归零链 |
+| 写入 SCharacterSnapshot | 外部 HUD/AI 只读 |
+| HUD 面板 | 后续 Phase |
 
 ---
 
