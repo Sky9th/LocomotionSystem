@@ -38,7 +38,7 @@ Loco完结   音效骨架     数值系统     生存+HUD    战斗基础
 
 ---
 
-## Phase 2: 通用数值系统 🔄
+## Phase 2: 通用数值系统 ✅
 
 **目标**: 项目级 Stats 基础设施，角色作为首批消费者。
 
@@ -48,20 +48,23 @@ Loco完结   音效骨架     数值系统     生存+HUD    战斗基础
 |------|------|
 | StatsTreeSO + StatsNodeSO (树形SO) | ✅ |
 | InheritsFrom 继承 + Resolve() | ✅ |
-| ResolvedStat 不修改原始 SO | ✅ |
-| StatDefSO + StatInstance + StatFactory | ✅ |
-| CharacterStats 容器 + Actor 接入 | ✅ |
+| 树路径做 Key（"Vitals/HP"） | ✅ |
+| 能力接口（IStatConsumable/IStatRestorable/IStatCumulative）| ✅ |
+| 修改器系统（StatModifier + ModifierContext 并行槽位）| ✅ |
+| StatInstance.Tick 接口分派 + 修改器管道 | ✅ |
+| StatDefSO + StatFactory | ✅ |
+| CharacterStats 容器（路径 key）+ Actor 接入 | ✅ |
+| CharacterStats.All 对外只读字典 | ✅ |
 | StatsTreeWindow EditorWindow | ✅ |
 | 基本 StatDef (HP/Hunger/Thirst/Stamina + 6 Attributes) | ✅ |
 | Debug 打印 | ✅ |
+| 去掉 StatType enum + Behaviors/ 目录 | ✅ |
 
-### 待完成
+### 划掉的探索
 
-| 功能 | 说明 |
-|------|------|
-| BindAll 自动接线 | ConditionId → 条件表, DepleteTarget → 归零链 |
-| 写入 SCharacterSnapshot | 外部 HUD/AI 只读 |
-| HUD 面板 | 后续 Phase |
+- ~~BindAll 概念~~ — 实为构造末尾一次字符串→引用解析，已合并进 CharacterStats
+- ~~ConditionId/Condition 条件表~~ — 业务逻辑收敛于 Character，外部干预走修改器
+- ~~SCharacterStatsSnapshot 独立 struct~~ — 直接暴露 `IReadOnlyDictionary<string, StatInstance>`
 
 ---
 

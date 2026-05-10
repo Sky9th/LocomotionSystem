@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: StatDef_HP
   m_EditorClassIdentifier: 
   Id: HP
-  Type: 1
   Min: 0
   Max: 100
   Default: 100
-  Behaviors: []

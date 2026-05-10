@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: StatDef_Strength
   m_EditorClassIdentifier: 
   Id: Strength
-  Type: 1
   Min: 1
   Max: 10
   Default: 5
-  Behaviors: []

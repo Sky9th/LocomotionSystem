@@ -9,7 +9,7 @@ namespace Game.Stats
         public StatsTreeSO InheritsFrom;
         public StatsNodeSO[] Children;
 
-        public IReadOnlyList<ResolvedStat> Resolve()
+        public IReadOnlyList<StatInstance> Resolve()
         {
             var nodes = CollectNodes();
             return ExtractLeaves(nodes);
@@ -34,36 +34,37 @@ namespace Game.Stats
                 MergeNodes(tree.Children, list);
         }
 
-        private static void MergeNodes(StatsNodeSO[] nodes, List<StatsNodeSO> list)
+        private static void MergeNodes(StatsNodeSO[] nodes, List<StatsNodeSO> list, string parentPath = "")
         {
             foreach (var node in nodes)
             {
                 if (node == null) continue;
+                node.Path = string.IsNullOrEmpty(parentPath) ? node.Id : $"{parentPath}/{node.Id}";
                 var existing = list.FindIndex(n => n.Id == node.Id);
                 if (existing >= 0)
                     list[existing] = node;
                 else
                     list.Add(node);
                 if (node.IsFolder && node.Children != null)
-                    MergeNodes(node.Children, list);
+                    MergeNodes(node.Children, list, node.Path);
             }
         }
 
-        private static IReadOnlyList<ResolvedStat> ExtractLeaves(List<StatsNodeSO> nodes)
+        private static IReadOnlyList<StatInstance> ExtractLeaves(List<StatsNodeSO> nodes)
         {
-            var leaves = new List<ResolvedStat>();
+            var instances = new List<StatInstance>();
             foreach (var node in nodes)
             {
                 if (!node.IsEnabled || node.IsFolder) continue;
                 if (node.Def == null) continue;
 
-                var rs = new ResolvedStat { Def = node.Def };
-                rs.OverrideDefault = node.OverrideValue;
-                rs.EffectiveBehaviors = node.CustomBehaviors is { Length: > 0 }
-                    ? node.CustomBehaviors : node.Def.Behaviors;
-                leaves.Add(rs);
+                var instance = new StatInstance(node.Def, node.OverrideValue)
+                {
+                    Path = node.Path
+                };
+                instances.Add(instance);
             }
-            return leaves;
+            return instances;
         }
     }
 }

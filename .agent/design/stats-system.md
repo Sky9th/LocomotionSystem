@@ -1,62 +1,104 @@
 # 通用数值系统设计
 
-> 日期: 2026-05-10
-> 状态: Phase 2 已实现
+> 日期: 2026-05-11
+> 状态: Phase 2 重构完成
 > 定位: 项目级共享基础设施
 
-## 核心: StatsTree SO 树
+## 核心设计
 
-一个子系统一棵 `StatsTree`。节点通过 `StatsNodeSO` 递归嵌套。派生树通过 `InheritsFrom` 继承 + `IsEnabled`/`OverrideValue` 覆盖。
+### 能力勾选
 
-## 三类 SO
+Stat 的能力在 Inspector 上直接勾选，不挂在 class 级接口：
 
-| 类 | 作用 |
-|----|------|
-| `StatsTreeSO` | 树根，`InheritsFrom` + `Children` + `Resolve()` |
-| `StatsNodeSO` | 节点，`IsFolder`/`IsEnabled`/`Def`/`OverrideValue`/`CustomBehaviors` |
-| `StatDefSO` | 叶子定义（不变量：Id, Type, Min, Max, Default, Behaviors） |
+`isConsumable` / `isRestorable` / `isCumulative` — 勾上即生效，Tick() 检查 bool。
+接口文件（`IStatConsumable` 等）保留作为文档契约，StatDefSO 不实现它们。外部判断用 `Def.IsConsumable`。
 
-## 继承与覆盖
+### 修改器 — 并行槽位
+
+不同系统独立添加修改器，不串行调用。每个修改器写独立槽位：
 
 ```
-CharacterTree:   Vitals → HP(100), Hunger(100) ...
-HumanTree:       InheritsFrom=Character, 不做修改
-ZombieTree:      InheritsFrom=Character
-  覆盖 Vitals.IsEnabled=false, HP.OverrideValue=30
+ModifierContext { Addend, Multiplier }
 ```
 
-`Resolve()`: CollectFrom(父树) → MergeNodes(本级覆盖) → ExtractLeaves(只取启用的叶子)
+合并公式：`(baseRate + Addend) * Multiplier`
 
-输出 `ResolvedStat{Def, OverrideDefault, EffectiveBehaviors}`——不修改原始 SO。
+多系统互不知晓，槽位类型消解顺序冲突。护甲（Addend += 5）和天气（Multiplier *= 1.5）同时生效，结果确定。
+
+### 修改器生命周期
+
+每个修改器带 `Owner`，创建者负责回收：
+
+```csharp
+stat.AddModifier(new StatModifier { Owner = this, Apply = (s, ctx) => ctx.Multiplier = 0 });
+// ... 效果结束
+stat.RemoveByOwner(this);
+```
+
+### 树路径做 Key
+
+沿 SO 树节点 `Id` 拼接路径（`"Vitals/HP"`、`"Attributes/Strength"`），Resolve 时生成。字典、对外查询、DepleteTarget 引用都用路径。
+
+### 决策权
+
+- Stat 根据自身能力自行 Tick，Character 只调 `TickAll(dt)`
+- 外部系统不直接调 Modify，而是通过 AddModifier/RemoveModifier 注入影响
+- 角色自身状态（冲刺等）同样走修改器
+
+### 计时策略
+
+统一帧累加，无异步/CancellationToken 清理负担：
+
+| 间隔 | 策略 | 公式 |
+|------|------|------|
+| `0`（每帧）| dt 缩放 | `rate × dt` |
+| `>0`（定时）| 帧累加 + catch-up | `rate × ticks` |
+
+长间隔后续接入 TimeManager 再改为事件驱动。`StatInstance.Tick()` 无外部生命周期依赖。
+
+## 历史
+
+- 去掉 `ResolvedStat`、`StatFactory` — 树直接产出 `StatInstance[]`，无中间 struct
+- 去掉 `Behaviors/` 目录 — 能力数据回归 `StatDefSO` 的 bool 勾选 + 字段
+- 去掉 `StatType` enum — 能力组合 > 互斥分类
+- 去掉 `ConditionId/Condition` — 业务逻辑收敛在 Character
 
 ## 运行时
 
 ```
 CharacterActor.Awake():
-  stats = new CharacterStats(statsTree)   ← tree.Resolve() → StatFactory.Create → Container
-  stats.Dump()                             ← 打印去重后的有效属性列表
+  stats = new CharacterStats(statsTree)   ← tree.Resolve() 直接产出 StatInstance[]
 
 CharacterActor.Update():
-  stats.TickAll(dt)
+  stats.TickAll(dt)                        ← 各 stat 按能力勾选自行分派
 ```
+
+## 三类实体
+
+| 实体 | 作用 |
+|------|------|
+| `StatDefSO` | 定义 + 能力勾选，Inspector 编辑 |
+| `StatsTreeSO` / `StatsNodeSO` | 层级组织 + 继承覆盖，Resolve 时生成路径并直接 new StatInstance |
+| `StatInstance` | 运行时实例，Current + modifiers[] + Tick 分派 |
 
 ## 目录
 
 ```
 Assets/Scripts/Stats/
-├── StatType.cs                [enum]
-├── StatDefSO.cs               [SO] { Id, Type, Min, Max, Default, Behaviors[] }
-├── StatsTreeSO.cs             [SO] { InheritsFrom, Children[], Resolve() }
-├── StatsNodeSO.cs             [SO] { Id, IsFolder, IsEnabled, Def, Children[], OverrideValue }
-├── StatInstance.cs            [class] { Def, Current, Modify, Tick }
-├── StatFactory.cs             static Create(ResolvedStat)
-├── ResolvedStat.cs            [struct] { Def, OverrideDefault, EffectiveBehaviors }
-├── StatModifier.cs            [struct] 未来
-├── Behaviors/
-│   └── ConsumeOverTime, RestoreOverTime, DepleteTarget, ThresholdLevel
+├── Interfaces/               (契约文档，SO 不实现)
+│   ├── IStatConsumable.cs
+│   ├── IStatRestorable.cs
+│   ├── IStatCumulative.cs
+│   └── IStatDerived.cs
+├── StatDefSO.cs               [SO] Id/Min/Max/Default + isConsumable/isRestorable/isCumulative
+├── StatsTreeSO.cs             [SO] InheritsFrom + Resolve() → StatInstance[]
+├── StatsNodeSO.cs             [SO] Id/IsFolder/Def/OverrideValue + Path
+├── StatInstance.cs            Current + Path + modifiers[] + Tick
+├── StatModifier.cs            {Owner, Apply(stat, ctx)}
+├── ModifierContext.cs         {Addend, Multiplier}
 └── Editor/
-    └── StatsTreeWindow.cs     EditorWindow: 可视化编辑树
+    └── StatsTreeWindow.cs     EditorWindow
 
 Assets/Scripts/Character/Stats/
-└── CharacterStats.cs          容器: Dictionary + TickAll
+└── CharacterStats.cs          容器: Dictionary<path, StatInstance> + TickAll + All
 ```

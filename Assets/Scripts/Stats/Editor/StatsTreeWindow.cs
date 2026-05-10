@@ -172,18 +172,6 @@ namespace Game.Stats.Editor
             }
         }
 
-        private static StatBehaviorSO[] ShowBehaviors(StatBehaviorSO[] behaviors)
-        {
-            if (behaviors == null || behaviors.Length == 0)
-                return null;
-            for (int i = 0; i < behaviors.Length; i++)
-            {
-                EditorGUILayout.ObjectField(behaviors[i], typeof(StatBehaviorSO), false,
-                    GUILayout.Width(180));
-            }
-            return behaviors;
-        }
-
         private static StatsNodeSO CreateNode(string id, bool isFolder, string parentPrefix)
         {
             var node = CreateInstance<StatsNodeSO>();

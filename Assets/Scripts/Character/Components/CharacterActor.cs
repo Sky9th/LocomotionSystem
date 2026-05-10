@@ -56,11 +56,8 @@ namespace Game.Character.Components
             if (statsTree == null) { Debug.Log("[StatsTree] null"); return; }
             var resolved = statsTree.Resolve();
             var sb = new System.Text.StringBuilder($"[StatsTree] {statsTree.name} — {resolved.Count} stats\n");
-            foreach (var r in resolved)
-            {
-                var val = r.HasOverride ? r.OverrideDefault : (r.Def != null ? r.Def.Default : 0f);
-                sb.AppendLine($"  ✅ {r.Def.Id}  ({val})");
-            }
+            foreach (var s in resolved)
+                sb.AppendLine($"  ✅ {s.Path}  ({s.Current})");
             Debug.Log(sb.ToString());
         }
 

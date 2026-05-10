@@ -10,7 +10,8 @@ namespace Game.Stats
         public bool IsFolder;
         public StatDefSO Def;
         public StatsNodeSO[] Children;
-        public StatBehaviorSO[] CustomBehaviors;
         [Min(-1f)] public float OverrideValue = -1f;
+
+        [System.NonSerialized] public string Path;
     }
 }
