@@ -9,7 +9,7 @@
 ```
 Phase 1 ──→ Phase 1.5 ──→ Phase 2 ──→ Phase 2.5 ──→ Phase 3 ──→ Phase 4 ──→ Phase 5
 Loco完结   音效骨架     数值系统     Stats管理    HUD UI     战斗基础    动画增强
-(已完成)    (已完成)     (已完成)    (进行中)     (后续)      (后续)      (后续)
+(已完成)    (已完成)     (已完成)    (已完成)     (后续)      (后续)      (后续)
 ```
 
 ---
@@ -68,19 +68,23 @@ Loco完结   音效骨架     数值系统     Stats管理    HUD UI     战斗�
 
 ---
 
-## Phase 2.5: Character Stats 管理 🔄
+## Phase 2.5: Character Stats 管理 ✅
 
 **目标**: Character 作为决策者，消费数值系统。Stat 自行 Tick，Character 管修改器、归零链、伤害入口。
 
-| 子项 | 说明 |
+| 子项 | 状态 |
 |------|------|
-| 体力冲刺 | 冲刺时 addModifier 加速消耗，停止时 remove |
-| 饥饿归零扣血 | CharacterActor.Update 中检查，hunger==0 → hp.Modify(-damage) |
-| 伤害入口 | `TakeDamage(float)` → hp.Modify(-amount)，外部系统统一入口 |
-| Stats 推 GameContext | 每帧更新，UI 可读（暂用 `stats.All` 直接暴露） |
+| Rule 分层架构（5 种行为模式基类）| ✅ |
+| SprintStaminaRule — 冲刺体力 ×3 | ✅ |
+| HungerDepleteRule — 归零扣 HP | ✅ |
+| DamageRule — 外伤攒批（待接入事件）| ✅ |
+| Stats 推 SCharacterSnapshot | ✅ |
+| Debug UI 显示实时数值 | ✅ |
+
+**架构**: Rules 归 CharacterStats 管理，CharacterActor 只调 `stats.Update(ctx, dt)`
 
 **依赖**: Phase 2 完整
-**可玩增量**: 跑起来体力降，饿了扣血，能受伤
+**可玩增量**: 跑起来体力降，饿了扣血
 
 ---
 
