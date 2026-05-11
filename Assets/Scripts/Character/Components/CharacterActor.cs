@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Game.Character.Animation.Components;
 using Game.Character.Config;
@@ -97,12 +98,20 @@ namespace Game.Character.Components
             locomotionSimulator.Simulate(ref ctx, locomotionProfile, deltaTime);
 
             PlanarSpeed = ctx.Motor.ActualPlanarVelocity.magnitude;
-            stats?.TickAll(deltaTime);
+            stats?.Update(ctx, deltaTime);
 
             var snapshot = new SCharacterSnapshot(
                 ctx.Input,
                 ctx.Kinematic,
                 new SLocomotionState(ctx.Motor, ctx.Discrete));
+
+            if (stats != null)
+            {
+                var dict = new Dictionary<string, (float current, float max)>();
+                foreach (var kv in stats.All)
+                    dict[kv.Key] = (kv.Value.Current, kv.Value.Def.Max);
+                snapshot.Stats = dict;
+            }
 
             characterAnimation?.Apply(in snapshot);
             context.UpdateSnapshot(snapshot);
