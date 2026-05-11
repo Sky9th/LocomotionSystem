@@ -100,5 +100,14 @@ Assets/Scripts/Stats/
     └── StatsTreeWindow.cs     EditorWindow
 
 Assets/Scripts/Character/Stats/
-└── CharacterStats.cs          容器: Dictionary<path, StatInstance> + TickAll + All
+├── CharacterStats.cs          容器: Dictionary<path, StatInstance> + TickAll + All
+└── Rules/                     业务逻辑层（Rule 模式）
+    ├── CharacterStatRule.cs   抽象基类
+    ├── ToggleModifierRule.cs  持续状态 ± 修改器
+    ├── DepleteChainRule.cs    归零链
+    ├── BatchDamageRule.cs     一次性事件攒批
+    ├── PassiveGainRule.cs     被动增加
+    └── ...                    具体 Rule（SprintStamina, HungerDeplete 等）
+
+详见 tech/modules/character/stats-rule-system.md
 ```

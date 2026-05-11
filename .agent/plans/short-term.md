@@ -7,9 +7,9 @@
 ## 路线总览
 
 ```
-Phase 1 ──→ Phase 1.5 ──→ Phase 2 ──→ Phase 3 ──→ Phase 4
-Loco完结   音效骨架     数值系统     生存+HUD    战斗基础
-(已完成)    (已完成)     (进行中)    (后续)      (后续)
+Phase 1 ──→ Phase 1.5 ──→ Phase 2 ──→ Phase 2.5 ──→ Phase 3 ──→ Phase 4 ──→ Phase 5
+Loco完结   音效骨架     数值系统     Stats管理    HUD UI     战斗基础    动画增强
+(已完成)    (已完成)     (已完成)    (进行中)     (后续)      (后续)      (后续)
 ```
 
 ---
@@ -68,7 +68,38 @@ Loco完结   音效骨架     数值系统     生存+HUD    战斗基础
 
 ---
 
-## Phase 3: 战斗基础
+## Phase 2.5: Character Stats 管理 🔄
+
+**目标**: Character 作为决策者，消费数值系统。Stat 自行 Tick，Character 管修改器、归零链、伤害入口。
+
+| 子项 | 说明 |
+|------|------|
+| 体力冲刺 | 冲刺时 addModifier 加速消耗，停止时 remove |
+| 饥饿归零扣血 | CharacterActor.Update 中检查，hunger==0 → hp.Modify(-damage) |
+| 伤害入口 | `TakeDamage(float)` → hp.Modify(-amount)，外部系统统一入口 |
+| Stats 推 GameContext | 每帧更新，UI 可读（暂用 `stats.All` 直接暴露） |
+
+**依赖**: Phase 2 完整
+**可玩增量**: 跑起来体力降，饿了扣血，能受伤
+
+---
+
+## Phase 3: 基本 HUD UI
+
+**目标**: 能看到数值变化，测试有反馈。
+
+| 子项 | 说明 |
+|------|------|
+| Main UI | 主菜单占位，进入游戏按钮 |
+| In-Game HUD | 左上显示 HP/Hunger/Thirst/Stamina 数值条 |
+| 数据源 | 读 `GameContext` 中 CharacterStats 的快照 |
+
+**依赖**: Phase 2.5 Stats 管理
+**可玩增量**: 跑动/等待时能看到数值实时变化
+
+---
+
+## Phase 4: 战斗基础
 
 **目标**: 能做最简单的近战攻击。
 
@@ -79,12 +110,12 @@ Loco完结   音效骨架     数值系统     生存+HUD    战斗基础
 | 武器数据 | ScriptableObject，伤害值/攻速 |
 | 基础反馈 | 命中音效/特效 |
 
-**依赖**: Phase 2 的 HP 系统
+**依赖**: Phase 2.5 的 HP 系统 + 伤害入口
 **可玩增量**: 能砍丧尸，战斗循环建立
 
 ---
 
-## Phase 4: 角色动画增强
+## Phase 5: 角色动画增强
 
 **目标**: 受伤有视觉反馈，上半身动画独立。
 
@@ -94,7 +125,7 @@ Loco完结   音效骨架     数值系统     生存+HUD    战斗基础
 | UpperBody 覆盖 | 利用 Layer 1 + mask，上半身独立于下肢播放 |
 | 多层仲裁雏形 | 为 UpperBody/Additive/Facial 铺路 |
 
-**依赖**: Phase 3 + 多层仲裁器（同步实现）
+**依赖**: Phase 4 + 多层仲裁器（同步实现）
 **可玩增量**: 受击有反应，动画更自然
 
 ---

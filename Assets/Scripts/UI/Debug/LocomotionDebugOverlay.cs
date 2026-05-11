@@ -47,6 +47,13 @@ public class LocomotionDebugOverlay : UIOverlayBase
             .Append(" | TURN ").Append(f(disc.IsTurning))
             .Append(" | GROUND ").Append(f(kin.GroundContact.IsGrounded));
 
+        if (snapshot.Stats != null)
+        {
+            summaryBuilder.AppendLine().AppendLine();
+            foreach (var kv in snapshot.Stats)
+                summaryBuilder.AppendFormat("{0}: {1:F0}/{2:F0}  ", kv.Key, kv.Value.current, kv.Value.max);
+        }
+
         leftBuilder.Clear();
         Header(leftBuilder, "Kinematic");
         KV(leftBuilder, "Position", kin.Position.ToString("F2"));
