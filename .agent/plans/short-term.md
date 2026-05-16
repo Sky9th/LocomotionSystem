@@ -88,18 +88,74 @@ Loco完结   音效骨架     数值系统     Stats管理    HUD UI     战斗�
 
 ---
 
-## Phase 3: 基本 HUD UI
+## Phase 3: 基本 HUD UI 🔧
 
-**目标**: 能看到数值变化，测试有反馈。
+> 更新: 2026-05-16
+> 状态: 代码完成，待 Unity Editor 搭建 Prefab
+> 方案: uGUI + DOTween + ScriptableObject 配置驱动，主菜单参考 PZ 风格
 
-| 子项 | 说明 |
+**目标**: MainMenu → 进入游戏 → VitalsOverlay 显示。
+
+### 架构
+
+```
+UIManager (BaseService)
+├── Screen 层    全屏互斥，fade Enter/Exit（MainMenuScreen）
+├── Overlay 层   HUD 并存，fade Enter/Exit（VitalsOverlay）
+└── Modal 层     弹窗栈（后续）
+```
+
+- 跨模块通信（Core→UI）走 EventDispatcher：UIManager 订阅 `SGameState`
+- UI 内部通信走层级链：面板直接调用 UIManager 方法，不发全局事件
+
+### 代码文件（11 个，已完成）
+
+```
+Assets/Scripts/UI/
+├── UIManager.cs                       # BaseService，编排器
+├── Core/
+│   ├── EUIPanelType.cs                # Screen / Overlay / Modal
+│   ├── UIScreen.cs                    # CanvasGroup fade + Enter/Exit
+│   └── UIOverlay.cs                   # CanvasGroup fade + Enter/Exit
+├── Config/
+│   ├── UIThemeSO.cs                   # 颜色/字体/间距/动画
+│   └── UIPanelConfigSO.cs             # id → prefab + type 注册
+├── Components/
+│   ├── UIButton.cs                    # DOTween hover/press
+│   ├── UILabel.cs                     # UITextStyle 枚举驱动
+│   └── UIStatBar.cs                   # 填充条 + 颜色阈值
+├── MainMenu/
+│   └── MainMenuScreen.cs             # PZ 风格主菜单
+└── HUD/
+    └── VitalsOverlay.cs              # HP/Hunger/Thirst/Stamina
+```
+
+### Unity Editor 构建步骤
+
+| 步骤 | 内容 |
 |------|------|
-| Main UI | 主菜单占位，进入游戏按钮 |
-| In-Game HUD | 左上显示 HP/Hunger/Thirst/Stamina 数值条 |
-| 数据源 | 读 `GameContext` 中 CharacterStats 的快照 |
+| 1. GameManager.prefab | 添加 UIManager 子节点，内建 Canvas + ScreenContainer/OverlayContainer/ModalContainer |
+| 2. SO 资产 | UIThemeSO（暗色默认值）、UIPanelConfigSO（空 panels 列表）|
+| 3. MainMenuScreen.prefab | 暗色背景 + 居中标题 + 4 按钮（VerticalLayoutGroup）+ 右下版本号 |
+| 4. VitalsOverlay.prefab | 左上面板，4 个 UIStatBar 竖排（HP/Hunger/Thirst/Stamina）|
+| 5. 连线 | PanelConfig 注册两条 entry，UIManager 挂载配置引用 |
+| 6. 测试 | MainMenu.unity → 新游戏 → SampleScene 加载 → VitalsOverlay 显示 |
+
+### 场景过渡
+
+```
+RequestNewGame()
+  → IsInputBlocked = true
+  → MainMenu PlayExitSequence (fade out)
+  → SceneManager.LoadSceneAsync("SampleScene")
+  → GameState.RequestState(Playing)
+  → SGameState 事件触发
+  → HideScreen("MainMenu") + ShowOverlay("VitalsOverlay")
+  → IsInputBlocked = false
+```
 
 **依赖**: Phase 2.5 Stats 管理
-**可玩增量**: 跑动/等待时能看到数值实时变化
+**可玩增量**: 主菜单 → 进入游戏 → 数值条实时变化
 
 ---
 
