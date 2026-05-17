@@ -12,9 +12,10 @@ public class UIManager : BaseService
     [SerializeField] private Transform overlayContainer;
     [SerializeField] private Transform modalContainer;
 
-    private readonly Dictionary<string, PanelState> panelStates = new();
+    private readonly Dictionary<UIPanelId, PanelState> panelStates = new();
     private UIScreen currentScreen;
-    private string currentScreenId;
+    private UIPanelId currentScreenId;
+    private bool hasCurrentScreen;
     private readonly List<UIOverlay> activeOverlays = new();
 
     public bool IsInputBlocked { get; private set; }
@@ -47,7 +48,7 @@ public class UIManager : BaseService
 
     // ---- Public API ----
 
-    public void ShowScreen(string id, object args = null)
+    public void ShowScreen(UIPanelId id, object args = null)
     {
         if (!TryGetPanel(id, EUIPanelType.Screen, out UIScreen screen)) return;
         if (screen == currentScreen) return;
@@ -57,7 +58,7 @@ public class UIManager : BaseService
             var old = currentScreen;
             var oldId = currentScreenId;
             currentScreen = null;
-            currentScreenId = null;
+            hasCurrentScreen = false;
 
             old.PlayExitSequence().OnComplete(() =>
             {
@@ -72,7 +73,7 @@ public class UIManager : BaseService
         }
     }
 
-    private void ActivateScreen(UIScreen screen, string id, object args)
+    private void ActivateScreen(UIScreen screen, UIPanelId id, object args)
     {
         currentScreen = screen;
         currentScreenId = id;
@@ -80,13 +81,13 @@ public class UIManager : BaseService
         screen.PlayEnterSequence(args);
     }
 
-    public void HideScreen(string id)
+    public void HideScreen(UIPanelId id)
     {
         if (!TryGetPanel(id, EUIPanelType.Screen, out UIScreen screen)) return;
         if (screen == currentScreen)
         {
             currentScreen = null;
-            currentScreenId = null;
+            hasCurrentScreen = false;
         }
 
         panelStates.Remove(id);
@@ -96,7 +97,7 @@ public class UIManager : BaseService
         });
     }
 
-    public void ShowOverlay(string id, object args = null)
+    public void ShowOverlay(UIPanelId id, object args = null)
     {
         if (!TryGetPanel(id, EUIPanelType.Overlay, out UIOverlay overlay)) return;
 
@@ -108,7 +109,7 @@ public class UIManager : BaseService
         overlay.PlayEnterSequence(args);
     }
 
-    public void HideOverlay(string id)
+    public void HideOverlay(UIPanelId id)
     {
         if (!TryGetPanel(id, EUIPanelType.Overlay, out UIOverlay overlay)) return;
         if (!activeOverlays.Remove(overlay)) return;
@@ -138,7 +139,7 @@ public class UIManager : BaseService
 
     // ---- Internal ----
 
-    private bool TryGetPanel<T>(string id, EUIPanelType type, out T panel) where T : MonoBehaviour
+    private bool TryGetPanel<T>(UIPanelId id, EUIPanelType type, out T panel) where T : MonoBehaviour
     {
         panel = null;
 
@@ -148,8 +149,23 @@ public class UIManager : BaseService
             return panel != null;
         }
 
-        if (!panelConfig.TryGetEntry(id, out var entry)) return false;
-        if (entry.type != type) return false;
+        if (!panelConfig.TryGetEntry(id, out var entry))
+        {
+            Debug.LogError($"[UIManager] Panel '{id}' not found in PanelConfig. Add it to the config SO.", this);
+            return false;
+        }
+
+        if (entry.type != type)
+        {
+            Debug.LogError($"[UIManager] Panel '{id}' type is {entry.type}, expected {type}.", this);
+            return false;
+        }
+
+        if (entry.prefab == null)
+        {
+            Debug.LogError($"[UIManager] Panel '{id}' prefab is null.", this);
+            return false;
+        }
 
         var container = type switch
         {
@@ -160,7 +176,7 @@ public class UIManager : BaseService
         };
 
         var instance = Instantiate(entry.prefab, container != null ? container : transform);
-        instance.name = id;
+        instance.name = id.ToString();
 
         if (instance.TryGetComponent<T>(out var component))
         {
@@ -211,12 +227,12 @@ public class UIManager : BaseService
         switch (state)
         {
             case EGameState.MainMenu:
-                ShowScreen("MainMenu");
+                ShowScreen(UIPanelId.MainMenu);
                 break;
             case EGameState.Playing:
-                if (currentScreenId != null)
+                if (hasCurrentScreen)
                     HideScreen(currentScreenId);
-                ShowOverlay("VitalsOverlay");
+                ShowOverlay(UIPanelId.VitalsOverlay);
                 break;
         }
     }

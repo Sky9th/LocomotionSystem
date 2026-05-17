@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+[ExecuteAlways]
 public class UIStatBar : MonoBehaviour
 {
     [SerializeField] private UIThemeSO theme;
@@ -22,8 +23,12 @@ public class UIStatBar : MonoBehaviour
     public void SetValue(float normalized)
     {
         targetFill = Mathf.Clamp01(normalized);
-        if (fillImage != null)
+        if (fillImage == null) return;
+
+        if (Application.isPlaying)
             fillImage.DOFillAmount(targetFill, fillDuration).SetEase(Ease.OutCubic);
+        else
+            fillImage.fillAmount = targetFill;
     }
 
     public void SetValue(float current, float max)

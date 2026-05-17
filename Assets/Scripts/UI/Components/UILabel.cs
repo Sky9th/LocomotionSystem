@@ -3,6 +3,7 @@ using UnityEngine;
 
 public enum UITextStyle { Title, Subtitle, Body, Button, Small }
 
+[ExecuteAlways]
 public class UILabel : MonoBehaviour
 {
     [SerializeField] private UIThemeSO theme;
@@ -11,9 +12,11 @@ public class UILabel : MonoBehaviour
 
     public string Text
     {
-        get => tmpText != null ? tmpText.text : "";
-        set { if (tmpText != null) tmpText.text = value; }
+        get => tmpText.text;
+        set => tmpText.text = value;
     }
+
+    public void SetText(string text) => tmpText.text = text;
 
     private void Awake()
     {
@@ -50,7 +53,7 @@ public class UILabel : MonoBehaviour
             case UITextStyle.Button:
                 tmpText.font = theme.bodyFont;
                 tmpText.fontSize = theme.buttonFontSize;
-                tmpText.color = theme.buttonTextColor;
+                tmpText.color = theme.GetColorSet(UIColorStyle.Normal).onPrimary;
                 break;
             case UITextStyle.Small:
                 tmpText.font = theme.bodyFont;
