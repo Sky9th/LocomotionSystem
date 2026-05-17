@@ -1,7 +1,7 @@
 # UI System — 技术实现
 
-> 日期: 2026-05-16
-> 状态: 代码完成，待 Unity Editor 搭建 Prefab
+> 更新: 2026-05-17
+> 状态: MainMenu 可运行，颜色风格系统已落地
 > 方案: uGUI + DOTween + ScriptableObject 配置驱动
 
 ## 文件结构
@@ -104,6 +104,42 @@ RequestNewGame()
 |---|---|---|
 | Pause/Resume | 有 | 无 |
 | 管理方式 | 互斥，UIManager.currentScreen | 并存，List<UIOverlay> |
+
+## 颜色风格系统
+
+### UIColorSet（9 色结构体）
+
+```csharp
+[Serializable]
+public struct UIColorSet
+{
+    public Color primary;          // 按钮背景
+    public Color primaryHover;     // 按钮悬浮
+    public Color primaryPressed;   // 按钮按下
+    public Color onPrimary;        // 按钮文字
+    public Color surface;          // 面板背景
+    public Color surfaceAlt;       // 交替行
+    public Color onSurface;        // 面板文字
+    public Color onSurfaceMuted;   // 弱化文字
+    public Color border;           // 描边
+}
+```
+
+### UIColorStyle（全局风格枚举）
+
+`Normal / Primary / Danger / Warning / Success`
+
+### UIThemeSO.GetColorSet(style)
+
+返回对应 `UIColorSet`，UIButton 的 ApplyTheme 和 Pointer 方法通过此方法取色。组件加 `[SerializeField] private UIColorStyle style` 字段，Inspector 下拉切换。
+
+### 组件色彩角色映射
+
+| 组件 | 使用的 UIColorSet 字段 |
+|------|----------------------|
+| UIButton | bg=primary, hover=primaryHover, press=primaryPressed, text=onPrimary |
+| UIPanel（后续） | bg=surface, subtitle=onSurfaceMuted, border=border |
+| UILabel（后续） | 在按钮上=onPrimary，在面板内=onSurface |
 
 ## 配置：UIThemeSO
 

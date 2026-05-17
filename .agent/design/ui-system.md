@@ -1,8 +1,7 @@
 # UI 系统设计
 
-> 日期: 2026-05-16
-> 状态: 代码完成，待 Unity Editor 搭建 Prefab
-> 定位: 俯视角末世生存游戏的 UI 系统，主菜单参考 Project Zomboid 风格
+> 更新: 2026-05-17
+> 状态: MainMenu 可运行，WYSIWYG 方案待实施
 
 ## 全貌
 
@@ -88,14 +87,57 @@ Stamina  绿色条 + 40/100
 
 每 0.1s 从 `SCharacterSnapshot.Stats` 字典读取，DOTween 驱动 fillAmount 平滑过渡。角色未生成时（Stats == null）条保持初始空值，显示 "--"。
 
-## 主题驱动
+## 主题驱动与所见即所得
 
-所有颜色/字体/字号/间距/动画参数集中在 `UIThemeSO` 一份 SO 中。组件在 Awake 时读取应用。策划在 Inspector 中可直接调色——不需要改代码或重新运行场景。
+所有颜色/字体/字号/间距/动画参数集中在 `UIThemeSO`。组件加 `[ExecuteAlways]` 标签，Awake 在 Edit 模式也执行——拖入 Prefab 即显示主题色，改 SO 值即时刷新。
 
-## 组件库
+DOTween 调用（Pointer 回调、UIStatBar.Update）加 `if (!Application.isPlaying) return` 守卫，Edit 模式跳过补间。
 
-| 组件 | 作用 |
+### 颜色风格系统
+
+每种风格（Normal / Primary / Danger / Warning / Success）定义一套完整色板 `UIColorSet`，包含 9 个颜色角色：
+
+| 角色 | 用途 |
 |------|------|
-| UIButton | 主题按钮，DOTween hover/press 动画，OnClicked event |
-| UILabel | 主题文本，枚举驱动（Title/Subtitle/Body/Button/Small）|
-| UIStatBar | 水平填充条，颜色阈值自动变色，max=0 时显示 "--" |
+| primary / primaryHover / primaryPressed | 按钮背景三态 |
+| onPrimary | 按钮文字色 |
+| surface / surfaceAlt | 面板/卡片背景 |
+| onSurface / onSurfaceMuted | 面板内文字 |
+| border | 描边 |
+
+组件只声明"我的颜色角色是什么"，具体颜色由当前 `UIColorStyle` 决定。切 Normal → Danger 改 Inspector 下拉框，按钮/面板/文字全系自动换色。所有组件共享同一套风格枚举和同一份 ThemeSO 色板定义，一处改色全局生效。
+
+## 组件 Prefab 库
+
+不设 Slot 抽象，Prefab 自带完整子级结构。基础 Prefab 内置所有组件并预连线引用，拖入场景只需改 Label 文字。
+
+通过 Prefab Variant 派生变体——尺寸/状态变化从基础 Prefab 继承，改基础则全局生效。
+
+### MainMenu 所需（立即制作）
+
+| Prefab | 内容 | 用途 |
+|--------|------|------|
+| `Button.prefab` | UIButton + Button + Image + 子 TMP_Text，全预连线 | 主菜单全部 4 个按钮 |
+| `Label.prefab` | UILabel + TMP_Text | 标题 + 版本号 |
+
+### Variant 准则
+
+**不使用 Variant 做属性差异。** Size、Interactable、Label 文字是实例属性，在实例上直接改。Variant 用在**结构变化**时——例如 `Button_Icon.prefab` 在按钮前加 Icon 子节点。
+
+所以 MainMenu 没有 Variant。4 个按钮全是 `Button.prefab` 实例，各自改 Label 和 Interactable；2 个文本全是 `Label.prefab` 实例，各自改 textStyle。
+
+### TODO
+
+| Prefab | 内容 | 用途 |
+|--------|------|------|
+| `StatBar.prefab` | UIStatBar + 背景 + 填充 + Name + Value 全预连线 | VitalsOverlay |
+| `Button_Icon.prefab` | Button Variant + Icon 子节点（结构变化） | 带图标的按钮 |
+| `Panel.prefab` | 圆角背景 Image，可拖拽/缩放标记 | 通用面板容器 |
+| `Loading.prefab` | 转圈动画 + 提示文字 | 场景加载过渡 |
+| `Tab.prefab` | 标签按钮组 | 多页签面板 |
+| `Tree.prefab` | 可折叠节点 | 存档列表、设置目录树 |
+
+### 全局改样式
+
+- 改颜色/字体 → 改 UIThemeSO 一处，所有 `[ExecuteAlways]` 组件即时刷新
+- 改 Button 结构（如加 Icon 子节点）→ 改 `Button.prefab`，所有变体自动继承

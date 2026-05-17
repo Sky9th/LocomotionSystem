@@ -8,16 +8,16 @@ public class UIPanelConfigSO : ScriptableObject
     [Serializable]
     public struct PanelEntry
     {
-        public string id;
+        public UIPanelId id;
         public EUIPanelType type;
         public GameObject prefab;
     }
 
     public PanelEntry[] panels;
 
-    private Dictionary<string, PanelEntry> lookup;
+    private Dictionary<UIPanelId, PanelEntry> lookup;
 
-    public bool TryGetEntry(string id, out PanelEntry entry)
+    public bool TryGetEntry(UIPanelId id, out PanelEntry entry)
     {
         if (lookup == null) BuildLookup();
         return lookup.TryGetValue(id, out entry);
@@ -25,12 +25,9 @@ public class UIPanelConfigSO : ScriptableObject
 
     public void BuildLookup()
     {
-        lookup = new Dictionary<string, PanelEntry>();
+        lookup = new Dictionary<UIPanelId, PanelEntry>();
         if (panels == null) return;
         foreach (var entry in panels)
-        {
-            if (!string.IsNullOrEmpty(entry.id))
-                lookup[entry.id] = entry;
-        }
+            lookup[entry.id] = entry;
     }
 }

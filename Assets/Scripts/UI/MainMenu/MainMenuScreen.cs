@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 
 public class MainMenuScreen : UIScreen
@@ -10,40 +9,41 @@ public class MainMenuScreen : UIScreen
     [SerializeField] private UIButton quitButton;
 
     [Header("Info")]
-    [SerializeField] private TMP_Text versionText;
+    [SerializeField] private UILabel versionText;
 
     protected override void OnInitialize()
     {
         if (newGameButton != null)
         {
-            newGameButton.Label = "新游戏";
+            newGameButton.SetText("新游戏");
             newGameButton.OnClicked += HandleNewGame;
         }
 
         if (loadGameButton != null)
         {
-            loadGameButton.Label = "加载存档";
-            loadGameButton.Interactable = false;
+            loadGameButton.SetText("加载存档");
+            loadGameButton.SetInteractable(false);
         }
 
         if (settingsButton != null)
         {
-            settingsButton.Label = "设置";
-            settingsButton.Interactable = false;
+            settingsButton.SetText("设置");
+            settingsButton.SetInteractable(false);
         }
 
         if (quitButton != null)
         {
-            quitButton.Label = "退出游戏";
+            quitButton.SetText("退出游戏");
             quitButton.OnClicked += HandleQuit;
         }
 
         if (versionText != null)
-            versionText.text = Application.version;
+            versionText.SetText(Application.version);
     }
 
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
+        base.OnDestroy();
         if (newGameButton != null) newGameButton.OnClicked -= HandleNewGame;
         if (quitButton != null) quitButton.OnClicked -= HandleQuit;
     }

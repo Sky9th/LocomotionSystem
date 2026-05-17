@@ -39,4 +39,9 @@ public abstract class UIOverlay : MonoBehaviour
     protected virtual void OnInitialize() { }
     protected virtual void OnEnterFinished() { }
     protected virtual void OnExitFinished() { }
+
+    protected virtual void OnDestroy()
+    {
+        DOTween.Kill(transform);
+    }
 }
