@@ -7,14 +7,38 @@
 
 类似 Project Zomboid——面板是核心玩法。角色面板、物品、制造、建造都通过 UI 完成。
 
-### 总是可见
+### 总是可见（6 个独立 Overlay，Playing 状态激活）
 
-| 元素 | 位置 | 内容 |
-|------|------|------|
-| 生命体征面板 | 左上 | HP / Hunger / Thirst / Stamina 数值条 |
-| 状态图标 | 右上 | Buff/Debuff 图标（后续）|
-| 快捷栏 | 底部居中 | 1-5 装备/消耗品槽位（后续）|
-| 时钟 | 顶部居中 | 游戏内时间/日期（后续）|
+```
+┌──────────────────────────────────────────────────┐
+│ Vitals            Clock       StatusIcons         │
+│ HP ████████      14:30 D3    [血][毒][饱]         │
+│ Hunger ████                                       │
+│ Thirst ██████                                     │
+│ Stamina ███                                       │
+│                                                    │
+│                   Notifications                    │
+│                   "背包已满"                        │
+│                                                    │
+│               InteractionPrompt                    │
+│               "[E] 打开箱子"                         │
+│                                                    │
+│         ┌───┬───┬───┬───┬───┐                      │
+│         │ 1 │ 2 │ 3 │ 4 │ 5 │   Hotbar             │
+│         └───┴───┴───┴───┴───┘                      │
+└──────────────────────────────────────────────────┘
+```
+
+| Overlay | 位置 | 内容 | 状态 |
+|---------|------|------|------|
+| VitalsOverlay | 左上 | HP / Hunger / Thirst / Stamina | 🔧 代码完成，缺 Prefab |
+| ClockOverlay | 顶部居中 | 第 N 天 HH:MM | 待时间系统 |
+| StatusIcons | 右上 | Buff/Debuff 图标 + 计时环 | 待 Buff 系统 |
+| HotbarOverlay | 底部居中 | 1-5 装备/消耗品槽 | 待物品系统 |
+| InteractionPrompt | 屏幕中央 | "[E] 打开" 动态提示 | 待交互系统 |
+| NotificationOverlay | 上方中央 | 浮现→停留→淡出通知 | 后续 |
+
+每个 Overlay 独立注册、独立生命周期，UIManager 在 Playing 状态下统一激活。
 
 ### 切换窗口（后续）
 

@@ -123,11 +123,11 @@ public class GameState : BaseService
 
 		switch (currentState)
 		{
-			case EGameState.MainMenu:
-				RequestState(EGameState.Playing);
-				break;
 			case EGameState.Playing:
-				RequestState(EGameState.MainMenu);
+				RequestState(EGameState.Paused);
+				break;
+			case EGameState.Paused:
+				RequestState(EGameState.Playing);
 				break;
 		}
 	}

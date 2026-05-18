@@ -1,5 +1,6 @@
 public enum UIPanelId
 {
     MainMenu,
-    VitalsOverlay
+    VitalsOverlay,
+    StatusOverlay,
 }
