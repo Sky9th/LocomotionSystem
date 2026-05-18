@@ -138,7 +138,7 @@ public struct UIColorSet
 | 组件 | 使用的 UIColorSet 字段 |
 |------|----------------------|
 | UIButton | bg=primary, hover=primaryHover, press=primaryPressed, text=onPrimary |
-| UIPanel（后续） | bg=surface, subtitle=onSurfaceMuted, border=border |
+| UIPanel | bg=surface | TODO: onSurfaceMuted, border, drag, resize, close |
 | UILabel（后续） | 在按钮上=onPrimary，在面板内=onSurface |
 
 ## 配置：UIThemeSO
@@ -181,6 +181,16 @@ Awake 时关闭 Unity Button 原生 transition（设 `Transition.None`），防�
 颜色阈值在 `Update()` 中跟随 `targetFill`（不是 `fillImage.fillAmount`——否则 DOTween 补间期间颜色闪错）。
 
 max ≤ 0 时显示 "--"，角色未生成时安全降级。
+
+### UIPanel
+
+`[ExecuteAlways]`。Awake 时从 `theme.GetColorSet(style).surface` 设 Image.color，提供统一暗色面板背景。
+
+| TODO | 说明 |
+|------|------|
+| drag | 标题栏拖拽，UIPanelDragHandler 组件 |
+| resize | 右下角缩放，UIPanelResizeHandler 组件 |
+| close | 关闭按钮 + OnClose event |
 
 ## 集成点
 

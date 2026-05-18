@@ -40,7 +40,7 @@ namespace Game.Stats
             {
                 if (node == null) continue;
                 node.Path = string.IsNullOrEmpty(parentPath) ? node.Id : $"{parentPath}/{node.Id}";
-                var existing = list.FindIndex(n => n.Id == node.Id);
+                var existing = list.FindIndex(n => n.Path == node.Path);
                 if (existing >= 0)
                     list[existing] = node;
                 else
