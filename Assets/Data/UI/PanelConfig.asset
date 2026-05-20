@@ -12,12 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d5a2fa43433e6d4ea18f5572fa4957a, type: 3}
   m_Name: PanelConfig
   m_EditorClassIdentifier: 
-  panels:
+  screens:
   - id: 0
-    type: 0
     prefab: {fileID: 6534779516122947053, guid: 7ac574c5a37e63a4eb539d91dbdbc847,
       type: 3}
   - id: 1
-    type: 1
+    prefab: {fileID: 8529329459084859164, guid: 8420eb53203235f44879c1581e517759,
+      type: 3}
+  overlays:
+  - id: 0
     prefab: {fileID: 6885373914538021880, guid: d8471db800745694488b69d77d11da1e,
       type: 3}
+  modals: []

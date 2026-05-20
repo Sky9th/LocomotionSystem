@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -12,9 +11,10 @@ public class UIManager : BaseService
     [SerializeField] private Transform overlayContainer;
     [SerializeField] private Transform modalContainer;
 
-    private readonly Dictionary<UIPanelId, PanelState> panelStates = new();
+    private readonly Dictionary<UIScreenId, PanelState> screenStates = new();
+    private readonly Dictionary<UIOverlayId, PanelState> overlayStates = new();
     private UIScreen currentScreen;
-    private UIPanelId currentScreenId;
+    private UIScreenId currentScreenId;
     private bool hasCurrentScreen;
     private readonly List<UIOverlay> activeOverlays = new();
 
@@ -24,7 +24,6 @@ public class UIManager : BaseService
     {
         context.RegisterService(this);
         if (panelConfig != null) panelConfig.BuildLookup();
-        Logger.Log("[UIManager] Registered.", name);
         return true;
     }
 
@@ -37,7 +36,7 @@ public class UIManager : BaseService
     protected override void OnServicesReady()
     {
         if (GameContext != null && GameContext.TryGetSnapshot(out SGameState state))
-            UpdateUIForState(state.CurrentState);
+            HandleGameState(state);
     }
 
     private void OnDestroy()
@@ -48,9 +47,9 @@ public class UIManager : BaseService
 
     // ---- Public API ----
 
-    public void ShowScreen(UIPanelId id, object args = null)
+    public void ShowScreen(UIScreenId id, object args = null)
     {
-        if (!TryGetPanel(id, EUIPanelType.Screen, out UIScreen screen)) return;
+        if (!TryGetScreen(id, out UIScreen screen)) return;
         if (screen == currentScreen) return;
 
         if (currentScreen != null)
@@ -63,7 +62,7 @@ public class UIManager : BaseService
             old.PlayExitSequence().OnComplete(() =>
             {
                 Destroy(old.gameObject);
-                panelStates.Remove(oldId);
+                screenStates.Remove(oldId);
                 ActivateScreen(screen, id, args);
             });
         }
@@ -73,33 +72,34 @@ public class UIManager : BaseService
         }
     }
 
-    private void ActivateScreen(UIScreen screen, UIPanelId id, object args)
+    private void ActivateScreen(UIScreen screen, UIScreenId id, object args)
     {
         currentScreen = screen;
         currentScreenId = id;
+        hasCurrentScreen = true;
         screen.gameObject.SetActive(true);
         screen.PlayEnterSequence(args);
     }
 
-    public void HideScreen(UIPanelId id)
+    public void HideScreen(UIScreenId id)
     {
-        if (!TryGetPanel(id, EUIPanelType.Screen, out UIScreen screen)) return;
+        if (!TryGetScreen(id, out UIScreen screen)) return;
         if (screen == currentScreen)
         {
             currentScreen = null;
             hasCurrentScreen = false;
         }
 
-        panelStates.Remove(id);
+        screenStates.Remove(id);
         screen.PlayExitSequence().OnComplete(() =>
         {
             if (screen != null) Destroy(screen.gameObject);
         });
     }
 
-    public void ShowOverlay(UIPanelId id, object args = null)
+    public void ShowOverlay(UIOverlayId id, object args = null)
     {
-        if (!TryGetPanel(id, EUIPanelType.Overlay, out UIOverlay overlay)) return;
+        if (!TryGetOverlay(id, out UIOverlay overlay)) return;
 
         var exists = activeOverlays.Find(o => o.gameObject == overlay.gameObject);
         if (exists != null) return;
@@ -109,9 +109,9 @@ public class UIManager : BaseService
         overlay.PlayEnterSequence(args);
     }
 
-    public void HideOverlay(UIPanelId id)
+    public void HideOverlay(UIOverlayId id)
     {
-        if (!TryGetPanel(id, EUIPanelType.Overlay, out UIOverlay overlay)) return;
+        if (!TryGetOverlay(id, out UIOverlay overlay)) return;
         if (!activeOverlays.Remove(overlay)) return;
 
         overlay.PlayExitSequence().OnComplete(() =>
@@ -129,7 +129,19 @@ public class UIManager : BaseService
     public void RequestNewGame()
     {
         if (IsInputBlocked) return;
-        StartCoroutine(TransitionToGameplay());
+        StartCoroutine(TransitionWithLoading("SampleScene", EGameState.Playing));
+    }
+
+    public void RequestMainMenu()
+    {
+        if (IsInputBlocked) return;
+        StartCoroutine(TransitionWithLoading("MainMenu", EGameState.MainMenu));
+    }
+
+    public void RequestResume()
+    {
+        if (TryResolveService(out GameState gs))
+            gs.RequestState(EGameState.Playing);
     }
 
     public void RequestQuit()
@@ -139,100 +151,121 @@ public class UIManager : BaseService
 
     // ---- Internal ----
 
-    private bool TryGetPanel<T>(UIPanelId id, EUIPanelType type, out T panel) where T : MonoBehaviour
+    private bool TryGetScreen(UIScreenId id, out UIScreen screen)
     {
-        panel = null;
+        screen = null;
 
-        if (panelStates.TryGetValue(id, out var state))
+        if (screenStates.TryGetValue(id, out var state))
         {
-            panel = state.Instance as T;
-            return panel != null;
+            screen = state.Instance as UIScreen;
+            return screen != null;
         }
 
-        if (!panelConfig.TryGetEntry(id, out var entry))
+        if (!panelConfig.TryGetScreen(id, out var prefab))
         {
-            Debug.LogError($"[UIManager] Panel '{id}' not found in PanelConfig. Add it to the config SO.", this);
+            Debug.LogError($"[UIManager] Screen '{id}' not found in PanelConfig.", this);
             return false;
         }
 
-        if (entry.type != type)
+        if (prefab == null)
         {
-            Debug.LogError($"[UIManager] Panel '{id}' type is {entry.type}, expected {type}.", this);
+            Debug.LogError($"[UIManager] Screen '{id}' prefab is null.", this);
             return false;
         }
 
-        if (entry.prefab == null)
-        {
-            Debug.LogError($"[UIManager] Panel '{id}' prefab is null.", this);
-            return false;
-        }
-
-        var container = type switch
-        {
-            EUIPanelType.Screen => screenContainer,
-            EUIPanelType.Overlay => overlayContainer,
-            EUIPanelType.Modal => modalContainer,
-            _ => transform
-        };
-
-        var instance = Instantiate(entry.prefab, container != null ? container : transform);
+        var instance = Instantiate(prefab, screenContainer);
         instance.name = id.ToString();
 
-        if (instance.TryGetComponent<T>(out var component))
+        screen = instance.GetComponent<UIScreen>();
+        if (screen == null)
         {
-            panel = component;
-            panelStates[id] = new PanelState { Instance = panel };
-
-            if (panel is UIScreen screen)
-                screen.Initialize(this);
-            else if (panel is UIOverlay overlay)
-                overlay.Initialize(this);
-
-            return true;
+            Destroy(instance);
+            return false;
         }
 
-        Destroy(instance);
-        return false;
+        screenStates[id] = new PanelState { Instance = screen };
+        screen.Initialize(this);
+        return true;
     }
 
-    private IEnumerator TransitionToGameplay()
+    private bool TryGetOverlay(UIOverlayId id, out UIOverlay overlay)
+    {
+        overlay = null;
+
+        if (overlayStates.TryGetValue(id, out var state))
+        {
+            overlay = state.Instance as UIOverlay;
+            return overlay != null;
+        }
+
+        if (!panelConfig.TryGetOverlay(id, out var prefab))
+        {
+            Debug.LogError($"[UIManager] Overlay '{id}' not found in PanelConfig.", this);
+            return false;
+        }
+
+        if (prefab == null)
+        {
+            Debug.LogError($"[UIManager] Overlay '{id}' prefab is null.", this);
+            return false;
+        }
+
+        var instance = Instantiate(prefab, overlayContainer);
+        instance.name = id.ToString();
+
+        overlay = instance.GetComponent<UIOverlay>();
+        if (overlay == null)
+        {
+            Destroy(instance);
+            return false;
+        }
+
+        overlayStates[id] = new PanelState { Instance = overlay };
+        overlay.Initialize(this);
+        return true;
+    }
+
+    private IEnumerator TransitionWithLoading(string sceneName, EGameState targetState)
     {
         IsInputBlocked = true;
 
+        ShowOverlay(UIOverlayId.LoadingOverlay);
+
         if (currentScreen != null)
         {
-            var exitSeq = currentScreen.PlayExitSequence();
-            yield return exitSeq.WaitForCompletion();
+            yield return currentScreen.PlayExitSequence().WaitForCompletion();
+            Destroy(currentScreen.gameObject);
+            screenStates.Remove(currentScreenId);
+            currentScreen = null;
+            hasCurrentScreen = false;
         }
 
-        var asyncOp = SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
-        while (!asyncOp.isDone)
-            yield return null;
-
+        var op = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
+        yield return op;
         yield return null;
 
-        if (TryResolveService(out GameState gameState))
-            gameState.RequestState(EGameState.Playing);
+        HideOverlay(UIOverlayId.LoadingOverlay);
 
+        if (TryResolveService(out GameState gs))
+            gs.RequestState(targetState);
         IsInputBlocked = false;
     }
 
-    private void HandleGameState(SGameState state, MetaStruct meta)
+    private void HandleGameState(SGameState state, MetaStruct meta = default)
     {
-        UpdateUIForState(state.CurrentState);
-    }
-
-    private void UpdateUIForState(EGameState state)
-    {
-        switch (state)
+        switch (state.CurrentState)
         {
             case EGameState.MainMenu:
-                ShowScreen(UIPanelId.MainMenu);
+                ShowScreen(UIScreenId.MainMenu);
+                break;
+            case EGameState.Paused:
+                ShowScreen(UIScreenId.PauseMenu);
                 break;
             case EGameState.Playing:
                 if (hasCurrentScreen)
                     HideScreen(currentScreenId);
-                ShowOverlay(UIPanelId.VitalsOverlay);
+                if (state.PreviousState != EGameState.Paused)
+                    ShowOverlay(UIOverlayId.VitalsOverlay);
                 break;
         }
     }

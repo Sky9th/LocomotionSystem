@@ -6,28 +6,44 @@ using UnityEngine;
 public class UIPanelConfigSO : ScriptableObject
 {
     [Serializable]
-    public struct PanelEntry
-    {
-        public UIPanelId id;
-        public EUIPanelType type;
-        public GameObject prefab;
-    }
+    public struct ScreenEntry  { public UIScreenId id; public GameObject prefab; }
+    [Serializable]
+    public struct OverlayEntry { public UIOverlayId id; public GameObject prefab; }
+    [Serializable]
+    public struct ModalEntry   { public UIModalId id; public GameObject prefab; }
 
-    public PanelEntry[] panels;
+    public ScreenEntry[] screens;
+    public OverlayEntry[] overlays;
+    public ModalEntry[] modals;
 
-    private Dictionary<UIPanelId, PanelEntry> lookup;
+    private Dictionary<object, GameObject> lookup;
 
-    public bool TryGetEntry(UIPanelId id, out PanelEntry entry)
+    public bool TryGetScreen(UIScreenId id, out GameObject prefab)
     {
         if (lookup == null) BuildLookup();
-        return lookup.TryGetValue(id, out entry);
+        return lookup.TryGetValue(id, out prefab);
+    }
+
+    public bool TryGetOverlay(UIOverlayId id, out GameObject prefab)
+    {
+        if (lookup == null) BuildLookup();
+        return lookup.TryGetValue(id, out prefab);
+    }
+
+    public bool TryGetModal(UIModalId id, out GameObject prefab)
+    {
+        if (lookup == null) BuildLookup();
+        return lookup.TryGetValue(id, out prefab);
     }
 
     public void BuildLookup()
     {
-        lookup = new Dictionary<UIPanelId, PanelEntry>();
-        if (panels == null) return;
-        foreach (var entry in panels)
-            lookup[entry.id] = entry;
+        lookup = new Dictionary<object, GameObject>();
+        if (screens != null)
+            foreach (var e in screens) lookup[e.id] = e.prefab;
+        if (overlays != null)
+            foreach (var e in overlays) lookup[e.id] = e.prefab;
+        if (modals != null)
+            foreach (var e in modals) lookup[e.id] = e.prefab;
     }
 }

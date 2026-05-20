@@ -62,6 +62,16 @@ StatBar Fill Image：Sprite=WhiteSquare，Type=Filled，Method=Horizontal，Orig
 
 中文用 Noto Sans SC SDF（Unicode Range: 20-7E, 4E00-9FFF），存放在 Assets/Fonts/。
 
+## 场景过渡
+
+所有场景切换走 `TransitionWithLoading(sceneName, targetState)`。Loading 先出现盖在画面上，当前 Screen 淡出在 Loading 下面，然后异步加载，Loading 退出后 RequestState。
+
+`RequestResume()` 不走 TransitionWithLoading——同场景内只切状态。
+
+## LoadingOverlay
+
+静态 "Loading..." 展示。API 预留 `SetPhase(string)` `SetProgress(float)`——将来复杂加载协程直接调实例方法。
+
 ## 颜色角色速查
 
 | 组件 | 颜色来源 |
