@@ -129,7 +129,7 @@ public class UIManager : BaseService
     public void RequestNewGame()
     {
         if (IsInputBlocked) return;
-        StartCoroutine(TransitionWithLoading("SampleScene", EGameState.Playing));
+        StartCoroutine(TransitionWithLoading("NewGame", EGameState.Playing));
     }
 
     public void RequestMainMenu()
