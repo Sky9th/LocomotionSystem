@@ -1,7 +1,7 @@
 # UI System — 技术实现
 
-> 更新: 2026-05-17
-> 状态: MainMenu 可运行，颜色风格系统已落地
+> 更新: 2026-05-19
+> 状态: Phase 3.5 完成，UIPanelId 拆分为三枚举，完整游戏循环闭环
 > 方案: uGUI + DOTween + ScriptableObject 配置驱动
 
 ## 文件结构
@@ -10,7 +10,9 @@
 Assets/Scripts/UI/
 ├── UIManager.cs                       # BaseService，编排器
 ├── Core/
-│   ├── EUIPanelType.cs                # enum: Screen, Overlay, Modal
+│   ├── UIScreenId.cs                  # enum: MainMenu, PauseMenu
+│   ├── UIOverlayId.cs                 # enum: VitalsOverlay, StatusOverlay, LoadingOverlay
+│   ├── UIModalId.cs                   # enum: (empty, 预留)
 │   ├── UIScreen.cs                    # 全屏基类 (CanvasGroup fade + Enter/Exit)
 │   └── UIOverlay.cs                   # 叠加基类 (CanvasGroup fade + Enter/Exit)
 ├── Config/
@@ -21,9 +23,12 @@ Assets/Scripts/UI/
 │   ├── UILabel.cs                     # UITextStyle 枚举驱动主题文本
 │   └── UIStatBar.cs                   # 填充条 + 颜色阈值 + DOTween
 ├── MainMenu/
-│   └── MainMenuScreen.cs             # PZ 风格主菜单
+│   ├── MainMenuScreen.cs             # PZ 风格主菜单
+│   └── PauseMenuScreen.cs            # 暂停菜单
 └── HUD/
-    └── VitalsOverlay.cs              # HP/Hunger/Thirst/Stamina
+    ├── VitalsOverlay.cs              # HP/Hunger/Thirst/Stamina
+    ├── StatusOverlay.cs               # 状态效果（骨架）
+    └── LoadingOverlay.cs              # 场景加载过渡
 ```
 
 无 UIPanel 容器抽象——每个 Screen/Overlay 在自己的 Prefab 里直接用 RectTransform 锚点 + VerticalLayoutGroup 自由布局。
@@ -75,17 +80,27 @@ ShowScreen("MainMenu")
 
 ### 场景过渡
 
+统一入口 `TransitionWithLoading(sceneName, targetState)`，替换原 `TransitionToGameplay`：
+
 ```
-RequestNewGame()
-  → StartCoroutine(TransitionToGameplay())
-    → IsInputBlocked = true
-    → currentScreen.PlayExitSequence() → WaitForCompletion
-    → SceneManager.LoadSceneAsync("SampleScene", Single)
-    → yield until done
-    → GameState.RequestState(Playing)
-    → SGameState 事件触发 → HideScreen + ShowOverlay("VitalsOverlay")
-    → IsInputBlocked = false
+1. ShowOverlay(LoadingOverlay)       // Loading 盖上来
+2. currentScreen.PlayExitSequence    // 当前屏幕淡出（在 Loading 下面）
+3. SceneManager.LoadSceneAsync       // 异步加载场景
+4. HideOverlay(LoadingOverlay)       // Loading 退出（须在 RequestState 前）
+5. GameState.RequestState            // SGameState 事件 → UpdateUIForState
 ```
+
+`RequestNewGame()` `RequestMainMenu()` 走同一协程。`RequestResume()` 不走——同场景内只切状态。
+
+### UpdateUIForState
+
+签名改为 `(SGameState state)`，新增 Paused 分支。Playing 分支用 `PreviousState != Paused` 判断是否建 VitalsOverlay。
+
+### PauseMenuScreen / LoadingOverlay
+
+`PauseMenuScreen : UIScreen` — 四按钮：继续游戏、设置(disabled)、保存(disabled)、返回主菜单。继续调 `uiManager.RequestResume()`，返回主菜单调 `uiManager.RequestMainMenu()`。
+
+`LoadingOverlay : UIOverlay` — `phaseText` + `SetPhase(string)`。`SetProgress` 预留。MVP 写死 "Loading..." Label。
 
 ## UIScreen / UIOverlay
 
@@ -150,15 +165,24 @@ public struct UIColorSet
 ## 配置：UIPanelConfigSO
 
 ```csharp
-[Serializable] public struct PanelEntry {
-    public string id;          // "MainMenu", "VitalsOverlay"
-    public EUIPanelType type;  // Screen / Overlay / Modal
+[Serializable] public struct ScreenEntry {
+    public UIScreenId id;
     public GameObject prefab;
 }
-public PanelEntry[] panels;
+[Serializable] public struct OverlayEntry {
+    public UIOverlayId id;
+    public GameObject prefab;
+}
+[Serializable] public struct ModalEntry {
+    public UIModalId id;
+    public GameObject prefab;
+}
+public ScreenEntry[] screens;
+public OverlayEntry[] overlays;
+public ModalEntry[] modals;
 ```
 
-`BuildLookup()` 构建 `Dictionary<string, PanelEntry>`，`TryGetEntry(id, out entry)` 查询。UIManager 在 `OnRegister` 中调用 BuildLookup。
+`BuildLookup()` 构建三个 `Dictionary<object, GameObject>`，`TryGetScreen/TryGetOverlay/TryGetModal` 类型安全查询。
 
 ## 组件
 

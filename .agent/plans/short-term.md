@@ -103,15 +103,23 @@ Loco完结   音效骨架     数值系统     Stats管理    HUD UI     战斗�
 - 颜色风格系统（UIColorSet × 5，Button/Panel 色彩角色映射）
 - [ExecuteAlways] WYSIWYG
 - Prefab 库：Button.prefab, Label.prefab, Panel.prefab, StatBar.prefab
-- UIPanelId 枚举替换魔术字符串
+- UIScreenId/UIOverlayId/UIModalId 枚举替换魔术字符串
 - UIButton.SetText/SetInteractable, UILabel.SetText
 - StatsTree 编辑器合并显示 + 继承 Bug 修复
 - NewGame 场景（开发用，直进 Playing）
 - ESC 切换 Playing ↔ Paused
 
+### Phase 3.5: PauseMenu + Loading ✅
+
+> 完成。UIPanelId 拆分为 UIScreenId/UIOverlayId/UIModalId 三枚举，TransitionWithLoading 替代 TransitionToGameplay。
+
+- PauseMenuScreen：半透明遮罩 + 居中面板 + 继续/设置/保存/主菜单 四按钮
+- LoadingOverlay：场景切换过渡，SetPhase/SetProgress API 预留
+- TransitionWithLoading：通用异步加载协程，替换 TransitionToGameplay
+- 完整闭环：MainMenu → Loading → Playing ↔ PauseMenu → MainMenu
+
 ### 待办
 
-- PauseMenu
 - StatusOverlay
 - ClockOverlay
 - MainMenu 加载存档/设置子面板
@@ -136,17 +144,17 @@ UIPanelConfigSO: Assets/Data/UI/PanelConfig.asset
 Assets/Scripts/UI/
 ├── UIManager.cs
 ├── Core/
-│   ├── EUIPanelType.cs       EUIPanelId.cs       UIColorStyle.cs
-│   ├── UIScreen.cs           UIOverlay.cs
+│   ├── UIScreenId.cs           UIOverlayId.cs        UIModalId.cs
+│   ├── UIColorStyle.cs         UIScreen.cs           UIOverlay.cs
 ├── Config/
-│   ├── UIThemeSO.cs          UIPanelConfigSO.cs
+│   ├── UIThemeSO.cs            UIPanelConfigSO.cs
 ├── Components/
-│   ├── UIButton.cs           UILabel.cs
-│   ├── UIStatBar.cs          UIPanel.cs
+│   ├── UIButton.cs             UILabel.cs
+│   ├── UIStatBar.cs            UIPanel.cs
 ├── MainMenu/
-│   └── MainMenuScreen.cs
+│   ├── MainMenuScreen.cs       PauseMenuScreen.cs
 └── HUD/
-    ├── VitalsOverlay.cs      StatusOverlay.cs
+    ├── VitalsOverlay.cs        StatusOverlay.cs      LoadingOverlay.cs
 ```
 
 **依赖**: Phase 2.5 Stats 管理

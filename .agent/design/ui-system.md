@@ -1,7 +1,7 @@
 # UI 系统设计
 
-> 更新: 2026-05-17
-> 状态: MainMenu 可运行，WYSIWYG 方案待实施
+> 更新: 2026-05-20
+> 状态: Phase 3.5 完成，完整游戏循环闭环
 
 ## 全貌
 
@@ -31,12 +31,14 @@
 
 | Overlay | 位置 | 内容 | 状态 |
 |---------|------|------|------|
-| VitalsOverlay | 左上 | HP / Hunger / Thirst / Stamina | 🔧 代码完成，缺 Prefab |
+| VitalsOverlay | 左上 | HP / Hunger / Thirst / Stamina | ✅ |
 | ClockOverlay | 顶部居中 | 第 N 天 HH:MM | 待时间系统 |
 | StatusIcons | 右上 | Buff/Debuff 图标 + 计时环 | 待 Buff 系统 |
 | HotbarOverlay | 底部居中 | 1-5 装备/消耗品槽 | 待物品系统 |
 | InteractionPrompt | 屏幕中央 | "[E] 打开" 动态提示 | 待交互系统 |
 | NotificationOverlay | 上方中央 | 浮现→停留→淡出通知 | 后续 |
+| LoadingOverlay | 全屏居中 | "Loading..." + 进度条（后续）| 🔧 计划完成 |
+| PauseMenu | 全屏 | 遮罩 + 继续/设置/保存/主菜单 | 🔧 计划完成 |
 
 每个 Overlay 独立注册、独立生命周期，UIManager 在 Playing 状态下统一激活。
 
@@ -51,11 +53,20 @@
 
 ### 特殊画面
 
-| 画面 | 内容 |
-|------|------|
-| 主菜单 | 新游戏 / 加载存档 / 设置 / 退出 |
-| 暂停菜单 | 继续 / 设置 / 保存 / 回主菜单 |
-| 死亡画面 | 存活天数 + 返回主菜单 |
+| 画面 | 内容 | 状态 |
+|------|------|------|
+| 主菜单 | 新游戏 / 加载存档 / 设置 / 退出 | ✅ |
+| 暂停菜单 | 继续 / 设置 / 保存 / 回主菜单 | 🔧 计划完成，待落地 |
+| 加载画面 | "Loading..." + 进度条（后续）| 🔧 计划完成，待落地 |
+| 死亡画面 | 存活天数 + 返回主菜单 | 后续 |
+
+### 游戏闭环
+
+```
+MainMenu ──→ Loading ──→ Playing ──[ESC]──→ PauseMenu ──→ MainMenu
+```
+
+场景切换统一走 `TransitionWithLoading(sceneName, targetState)`，自动显示/隐藏 LoadingOverlay。
 
 ## 三层架构
 
