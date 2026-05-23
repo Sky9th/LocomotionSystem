@@ -30,6 +30,10 @@ public class GameService : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
+        // UI time is independent of gameplay timeScale.
+        // All DOTween tweens default to unscaled deltaTime.
+        DG.Tweening.DOTween.defaultTimeScaleIndependent = true;
+
         Logger.Log("GameManager Awake: starting bootstrap sequence.", nameof(GameService), this);
 
         Bootstrap();
