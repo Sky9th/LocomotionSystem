@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8661345319936802492}
   - component: {fileID: -7220105698144710926}
+  - component: {fileID: 3328878976750108620}
   m_Layer: 0
-  m_Name: MainMenu
+  m_Name: MainMenuScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -52,13 +53,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e6c6015f4b38234b9110640dd337ee7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvasGroup: {fileID: 0}
+  canvasGroup: {fileID: 3328878976750108620}
   fadeDuration: 0.3
   newGameButton: {fileID: 3720292987890071322}
   loadGameButton: {fileID: 1592085436154176419}
   settingsButton: {fileID: 3035927947621305236}
   quitButton: {fileID: 4324987870956802906}
-  versionText: {fileID: 7965952999115854962}
+  versionText: {fileID: 2731944698233681424}
+--- !u!225 &3328878976750108620
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6534779516122947053}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &7243041067750052256
 GameObject:
   m_ObjectHideFlags: 0
@@ -313,6 +326,28 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5761024149537176759, guid: 8a7d84fafc9f94e4b980bdd399254b03,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 5761024149537176759, guid: 8a7d84fafc9f94e4b980bdd399254b03,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: a0d6a7e1cff702d4f8f04c928bb9bc57,
+        type: 2}
+    - target: {fileID: 5761024149537176759, guid: 8a7d84fafc9f94e4b980bdd399254b03,
+        type: 3}
+      propertyPath: m_fontSizeBase
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 5761024149537176759, guid: 8a7d84fafc9f94e4b980bdd399254b03,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -3322954453469421308, guid: a0d6a7e1cff702d4f8f04c928bb9bc57,
+        type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -449,6 +484,28 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5761024149537176759, guid: 8a7d84fafc9f94e4b980bdd399254b03,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 5761024149537176759, guid: 8a7d84fafc9f94e4b980bdd399254b03,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: a0d6a7e1cff702d4f8f04c928bb9bc57,
+        type: 2}
+    - target: {fileID: 5761024149537176759, guid: 8a7d84fafc9f94e4b980bdd399254b03,
+        type: 3}
+      propertyPath: m_fontSizeBase
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 5761024149537176759, guid: 8a7d84fafc9f94e4b980bdd399254b03,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -3322954453469421308, guid: a0d6a7e1cff702d4f8f04c928bb9bc57,
+        type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -658,16 +715,16 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1202079307837287808}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7965952999115854962 stripped
+--- !u!114 &2731944698233681424 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 9088937837918632434, guid: 03b2571faf38160478a35594a87137f9,
+  m_CorrespondingSourceObject: {fileID: 3839166917303065488, guid: 03b2571faf38160478a35594a87137f9,
     type: 3}
   m_PrefabInstance: {fileID: 1202079307837287808}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Script: {fileID: 11500000, guid: b153e3f859b8a054485cc737935b0ceb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &2174892420041875388
@@ -964,6 +1021,28 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5761024149537176759, guid: 8a7d84fafc9f94e4b980bdd399254b03,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 5761024149537176759, guid: 8a7d84fafc9f94e4b980bdd399254b03,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: a0d6a7e1cff702d4f8f04c928bb9bc57,
+        type: 2}
+    - target: {fileID: 5761024149537176759, guid: 8a7d84fafc9f94e4b980bdd399254b03,
+        type: 3}
+      propertyPath: m_fontSizeBase
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 5761024149537176759, guid: 8a7d84fafc9f94e4b980bdd399254b03,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -3322954453469421308, guid: a0d6a7e1cff702d4f8f04c928bb9bc57,
+        type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1100,6 +1179,28 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5761024149537176759, guid: 8a7d84fafc9f94e4b980bdd399254b03,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 5761024149537176759, guid: 8a7d84fafc9f94e4b980bdd399254b03,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: a0d6a7e1cff702d4f8f04c928bb9bc57,
+        type: 2}
+    - target: {fileID: 5761024149537176759, guid: 8a7d84fafc9f94e4b980bdd399254b03,
+        type: 3}
+      propertyPath: m_fontSizeBase
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 5761024149537176759, guid: 8a7d84fafc9f94e4b980bdd399254b03,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -3322954453469421308, guid: a0d6a7e1cff702d4f8f04c928bb9bc57,
+        type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

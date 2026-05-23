@@ -34,8 +34,8 @@ public class VitalsOverlay : UIOverlay
         if (refreshTimer < refreshRate) return;
         refreshTimer = 0f;
 
-        if (uiManager == null) return;
-        if (!uiManager.TryGetSnapshot(out SCharacterSnapshot snap)) return;
+        if (uiService == null) return;
+        if (!uiService.TryGetSnapshot(out SCharacterSnapshot snap)) return;
         if (snap.Stats == null) return;
 
         TryUpdateBar(hpBar, hpStatPath, snap.Stats);

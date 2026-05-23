@@ -50,11 +50,11 @@ public class MainMenuScreen : UIScreen
 
     private void HandleNewGame()
     {
-        uiManager.RequestNewGame();
+        uiService.RequestNewGame();
     }
 
     private void HandleQuit()
     {
-        uiManager.RequestQuit();
+        uiService.RequestQuit();
     }
 }

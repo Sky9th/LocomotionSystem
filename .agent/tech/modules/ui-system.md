@@ -1,14 +1,14 @@
 # UI System — 技术实现
 
-> 更新: 2026-05-19
-> 状态: Phase 3.5 完成，UIPanelId 拆分为三枚举，完整游戏循环闭环
+> 更新: 2026-05-22
+> 状态: Service 架构迁移完成
 > 方案: uGUI + DOTween + ScriptableObject 配置驱动
 
 ## 文件结构
 
 ```
 Assets/Scripts/UI/
-├── UIManager.cs                       # BaseService，编排器
+├── UIService.cs                       # BaseService，编排器
 ├── Core/
 │   ├── UIScreenId.cs                  # enum: MainMenu, PauseMenu
 │   ├── UIOverlayId.cs                 # enum: VitalsOverlay, StatusOverlay, LoadingOverlay
@@ -33,12 +33,12 @@ Assets/Scripts/UI/
 
 无 UIPanel 容器抽象——每个 Screen/Overlay 在自己的 Prefab 里直接用 RectTransform 锚点 + VerticalLayoutGroup 自由布局。
 
-## UIManager : BaseService
+## UIService : BaseService
 
 ### 生命周期
 
 ```
-OnRegister        → context.RegisterService<UIManager>(this)
+OnRegister        → context.RegisterService<UIService>(this)
                     → panelConfig.BuildLookup()
 OnSubscriptionsActivated
                     → Dispatcher.Subscribe<SGameState>(HandleGameState)
@@ -78,19 +78,51 @@ ShowScreen("MainMenu")
   → currentScreen = screen; currentScreenId = id
 ```
 
+### 场景架构
+
+Persistent Core Scene 模式：
+- `Core.unity` (Scene 0) — GameService + EventSystem + UIService，永不卸载
+- MainMenuScreen 内嵌于 Core 场景 Canvas，启动即显示主菜单
+- `NewGame.unity` — 内容场景，通过 Additive 加载/卸载
+
+UIService 持有两个 Canvas：
+- `MainCanvas` (sortOrder=0) — Screen / Overlay 面板
+- `LoadingCanvas` (sortOrder=999) — LoadingOverlay 独立 Canvas，永远最顶层
+
 ### 场景过渡
 
-统一入口 `TransitionWithLoading(sceneName, targetState)`，替换原 `TransitionToGameplay`：
+**加载 NewGame** — `UIService.RequestNewGame()` → `SLoadSceneRequest("NewGame")`
 
 ```
-1. ShowOverlay(LoadingOverlay)       // Loading 盖上来
-2. currentScreen.PlayExitSequence    // 当前屏幕淡出（在 Loading 下面）
-3. SceneManager.LoadSceneAsync       // 异步加载场景
-4. HideOverlay(LoadingOverlay)       // Loading 退出（须在 RequestState 前）
-5. GameState.RequestState            // SGameState 事件 → UpdateUIForState
+1. loadingCanvasGroup.alpha = 1        // Loading 遮住
+2. currentScreen.PlayExitSequence      // MainMenu 淡出
+3. SceneService.LoadContentScene()
+   a. STimeFreeze → TimeService: timeScale=0
+   b. LoadSceneAsync(NewGame, Additive)
+   c. 等待 minLoadingDisplayTime (unscaled)
+4. SSceneLoadComplete → UIService:
+   a. loadingCanvasGroup.alpha = 0
+   b. STimeResume → TimeService: timeScale=1
+   c. GameStateService.RequestState(Playing)
 ```
 
-`RequestNewGame()` `RequestMainMenu()` 走同一协程。`RequestResume()` 不走——同场景内只切状态。
+**返回主菜单** — `UIService.RequestMainMenu()` → `SUnloadSceneRequest(null)`
+
+```
+1. loadingCanvasGroup.alpha = 1
+2. currentScreen.PlayExitSequence      // PauseMenu 淡出
+3. SceneService.UnloadContentScene()
+   a. STimeFreeze → TimeService: timeScale=0
+   b. UnloadSceneAsync(NewGame)
+   c. currentContentScene = null
+   d. 等待 minLoadingDisplayTime (unscaled)
+4. SSceneLoadComplete → UIService:
+   a. loadingCanvasGroup.alpha = 0
+   b. STimeResume → TimeService: timeScale=1
+   c. GameStateService.RequestState(MainMenu)
+```
+
+`RequestResume()` 不走场景过渡——同场景内只切状态。
 
 ### UpdateUIForState
 
@@ -98,9 +130,9 @@ ShowScreen("MainMenu")
 
 ### PauseMenuScreen / LoadingOverlay
 
-`PauseMenuScreen : UIScreen` — 四按钮：继续游戏、设置(disabled)、保存(disabled)、返回主菜单。继续调 `uiManager.RequestResume()`，返回主菜单调 `uiManager.RequestMainMenu()`。
+`PauseMenuScreen : UIScreen` — 四按钮：继续游戏、设置(disabled)、保存(disabled)、返回主菜单。
 
-`LoadingOverlay : UIOverlay` — `phaseText` + `SetPhase(string)`。`SetProgress` 预留。MVP 写死 "Loading..." Label。
+`LoadingOverlay` 挂载在 `LoadingCanvas` 下，不通过 Instantiate 创建——从 Core 场景开始就存在。通过 `loadingCanvasGroup.alpha` 0/1 切换。`SetPhase`/`SetProgress` API 保留，供未来复杂加载流程直接调用实例方法。
 
 ## UIScreen / UIOverlay
 
@@ -108,17 +140,17 @@ ShowScreen("MainMenu")
 
 - `[SerializeField] CanvasGroup canvasGroup`
 - `[SerializeField] float fadeDuration`
-- `Initialize(UIManager)` → `OnInitialize()` hook
+- `Initialize(UIService)` → `OnInitialize()` hook
 - `PlayEnterSequence()` → alpha 0→1 (EaseOutCubic) → OnEnterFinished
 - `PlayExitSequence()` → alpha 1→0 (EaseInCubic) → OnExitFinished
-- 返回 DOTween `Sequence`，UIManager 可 `yield return seq.WaitForCompletion()`
+- 返回 DOTween `Sequence`，UIService 可 `yield return seq.WaitForCompletion()`
 
 ### 差异
 
 | | UIScreen | UIOverlay |
 |---|---|---|
 | Pause/Resume | 有 | 无 |
-| 管理方式 | 互斥，UIManager.currentScreen | 并存，List<UIOverlay> |
+| 管理方式 | 互斥，UIService.currentScreen | 并存，List<UIOverlay> |
 
 ## 颜色风格系统
 
@@ -218,16 +250,13 @@ max ≤ 0 时显示 "--"，角色未生成时安全降级。
 
 ## 集成点
 
-- `SGameState` 通过 EventDispatcher 发布 → UIManager 订阅，驱动 UI 切换
+- `SGameState` 通过 EventDispatcher 发布 → UIService 订阅，驱动 UI 切换
 - `SCharacterSnapshot.Stats` 字典 → VitalsOverlay 每 0.1s 读取，路径可配
-- UIManager 持久化（GameManager `DontDestroyOnLoad`），场景切换不丢失
-- MainMenuScreen → UIManager 导航用直接方法调用，不用 EventDispatcher
+- UIService 持久化（GameService `DontDestroyOnLoad`），场景切换不丢失
+- MainMenuScreen / PauseMenuScreen → UIService 导航用直接方法调用，不用 EventDispatcher
 
 ## Unity Editor 待办
 
-1. DOTween 已安装（`Assets/Plugins/Demigiant/`），在 Utility Panel 确认 Setup
-2. 创建 `Assets/Settings/UI/DefaultTheme.asset`（Create → Game → UI → Theme）
-3. 创建 `Assets/Settings/UI/PanelConfig.asset`（Create → Game → UI → Panel Config）
-4. GameManager 预制体下添加 UIManager 子节点，内建 Canvas + ScreenContainer/OverlayContainer/ModalContainer
-5. 制作 MainMenuScreen.prefab 和 VitalsOverlay.prefab
-6. 连线配置
+1. Core.unity 设为 Build Settings Scene 0
+2. MainMenuScreen prefab 内嵌于 Core 场景 Canvas
+3. 连线 GameService → 各 Service 子节点

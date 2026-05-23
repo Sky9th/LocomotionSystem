@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class UIManager : BaseService
+public class UIService : BaseService, IGameplaySessionHandler
 {
+    [Header("Config")]
     [SerializeField] private UIPanelConfigSO panelConfig;
     [SerializeField] private Transform screenContainer;
     [SerializeField] private Transform overlayContainer;
     [SerializeField] private Transform modalContainer;
+    [SerializeField] private CanvasGroup loadingCanvasGroup;
 
     private readonly Dictionary<UIScreenId, PanelState> screenStates = new();
     private readonly Dictionary<UIOverlayId, PanelState> overlayStates = new();
@@ -17,6 +18,7 @@ public class UIManager : BaseService
     private UIScreenId currentScreenId;
     private bool hasCurrentScreen;
     private readonly List<UIOverlay> activeOverlays = new();
+    private EGameState pendingTargetState;
 
     public bool IsInputBlocked { get; private set; }
 
@@ -29,20 +31,26 @@ public class UIManager : BaseService
 
     protected override void OnSubscriptionsActivated()
     {
-        if (Dispatcher != null)
-            Dispatcher.Subscribe<SGameState>(HandleGameState);
+        if (Dispatcher == null) return;
+        Dispatcher.Subscribe<SGameState>(HandleGameState);
+        Dispatcher.Subscribe<SSceneLoadStart>(HandleSceneLoadStart);
+        Dispatcher.Subscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
     }
 
     protected override void OnServicesReady()
     {
-        if (GameContext != null && GameContext.TryGetSnapshot(out SGameState state))
-            HandleGameState(state);
+        if (GameContext == null || !GameContext.TryGetSnapshot(out SGameState state))
+            return;
+
+        HandleGameState(state);
     }
 
     private void OnDestroy()
     {
-        if (Dispatcher != null)
-            Dispatcher.Unsubscribe<SGameState>(HandleGameState);
+        if (Dispatcher == null) return;
+        Dispatcher.Unsubscribe<SGameState>(HandleGameState);
+        Dispatcher.Unsubscribe<SSceneLoadStart>(HandleSceneLoadStart);
+        Dispatcher.Unsubscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
     }
 
     // ---- Public API ----
@@ -59,12 +67,16 @@ public class UIManager : BaseService
             currentScreen = null;
             hasCurrentScreen = false;
 
-            old.PlayExitSequence().OnComplete(() =>
-            {
-                Destroy(old.gameObject);
-                screenStates.Remove(oldId);
+            var exitSeq = old.PlayExitSequence();
+            if (exitSeq != null)
+                exitSeq.OnComplete(() =>
+                {
+                    Destroy(old.gameObject);
+                    screenStates.Remove(oldId);
+                    ActivateScreen(screen, id, args);
+                });
+            else
                 ActivateScreen(screen, id, args);
-            });
         }
         else
         {
@@ -91,10 +103,14 @@ public class UIManager : BaseService
         }
 
         screenStates.Remove(id);
-        screen.PlayExitSequence().OnComplete(() =>
-        {
-            if (screen != null) Destroy(screen.gameObject);
-        });
+        var exitSeq = screen.PlayExitSequence();
+        if (exitSeq != null)
+            exitSeq.OnComplete(() =>
+            {
+                if (screen != null) Destroy(screen.gameObject);
+            });
+        else
+            Destroy(screen.gameObject);
     }
 
     public void ShowOverlay(UIOverlayId id, object args = null)
@@ -114,10 +130,30 @@ public class UIManager : BaseService
         if (!TryGetOverlay(id, out UIOverlay overlay)) return;
         if (!activeOverlays.Remove(overlay)) return;
 
-        overlay.PlayExitSequence().OnComplete(() =>
+        var exitSeq = overlay.PlayExitSequence();
+        if (exitSeq != null)
+            exitSeq.OnComplete(() =>
+            {
+                if (overlay != null) Destroy(overlay.gameObject);
+            });
+        else if (overlay != null)
+            Destroy(overlay.gameObject);
+    }
+
+    private void HideAllOverlays()
+    {
+        foreach (var overlay in activeOverlays)
         {
-            if (overlay != null) Destroy(overlay.gameObject);
-        });
+            if (overlay != null)
+                Destroy(overlay.gameObject);
+        }
+        activeOverlays.Clear();
+        overlayStates.Clear();
+    }
+
+    public void OnGameplaySessionEnd()
+    {
+        HideAllOverlays();
     }
 
     public bool TryGetSnapshot<T>(out T snapshot) where T : struct
@@ -128,19 +164,42 @@ public class UIManager : BaseService
 
     public void RequestNewGame()
     {
-        if (IsInputBlocked) return;
-        StartCoroutine(TransitionWithLoading("NewGame", EGameState.Playing));
+        StartSceneTransition("NewGame", EGameState.Playing);
     }
 
     public void RequestMainMenu()
     {
         if (IsInputBlocked) return;
-        StartCoroutine(TransitionWithLoading("MainMenu", EGameState.MainMenu));
+        IsInputBlocked = true;
+        pendingTargetState = EGameState.MainMenu;
+
+        if (currentScreen != null)
+        {
+            var exitSeq = currentScreen.PlayExitSequence();
+            if (exitSeq != null)
+            {
+                exitSeq.OnComplete(() =>
+                {
+                    Destroy(currentScreen.gameObject);
+                    screenStates.Remove(currentScreenId);
+                    currentScreen = null;
+                    hasCurrentScreen = false;
+                    Dispatcher.Publish(new SUnloadSceneRequest(null));
+                });
+                return;
+            }
+            Destroy(currentScreen.gameObject);
+            screenStates.Remove(currentScreenId);
+            currentScreen = null;
+            hasCurrentScreen = false;
+        }
+
+        Dispatcher.Publish(new SUnloadSceneRequest(null));
     }
 
     public void RequestResume()
     {
-        if (TryResolveService(out GameState gs))
+        if (TryResolveService(out GameStateService gs))
             gs.RequestState(EGameState.Playing);
     }
 
@@ -150,6 +209,51 @@ public class UIManager : BaseService
     }
 
     // ---- Internal ----
+
+    private void StartSceneTransition(string sceneName, EGameState targetState)
+    {
+        if (IsInputBlocked) return;
+        IsInputBlocked = true;
+        pendingTargetState = targetState;
+
+        if (currentScreen != null)
+        {
+            var exitSeq = currentScreen.PlayExitSequence();
+            if (exitSeq != null)
+            {
+                exitSeq.OnComplete(() =>
+                {
+                    Destroy(currentScreen.gameObject);
+                    screenStates.Remove(currentScreenId);
+                    currentScreen = null;
+                    hasCurrentScreen = false;
+                    Dispatcher.Publish(new SLoadSceneRequest(sceneName));
+                });
+                return;
+            }
+            Destroy(currentScreen.gameObject);
+            screenStates.Remove(currentScreenId);
+            currentScreen = null;
+            hasCurrentScreen = false;
+        }
+
+        Dispatcher.Publish(new SLoadSceneRequest(sceneName));
+    }
+
+    private void HandleSceneLoadStart(SSceneLoadStart _, MetaStruct __)
+    {
+        loadingCanvasGroup.alpha = 1f;
+    }
+
+    private void HandleSceneLoadComplete(SSceneLoadComplete evt, MetaStruct __)
+    {
+        loadingCanvasGroup.alpha = 0f;
+
+        if (pendingTargetState != EGameState.Initializing && TryResolveService(out GameStateService gs))
+            gs.RequestState(pendingTargetState);
+
+        IsInputBlocked = false;
+    }
 
     private bool TryGetScreen(UIScreenId id, out UIScreen screen)
     {
@@ -163,13 +267,13 @@ public class UIManager : BaseService
 
         if (!panelConfig.TryGetScreen(id, out var prefab))
         {
-            Debug.LogError($"[UIManager] Screen '{id}' not found in PanelConfig.", this);
+            Debug.LogError($"[UIService] Screen '{id}' not found in PanelConfig.", this);
             return false;
         }
 
         if (prefab == null)
         {
-            Debug.LogError($"[UIManager] Screen '{id}' prefab is null.", this);
+            Debug.LogError($"[UIService] Screen '{id}' prefab is null.", this);
             return false;
         }
 
@@ -200,13 +304,13 @@ public class UIManager : BaseService
 
         if (!panelConfig.TryGetOverlay(id, out var prefab))
         {
-            Debug.LogError($"[UIManager] Overlay '{id}' not found in PanelConfig.", this);
+            Debug.LogError($"[UIService] Overlay '{id}' not found in PanelConfig.", this);
             return false;
         }
 
         if (prefab == null)
         {
-            Debug.LogError($"[UIManager] Overlay '{id}' prefab is null.", this);
+            Debug.LogError($"[UIService] Overlay '{id}' prefab is null.", this);
             return false;
         }
 
@@ -223,32 +327,6 @@ public class UIManager : BaseService
         overlayStates[id] = new PanelState { Instance = overlay };
         overlay.Initialize(this);
         return true;
-    }
-
-    private IEnumerator TransitionWithLoading(string sceneName, EGameState targetState)
-    {
-        IsInputBlocked = true;
-
-        ShowOverlay(UIOverlayId.LoadingOverlay);
-
-        if (currentScreen != null)
-        {
-            yield return currentScreen.PlayExitSequence().WaitForCompletion();
-            Destroy(currentScreen.gameObject);
-            screenStates.Remove(currentScreenId);
-            currentScreen = null;
-            hasCurrentScreen = false;
-        }
-
-        var op = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
-        yield return op;
-        yield return null;
-
-        HideOverlay(UIOverlayId.LoadingOverlay);
-
-        if (TryResolveService(out GameState gs))
-            gs.RequestState(targetState);
-        IsInputBlocked = false;
     }
 
     private void HandleGameState(SGameState state, MetaStruct meta = default)

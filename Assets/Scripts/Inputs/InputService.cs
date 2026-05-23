@@ -6,7 +6,7 @@ using UnityEngine;
 /// aggregates snapshots, and keeps the EventDispatcher wiring deterministic.
 /// </summary>
 [DisallowMultipleComponent]
-public class InputManager : BaseService
+public class InputService : BaseService
 {
     [SerializeField] private InputActionHandler[] actionHandlers = Array.Empty<InputActionHandler>();
 
@@ -72,6 +72,11 @@ public class InputManager : BaseService
     private void OnDestroy()
     {
         Dispatcher?.Unsubscribe<SGameState>(HandleGameStateChanged);
+
+        if (!actionsConfigured)
+        {
+            return;
+        }
 
         foreach (var handler in actionHandlers)
         {

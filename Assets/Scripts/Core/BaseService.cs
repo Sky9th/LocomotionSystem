@@ -11,7 +11,7 @@ public abstract class BaseService : MonoBehaviour
 {
     public bool IsRegistered { get; private set; }
     protected GameContext GameContext { get; private set; }
-    protected EventDispatcher Dispatcher { get; private set; }
+    protected EventDispatcherService Dispatcher { get; private set; }
     private readonly Dictionary<Type, object> serviceCache = new();
     private bool subscriptionsActivated;
     private bool isInitialized;
@@ -116,7 +116,7 @@ public abstract class BaseService : MonoBehaviour
         return null;
     }
 
-    internal void AttachDispatcher(EventDispatcher dispatcher)
+    internal void AttachDispatcher(EventDispatcherService dispatcher)
     {
         if (!IsRegistered)
         {

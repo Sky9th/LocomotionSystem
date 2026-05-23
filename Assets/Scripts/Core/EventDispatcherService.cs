@@ -6,7 +6,7 @@ using UnityEngine;
 /// Lightweight event bus used to decouple gameplay systems.
 /// </summary>
 [DisallowMultipleComponent]
-public class EventDispatcher : BaseService
+public class EventDispatcherService : BaseService
 {
     private readonly Dictionary<Type, List<Delegate>> listeners = new();
     [SerializeField] private List<string> inspectorListeners = new();
