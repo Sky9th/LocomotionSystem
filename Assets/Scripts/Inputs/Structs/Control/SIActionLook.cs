@@ -6,9 +6,9 @@ using UnityEngine;
 /// Stored under Structs/IActions so every subsystem observes the same DTO layout.
 /// </summary>
 [Serializable]
-public struct SLookIAction
+public struct SIActionLook
 {
-    public SLookIAction(Vector2 delta)
+    public SIActionLook(Vector2 delta)
     {
         Delta = delta;
     }
@@ -20,5 +20,5 @@ public struct SLookIAction
 
     public bool HasDelta => Delta.sqrMagnitude > Mathf.Epsilon;
 
-    public static SLookIAction None => new SLookIAction(Vector2.zero);
+    public static SIActionLook None => new SIActionLook(Vector2.zero);
 }

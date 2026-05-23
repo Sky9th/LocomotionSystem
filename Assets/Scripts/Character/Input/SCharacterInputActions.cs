@@ -6,12 +6,12 @@ namespace Game.Character.Input
     public readonly struct SCharacterInputActions
     {
         public SCharacterInputActions(
-            SMoveIAction moveAction, SMoveIAction lastMoveAction,
-            SLookIAction lookAction,
-            SCrouchIAction crouchAction, SProneIAction proneAction,
-            SWalkIAction walkAction, SRunIAction runAction,
-            SSprintIAction sprintAction, SJumpIAction jumpAction,
-            SStandIAction standAction)
+            SIActionMove moveAction, SIActionMove lastMoveAction,
+            SIActionLook lookAction,
+            SIActionCrouch crouchAction, SIActionProne proneAction,
+            SIActionWalk walkAction, SIActionRun runAction,
+            SIActionSprint sprintAction, SIActionJump jumpAction,
+            SIActionStand standAction)
         {
             MoveAction = moveAction;
             LastMoveAction = lastMoveAction;
@@ -25,23 +25,23 @@ namespace Game.Character.Input
             StandAction = standAction;
         }
 
-        public SMoveIAction MoveAction { get; }
-        public SMoveIAction LastMoveAction { get; }
-        public SLookIAction LookAction { get; }
-        public SCrouchIAction CrouchAction { get; }
-        public SProneIAction ProneAction { get; }
-        public SWalkIAction WalkAction { get; }
-        public SRunIAction RunAction { get; }
-        public SSprintIAction SprintAction { get; }
-        public SJumpIAction JumpAction { get; }
-        public SStandIAction StandAction { get; }
+        public SIActionMove MoveAction { get; }
+        public SIActionMove LastMoveAction { get; }
+        public SIActionLook LookAction { get; }
+        public SIActionCrouch CrouchAction { get; }
+        public SIActionProne ProneAction { get; }
+        public SIActionWalk WalkAction { get; }
+        public SIActionRun RunAction { get; }
+        public SIActionSprint SprintAction { get; }
+        public SIActionJump JumpAction { get; }
+        public SIActionStand StandAction { get; }
 
         public static SCharacterInputActions None => new(
-            SMoveIAction.None, SMoveIAction.None,
-            SLookIAction.None,
-            SCrouchIAction.None, SProneIAction.None,
-            SWalkIAction.None, SRunIAction.None,
-            SSprintIAction.None, SJumpIAction.None,
-            SStandIAction.None);
+            SIActionMove.None, SIActionMove.None,
+            SIActionLook.None,
+            SIActionCrouch.None, SIActionProne.None,
+            SIActionWalk.None, SIActionRun.None,
+            SIActionSprint.None, SIActionJump.None,
+            SIActionStand.None);
     }
 }

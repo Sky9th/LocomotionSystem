@@ -125,10 +125,12 @@ Loco完结   音效骨架     数值系统     Stats管理    HUD UI     战斗�
 
 ### 待办
 
-- **命名统一**: `STimeScaleIAction` → `SWorldSpeedIAction`，后续统一改为 `SIAction{What}` 前缀
-- StatusOverlay
-- ClockOverlay
-- MainMenu 加载存档/设置子面板
+- ~~命名统一: 全部 `S{What}IAction` → `SIAction{What}` (11 structs)~~ ✅ 2026-05-23
+- StatusOverlay — 延后，暂不拓展 condition/buff 代码，仅通过 modifier 速率调整
+- ClockOverlay — 延后
+- MainMenu 加载存档/设置子面板 — 延后
+
+> **整体策略**: 先完成玩法闭环（消耗 / 装备 / 拾取 / 战斗 / 僵尸 AI），再调整数值速率。
 
 ### Prefab 资产
 

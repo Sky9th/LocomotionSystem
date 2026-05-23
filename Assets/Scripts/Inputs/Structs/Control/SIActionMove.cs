@@ -7,9 +7,9 @@ using UnityEngine.InputSystem;
 /// Stored under Structs/IActions so every subsystem observes the same DTO layout.
 /// </summary>
 [Serializable]
-public struct SMoveIAction
+public struct SIActionMove
 {
-    public SMoveIAction(Vector2 rawInput, Vector3 worldDirection, InputActionPhase phase)
+    public SIActionMove(Vector2 rawInput, Vector3 worldDirection, InputActionPhase phase)
     {
         RawInput = rawInput;
         WorldDirection = worldDirection;
@@ -21,7 +21,7 @@ public struct SMoveIAction
     public InputActionPhase Phase { get; }
     public bool HasInput => RawInput.sqrMagnitude > Mathf.Epsilon;
 
-    public static SMoveIAction None => new SMoveIAction(
+    public static SIActionMove None => new SIActionMove(
         Vector2.zero,
         Vector3.zero,
         InputActionPhase.Waiting);

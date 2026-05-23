@@ -17,7 +17,7 @@ public class CameraService : BaseService, IGameplaySessionHandler
     [SerializeField, Range(0f, 90f)] private float maxPitchDegrees = 75f;
 
     private Transform cameraPivot;
-    private SLookIAction lastLookAction;
+    private SIActionLook lastLookAction;
     private Vector2 lastAppliedLookDelta;
 
     private SCameraContext lastSnapshot;
@@ -43,7 +43,7 @@ public class CameraService : BaseService, IGameplaySessionHandler
 
         if (Dispatcher != null)
         {
-            Dispatcher.Subscribe<SLookIAction>(HandleLook);
+            Dispatcher.Subscribe<SIActionLook>(HandleLook);
             Dispatcher.Subscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
         }
     }
@@ -52,7 +52,7 @@ public class CameraService : BaseService, IGameplaySessionHandler
     {
         if (Dispatcher != null)
         {
-            Dispatcher.Unsubscribe<SLookIAction>(HandleLook);
+            Dispatcher.Unsubscribe<SIActionLook>(HandleLook);
             Dispatcher.Unsubscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
         }
     }
@@ -82,7 +82,7 @@ public class CameraService : BaseService, IGameplaySessionHandler
     public void OnGameplaySessionEnd()
     {
         isFollowingPlayer = false;
-        lastLookAction = SLookIAction.None;
+        lastLookAction = SIActionLook.None;
         lastAppliedLookDelta = Vector2.zero;
         DestroyCameraPivot();
     }
@@ -197,7 +197,7 @@ public class CameraService : BaseService, IGameplaySessionHandler
         return hasSnapshot;
     }
 
-    private void HandleLook(SLookIAction payload, MetaStruct meta)
+    private void HandleLook(SIActionLook payload, MetaStruct meta)
     {
         lastLookAction = payload;
     }
@@ -239,10 +239,10 @@ public class CameraService : BaseService, IGameplaySessionHandler
             }
         }
 
-        lastLookAction = SLookIAction.None;
+        lastLookAction = SIActionLook.None;
     }
 
-    private void ApplyLookRotationToPivot(Transform pivot, SLookIAction lookAction, out Vector2 appliedLookDelta)
+    private void ApplyLookRotationToPivot(Transform pivot, SIActionLook lookAction, out Vector2 appliedLookDelta)
     {
         appliedLookDelta = Vector2.zero;
 

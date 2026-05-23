@@ -18,7 +18,7 @@ public class TimeService : BaseService
 
     protected override void OnSubscriptionsActivated()
     {
-        Dispatcher.Subscribe<STimeScaleIAction>(HandleTimeScaleRequested);
+        Dispatcher.Subscribe<SIActionWorldSpeed>(HandleTimeScaleRequested);
         Dispatcher.Subscribe<SSceneLoadStart>(HandleSceneLoadStart);
         Dispatcher.Subscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
         Dispatcher.Subscribe<SGameState>(HandleGameStateChanged);
@@ -47,7 +47,7 @@ public class TimeService : BaseService
         Time.timeScale = (isSceneLoading || isGamePaused) ? 0f : defaultScale;
     }
 
-    private void HandleTimeScaleRequested(STimeScaleIAction action, MetaStruct meta)
+    private void HandleTimeScaleRequested(SIActionWorldSpeed action, MetaStruct meta)
     {
         if (isSceneLoading || isGamePaused) return;
         defaultScale = Mathf.Clamp(action.TargetScale, minScale, maxScale);
@@ -63,7 +63,7 @@ public class TimeService : BaseService
     {
         if (Dispatcher != null)
         {
-            Dispatcher.Unsubscribe<STimeScaleIAction>(HandleTimeScaleRequested);
+            Dispatcher.Unsubscribe<SIActionWorldSpeed>(HandleTimeScaleRequested);
             Dispatcher.Unsubscribe<SSceneLoadStart>(HandleSceneLoadStart);
             Dispatcher.Unsubscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
             Dispatcher.Unsubscribe<SGameState>(HandleGameStateChanged);

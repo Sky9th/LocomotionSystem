@@ -21,7 +21,7 @@ public class IAPlayerSprint : InputActionHandler
 
         bool isPressed = context.ReadValueAsButton();
 
-        SSprintIAction intent = SSprintIAction.CreateEvent(isPressed, context.phase);
+        SIActionSprint intent = SIActionSprint.CreateEvent(isPressed, context.phase);
 
         eventDispatcher.Publish(intent);
     }

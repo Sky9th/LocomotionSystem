@@ -17,7 +17,7 @@ public class IASystemTimeSlow : InputActionHandler
             return;
         }
 
-        var payload = new STimeScaleIAction(Mathf.Max(0.01f, slowScale));
+        var payload = new SIActionWorldSpeed(Mathf.Max(0.01f, slowScale));
         eventDispatcher.Publish(payload);
     }
 

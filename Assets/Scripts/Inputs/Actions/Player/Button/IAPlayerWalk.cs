@@ -21,7 +21,7 @@ public class IAPlayerWalk : InputActionHandler
 
         bool rawInput = context.ReadValueAsButton();
 
-        SWalkIAction intent = SWalkIAction.CreateEvent(rawInput, context.phase);
+        SIActionWalk intent = SIActionWalk.CreateEvent(rawInput, context.phase);
 
         eventDispatcher.Publish(intent);
     }

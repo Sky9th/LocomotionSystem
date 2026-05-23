@@ -19,7 +19,7 @@ public class IAPlayerCrouch : InputActionHandler
             return;
         }
         bool rawInput = context.ReadValueAsButton();
-        SCrouchIAction intent = SCrouchIAction.CreateEvent(rawInput, context.phase);
+        SIActionCrouch intent = SIActionCrouch.CreateEvent(rawInput, context.phase);
         eventDispatcher.Publish(intent);
     }
 }

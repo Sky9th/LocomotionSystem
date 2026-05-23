@@ -27,7 +27,7 @@ public class IAUIEscape : InputActionHandler
             return;
         }
 
-        var iaction = new SUIEscapeIAction(isPressed);
+        var iaction = new SIActionUIEscape(isPressed);
         eventDispatcher.Publish(iaction);
     }
 }

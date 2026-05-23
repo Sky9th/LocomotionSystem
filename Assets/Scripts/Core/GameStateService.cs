@@ -106,7 +106,7 @@ public class GameStateService : BaseService
 		base.OnSubscriptionsActivated();
 		if (Dispatcher != null)
 		{
-			Dispatcher.Subscribe<SUIEscapeIAction>(HandleEscapeIntent);
+			Dispatcher.Subscribe<SIActionUIEscape>(HandleEscapeIntent);
 		}
 	}
 
@@ -114,11 +114,11 @@ public class GameStateService : BaseService
 	{
 		if (Dispatcher != null)
 		{
-			Dispatcher.Unsubscribe<SUIEscapeIAction>(HandleEscapeIntent);
+			Dispatcher.Unsubscribe<SIActionUIEscape>(HandleEscapeIntent);
 		}
 	}
 
-	private void HandleEscapeIntent(SUIEscapeIAction payload, MetaStruct meta)
+	private void HandleEscapeIntent(SIActionUIEscape payload, MetaStruct meta)
 	{
 		if (!payload.IsPressed)
 		{
