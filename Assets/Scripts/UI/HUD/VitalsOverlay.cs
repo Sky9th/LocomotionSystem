@@ -30,7 +30,7 @@ public class VitalsOverlay : UIOverlay
 
     private void Update()
     {
-        refreshTimer += Time.deltaTime;
+        refreshTimer += DeltaTime;
         if (refreshTimer < refreshRate) return;
         refreshTimer = 0f;
 

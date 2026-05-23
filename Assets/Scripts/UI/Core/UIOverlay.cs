@@ -7,6 +7,7 @@ public abstract class UIOverlay : MonoBehaviour
     [SerializeField] private float fadeDuration = 0.2f;
 
     protected UIService uiService;
+    protected float DeltaTime => Time.unscaledDeltaTime;
 
     public void Initialize(UIService manager)
     {
