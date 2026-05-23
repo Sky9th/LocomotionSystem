@@ -7,9 +7,9 @@ namespace Game.Character.Input
     {
         private readonly struct Subscription
         {
-            public readonly Action<EventDispatcher> Subscribe;
-            public readonly Action<EventDispatcher> Unsubscribe;
-            public Subscription(Action<EventDispatcher> subscribe, Action<EventDispatcher> unsubscribe)
+            public readonly Action<EventDispatcherService> Subscribe;
+            public readonly Action<EventDispatcherService> Unsubscribe;
+            public Subscription(Action<EventDispatcherService> subscribe, Action<EventDispatcherService> unsubscribe)
             {
                 Subscribe = subscribe;
                 Unsubscribe = unsubscribe;
@@ -33,7 +33,7 @@ namespace Game.Character.Input
         private bool hasCameraControl;
 
         private bool isSubscribed;
-        private EventDispatcher eventDispatcher;
+        private EventDispatcherService eventDispatcher;
         private readonly Dictionary<Type, Subscription> subscriptions = new();
 
         internal CharacterInputModule(Game.Character.Components.CharacterActor owner)
@@ -161,7 +161,7 @@ namespace Game.Character.Input
             }
         }
 
-        private static bool TryResolveDispatcher(out EventDispatcher dispatcher)
+        private static bool TryResolveDispatcher(out EventDispatcherService dispatcher)
         {
             dispatcher = null;
             var context = GameContext.Instance;

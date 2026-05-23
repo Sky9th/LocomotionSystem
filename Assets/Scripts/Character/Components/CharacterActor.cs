@@ -59,7 +59,6 @@ namespace Game.Character.Components
             var sb = new System.Text.StringBuilder($"[StatsTree] {statsTree.name} — {resolved.Count} stats\n");
             foreach (var s in resolved)
                 sb.AppendLine($"  ✅ {s.Path}  ({s.Current})");
-            Debug.Log(sb.ToString());
         }
 
         private void Start() { }

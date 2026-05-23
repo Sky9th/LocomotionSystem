@@ -52,12 +52,12 @@ Phase1-2  P0 完成     P1 启动    P1 完成   P2 完成   P3 完成   打磨�
 - **雾区/母体** — 感染值系统、特殊堕者
 - **结局** — 逃离触发、无人机交易
 
-P0 完成度:  ~35%
+P0 完成度:  ~40%
   ├─ LocomotionSystem  100% ✅
   ├─ 音效系统骨架      100% ✅
   ├─ 通用数值系统      100% ✅
   ├─ Stats 业务管理    100% ✅
-  ├─ HUD UI             0%
+  ├─ HUD UI             90%（Service 架构 + Core Scene 重构完成）
   ├─ 资源系统            0%
   ├─ 建造原型            0%
   ├─ 丧尸AI              0%
@@ -70,6 +70,6 @@ Phase 1:   LocomotionSystem 完结  ✅
 Phase 1.5: 音效系统骨架          ✅
 Phase 2:   通用数值系统           ✅
 Phase 2.5: Character Stats 管理  ✅
-Phase 3:   基本 HUD UI           后续
+Phase 3:   基本 HUD UI           ✅（Service 架构重构）
 Phase 4:   战斗基础              后续
 Phase 5:   角色动画增强          后续

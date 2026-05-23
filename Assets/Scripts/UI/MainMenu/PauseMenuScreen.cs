@@ -23,6 +23,6 @@ public class PauseMenuScreen : UIScreen
         mainMenuBtn.OnClicked -= HandleMainMenu;
     }
 
-    void HandleContinue() => uiManager.RequestResume();
-    void HandleMainMenu() => uiManager.RequestMainMenu();
+    void HandleContinue() => uiService.RequestResume();
+    void HandleMainMenu() => uiService.RequestMainMenu();
 }

@@ -95,6 +95,11 @@ public class GameContext : MonoBehaviour
         return false;
     }
 
+    public void ClearSnapshots()
+    {
+        contextSnapshots.Clear();
+    }
+
     public bool TryResolveService<TService>(out TService service)
         where TService : class
     {

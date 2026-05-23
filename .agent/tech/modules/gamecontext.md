@@ -18,9 +18,10 @@ GameContext 常驻于 GameManager 的子层级，是场景内“运行期上下�
 - **Struct Snapshot Layer**：仅缓存结构体快照，例如 `SCameraContext`（位置、前向、近远裁剪等）、`SPlayerPose`、`SWeatherContext`。每个子系统负责在自身更新点调用 `GameContext.UpdateSnapshot(struct)` 写入最新状态，消费方通过 `TryGetSnapshot<TStruct>` 读取上一帧稳定值。
 - **Service Access Layer**：对外暴露 `EventDispatcher Dispatcher { get; }`、`InputManager Input { get; }` 等核心服务。除 GameManager 外，不允许其他脚本直接持有服务引用，如需扩展可通过 `RegisterService/ TryResolveService` 实现。
 
-## 公共 API 建议
+## 公共 API
 - `void UpdateSnapshot<TStruct>(TStruct data) where TStruct : struct`
 - `bool TryGetSnapshot<TStruct>(out TStruct data) where TStruct : struct`
+- `void ClearSnapshots()` — 清空所有快照（会话结束时调用）
 - `void RegisterService<TService>(TService service)` / `bool TryResolveService<TService>(out TService service)`
 
 通过统一接口传递 Struct，有助于保持上下文不可变，避免外部脚本直接持有 GameObject 引用并修改状态。

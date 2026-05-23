@@ -6,11 +6,11 @@ public abstract class UIScreen : MonoBehaviour
     [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private float fadeDuration = 0.3f;
 
-    protected UIManager uiManager;
+    protected UIService uiService;
 
-    public void Initialize(UIManager manager)
+    public void Initialize(UIService manager)
     {
-        uiManager = manager;
+        uiService = manager;
         OnInitialize();
     }
 

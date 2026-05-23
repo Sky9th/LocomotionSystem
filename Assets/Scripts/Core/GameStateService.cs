@@ -6,10 +6,10 @@ using UnityEngine;
 /// keep GameContext snapshots in sync.
 /// </summary>
 [DisallowMultipleComponent]
-public class GameState : BaseService
+public class GameStateService : BaseService
 {
 	[Header("State Options")]
-	[SerializeField] private EGameState initialState = EGameState.Initializing;
+	[SerializeField] private EGameState initialState = EGameState.MainMenu;
 	[SerializeField] private bool logTransitions;
 	[Header("Cursor Options")]
 	[SerializeField] private bool lockCursorWhenPlaying = true;
@@ -22,12 +22,22 @@ public class GameState : BaseService
 	public EGameState PreviousState => previousState;
 	public bool HasInitialized => hasInitialized;
 
+	private void Update()
+	{
+	}
+
 	protected override bool OnRegister(GameContext context)
 	{
 		context.RegisterService(this);
 
-		previousState = initialState;
-		currentState = initialState;
+		var state = initialState;
+#if UNITY_EDITOR
+		if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Core")
+			state = EGameState.Playing;
+#endif
+
+		previousState = state;
+		currentState = state;
 
 		var snapshot = new SGameState(currentState, previousState);
 		PushSnapshot(snapshot);
@@ -50,17 +60,11 @@ public class GameState : BaseService
 		ApplyState(currentState, force: true);
 	}
 
-	/// <summary>
-	/// Attempts to switch into the requested state. No-op if already in that state.
-	/// </summary>
 	public bool RequestState(EGameState nextState)
 	{
 		return ApplyState(nextState, force: false);
 	}
 
-	/// <summary>
-	/// Forces a state change even if the new state matches the current one.
-	/// </summary>
 	public void ForceState(EGameState nextState)
 	{
 		ApplyState(nextState, force: true);

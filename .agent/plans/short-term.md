@@ -90,8 +90,8 @@ Loco完结   音效骨架     数值系统     Stats管理    HUD UI     战斗�
 
 ## Phase 3: 基本 HUD UI ✅
 
-> 更新: 2026-05-17
-> 状态: 完成
+> 更新: 2026-05-22
+> 状态: 完成（架构重构为 Service + Core Scene 直显主菜单）
 
 **目标**: MainMenu → 进入游戏 → VitalsOverlay 显示。
 
@@ -118,8 +118,14 @@ Loco完结   音效骨架     数值系统     Stats管理    HUD UI     战斗�
 - TransitionWithLoading：通用异步加载协程，替换 TransitionToGameplay
 - 完整闭环：MainMenu → Loading → Playing ↔ PauseMenu → MainMenu
 
+### Phase 3.6: Service 架构加固 ✅
+
+> 2026-05-23 完成。会话层显式化、TimeService 职责重整、Editor 直开 Core、IGameplaySessionHandler 接口。
+> 详见 tech/modules/service-architecture.md
+
 ### 待办
 
+- **命名统一**: `STimeScaleIAction` → `SWorldSpeedIAction`，后续统一改为 `SIAction{What}` 前缀
 - StatusOverlay
 - ClockOverlay
 - MainMenu 加载存档/设置子面板
