@@ -18,16 +18,16 @@ namespace Game.Character.Input
 
         private readonly Game.Character.Components.CharacterActor owner;
 
-        private SMoveIAction moveAction;
-        private SMoveIAction lastMoveAction;
-        private SLookIAction lookAction;
-        private SCrouchIAction crouchAction;
-        private SProneIAction proneAction;
-        private SWalkIAction walkAction;
-        private SRunIAction runAction;
-        private SSprintIAction sprintAction;
-        private SJumpIAction jumpAction;
-        private SStandIAction standAction;
+        private SIActionMove moveAction;
+        private SIActionMove lastMoveAction;
+        private SIActionLook lookAction;
+        private SIActionCrouch crouchAction;
+        private SIActionProne proneAction;
+        private SIActionWalk walkAction;
+        private SIActionRun runAction;
+        private SIActionSprint sprintAction;
+        private SIActionJump jumpAction;
+        private SIActionStand standAction;
 
         private SCameraContext cameraControl;
         private bool hasCameraControl;
@@ -40,30 +40,30 @@ namespace Game.Character.Input
         {
             this.owner = owner;
 
-            Register<SMoveIAction>();
-            Register<SLookIAction>();
-            Register<SCrouchIAction>();
-            Register<SProneIAction>();
-            Register<SRunIAction>();
-            Register<SStandIAction>();
-            Register<SWalkIAction>();
-            Register<SSprintIAction>();
-            Register<SJumpIAction>();
+            Register<SIActionMove>();
+            Register<SIActionLook>();
+            Register<SIActionCrouch>();
+            Register<SIActionProne>();
+            Register<SIActionRun>();
+            Register<SIActionStand>();
+            Register<SIActionWalk>();
+            Register<SIActionSprint>();
+            Register<SIActionJump>();
             Register<SCameraContext>();
         }
 
         internal void Reset()
         {
-            moveAction = SMoveIAction.None;
-            lastMoveAction = SMoveIAction.None;
-            lookAction = SLookIAction.None;
-            crouchAction = SCrouchIAction.None;
-            proneAction = SProneIAction.None;
-            walkAction = SWalkIAction.None;
-            runAction = SRunIAction.None;
-            sprintAction = SSprintIAction.None;
-            jumpAction = SJumpIAction.None;
-            standAction = SStandIAction.None;
+            moveAction = SIActionMove.None;
+            lastMoveAction = SIActionMove.None;
+            lookAction = SIActionLook.None;
+            crouchAction = SIActionCrouch.None;
+            proneAction = SIActionProne.None;
+            walkAction = SIActionWalk.None;
+            runAction = SIActionRun.None;
+            sprintAction = SIActionSprint.None;
+            jumpAction = SIActionJump.None;
+            standAction = SIActionStand.None;
             cameraControl = default;
             hasCameraControl = false;
         }
@@ -129,28 +129,28 @@ namespace Game.Character.Input
 
         private void PutAction<TPayload>(TPayload payload) where TPayload : struct
         {
-            if (typeof(TPayload) == typeof(SMoveIAction))
+            if (typeof(TPayload) == typeof(SIActionMove))
             {
                 lastMoveAction = moveAction;
-                moveAction = (SMoveIAction)(object)payload;
+                moveAction = (SIActionMove)(object)payload;
                 return;
             }
-            if (typeof(TPayload) == typeof(SLookIAction))
-            { lookAction = (SLookIAction)(object)payload; return; }
-            if (typeof(TPayload) == typeof(SCrouchIAction))
-            { crouchAction = (SCrouchIAction)(object)payload; return; }
-            if (typeof(TPayload) == typeof(SProneIAction))
-            { proneAction = (SProneIAction)(object)payload; return; }
-            if (typeof(TPayload) == typeof(SWalkIAction))
-            { walkAction = (SWalkIAction)(object)payload; return; }
-            if (typeof(TPayload) == typeof(SRunIAction))
-            { runAction = (SRunIAction)(object)payload; return; }
-            if (typeof(TPayload) == typeof(SSprintIAction))
-            { sprintAction = (SSprintIAction)(object)payload; return; }
-            if (typeof(TPayload) == typeof(SJumpIAction))
-            { jumpAction = (SJumpIAction)(object)payload; return; }
-            if (typeof(TPayload) == typeof(SStandIAction))
-            { standAction = (SStandIAction)(object)payload; return; }
+            if (typeof(TPayload) == typeof(SIActionLook))
+            { lookAction = (SIActionLook)(object)payload; return; }
+            if (typeof(TPayload) == typeof(SIActionCrouch))
+            { crouchAction = (SIActionCrouch)(object)payload; return; }
+            if (typeof(TPayload) == typeof(SIActionProne))
+            { proneAction = (SIActionProne)(object)payload; return; }
+            if (typeof(TPayload) == typeof(SIActionWalk))
+            { walkAction = (SIActionWalk)(object)payload; return; }
+            if (typeof(TPayload) == typeof(SIActionRun))
+            { runAction = (SIActionRun)(object)payload; return; }
+            if (typeof(TPayload) == typeof(SIActionSprint))
+            { sprintAction = (SIActionSprint)(object)payload; return; }
+            if (typeof(TPayload) == typeof(SIActionJump))
+            { jumpAction = (SIActionJump)(object)payload; return; }
+            if (typeof(TPayload) == typeof(SIActionStand))
+            { standAction = (SIActionStand)(object)payload; return; }
             if (typeof(TPayload) == typeof(SCameraContext))
             {
                 if (owner != null && owner.IsPlayer)

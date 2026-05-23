@@ -21,7 +21,7 @@ public class IAPlayerJump : InputActionHandler
         Logger.Log($"[IAPlayerJump] Executing with context: {context}");
 
         bool rawInput = context.ReadValueAsButton();
-        SJumpIAction intent = SJumpIAction.CreateEvent(rawInput, context.phase);
+        SIActionJump intent = SIActionJump.CreateEvent(rawInput, context.phase);
         eventDispatcher.Publish(intent);
     }
 }

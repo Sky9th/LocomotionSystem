@@ -17,7 +17,7 @@ public class IASystemTimeResume : InputActionHandler
             return;
         }
 
-        var payload = new STimeScaleIAction(Mathf.Max(0.01f, resumeScale));
+        var payload = new SIActionWorldSpeed(Mathf.Max(0.01f, resumeScale));
         eventDispatcher.Publish(payload);
     }
 

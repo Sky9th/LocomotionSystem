@@ -25,7 +25,7 @@ public class IAPlayerLook : InputActionHandler
             delta.y = -delta.y;
         }
 
-        SLookIAction intent = new SLookIAction(delta);
+        SIActionLook intent = new SIActionLook(delta);
         eventDispatcher.Publish(intent);
     }
 

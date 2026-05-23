@@ -5,14 +5,14 @@ using System;
 /// to trigger pause/menu flows).
 /// </summary>
 [Serializable]
-public struct SUIEscapeIAction
+public struct SIActionUIEscape
 {
-    public SUIEscapeIAction(bool isPressed)
+    public SIActionUIEscape(bool isPressed)
     {
         IsPressed = isPressed;
     }
 
     public bool IsPressed { get; }
 
-    public static SUIEscapeIAction Pressed => new SUIEscapeIAction(true);
+    public static SIActionUIEscape Pressed => new SIActionUIEscape(true);
 }

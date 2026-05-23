@@ -2,12 +2,12 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// Signals a desired global time scale multiplier.
+/// Signals a desired world speed multiplier for gameplay.
 /// </summary>
 [Serializable]
-public struct STimeScaleIAction
+public struct SIActionWorldSpeed
 {
-    public STimeScaleIAction(float targetScale)
+    public SIActionWorldSpeed(float targetScale)
     {
         TargetScale = Mathf.Max(0.01f, targetScale);
     }

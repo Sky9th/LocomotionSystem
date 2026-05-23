@@ -20,7 +20,7 @@ public class IAPlayerRun : InputActionHandler
 
         bool rawInput = context.ReadValueAsButton();
 
-        SRunIAction intent = SRunIAction.CreateEvent(rawInput, context.phase);
+        SIActionRun intent = SIActionRun.CreateEvent(rawInput, context.phase);
 
         eventDispatcher.Publish(intent);
     }
