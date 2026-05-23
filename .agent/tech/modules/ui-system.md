@@ -1,7 +1,7 @@
 # UI System — 技术实现
 
-> 更新: 2026-05-22
-> 状态: Service 架构迁移完成
+> 更新: 2026-05-23
+> 状态: Service 架构迁移完成 + 时间线分离
 > 方案: uGUI + DOTween + ScriptableObject 配置驱动
 
 ## 文件结构
@@ -151,6 +151,21 @@ UIService 持有两个 Canvas：
 |---|---|---|
 | Pause/Resume | 有 | 无 |
 | 管理方式 | 互斥，UIService.currentScreen | 并存，List<UIOverlay> |
+
+## UI/Gameplay 时间线分离
+
+> 2026-05-23
+
+**原则**: UI 和 Gameplay 使用独立的时间线。`Time.timeScale` 只影响 Gameplay，UI 始终用 unscaled time。
+
+**实现**:
+- `GameService.Awake()` 设 `DOTween.defaultTimeScaleIndependent = true` — 所有 DOTween 动画默认走 unscaled time
+- `UIScreen` / `UIOverlay` 基类暴露 `protected float DeltaTime => Time.unscaledDeltaTime` — 子类 Update 用 `DeltaTime` 替代 `Time.deltaTime`
+- Gameplay 若需 timescale-dependent tween，显式 `.SetUpdate(false)`
+
+**效果**: Pause 时 `Time.timeScale = 0` 只冻 gameplay，UI 动画（fade/hover/press）和刷新计时不受影响。
+
+---
 
 ## 颜色风格系统
 
