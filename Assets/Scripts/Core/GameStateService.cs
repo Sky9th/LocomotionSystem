@@ -11,9 +11,6 @@ public class GameStateService : BaseService
 	[Header("State Options")]
 	[SerializeField] private EGameState initialState = EGameState.MainMenu;
 	[SerializeField] private bool logTransitions;
-	[Header("Cursor Options")]
-	[SerializeField] private bool lockCursorWhenPlaying = true;
-
 	private bool hasInitialized;
 	[SerializeField] private EGameState currentState;
 	[SerializeField] private EGameState previousState;
@@ -144,8 +141,7 @@ public class GameStateService : BaseService
 				SetCursorVisibility(true, CursorLockMode.None);
 				break;
 			case EGameState.Playing:
-				var targetLock = lockCursorWhenPlaying ? CursorLockMode.Locked : CursorLockMode.Confined;
-				SetCursorVisibility(false, targetLock);
+				SetCursorVisibility(true, CursorLockMode.Confined);
 				break;
 			default:
 				SetCursorVisibility(true, CursorLockMode.None);

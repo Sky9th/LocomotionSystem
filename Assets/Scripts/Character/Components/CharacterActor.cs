@@ -35,7 +35,7 @@ namespace Game.Character.Components
         internal SCharacterMotor LastMotor { get; private set; }
         internal SCharacterDiscrete LastDiscrete { get; private set; }
 
-        private CharacterInputModule inputModule;
+        private CharacterEventReceiver inputModule;
         private CharacterRig characterRig;
         private CharacterKinematic characterKinematic;
         private ILocomotionSimulator locomotionSimulator;
@@ -47,7 +47,7 @@ namespace Game.Character.Components
             characterAnimation = GetComponentInChildren<AnimationBrain>();
             characterRig = new CharacterRig(transform, characterAnimation?.transform ?? transform);
             characterAnimation?.SetRig(characterRig);
-            inputModule = new CharacterInputModule(this);
+            inputModule = new CharacterEventReceiver(this);
             characterKinematic = new CharacterKinematic(transform, transform, characterRig);
             locomotionSimulator = new GroundLocomotion();
 
@@ -88,12 +88,19 @@ namespace Game.Character.Components
 
             inputModule.ReadActions(out ctx.Input);
 
-            inputModule.ReadCameraControl(out var cameraControl);
-            Vector3 viewForward = isPlayer
-                ? (cameraControl.AnchorRotation * Vector3.forward)
-                : Vector3.zero;
+            Vector3 heading;
+            if (inputModule.ReadMouseGroundPosition(out Vector3 mouseWorldPos))
+            {
+                var dir = mouseWorldPos - transform.position;
+                dir.y = 0f;
+                heading = dir.sqrMagnitude > Mathf.Epsilon ? dir.normalized : transform.forward;
+            }
+            else
+            {
+                heading = transform.forward;
+            }
 
-            ctx.Kinematic = characterKinematic.Evaluate(characterProfile, viewForward, deltaTime);
+            ctx.Kinematic = characterKinematic.Evaluate(characterProfile, heading, deltaTime);
 
             locomotionSimulator.Simulate(ref ctx, locomotionProfile, deltaTime);
 
