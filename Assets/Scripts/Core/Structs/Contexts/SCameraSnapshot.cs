@@ -6,9 +6,9 @@ using UnityEngine;
 /// Shared via GameContext so any subsystem can reason about camera and anchor poses deterministically.
 /// </summary>
 [Serializable]
-public struct SCameraContext
+public struct SCameraSnapshot
 {
-    public SCameraContext(
+    public SCameraSnapshot(
         Vector3 cameraPosition,
         Quaternion cameraRotation,
         Vector3 anchorPosition,
@@ -26,7 +26,7 @@ public struct SCameraContext
         IsMouseGroundValid = isMouseGroundValid;
     }
 
-    public SCameraContext(
+    public SCameraSnapshot(
         Vector3 cameraPosition,
         Quaternion cameraRotation,
         Vector2 lookDelta)

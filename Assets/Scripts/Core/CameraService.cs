@@ -11,8 +11,6 @@ public class CameraService : BaseService, IGameplaySessionHandler
     [SerializeField] private bool autoLocateBrain = true;
     [SerializeField] private bool autoLocateDefaultVirtualCamera = true;
 
-    [Header("Camera Pivot")]
-    [SerializeField] private float cameraHeight = 15f;
     [SerializeField] private GameProfile gameProfile;
 
     private Transform cameraPivot;
@@ -138,22 +136,10 @@ public class CameraService : BaseService, IGameplaySessionHandler
             defaultVirtualCamera.LookAt = cameraPivot;
             defaultVirtualCamera.gameObject.SetActive(true);
 
-            StripCinemachineProceduralComponents();
             return;
         }
 
         Debug.LogWarning("[CameraService] No default virtual camera assigned.", this);
-    }
-
-    private void StripCinemachineProceduralComponents()
-    {
-        if (defaultVirtualCamera == null) return;
-
-        foreach (var comp in defaultVirtualCamera.GetComponents<CinemachineComponentBase>())
-            Destroy(comp);
-
-        var collider = defaultVirtualCamera.GetComponent<CinemachineCollider>();
-        if (collider != null) Destroy(collider);
     }
 
     private CinemachineBrain FindCinemachineBrain()
@@ -172,16 +158,7 @@ public class CameraService : BaseService, IGameplaySessionHandler
         if (cameraPivot == null) return;
         if (GameContext == null || !GameContext.TryGetSnapshot(out SPlayer player)) return;
 
-        Vector3 pivotPos = player.Character.Position;
-        cameraPivot.position = pivotPos;
-        cameraPivot.rotation = Quaternion.Euler(90f, 0f, 0f);
-
-        if (defaultVirtualCamera != null)
-        {
-            var vcamT = defaultVirtualCamera.transform;
-            vcamT.position = pivotPos + Vector3.up * cameraHeight;
-            vcamT.rotation = Quaternion.Euler(90f, 0f, 0f);
-        }
+        cameraPivot.position = player.Character.Position;
 
         var mouseGround = ComputeMouseGroundPosition();
 
@@ -203,7 +180,7 @@ public class CameraService : BaseService, IGameplaySessionHandler
         anchorPos = cameraPivot.position;
         anchorRot = cameraPivot.rotation;
 
-        PublishState(new SCameraContext(
+        PublishState(new SCameraSnapshot(
             camPos, camRot, anchorPos, anchorRot,
             Vector2.zero, mouseGround.WorldPosition, mouseGround.IsValid));
     }

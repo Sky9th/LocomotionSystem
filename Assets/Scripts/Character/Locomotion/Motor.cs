@@ -38,11 +38,7 @@ namespace Game.Character.Locomotion
 
         private static Vector3 ConvertToWorld(Vector2 local, Vector3 heading)
         {
-            var f = heading; f.y = 0f;
-            if (f.sqrMagnitude <= Mathf.Epsilon) f = Vector3.forward;
-            f.Normalize();
-            var r = Vector3.Cross(Vector3.up, f);
-            return f * local.y + r * local.x;
+            return new Vector3(local.x, 0f, local.y);
         }
 
         private static float SignedAngle(Vector3 body, Vector3 heading)

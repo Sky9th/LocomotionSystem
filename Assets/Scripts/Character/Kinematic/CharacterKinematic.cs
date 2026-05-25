@@ -27,18 +27,16 @@ namespace Game.Character.Kinematic
             previousGroundContact = SGroundContact.None;
         }
 
-        internal SCharacterKinematic Evaluate(CharacterProfile profile, Vector3 viewForward, float deltaTime)
+        internal SCharacterKinematic Evaluate(CharacterProfile profile, Vector3 heading, float deltaTime)
         {
             if (profile == null) throw new ArgumentNullException(nameof(profile));
 
             var position = actorTransform.position;
             var bodyForward = actorTransform.forward;
 
-            var lookDirection = CharacterHeadLook.Evaluate(viewForward, modelRoot, actorTransform, profile);
+            var lookDirection = CharacterHeadLook.Evaluate(actorTransform.forward, modelRoot, actorTransform, profile);
 
             var groundContact = EvaluateGroundContactAndApplyConstraints(profile, deltaTime, ref position);
-
-            var heading = CharacterHeadLook.EvaluatePlanarHeading(viewForward, actorTransform);
             CharacterObstacleDetection.TryDetectForwardObstacle(
                 position, heading,
                 profile.obstacleProbeVerticalOffset, profile.obstacleProbeDistance,

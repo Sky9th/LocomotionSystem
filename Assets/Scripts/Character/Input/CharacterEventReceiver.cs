@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Game.Character.Input
 {
-    internal sealed class CharacterInputModule
+    internal sealed class CharacterEventReceiver
     {
         private readonly struct Subscription
         {
@@ -29,14 +30,17 @@ namespace Game.Character.Input
         private SIActionJump jumpAction;
         private SIActionStand standAction;
 
-        private SCameraContext cameraControl;
+        // Camera
+        private SCameraSnapshot cameraControl;
         private bool hasCameraControl;
+        private Vector3 mouseGroundPosition;
+        private bool hasMouseGround;
 
         private bool isSubscribed;
         private EventDispatcherService eventDispatcher;
         private readonly Dictionary<Type, Subscription> subscriptions = new();
 
-        internal CharacterInputModule(Game.Character.Components.CharacterActor owner)
+        internal CharacterEventReceiver(Game.Character.Components.CharacterActor owner)
         {
             this.owner = owner;
 
@@ -49,7 +53,7 @@ namespace Game.Character.Input
             Register<SIActionWalk>();
             Register<SIActionSprint>();
             Register<SIActionJump>();
-            Register<SCameraContext>();
+            RegisterCamera();
         }
 
         internal void Reset()
@@ -66,6 +70,8 @@ namespace Game.Character.Input
             standAction = SIActionStand.None;
             cameraControl = default;
             hasCameraControl = false;
+            mouseGroundPosition = Vector3.zero;
+            hasMouseGround = false;
         }
 
         internal void ReadActions(out SCharacterInputActions actions)
@@ -87,10 +93,16 @@ namespace Game.Character.Input
             standAction = standAction.ClearFrameSignals();
         }
 
-        internal bool ReadCameraControl(out SCameraContext control)
+        internal bool ReadCameraControl(out SCameraSnapshot control)
         {
             control = cameraControl;
             return hasCameraControl;
+        }
+
+        internal bool ReadMouseGroundPosition(out Vector3 worldPosition)
+        {
+            worldPosition = mouseGroundPosition;
+            return hasMouseGround;
         }
 
         internal void Subscribe()
@@ -113,6 +125,27 @@ namespace Game.Character.Input
             eventDispatcher = null;
             isSubscribed = false;
         }
+
+        // ── Camera ──
+
+        private void RegisterCamera()
+        {
+            subscriptions[typeof(SCameraSnapshot)] = new Subscription(
+                d => d.Subscribe<SCameraSnapshot>(HandleCameraSnapshot),
+                d => d.Unsubscribe<SCameraSnapshot>(HandleCameraSnapshot));
+        }
+
+        private void HandleCameraSnapshot(SCameraSnapshot snapshot, MetaStruct meta)
+        {
+            if (owner == null || !owner.isActiveAndEnabled) return;
+            if (!owner.IsPlayer) return;
+            cameraControl = snapshot;
+            hasCameraControl = true;
+            mouseGroundPosition = snapshot.MouseGroundPosition;
+            hasMouseGround = snapshot.IsMouseGroundValid;
+        }
+
+        // ── Input Actions ──
 
         private void Register<TPayload>() where TPayload : struct
         {
@@ -151,14 +184,6 @@ namespace Game.Character.Input
             { jumpAction = (SIActionJump)(object)payload; return; }
             if (typeof(TPayload) == typeof(SIActionStand))
             { standAction = (SIActionStand)(object)payload; return; }
-            if (typeof(TPayload) == typeof(SCameraContext))
-            {
-                if (owner != null && owner.IsPlayer)
-                {
-                    cameraControl = (SCameraContext)(object)payload;
-                    hasCameraControl = true;
-                }
-            }
         }
 
         private static bool TryResolveDispatcher(out EventDispatcherService dispatcher)
