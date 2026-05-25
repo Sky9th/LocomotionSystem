@@ -1,19 +1,17 @@
 using System;
 using System.Collections.Generic;
+using Game.Utility.Logging;
 using UnityEngine;
 
-/// <summary>
-/// Central repository for runtime scene context. Lives under GameManager and
-/// exposes shared references (cameras, player roots, services) to the rest of the
-/// project through a controlled API.
-/// </summary>
 [DisallowMultipleComponent]
 public class GameContext : MonoBehaviour
 {
     public static GameContext Instance { get; private set; }
 
     [Header("Diagnostics")]
-    [SerializeField] private bool logDebugInfo;
+    [SerializeField] private LogLevel logLevel = LogLevel.Warning;
+
+    private LogChannel Log;
 
     private readonly Dictionary<Type, object> serviceRegistry = new();
     private readonly Dictionary<Type, object> contextSnapshots = new();
@@ -47,41 +45,27 @@ public class GameContext : MonoBehaviour
 
     public void Initialize()
     {
+        if (Log == null) Log = LogManager.GetChannel(nameof(GameContext), logLevel);
+
         if (isInitialized)
         {
-            if (logDebugInfo)
-            {
-                Logger.Log("GameContext.Initialize called but already initialized.", nameof(GameContext), this);
-            }
+            Log.Debug("Initialize called but already initialized.");
             return;
         }
 
         Instance = this;
         isInitialized = true;
 
-        if (logDebugInfo)
-        {
-            Logger.Log($"GameContext initialized. RegisteredServiceCount={RegisteredServiceCount}", nameof(GameContext), this);
-        }
+        Log.Info($"Initialized. RegisteredServiceCount={RegisteredServiceCount}");
     }
 
-    /// <summary>
-    /// Stores or refreshes a snapshot struct pushed from another subsystem (e.g. camera, player, AI).
-    /// </summary>
     public void UpdateSnapshot<TSnapshot>(TSnapshot snapshot)
         where TSnapshot : struct
     {
         contextSnapshots[typeof(TSnapshot)] = snapshot;
-
-        if (logDebugInfo)
-        {
-            Logger.Log($"Snapshot updated: {typeof(TSnapshot).Name}", nameof(GameContext), this);
-        }
+        Log.Debug($"Snapshot updated: {typeof(TSnapshot).Name}");
     }
 
-    /// <summary>
-    /// Attempts to retrieve the latest snapshot for the requested struct type.
-    /// </summary>
     public bool TryGetSnapshot<TSnapshot>(out TSnapshot snapshot)
         where TSnapshot : struct
     {
@@ -116,16 +100,9 @@ public class GameContext : MonoBehaviour
     public void RegisterService<TService>(TService service)
         where TService : class
     {
-        if (service == null)
-        {
-            return;
-        }
+        if (service == null) return;
 
         serviceRegistry[typeof(TService)] = service;
-
-        if (logDebugInfo)
-        {
-            Logger.Log($"Service registered in GameContext: {typeof(TService).Name}", nameof(GameContext), this);
-        }
+        Log.Debug($"Service registered: {typeof(TService).Name}");
     }
 }
