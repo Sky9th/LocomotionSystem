@@ -40,7 +40,7 @@ public class GameStateService : BaseService
 		currentState = state;
 
 		var snapshot = new SGameState(currentState, previousState);
-		PushSnapshot(snapshot);
+		PublishState(snapshot);
 
 		if (logTransitions)
 		{
@@ -90,8 +90,7 @@ public class GameStateService : BaseService
 
 		var snapshot = new SGameState(currentState, previousState);
 		Log.Info($"Transition: {previousState} -> {currentState}");
-		PushSnapshot(snapshot);
-		PublishStateChange(snapshot);
+		PublishState(snapshot);
 
 		if (logTransitions)
 		{
@@ -160,15 +159,6 @@ public class GameStateService : BaseService
 		Cursor.lockState = lockMode;
 	}
 
-	private void PushSnapshot(SGameState snapshot)
-	{
-		GameContext?.UpdateSnapshot(snapshot);
-	}
-
-	private void PublishStateChange(SGameState snapshot)
-	{
-		Dispatcher.Publish(snapshot);
-	}
 }
 
 public enum EGameState

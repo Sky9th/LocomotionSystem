@@ -54,7 +54,7 @@ public class SceneService : BaseService
 
         Dispatcher.Publish(new SSceneLoadStart(sceneName));
 
-        PushSnapshot(sceneName, previousScene, true);
+        PublishState(new SSceneTransition(sceneName, previousScene, true));
 
         var op = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
         while (!op.isDone)
@@ -75,7 +75,7 @@ public class SceneService : BaseService
             yield return null;
         }
 
-        PushSnapshot(sceneName, previousScene, false);
+        PublishState(new SSceneTransition(sceneName, previousScene, false));
         Dispatcher.Publish(new SSceneLoadComplete(sceneName, previousScene));
     }
 
@@ -83,7 +83,7 @@ public class SceneService : BaseService
     {
         Dispatcher.Publish(new SSceneLoadStart(sceneName));
 
-        PushSnapshot(null, sceneName, true);
+        PublishState(new SSceneTransition(null, sceneName, true));
 
         var scene = SceneManager.GetSceneByName(sceneName);
         if (scene.isLoaded)
@@ -98,14 +98,10 @@ public class SceneService : BaseService
             yield return null;
         }
 
-        PushSnapshot(null, sceneName, false);
+        PublishState(new SSceneTransition(null, sceneName, false));
         Dispatcher.Publish(new SSceneLoadComplete(null, sceneName));
     }
 
-    private void PushSnapshot(string current, string previous, bool isLoading)
-    {
-        GameContext?.UpdateSnapshot(new SSceneTransition(current, previous, isLoading));
-    }
 
     protected override void OnServicesReady() { }
 

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Animancer;
 using Game.Character.Animation.Drivers;
+using Game.Character.Components;
 using Game.Character.Animation.Requests;
 
 namespace Game.Character.Animation
@@ -66,19 +67,19 @@ namespace Game.Character.Animation
 
         // ── 每帧调度 ──
 
-        public void Resolve(in SCharacterSnapshot snapshot, float dt)
+        public void Resolve(in CharacterFrameContext ctx, float dt)
         {
-            EvaluateDrivers(snapshot, dt);
+            EvaluateDrivers(ctx, dt);
             ProcessQueue();
             CheckCompletion();
-            activeDriver?.Drive(snapshot, dt);
+            activeDriver?.Drive(ctx, dt);
             ActivateDefaultIfNeeded();
         }
 
-        private void EvaluateDrivers(in SCharacterSnapshot snapshot, float dt)
+        private void EvaluateDrivers(in CharacterFrameContext ctx, float dt)
         {
             foreach (var driver in drivers)
-                driver.Evaluate(snapshot, dt);
+                driver.Evaluate(ctx, dt);
         }
 
         private void ProcessQueue()

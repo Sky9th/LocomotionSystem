@@ -5,15 +5,15 @@ namespace Game.Character.Animation.Drivers
         public BaseIdleToMovingState(BaseLayer owner) : base(owner) { }
 
         public override bool CanEnterState
-            => Owner.Snapshot.Locomotion.Discrete.Phase == ELocomotionPhase.GroundedMoving
-            && Owner.Snapshot.Locomotion.Discrete.IsTurning;
+            => Owner.Ctx.Discrete.Phase == ELocomotionPhase.GroundedMoving
+            && Owner.Ctx.Discrete.IsTurning;
 
         public override bool CanExitState
-            => !Owner.Snapshot.Locomotion.Discrete.IsTurning;
+            => !Owner.Ctx.Discrete.IsTurning;
 
         public override void OnEnterState()
         {
-            var alias = Owner.Snapshot.Locomotion.Motor.TurnAngle > 0f
+            var alias = Owner.Ctx.Motor.TurnAngle > 0f
                 ? Owner.Alias.idleToRun180R : Owner.Alias.idleToRun180L;
             Owner.PlayFromStart(alias);
         }
@@ -25,7 +25,7 @@ namespace Game.Character.Animation.Drivers
             if (Owner.TrySetState(BaseStateKey.AirLoop)) return;
             if (Owner.HasCompleted())
             {
-                if (Owner.Snapshot.Locomotion.Discrete.Phase == ELocomotionPhase.GroundedMoving)
+                if (Owner.Ctx.Discrete.Phase == ELocomotionPhase.GroundedMoving)
                     Owner.ForceSetState(BaseStateKey.Moving);
                 else
                     Owner.ForceSetState(BaseStateKey.Idle);

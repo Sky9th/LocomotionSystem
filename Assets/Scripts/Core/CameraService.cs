@@ -12,16 +12,10 @@ public class CameraService : BaseService, IGameplaySessionHandler
     [SerializeField] private bool autoLocateDefaultVirtualCamera = true;
 
     [Header("Camera Pivot")]
-    [SerializeField] private float verticalOffset;
+    [SerializeField] private float cameraHeight = 15f;
     [SerializeField] private GameProfile gameProfile;
-    [SerializeField, Range(0f, 90f)] private float maxPitchDegrees = 75f;
 
     private Transform cameraPivot;
-    private SIActionLook lastLookAction;
-    private Vector2 lastAppliedLookDelta;
-
-    private SCameraContext lastSnapshot;
-    private bool hasSnapshot;
     private bool isFollowingPlayer;
 
     public Transform CameraPivot => cameraPivot;
@@ -32,18 +26,12 @@ public class CameraService : BaseService, IGameplaySessionHandler
         TickCameraPivot();
     }
 
-    private void LateUpdate()
-    {
-        PushCameraSnapshotToContext();
-    }
-
     protected override void OnSubscriptionsActivated()
     {
         base.OnSubscriptionsActivated();
 
         if (Dispatcher != null)
         {
-            Dispatcher.Subscribe<SIActionLook>(HandleLook);
             Dispatcher.Subscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
         }
     }
@@ -52,7 +40,6 @@ public class CameraService : BaseService, IGameplaySessionHandler
     {
         if (Dispatcher != null)
         {
-            Dispatcher.Unsubscribe<SIActionLook>(HandleLook);
             Dispatcher.Unsubscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
         }
     }
@@ -76,14 +63,11 @@ public class CameraService : BaseService, IGameplaySessionHandler
 
     protected override void OnServicesReady()
     {
-        PushCameraSnapshotToContext();
     }
 
     public void OnGameplaySessionEnd()
     {
         isFollowingPlayer = false;
-        lastLookAction = SIActionLook.None;
-        lastAppliedLookDelta = Vector2.zero;
         DestroyCameraPivot();
     }
 
@@ -153,10 +137,23 @@ public class CameraService : BaseService, IGameplaySessionHandler
             defaultVirtualCamera.Follow = cameraPivot;
             defaultVirtualCamera.LookAt = cameraPivot;
             defaultVirtualCamera.gameObject.SetActive(true);
+
+            StripCinemachineProceduralComponents();
             return;
         }
 
         Debug.LogWarning("[CameraService] No default virtual camera assigned.", this);
+    }
+
+    private void StripCinemachineProceduralComponents()
+    {
+        if (defaultVirtualCamera == null) return;
+
+        foreach (var comp in defaultVirtualCamera.GetComponents<CinemachineComponentBase>())
+            Destroy(comp);
+
+        var collider = defaultVirtualCamera.GetComponent<CinemachineCollider>();
+        if (collider != null) Destroy(collider);
     }
 
     private CinemachineBrain FindCinemachineBrain()
@@ -170,112 +167,58 @@ public class CameraService : BaseService, IGameplaySessionHandler
         return FindObjectOfType<CinemachineBrain>();
     }
 
-    private void PushCameraSnapshotToContext()
-    {
-        if (cameraBrain == null || GameContext == null) return;
-
-        var outputCamera = cameraBrain.OutputCamera;
-        if (outputCamera == null) return;
-
-        Vector3 pivotPosition = cameraPivot != null ? cameraPivot.position : outputCamera.transform.position;
-        Quaternion pivotRotation = cameraPivot != null ? cameraPivot.rotation : outputCamera.transform.rotation;
-
-        lastSnapshot = new SCameraContext(
-            outputCamera.transform.position,
-            outputCamera.transform.rotation,
-            pivotPosition,
-            pivotRotation,
-            lastAppliedLookDelta);
-
-        hasSnapshot = true;
-        GameContext.UpdateSnapshot(lastSnapshot);
-    }
-
-    public bool TryGetLatestSnapshot(out SCameraContext snapshot)
-    {
-        snapshot = lastSnapshot;
-        return hasSnapshot;
-    }
-
-    private void HandleLook(SIActionLook payload, MetaStruct meta)
-    {
-        lastLookAction = payload;
-    }
-
     private void TickCameraPivot()
     {
         if (cameraPivot == null) return;
+        if (GameContext == null || !GameContext.TryGetSnapshot(out SPlayer player)) return;
 
-        GameContext context = GameContext.Instance;
-        if (context == null || !context.TryGetSnapshot(out SCharacterSnapshot snapshot)) return;
+        Vector3 pivotPos = player.Character.Position;
+        cameraPivot.position = pivotPos;
+        cameraPivot.rotation = Quaternion.Euler(90f, 0f, 0f);
 
-        Vector3 targetPosition = snapshot.Kinematic.Position;
-        targetPosition.y = snapshot.Kinematic.Position.y + verticalOffset;
-        cameraPivot.position = targetPosition;
-
-        ApplyLookRotationToPivot(cameraPivot, lastLookAction, out Vector2 appliedLookDelta);
-        lastAppliedLookDelta = appliedLookDelta;
-
-        if (Dispatcher != null)
+        if (defaultVirtualCamera != null)
         {
-            var outputCamera = cameraBrain != null ? cameraBrain.OutputCamera : null;
-            if (outputCamera != null)
-            {
-                Dispatcher.Publish(new SCameraContext(
-                    outputCamera.transform.position,
-                    outputCamera.transform.rotation,
-                    cameraPivot.position,
-                    cameraPivot.rotation,
-                    appliedLookDelta));
-            }
-            else
-            {
-                Dispatcher.Publish(new SCameraContext(
-                    cameraPivot.position,
-                    cameraPivot.rotation,
-                    cameraPivot.position,
-                    cameraPivot.rotation,
-                    appliedLookDelta));
-            }
+            var vcamT = defaultVirtualCamera.transform;
+            vcamT.position = pivotPos + Vector3.up * cameraHeight;
+            vcamT.rotation = Quaternion.Euler(90f, 0f, 0f);
         }
 
-        lastLookAction = SIActionLook.None;
-    }
+        var mouseGround = ComputeMouseGroundPosition();
 
-    private void ApplyLookRotationToPivot(Transform pivot, SIActionLook lookAction, out Vector2 appliedLookDelta)
-    {
-        appliedLookDelta = Vector2.zero;
+        var outputCamera = cameraBrain != null ? cameraBrain.OutputCamera : null;
+        Vector3 camPos, anchorPos;
+        Quaternion camRot, anchorRot;
 
-        if (pivot == null || !lookAction.HasDelta) return;
-
-        float rotationSpeed = gameProfile != null ? gameProfile.cameraLookRotationSpeed : 1f;
-        Vector2 lookDelta = lookAction.Delta * rotationSpeed;
-        appliedLookDelta = lookDelta;
-
-        Vector3 euler = pivot.rotation.eulerAngles;
-        euler.z = 0f;
-
-        float pitch = NormalizeAngle180(euler.x);
-        pitch += lookDelta.y;
-        if (maxPitchDegrees > 0f)
+        if (outputCamera != null)
         {
-            pitch = Mathf.Clamp(pitch, -maxPitchDegrees, maxPitchDegrees);
+            camPos = outputCamera.transform.position;
+            camRot = outputCamera.transform.rotation;
+        }
+        else
+        {
+            camPos = cameraPivot.position;
+            camRot = cameraPivot.rotation;
         }
 
-        euler.x = pitch;
-        euler.y += lookDelta.x;
+        anchorPos = cameraPivot.position;
+        anchorRot = cameraPivot.rotation;
 
-        pivot.rotation = Quaternion.Euler(euler);
+        PublishState(new SCameraContext(
+            camPos, camRot, anchorPos, anchorRot,
+            Vector2.zero, mouseGround.WorldPosition, mouseGround.IsValid));
     }
 
-    private static float NormalizeAngle180(float angle)
+    private (Vector3 WorldPosition, bool IsValid) ComputeMouseGroundPosition()
     {
-        angle %= 360f;
-        if (angle > 180f)
-            angle -= 360f;
-        else if (angle < -180f)
-            angle += 360f;
+        var outputCamera = cameraBrain != null ? cameraBrain.OutputCamera : null;
+        if (outputCamera == null) return (Vector3.zero, false);
 
-        return angle;
+        var ray = outputCamera.ScreenPointToRay(Input.mousePosition);
+        var groundPlane = new Plane(Vector3.up, Vector3.zero);
+
+        if (groundPlane.Raycast(ray, out float distance))
+            return (ray.GetPoint(distance), true);
+
+        return (Vector3.zero, false);
     }
 }

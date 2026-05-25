@@ -34,7 +34,8 @@ GameContext 常驻于 GameManager 的子层级，是场景内“运行期上下�
 5. **OnDestroy**：解除所有事件订阅并清空注册表，确保重新加载场景时可以干净初始化。
 
 ## 协作要点
-- **输入/摄像机/AI 子系统**：各自维护专属 Struct（例如 `SPlayerMoveIAction`、`SCameraContext`、`SEnemyAwareness`），并在更新后调用 `UpdateSnapshot` 推送；需要数据的系统通过 `TryGetSnapshot` 读取。
+- **仅 Service 层写入**：Component（MonoBehaviour 非 Service）禁止直接 `GameContext.Instance.UpdateSnapshot()`。个体实体数据留在 Component public 属性，通过 `GetComponent<T>()` 读取。GameContext 只承载全局单例状态。
+- **输入/摄像机/AI 子系统**：各自维护专属 Struct，并在更新后调用 `PublishState()` 推送；需要数据的系统通过 `TryGetSnapshot` 读取。
 - **EventDispatcher**：GameContext 可订阅玩家重生、场景切换等事件以触发快照重建或清理；也可在必要时广播“ContextUpdated”类型事件，提醒订阅者刷新本地缓存。
 - **其他服务**：例如 AudioService、UIService、天气系统，可在初始化时通过 `RegisterService` 暴露给需要的子系统，保持依赖集中。
 

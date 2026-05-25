@@ -18,7 +18,7 @@ namespace Game.Character.Animation.Drivers
                         ? profile.landMediumTriggerDistance
                         : profile.landHardTriggerDistance;
 
-                return Owner.Snapshot.Kinematic.GroundContact.DistanceToGround < threshold;
+                return Owner.Ctx.Kinematic.GroundContact.DistanceToGround < threshold;
             }
         }
 

@@ -35,13 +35,12 @@ public class VitalsOverlay : UIOverlay
         refreshTimer = 0f;
 
         if (uiService == null) return;
-        if (!uiService.TryGetSnapshot(out SCharacterSnapshot snap)) return;
-        if (snap.Stats == null) return;
+        if (!uiService.TryGetPlayerStats(out var stats)) return;
 
-        TryUpdateBar(hpBar, hpStatPath, snap.Stats);
-        TryUpdateBar(hungerBar, hungerStatPath, snap.Stats);
-        TryUpdateBar(thirstBar, thirstStatPath, snap.Stats);
-        TryUpdateBar(staminaBar, staminaStatPath, snap.Stats);
+        TryUpdateBar(hpBar, hpStatPath, stats);
+        TryUpdateBar(hungerBar, hungerStatPath, stats);
+        TryUpdateBar(thirstBar, thirstStatPath, stats);
+        TryUpdateBar(staminaBar, staminaStatPath, stats);
     }
 
     private void TryUpdateBar(UIStatBar bar, string path,

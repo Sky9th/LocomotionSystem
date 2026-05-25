@@ -1,6 +1,7 @@
 using UnityEngine;
 using Animancer;
 using Game.Character.Animation.Requests;
+using Game.Character.Components;
 using Game.Locomotion.Animation.Config;
 
 namespace Game.Character.Animation.Drivers
@@ -14,17 +15,17 @@ namespace Game.Character.Animation.Drivers
 
         public override int ChannelMask => 1 << 0; // FullBody
 
-        public override void Evaluate(in SCharacterSnapshot snapshot, float dt)
+        public override void Evaluate(in CharacterFrameContext ctx, float dt)
         {
             if (aliasProfile == null) return;
 
-            if (!snapshot.Input.JumpAction.Button.IsRequested) return;
+            if (!ctx.Input.JumpAction.Button.IsRequested) return;
 
-            var phase = snapshot.Locomotion.Discrete.Phase;
+            var phase = ctx.Discrete.Phase;
             if (phase != ELocomotionPhase.GroundedIdle && phase != ELocomotionPhase.GroundedMoving)
                 return;
 
-            var obstacle = snapshot.Kinematic.ForwardObstacleDetection;
+            var obstacle = ctx.Kinematic.ForwardObstacleDetection;
             if (!obstacle.CanClimb) return;
 
             var alias = ResolveClimbAlias(obstacle.ObstacleHeight);
@@ -45,7 +46,7 @@ namespace Game.Character.Animation.Drivers
             topPoint = obstacle.TopPoint;
         }
 
-        public override void Drive(in SCharacterSnapshot snapshot, float dt) { }
+        public override void Drive(in CharacterFrameContext ctx, float dt) { }
 
         public override void OnStarted()
         {

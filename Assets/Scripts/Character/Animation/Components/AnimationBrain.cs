@@ -102,15 +102,15 @@ namespace Game.Character.Animation.Components
             characterRig = rig;
         }
 
-        internal void Apply(in SCharacterSnapshot snapshot)
+        internal void Apply(in CharacterFrameContext ctx)
         {
-            fullBodyArbiter.Resolve(snapshot, Time.deltaTime);
-            UpdateHeadLook(snapshot);
+            fullBodyArbiter.Resolve(ctx, Time.deltaTime);
+            UpdateHeadLook(ctx);
         }
 
         // ── Head Look ──
 
-        private void UpdateHeadLook(in SCharacterSnapshot snapshot)
+        private void UpdateHeadLook(in CharacterFrameContext ctx)
         {
             if (headLookMixer == null) return;
 
@@ -120,7 +120,7 @@ namespace Game.Character.Animation.Components
                 headLookInitialized = true;
             }
 
-            Vector2 target = snapshot.Kinematic.LookDirection;
+            Vector2 target = ctx.Kinematic.LookDirection;
             float speed = animationProfile != null ? animationProfile.headLookSmoothingSpeed : 12f;
             float step = speed * Time.deltaTime;
 
