@@ -16,13 +16,11 @@ namespace Game.Character.Components
         {
             if (!drawDebugGizmos) return;
 
-            GameContext context = GameContext.Instance;
-            if (context == null || !context.TryGetSnapshot(out SCharacterSnapshot snapshot)) return;
-
             var pos = transform.position;
-            var mot = snapshot.Locomotion.Motor;
-            var disc = snapshot.Locomotion.Discrete;
-            var kin = snapshot.Kinematic;
+            var mot = LastMotor;
+            var disc = LastDiscrete;
+            var kin = LastKinematic;
+            if (kin.Position.sqrMagnitude <= Mathf.Epsilon) return;
 
             DrawTextLabel(pos, disc, mot);
             DrawHeading(pos, kin.LocomotionHeading, disc.Phase);

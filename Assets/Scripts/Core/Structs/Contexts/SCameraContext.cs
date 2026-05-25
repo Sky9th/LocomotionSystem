@@ -13,13 +13,17 @@ public struct SCameraContext
         Quaternion cameraRotation,
         Vector3 anchorPosition,
         Quaternion anchorRotation,
-        Vector2 lookDelta)
+        Vector2 lookDelta,
+        Vector3 mouseGroundPosition,
+        bool isMouseGroundValid)
     {
         CameraPosition = cameraPosition;
         CameraRotation = cameraRotation;
         AnchorPosition = anchorPosition;
         AnchorRotation = anchorRotation;
         LookDelta = lookDelta;
+        MouseGroundPosition = mouseGroundPosition;
+        IsMouseGroundValid = isMouseGroundValid;
     }
 
     public SCameraContext(
@@ -32,6 +36,8 @@ public struct SCameraContext
         AnchorPosition = cameraPosition;
         AnchorRotation = cameraRotation;
         LookDelta = lookDelta;
+        MouseGroundPosition = Vector3.zero;
+        IsMouseGroundValid = false;
     }
 
     /// <summary>
@@ -53,4 +59,10 @@ public struct SCameraContext
 
     public float YawDelta => LookDelta.x;
     public float PitchDelta => LookDelta.y;
+
+    /// <summary>
+    /// Mouse cursor intersection with the ground plane (Y=0).
+    /// </summary>
+    public Vector3 MouseGroundPosition { get; }
+    public bool IsMouseGroundValid { get; }
 }

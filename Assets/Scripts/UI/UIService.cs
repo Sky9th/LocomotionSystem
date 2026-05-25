@@ -162,6 +162,13 @@ public class UIService : BaseService, IGameplaySessionHandler
         return GameContext != null && GameContext.TryGetSnapshot(out snapshot);
     }
 
+    public bool TryGetPlayerStats(out System.Collections.Generic.Dictionary<string, (float current, float max)> stats)
+    {
+        stats = null;
+        if (!TryResolveService(out PlayerService ps)) return false;
+        return ps.TryGetPlayerStats(out stats);
+    }
+
     public void RequestNewGame()
     {
         StartSceneTransition("NewGame", EGameState.Playing);

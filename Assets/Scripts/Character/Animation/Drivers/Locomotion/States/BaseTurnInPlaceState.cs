@@ -10,12 +10,12 @@ namespace Game.Character.Animation.Drivers
         public BaseTurnInPlaceState(BaseLayer owner) : base(owner) { }
 
         public override bool CanEnterState
-            => Owner.Snapshot.Locomotion.Discrete.Phase == ELocomotionPhase.GroundedIdle
-            && Owner.Snapshot.Locomotion.Discrete.IsTurning;
+            => Owner.Ctx.Discrete.Phase == ELocomotionPhase.GroundedIdle
+            && Owner.Ctx.Discrete.IsTurning;
 
         public override void OnEnterState()
         {
-            selectedAlias = Owner.Snapshot.Locomotion.Motor.TurnAngle > 0f
+            selectedAlias = Owner.Ctx.Motor.TurnAngle > 0f
                 ? Owner.Alias.turnInPlace90R : Owner.Alias.turnInPlace90L;
             Owner.Play(selectedAlias);
         }

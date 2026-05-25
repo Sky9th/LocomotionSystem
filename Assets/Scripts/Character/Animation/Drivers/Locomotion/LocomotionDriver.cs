@@ -1,6 +1,7 @@
 using UnityEngine;
 using Animancer;
 using Game.Character.Animation.Requests;
+using Game.Character.Components;
 using Game.Character.Locomotion;
 using Game.Locomotion.Animation.Config;
 
@@ -22,13 +23,13 @@ namespace Game.Character.Animation.Drivers
             baseLayer = new BaseLayer(brain?.FullBodyLayer, aliasProfile, animationProfile, locomotionProfile, brain?.CharacterRig);
         }
 
-        public override void Evaluate(in SCharacterSnapshot snapshot, float dt) { }
+        public override void Evaluate(in CharacterFrameContext ctx, float dt) { }
         public override void OnStarted() { }
         public override void OnCompleted() { }
 
-        public override void Drive(in SCharacterSnapshot snapshot, float dt)
+        public override void Drive(in CharacterFrameContext ctx, float dt)
         {
-            baseLayer.Update(snapshot, dt);
+            baseLayer.Update(ctx, dt);
         }
 
         public override void OnInterrupted(AnimationRequest by) { }

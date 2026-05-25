@@ -29,7 +29,11 @@ namespace Game.Character.Components
         [SerializeField] private bool autoSubscribeInput = true;
 
         public bool IsPlayer => isPlayer;
+        public Dictionary<string, (float current, float max)> LastStats { get; private set; }
         internal float PlanarSpeed { get; private set; }
+        internal SCharacterKinematic LastKinematic { get; private set; }
+        internal SCharacterMotor LastMotor { get; private set; }
+        internal SCharacterDiscrete LastDiscrete { get; private set; }
 
         private CharacterInputModule inputModule;
         private CharacterRig characterRig;
@@ -80,9 +84,6 @@ namespace Game.Character.Components
             float deltaTime = Time.deltaTime;
             if (deltaTime <= Mathf.Epsilon) return;
 
-            GameContext context = GameContext.Instance;
-            if (context == null) return;
-
             var ctx = new CharacterFrameContext();
 
             inputModule.ReadActions(out ctx.Input);
@@ -97,23 +98,20 @@ namespace Game.Character.Components
             locomotionSimulator.Simulate(ref ctx, locomotionProfile, deltaTime);
 
             PlanarSpeed = ctx.Motor.ActualPlanarVelocity.magnitude;
+            LastKinematic = ctx.Kinematic;
+            LastMotor = ctx.Motor;
+            LastDiscrete = ctx.Discrete;
             stats?.Update(ctx, deltaTime);
-
-            var snapshot = new SCharacterSnapshot(
-                ctx.Input,
-                ctx.Kinematic,
-                new SLocomotionState(ctx.Motor, ctx.Discrete));
 
             if (stats != null)
             {
                 var dict = new Dictionary<string, (float current, float max)>();
                 foreach (var kv in stats.All)
                     dict[kv.Key] = (kv.Value.Current, kv.Value.Def.Max);
-                snapshot.Stats = dict;
+                LastStats = dict;
             }
 
-            characterAnimation?.Apply(in snapshot);
-            context.UpdateSnapshot(snapshot);
+            characterAnimation?.Apply(in ctx);
         }
     }
 }

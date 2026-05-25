@@ -59,6 +59,13 @@ SGameState{MainMenu} 发布（同步）
   ▶ InputService.HandleGameStateChanged    → 禁用输入
 ```
 
+## Service 间通信规则
+
+- **写**：Service 通过 `PublishState<T>(T snapshot)` 同时写入 GameContext + Dispatcher
+- **读**：通过 Dispatcher 订阅（push）或 GameContext 轮询（pull）
+- **禁止** Service 持有其他 Service 的直接引用（如 `private PlayerService _playerService`）
+- Service 可持有自己创建的 GameObject/内部对象引用
+
 ## Player 生命周期
 
 PlayerService 拥有 Player：

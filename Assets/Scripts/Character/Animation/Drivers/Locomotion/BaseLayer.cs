@@ -10,7 +10,7 @@ namespace Game.Character.Animation.Drivers
     internal sealed class BaseLayer
     {
         private readonly StateMachine<BaseStateKey, LocomotionLayerFsmState<BaseLayer>> fsm;
-        private SCharacterSnapshot snapshot;
+        private CharacterFrameContext ctx;
         private float deltaTime;
         private StringAsset lastPlayedAlias;
         private AnimancerState currentAnimState;
@@ -19,7 +19,7 @@ namespace Game.Character.Animation.Drivers
         internal LocomotionAnimationProfile AnimProfile { get; }
         internal LocomotionProfile LocoProfile { get; }
         internal CharacterRig Rig { get; }
-        internal SCharacterSnapshot Snapshot => snapshot;
+        internal CharacterFrameContext Ctx => ctx;
         internal float DeltaTime => deltaTime;
         internal AnimancerLayer Layer { get; }
 
@@ -47,9 +47,9 @@ namespace Game.Character.Animation.Drivers
             fsm.Dictionary[BaseStateKey.AirLand] = new BaseAirLandState(this);
         }
 
-        internal void Update(SCharacterSnapshot snap, float dt)
+        internal void Update(CharacterFrameContext ctx, float dt)
         {
-            snapshot = snap;
+            this.ctx = ctx;
             deltaTime = dt;
             if (fsm.CurrentState == null) fsm.ForceSetState(BaseStateKey.Idle);
             fsm.CurrentState?.Tick();
@@ -83,15 +83,15 @@ namespace Game.Character.Animation.Drivers
         {
             if (Rig == null || AnimProfile == null) return false;
 
-            var absAngle = Mathf.Abs(Snapshot.Locomotion.Motor.TurnAngle);
+            var absAngle = Mathf.Abs(Ctx.Motor.TurnAngle);
             if (absAngle <= Mathf.Epsilon) return false;
 
-            var gait = Snapshot.Locomotion.Discrete.Gait;
-            var speed = AnimProfile.GetTurnSpeed(Snapshot.Locomotion.Discrete.Posture, gait, gait != EMovementGait.Idle);
+            var gait = Ctx.Discrete.Gait;
+            var speed = AnimProfile.GetTurnSpeed(Ctx.Discrete.Posture, gait, gait != EMovementGait.Idle);
             if (speed <= 0f) return false;
 
             var step = Mathf.Min(speed * DeltaTime, absAngle);
-            var delta = Mathf.Sign(Snapshot.Locomotion.Motor.TurnAngle) * step;
+            var delta = Mathf.Sign(Ctx.Motor.TurnAngle) * step;
             Rig.ApplyRotation(Quaternion.AngleAxis(delta, Vector3.up));
             return true;
         }

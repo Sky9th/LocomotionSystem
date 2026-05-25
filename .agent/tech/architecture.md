@@ -16,7 +16,10 @@
 
 ### 核心原则
 - 数据由上至下参数传递，不反向查询 GameContext
-- CharacterActor 为唯一对外出口，通过 `SCharacterSnapshot` 写入 GameContext
+- Service 通过 `PublishState<T>()` 统一写入 GameContext + Dispatcher
+- Component 禁止直接调用 `GameContext.Instance.UpdateSnapshot()`
+- 个体实体数据留在 Component public 属性，通过 `GetComponent<T>()` 读取
+- Service 间通过 Dispatcher（push）或 GameContext（pull）通信，不持有彼此引用
 - CharacterRig 统一物理实体写入入口（Transform/Rigidbody/Collider）
 - 父模块调用子模块，不跨级调用
 - 动画驱动通过 Driver/Arbiter 模式：LocoDriver（连续）+ TraversalDriver（一次性）
@@ -54,8 +57,6 @@ Character/
 │   └── Config/LocomotionProfile.cs    [SO] 移动参数
 ├── Enums/
 │   └── LocomotionEnums.cs             Phase/Gait/Posture
-└── Structs/
-    └── SCharacterSnapshot.cs           Input + Kinematic + Locomotion
 ```
 
 ### 稳态调用链
@@ -64,13 +65,11 @@ CharacterActor.Update()
   → InputModule.ReadActions → ctx.Input
   → CharacterKinematic.Evaluate → ctx.Kinematic (SphereCast地面检测)
   → GroundLocomotion.Simulate → ctx.Motor + ctx.Discrete
-  → SCharacterSnapshot(ctx.Input, Kinematic, Locomotion)
-  → AnimationBrain.Apply(snapshot)
+  → AnimationBrain.Apply(ctx)
     → DriverArbiter.Resolve
-      → EvaluateDrivers ← TraversalDriver 读快照提交请求
+      → EvaluateDrivers ← TraversalDriver 读ctx提交请求
       → ProcessQueue → AcceptRequest(OnStarted) → 中断 → 播放
       → CheckCompletion → OnCompleted → 恢复 LocoDriver
-      → ActiveDriver.Drive → FSM.Tick
   → GameContext.UpdateSnapshot(snapshot)
 
 AnimationBrain.OnAnimatorMove()
@@ -85,7 +84,7 @@ AnimationBrain.OnAnimatorMove()
 
 ### 关键设计决策
 - **Component Driver 模式**：Inspector 可视化，OnEnable 自注册
-- **从快照读输入**：单一订阅点(InputModule)，驱动层只消费快照
+- **从ctx读输入**：单一订阅点(InputModule)，驱动层只消费 CharacterFrameContext
 - **Evaluate 接口**：Driver 非活跃时也能提交请求
 - **SphereCast 单探头**：膝盖高度往下探，替代不稳的 BoxCast+Raycast
 - **Y轴单一路径**：常态不碰Y，攀爬/落地时 SuppressGroundLock 解锁

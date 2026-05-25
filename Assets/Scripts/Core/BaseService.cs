@@ -206,4 +206,15 @@ public abstract class BaseService : MonoBehaviour
     protected virtual void OnSubscriptionsActivated()
     {
     }
+
+    /// <summary>
+    /// Single entry point that guarantees both GameContext snapshot and
+    /// Dispatcher publish happen atomically, preventing data skew between
+    /// the two channels.
+    /// </summary>
+    protected void PublishState<TSnapshot>(TSnapshot snapshot) where TSnapshot : struct
+    {
+        GameContext?.UpdateSnapshot(snapshot);
+        Dispatcher?.Publish(snapshot);
+    }
 }
