@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Game.Utility.Logging;
 using UnityEngine;
 
 /// <summary>
@@ -19,6 +20,8 @@ public class GameService : MonoBehaviour
     private bool isBootstrapped;
     private bool sessionWasActive;
 
+    private LogChannel Log;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -34,7 +37,8 @@ public class GameService : MonoBehaviour
         // All DOTween tweens default to unscaled deltaTime.
         DG.Tweening.DOTween.defaultTimeScaleIndependent = true;
 
-        Logger.Log("GameManager Awake: starting bootstrap sequence.", nameof(GameService), this);
+        Log = LogManager.GetChannel(nameof(GameService));
+        Log.Info("Bootstrap sequence starting.");
 
         Bootstrap();
     }
@@ -54,7 +58,7 @@ public class GameService : MonoBehaviour
     {
         if (isBootstrapped)
         {
-            Logger.Log("GameManager.Bootstrap called but already bootstrapped. Skipping.", nameof(GameService), this);
+            Log.Debug("Bootstrap called but already bootstrapped. Skipping.");
             return;
         }
 
@@ -62,55 +66,56 @@ public class GameService : MonoBehaviour
         if (gameContext == null)
         {
             Debug.LogError("GameManager is missing a GameContext reference.", this);
-            Logger.LogError("GameManager is missing a GameContext reference.", nameof(GameService), this);
+            Log.Error("Missing GameContext reference.");
             return;
         }
 
-        Logger.Log("Bootstrap Step 1: Initializing GameContext.", nameof(GameService), this);
+        Log.Info("Step 1: Initializing GameContext.");
         gameContext.Initialize();
-        Logger.Log($"GameContext after Initialize. IsInitialized={gameContext.IsInitialized}, RegisteredServiceCount={gameContext.RegisteredServiceCount}", nameof(GameService), this);
         registeredServices.Clear();
 
-        Logger.Log("Bootstrap Step 2: Discovering and registering services.", nameof(GameService), this);
+        Log.Info("Step 2: Discovering and registering services.");
 
         eventDispatcher = GetComponentInChildren<EventDispatcherService>();
-        // Ensure the EventDispatcher is registered first since other services depend on it.
-        if (!RegisterService(eventDispatcher, nameof(eventDispatcher)))
+        if (!RegisterService(eventDispatcher, "EventDispatcher"))
         {
             Debug.LogError("GameManager requires a valid EventDispatcher before continuing.", this);
-            Logger.LogError("GameManager requires a valid EventDispatcher before continuing.", nameof(GameService), this);
+            Log.Error("EventDispatcher registration failed.");
             return;
         }
 
         registeredServices.Add(eventDispatcher);
-
-        // Subscribe before other services so TeardownSession runs first
-        // when SGameState is published synchronously.
         eventDispatcher.Subscribe<SGameState>(HandleSessionStateChange);
 
-        // Automatically discover and register all BaseService instances under this GameManager,
-        // so new services can be added without updating this bootstrap code.
+        var registered = new List<string>();
+        var failed = new List<string>();
+
         var discoveredServices = GetComponentsInChildren<BaseService>(includeInactive: true);
         foreach (var service in discoveredServices)
         {
-            if (service == null || service == eventDispatcher)
-            {
-                continue;
-            }
+            if (service == null || service == eventDispatcher) continue;
 
-            // Use the component name as the label to keep logs readable.
-            if (RegisterService(service, service.name))
+            if (RegisterService(service, service.GetType().Name))
             {
                 registeredServices.Add(service);
+                registered.Add(service.GetType().Name);
+            }
+            else
+            {
+                failed.Add(service.GetType().Name);
             }
         }
 
-        Logger.Log($"Bootstrap Step 3: Attaching dispatcher and activating {registeredServices.Count} registered services.", nameof(GameService), this);
+        Log.Info($"Services registered: [{string.Join(", ", registered)}] ({registered.Count} total)");
+        if (failed.Count > 0)
+            Log.Warning($"Services failed: [{string.Join(", ", failed)}]");
+
+        Log.Info($"Step 3: Attaching dispatcher, activating subscriptions, notifying {registeredServices.Count} services.");
         AttachDispatcherToServices();
         ActivateServiceSubscriptions();
         InitializeServices();
 
-        Logger.Log($"GameManager bootstrap completed. RegisteredServices={registeredServices.Count}", nameof(GameService), this);
+        Log.Info("Bootstrap completed.");
         isBootstrapped = true;
 
 #if UNITY_EDITOR
@@ -134,24 +139,12 @@ public class GameService : MonoBehaviour
     {
         if (service == null)
         {
-            Debug.LogWarning($"GameManager could not register service '{label}' because the reference is missing.", this);
-            Logger.LogWarning($"RegisterService skipped: '{label}' is null.", nameof(GameService), this);
+            Log.Warning($"RegisterService skipped: '{label}' is null.");
             return false;
         }
 
-        Logger.Log($"RegisterService starting for '{label}' ({service.GetType().Name}).", nameof(GameService), service);
         service.Register(gameContext);
-
-        if (service.IsRegistered)
-        {
-            Logger.Log($"RegisterService succeeded for '{label}' ({service.GetType().Name}). IsRegistered={service.IsRegistered}", nameof(GameService), service);
-            return true;
-        }
-        else
-        {
-            Logger.LogWarning($"RegisterService did not complete for '{label}' ({service.GetType().Name}). IsRegistered={service.IsRegistered}", nameof(GameService), service);
-            return false;
-        }
+        return service.IsRegistered;
     }
 
     private void AttachDispatcherToServices()
@@ -159,20 +152,14 @@ public class GameService : MonoBehaviour
         if (eventDispatcher == null || !eventDispatcher.IsRegistered)
         {
             Debug.LogError("Cannot attach dispatcher references before EventDispatcher finishes registering.", this);
-            Logger.LogError("Cannot attach dispatcher references before EventDispatcher finishes registering.", nameof(GameService), this);
+            Log.Error("EventDispatcher not ready for AttachDispatcher.");
             return;
         }
 
-        Logger.Log($"Attaching EventDispatcher to {registeredServices.Count} services.", nameof(GameService), this);
         foreach (var service in registeredServices)
         {
-            if (service == null)
-            {
-                continue;
-            }
-
-            Logger.Log($"AttachDispatcher -> {service.GetType().Name}", nameof(GameService), service);
-            service.AttachDispatcher(eventDispatcher);
+            if (service != null)
+                service.AttachDispatcher(eventDispatcher);
         }
     }
 
@@ -180,13 +167,8 @@ public class GameService : MonoBehaviour
     {
         foreach (var service in registeredServices)
         {
-            if (service == null)
-            {
-                continue;
-            }
-
-            Logger.Log($"ActivateSubscriptions -> {service.GetType().Name}", nameof(GameService), service);
-            service.ActivateSubscriptions();
+            if (service != null)
+                service.ActivateSubscriptions();
         }
     }
 
@@ -194,13 +176,8 @@ public class GameService : MonoBehaviour
     {
         foreach (var service in registeredServices)
         {
-            if (service == null)
-            {
-                continue;
-            }
-
-            Logger.Log($"NotifyInitialized -> {service.GetType().Name}", nameof(GameService), service);
-            service.NotifyInitialized();
+            if (service != null)
+                service.NotifyInitialized();
         }
     }
 

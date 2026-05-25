@@ -89,7 +89,7 @@ public class GameStateService : BaseService
 		ApplyCursorMode(currentState);
 
 		var snapshot = new SGameState(currentState, previousState);
-		Logger.Log($"GameState transitioning: {previousState} -> {currentState}");
+		Log.Info($"Transition: {previousState} -> {currentState}");
 		PushSnapshot(snapshot);
 		PublishStateChange(snapshot);
 
