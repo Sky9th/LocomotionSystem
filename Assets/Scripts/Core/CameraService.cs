@@ -13,6 +13,8 @@ public class CameraService : BaseService, IGameplaySessionHandler
 
     [SerializeField] private GameProfile gameProfile;
 
+    [SerializeField] private GameObject anchorPrefab;
+
     private Transform cameraPivot;
     private bool isFollowingPlayer;
 
@@ -91,9 +93,18 @@ public class CameraService : BaseService, IGameplaySessionHandler
 
     private void CreateCameraPivot()
     {
-        var pivotObj = new GameObject(CommonConstants.FollowAnchorName);
-        pivotObj.transform.SetParent(transform, false);
-        cameraPivot = pivotObj.transform;
+        if (anchorPrefab != null)
+        {
+            var obj = Instantiate(anchorPrefab, transform);
+            obj.name = CommonConstants.FollowAnchorName;
+            cameraPivot = obj.transform;
+        }
+        else
+        {
+            var obj = new GameObject(CommonConstants.FollowAnchorName);
+            obj.transform.SetParent(transform, false);
+            cameraPivot = obj.transform;
+        }
     }
 
     private void ValidateConfiguration()
@@ -158,9 +169,21 @@ public class CameraService : BaseService, IGameplaySessionHandler
         if (cameraPivot == null) return;
         if (GameContext == null || !GameContext.TryGetSnapshot(out SPlayer player)) return;
 
-        cameraPivot.position = player.Character.Position;
+        Vector3 pivotPos = player.Character.Position;
+        cameraPivot.position = pivotPos;
 
         var mouseGround = ComputeMouseGroundPosition();
+
+        if (mouseGround.IsValid)
+        {
+            var dir = mouseGround.WorldPosition - pivotPos;
+            dir.y = 0f;
+            if (dir.sqrMagnitude > 0.01f)
+            {
+                var angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
+                cameraPivot.rotation = Quaternion.Euler(0f, angle, 0f);
+            }
+        }
 
         var outputCamera = cameraBrain != null ? cameraBrain.OutputCamera : null;
         Vector3 camPos, anchorPos;
