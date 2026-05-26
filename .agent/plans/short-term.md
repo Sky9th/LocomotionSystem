@@ -12,17 +12,26 @@
 > 最终游戏是俯视角，寻路使用 Aron Granberg 的 A\* Pathfinding Project（Asset Store）。
 > 不在算法层造轮子，只做集成适配。
 
-### 0.1 俯视角切换
+### 0.1 俯视角切换 ✅
 
-| 子项 | 说明 |
-|------|------|
-| Camera | 第三人称跟随 → 俯视角（透视俯拍），跟随玩家 XZ 位置 |
-| 鼠标→世界 | `ScreenPointToRay` 与 Y=0 地面平面求交 → `mouseWorldPos` |
-| 移动输入 | WASD 相对于俯视屏幕方向（上=屏幕上方=世界+Z，不受相机旋转影响） |
-| 角色朝向 | `(mouseWorldPos - bodyPos).normalized`，投影到 XZ 平面 |
-| LocomotionHeading | 来源从 `viewForward` 改为鼠标地面位置 |
-| HeadLook | 移除（俯视角下无头部追踪需求） |
-| TurnInPlace 判定 | 去掉 `lookStabilityAngle`/`lookStabilityDuration` 相机稳定性检测 |
+| 子项 | 说明 | 实现 |
+|------|------|------|
+| Camera | 第三人称跟随 → 俯视角透视俯拍 | Cinemachine Transposer(WorldSpace) + HardLookAt，代码只设 pivot.position/rotation |
+| 鼠标→世界 | Y=0 平面求交 | CameraService.ComputeMouseGroundPosition → Plane.Raycast |
+| 移动输入 | WASD 固定屏幕方向 | Motor.ConvertToWorld → Vector3(local.x, 0f, local.y) |
+| 角色朝向 | 鼠标地面位置 | CharacterActor Update 中 (mouseWorldPos - position).XZ.normalized |
+| LocomotionHeading | 来源改为 mouseWorldPos | CharacterKinematic.Evaluate 参数 viewForward → heading |
+| HeadLook | 保留退化模式 | Phase 4 接入感知系统，当前看 actorTransform.forward |
+| TurnInPlace 判定 | 删除 lookStability | Stance.EvaluateTurning 直接用 TurnAngle |
+| 光标 | Playing 状态 Confined + visible | GameStateService |
+| 数据结构 | SCameraContext → SCameraSnapshot | 加 MouseGroundPosition/IsMouseGroundValid |
+| 输入模块 | CharacterInputModule → CharacterEventReceiver | Camera 与 Input Actions 分离 |
+
+**附带架构改动**:
+- BaseService.PublishState<T>() — GameContext + Dispatcher 统一写入
+- Component 禁止直接 GameContext.Instance.UpdateSnapshot()
+- CameraService 通过 GameContext.TryGetSnapshot<SPlayer>() 读玩家位置
+- SCharacterSnapshot + SLocomotionState 删除，Animation 管线使用 CharacterFrameContext
 
 ### 0.2 A\* Pathfinding Project 集成
 
@@ -107,7 +116,7 @@
 
 ---
 
-## 已完成（Phase 1 ~ 3.6）
+## 已完成（Phase 1 ~ 4 前置）
 
 | Phase | 内容 | 状态 |
 |-------|------|------|
@@ -118,6 +127,9 @@
 | 3 | HUD UI + MainMenu | ✅ |
 | 3.5 | PauseMenu + Loading | ✅ |
 | 3.6 | Service 架构加固 | ✅ |
+| 3.7 | 数据流架构重构 (PublishState + Component 解耦) | ✅ |
+| 4 前置 | 俯视角切换 | ✅ |
+| 4 前置 | A\* Pathfinding 集成 | 待做 |
 
 ---
 

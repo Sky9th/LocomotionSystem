@@ -34,7 +34,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Interact",
+                    "name": "ThridInteract",
                     "type": "Button",
                     "id": "852140f2-7766-474d-8707-702459ba45f3",
                     "expectedControlType": "",
@@ -109,6 +109,24 @@
                     "name": "Walk",
                     "type": "Button",
                     "id": "72c6e274-5fa2-492a-874a-742f47b55870",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PrimaryInteract",
+                    "type": "Button",
+                    "id": "dfeb8844-8ad8-4037-9952-a61e7389c160",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SecendaryInteract",
+                    "type": "Button",
+                    "id": "38bbe166-c585-4f2c-b5d1-2f32cece0882",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -464,7 +482,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "Interact",
+                    "action": "ThridInteract",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -475,7 +493,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Interact",
+                    "action": "ThridInteract",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -531,6 +549,28 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Walk",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cabef471-7ae1-4aac-af9e-fe258e24a4fe",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PrimaryInteract",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d5a86490-b084-4e2e-b128-eb26c78e222f",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SecendaryInteract",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
