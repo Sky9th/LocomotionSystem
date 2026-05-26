@@ -29,6 +29,8 @@ namespace Game.Character.Input
         private SIActionSprint sprintAction;
         private SIActionJump jumpAction;
         private SIActionStand standAction;
+        private SIActionPrimaryInteract primaryInteractAction;
+        private SIActionSecondaryInteract secondaryInteractAction;
 
         // Camera
         private SCameraSnapshot cameraControl;
@@ -44,7 +46,8 @@ namespace Game.Character.Input
         {
             this.owner = owner;
 
-            Register<SIActionMove>();
+            // TODO: WASD movement disabled — Phase 4 A* Pathfinding will drive movement via GridAgent
+            // Register<SIActionMove>();
             Register<SIActionLook>();
             Register<SIActionCrouch>();
             Register<SIActionProne>();
@@ -53,6 +56,8 @@ namespace Game.Character.Input
             Register<SIActionWalk>();
             Register<SIActionSprint>();
             Register<SIActionJump>();
+            Register<SIActionPrimaryInteract>();
+            Register<SIActionSecondaryInteract>();
             RegisterCamera();
         }
 
@@ -68,6 +73,8 @@ namespace Game.Character.Input
             sprintAction = SIActionSprint.None;
             jumpAction = SIActionJump.None;
             standAction = SIActionStand.None;
+            primaryInteractAction = SIActionPrimaryInteract.None;
+            secondaryInteractAction = SIActionSecondaryInteract.None;
             cameraControl = default;
             hasCameraControl = false;
             mouseGroundPosition = Vector3.zero;
@@ -91,6 +98,20 @@ namespace Game.Character.Input
             sprintAction = sprintAction.ClearFrameSignals();
             jumpAction = jumpAction.ClearFrameSignals();
             standAction = standAction.ClearFrameSignals();
+            primaryInteractAction = primaryInteractAction.ClearFrameSignals();
+            secondaryInteractAction = secondaryInteractAction.ClearFrameSignals();
+        }
+
+        internal bool ReadPrimaryInteract(out SIActionPrimaryInteract action)
+        {
+            action = primaryInteractAction;
+            return primaryInteractAction.Button.IsRequested;
+        }
+
+        internal bool ReadSecondaryInteract(out SIActionSecondaryInteract action)
+        {
+            action = secondaryInteractAction;
+            return secondaryInteractAction.Button.IsRequested;
         }
 
         internal bool ReadCameraControl(out SCameraSnapshot control)
@@ -184,6 +205,18 @@ namespace Game.Character.Input
             { jumpAction = (SIActionJump)(object)payload; return; }
             if (typeof(TPayload) == typeof(SIActionStand))
             { standAction = (SIActionStand)(object)payload; return; }
+            if (typeof(TPayload) == typeof(SIActionPrimaryInteract))
+            { primaryInteractAction = (SIActionPrimaryInteract)(object)payload; LogInteract("PrimaryInteract", primaryInteractAction.Button); return; }
+            if (typeof(TPayload) == typeof(SIActionSecondaryInteract))
+            { secondaryInteractAction = (SIActionSecondaryInteract)(object)payload; LogInteract("SecondaryInteract", secondaryInteractAction.Button); return; }
+        }
+
+        private static void LogInteract(string name, SButtonInputState state)
+        {
+            if (state.IsRequested)
+                Debug.Log($"[Character] {name} — Pressed");
+            else if (state.IsReleased)
+                Debug.Log($"[Character] {name} — Released");
         }
 
         private static bool TryResolveDispatcher(out EventDispatcherService dispatcher)

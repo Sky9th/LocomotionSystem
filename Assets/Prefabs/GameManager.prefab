@@ -102,6 +102,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7692693fb45cbec4285a6fee9cb7724b, type: 2}
   - {fileID: 11400000, guid: 46b351c7f488dbb488edf3a486ec57fb, type: 2}
   - {fileID: 11400000, guid: d3651902b20d0514d8468ca575232bf6, type: 2}
+  - {fileID: 11400000, guid: cf29858e3bb01944b87858465b827c99, type: 2}
+  - {fileID: 11400000, guid: 9cc110874109c5843add961a7d80190e, type: 2}
 --- !u!1 &1179361730580851819
 GameObject:
   m_ObjectHideFlags: 0
@@ -311,7 +313,6 @@ MonoBehaviour:
   gameProfile: {fileID: 11400000, guid: 165700f895aa32f47a390326acbdd5a3, type: 2}
   anchorPrefab: {fileID: 3112166702520194949, guid: 71b166b4ebadd784b8a297e743059aac,
     type: 3}
-  debugArrowName: DebugArrow
 --- !u!1 &2704633045547972636
 GameObject:
   m_ObjectHideFlags: 0
@@ -683,7 +684,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   logLevel: 2
-  playerPrefab: {fileID: 0}
+  playerPrefab: {fileID: 8667043660662020576, guid: 4c0627a5cad7b734c8c24cbdadfe712f,
+    type: 3}
   playerStartAnchor: {fileID: 0}
 --- !u!1 &6987912418579276946
 GameObject:
