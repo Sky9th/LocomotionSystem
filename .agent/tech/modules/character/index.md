@@ -187,14 +187,14 @@ LocomotionInputModule (Agent 内部)
   moveAction, lastMoveAction     ← SMoveIAction
   lookAction                     ← SLookIAction
   crouch/prone/walk/run/sprint/jump/stand Action ← 对应 IAction
-  cameraControl                  ← SCameraContext (仅玩家 Agent)
+  cameraControl                  ← SCameraSnapshot (仅玩家 Agent)
 
 每帧读取:
   ReadActions(out SLocomotionInputActions)
     → 聚合所有按钮
     → 清空单帧信号（IsRequested/IsReleased）
   
-  ReadCameraControl(out hasControl, out SCameraContext)
+  ReadCameraControl(out hasControl, out SCameraSnapshot)
     → 仅 isPlayer=true 的 Agent 接收
 ```
 
@@ -210,7 +210,7 @@ LocomotionInputModule (Agent 内部)
 每帧 Update:
   1. 从 LocomotionInputModule 读取聚合输入
      → SLocomotionInputActions inputActions
-     → SCameraContext cameraControl (仅玩家)
+     → SCameraSnapshot cameraControl (仅玩家)
 
   2. 计算 viewForward
      → hasCameraControl ? cameraControl.AnchorRotation * Vector3.forward : Vector3.zero
@@ -731,11 +731,11 @@ Update():
   Update(): TickLocalPlayerAnchor()
     1. 将 anchor 移动到 Agent 位置 + verticalOffset
     2. 应用 look delta 旋转（yaw 无限制，pitch 限制到 maxPitchDegrees）
-    3. 发布 SCameraContext 到 EventDispatcher
+    3. 发布 SCameraSnapshot 到 EventDispatcher
     4. 清空 lastLookAction
 
   LateUpdate(): PushCameraSnapshotToContext()
-    1. 更新 GameContext 中的 SCameraContext 快照
+    1. 更新 GameContext 中的 SCameraSnapshot 快照
 ```
 
 ### 8.2 相机 Anchor 旋转
