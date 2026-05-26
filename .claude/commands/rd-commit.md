@@ -50,3 +50,10 @@ refactor: top-down camera and mouse-based heading
    - `sessions/YYYY-MM-DD-主题.md` — 会话记录
    - `tech/modules/<模块>.md` — 技术改动
    - `design/<子系统>.md` — 设计决策
+4. 更新 `.agent/versions/vX.X.X.md`，追加本次改动条目
+
+## 版号
+
+- 当前版号见 `.agent/VERSION.md`
+- 版本文件在 `.agent/versions/vX.X.X.md`，每个版本一个文件
+- 规则见 `rd-doc` 版本控制章节

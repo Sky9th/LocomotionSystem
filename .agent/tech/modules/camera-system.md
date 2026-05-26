@@ -10,7 +10,12 @@
 | Aim | `CinemachineHardLookAt` |
 | Follow / LookAt | cameraPivot（代码设置） |
 
-代码只负责设 `cameraPivot.position = 玩家位置`，其余由 Cinemachine 处理。
+代码 `TickCameraPivot`:
+- 设 `cameraPivot.position = 玩家位置`
+- 设 `cameraPivot.rotation = 指向鼠标（Y轴旋转）`
+- Anchor Prefab（含 DebugArrow 子对象）在 Inspector 配置，`CreateCameraPivot` 实例化
+
+其余由 Cinemachine 处理。
 
 ## 数据流
 
