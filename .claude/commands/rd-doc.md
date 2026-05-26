@@ -41,4 +41,21 @@ allowed-tools: Read, Write, Edit, Glob, Bash, Grep
 3. 写入文档，开头标注日期和状态
 4. 必要时更新 .agent/README.md 目录树
 
+## 代码改动后归档（重要）
+
+如果本次会话修改了代码，**必须同时归档三层**：
+
+| 层 | 目录 | 内容 | 示例 |
+|----|------|------|------|
+| 会话 | `sessions/` | 本次改了什么、为什么、已知问题 | `YYYY-MM-DD-主题.md` |
+| 技术 | `tech/modules/` | 改动的模块实现细节、配置、数据流 | 相机 → `camera-system.md`，角色 → `character/index.md` |
+| 设计 | `design/` | 设计决策、为什么这样改 | 俯视角 → 更新 `game-overview.md` 或新建设计文档 |
+
+**流程**：
+1. 通过 `git diff --stat` 确定改动了哪些模块
+2. 创建/更新 session 文件（会话归档）
+3. 创建/更新对应 `tech/modules/<模块>.md`（技术归档）
+4. 涉及设计决策时更新 `design/<子系统>.md`（设计归档）
+5. 已有文档过时时同步更新（如改名、删除、调用链变化）
+
 详细约定参考 .agent/README.md。
