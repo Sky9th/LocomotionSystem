@@ -14,10 +14,12 @@
 - **GameStateService** — Playing 光标 Confined + visible
 - **鼠标地面坐标** — SCameraSnapshot.MouseGroundPosition / IsMouseGroundValid
 
-## 已知问题
+## 后续修复
 
-角色朝向鼠标不精准：TurnAngle 比较的是 bodyForward vs locomotionHeading（WASD 移动方向），而非 bodyForward vs mouseGround 方向。导致 WASD 和鼠标不同方向时转身逻辑错误。需要单独修。
+- **Anchor 旋转** — pivot 每帧旋转指向鼠标方向，箭头作为 Prefab 子对象跟随
+- **转身退出条件** — 移除 `!wantsTurn` 提前退出，只在 `turnDone(≤5°)` 时退出
 
 ## 提交
 
 `e199e3c` refactor: top-down camera and mouse-based heading
+`a8a4565` fix: anchor rotation toward mouse and turning exit condition
