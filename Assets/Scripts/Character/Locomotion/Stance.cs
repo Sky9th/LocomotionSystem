@@ -8,8 +8,6 @@ namespace Game.Character.Locomotion
         private EMovementGait currentGait = EMovementGait.Idle;
         private EPosture currentPosture = EPosture.Standing;
         private bool isTurning;
-        private float lastDesiredYaw;
-        private float lookStabilityTimer;
 
         internal SCharacterDiscrete Evaluate(
             in SCharacterMotor motor, in SCharacterKinematic kin,
@@ -67,20 +65,12 @@ namespace Game.Character.Locomotion
             if (phase != ELocomotionPhase.GroundedIdle && phase != ELocomotionPhase.GroundedMoving)
             { isTurning = false; return false; }
 
-            var yaw = Mathf.Atan2(kin.LocomotionHeading.x, kin.LocomotionHeading.z) * Mathf.Rad2Deg;
-            var yawDelta = Mathf.Abs(Mathf.DeltaAngle(yaw, lastDesiredYaw));
-            lastDesiredYaw = yaw;
-
-            if (yawDelta <= profile.lookStabilityAngle) lookStabilityTimer += dt;
-            else lookStabilityTimer = 0f;
-
             var absAngle = Mathf.Abs(motor.TurnAngle);
             var wantsTurn = absAngle >= profile.turnEnterAngle;
-            var lookStable = lookStabilityTimer >= profile.lookStabilityDuration;
             var turnDone = absAngle <= profile.turnCompletionAngle;
 
-            if (!isTurning && wantsTurn && lookStable) isTurning = true;
-            else if (isTurning && (turnDone || !wantsTurn)) isTurning = false;
+            if (!isTurning && wantsTurn) isTurning = true;
+            else if (isTurning && turnDone) isTurning = false;
 
             return isTurning;
         }

@@ -17,7 +17,5 @@ namespace Game.Character.Locomotion
         [Header("Turning")]
         [Range(0f, 180f)] public float turnEnterAngle = 65f;
         [Range(0f, 25f)] public float turnCompletionAngle = 5f;
-        [Range(0f, 45f)] public float lookStabilityAngle = 2f;
-        [Min(0f)] public float lookStabilityDuration = 0.15f;
     }
 }

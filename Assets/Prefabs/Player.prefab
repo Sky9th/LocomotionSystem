@@ -102,6 +102,7 @@ MonoBehaviour:
   isPlayer: 1
   characterProfile: {fileID: 11400000, guid: 19080c489b2a47c4f85047f53e6224f6, type: 2}
   locomotionProfile: {fileID: 11400000, guid: 2658baef4b1928c4ca79d1e7b70ab09a, type: 2}
+  statsTree: {fileID: 11400000, guid: 360382e3918493c4e898d1cc14cc6786, type: 2}
   autoSubscribeInput: 1
   drawDebugGizmos: 1
   debugArrowLength: 2
@@ -626,10 +627,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba6176090a0d88a42b530e27e5f2171e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animancer: {fileID: 0}
-  animator: {fileID: 0}
+  animancer: {fileID: 2514341874839075585}
+  animator: {fileID: 4304622158265510663}
   aliasProfile: {fileID: 11400000, guid: f85ef9e02053e3542b741c132b6f8f5c, type: 2}
-  animationProfile: {fileID: 0}
+  animationProfile: {fileID: 11400000, guid: 264e4d30fb02cbb4b93aefb446d194ea, type: 2}
   forwardRootMotion: 1
   upperBodyMask: {fileID: 0}
   additiveMask: {fileID: 0}

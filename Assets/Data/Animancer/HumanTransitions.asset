@@ -654,7 +654,7 @@ MonoBehaviour:
           - 0.62
           _Callbacks: []
           _Names: []
-        _Clip: {fileID: 1827226128182048838, guid: d2995d8a62be0ce42a4e73698b62b275,
+        _Clip: {fileID: -2608409714564489407, guid: f379750ad2690914e87b6243c4d8811a,
           type: 3}
         _NormalizedStartTime: NaN
 --- !u!114 &2380433029849792603

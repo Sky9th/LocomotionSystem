@@ -7,8 +7,8 @@ namespace Game.Character.Animation.Drivers
         public BaseIdleState(BaseLayer owner) : base(owner) { }
 
         public override bool CanEnterState
-            => Owner.Snapshot.Locomotion.Discrete.Phase == ELocomotionPhase.GroundedIdle
-            && !Owner.Snapshot.Locomotion.Discrete.IsTurning;
+            => Owner.Ctx.Discrete.Phase == ELocomotionPhase.GroundedIdle
+            && !Owner.Ctx.Discrete.IsTurning;
 
         public override void OnEnterState() => Owner.Play(Owner.Alias.idleL);
 

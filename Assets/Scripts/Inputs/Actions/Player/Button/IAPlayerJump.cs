@@ -1,27 +1,21 @@
-using System;
-using Unity.VisualScripting;
+using Game.Utility.Logging;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-/// <summary>
-/// Translates the "Jump" input action into a structured jump intent for the player.
-/// The action never touches physics directly; it simply reports structured data back
-/// to the InputManager for further dispatch.
-/// </summary>
 [CreateAssetMenu(menuName = "Inputs/Player/IA Player Jump")]
 public class IAPlayerJump : InputActionHandler
 {
+    private static LogChannel _log;
+
     protected override void Execute(InputAction.CallbackContext context)
     {
-        if (!IsEnabled)
-        {
-            return;
-        }
+        if (!IsEnabled) return;
 
-        Logger.Log($"[IAPlayerJump] Executing with context: {context}");
+        if (_log == null) _log = LogManager.GetChannel(nameof(IAPlayerJump));
+        _log.Debug("Jump input received.");
 
         bool rawInput = context.ReadValueAsButton();
-        SJumpIAction intent = SJumpIAction.CreateEvent(rawInput, context.phase);
+        SIActionJump intent = SIActionJump.CreateEvent(rawInput, context.phase);
         eventDispatcher.Publish(intent);
     }
 }

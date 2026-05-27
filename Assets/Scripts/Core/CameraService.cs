@@ -1,0 +1,224 @@
+using Cinemachine;
+using UnityEngine;
+
+[DefaultExecutionOrder(-400)]
+[DisallowMultipleComponent]
+public class CameraService : BaseService, IGameplaySessionHandler
+{
+    [Header("Cinemachine Wiring")]
+    [SerializeField] private CinemachineBrain cameraBrain;
+    [SerializeField] private CinemachineVirtualCamera defaultVirtualCamera;
+    [SerializeField] private bool autoLocateBrain = true;
+    [SerializeField] private bool autoLocateDefaultVirtualCamera = true;
+
+    [SerializeField] private GameProfile gameProfile;
+
+    [SerializeField] private GameObject anchorPrefab;
+
+    private Transform cameraPivot;
+    private bool isFollowingPlayer;
+
+    public Transform CameraPivot => cameraPivot;
+
+    private void Update()
+    {
+        if (!isFollowingPlayer) return;
+        TickCameraPivot();
+    }
+
+    protected override void OnSubscriptionsActivated()
+    {
+        base.OnSubscriptionsActivated();
+
+        if (Dispatcher != null)
+        {
+            Dispatcher.Subscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (Dispatcher != null)
+        {
+            Dispatcher.Unsubscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
+        }
+    }
+
+    protected override bool OnRegister(GameContext context)
+    {
+        ValidateConfiguration();
+
+        if (!EnsureCinemachineBrain())
+        {
+            return false;
+        }
+
+        EnsureDefaultVirtualCamera();
+        CreateCameraPivot();
+        InitializeDefaultRig();
+
+        context.RegisterService(this);
+        return true;
+    }
+
+    protected override void OnServicesReady()
+    {
+    }
+
+    public void OnGameplaySessionEnd()
+    {
+        isFollowingPlayer = false;
+        DestroyCameraPivot();
+    }
+
+    private void DestroyCameraPivot()
+    {
+        if (cameraPivot != null)
+        {
+            Destroy(cameraPivot.gameObject);
+            cameraPivot = null;
+        }
+    }
+
+    private void HandlePlayerSpawned(SPlayerSpawnedEvent evt, MetaStruct meta)
+    {
+        if (!evt.IsLocalPlayer) return;
+        if (cameraPivot == null)
+        {
+            CreateCameraPivot();
+            InitializeDefaultRig();
+        }
+        isFollowingPlayer = true;
+    }
+
+    private void CreateCameraPivot()
+    {
+        if (anchorPrefab != null)
+        {
+            var obj = Instantiate(anchorPrefab, transform);
+            obj.name = CommonConstants.FollowAnchorName;
+            cameraPivot = obj.transform;
+        }
+        else
+        {
+            var obj = new GameObject(CommonConstants.FollowAnchorName);
+            obj.transform.SetParent(transform, false);
+            cameraPivot = obj.transform;
+        }
+    }
+
+    private void ValidateConfiguration()
+    {
+        if (gameProfile == null)
+        {
+            Debug.LogError("[CameraService] Missing GameProfile reference.", this);
+        }
+    }
+
+    private bool EnsureCinemachineBrain()
+    {
+        if (autoLocateBrain && cameraBrain == null)
+        {
+            cameraBrain = FindCinemachineBrain();
+        }
+
+        if (cameraBrain == null)
+        {
+            Debug.LogError("[CameraService] Could not locate a CinemachineBrain.", this);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void EnsureDefaultVirtualCamera()
+    {
+        if (autoLocateDefaultVirtualCamera && defaultVirtualCamera == null)
+        {
+            defaultVirtualCamera = GetComponentInChildren<CinemachineVirtualCamera>(true);
+        }
+    }
+
+    private void InitializeDefaultRig()
+    {
+        if (defaultVirtualCamera != null)
+        {
+            defaultVirtualCamera.Follow = cameraPivot;
+            defaultVirtualCamera.LookAt = cameraPivot;
+            defaultVirtualCamera.gameObject.SetActive(true);
+
+            return;
+        }
+
+        Debug.LogWarning("[CameraService] No default virtual camera assigned.", this);
+    }
+
+    private CinemachineBrain FindCinemachineBrain()
+    {
+        var mainCamera = Camera.main;
+        if (mainCamera != null && mainCamera.TryGetComponent(out CinemachineBrain brainOnMain))
+        {
+            return brainOnMain;
+        }
+
+        return FindObjectOfType<CinemachineBrain>();
+    }
+
+    private void TickCameraPivot()
+    {
+        if (cameraPivot == null) return;
+        if (GameContext == null || !GameContext.TryGetSnapshot(out SPlayer player)) return;
+
+        Vector3 pivotPos = player.Character.Position;
+        cameraPivot.position = pivotPos;
+
+        var mouseGround = ComputeMouseGroundPosition();
+
+        if (mouseGround.IsValid)
+        {
+            var dir = mouseGround.WorldPosition - pivotPos;
+            dir.y = 0f;
+            if (dir.sqrMagnitude > 0.01f)
+            {
+                var angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
+                cameraPivot.rotation = Quaternion.Euler(0f, angle, 0f);
+            }
+        }
+
+        var outputCamera = cameraBrain != null ? cameraBrain.OutputCamera : null;
+        Vector3 camPos, anchorPos;
+        Quaternion camRot, anchorRot;
+
+        if (outputCamera != null)
+        {
+            camPos = outputCamera.transform.position;
+            camRot = outputCamera.transform.rotation;
+        }
+        else
+        {
+            camPos = cameraPivot.position;
+            camRot = cameraPivot.rotation;
+        }
+
+        anchorPos = cameraPivot.position;
+        anchorRot = cameraPivot.rotation;
+
+        PublishState(new SCameraSnapshot(
+            camPos, camRot, anchorPos, anchorRot,
+            Vector2.zero, mouseGround.WorldPosition, mouseGround.IsValid));
+    }
+
+    private (Vector3 WorldPosition, bool IsValid) ComputeMouseGroundPosition()
+    {
+        var outputCamera = cameraBrain != null ? cameraBrain.OutputCamera : null;
+        if (outputCamera == null) return (Vector3.zero, false);
+
+        var ray = outputCamera.ScreenPointToRay(Input.mousePosition);
+        var groundPlane = new Plane(Vector3.up, Vector3.zero);
+
+        if (groundPlane.Raycast(ray, out float distance))
+            return (ray.GetPoint(distance), true);
+
+        return (Vector3.zero, false);
+    }
+}

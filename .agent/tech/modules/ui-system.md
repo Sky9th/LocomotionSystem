@@ -1,135 +1,277 @@
-# UI System – Copilot 指南
+# UI System — 技术实现
 
-本说明文档定义项目内统一的 UI 系统设计，用于承载**正式游戏 UI**（主菜单、HUD、背包等）以及 **Debug UI**（如 Locomotion 调试面板）。它应保持简洁、可扩展，并与 GameManager / GameContext / EventDispatcher 架构一致。
+> 更新: 2026-05-23
+> 状态: Service 架构迁移完成 + 时间线分离
+> 方案: uGUI + DOTween + ScriptableObject 配置驱动
 
-## 核心目标
-- 为所有 UI 提供统一的管理入口 `UIService`，由 GameManager 注册和驱动。
-- 定义通用的 Screen / Overlay 抽象，避免各功能模块各自管理 UI 生命周期。
-- 让游戏 UI 与 Debug UI 共用一套框架：同样的导航、显隐与数据获取逻辑。
-- 严格区分“展示层”和“业务层”：UI 只读 GameContext、响应 EventDispatcher，不直接修改业务状态。
+## 文件结构
 
-## 核心角色
+```
+Assets/Scripts/UI/
+├── UIService.cs                       # BaseService，编排器
+├── Core/
+│   ├── UIScreenId.cs                  # enum: MainMenu, PauseMenu
+│   ├── UIOverlayId.cs                 # enum: VitalsOverlay, StatusOverlay, LoadingOverlay
+│   ├── UIModalId.cs                   # enum: (empty, 预留)
+│   ├── UIScreen.cs                    # 全屏基类 (CanvasGroup fade + Enter/Exit)
+│   └── UIOverlay.cs                   # 叠加基类 (CanvasGroup fade + Enter/Exit)
+├── Config/
+│   ├── UIThemeSO.cs                   # 颜色/字体/间距/动画参数
+│   └── UIPanelConfigSO.cs             # id → prefab + type 注册
+├── Components/
+│   ├── UIButton.cs                    # DOTween hover/press + 主题色
+│   ├── UILabel.cs                     # UITextStyle 枚举驱动主题文本
+│   └── UIStatBar.cs                   # 填充条 + 颜色阈值 + DOTween
+├── MainMenu/
+│   ├── MainMenuScreen.cs             # PZ 风格主菜单
+│   └── PauseMenuScreen.cs            # 暂停菜单
+└── HUD/
+    ├── VitalsOverlay.cs              # HP/Hunger/Thirst/Stamina
+    ├── StatusOverlay.cs               # 状态效果（骨架）
+    └── LoadingOverlay.cs              # 场景加载过渡
+```
 
-### UIService（运行时入口）
-- 类型：`UIService : BaseService`，由 GameManager 在启动阶段注册。
-- 职责：
-  - 持有 UI 根节点（通常为场景中的主 Canvas 与 EventSystem）。
-  - 维护可用的 Screen / Overlay 实例或 Prefab 映射表（按 string id 区分）。
-  - 提供简洁 API：
-    - `ShowScreen(string screenId, object payload = null)`：切换全屏界面。
-    - `ShowOverlay(string overlayId, object payload = null)`：显示叠加层。
-    - `HideOverlay(string overlayId)`：隐藏叠加层。
-    - `ToggleDebugOverlay(string overlayId)`：用于 Debug 面板的显隐切换。
-  - 在 `AttachDispatcher(EventDispatcher dispatcher)` 后统一订阅 UI 相关事件（如弹出提示、伤害飘字等），并将事件转发给具体 Screen/Overlay。
-- 生命周期约定：
-  - `Register(GameContext)`：
-    - 解析并缓存 GameContext 和必要的 UI 资源引用（Canvas、Screen/Overlay 列表等）。
-    - 扫描 Canvas（或指定根节点）下所有 UIScreenBase / UIOverlayBase 实例，记录其根 GameObject 的初始激活状态 `activeSelf`，并统一将这些 GameObject 关闭，以避免尚未初始化完成时抢先参与渲染或逻辑。
-    - Prefab 形式的 Screen/Overlay 只在配置中登记，不在此阶段实例化。
-  - `AttachDispatcher(EventDispatcher dispatcher)`：
-    - 缓存 Dispatcher 引用（不做订阅）。
-  - `ActivateSubscriptions()`：
-    - 订阅用于 UI 的 IAction / 领域事件（例如 Debug UI 的 toggle 输入）。
-  - `OnInitialized()`（通过 BaseService.NotifyInitialized 由 GameManager 统一触发）：
-    - 对所有已登记的场景内 UIScreenBase / UIOverlayBase，再执行一次性轻量初始化（按需为其注入 GameContext、UIService 引用等）。
-    - 根据之前记录的初始激活状态决定默认显示哪些 UI：对于在编辑器中默认激活（`activeSelf == true`）的 Screen/Overlay，通过 `ShowScreen/ShowOverlay` 调用其 OnEnter/OnShow，使其在引导完成后自动显示；其余保持隐藏，等待运行期逻辑显式打开。
+无 UIPanel 容器抽象——每个 Screen/Overlay 在自己的 Prefab 里直接用 RectTransform 锚点 + VerticalLayoutGroup 自由布局。
 
-### UIScreenBase（全屏界面基类）
-- 类型：`UIScreenBase : MonoBehaviour`。
-- 用途：主菜单、设置菜单、暂停菜单等**全屏互斥界面**。
-- 建议接口：
-  - `virtual void OnEnter(object payload)`：当被 UIService 设为当前 Screen 时调用，可根据 payload 初始化内容。
-  - `virtual void OnExit()`：当离开当前 Screen 时调用。
-  - `virtual void SetVisible(bool visible)`：统一显隐入口（内部可用 `gameObject.SetActive` 或 CanvasGroup）。
-- 导航规则：
-  - 同一时间仅有一个活跃 Screen，由 UIService 维护当前引用。
-  - 第一版实现可以只支持“直接切换当前 Screen”，后续如有需要再扩展简单堆栈（如 Pause → Options → Back）。
+## UIService : BaseService
 
-### UIOverlayBase（叠加层基类）
-- 类型：`UIOverlayBase : MonoBehaviour`。
-- 用途：HUD、提示层、Debug 面板等**可叠加界面**。
-- 建议接口：
-  - `virtual void OnShow(object payload)`：通过 UIService 显示时调用，可用 payload 传递上下文（如目标实体）。
-  - `virtual void OnHide()`：被隐藏时调用。
-  - `virtual void SetVisible(bool visible)`：统一显隐入口。
-- 管理规则：
-  - 允许多个 Overlay 同时显示，由 UIService 通过 overlayId 进行查找和管理。
-  - Overlay 本身不负责导航逻辑，只专注于展示和与玩家的本地交互（按钮回调等）。
+### 生命周期
 
-## Debug UI 集成
+```
+OnRegister        → context.RegisterService<UIService>(this)
+                    → panelConfig.BuildLookup()
+OnSubscriptionsActivated
+                    → Dispatcher.Subscribe<SGameState>(HandleGameState)
+OnServicesReady   → 读 SGameState 快照 → UpdateUIForState
+OnDestroy         → Dispatcher.Unsubscribe<SGameState>(HandleGameState)
+```
 
-Debug UI 被视作 UI System 的一个子模块，以 Overlay 形式接入：
+### 公开 API
 
-- Debug 面板采用 `UIOverlayBase` 的派生类实现，例如：
-  - `LocomotionDebugOverlay`：用于展示 `SPlayerLocomotion` 等运动数据。
-- Debug 面板的显隐由 UIService 统一控制：
-  - 提供 `ToggleDebugOverlay(string overlayId)` API，供 InputManager 或其它服务调用。
-  - Overlay 自身不直接监听输入设备事件，避免与 InputManager 职责重叠。
-- 输入链路示例：
-  - InputManager 定义 Debug UI 切换的 IAction（例如 `SDebugToggleIAction`）。
-  - UIService 在 `ActivateSubscriptions()` 中通过 EventDispatcher 订阅该 IAction。
-  - 收到 toggle 消息时，调用 `ToggleDebugOverlay("LocomotionDebug")` 等实现显隐切换。
+```csharp
+void ShowScreen(string id, object args = null)
+void HideScreen(string id)
+void ShowOverlay(string id, object args = null)
+void HideOverlay(string id)
+bool TryGetSnapshot<T>(out T snapshot) where T : struct
 
-## 数据流与职责边界
+// 导航（面板直接调用，不走 EventDispatcher）
+void RequestNewGame()
+void RequestQuit()
 
-- **GameContext 为主数据源**：
-  - 各类 Screen / Overlay 在 `Update()` 或定期 Tick 中从 GameContext 读取只读 Struct 快照（如 `SPlayerLocomotion`、`SPlayerStatusContext` 等）。
-  - UI 逻辑只依赖这些快照进行展示，不尝试修改或缓存可变业务状态。
-- **EventDispatcher 负责事件驱动 UI**：
-  - 例如：任务完成、受到伤害、弹出提示等事件通过 EventDispatcher 广播。
-  - UIService 在集中订阅后，将事件分发给对应的 Screen/Overlay，减少各 UI 组件直接依赖 Dispatcher 的数量。
-- **UI 不直接写业务状态**：
-  - 点击按钮后如需触发行为（例如“开始游戏”“退出到主菜单”“使用物品”），应通过 EventDispatcher 发送领域事件，或调用对应 Service 的公开方法（由 GameManager 注册的 Service）。
-  - 禁止在 UI 脚本中直接操作 GameContext 内部存储结构（例如直接修改 Struct 或 Service Registry）。
+// 状态
+bool IsInputBlocked { get; }
+```
 
-## 资源组织
+### Screen 切换流程
 
-- **Canvas 与 EventSystem**：
-  - 场景中通常放置一个主 Canvas 与 EventSystem，由 UIService 在 Register 阶段通过 SerializeField 或查找方式绑定。
-  - 将来如果需要分屏或多 Canvas，可以在 UIService 内部扩展对多个 Canvas 的管理，但第一版只考虑单 Canvas。
-- **Prefab 与 ID 映射**：
-  - 所有 Screen / Overlay 建议以 Prefab 形式存放在 `Assets/UI/` 下（可按类别分子文件夹）。
-  - 第一版可在 UIService 上直接用 `List<UIEntry>`（结构体包含 `string id; UIScreenBase screenPrefab;` 或 `UIOverlayBase overlayPrefab;`）手工配置；
-  - UI 数量增多后，可考虑迁移到 ScriptableObject 配置（如 `UIConfig` 资产），在 Register 时加载并建立 `id → prefab` 映射表。
-- **实例化策略**：
-  - 简化起见，第一版可以在场景中预放常驻 Overlay（如 HUD、LocomotionDebug），由 UIService 引用并控制显隐；
-  - 对于较重或使用频率低的 Screen/Overlay，可以在首次 `Show` 时从 prefab 动态实例化，并缓存引用以复用。
+```
+ShowScreen("MainMenu")
+  → TryGetPanel(id, Screen, out UIScreen)
+  → 如果已有 currentScreen:
+      old.PlayExitSequence().OnComplete(() =>
+      {
+        Destroy(old.gameObject);
+        panelStates.Remove(oldId);
+        ActivateScreen(new, id, args);  // SetActive + PlayEnterSequence
+      })
+  → currentScreen = screen; currentScreenId = id
+```
 
-## 推荐层级结构
+### 场景架构
 
-在典型场景中，推荐的 UI GameObject 层级如下：
+Persistent Core Scene 模式：
+- `Core.unity` (Scene 0) — GameService + EventSystem + UIService，永不卸载
+- MainMenuScreen 内嵌于 Core 场景 Canvas，启动即显示主菜单
+- `NewGame.unity` — 内容场景，通过 Additive 加载/卸载
 
-- GameManager
-  - GameContext
-  - EventDispatcher
-  - InputManager
-  - CameraManager
-  - LocomotionManager
-  - TimeScaleManager
-  - UIService（或 UIManager：挂载 UI 入口 Service）
-    - UIRoot（可选空节点，仅用于归类）
-      - Canvas（Screen Space - Overlay）
-      - EventSystem
-        - ScreensRoot（空节点，承载全屏 Screen）
-          - MainMenuScreen（挂 UIScreenBase 派生类）
-          - PauseMenuScreen（挂 UIScreenBase 派生类）
-          - InventoryScreen（挂 UIScreenBase 派生类）
-        - OverlaysRoot（空节点，承载 Overlay）
-          - GameHudOverlay（挂 UIOverlayBase 派生类）
-            - HealthBar
-            - StaminaBar
-            - Hotbar
-          - NotificationOverlay（挂 UIOverlayBase 派生类）
-          - LocomotionDebugOverlay（挂 UIOverlayBase 派生类，用于调试 SPlayerLocomotion）
+UIService 持有两个 Canvas：
+- `MainCanvas` (sortOrder=0) — Screen / Overlay 面板
+- `LoadingCanvas` (sortOrder=999) — LoadingOverlay 独立 Canvas，永远最顶层
 
-每个 Screen/Overlay 内部再根据功能自行组织子节点（如 Background、布局容器、TextMeshPro 文本等），但生命周期与显隐一律由 UIService 统一调度，以保证结构清晰、行为一致。
+### 场景过渡
 
-## 与 Locomotion Debug 的关系
+**加载 NewGame** — `UIService.RequestNewGame()` → `SLoadSceneRequest("NewGame")`
 
-- Locomotion 子系统每帧向 GameContext 写入 `SPlayerLocomotion` 快照。
-- `LocomotionDebugOverlay` 作为 UIOverlayBase 派生类：
-  - 在初始化时（如 `Awake/OnShow`）通过 GameContext 或 Service resolve 拿到 Locomotion 相关快照访问入口。
-  - 在 `Update()` 中轮询 `SPlayerLocomotion`，将位置、速度、当前运动状态、是否在地面等字段映射到 TextMeshPro 文本或其他 UI 元素。
-  - 不向外广播事件、不修改运动状态，仅作只读展示。
+```
+1. loadingCanvasGroup.alpha = 1        // Loading 遮住
+2. currentScreen.PlayExitSequence      // MainMenu 淡出
+3. SceneService.LoadContentScene()
+   a. STimeFreeze → TimeService: timeScale=0
+   b. LoadSceneAsync(NewGame, Additive)
+   c. 等待 minLoadingDisplayTime (unscaled)
+4. SSceneLoadComplete → UIService:
+   a. loadingCanvasGroup.alpha = 0
+   b. STimeResume → TimeService: timeScale=1
+   c. GameStateService.RequestState(Playing)
+```
 
-> 本文档只给出 UI System 的总体约定与边界。具体类名、字段与方法签名在实现阶段可根据需要微调，但应保持：统一通过 `UIService` 管理 UI 生命周期，游戏 UI 与 Debug UI 共用同一套 Screen/Overlay 抽象，并遵守“UI 只读 GameContext + 通过 EventDispatcher 响应事件”的原则。
+**返回主菜单** — `UIService.RequestMainMenu()` → `SUnloadSceneRequest(null)`
+
+```
+1. loadingCanvasGroup.alpha = 1
+2. currentScreen.PlayExitSequence      // PauseMenu 淡出
+3. SceneService.UnloadContentScene()
+   a. STimeFreeze → TimeService: timeScale=0
+   b. UnloadSceneAsync(NewGame)
+   c. currentContentScene = null
+   d. 等待 minLoadingDisplayTime (unscaled)
+4. SSceneLoadComplete → UIService:
+   a. loadingCanvasGroup.alpha = 0
+   b. STimeResume → TimeService: timeScale=1
+   c. GameStateService.RequestState(MainMenu)
+```
+
+`RequestResume()` 不走场景过渡——同场景内只切状态。
+
+### UpdateUIForState
+
+签名改为 `(SGameState state)`，新增 Paused 分支。Playing 分支用 `PreviousState != Paused` 判断是否建 VitalsOverlay。
+
+### PauseMenuScreen / LoadingOverlay
+
+`PauseMenuScreen : UIScreen` — 四按钮：继续游戏、设置(disabled)、保存(disabled)、返回主菜单。
+
+`LoadingOverlay` 挂载在 `LoadingCanvas` 下，不通过 Instantiate 创建——从 Core 场景开始就存在。通过 `loadingCanvasGroup.alpha` 0/1 切换。`SetPhase`/`SetProgress` API 保留，供未来复杂加载流程直接调用实例方法。
+
+## UIScreen / UIOverlay
+
+### 共同点
+
+- `[SerializeField] CanvasGroup canvasGroup`
+- `[SerializeField] float fadeDuration`
+- `Initialize(UIService)` → `OnInitialize()` hook
+- `PlayEnterSequence()` → alpha 0→1 (EaseOutCubic) → OnEnterFinished
+- `PlayExitSequence()` → alpha 1→0 (EaseInCubic) → OnExitFinished
+- 返回 DOTween `Sequence`，UIService 可 `yield return seq.WaitForCompletion()`
+
+### 差异
+
+| | UIScreen | UIOverlay |
+|---|---|---|
+| Pause/Resume | 有 | 无 |
+| 管理方式 | 互斥，UIService.currentScreen | 并存，List<UIOverlay> |
+
+## UI/Gameplay 时间线分离
+
+> 2026-05-23
+
+**原则**: UI 和 Gameplay 使用独立的时间线。`Time.timeScale` 只影响 Gameplay，UI 始终用 unscaled time。
+
+**实现**:
+- `GameService.Awake()` 设 `DOTween.defaultTimeScaleIndependent = true` — 所有 DOTween 动画默认走 unscaled time
+- `UIScreen` / `UIOverlay` 基类暴露 `protected float DeltaTime => Time.unscaledDeltaTime` — 子类 Update 用 `DeltaTime` 替代 `Time.deltaTime`
+- Gameplay 若需 timescale-dependent tween，显式 `.SetUpdate(false)`
+
+**效果**: Pause 时 `Time.timeScale = 0` 只冻 gameplay，UI 动画（fade/hover/press）和刷新计时不受影响。
+
+---
+
+## 颜色风格系统
+
+### UIColorSet（9 色结构体）
+
+```csharp
+[Serializable]
+public struct UIColorSet
+{
+    public Color primary;          // 按钮背景
+    public Color primaryHover;     // 按钮悬浮
+    public Color primaryPressed;   // 按钮按下
+    public Color onPrimary;        // 按钮文字
+    public Color surface;          // 面板背景
+    public Color surfaceAlt;       // 交替行
+    public Color onSurface;        // 面板文字
+    public Color onSurfaceMuted;   // 弱化文字
+    public Color border;           // 描边
+}
+```
+
+### UIColorStyle（全局风格枚举）
+
+`Normal / Primary / Danger / Warning / Success`
+
+### UIThemeSO.GetColorSet(style)
+
+返回对应 `UIColorSet`，UIButton 的 ApplyTheme 和 Pointer 方法通过此方法取色。组件加 `[SerializeField] private UIColorStyle style` 字段，Inspector 下拉切换。
+
+### 组件色彩角色映射
+
+| 组件 | 使用的 UIColorSet 字段 |
+|------|----------------------|
+| UIButton | bg=primary, hover=primaryHover, press=primaryPressed, text=onPrimary |
+| UIPanel | bg=surface | TODO: onSurfaceMuted, border, drag, resize, close |
+| UILabel（后续） | 在按钮上=onPrimary，在面板内=onSurface |
+
+## 配置：UIThemeSO
+
+集中管理所有视觉参数：面板背景色、按钮 Normal/Hover/Press/Disabled 四态色、文字色（title/body/subtitle/accent/danger）、StatBar 三色阈值、TMP 字体和字号映射、间距、按钮尺寸、动画时长。
+
+`[CreateAssetMenu(fileName = "UITheme", menuName = "Game/UI/Theme")]`
+
+## 配置：UIPanelConfigSO
+
+```csharp
+[Serializable] public struct ScreenEntry {
+    public UIScreenId id;
+    public GameObject prefab;
+}
+[Serializable] public struct OverlayEntry {
+    public UIOverlayId id;
+    public GameObject prefab;
+}
+[Serializable] public struct ModalEntry {
+    public UIModalId id;
+    public GameObject prefab;
+}
+public ScreenEntry[] screens;
+public OverlayEntry[] overlays;
+public ModalEntry[] modals;
+```
+
+`BuildLookup()` 构建三个 `Dictionary<object, GameObject>`，`TryGetScreen/TryGetOverlay/TryGetModal` 类型安全查询。
+
+## 组件
+
+### UIButton
+
+继承 `IPointerEnter/Exit/Down/UpHandler`。Hover→scale 1.05+亮色，Exit→scale 1.0+正常色，Down→scale 0.97+暗色。全部 DOTween，0.1s EaseOutQuad。
+
+Awake 时关闭 Unity Button 原生 transition（设 `Transition.None`），防止和 DOTween 叠动。
+
+暴露 `event Action OnClicked` 和 `bool Interactable` 属性。
+
+### UILabel
+
+`UITextStyle` 枚举驱动：Title/Subtitle/Body/Button/Small。Awake 时从 UIThemeSO 拉字体/字号/颜色应用。`SetStyle()` 支持运行时切换。
+
+### UIStatBar
+
+水平 Filled Image，默认 fillMethod=Horizontal。`SetValue(current, max)` 计算归一化值，DOTween 驱动 fillAmount 平滑过渡。
+
+颜色阈值在 `Update()` 中跟随 `targetFill`（不是 `fillImage.fillAmount`——否则 DOTween 补间期间颜色闪错）。
+
+max ≤ 0 时显示 "--"，角色未生成时安全降级。
+
+### UIPanel
+
+`[ExecuteAlways]`。Awake 时从 `theme.GetColorSet(style).surface` 设 Image.color，提供统一暗色面板背景。
+
+| TODO | 说明 |
+|------|------|
+| drag | 标题栏拖拽，UIPanelDragHandler 组件 |
+| resize | 右下角缩放，UIPanelResizeHandler 组件 |
+| close | 关闭按钮 + OnClose event |
+
+## 集成点
+
+- `SGameState` 通过 EventDispatcher 发布 → UIService 订阅，驱动 UI 切换
+- `SCharacterSnapshot.Stats` 字典 → VitalsOverlay 每 0.1s 读取，路径可配
+- UIService 持久化（GameService `DontDestroyOnLoad`），场景切换不丢失
+- MainMenuScreen / PauseMenuScreen → UIService 导航用直接方法调用，不用 EventDispatcher
+
+## Unity Editor 待办
+
+1. Core.unity 设为 Build Settings Scene 0
+2. MainMenuScreen prefab 内嵌于 Core 场景 Canvas
+3. 连线 GameService → 各 Service 子节点

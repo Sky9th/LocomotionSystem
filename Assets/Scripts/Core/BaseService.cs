@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Game.Utility.Logging;
 using UnityEngine;
 
 /// <summary>
@@ -11,7 +12,13 @@ public abstract class BaseService : MonoBehaviour
 {
     public bool IsRegistered { get; private set; }
     protected GameContext GameContext { get; private set; }
-    protected EventDispatcher Dispatcher { get; private set; }
+    protected EventDispatcherService Dispatcher { get; private set; }
+
+    [Header("Logging")]
+    [SerializeField] private LogLevel logLevel = LogLevel.Info;
+
+    protected LogChannel Log { get; private set; }
+
     private readonly Dictionary<Type, object> serviceCache = new();
     private bool subscriptionsActivated;
     private bool isInitialized;
@@ -22,18 +29,18 @@ public abstract class BaseService : MonoBehaviour
     /// </summary>
     public void Register(GameContext context)
     {
-        Logger.Log($"[{GetType().Name}] Register invoked. ContextIsNull={context == null}", GetType().Name, this);
+        Log = LogManager.GetChannel(GetType().Name, logLevel);
 
         if (context == null)
         {
             Debug.LogError($"{name} cannot register without a valid GameContext reference.", this);
-            Logger.LogError($"{name} cannot register without a valid GameContext reference.", GetType().Name, this);
+            Log.Error("Register called with null GameContext.");
             return;
         }
 
         if (IsRegistered)
         {
-            Logger.Log($"[{GetType().Name}] Register skipped - already registered.", GetType().Name, this);
+            Log.Debug("Register skipped — already registered.");
             return;
         }
 
@@ -43,18 +50,17 @@ public abstract class BaseService : MonoBehaviour
         subscriptionsActivated = false;
         isInitialized = false;
         var success = OnRegister(context);
-        Logger.Log($"[{GetType().Name}] OnRegister returned {success}.", GetType().Name, this);
 
         if (success)
         {
             IsRegistered = true;
-            Logger.Log($"[{GetType().Name}] Registration completed. IsRegistered={IsRegistered}", GetType().Name, this);
+            Log.Debug("Registration completed.");
         }
         else
         {
             GameContext = null;
             serviceCache.Clear();
-            Logger.LogWarning($"[{GetType().Name}] Registration failed. GameContext cleared and cache reset.", GetType().Name, this);
+            Log.Warning("Registration failed — GameContext cleared.");
         }
     }
 
@@ -116,7 +122,7 @@ public abstract class BaseService : MonoBehaviour
         return null;
     }
 
-    internal void AttachDispatcher(EventDispatcher dispatcher)
+    internal void AttachDispatcher(EventDispatcherService dispatcher)
     {
         if (!IsRegistered)
         {
@@ -199,5 +205,16 @@ public abstract class BaseService : MonoBehaviour
     /// </summary>
     protected virtual void OnSubscriptionsActivated()
     {
+    }
+
+    /// <summary>
+    /// Single entry point that guarantees both GameContext snapshot and
+    /// Dispatcher publish happen atomically, preventing data skew between
+    /// the two channels.
+    /// </summary>
+    protected void PublishState<TSnapshot>(TSnapshot snapshot) where TSnapshot : struct
+    {
+        GameContext?.UpdateSnapshot(snapshot);
+        Dispatcher?.Publish(snapshot);
     }
 }

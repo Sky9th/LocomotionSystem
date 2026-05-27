@@ -13,10 +13,10 @@ namespace Game.Character.Animation.Drivers
         {
             get
             {
-                var disc = Owner.Snapshot.Locomotion.Discrete;
+                var disc = Owner.Ctx.Discrete;
                 if (disc.Phase != ELocomotionPhase.GroundedMoving || !disc.IsTurning) return false;
 
-                var vel = Owner.Snapshot.Locomotion.Motor.DesiredLocalVelocity;
+                var vel = Owner.Ctx.Motor.DesiredLocalVelocity;
                 var speed = Owner.LocoProfile != null ? Owner.LocoProfile.moveSpeed : 0f;
                 var forwardThreshold = speed > 0f ? speed * 0.9f : 0.01f;
                 var lateralThreshold = speed > 0f ? speed * 0.1f : 0.01f;
@@ -28,9 +28,9 @@ namespace Game.Character.Animation.Drivers
 
         public override void OnEnterState()
         {
-            var turnAngle = Owner.Snapshot.Locomotion.Motor.TurnAngle;
+            var turnAngle = Owner.Ctx.Motor.TurnAngle;
             var isRight = turnAngle > 0f;
-            selectedAlias = Owner.Snapshot.Locomotion.Discrete.Gait switch
+            selectedAlias = Owner.Ctx.Discrete.Gait switch
             {
                 EMovementGait.Walk => isRight ? Owner.Alias.turnInWalk180R : Owner.Alias.turnInWalk180L,
                 EMovementGait.Run  => isRight ? Owner.Alias.turnInRun180R  : Owner.Alias.turnInRun180L,
@@ -41,7 +41,7 @@ namespace Game.Character.Animation.Drivers
 
         public override void Tick()
         {
-            var vel = Owner.Snapshot.Locomotion.Motor.DesiredLocalVelocity;
+            var vel = Owner.Ctx.Motor.DesiredLocalVelocity;
             var speed = Owner.LocoProfile != null ? Owner.LocoProfile.moveSpeed : 0f;
             if (vel.y < speed * 0.9f || Mathf.Abs(vel.x) > speed * 0.1f)
             { Owner.ForceSetState(BaseStateKey.Moving); return; }
@@ -52,11 +52,11 @@ namespace Game.Character.Animation.Drivers
 
             if (Owner.HasCompleted())
             {
-                if (Owner.Snapshot.Locomotion.Discrete.IsTurning)
+                if (Owner.Ctx.Discrete.IsTurning)
                 {
-                    var turnAngle = Owner.Snapshot.Locomotion.Motor.TurnAngle;
+                    var turnAngle = Owner.Ctx.Motor.TurnAngle;
                     var isRight = turnAngle > 0f;
-                    selectedAlias = Owner.Snapshot.Locomotion.Discrete.Gait switch
+                    selectedAlias = Owner.Ctx.Discrete.Gait switch
                     {
                         EMovementGait.Walk => isRight ? Owner.Alias.turnInWalk180R : Owner.Alias.turnInWalk180L,
                         EMovementGait.Run  => isRight ? Owner.Alias.turnInRun180R  : Owner.Alias.turnInRun180L,

@@ -1,48 +1,22 @@
 # 数据结构
 
-## SCharacterSnapshot（对外唯一快照）
+## SCharacterSnapshot — 已删除 (2026-05-25)
+
+原 `SCharacterSnapshot` 打包 Input + Kinematic + Motor + Discrete + Stats，供 Animation 管线和 GameContext 消费。
+
+现已删除。Animation 管线直接消费 `CharacterFrameContext`：
 
 ```
-SCharacterSnapshot
-│
-├── Kinematic: SCharacterKinematic          ← Character 层, 始终有效
-│   ├── Position                  Vector3
-│   ├── BodyForward               Vector3
-│   ├── LocomotionHeading         Vector3    ← 运动方向 (相机→水平投影)
-│   ├── LookDirection             Vector2
-│   ├── GroundContact: SGroundContact
-│   │   ├── IsGrounded            bool
-│   │   ├── DistanceToGround      float
-│   │   ├── IsWalkableSlope       bool
-│   │   ├── ContactPoint          Vector3
-│   │   ├── ContactNormal         Vector3
-│   │   └── StateDuration         float
-│   └── ForwardObstacleDetection: SForwardObstacleDetection
-│       ├── HasHit / HasTopSurface    bool
-│       ├── IsSlope / IsObstacle      bool
-│       ├── CanClimb / CanVault / CanStepOver  bool
-│       ├── Distance / ObstacleHeight  float
-│       ├── Point / Normal / TopPoint / TopNormal / Direction  Vector3
-│       ├── SurfaceAngle               float
-│       └── Collider                   Collider
-│
-└── Locomotion: SLocomotionState             ← Locomotion 仿真
-    ├── Motor: SCharacterMotor               ← 运动数据 (连续值)
-    │   ├── DesiredLocalVelocity      Vector2
-    │   ├── ActualLocalVelocity       Vector2
-    │   ├── ActualPlanarVelocity      Vector3
-    │   └── TurnAngle                 float
-    │
-    └── Discrete: SCharacterDiscrete         ← 状态标签 (离散值)
-        ├── Phase           ELocomotionPhase
-        ├── Posture         EPosture
-        ├── Gait            EMovementGait
-        └── IsTurning       bool
+CharacterFrameContext (唯一数据载体)
 
+├── Input        SCharacterInputActions
+├── Kinematic    SCharacterKinematic
+├── Motor        SCharacterMotor
+└── Discrete     SCharacterDiscrete
+```
 
-[内部] CharacterFrameContext                    ← CharacterActor 同帧内逐级传递
+`ctx` 由 CharacterActor.Update() 逐级填充后直传 `AnimationBrain.Apply(in ctx)`。
 
-├── Input        SCharacterInputActions         ← Step 1: ReadActions
-├── Kinematic    SCharacterKinematic            ← Step 3: Evaluate
-├── Motor        SCharacterMotor                ← Step 4: Motor.Evaluate
-└── Discrete     SCharacterDiscrete             ← Step 4: Stance.Evaluate
+外部需要玩家数据时通过 PlayerService 获取：
+- 位置 → SPlayer (GameContext)
+- Stats → PlayerService.TryGetPlayerStats()

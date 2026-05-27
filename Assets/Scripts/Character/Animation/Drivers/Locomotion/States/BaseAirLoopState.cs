@@ -8,7 +8,7 @@ namespace Game.Character.Animation.Drivers
         {
             get
             {
-                var contact = Owner.Snapshot.Kinematic.GroundContact;
+                var contact = Owner.Ctx.Kinematic.GroundContact;
                 return !contact.IsGrounded
                     && contact.DistanceToGround >= Owner.AnimProfile.landMinFallDistance;
             }
@@ -17,14 +17,14 @@ namespace Game.Character.Animation.Drivers
         public override void OnEnterState()
         {
             Owner.Play(Owner.Alias.AirLoop);
-            Owner.AirborneStartY = Owner.Snapshot.Kinematic.Position.y;
+            Owner.AirborneStartY = Owner.Ctx.Kinematic.Position.y;
             Owner.MaxFallDistance = 0f;
             Owner.Rig?.SetSuppressGroundLock(true);
         }
 
         public override void Tick()
         {
-            float fall = Owner.AirborneStartY - Owner.Snapshot.Kinematic.Position.y;
+            float fall = Owner.AirborneStartY - Owner.Ctx.Kinematic.Position.y;
             if (fall > Owner.MaxFallDistance) Owner.MaxFallDistance = fall;
 
             if (Owner.TrySetState(BaseStateKey.AirLand)) return;

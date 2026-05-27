@@ -15,7 +15,7 @@ public abstract class InputActionHandler : ScriptableObject
     private InputActionReference inputAction;
     private InputAction runtimeAction;
 
-    protected EventDispatcher eventDispatcher;
+    protected EventDispatcherService eventDispatcher;
 
     protected bool IsContextBound { get; private set; }
     protected bool IsEnabled { get; private set; }
@@ -29,7 +29,7 @@ public abstract class InputActionHandler : ScriptableObject
     /// Public entry point used by InputManager to supply the current shared
     /// context (camera transform, stance references, etc.).
     /// </summary>
-    public void InitializeHandler(EventDispatcher dispatcher)
+    public void InitializeHandler(EventDispatcherService dispatcher)
     {
         if (dispatcher == null)
         {
@@ -58,10 +58,7 @@ public abstract class InputActionHandler : ScriptableObject
 
     public void Enable()
     {
-        if (!IsContextBound || IsEnabled || runtimeAction == null)
-        {
-            return;
-        }
+        if (!IsContextBound || IsEnabled || runtimeAction == null) return;
 
         runtimeAction.Enable();
         IsEnabled = true;
