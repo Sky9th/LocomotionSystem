@@ -10,36 +10,41 @@ allowed-tools: Read, Write, Edit, Glob, Bash, Grep
 
 根据内容性质选择目录：
 - **design/** — 设计决策、系统定位、玩家体验（WHY）
-- **tech/modules/** — 技术实现、数据结构、调用链（HOW）
+- **tech/** — 技术实现、调用链、API 文档（HOW），按 L1→L5 架构层级组织，**编写时使用 rd-tech-doc skill**
 - **tech/conventions/** — 命名规范、代码风格
 - **plans/** — 长期/短期开发计划
 - **sessions/** — 会话归档（YYYY-MM-DD-主题.md）
 - **references/** — 截图、外部资料
 
-## 子系统子目录
+> `archive/tech-v1/` 和 `archive/tech-v2/` 为旧文档归档，不再新增内容。所有新技术文档写入 `tech/`。
 
-| 系统 | design/ | tech/modules/ |
-|------|---------|---------------|
-| 角色 | design/character/ | tech/modules/character/ |
-| 战斗 | design/combat/ | tech/modules/character/ |
-| AI | design/ai/ | — |
-| 关卡 | design/level/ | — |
-| 动画 | — | tech/modules/animation/ |
-| 输入 | — | tech/modules/input/ |
+## 子系统子目录（按 L1→L5 层级）
+
+| 层级 | 目录 | 系统 |
+|------|------|------|
+| L1 | `L1-core/` | GameManager 根 — GameContext, GameService, BaseService |
+| L2 | `L2-services/` | Service 层 — EventDispatcher, Scene, Time, GameState, Player, Camera |
+| L2 | `L2-services/L2-input/` | 输入系统 (复合 Service) |
+| L2 | `L2-services/L2-ui/` | UI 系统 (复合 Service) |
+| L2 | `L2-services/L2-audio/` | 音频系统 (复合 Service) |
+| L2 | `L2-services/L2-modules/L3-character/` | 角色系统 (独立模块) |
+| L2 | `L2-services/L2-modules/L3-stats/` | Stat 数值框架 (独立模块) |
+| L2 | `L2-services/L2-modules/L3-pathfinding/` | 寻路系统 (独立模块) |
+| — | `shared/` | 全局 Helper — 日志、编辑器、工具 |
 
 ## 命名
 
 - 中文，清晰描述内容
 - design: `子系统名-主题.md`
-- tech: `模块-主题.md`
 - sessions: `YYYY-MM-DD-主题.md`
+- tech: 遵循 rd-tech-doc skill 的命名和结构约定（kebab-case + L 前缀目录）
 
 ## 流程
 
-1. 确认用户想记录的内容属于哪个分类
-2. 如果目录不存在，先创建
-3. 写入文档，开头标注日期和状态
-4. 必要时更新 .agent/README.md 目录树
+1. 确认用户想记录的内容属于哪个分类和层级
+2. 如果是 tech 文档 → 调用 **rd-tech-doc skill** 完成写入
+3. design/sessions/plans → 直接写入对应目录
+4. 必要时更新 `tech/README.md` 根总领目录树
 
 ## 代码改动后归档（重要）
 
@@ -48,13 +53,13 @@ allowed-tools: Read, Write, Edit, Glob, Bash, Grep
 | 层 | 目录 | 内容 | 示例 |
 |----|------|------|------|
 | 会话 | `sessions/` | 本次改了什么、为什么、已知问题 | `YYYY-MM-DD-主题.md` |
-| 技术 | `tech/modules/` | 改动的模块实现细节、配置、数据流 | 相机 → `camera-system.md`，角色 → `character/index.md` |
+| 技术 | `tech/` | 模块实现细节、调用链、API | 使用 rd-tech-doc skill 更新 |
 | 设计 | `design/` | 设计决策、为什么这样改 | 俯视角 → 更新 `game-overview.md` 或新建设计文档 |
 
 **流程**：
 1. 通过 `git diff --stat` 确定改动了哪些模块
 2. 创建/更新 session 文件（会话归档）
-3. 创建/更新对应 `tech/modules/<模块>.md`（技术归档）
+3. 调用 **rd-tech-doc skill** 更新 `tech/` 对应模块文档
 4. 涉及设计决策时更新 `design/<子系统>.md`（设计归档）
 5. 已有文档过时时同步更新（如改名、删除、调用链变化）
 
