@@ -49,7 +49,7 @@ public class PlayerService : BaseService, IGameplaySessionHandler
 
     private void HandleSceneLoadComplete(SSceneLoadComplete evt, MetaStruct meta)
     {
-        if (evt.SceneName == "NewGame")
+        if (evt.SceneName != "Core")
             CreatePlayer();
     }
 
