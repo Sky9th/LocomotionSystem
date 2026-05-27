@@ -21,4 +21,14 @@
 
 ## 已知问题
 
+### 文档架构重组
+- 移除 `.agent/tech/` 旧 v2 文档（36 个文件），迁移到 `.agent/archive/tech-v1/` 和 `.agent/archive/tech-v2/`
+- 新增 `rd-tech-doc` skill，按 L1→L5 架构层级编写技术文档
+- 更新 `rd-doc` 命令：tech 文档写入委托给 `rd-tech-doc` skill
+- 移除 `.agent/backup/character-backup/` 下 196 个旧角色模块备份文件
+- 新增 `.agent/archive/` 作为旧版本文档存放目录
+- 新增 `.agent/README.md` 作为文档目录说明
+
+## 已知问题
+
 - 转身 180° 时有概率速度异常慢，未定位根因（来自上一 session）
