@@ -73,3 +73,6 @@ Thumbs.db
 
 # Package Manager
 Packages/packages-lock.json
+
+# A* Example Scenes (121 MB, not needed)
+Packages/com.arongranberg.astar/ExampleScenes~/
