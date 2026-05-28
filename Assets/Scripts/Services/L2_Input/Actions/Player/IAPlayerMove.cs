@@ -1,59 +1,63 @@
 using System;
+using RedDust.GameStateService;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-/// <summary>
-/// Translates the "Move" action map into a world-space locomotion intent. The
-/// action never touches physics directly; it simply reports structured data back
-/// to the InputManager for further dispatch.
-/// </summary>
-[CreateAssetMenu(menuName = "Inputs/Player/IA Player Move")]
-public class IAPlayerMove : InputActionHandler
+namespace RedDust.Input
 {
-
-    [Header("Processing")]
-    [SerializeField, Range(0f, 1f)] private float deadZone = 0.15f;
-    [SerializeField] private bool normalizeWorldDirection = true;
-
-    protected override void Execute(InputAction.CallbackContext context)
+    /// <summary>
+    /// Translates the "Move" action map into a world-space locomotion intent. The
+    /// action never touches physics directly; it simply reports structured data back
+    /// to the InputManager for further dispatch.
+    /// </summary>
+    [CreateAssetMenu(menuName = "Inputs/Player/IA Player Move")]
+    public class IAPlayerMove : InputActionHandler
     {
-        if (!IsEnabled)
+
+        [Header("Processing")]
+        [SerializeField, Range(0f, 1f)] private float deadZone = 0.15f;
+        [SerializeField] private bool normalizeWorldDirection = true;
+
+        protected override void Execute(InputAction.CallbackContext context)
         {
-            return;
+            if (!IsEnabled)
+            {
+                return;
+            }
+
+            Vector2 rawInput = context.ReadValue<Vector2>();
+
+            // Apply deadzone filtering
+            if (rawInput.magnitude < deadZone)
+            {
+                rawInput = Vector2.zero;
+            }
+            else if (normalizeWorldDirection)
+            {
+                rawInput = rawInput.normalized;
+            }
+
+            Vector3 worldDirection = CalculateWorldDirection(rawInput);
+            SIActionMove intent = new SIActionMove(rawInput, worldDirection, context.phase);
+
+            eventDispatcher.Publish(intent);
         }
 
-        Vector2 rawInput = context.ReadValue<Vector2>();
-
-        // Apply deadzone filtering
-        if (rawInput.magnitude < deadZone)
+        private Vector3 CalculateWorldDirection(Vector2 planarInput)
         {
-            rawInput = Vector2.zero;
-        }
-        else if (normalizeWorldDirection)
-        {
-            rawInput = rawInput.normalized;
-        }
+            if (planarInput.sqrMagnitude <= Mathf.Epsilon)
+            {
+                return Vector3.zero;
+            }
 
-        Vector3 worldDirection = CalculateWorldDirection(rawInput);
-        SIActionMove intent = new SIActionMove(rawInput, worldDirection, context.phase);
-
-        eventDispatcher.Publish(intent);
-    }
-
-    private Vector3 CalculateWorldDirection(Vector2 planarInput)
-    {
-        if (planarInput.sqrMagnitude <= Mathf.Epsilon)
-        {
-            return Vector3.zero;
+            // Map Vector2 input (X = horizontal, Y = vertical) into world-space X/Z.
+            return new Vector3(planarInput.x, 0f, planarInput.y);
         }
 
-        // Map Vector2 input (X = horizontal, Y = vertical) into world-space X/Z.
-        return new Vector3(planarInput.x, 0f, planarInput.y);
-    }
-
-    protected override bool OnSupportsState(EGameState state)
-    {
-        return state == EGameState.Playing;
+        protected override bool OnSupportsState(EGameState state)
+        {
+            return state == EGameState.Playing;
+        }
     }
 }

@@ -1,9 +1,8 @@
 using System;
 using UnityEngine;
-using Game.Character.Components;
-using Game.Character.Config;
+using RedDust.Character;
 
-namespace Game.Character.Kinematic
+namespace RedDust.Character.Kinematic
 {
     internal sealed class CharacterKinematic
     {

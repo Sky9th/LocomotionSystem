@@ -1,11 +1,10 @@
 using UnityEngine;
 using Animancer;
-using Game.Character.Animation.Drivers;
-using Game.Character.Animation.Requests;
-using Game.Character.Components;
-using Game.Locomotion.Animation.Config;
+using RedDust.Character.Animation.Drivers;
+using RedDust.Character.Animation;
+using RedDust.Character;
 
-namespace Game.Character.Animation.Components
+namespace RedDust.Character.Animation
 {
     [DefaultExecutionOrder(-10)]
     [DisallowMultipleComponent]
@@ -13,12 +12,12 @@ namespace Game.Character.Animation.Components
     {
         // ── Constants ──
         public const int TotalLayerCount = 6;
-        public const int FullBody  = 0;
+        public const int FullBody = 0;
         public const int UpperBody = 1;
-        public const int Additive  = 2;
-        public const int Facial    = 3;
-        public const int HeadLook  = 4;
-        public const int Footstep  = 5;
+        public const int Additive = 2;
+        public const int Facial = 3;
+        public const int HeadLook = 4;
+        public const int Footstep = 5;
 
         // ── Serialized ──
         [Header("Dependencies")]
@@ -124,7 +123,7 @@ namespace Game.Character.Animation.Components
             float speed = animationProfile != null ? animationProfile.headLookSmoothingSpeed : 12f;
             float step = speed * Time.deltaTime;
 
-            headLookSmoothedYaw   = Mathf.MoveTowards(headLookSmoothedYaw,   target.x, step);
+            headLookSmoothedYaw = Mathf.MoveTowards(headLookSmoothedYaw, target.x, step);
             headLookSmoothedPitch = Mathf.MoveTowards(headLookSmoothedPitch, target.y, step);
             headLookMixer.Parameter = new Vector2(headLookSmoothedYaw, headLookSmoothedPitch);
         }

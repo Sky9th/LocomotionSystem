@@ -2,18 +2,21 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[CreateAssetMenu(menuName = "Inputs/Player/IA Player SecondaryInteract")]
-public class IAPlayerSecondaryInteract : InputActionHandler
+namespace RedDust.Input
 {
-    protected override void Execute(InputAction.CallbackContext context)
+    [CreateAssetMenu(menuName = "Inputs/Player/IA Player SecondaryInteract")]
+    public class IAPlayerSecondaryInteract : InputActionHandler
     {
-        if (!IsEnabled)
+        protected override void Execute(InputAction.CallbackContext context)
         {
-            return;
-        }
+            if (!IsEnabled)
+            {
+                return;
+            }
 
-        bool rawInput = context.ReadValueAsButton();
-        SIActionSecondaryInteract intent = SIActionSecondaryInteract.CreateEvent(rawInput, context.phase);
-        eventDispatcher.Publish(intent);
+            bool rawInput = context.ReadValueAsButton();
+            SIActionSecondaryInteract intent = SIActionSecondaryInteract.CreateEvent(rawInput, context.phase);
+            eventDispatcher.Publish(intent);
+        }
     }
 }

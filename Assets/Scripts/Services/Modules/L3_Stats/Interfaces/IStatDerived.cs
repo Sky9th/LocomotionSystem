@@ -1,4 +1,4 @@
-namespace Game.Stats
+namespace RedDust.Stats
 {
     /// <summary>
     /// 从其他 stat 计算得出的能力（暂未实现）。

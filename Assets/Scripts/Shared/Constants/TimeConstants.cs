@@ -1,13 +1,15 @@
 using UnityEngine;
 
-/// <summary>
-/// Centralized access point for commonly used time values.
-/// Wraps UnityEngine.Time so gameplay systems can use a single
-/// place to retrieve delta times and avoid scattering direct
-/// Time.* calls throughout the codebase.
-/// </summary>
-public static class TimeConstants
+namespace RedDust.Shared
 {
+    /// <summary>
+    /// Centralized access point for commonly used time values.
+    /// Wraps UnityEngine.Time so gameplay systems can use a single
+    /// place to retrieve delta times and avoid scattering direct
+    /// Time.* calls throughout the codebase.
+    /// </summary>
+    public static class TimeConstants
+    {
     /// <summary>
     /// Scaled delta time for frame-based simulation.
     /// Equivalent to Time.deltaTime.
@@ -38,4 +40,5 @@ public static class TimeConstants
     /// Current global time scale.
     /// </summary>
     public static float TimeScale => UnityEngine.Time.timeScale;
+    }
 }

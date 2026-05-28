@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Locomotion.Animation.Config
+namespace RedDust.Character.Animation
 {
     /// <summary>
     /// ScriptableObject describing locomotion tuning for a specific

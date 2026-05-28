@@ -1,25 +1,28 @@
 using System;
 using UnityEngine.InputSystem;
 
-[Serializable]
-public struct SIActionPrimaryInteract
+namespace RedDust.Input
 {
-    public SIActionPrimaryInteract(SButtonInputState button)
+    [Serializable]
+    public struct SIActionPrimaryInteract
     {
-        Button = button;
+        public SIActionPrimaryInteract(SButtonInputState button)
+        {
+            Button = button;
+        }
+
+        public SButtonInputState Button { get; }
+
+        public SIActionPrimaryInteract ClearFrameSignals()
+        {
+            return new SIActionPrimaryInteract(Button.ClearFrameSignals());
+        }
+
+        public static SIActionPrimaryInteract CreateEvent(bool isPressed, InputActionPhase phase)
+        {
+            return new SIActionPrimaryInteract(SButtonInputState.CreateEvent(isPressed, phase));
+        }
+
+        public static SIActionPrimaryInteract None => new SIActionPrimaryInteract(SButtonInputState.None);
     }
-
-    public SButtonInputState Button { get; }
-
-    public SIActionPrimaryInteract ClearFrameSignals()
-    {
-        return new SIActionPrimaryInteract(Button.ClearFrameSignals());
-    }
-
-    public static SIActionPrimaryInteract CreateEvent(bool isPressed, InputActionPhase phase)
-    {
-        return new SIActionPrimaryInteract(SButtonInputState.CreateEvent(isPressed, phase));
-    }
-
-    public static SIActionPrimaryInteract None => new SIActionPrimaryInteract(SButtonInputState.None);
 }

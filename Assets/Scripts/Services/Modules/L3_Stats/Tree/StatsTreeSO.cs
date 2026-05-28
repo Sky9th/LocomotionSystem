@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Stats
+namespace RedDust.Stats
 {
     [CreateAssetMenu(fileName = "StatsTree", menuName = "Game/Stats/Stats Tree")]
     public class StatsTreeSO : ScriptableObject

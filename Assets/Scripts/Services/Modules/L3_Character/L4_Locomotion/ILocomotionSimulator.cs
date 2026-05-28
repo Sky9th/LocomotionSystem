@@ -1,6 +1,6 @@
-using Game.Character.Components;
+using RedDust.Character;
 
-namespace Game.Character.Locomotion
+namespace RedDust.Character.Locomotion
 {
     internal interface ILocomotionSimulator
     {

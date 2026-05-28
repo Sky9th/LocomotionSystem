@@ -2,11 +2,13 @@
 using UnityEditor;
 using UnityEngine;
 
-/// <summary>
-/// Editor-only gizmo drawing helpers.
-/// Keep these utilities out of gameplay code paths.
-/// </summary>
-internal static class GizmoDebugUtility
+namespace RedDust.Shared
+{
+    /// <summary>
+    /// Editor-only gizmo drawing helpers.
+    /// Keep these utilities out of gameplay code paths.
+    /// </summary>
+    internal static class GizmoDebugUtility
 {
     public static void DrawArrowLine(Vector3 from, Vector3 to, Color color, string label = null)
     {
@@ -78,5 +80,6 @@ internal static class GizmoDebugUtility
             Handles.Label(center, label);
         }
     }
+}
 }
 #endif

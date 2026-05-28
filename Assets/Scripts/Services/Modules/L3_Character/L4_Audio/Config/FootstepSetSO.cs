@@ -1,7 +1,7 @@
 using UnityEngine;
-using Game.Audio;
+using RedDust.Audio;
 
-namespace Game.Character.Audio
+namespace RedDust.Character.Audio
 {
     [CreateAssetMenu(fileName = "FootstepSet", menuName = "Game/Character/Footstep Set")]
     public class FootstepSetSO : AudioSetSO

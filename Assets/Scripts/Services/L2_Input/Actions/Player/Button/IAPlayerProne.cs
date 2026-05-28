@@ -3,23 +3,26 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-/// <summary>
-/// Translates the "Prone" input action into a structured prone intent for the player.
-/// The action never touches physics directly; it simply reports structured data back
-/// to the InputManager for further dispatch.
-/// </summary>
-[CreateAssetMenu(menuName = "Inputs/Player/IA Player Prone")]
-public class IAPlayerProne : InputActionHandler
+namespace RedDust.Input
 {
-    protected override void Execute(InputAction.CallbackContext context)
+    /// <summary>
+    /// Translates the "Prone" input action into a structured prone intent for the player.
+    /// The action never touches physics directly; it simply reports structured data back
+    /// to the InputManager for further dispatch.
+    /// </summary>
+    [CreateAssetMenu(menuName = "Inputs/Player/IA Player Prone")]
+    public class IAPlayerProne : InputActionHandler
     {
-        if (!IsEnabled)
+        protected override void Execute(InputAction.CallbackContext context)
         {
-            return;
-        }
+            if (!IsEnabled)
+            {
+                return;
+            }
 
-        bool rawInput = context.ReadValueAsButton();
-        SIActionProne intent = SIActionProne.CreateEvent(rawInput, context.phase);
-        eventDispatcher.Publish(intent);
+            bool rawInput = context.ReadValueAsButton();
+            SIActionProne intent = SIActionProne.CreateEvent(rawInput, context.phase);
+            eventDispatcher.Publish(intent);
+        }
     }
 }

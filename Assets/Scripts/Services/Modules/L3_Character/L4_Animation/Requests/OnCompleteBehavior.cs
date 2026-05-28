@@ -1,4 +1,4 @@
-namespace Game.Character.Animation.Requests
+namespace RedDust.Character.Animation
 {
     public enum OnCompleteBehavior
     {

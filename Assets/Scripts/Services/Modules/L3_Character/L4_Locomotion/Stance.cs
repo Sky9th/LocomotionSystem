@@ -1,7 +1,8 @@
 using UnityEngine;
-using Game.Character.Input;
+using RedDust.Character;
+using RedDust.Character.Kinematic;
 
-namespace Game.Character.Locomotion
+namespace RedDust.Character.Locomotion
 {
     internal sealed class Stance
     {

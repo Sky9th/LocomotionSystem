@@ -1,7 +1,9 @@
 using UnityEngine;
-using Game.Character.Input;
+using RedDust.Character;
+using RedDust.Character.Kinematic;
+using RedDust.Input;
 
-namespace Game.Character.Locomotion
+namespace RedDust.Character.Locomotion
 {
     internal sealed class Motor
     {

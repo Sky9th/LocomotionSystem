@@ -1,166 +1,171 @@
+using RedDust.Core;
+using RedDust.Input;
 using UnityEngine;
 
-/// <summary>
-/// Central authority for high-level game state transitions. Other systems request
-/// state changes through this service so we can broadcast a unified payload and
-/// keep GameContext snapshots in sync.
-/// </summary>
-[DisallowMultipleComponent]
-public class GameStateService : BaseService
+namespace RedDust.GameStateService
 {
-	[Header("State Options")]
-	[SerializeField] private EGameState initialState = EGameState.MainMenu;
-	[SerializeField] private bool logTransitions;
-	private bool hasInitialized;
-	[SerializeField] private EGameState currentState;
-	[SerializeField] private EGameState previousState;
-
-	public EGameState CurrentState => currentState;
-	public EGameState PreviousState => previousState;
-	public bool HasInitialized => hasInitialized;
-
-	private void Update()
+	/// <summary>
+	/// Central authority for high-level game state transitions. Other systems request
+	/// state changes through this service so we can broadcast a unified payload and
+	/// keep GameContext snapshots in sync.
+	/// </summary>
+	[DisallowMultipleComponent]
+	public class GameStateService : BaseService
 	{
-	}
+		[Header("State Options")]
+		[SerializeField] private EGameState initialState = EGameState.MainMenu;
+		[SerializeField] private bool logTransitions;
+		private bool hasInitialized;
+		[SerializeField] private EGameState currentState;
+		[SerializeField] private EGameState previousState;
 
-	protected override bool OnRegister(GameContext context)
-	{
-		context.RegisterService(this);
+		public EGameState CurrentState => currentState;
+		public EGameState PreviousState => previousState;
+		public bool HasInitialized => hasInitialized;
 
-		var state = initialState;
+		private void Update()
+		{
+		}
+
+		protected override bool OnRegister(GameContext context)
+		{
+			context.RegisterService(this);
+
+			var state = initialState;
 #if UNITY_EDITOR
-		if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Core")
-			state = EGameState.Playing;
+			if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Core")
+				state = EGameState.Playing;
 #endif
 
-		previousState = state;
-		currentState = state;
+			previousState = state;
+			currentState = state;
 
-		var snapshot = new SGameState(currentState, previousState);
-		PublishState(snapshot);
+			var snapshot = new SGameState(currentState, previousState);
+			PublishState(snapshot);
 
-		if (logTransitions)
-		{
-			Debug.Log($"[GameState] Bootstrap at {currentState}.", this);
+			if (logTransitions)
+			{
+				Debug.Log($"[GameState] Bootstrap at {currentState}.", this);
+			}
+
+			return true;
 		}
 
-		return true;
-	}
-
-	protected override void OnServicesReady()
-	{
-	}
-
-	protected override void OnDispatcherAttached()
-	{
-		hasInitialized = true;
-		ApplyState(currentState, force: true);
-	}
-
-	public bool RequestState(EGameState nextState)
-	{
-		return ApplyState(nextState, force: false);
-	}
-
-	public void ForceState(EGameState nextState)
-	{
-		ApplyState(nextState, force: true);
-	}
-
-	private bool ApplyState(EGameState nextState, bool force)
-	{
-		if (!hasInitialized)
+		protected override void OnServicesReady()
 		{
-			Debug.LogWarning("GameState has not finished registering; ignoring transition request.", this);
-			return false;
 		}
 
-		if (!force && nextState == currentState)
+		protected override void OnDispatcherAttached()
 		{
-			return false;
+			hasInitialized = true;
+			ApplyState(currentState, force: true);
 		}
 
-		previousState = currentState;
-		currentState = nextState;
-
-		ApplyCursorMode(currentState);
-
-		var snapshot = new SGameState(currentState, previousState);
-		Log.Info($"Transition: {previousState} -> {currentState}");
-		PublishState(snapshot);
-
-		if (logTransitions)
+		public bool RequestState(EGameState nextState)
 		{
-			Debug.Log($"[GameState] {previousState} -> {currentState}", this);
+			return ApplyState(nextState, force: false);
 		}
 
-		return true;
+		public void ForceState(EGameState nextState)
+		{
+			ApplyState(nextState, force: true);
+		}
+
+		private bool ApplyState(EGameState nextState, bool force)
+		{
+			if (!hasInitialized)
+			{
+				Debug.LogWarning("GameState has not finished registering; ignoring transition request.", this);
+				return false;
+			}
+
+			if (!force && nextState == currentState)
+			{
+				return false;
+			}
+
+			previousState = currentState;
+			currentState = nextState;
+
+			ApplyCursorMode(currentState);
+
+			var snapshot = new SGameState(currentState, previousState);
+			Log.Info($"Transition: {previousState} -> {currentState}");
+			PublishState(snapshot);
+
+			if (logTransitions)
+			{
+				Debug.Log($"[GameState] {previousState} -> {currentState}", this);
+			}
+
+			return true;
+		}
+
+		protected override void OnSubscriptionsActivated()
+		{
+			base.OnSubscriptionsActivated();
+			if (Dispatcher != null)
+			{
+				Dispatcher.Subscribe<SIActionUIEscape>(HandleEscapeIntent);
+			}
+		}
+
+		private void OnDestroy()
+		{
+			if (Dispatcher != null)
+			{
+				Dispatcher.Unsubscribe<SIActionUIEscape>(HandleEscapeIntent);
+			}
+		}
+
+		private void HandleEscapeIntent(SIActionUIEscape payload, MetaStruct meta)
+		{
+			if (!payload.IsPressed)
+			{
+				return;
+			}
+
+			switch (currentState)
+			{
+				case EGameState.Playing:
+					RequestState(EGameState.Paused);
+					break;
+				case EGameState.Paused:
+					RequestState(EGameState.Playing);
+					break;
+			}
+		}
+
+		private void ApplyCursorMode(EGameState state)
+		{
+			switch (state)
+			{
+				case EGameState.MainMenu:
+				case EGameState.Paused:
+					SetCursorVisibility(true, CursorLockMode.None);
+					break;
+				case EGameState.Playing:
+					SetCursorVisibility(true, CursorLockMode.Confined);
+					break;
+				default:
+					SetCursorVisibility(true, CursorLockMode.None);
+					break;
+			}
+		}
+
+		private void SetCursorVisibility(bool isVisible, CursorLockMode lockMode)
+		{
+			Cursor.visible = isVisible;
+			Cursor.lockState = lockMode;
+		}
+
 	}
 
-	protected override void OnSubscriptionsActivated()
+	public enum EGameState
 	{
-		base.OnSubscriptionsActivated();
-		if (Dispatcher != null)
-		{
-			Dispatcher.Subscribe<SIActionUIEscape>(HandleEscapeIntent);
-		}
+		Initializing = 0,
+		MainMenu = 10,
+		Playing = 20,
+		Paused = 30
 	}
-
-	private void OnDestroy()
-	{
-		if (Dispatcher != null)
-		{
-			Dispatcher.Unsubscribe<SIActionUIEscape>(HandleEscapeIntent);
-		}
-	}
-
-	private void HandleEscapeIntent(SIActionUIEscape payload, MetaStruct meta)
-	{
-		if (!payload.IsPressed)
-		{
-			return;
-		}
-
-		switch (currentState)
-		{
-			case EGameState.Playing:
-				RequestState(EGameState.Paused);
-				break;
-			case EGameState.Paused:
-				RequestState(EGameState.Playing);
-				break;
-		}
-	}
-
-	private void ApplyCursorMode(EGameState state)
-	{
-		switch (state)
-		{
-			case EGameState.MainMenu:
-			case EGameState.Paused:
-				SetCursorVisibility(true, CursorLockMode.None);
-				break;
-			case EGameState.Playing:
-				SetCursorVisibility(true, CursorLockMode.Confined);
-				break;
-			default:
-				SetCursorVisibility(true, CursorLockMode.None);
-				break;
-		}
-	}
-
-	private void SetCursorVisibility(bool isVisible, CursorLockMode lockMode)
-	{
-		Cursor.visible = isVisible;
-		Cursor.lockState = lockMode;
-	}
-
-}
-
-public enum EGameState
-{
-	Initializing = 0,
-	MainMenu = 10,
-	Playing = 20,
-	Paused = 30
 }

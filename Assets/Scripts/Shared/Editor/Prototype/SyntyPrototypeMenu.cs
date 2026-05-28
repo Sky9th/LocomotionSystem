@@ -5,8 +5,10 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 
-/// Window > Synty Prototype — dockable prefab browser for PolygonPrototype assets
-public static class SyntyPrototypeMenu
+namespace RedDust.Shared
+{
+    /// Window > Synty Prototype — dockable prefab browser for PolygonPrototype assets
+    public static class SyntyPrototypeMenu
 {
     private static List<CategoryData> s_cache;
 
@@ -219,5 +221,6 @@ public static class SyntyPrototypeMenu
         public string displayName;
         public bool isPolygon;
     }
+}
 }
 #endif

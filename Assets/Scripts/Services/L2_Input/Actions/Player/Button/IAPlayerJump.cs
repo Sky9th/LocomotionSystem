@@ -1,21 +1,24 @@
-using Game.Utility.Logging;
+using RedDust.Shared;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[CreateAssetMenu(menuName = "Inputs/Player/IA Player Jump")]
-public class IAPlayerJump : InputActionHandler
+namespace RedDust.Input
 {
-    private static LogChannel _log;
-
-    protected override void Execute(InputAction.CallbackContext context)
+    [CreateAssetMenu(menuName = "Inputs/Player/IA Player Jump")]
+    public class IAPlayerJump : InputActionHandler
     {
-        if (!IsEnabled) return;
+        private static LogChannel _log;
 
-        if (_log == null) _log = LogManager.GetChannel(nameof(IAPlayerJump));
-        _log.Debug("Jump input received.");
+        protected override void Execute(InputAction.CallbackContext context)
+        {
+            if (!IsEnabled) return;
 
-        bool rawInput = context.ReadValueAsButton();
-        SIActionJump intent = SIActionJump.CreateEvent(rawInput, context.phase);
-        eventDispatcher.Publish(intent);
+            if (_log == null) _log = LogManager.GetChannel(nameof(IAPlayerJump));
+            _log.Debug("Jump input received.");
+
+            bool rawInput = context.ReadValueAsButton();
+            SIActionJump intent = SIActionJump.CreateEvent(rawInput, context.phase);
+            eventDispatcher.Publish(intent);
+        }
     }
 }

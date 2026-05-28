@@ -5,7 +5,9 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-public class SyntyPrototypeBrowser : EditorWindow
+namespace RedDust.Shared
+{
+    public class SyntyPrototypeBrowser : EditorWindow
 {
     private List<SyntyPrototypeMenu.CategoryData> _categories;
     private int _selectedCategoryIndex;
@@ -281,5 +283,6 @@ public class SyntyPrototypeBrowser : EditorWindow
         }
         return go;
     }
+}
 }
 #endif

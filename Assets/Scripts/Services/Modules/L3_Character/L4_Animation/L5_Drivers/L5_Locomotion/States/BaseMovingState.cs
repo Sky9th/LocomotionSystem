@@ -1,6 +1,6 @@
 using Animancer;
 
-namespace Game.Character.Animation.Drivers
+namespace RedDust.Character.Animation.Drivers.Locomotion
 {
     internal sealed class BaseMovingState : LocomotionLayerFsmState<BaseLayer>
     {

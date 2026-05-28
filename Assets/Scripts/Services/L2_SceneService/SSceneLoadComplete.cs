@@ -1,15 +1,18 @@
-/// <summary>
-/// Published via EventDispatcher when a scene transition finishes.
-/// Subscribe in OnSubscriptionsActivated to react immediately.
-/// </summary>
-public readonly struct SSceneLoadComplete
+namespace RedDust.SceneService
 {
-    public readonly string SceneName;
-    public readonly string PreviousScene;
-
-    public SSceneLoadComplete(string sceneName, string previousScene)
+    /// <summary>
+    /// Published via EventDispatcher when a scene transition finishes.
+    /// Subscribe in OnSubscriptionsActivated to react immediately.
+    /// </summary>
+    public readonly struct SSceneLoadComplete
     {
-        SceneName = sceneName;
-        PreviousScene = previousScene;
+        public readonly string SceneName;
+        public readonly string PreviousScene;
+
+        public SSceneLoadComplete(string sceneName, string previousScene)
+        {
+            SceneName = sceneName;
+            PreviousScene = previousScene;
+        }
     }
 }

@@ -1,13 +1,15 @@
 using System;
 using UnityEngine;
 
-/// <summary>
-/// Immutable snapshot describing the currently active gameplay camera.
-/// Shared via GameContext so any subsystem can reason about camera and anchor poses deterministically.
-/// </summary>
-[Serializable]
-public struct SCameraSnapshot
+namespace RedDust.Core
 {
+    /// <summary>
+    /// Immutable snapshot describing the currently active gameplay camera.
+    /// Shared via GameContext so any subsystem can reason about camera and anchor poses deterministically.
+    /// </summary>
+    [Serializable]
+    public struct SCameraSnapshot
+    {
     public SCameraSnapshot(
         Vector3 cameraPosition,
         Quaternion cameraRotation,
@@ -65,4 +67,5 @@ public struct SCameraSnapshot
     /// </summary>
     public Vector3 MouseGroundPosition { get; }
     public bool IsMouseGroundValid { get; }
+    }
 }

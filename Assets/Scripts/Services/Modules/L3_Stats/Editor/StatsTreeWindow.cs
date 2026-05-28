@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace Game.Stats.Editor
+namespace RedDust.Stats.Editor
 {
     public class StatsTreeWindow : EditorWindow
     {

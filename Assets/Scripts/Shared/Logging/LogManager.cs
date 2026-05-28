@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Game.Utility.Logging
+namespace RedDust.Shared
 {
     public static class LogManager
     {

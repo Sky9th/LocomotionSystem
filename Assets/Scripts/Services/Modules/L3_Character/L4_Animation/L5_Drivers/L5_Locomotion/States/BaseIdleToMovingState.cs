@@ -1,4 +1,4 @@
-namespace Game.Character.Animation.Drivers
+namespace RedDust.Character.Animation.Drivers.Locomotion
 {
     internal sealed class BaseIdleToMovingState : LocomotionLayerFsmState<BaseLayer>
     {

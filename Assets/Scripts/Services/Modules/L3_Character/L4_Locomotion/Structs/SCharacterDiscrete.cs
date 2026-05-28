@@ -1,21 +1,24 @@
 using System;
 
-[Serializable]
-public readonly struct SCharacterDiscrete
+namespace RedDust.Character.Locomotion
 {
-    public SCharacterDiscrete(ELocomotionPhase phase, EPosture posture, EMovementGait gait, bool isTurning)
+    [Serializable]
+    public readonly struct SCharacterDiscrete
     {
-        Phase = phase;
-        Posture = posture;
-        Gait = gait;
-        IsTurning = isTurning;
+        public SCharacterDiscrete(ELocomotionPhase phase, EPosture posture, EMovementGait gait, bool isTurning)
+        {
+            Phase = phase;
+            Posture = posture;
+            Gait = gait;
+            IsTurning = isTurning;
+        }
+
+        public ELocomotionPhase Phase { get; }
+        public EPosture Posture { get; }
+        public EMovementGait Gait { get; }
+        public bool IsTurning { get; }
+
+        public static SCharacterDiscrete Default => new(
+            ELocomotionPhase.GroundedIdle, EPosture.Standing, EMovementGait.Idle, false);
     }
-
-    public ELocomotionPhase Phase { get; }
-    public EPosture Posture { get; }
-    public EMovementGait Gait { get; }
-    public bool IsTurning { get; }
-
-    public static SCharacterDiscrete Default => new(
-        ELocomotionPhase.GroundedIdle, EPosture.Standing, EMovementGait.Idle, false);
 }

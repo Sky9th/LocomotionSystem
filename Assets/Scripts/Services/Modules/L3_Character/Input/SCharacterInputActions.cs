@@ -1,6 +1,7 @@
 using System;
+using RedDust.Input;
 
-namespace Game.Character.Input
+namespace RedDust.Character
 {
     [Serializable]
     public readonly struct SCharacterInputActions

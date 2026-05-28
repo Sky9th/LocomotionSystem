@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using RedDust.Core;
 using UnityEngine;
 
-namespace Game.Audio
+namespace RedDust.Audio
 {
     public enum AudioChannelType
     {

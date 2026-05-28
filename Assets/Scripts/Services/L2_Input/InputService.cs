@@ -1,180 +1,185 @@
 using System;
+using RedDust.Core;
+using RedDust.GameStateService;
 using UnityEngine;
 
-/// <summary>
-/// Central coordinator for all gameplay input helpers. It owns their lifecycle,
-/// aggregates snapshots, and keeps the EventDispatcher wiring deterministic.
-/// </summary>
-[DisallowMultipleComponent]
-public class InputService : BaseService
+namespace RedDust.Input
 {
-    [SerializeField] private InputActionHandler[] actionHandlers = Array.Empty<InputActionHandler>();
-
-    private bool actionsConfigured;
-    private EGameState currentGameState = EGameState.Initializing;
-    private bool hasGameStateSnapshot;
-
-    public bool AreActionsConfigured => actionsConfigured;
-
-    protected override bool OnRegister(GameContext context)
+    /// <summary>
+    /// Central coordinator for all gameplay input helpers. It owns their lifecycle,
+    /// aggregates snapshots, and keeps the EventDispatcher wiring deterministic.
+    /// </summary>
+    [DisallowMultipleComponent]
+    public class InputService : BaseService
     {
-        context.RegisterService(this);
-        actionsConfigured = false;
-        return true;
-    }
+        [SerializeField] private InputActionHandler[] actionHandlers = Array.Empty<InputActionHandler>();
 
-    protected override void OnDispatcherAttached()
-    {
-        base.OnDispatcherAttached();
-        InitializeInputHandlers();
+        private bool actionsConfigured;
+        private EGameState currentGameState = EGameState.Initializing;
+        private bool hasGameStateSnapshot;
 
-        if (isActiveAndEnabled)
+        public bool AreActionsConfigured => actionsConfigured;
+
+        protected override bool OnRegister(GameContext context)
         {
-            EnableActions();
+            context.RegisterService(this);
+            actionsConfigured = false;
+            return true;
         }
 
-        SyncInitialGameState();
-    }
-
-    protected override void OnSubscriptionsActivated()
-    {
-        Dispatcher.Subscribe<SGameState>(HandleGameStateChanged);
-    }
-
-    private void InitializeInputHandlers()
-    {
-        if (actionsConfigured)
+        protected override void OnDispatcherAttached()
         {
-            return;
-        }
+            base.OnDispatcherAttached();
+            InitializeInputHandlers();
 
-        foreach (var handler in actionHandlers)
-        {
-            handler?.InitializeHandler(Dispatcher);
-        }
-
-        actionsConfigured = true;
-    }
-
-    private void OnEnable()
-    {
-        if (IsRegistered)
-        {
-            EnableActions();
-        }
-    }
-
-    private void OnDisable()
-    {
-        DisableActions();
-    }
-
-    private void OnDestroy()
-    {
-        Dispatcher?.Unsubscribe<SGameState>(HandleGameStateChanged);
-
-        if (!actionsConfigured)
-        {
-            return;
-        }
-
-        foreach (var handler in actionHandlers)
-        {
-            handler?.Dispose();
-        }
-    }
-
-    private void EnableActions()
-    {
-        if (!actionsConfigured)
-        {
-            return;
-        }
-
-        foreach (var handler in actionHandlers)
-        {
-            handler?.Enable();
-        }
-
-        EnforceHandlerStatePermissions();
-    }
-
-    private void DisableActions()
-    {
-        if (!actionsConfigured)
-        {
-            return;
-        }
-
-        foreach (var handler in actionHandlers)
-        {
-            handler?.Disable();
-        }
-    }
-
-    private void HandleGameStateChanged(SGameState snapshot, MetaStruct meta)
-    {
-        ApplyGameState(snapshot.CurrentState);
-    }
-
-    private void SyncInitialGameState()
-    {
-        if (GameContext != null && GameContext.TryGetSnapshot(out SGameState snapshot))
-        {
-            ApplyGameState(snapshot.CurrentState, force: true);
-        }
-        else
-        {
-            ApplyGameState(EGameState.Initializing, force: true);
-        }
-    }
-
-    private void ApplyGameState(EGameState nextState, bool force = false)
-    {
-        if (!force && hasGameStateSnapshot && nextState == currentGameState)
-        {
-            return;
-        }
-
-        currentGameState = nextState;
-        hasGameStateSnapshot = true;
-
-        if (!actionsConfigured)
-        {
-            return;
-        }
-
-        EnforceHandlerStatePermissions();
-    }
-
-    private void EnforceHandlerStatePermissions()
-    {
-        if (!actionsConfigured)
-        {
-            return;
-        }
-
-        bool canEnableHandlers = IsRegistered && isActiveAndEnabled;
-        foreach (var handler in actionHandlers)
-        {
-            if (handler == null)
+            if (isActiveAndEnabled)
             {
-                continue;
+                EnableActions();
             }
 
-            bool supportsState = hasGameStateSnapshot ? handler.SupportsState(currentGameState) : true;
-            if (!supportsState || !canEnableHandlers)
+            SyncInitialGameState();
+        }
+
+        protected override void OnSubscriptionsActivated()
+        {
+            Dispatcher.Subscribe<SGameState>(HandleGameStateChanged);
+        }
+
+        private void InitializeInputHandlers()
+        {
+            if (actionsConfigured)
             {
-                handler.Disable();
+                return;
+            }
+
+            foreach (var handler in actionHandlers)
+            {
+                handler?.InitializeHandler(Dispatcher);
+            }
+
+            actionsConfigured = true;
+        }
+
+        private void OnEnable()
+        {
+            if (IsRegistered)
+            {
+                EnableActions();
+            }
+        }
+
+        private void OnDisable()
+        {
+            DisableActions();
+        }
+
+        private void OnDestroy()
+        {
+            Dispatcher?.Unsubscribe<SGameState>(HandleGameStateChanged);
+
+            if (!actionsConfigured)
+            {
+                return;
+            }
+
+            foreach (var handler in actionHandlers)
+            {
+                handler?.Dispose();
+            }
+        }
+
+        private void EnableActions()
+        {
+            if (!actionsConfigured)
+            {
+                return;
+            }
+
+            foreach (var handler in actionHandlers)
+            {
+                handler?.Enable();
+            }
+
+            EnforceHandlerStatePermissions();
+        }
+
+        private void DisableActions()
+        {
+            if (!actionsConfigured)
+            {
+                return;
+            }
+
+            foreach (var handler in actionHandlers)
+            {
+                handler?.Disable();
+            }
+        }
+
+        private void HandleGameStateChanged(SGameState snapshot, MetaStruct meta)
+        {
+            ApplyGameState(snapshot.CurrentState);
+        }
+
+        private void SyncInitialGameState()
+        {
+            if (GameContext != null && GameContext.TryGetSnapshot(out SGameState snapshot))
+            {
+                ApplyGameState(snapshot.CurrentState, force: true);
             }
             else
             {
-                handler.Enable();
+                ApplyGameState(EGameState.Initializing, force: true);
             }
         }
-    }
 
-    protected override void OnServicesReady()
-    {
+        private void ApplyGameState(EGameState nextState, bool force = false)
+        {
+            if (!force && hasGameStateSnapshot && nextState == currentGameState)
+            {
+                return;
+            }
+
+            currentGameState = nextState;
+            hasGameStateSnapshot = true;
+
+            if (!actionsConfigured)
+            {
+                return;
+            }
+
+            EnforceHandlerStatePermissions();
+        }
+
+        private void EnforceHandlerStatePermissions()
+        {
+            if (!actionsConfigured)
+            {
+                return;
+            }
+
+            bool canEnableHandlers = IsRegistered && isActiveAndEnabled;
+            foreach (var handler in actionHandlers)
+            {
+                if (handler == null)
+                {
+                    continue;
+                }
+
+                bool supportsState = hasGameStateSnapshot ? handler.SupportsState(currentGameState) : true;
+                if (!supportsState || !canEnableHandlers)
+                {
+                    handler.Disable();
+                }
+                else
+                {
+                    handler.Enable();
+                }
+            }
+        }
+
+        protected override void OnServicesReady()
+        {
+        }
     }
 }

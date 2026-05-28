@@ -1,220 +1,224 @@
 using System;
 using System.Collections.Generic;
-using Game.Utility.Logging;
+using RedDust.EventDispatcher;
+using RedDust.Shared;
 using UnityEngine;
 
-/// <summary>
-/// Shared base class for all runtime managers/services that the GameManager bootstraps.
-/// Provides a deterministic Register(GameContext) entry point so each system can
-/// bind into the global context without duplicating guard logic.
-/// </summary>
-public abstract class BaseService : MonoBehaviour
+namespace RedDust.Core
 {
-    public bool IsRegistered { get; private set; }
-    protected GameContext GameContext { get; private set; }
-    protected EventDispatcherService Dispatcher { get; private set; }
-
-    [Header("Logging")]
-    [SerializeField] private LogLevel logLevel = LogLevel.Info;
-
-    protected LogChannel Log { get; private set; }
-
-    private readonly Dictionary<Type, object> serviceCache = new();
-    private bool subscriptionsActivated;
-    private bool isInitialized;
-
     /// <summary>
-    /// Called by GameManager to hook this service into the GameContext.
-    /// Derived classes should place their initialization logic inside OnRegister.
+    /// Shared base class for all runtime managers/services that the GameManager bootstraps.
+    /// Provides a deterministic Register(GameContext) entry point so each system can
+    /// bind into the global context without duplicating guard logic.
     /// </summary>
-    public void Register(GameContext context)
+    public abstract class BaseService : MonoBehaviour
     {
-        Log = LogManager.GetChannel(GetType().Name, logLevel);
+        public bool IsRegistered { get; private set; }
+        protected GameContext GameContext { get; private set; }
+        protected EventDispatcherService Dispatcher { get; private set; }
 
-        if (context == null)
-        {
-            Debug.LogError($"{name} cannot register without a valid GameContext reference.", this);
-            Log.Error("Register called with null GameContext.");
-            return;
-        }
+        [Header("Logging")]
+        [SerializeField] private LogLevel logLevel = LogLevel.Info;
 
-        if (IsRegistered)
-        {
-            Log.Debug("Register skipped — already registered.");
-            return;
-        }
+        protected LogChannel Log { get; private set; }
 
-        GameContext = context;
-        serviceCache.Clear();
-        Dispatcher = null;
-        subscriptionsActivated = false;
-        isInitialized = false;
-        var success = OnRegister(context);
+        private readonly Dictionary<Type, object> serviceCache = new();
+        private bool subscriptionsActivated;
+        private bool isInitialized;
 
-        if (success)
+        /// <summary>
+        /// Called by GameManager to hook this service into the GameContext.
+        /// Derived classes should place their initialization logic inside OnRegister.
+        /// </summary>
+        public void Register(GameContext context)
         {
-            IsRegistered = true;
-            Log.Debug("Registration completed.");
-        }
-        else
-        {
-            GameContext = null;
+            Log = LogManager.GetChannel(GetType().Name, logLevel);
+
+            if (context == null)
+            {
+                Debug.LogError($"{name} cannot register without a valid GameContext reference.", this);
+                Log.Error("Register called with null GameContext.");
+                return;
+            }
+
+            if (IsRegistered)
+            {
+                Log.Debug("Register skipped — already registered.");
+                return;
+            }
+
+            GameContext = context;
             serviceCache.Clear();
-            Log.Warning("Registration failed — GameContext cleared.");
-        }
-    }
+            Dispatcher = null;
+            subscriptionsActivated = false;
+            isInitialized = false;
+            var success = OnRegister(context);
 
-    protected abstract bool OnRegister(GameContext context);
-
-    /// <summary>
-    /// Attempts to resolve the requested service from GameContext.
-    /// </summary>
-    protected bool TryResolveService<TService>(out TService service, bool logWarning = true)
-        where TService : class
-    {
-        service = null;
-
-        if (serviceCache.TryGetValue(typeof(TService), out var cached) && cached is TService cachedService)
-        {
-            service = cachedService;
-            return true;
+            if (success)
+            {
+                IsRegistered = true;
+                Log.Debug("Registration completed.");
+            }
+            else
+            {
+                GameContext = null;
+                serviceCache.Clear();
+                Log.Warning("Registration failed — GameContext cleared.");
+            }
         }
 
-        if (GameContext == null)
+        protected abstract bool OnRegister(GameContext context);
+
+        /// <summary>
+        /// Attempts to resolve the requested service from GameContext.
+        /// </summary>
+        protected bool TryResolveService<TService>(out TService service, bool logWarning = true)
+            where TService : class
         {
+            service = null;
+
+            if (serviceCache.TryGetValue(typeof(TService), out var cached) && cached is TService cachedService)
+            {
+                service = cachedService;
+                return true;
+            }
+
+            if (GameContext == null)
+            {
+                if (logWarning)
+                {
+                    Debug.LogWarning($"{name} cannot resolve {typeof(TService).Name} because GameContext is missing.", this);
+                }
+
+                return false;
+            }
+
+            if (GameContext.TryResolveService(out service))
+            {
+                if (service != null)
+                {
+                    serviceCache[typeof(TService)] = service;
+                }
+                return true;
+            }
+
             if (logWarning)
             {
-                Debug.LogWarning($"{name} cannot resolve {typeof(TService).Name} because GameContext is missing.", this);
+                Debug.LogWarning($"{name} could not resolve service {typeof(TService).Name}. Ensure it is registered before {GetType().Name}.", this);
             }
 
             return false;
         }
 
-        if (GameContext.TryResolveService(out service))
+        /// <summary>
+        /// Resolves the requested service or logs an error when it is unavailable.
+        /// </summary>
+        protected TService RequireService<TService>()
+            where TService : class
         {
-            if (service != null)
+            if (TryResolveService(out TService service, logWarning: false))
             {
-                serviceCache[typeof(TService)] = service;
+                return service;
             }
-            return true;
+
+            Debug.LogError($"{name} requires service {typeof(TService).Name} but it has not been registered.", this);
+            return null;
         }
 
-        if (logWarning)
+        internal void AttachDispatcher(EventDispatcherService dispatcher)
         {
-            Debug.LogWarning($"{name} could not resolve service {typeof(TService).Name}. Ensure it is registered before {GetType().Name}.", this);
+            if (!IsRegistered)
+            {
+                Debug.LogWarning($"{name} cannot attach dispatcher before registration completes.", this);
+                return;
+            }
+
+            if (dispatcher == null)
+            {
+                Debug.LogWarning($"{name} cannot attach a null dispatcher.", this);
+                return;
+            }
+
+            if (Dispatcher == dispatcher)
+            {
+                return;
+            }
+
+            Dispatcher = dispatcher;
+            subscriptionsActivated = false;
+            OnDispatcherAttached();
         }
 
-        return false;
-    }
-
-    /// <summary>
-    /// Resolves the requested service or logs an error when it is unavailable.
-    /// </summary>
-    protected TService RequireService<TService>()
-        where TService : class
-    {
-        if (TryResolveService(out TService service, logWarning: false))
+        internal void ActivateSubscriptions()
         {
-            return service;
+            if (!IsRegistered)
+            {
+                Debug.LogWarning($"{name} cannot activate subscriptions before registration completes.", this);
+                return;
+            }
+
+            if (Dispatcher == null)
+            {
+                Debug.LogWarning($"{name} cannot activate subscriptions without a dispatcher reference.", this);
+                return;
+            }
+
+            if (subscriptionsActivated)
+            {
+                return;
+            }
+
+            OnSubscriptionsActivated();
+            subscriptionsActivated = true;
         }
 
-        Debug.LogError($"{name} requires service {typeof(TService).Name} but it has not been registered.", this);
-        return null;
-    }
+        /// <summary>
+        /// Called by GameManager after all services have registered, attached a dispatcher,
+        /// and activated their subscriptions. Use this for any final initialization that
+        /// relies on other services being fully ready.
+        /// </summary>
+        protected abstract void OnServicesReady();
 
-    internal void AttachDispatcher(EventDispatcherService dispatcher)
-    {
-        if (!IsRegistered)
+        /// <summary>
+        /// Internal entry point used by GameManager to notify services that the
+        /// bootstrap sequence has completed.
+        /// </summary>
+        internal void NotifyInitialized()
         {
-            Debug.LogWarning($"{name} cannot attach dispatcher before registration completes.", this);
-            return;
+            if (!IsRegistered || isInitialized)
+            {
+                return;
+            }
+
+            OnServicesReady();
+            isInitialized = true;
         }
 
-        if (dispatcher == null)
+        /// <summary>
+        /// Phase 2: called when the shared EventDispatcher has been attached,
+        /// but before any subscriptions are activated.
+        /// </summary>
+        protected virtual void OnDispatcherAttached()
         {
-            Debug.LogWarning($"{name} cannot attach a null dispatcher.", this);
-            return;
         }
 
-        if (Dispatcher == dispatcher)
+        /// <summary>
+        /// Phase 3: called when GameManager activates dispatcher subscriptions
+        /// for this service. Override to register event listeners on Dispatcher.
+        /// </summary>
+        protected virtual void OnSubscriptionsActivated()
         {
-            return;
         }
 
-        Dispatcher = dispatcher;
-        subscriptionsActivated = false;
-        OnDispatcherAttached();
-    }
-
-    internal void ActivateSubscriptions()
-    {
-        if (!IsRegistered)
+        /// <summary>
+        /// Single entry point that guarantees both GameContext snapshot and
+        /// Dispatcher publish happen atomically, preventing data skew between
+        /// the two channels.
+        /// </summary>
+        protected void PublishState<TSnapshot>(TSnapshot snapshot) where TSnapshot : struct
         {
-            Debug.LogWarning($"{name} cannot activate subscriptions before registration completes.", this);
-            return;
+            GameContext?.UpdateSnapshot(snapshot);
+            Dispatcher?.Publish(snapshot);
         }
-
-        if (Dispatcher == null)
-        {
-            Debug.LogWarning($"{name} cannot activate subscriptions without a dispatcher reference.", this);
-            return;
-        }
-
-        if (subscriptionsActivated)
-        {
-            return;
-        }
-
-        OnSubscriptionsActivated();
-        subscriptionsActivated = true;
-    }
-
-    /// <summary>
-    /// Called by GameManager after all services have registered, attached a dispatcher,
-    /// and activated their subscriptions. Use this for any final initialization that
-    /// relies on other services being fully ready.
-    /// </summary>
-    protected abstract void OnServicesReady();
-
-    /// <summary>
-    /// Internal entry point used by GameManager to notify services that the
-    /// bootstrap sequence has completed.
-    /// </summary>
-    internal void NotifyInitialized()
-    {
-        if (!IsRegistered || isInitialized)
-        {
-            return;
-        }
-
-        OnServicesReady();
-        isInitialized = true;
-    }
-
-    /// <summary>
-    /// Phase 2: called when the shared EventDispatcher has been attached,
-    /// but before any subscriptions are activated.
-    /// </summary>
-    protected virtual void OnDispatcherAttached()
-    {
-    }
-
-    /// <summary>
-    /// Phase 3: called when GameManager activates dispatcher subscriptions
-    /// for this service. Override to register event listeners on Dispatcher.
-    /// </summary>
-    protected virtual void OnSubscriptionsActivated()
-    {
-    }
-
-    /// <summary>
-    /// Single entry point that guarantees both GameContext snapshot and
-    /// Dispatcher publish happen atomically, preventing data skew between
-    /// the two channels.
-    /// </summary>
-    protected void PublishState<TSnapshot>(TSnapshot snapshot) where TSnapshot : struct
-    {
-        GameContext?.UpdateSnapshot(snapshot);
-        Dispatcher?.Publish(snapshot);
     }
 }

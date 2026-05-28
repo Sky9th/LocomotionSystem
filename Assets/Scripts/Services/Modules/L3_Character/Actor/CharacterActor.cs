@@ -1,14 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Game.Character.Animation.Components;
-using Game.Character.Config;
-using Game.Character.Input;
-using Game.Character.Kinematic;
-using Game.Character.Locomotion;
-using Game.Character.Stats;
-using Game.Stats;
+using RedDust.Character.Animation;
+using RedDust.Character;
+using RedDust.Character.Kinematic;
+using RedDust.Character.Locomotion;
+using RedDust.Character.Stats;
+using RedDust.Stats;
 
-namespace Game.Character.Components
+namespace RedDust.Character
 {
     [DisallowMultipleComponent]
     public partial class CharacterActor : MonoBehaviour

@@ -1,6 +1,9 @@
-public enum UIOverlayId
+namespace RedDust.UI
 {
-    VitalsOverlay,
-    StatusOverlay,
-    LoadingOverlay,
+    public enum UIOverlayId
+    {
+        VitalsOverlay,
+        StatusOverlay,
+        LoadingOverlay,
+    }
 }

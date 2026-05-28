@@ -1,28 +1,33 @@
+using RedDust.GameStateService;
+using RedDust.TimeService;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-/// <summary>
-/// Publishes a time scale intent that restores gameplay speed to a desired multiplier.
-/// </summary>
-[CreateAssetMenu(menuName = "Inputs/System/IA Time Resume")]
-public class IASystemTimeResume : InputActionHandler
+namespace RedDust.Input
 {
-    [Header("Time Scale")]
-    [SerializeField, Min(0.01f)] private float resumeScale = 1f;
-
-    protected override void Execute(InputAction.CallbackContext context)
+    /// <summary>
+    /// Publishes a time scale intent that restores gameplay speed to a desired multiplier.
+    /// </summary>
+    [CreateAssetMenu(menuName = "Inputs/System/IA Time Resume")]
+    public class IASystemTimeResume : InputActionHandler
     {
-        if (!IsEnabled || !context.performed)
+        [Header("Time Scale")]
+        [SerializeField, Min(0.01f)] private float resumeScale = 1f;
+
+        protected override void Execute(InputAction.CallbackContext context)
         {
-            return;
+            if (!IsEnabled || !context.performed)
+            {
+                return;
+            }
+
+            var payload = new SIActionWorldSpeed(Mathf.Max(0.01f, resumeScale));
+            eventDispatcher.Publish(payload);
         }
 
-        var payload = new SIActionWorldSpeed(Mathf.Max(0.01f, resumeScale));
-        eventDispatcher.Publish(payload);
-    }
-
-    protected override bool OnSupportsState(EGameState state)
-    {
-        return state == EGameState.Playing;
+        protected override bool OnSupportsState(EGameState state)
+        {
+            return state == EGameState.Playing;
+        }
     }
 }

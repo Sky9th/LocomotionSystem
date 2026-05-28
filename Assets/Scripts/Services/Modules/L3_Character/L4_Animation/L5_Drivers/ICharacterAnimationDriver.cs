@@ -1,7 +1,7 @@
-using Game.Character.Animation.Requests;
-using Game.Character.Components;
+using RedDust.Character.Animation;
+using RedDust.Character;
 
-namespace Game.Character.Animation.Drivers
+namespace RedDust.Character.Animation.Drivers
 {
     internal interface ICharacterAnimationDriver
     {

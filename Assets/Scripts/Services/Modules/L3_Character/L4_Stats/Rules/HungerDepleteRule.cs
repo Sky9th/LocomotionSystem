@@ -1,4 +1,4 @@
-namespace Game.Character.Stats.Rules
+namespace RedDust.Character.Stats
 {
     // TODO: Demo 阶段确定归零伤害值
     internal class HungerDepleteRule : DepleteChainRule

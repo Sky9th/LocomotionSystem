@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Game.Character.Components;
-using Game.Character.Stats.Rules;
-using Game.Stats;
+using RedDust.Character;
+using RedDust.Character.Stats;
+using RedDust.Stats;
 
-namespace Game.Character.Stats
+namespace RedDust.Character.Stats
 {
     public class CharacterStats
     {

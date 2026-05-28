@@ -1,4 +1,4 @@
-namespace Game.Stats
+namespace RedDust.Stats
 {
     /// <summary>
     /// 按间隔持续扣减的能力。

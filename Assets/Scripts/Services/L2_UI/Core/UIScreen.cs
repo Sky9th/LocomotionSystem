@@ -1,58 +1,62 @@
 using DG.Tweening;
 using UnityEngine;
 
-public abstract class UIScreen : MonoBehaviour
+namespace RedDust.UI
 {
-    [SerializeField] private CanvasGroup canvasGroup;
-    [SerializeField] private float fadeDuration = 0.3f;
 
-    protected UIService uiService;
-    protected float DeltaTime => Time.unscaledDeltaTime;
-
-    public void Initialize(UIService manager)
+    public abstract class UIScreen : MonoBehaviour
     {
-        uiService = manager;
-        OnInitialize();
-    }
+        [SerializeField] private CanvasGroup canvasGroup;
+        [SerializeField] private float fadeDuration = 0.3f;
 
-    public virtual Sequence PlayEnterSequence(object args = null)
-    {
-        if (canvasGroup == null) return null;
+        protected UIService uiService;
+        protected float DeltaTime => Time.unscaledDeltaTime;
 
-        canvasGroup.interactable = true;
-        canvasGroup.blocksRaycasts = true;
-        return DOTween.Sequence()
-            .Append(canvasGroup.DOFade(1f, fadeDuration).SetEase(Ease.OutCubic))
-            .OnComplete(OnEnterFinished);
-    }
+        public void Initialize(UIService manager)
+        {
+            uiService = manager;
+            OnInitialize();
+        }
 
-    public virtual Sequence PlayExitSequence()
-    {
-        if (canvasGroup == null) return null;
+        public virtual Sequence PlayEnterSequence(object args = null)
+        {
+            if (canvasGroup == null) return null;
 
-        canvasGroup.interactable = false;
-        canvasGroup.blocksRaycasts = false;
-        return DOTween.Sequence()
-            .Append(canvasGroup.DOFade(0f, fadeDuration).SetEase(Ease.InCubic))
-            .OnComplete(OnExitFinished);
-    }
+            canvasGroup.interactable = true;
+            canvasGroup.blocksRaycasts = true;
+            return DOTween.Sequence()
+                .Append(canvasGroup.DOFade(1f, fadeDuration).SetEase(Ease.OutCubic))
+                .OnComplete(OnEnterFinished);
+        }
 
-    public virtual void OnPause()
-    {
-        if (canvasGroup != null) canvasGroup.interactable = false;
-    }
+        public virtual Sequence PlayExitSequence()
+        {
+            if (canvasGroup == null) return null;
 
-    public virtual void OnResume()
-    {
-        if (canvasGroup != null) canvasGroup.interactable = true;
-    }
+            canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
+            return DOTween.Sequence()
+                .Append(canvasGroup.DOFade(0f, fadeDuration).SetEase(Ease.InCubic))
+                .OnComplete(OnExitFinished);
+        }
 
-    protected virtual void OnInitialize() { }
-    protected virtual void OnEnterFinished() { }
-    protected virtual void OnExitFinished() { }
+        public virtual void OnPause()
+        {
+            if (canvasGroup != null) canvasGroup.interactable = false;
+        }
 
-    protected virtual void OnDestroy()
-    {
-        DOTween.Kill(transform);
+        public virtual void OnResume()
+        {
+            if (canvasGroup != null) canvasGroup.interactable = true;
+        }
+
+        protected virtual void OnInitialize() { }
+        protected virtual void OnEnterFinished() { }
+        protected virtual void OnExitFinished() { }
+
+        protected virtual void OnDestroy()
+        {
+            DOTween.Kill(transform);
+        }
     }
 }

@@ -1,4 +1,4 @@
-namespace Game.Character.Stats.Rules
+namespace RedDust.Character.Stats
 {
     internal class DamageRule : BatchDamageRule
     {

@@ -1,33 +1,36 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-/// <summary>
-/// Emits a simple IAction whenever the Escape key action is triggered.
-/// </summary>
-[CreateAssetMenu(menuName = "Inputs/UI/IA Escape")]
-public class IAUIEscape : InputActionHandler
+namespace RedDust.Input
 {
-    [SerializeField] private bool publishOnCanceled;
-
-    protected override void Execute(InputAction.CallbackContext context)
+    /// <summary>
+    /// Emits a simple IAction whenever the Escape key action is triggered.
+    /// </summary>
+    [CreateAssetMenu(menuName = "Inputs/UI/IA Escape")]
+    public class IAUIEscape : InputActionHandler
     {
-        if (!IsEnabled)
-        {
-            return;
-        }
+        [SerializeField] private bool publishOnCanceled;
 
-        if (!publishOnCanceled && !context.performed)
+        protected override void Execute(InputAction.CallbackContext context)
         {
-            return;
-        }
+            if (!IsEnabled)
+            {
+                return;
+            }
 
-        bool isPressed = context.ReadValueAsButton();
-        if (!isPressed && !publishOnCanceled)
-        {
-            return;
-        }
+            if (!publishOnCanceled && !context.performed)
+            {
+                return;
+            }
 
-        var iaction = new SIActionUIEscape(isPressed);
-        eventDispatcher.Publish(iaction);
+            bool isPressed = context.ReadValueAsButton();
+            if (!isPressed && !publishOnCanceled)
+            {
+                return;
+            }
+
+            var iaction = new SIActionUIEscape(isPressed);
+            eventDispatcher.Publish(iaction);
+        }
     }
 }

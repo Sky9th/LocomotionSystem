@@ -1,16 +1,19 @@
 using System;
 using UnityEngine;
 
-/// <summary>
-/// Signals a desired world speed multiplier for gameplay.
-/// </summary>
-[Serializable]
-public struct SIActionWorldSpeed
+namespace RedDust.TimeService
 {
-    public SIActionWorldSpeed(float targetScale)
+    /// <summary>
+    /// Signals a desired world speed multiplier for gameplay.
+    /// </summary>
+    [Serializable]
+    public struct SIActionWorldSpeed
     {
-        TargetScale = Mathf.Max(0.01f, targetScale);
-    }
+        public SIActionWorldSpeed(float targetScale)
+        {
+            TargetScale = Mathf.Max(0.01f, targetScale);
+        }
 
-    public float TargetScale { get; }
+        public float TargetScale { get; }
+    }
 }

@@ -1,6 +1,6 @@
 using Animancer.FSM;
 
-namespace Game.Character.Animation.Drivers
+namespace RedDust.Character.Animation.Drivers.Locomotion
 {
     internal abstract class LocomotionLayerFsmState<TOwner> : State
     {

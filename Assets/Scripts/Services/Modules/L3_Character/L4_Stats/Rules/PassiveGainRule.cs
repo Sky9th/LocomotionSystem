@@ -1,7 +1,7 @@
-using Game.Character.Components;
-using Game.Stats;
+using RedDust.Character;
+using RedDust.Stats;
 
-namespace Game.Character.Stats.Rules
+namespace RedDust.Character.Stats
 {
     internal abstract class PassiveGainRule : CharacterStatRule
     {

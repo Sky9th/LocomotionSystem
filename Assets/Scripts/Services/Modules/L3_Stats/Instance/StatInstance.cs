@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Game.Stats
+namespace RedDust.Stats
 {
     public class StatInstance
     {

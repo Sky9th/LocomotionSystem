@@ -1,3 +1,6 @@
-public enum UIModalId
+namespace RedDust.UI
 {
+    public enum UIModalId
+    {
+    }
 }

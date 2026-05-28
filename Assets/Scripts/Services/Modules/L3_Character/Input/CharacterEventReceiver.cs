@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using RedDust.Core;
+using RedDust.EventDispatcher;
+using RedDust.Input;
 using UnityEngine;
 
-namespace Game.Character.Input
+namespace RedDust.Character
 {
     internal sealed class CharacterEventReceiver
     {
@@ -17,7 +20,7 @@ namespace Game.Character.Input
             }
         }
 
-        private readonly Game.Character.Components.CharacterActor owner;
+        private readonly CharacterActor owner;
 
         private SIActionMove moveAction;
         private SIActionMove lastMoveAction;
@@ -42,7 +45,7 @@ namespace Game.Character.Input
         private EventDispatcherService eventDispatcher;
         private readonly Dictionary<Type, Subscription> subscriptions = new();
 
-        internal CharacterEventReceiver(Game.Character.Components.CharacterActor owner)
+        internal CharacterEventReceiver(CharacterActor owner)
         {
             this.owner = owner;
 

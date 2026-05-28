@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Animancer;
-using Game.Character.Animation.Drivers;
-using Game.Character.Components;
-using Game.Character.Animation.Requests;
+using RedDust.Character.Animation.Drivers;
+using RedDust.Character;
+using RedDust.Character.Animation;
 
-namespace Game.Character.Animation
+namespace RedDust.Character.Animation
 {
     internal sealed class DriverArbiter
     {

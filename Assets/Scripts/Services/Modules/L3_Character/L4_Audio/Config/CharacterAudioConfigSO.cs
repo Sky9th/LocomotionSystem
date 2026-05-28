@@ -1,7 +1,7 @@
 using UnityEngine;
-using Game.Audio;
+using RedDust.Audio;
 
-namespace Game.Character.Audio
+namespace RedDust.Character.Audio
 {
     [CreateAssetMenu(fileName = "CharacterAudioConfig", menuName = "Game/Character/Audio Config")]
     public class CharacterAudioConfigSO : AudioSetSO

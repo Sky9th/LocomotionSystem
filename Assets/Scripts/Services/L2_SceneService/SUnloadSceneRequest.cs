@@ -1,9 +1,12 @@
-public readonly struct SUnloadSceneRequest
+namespace RedDust.SceneService
 {
-    public readonly string SceneName;
-
-    public SUnloadSceneRequest(string sceneName)
+    public readonly struct SUnloadSceneRequest
     {
-        SceneName = sceneName;
+        public readonly string SceneName;
+
+        public SUnloadSceneRequest(string sceneName)
+        {
+            SceneName = sceneName;
+        }
     }
 }

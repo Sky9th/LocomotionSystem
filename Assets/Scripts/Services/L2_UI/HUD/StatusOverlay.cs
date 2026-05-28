@@ -1,37 +1,41 @@
 using UnityEngine;
 
-public class StatusOverlay : UIOverlay
+namespace RedDust.UI
 {
-    [Header("Status Container")]
-    [SerializeField] private RectTransform statusContainer;
 
-    [Header("Status Entry Prefab")]
-    [SerializeField] private GameObject statusEntryPrefab;
-
-    [Header("Layout")]
-    [SerializeField] private float refreshRate = 1f;
-
-    private float refreshTimer;
-
-    protected override void OnInitialize()
+    public class StatusOverlay : UIOverlay
     {
-        // TODO: subscribe to character condition/buff snapshot when system is ready
-    }
+        [Header("Status Container")]
+        [SerializeField] private RectTransform statusContainer;
 
-    private void Update()
-    {
-        refreshTimer += DeltaTime;
-        if (refreshTimer < refreshRate) return;
-        refreshTimer = 0f;
+        [Header("Status Entry Prefab")]
+        [SerializeField] private GameObject statusEntryPrefab;
 
-        RefreshStatuses();
-    }
+        [Header("Layout")]
+        [SerializeField] private float refreshRate = 1f;
 
-    private void RefreshStatuses()
-    {
-        // TODO: read condition data from GameContext snapshot
-        // For each active status effect:
-        //   - instantiate or reuse statusEntryPrefab
-        //   - set icon, duration ring, tooltip text
+        private float refreshTimer;
+
+        protected override void OnInitialize()
+        {
+            // TODO: subscribe to character condition/buff snapshot when system is ready
+        }
+
+        private void Update()
+        {
+            refreshTimer += DeltaTime;
+            if (refreshTimer < refreshRate) return;
+            refreshTimer = 0f;
+
+            RefreshStatuses();
+        }
+
+        private void RefreshStatuses()
+        {
+            // TODO: read condition data from GameContext snapshot
+            // For each active status effect:
+            //   - instantiate or reuse statusEntryPrefab
+            //   - set icon, duration ring, tooltip text
+        }
     }
 }

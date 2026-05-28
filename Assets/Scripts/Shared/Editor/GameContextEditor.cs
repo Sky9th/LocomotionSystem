@@ -1,15 +1,18 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
+using RedDust.Core;
 using UnityEditor;
 using UnityEngine;
 
-/// <summary>
-/// Custom inspector that surfaces GameContext runtime registries so designers
-/// can inspect which services and snapshot structs are currently cached.
-/// </summary>
-[CustomEditor(typeof(GameContext))]
-public class GameContextEditor : Editor
+namespace RedDust.Shared
+{
+    /// <summary>
+    /// Custom inspector that surfaces GameContext runtime registries so designers
+    /// can inspect which services and snapshot structs are currently cached.
+    /// </summary>
+    [CustomEditor(typeof(GameContext))]
+    public class GameContextEditor : Editor
 {
     private bool showServices = true;
     private bool showSnapshots = true;
@@ -63,5 +66,6 @@ public class GameContextEditor : Editor
 
         EditorGUI.indentLevel--;
     }
+}
 }
 #endif

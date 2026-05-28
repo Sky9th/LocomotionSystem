@@ -1,108 +1,111 @@
 using System;
 using System.Collections.Generic;
-using Game.Utility.Logging;
+using RedDust.Shared;
 using UnityEngine;
 
-[DisallowMultipleComponent]
-public class GameContext : MonoBehaviour
+namespace RedDust.Core
 {
-    public static GameContext Instance { get; private set; }
-
-    [Header("Diagnostics")]
-    [SerializeField] private LogLevel logLevel = LogLevel.Warning;
-
-    private LogChannel Log;
-
-    private readonly Dictionary<Type, object> serviceRegistry = new();
-    private readonly Dictionary<Type, object> contextSnapshots = new();
-    private bool isInitialized;
-
-    public bool IsInitialized => isInitialized;
-    public int RegisteredServiceCount => serviceRegistry.Count;
-    public int SnapshotCount => contextSnapshots.Count;
-    public IEnumerable<Type> RegisteredServiceTypes => serviceRegistry.Keys;
-    public IEnumerable<Type> SnapshotStructTypes => contextSnapshots.Keys;
-
-    private void Awake()
+    [DisallowMultipleComponent]
+    public class GameContext : MonoBehaviour
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-    }
+        public static GameContext Instance { get; private set; }
 
-    private void OnDestroy()
-    {
-        if (Instance == this)
+        [Header("Diagnostics")]
+        [SerializeField] private LogLevel logLevel = LogLevel.Warning;
+
+        private LogChannel Log;
+
+        private readonly Dictionary<Type, object> serviceRegistry = new();
+        private readonly Dictionary<Type, object> contextSnapshots = new();
+        private bool isInitialized;
+
+        public bool IsInitialized => isInitialized;
+        public int RegisteredServiceCount => serviceRegistry.Count;
+        public int SnapshotCount => contextSnapshots.Count;
+        public IEnumerable<Type> RegisteredServiceTypes => serviceRegistry.Keys;
+        public IEnumerable<Type> SnapshotStructTypes => contextSnapshots.Keys;
+
+        private void Awake()
         {
-            Instance = null;
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
         }
 
-        serviceRegistry.Clear();
-        isInitialized = false;
-    }
-
-    public void Initialize()
-    {
-        if (Log == null) Log = LogManager.GetChannel(nameof(GameContext), logLevel);
-
-        if (isInitialized)
+        private void OnDestroy()
         {
-            Log.Debug("Initialize called but already initialized.");
-            return;
+            if (Instance == this)
+            {
+                Instance = null;
+            }
+
+            serviceRegistry.Clear();
+            isInitialized = false;
         }
 
-        Instance = this;
-        isInitialized = true;
-
-        Log.Info($"Initialized. RegisteredServiceCount={RegisteredServiceCount}");
-    }
-
-    public void UpdateSnapshot<TSnapshot>(TSnapshot snapshot)
-        where TSnapshot : struct
-    {
-        contextSnapshots[typeof(TSnapshot)] = snapshot;
-        Log.Debug($"Snapshot updated: {typeof(TSnapshot).Name}");
-    }
-
-    public bool TryGetSnapshot<TSnapshot>(out TSnapshot snapshot)
-        where TSnapshot : struct
-    {
-        if (contextSnapshots.TryGetValue(typeof(TSnapshot), out var boxed) && boxed is TSnapshot typed)
+        public void Initialize()
         {
-            snapshot = typed;
-            return true;
+            if (Log == null) Log = LogManager.GetChannel(nameof(GameContext), logLevel);
+
+            if (isInitialized)
+            {
+                Log.Debug("Initialize called but already initialized.");
+                return;
+            }
+
+            Instance = this;
+            isInitialized = true;
+
+            Log.Info($"Initialized. RegisteredServiceCount={RegisteredServiceCount}");
         }
 
-        snapshot = default;
-        return false;
-    }
-
-    public void ClearSnapshots()
-    {
-        contextSnapshots.Clear();
-    }
-
-    public bool TryResolveService<TService>(out TService service)
-        where TService : class
-    {
-        if (serviceRegistry.TryGetValue(typeof(TService), out var boxed) && boxed is TService typed)
+        public void UpdateSnapshot<TSnapshot>(TSnapshot snapshot)
+            where TSnapshot : struct
         {
-            service = typed;
-            return true;
+            contextSnapshots[typeof(TSnapshot)] = snapshot;
+            Log.Debug($"Snapshot updated: {typeof(TSnapshot).Name}");
         }
 
-        service = null;
-        return false;
-    }
+        public bool TryGetSnapshot<TSnapshot>(out TSnapshot snapshot)
+            where TSnapshot : struct
+        {
+            if (contextSnapshots.TryGetValue(typeof(TSnapshot), out var boxed) && boxed is TSnapshot typed)
+            {
+                snapshot = typed;
+                return true;
+            }
 
-    public void RegisterService<TService>(TService service)
-        where TService : class
-    {
-        if (service == null) return;
+            snapshot = default;
+            return false;
+        }
 
-        serviceRegistry[typeof(TService)] = service;
-        Log.Debug($"Service registered: {typeof(TService).Name}");
+        public void ClearSnapshots()
+        {
+            contextSnapshots.Clear();
+        }
+
+        public bool TryResolveService<TService>(out TService service)
+            where TService : class
+        {
+            if (serviceRegistry.TryGetValue(typeof(TService), out var boxed) && boxed is TService typed)
+            {
+                service = typed;
+                return true;
+            }
+
+            service = null;
+            return false;
+        }
+
+        public void RegisterService<TService>(TService service)
+            where TService : class
+        {
+            if (service == null) return;
+
+            serviceRegistry[typeof(TService)] = service;
+            Log.Debug($"Service registered: {typeof(TService).Name}");
+        }
     }
 }

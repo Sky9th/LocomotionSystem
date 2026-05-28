@@ -1,9 +1,12 @@
+using RedDust.Character.Kinematic;
+using RedDust.Character.Locomotion;
+using RedDust.Shared;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace Game.Character.Components
+namespace RedDust.Character
 {
     public partial class CharacterActor
     {
@@ -43,8 +46,8 @@ namespace Game.Character.Components
             var color = phase switch
             {
                 ELocomotionPhase.GroundedMoving => Color.green,
-                ELocomotionPhase.Airborne       => Color.yellow,
-                _                               => Color.cyan
+                ELocomotionPhase.Airborne => Color.yellow,
+                _ => Color.cyan
             };
             GizmoDebugUtility.DrawArrowLine(pos, pos + heading * debugArrowLength, color, "Heading");
         }

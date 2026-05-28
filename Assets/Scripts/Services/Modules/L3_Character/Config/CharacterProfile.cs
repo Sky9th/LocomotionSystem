@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Character.Config
+namespace RedDust.Character
 {
     [CreateAssetMenu(fileName = "CharacterProfile", menuName = "Game/Character/Character Profile")]
     public sealed class CharacterProfile : ScriptableObject

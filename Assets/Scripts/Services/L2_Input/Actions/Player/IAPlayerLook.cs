@@ -1,36 +1,40 @@
+using RedDust.GameStateService;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-/// <summary>
-/// Translates the "Look" action into a normalized SPlayerLookIAction payload.
-/// Keeps camera/locomotion systems decoupled from raw device specifics.
-/// </summary>
-[CreateAssetMenu(menuName = "Inputs/Player/IA Player Look")]
-public class IAPlayerLook : InputActionHandler
+namespace RedDust.Input
 {
-    [Header("Processing")]
-    [SerializeField] private float sensitivity = 1f;
-    [SerializeField] private bool invertY = true;
-
-    protected override void Execute(InputAction.CallbackContext context)
+    /// <summary>
+    /// Translates the "Look" action into a normalized SPlayerLookIAction payload.
+    /// Keeps camera/locomotion systems decoupled from raw device specifics.
+    /// </summary>
+    [CreateAssetMenu(menuName = "Inputs/Player/IA Player Look")]
+    public class IAPlayerLook : InputActionHandler
     {
-        if (!IsEnabled)
+        [Header("Processing")]
+        [SerializeField] private float sensitivity = 1f;
+        [SerializeField] private bool invertY = true;
+
+        protected override void Execute(InputAction.CallbackContext context)
         {
-            return;
+            if (!IsEnabled)
+            {
+                return;
+            }
+
+            Vector2 delta = context.ReadValue<Vector2>() * sensitivity;
+            if (invertY)
+            {
+                delta.y = -delta.y;
+            }
+
+            SIActionLook intent = new SIActionLook(delta);
+            eventDispatcher.Publish(intent);
         }
 
-        Vector2 delta = context.ReadValue<Vector2>() * sensitivity;
-        if (invertY)
+        protected override bool OnSupportsState(EGameState state)
         {
-            delta.y = -delta.y;
+            return state == EGameState.Playing;
         }
-
-        SIActionLook intent = new SIActionLook(delta);
-        eventDispatcher.Publish(intent);
-    }
-
-    protected override bool OnSupportsState(EGameState state)
-    {
-        return state == EGameState.Playing;
     }
 }

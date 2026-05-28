@@ -1,8 +1,9 @@
 using UnityEngine;
-using Game.Audio;
-using Game.Character.Animation.Drivers;
+using RedDust.Audio;
+using RedDust.Character.Animation.Drivers;
+using RedDust.Character.Animation.Drivers.Locomotion;
 
-namespace Game.Character.Audio
+namespace RedDust.Character.Audio
 {
     public sealed class CharacterAudio : MonoBehaviour
     {

@@ -1,17 +1,19 @@
 using System;
 using UnityEngine;
 
-/// <summary>
-/// Immutable snapshot describing the player character identity.
-/// Wraps a generic SCharacter so other character types can share
-/// the same base layout while extending with their own fields.
-///
-/// This struct is used as the payload when broadcasting that the
-/// player has spawned into the world.
-/// </summary>
-[Serializable]
-public struct SPlayer
+namespace RedDust.Core
 {
+    /// <summary>
+    /// Immutable snapshot describing the player character identity.
+    /// Wraps a generic SCharacter so other character types can share
+    /// the same base layout while extending with their own fields.
+    ///
+    /// This struct is used as the payload when broadcasting that the
+    /// player has spawned into the world.
+    /// </summary>
+    [Serializable]
+    public struct SPlayer
+    {
     public SPlayer(SCharacter character, bool isLocalPlayer)
     {
         Character = character;
@@ -40,4 +42,5 @@ public struct SPlayer
     }
 
     public static SPlayer Default => new SPlayer(SCharacter.Default, true);
+    }
 }

@@ -1,7 +1,7 @@
-using Game.Character.Components;
-using Game.Stats;
+using RedDust.Character;
+using RedDust.Stats;
 
-namespace Game.Character.Stats.Rules
+namespace RedDust.Character.Stats
 {
     // TODO: Demo 阶段确定冲刺体力倍率
     internal class SprintStaminaRule : ToggleModifierRule

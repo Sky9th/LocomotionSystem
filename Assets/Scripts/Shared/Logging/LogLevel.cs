@@ -1,4 +1,4 @@
-namespace Game.Utility.Logging
+namespace RedDust.Shared
 {
     public enum LogLevel : byte
     {

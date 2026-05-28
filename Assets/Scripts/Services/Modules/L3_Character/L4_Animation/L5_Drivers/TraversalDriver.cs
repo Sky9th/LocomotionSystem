@@ -1,10 +1,9 @@
 using UnityEngine;
 using Animancer;
-using Game.Character.Animation.Requests;
-using Game.Character.Components;
-using Game.Locomotion.Animation.Config;
+using RedDust.Character.Animation;
+using RedDust.Character;
 
-namespace Game.Character.Animation.Drivers
+namespace RedDust.Character.Animation.Drivers
 {
     public sealed class TraversalDriver : BaseCharacterAnimationDriver
     {

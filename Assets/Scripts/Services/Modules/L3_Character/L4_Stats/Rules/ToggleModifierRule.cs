@@ -1,8 +1,8 @@
-using Game.Character.Components;
-using Game.Stats;
+using RedDust.Character;
+using RedDust.Stats;
 using UnityEngine;
 
-namespace Game.Character.Stats.Rules
+namespace RedDust.Character.Stats
 {
     internal abstract class ToggleModifierRule : CharacterStatRule
     {

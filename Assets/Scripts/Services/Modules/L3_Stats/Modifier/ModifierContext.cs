@@ -1,4 +1,4 @@
-namespace Game.Stats
+namespace RedDust.Stats
 {
     public class ModifierContext
     {

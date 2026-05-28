@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Character.Kinematic
+namespace RedDust.Character.Kinematic
 {
     internal static class CharacterObstacleDetection
     {

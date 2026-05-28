@@ -1,6 +1,8 @@
-using Game.Character.Input;
+using RedDust.Character;
+using RedDust.Character.Kinematic;
+using RedDust.Character.Locomotion;
 
-namespace Game.Character.Components
+namespace RedDust.Character
 {
     public struct CharacterFrameContext
     {

@@ -3,13 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using RedDust.Core;
 using UnityEngine;
 
-/// <summary>
-/// Unified logging utility that automatically inspects and formats common data types
-/// (primitives, Unity structs, IEnumerable, structs, etc.).
-/// </summary>
-internal static class Logger
+namespace RedDust.Shared
+{
+    /// <summary>
+    /// Unified logging utility that automatically inspects and formats common data types
+    /// (primitives, Unity structs, IEnumerable, structs, etc.).
+    /// </summary>
+    internal static class Logger
 {
 
     public static void Log(object payload, string tag = null, UnityEngine.Object context = null, bool prettyPrint = false)
@@ -329,4 +332,5 @@ internal static class Logger
             return System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(obj);
         }
     }
+}
 }

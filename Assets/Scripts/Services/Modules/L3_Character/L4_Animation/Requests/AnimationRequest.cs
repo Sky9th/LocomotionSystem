@@ -1,7 +1,7 @@
 using UnityEngine;
 using Animancer;
 
-namespace Game.Character.Animation.Requests
+namespace RedDust.Character.Animation
 {
     public class AnimationRequest
     {

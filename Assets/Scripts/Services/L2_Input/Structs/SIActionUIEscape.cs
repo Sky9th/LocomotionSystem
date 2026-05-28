@@ -1,18 +1,21 @@
 using System;
 
-/// <summary>
-/// Payload emitted whenever the player presses the Escape key (typically used
-/// to trigger pause/menu flows).
-/// </summary>
-[Serializable]
-public struct SIActionUIEscape
+namespace RedDust.Input
 {
-    public SIActionUIEscape(bool isPressed)
+    /// <summary>
+    /// Payload emitted whenever the player presses the Escape key (typically used
+    /// to trigger pause/menu flows).
+    /// </summary>
+    [Serializable]
+    public struct SIActionUIEscape
     {
-        IsPressed = isPressed;
+        public SIActionUIEscape(bool isPressed)
+        {
+            IsPressed = isPressed;
+        }
+
+        public bool IsPressed { get; }
+
+        public static SIActionUIEscape Pressed => new SIActionUIEscape(true);
     }
-
-    public bool IsPressed { get; }
-
-    public static SIActionUIEscape Pressed => new SIActionUIEscape(true);
 }

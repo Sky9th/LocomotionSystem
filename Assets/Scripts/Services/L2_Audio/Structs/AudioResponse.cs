@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Audio
+namespace RedDust.Audio
 {
     public readonly struct AudioResponse
     {

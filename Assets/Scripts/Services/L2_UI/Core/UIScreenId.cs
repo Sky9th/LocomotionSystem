@@ -1,5 +1,8 @@
-public enum UIScreenId
+namespace RedDust.UI
 {
-    MainMenu,
-    PauseMenu,
+    public enum UIScreenId
+    {
+        MainMenu,
+        PauseMenu,
+    }
 }

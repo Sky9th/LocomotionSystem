@@ -1,98 +1,103 @@
 using System;
+using RedDust.EventDispatcher;
+using RedDust.GameStateService;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-/// <summary>
-/// Base class for input helper ScriptableObjects. It owns shared context
-/// (camera transforms, stance references, etc.) and exposes a unified
-/// Enable/Disable lifecycle that the InputManager can drive deterministically.
-/// </summary>
-public abstract class InputActionHandler : ScriptableObject
+namespace RedDust.Input
 {
-
-    [Header("Action Source")]
-    [SerializeField] 
-    private InputActionReference inputAction;
-    private InputAction runtimeAction;
-
-    protected EventDispatcherService eventDispatcher;
-
-    protected bool IsContextBound { get; private set; }
-    protected bool IsEnabled { get; private set; }
-
-    internal bool SupportsState(EGameState state)
-    {
-        return OnSupportsState(state);
-    }
-
     /// <summary>
-    /// Public entry point used by InputManager to supply the current shared
-    /// context (camera transform, stance references, etc.).
+    /// Base class for input helper ScriptableObjects. It owns shared context
+    /// (camera transforms, stance references, etc.) and exposes a unified
+    /// Enable/Disable lifecycle that the InputManager can drive deterministically.
     /// </summary>
-    public void InitializeHandler(EventDispatcherService dispatcher)
+    public abstract class InputActionHandler : ScriptableObject
     {
-        if (dispatcher == null)
+
+        [Header("Action Source")]
+        [SerializeField]
+        private InputActionReference inputAction;
+        private InputAction runtimeAction;
+
+        protected EventDispatcherService eventDispatcher;
+
+        protected bool IsContextBound { get; private set; }
+        protected bool IsEnabled { get; private set; }
+
+        internal bool SupportsState(EGameState state)
         {
-            Debug.LogError("InputActionHandler requires a valid EventDispatcher reference.");
-            return;
+            return OnSupportsState(state);
         }
 
-        if (IsContextBound)
+        /// <summary>
+        /// Public entry point used by InputManager to supply the current shared
+        /// context (camera transform, stance references, etc.).
+        /// </summary>
+        public void InitializeHandler(EventDispatcherService dispatcher)
         {
-            return;
+            if (dispatcher == null)
+            {
+                Debug.LogError("InputActionHandler requires a valid EventDispatcher reference.");
+                return;
+            }
+
+            if (IsContextBound)
+            {
+                return;
+            }
+
+            eventDispatcher = dispatcher;
+            runtimeAction = inputAction?.action;
+
+            if (runtimeAction == null)
+            {
+                Debug.LogError($"InputActionHandler '{name}' is missing an InputAction reference.");
+                return;
+            }
+
+            runtimeAction.performed += Execute;
+            runtimeAction.canceled += Execute;
+            IsContextBound = true;
         }
 
-        eventDispatcher = dispatcher;
-        runtimeAction = inputAction?.action;
-
-        if (runtimeAction == null)
+        public void Enable()
         {
-            Debug.LogError($"InputActionHandler '{name}' is missing an InputAction reference.");
-            return;
+            if (!IsContextBound || IsEnabled || runtimeAction == null) return;
+
+            runtimeAction.Enable();
+            IsEnabled = true;
         }
 
-        runtimeAction.performed += Execute;
-        runtimeAction.canceled += Execute;
-        IsContextBound = true;
-    }
-
-    public void Enable()
-    {
-        if (!IsContextBound || IsEnabled || runtimeAction == null) return;
-
-        runtimeAction.Enable();
-        IsEnabled = true;
-    }
-
-    public void Disable()
-    {
-        if (!IsEnabled || runtimeAction == null)
+        public void Disable()
         {
-            return;
+            if (!IsEnabled || runtimeAction == null)
+            {
+                return;
+            }
+
+            runtimeAction.Disable();
+            IsEnabled = false;
         }
 
-        runtimeAction.Disable();
-        IsEnabled = false;
-    }
-
-    public void Dispose()
-    {
-        Disable();
-        if (runtimeAction != null)
+        public void Dispose()
         {
-            runtimeAction.performed -= Execute;
-            runtimeAction.canceled -= Execute;
+            Disable();
+            if (runtimeAction != null)
+            {
+                runtimeAction.performed -= Execute;
+                runtimeAction.canceled -= Execute;
+            }
+
+            IsContextBound = false;
+            runtimeAction = null;
+            eventDispatcher = null;
         }
 
-        IsContextBound = false;
-        runtimeAction = null;
-        eventDispatcher = null;
-    }
+        protected abstract void Execute(InputAction.CallbackContext context);
 
-    protected abstract void Execute (InputAction.CallbackContext context);
-
-    protected virtual bool OnSupportsState(EGameState state)
-    {
-        return true;
+        protected virtual bool OnSupportsState(EGameState state)
+        {
+            return true;
+        }
     }
 }

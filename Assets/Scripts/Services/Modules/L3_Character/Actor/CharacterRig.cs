@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Character.Components
+namespace RedDust.Character
 {
     internal sealed class CharacterRig
     {

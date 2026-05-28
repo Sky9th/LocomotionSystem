@@ -1,7 +1,7 @@
 using UnityEngine;
-using Game.Character.Config;
+using RedDust.Character;
 
-namespace Game.Character.Kinematic
+namespace RedDust.Character.Kinematic
 {
     internal static class CharacterHeadLook
     {
@@ -27,13 +27,13 @@ namespace Game.Character.Kinematic
             var delta = Quaternion.Inverse(bodyRotation) * targetRotation;
             var euler = delta.eulerAngles;
 
-            float yaw   = NormalizeAngle180(euler.y);
+            float yaw = NormalizeAngle180(euler.y);
             float pitch = -NormalizeAngle180(euler.x);
 
-            float maxYaw   = profile != null ? Mathf.Max(1e-3f, profile.maxHeadYawDegrees)   : 1e-3f;
+            float maxYaw = profile != null ? Mathf.Max(1e-3f, profile.maxHeadYawDegrees) : 1e-3f;
             float maxPitch = profile != null ? Mathf.Max(1e-3f, profile.maxHeadPitchDegrees) : 1e-3f;
 
-            float normYaw   = Mathf.Clamp(yaw   / maxYaw,   -1f, 1f);
+            float normYaw = Mathf.Clamp(yaw / maxYaw, -1f, 1f);
             float normPitch = Mathf.Clamp(pitch / maxPitch, -1f, 1f);
             return new Vector2(normYaw, normPitch);
         }
@@ -41,7 +41,7 @@ namespace Game.Character.Kinematic
         private static float NormalizeAngle180(float angle)
         {
             angle %= 360f;
-            if (angle > 180f)  angle -= 360f;
+            if (angle > 180f) angle -= 360f;
             if (angle < -180f) angle += 360f;
             return angle;
         }

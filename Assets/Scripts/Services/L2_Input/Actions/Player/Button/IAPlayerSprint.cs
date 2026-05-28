@@ -3,26 +3,29 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-/// <summary>
-/// Translates the "Sprint" action map into a world-space locomotion intent. The
-/// action never touches physics directly; it simply reports structured data back
-/// to the InputManager for further dispatch.
-/// </summary>
-[CreateAssetMenu(menuName = "Inputs/Player/IA Player Sprint")]
-public class IAPlayerSprint : InputActionHandler
+namespace RedDust.Input
 {
-
-    protected override void Execute(InputAction.CallbackContext context)
+    /// <summary>
+    /// Translates the "Sprint" action map into a world-space locomotion intent. The
+    /// action never touches physics directly; it simply reports structured data back
+    /// to the InputManager for further dispatch.
+    /// </summary>
+    [CreateAssetMenu(menuName = "Inputs/Player/IA Player Sprint")]
+    public class IAPlayerSprint : InputActionHandler
     {
-        if (!IsEnabled)
+
+        protected override void Execute(InputAction.CallbackContext context)
         {
-            return;
+            if (!IsEnabled)
+            {
+                return;
+            }
+
+            bool isPressed = context.ReadValueAsButton();
+
+            SIActionSprint intent = SIActionSprint.CreateEvent(isPressed, context.phase);
+
+            eventDispatcher.Publish(intent);
         }
-
-        bool isPressed = context.ReadValueAsButton();
-
-        SIActionSprint intent = SIActionSprint.CreateEvent(isPressed, context.phase);
-
-        eventDispatcher.Publish(intent);
     }
 }
