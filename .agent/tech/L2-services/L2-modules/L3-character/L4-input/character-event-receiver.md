@@ -57,7 +57,7 @@ private bool hasMouseGround;
 
 ### CharacterEventReceiver()
 ```csharp
-internal CharacterEventReceiver(Game.Character.Components.CharacterActor owner)
+internal CharacterEventReceiver(CharacterActor owner)
 ```
 - **用途**: 构造，注册所有输入类型和相机的订阅
 - **调用者**: `CharacterActor.Awake()`

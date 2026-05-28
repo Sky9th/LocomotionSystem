@@ -65,29 +65,16 @@ allowed-tools: Read, Write, Edit, Glob, Bash, Grep
 
 ## 版本控制
 
-版本号 `.agent/VERSION.md`，格式 `v0.0.1`。
+版号升级由 `rd-commit` 在提交前完成，rd-doc 不再负责版本号。
 
-每次提交代码时自动更新 `.agent/CHANGELOG.md`：
+- 版本号在 `.agent/VERSION.md`，提交前已由 rd-commit 升级
+- 版本 changelog 在 `.agent/versions/vX.X.X.md`，提交前已由 rd-commit 写入
+- rd-doc 仅负责三层文档归档（session/tech/design）
 
-```
-## v0.0.x (YYYY-MM-DD)
-
-- type: change description
-```
-
-### 版号规则
+### 版号规则（由 rd-commit 使用）
 
 | 级别 | 触发条件 | 示例 |
 |------|---------|------|
 | Patch `0.0.x` | bug 修复、小调整 | `v0.0.1` → `v0.0.2` |
 | Minor `0.x.0` | 新功能、新系统 | `v0.1.0` |
 | Major `x.0.0` | 架构重构、正式发布 | `v1.0.0` |
-
-### 提醒时机
-
-以下情况主动询问是否升级版号：
-- 完成一个 Plan 中定义的功能模块
-- 阶段性提交超过 5 次
-- 用户说"发布/上线/打包"
-
-详细约定参考 .agent/README.md。
