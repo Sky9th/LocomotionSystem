@@ -19,10 +19,10 @@
 
 | 方向 | 模块 | 关系 |
 |------|------|------|
-| 被依赖 | L3-character | Character/Locomotion/Animation Profile 全家桶 |
-| 被依赖 | L1-core | GameProfile 全局配置 |
-| 被依赖 | L2-input | InputAction 配置 |
-| 被依赖 | L2-ui | UI 主题/Panel 配置 |
+| 被依赖 | L3_Character | Character/Locomotion/Animation Profile 全家桶 |
+| 被依赖 | L1_Core | GameProfile 全局配置 |
+| 被依赖 | L2_Input | InputAction 配置 |
+| 被依赖 | L2_UI | UI 主题/Panel 配置 |
 
 ## 目录结构
 

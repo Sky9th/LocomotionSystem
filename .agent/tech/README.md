@@ -1,23 +1,44 @@
 # Tech 文档
 
-> 按 L1→L5 架构层级组织。每层目录带 L 前缀。
-> 数据流：L1→L2→L3→L4→L5，逐级传递返回，严禁跨级调用。
-> shared/ 为全局 Helper，无层级归属。
+> 按 L1→L5 架构层级组织。数据流：L1→L2→L3→L4→L5，逐级传递返回，严禁跨级调用。
+
+### 命名规则
+
+| 位置 | 命名格式 | 示例 |
+|------|---------|------|
+| **代码目录** (`Assets/Scripts/`) | `L{N}_{PascalCase}`，占位容器不带 L | `L1_Core/`, `L2_Audio/`, `Services/`, `Modules/` |
+| **文档目录** (`.agent/tech/`) | `L{N}-{kebab-case}`，纯文档不随 Unity 风格 | `L1-core/`, `L2-audio/`, `L4-animation/`, `L5-drivers/` |
+
+> **为什么不同？** 代码目录跟 Unity 项目惯例（PascalCase），文档目录保持 kebab-case 便于阅读。两者表示同一架构层级，仅命名风格不同。
+
+### L 层级定义
+
+| 层级 | 定义 | 判断标准 | 示例 |
+|------|------|---------|------|
+| **L1** | 根管理层 | 持有所有 Service，无业务逻辑 | `L1_Core/` |
+| **L2** | 系统服务 | 继承 BaseService，协调 L1↔L3 | `L2_Audio/`, `L2_Input/`, `L2_UI/` |
+| **L3** | 领域模块 | 独立领域，不隶属单一 L2，可被多个 Service 共用 | `L3_Character/`, `L3_Stats/` |
+| **L4** | 领域子系统 | L3 内部的**不同领域子系统**，承担独立功能 | `L4_Animation/`, `L4_Kinematic/`, `L4_Locomotion/`, `L4_Stats/`, `L4_Audio/` |
+| **L5** | 子系统的子系统 | L4 内部的**附属子系统**，承担其下一级独立功能 | `L5_Drivers/`, `L5_Locomotion/` |
+
+> **不是 L4 的**：模块自身组件代码（`Actor/`、`Actions/`、`Core/`、`Components/`、`HUD/`）——这是代码分组，不是子系统。
+> **不是 L5 的**：按文件类型分组（`Config/`、`Structs/`、`Data/`、`Rules/`、`States/`、`Requests/`）——这是代码结构，不是子系统。
 
 ```
 tech/
 ├── README.md                           # 本文件
 │
-├── L1-core/                            # GameManager 根
+├── L1-core/                            # Layer 1: GameManager 根
 │   ├── README.md
 │   ├── game-context.md                 # GameContext — Service Registry + Snapshot Store
 │   ├── game-service.md                 # GameService — Bootstrap 五步启动
 │   ├── base-service.md                 # BaseService — 四阶段生命周期
 │   └── structs.md                      # MetaStruct + Core Context Structs
 │
-├── L2-services/                        # Service + Module 层
+├── L2-services/                        # 占位容器: 所有 L2 Service
 │   ├── README.md
-│   ├── L2-event-dispatcher/
+│   │
+│   ├── L2-event-dispatcher/            # L2: 简单 Service ×6
 │   │   └── event-dispatcher.md
 │   ├── L2-scene-service/
 │   │   └── scene-service.md
@@ -30,185 +51,91 @@ tech/
 │   ├── L2-camera-service/
 │   │   └── camera-service.md
 │   │
-│   ├── L2-input/                       # 复合 Service
-│   │   ├── README.md
-│   │   ├── input-service.md
-│   │   ├── L4-actions/
-│   │   │   ├── input-action-handler.md
-│   │   │   ├── L5-player/
-│   │   │   │   ├── ia-player-move.md
-│   │   │   │   ├── ia-player-look.md
-│   │   │   │   └── L5-button/
-│   │   │   │       ├── ia-player-crouch.md
-│   │   │   │       ├── ia-player-jump.md
-│   │   │   │       ├── ia-player-primary-interact.md
-│   │   │   │       ├── ia-player-prone.md
-│   │   │   │       ├── ia-player-run.md
-│   │   │   │       ├── ia-player-secondary-interact.md
-│   │   │   │       ├── ia-player-sprint.md
-│   │   │   │       ├── ia-player-stand.md
-│   │   │   │       └── ia-player-walk.md
-│   │   │   ├── L5-system/
-│   │   │   │   ├── ia-system-time-resume.md
-│   │   │   │   └── ia-system-time-slow.md
-│   │   │   └── L5-ui/
-│   │   │       └── ia-ui-escape.md
-│   │   └── L4-structs/
-│   │       ├── s-action-ui-escape.md
-│   │       └── L5-control/
-│   │           ├── s-action-move.md
-│   │           ├── s-action-look.md
-│   │           └── L5-button/
-│   │               ├── s-button-input-state.md
-│   │               └── s-action-*.md (×9)
-│   │
-│   ├── L2-ui/                          # 复合 Service
-│   │   ├── README.md
-│   │   ├── ui-service.md
-│   │   ├── L4-core/
-│   │   │   ├── ui-screen.md
-│   │   │   ├── ui-screen-id.md
-│   │   │   ├── ui-overlay.md
-│   │   │   ├── ui-overlay-id.md
-│   │   │   ├── ui-modal-id.md
-│   │   │   └── ui-color-style.md
-│   │   ├── L4-components/
-│   │   │   ├── ui-button.md
-│   │   │   ├── ui-label.md
-│   │   │   ├── ui-panel.md
-│   │   │   └── ui-stat-bar.md
-│   │   ├── L4-config/
-│   │   │   ├── ui-panel-config-so.md
-│   │   │   └── ui-theme-so.md
-│   │   ├── L4-hud/
-│   │   │   ├── vitals-overlay.md
-│   │   │   ├── status-overlay.md
-│   │   │   └── loading-overlay.md
-│   │   └── L4-main-menu/
-│   │       ├── main-menu-screen.md
-│   │       └── pause-menu-screen.md
-│   │
-│   ├── L2-audio/                       # 复合 Service
+│   ├── L2-audio/                       # L2 Service (自身代码: Data/ Structs/)
 │   │   ├── README.md
 │   │   ├── audio-manager.md
-│   │   ├── L4-data/
-│   │   │   ├── audio-set-so.md
-│   │   │   └── audio-channel.md
-│   │   └── L4-structs/
-│   │       ├── audio-request.md
-│   │       └── audio-response.md
+│   │   ├── Data/                       # AudioChannel, AudioSetSO
+│   │   └── Structs/                    # AudioRequest, AudioResponse
 │   │
-│   └── L2-modules/                     # 虚拟 L2 — 独立模块容器
-│       ├── L3-character/               # 角色系统 ✅ 来源: tech-v2/L3-character
+│   ├── L2-input/                       # L2 Service (自身代码: Actions/ Structs/)
+│   │   ├── README.md
+│   │   ├── input-service.md
+│   │   ├── Actions/
+│   │   │   ├── input-action-handler.md
+│   │   │   ├── IAUIEscape.cs
+│   │   │   ├── Player/                 # IAPlayerMove, IAPlayerLook + Button/
+│   │   │   └── System/                # IASystemTimeResume, IASystemTimeSlow
+│   │   └── Structs/
+│   │       ├── SIActionUIEscape.cs
+│   │       └── Control/               # SIActionMove, SIActionLook + Button/
+│   │
+│   ├── L2-ui/                          # L2 Service (自身代码: Core/ Components/ HUD/ Config/ MainMenu/)
+│   │   ├── README.md
+│   │   ├── ui-service.md
+│   │   ├── Core/                       # UIScreen, UIOverlay, UIScreenId 等
+│   │   ├── Components/                 # UIButton, UILabel, UIPanel, UIStatBar
+│   │   ├── Config/                     # UIPanelConfigSO, UIThemeSO
+│   │   ├── HUD/                        # VitalsOverlay, StatusOverlay, LoadingOverlay
+│   │   └── MainMenu/                   # MainMenuScreen, PauseMenuScreen
+│   │
+│   └── L2-modules/                     # 占位容器: L3 独立模块
+│       ├── L3-character/               # L3: 角色系统
 │       │   ├── README.md
-│       │   ├── L4-actor/
-│       │   │   ├── character-actor.md
-│       │   │   ├── character-actor-debug.md
-│       │   │   ├── character-rig.md
-│       │   │   └── character-frame-context.md
-│       │   ├── L4-config/
-│       │   │   ├── character-profile.md
-│       │   │   └── locomotion-enums.md
-│       │   ├── L4-kinematic/
-│       │   │   ├── character-kinematic.md
-│       │   │   ├── character-ground-detection.md
-│       │   │   ├── character-head-look.md
-│       │   │   ├── character-obstacle-detection.md
-│       │   │   └── L5-structs/
-│       │   │       ├── s-character-kinematic.md
-│       │   │       ├── s-forward-obstacle-detection.md
-│       │   │       └── s-ground-contact.md
-│       │   ├── L4-locomotion/
-│       │   │   ├── i-locomotion-simulator.md
-│       │   │   ├── ground-locomotion.md
-│       │   │   ├── motor.md
-│       │   │   ├── stance.md
-│       │   │   ├── L5-config/
-│       │   │   │   └── locomotion-profile.md
-│       │   │   └── L5-structs/
-│       │   │       ├── s-character-motor.md
-│       │   │       └── s-character-discrete.md
-│       │   ├── L4-animation/
-│       │   │   ├── animation-brain.md
-│       │   │   ├── driver-arbiter.md
-│       │   │   ├── L5-config/
-│       │   │   │   ├── animation-alias-profile.md
-│       │   │   │   ├── locomotion-animation-profile.md
-│       │   │   │   └── locomotion-mode-profile.md
-│       │   │   ├── L5-drivers/
-│       │   │   │   ├── i-character-animation-driver.md
-│       │   │   │   ├── base-character-animation-driver.md
-│       │   │   │   ├── L5-locomotion/
-│       │   │   │   │   ├── locomotion-driver.md
-│       │   │   │   │   ├── base-layer.md
-│       │   │   │   │   ├── base-state-key.md
-│       │   │   │   │   ├── locomotion-layer-fsm-state.md
-│       │   │   │   │   └── L5-states/
-│       │   │   │   │       ├── base-idle-state.md
-│       │   │   │   │       ├── base-moving-state.md
-│       │   │   │   │       ├── base-idle-to-moving-state.md
-│       │   │   │   │       ├── base-turn-in-place-state.md
-│       │   │   │   │       ├── base-turn-in-moving-state.md
-│       │   │   │   │       ├── base-air-loop-state.md
-│       │   │   │   │       └── base-air-land-state.md
-│       │   │   │   └── L5-traversal/
-│       │   │   │       └── traversal-driver.md
-│       │   │   └── L5-requests/
-│       │   │       ├── animation-request.md
-│       │   │       ├── on-complete-behavior.md
-│       │   │       └── on-interrupted-behavior.md
-│       │   ├── L4-stats/
-│       │   │   ├── character-stats.md
-│       │   │   └── L5-rules/
-│       │   │       ├── character-stat-rule.md
-│       │   │       ├── damage-rule.md
-│       │   │       ├── batch-damage-rule.md
-│       │   │       ├── deplete-chain-rule.md
-│       │   │       ├── hunger-deplete-rule.md
-│       │   │       ├── passive-gain-rule.md
-│       │   │       ├── sprint-stamina-rule.md
-│       │   │       └── toggle-modifier-rule.md
-│       │   ├── L4-audio/
-│       │   │   ├── character-audio.md
-│       │   │   └── L5-config/
-│       │   │       ├── character-audio-config-so.md
-│       │   │       └── footstep-set-so.md
-│       │   └── L4-input/
-│       │       ├── character-event-receiver.md
-│       │       └── s-character-input-actions.md
+│       │   ├── Actor/                  # CharacterActor, CharacterRig, CharacterFrameContext [自身组件]
+│       │   ├── Config/                 # CharacterProfile, LocomotionEnums [代码结构]
+│       │   ├── Input/                  # CharacterEventReceiver, SCharacterInputActions [代码结构]
+│       │   │
+│       │   ├── L4-animation/           # L4: 动画子系统
+│       │   │   ├── AnimationBrain.cs
+│       │   │   ├── DriverArbiter.cs
+│       │   │   ├── Config/             # AnimationAliasProfile, LocomotionAnimationProfile, LocomotionModeProfile
+│       │   │   ├── Requests/           # AnimationRequest, OnCompleteBehavior, OnInterruptedBehavior
+│       │   │   └── L5-drivers/         # L5: 驱动子系统
+│       │   │       ├── i-character-animation-driver.md
+│       │   │       ├── base-character-animation-driver.md
+│       │   │       ├── TraversalDriver.cs
+│       │   │       └── L5-locomotion/  # L5: 移动驱动子系统
+│       │   │           ├── LocomotionDriver, BaseLayer, BaseStateKey
+│       │   │           └── States/     # 7 个 FSM state [代码结构]
+│       │   │
+│       │   ├── L4-audio/               # L4: 音效子系统
+│       │   │   ├── CharacterAudio.cs
+│       │   │   └── Config/             # CharacterAudioConfigSO, FootstepSetSO
+│       │   ├── L4-kinematic/           # L4: 运动学子系统
+│       │   │   ├── CharacterKinematic, GroundDetection, HeadLook, ObstacleDetection
+│       │   │   └── Structs/            # SCharacterKinematic, SGroundContact, SForwardObstacleDetection
+│       │   ├── L4-locomotion/          # L4: 移动控制子系统
+│       │   │   ├── ILocomotionSimulator, GroundLocomotion, Motor, Stance
+│       │   │   ├── LocomotionProfile.cs
+│       │   │   └── Structs/            # SCharacterMotor, SCharacterDiscrete
+│       │   └── L4-stats/               # L4: 数值子系统
+│       │       ├── CharacterStats.cs
+│       │       └── Rules/              # 8 个 stat rule
 │       │
-│       ├── L3-stats/                   # Stat 数值框架
+│       ├── L3-stats/                   # L3: Stat 数值框架 (自身代码: Definition/ Tree/ Instance/ Modifier/ Interfaces/ Editor/)
 │       │   ├── README.md
-│       │   ├── L4-definition/ ─ stat-def-so.md
-│       │   ├── L4-tree/ ── stats-node-so.md, stats-tree-so.md
-│       │   ├── L4-instance/ ── stat-instance.md
-│       │   ├── L4-modifier/ ── stat-modifier.md, modifier-context.md
-│       │   ├── L4-interfaces/ ── i-stat-consumable.md, i-stat-cumulative.md, i-stat-derived.md, i-stat-restorable.md
-│       │   └── L4-editor/ ── stats-tree-window.md
+│       │   ├── Definition/             # StatDefSO
+│       │   ├── Tree/                   # StatsNodeSO, StatsTreeSO
+│       │   ├── Instance/               # StatInstance
+│       │   ├── Modifier/               # StatModifier, ModifierContext
+│       │   ├── Interfaces/             # IStatConsumable 等 4 个接口
+│       │   └── Editor/                 # StatsTreeWindow
 │       │
-│       └── L3-pathfinding/             # 寻路系统
+│       └── L3-pathfinding/             # L3: 寻路系统
 │           └── README.md
 │
-└── shared/                              # 全局 Helper — 不限层级
+└── shared/                              # 占位容器: 全局 Helper (不限层级)
     ├── README.md
     ├── data-assets.md
     ├── logging/
     │   ├── README.md
-    │   ├── log-manager.md
-    │   ├── log-channel.md
-    │   ├── log-level.md
-    │   ├── L4-appender/
-    │   │   ├── i-log-appender.md
-    │   │   └── console-appender.md
-    │   └── L4-compat/
-    │       └── logger.md
+    │   ├── log-manager.md, log-channel.md, log-level.md
+    │   ├── appender/                   # ILogAppender, ConsoleAppender
+    │   └── compat/                     # Logger
     ├── editor/
     │   ├── README.md
-    │   ├── editor-core-loader.md
-    │   ├── game-context-editor.md
-    │   └── L4-prototype/
-    │       ├── synty-prototype-browser.md
-    │       └── synty-prototype-menu.md
+    │   ├── editor-core-loader.md, game-context-editor.md
+    │   └── prototype/                  # SyntyPrototypeBrowser, SyntyPrototypeMenu
     └── utility/
         ├── README.md
         └── gizmo-debug-utility.md
@@ -216,21 +143,26 @@ tech/
 
 ## 迁移来源
 
-> **v1 和 v2 已归档至 `.agent/archive/tech-v1/` 和 `.agent/archive/tech-v2/`，不纳入日常查询。**
+> **v1 和 v2 已归档至 `.agent/archive/tech-v1/` 和 `.agent/archive/tech-v2/`。**
 
-| v3 位置 | v2 来源 | 状态 |
-|---------|---------|------|
-| L1-core/ | L1-core/ | 直接迁移 |
-| L2-services/L2-*/ (独立 Service) | L2-services/ | 重组 + L 前缀目录 |
-| L2-services/L2-input/ | L3-input/ | 重组 + L 前缀 |
-| L2-services/L2-ui/ | L3-ui/ | 重组 + L 前缀 |
-| L2-services/L2-audio/ | L3-audio/ | 重组 + L 前缀 |
-| L2-services/L2-modules/L3-character/ | L3-character/ | 直接迁移 |
-| L2-services/L2-modules/L3-stats/ | L3-stats/ | 重组 + L 前缀 |
-| L2-services/L2-modules/L3-pathfinding/ | L3-pathfinding/ | 直接迁移 |
-| shared/logging/ | L3-logging/ | 移至 shared |
-| shared/editor/ | L3-editor/ | 移至 shared |
-| shared/utility/ | L3-utility/ | 移至 shared |
+| 新位置 | 旧来源 | 状态 |
+|--------|--------|------|
+| L1_Core/ | L1-core/ | 直接迁移 |
+| Services/L2_EventDispatcher/ | L2-services/EventDispatcher | 重组 |
+| Services/L2_SceneService/ | L2-services/SceneService | 重组 |
+| Services/L2_TimeService/ | L2-services/TimeService | 重组 |
+| Services/L2_GameStateService/ | L2-services/GameStateService | 重组 |
+| Services/L2_PlayerService/ | L2-services/PlayerService | 重组 |
+| Services/L2_CameraService/ | L2-services/CameraService | 重组 |
+| Services/L2_Audio/ | L3-audio/ | 提升至 L2 |
+| Services/L2_Input/ | L3-input/ | 提升至 L2 |
+| Services/L2_UI/ | L3-ui/ | 提升至 L2 |
+| Services/Modules/L3_Character/ | L3-character/ | 直接迁移 |
+| Services/Modules/L3_Stats/ | L3-stats/ | 重组 |
+| Services/Modules/L3_Pathfinding/ | L3-pathfinding/ | 直接迁移 |
+| Shared/Logging/ | L3-logging/ | 移至 Shared |
+| Shared/Editor/ | L3-editor/ | 移至 Shared |
+| Shared/Utility/ | L3-utility/ | 移至 Shared |
 
 ## 层级规则
 
@@ -240,6 +172,24 @@ tech/
 | L2 Service 不直接互相引用 | 通过 GameContext 或 EventDispatcher |
 | L3 不依赖特定 L2 | Character 不 import PlayerService |
 | L3 可被多个 L2 共用 | Character ← PlayerService + AIService |
-| L4 只被同模块调用 | L4-actor 只被 character 内部调用 |
-| L5 纯分组 | 不新增层级语义 |
-| shared 不限层级 | 任何层可调用 |
+| L4 是 L3 的领域子系统 | Animation, Kinematic, Locomotion, Stats, Audio 各自承担独立功能 |
+| L4 只被同模块调用 | L4_Animation 只被 Character 内部使用 |
+| L5 是 L4 的附属子系统 | L5_Drivers 是 Animation 的驱动子系统，L5_Locomotion 是 Drivers 的移动子系统 |
+| L5 只被同子系统调用 | L5_Locomotion 只被 L5_Drivers 内部使用 |
+| Shared 不限层级 | 任何层可调用 |
+| 自身组件不是 L4 | Actor/ (Character 自身)、Actions/ (Input 自身)、Core/ Components/ HUD/ (UI 自身) |
+| 代码结构不是 L5 | Config/ Structs/ Data/ States/ Rules/ Requests/ — 按文件类型分组，不构成子系统 |
+
+## 命名规则对照
+
+| 类型 | 代码目录 (`Assets/Scripts/`) | 文档目录 (`.agent/tech/`) |
+|------|---------------------------|---------------------------|
+| 占位容器 | `Services/`, `Modules/`, `Shared/` | `L2-services/`, `L2-modules/`, `shared/` |
+| L1 层级 | `L1_Core/` | `L1-core/` |
+| L2 层级 | `L2_{Name}/` | `L2-{name}/` |
+| L3 层级 | `L3_{Name}/` | `L3-{name}/` |
+| L4 子系统 | `L4_{Name}/` (仅领域子系统) | `L4-{name}/` |
+| L5 子子系统 | `L5_{Name}/` (仅附属子系统) | `L5-{name}/` |
+
+> 代码目录跟 Unity PascalCase + 下划线分隔 L 前缀；文档目录用 kebab-case 纯小写，便于阅读。两者 L 数字含义完全相同。
+> **L4/L5 不应用于普通代码分组**，仅当目录代表一个真正独立的子系统/子子系统时才带 L 前缀。

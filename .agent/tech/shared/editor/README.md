@@ -76,5 +76,5 @@ Unity 编辑器启动
 |------|------|
 | [editor-core-loader.md](editor-core-loader.md) | Play Mode 自动加载 Core 场景 |
 | [game-context-editor.md](game-context-editor.md) | GameContext Inspector 调试面板 |
-| [L4-prototype/synty-prototype-browser.md](L4-prototype/synty-prototype-browser.md) | Prototype 浏览器 EditorWindow |
-| [L4-prototype/synty-prototype-menu.md](L4-prototype/synty-prototype-menu.md) | 菜单入口 + 分类扫描 + 实例化 |
+| [prototype/synty-prototype-browser.md](prototype/synty-prototype-browser.md) | Prototype 浏览器 EditorWindow |
+| [prototype/synty-prototype-menu.md](prototype/synty-prototype-menu.md) | 菜单入口 + 分类扫描 + 实例化 |

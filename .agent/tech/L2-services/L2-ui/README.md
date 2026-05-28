@@ -1,12 +1,12 @@
-# L2-ui · UI Service 模块
+# L2_UI · UI Service 模块
 
-UI 系统全局模块，隶属 L2-services 层。提供全生命周期统一调度、Screen/Overlay 双模式面板管理、DOTween 驱动过渡动画、主题驱动的视觉参数管理。
+UI 系统全局模块，隶属 Services 层。提供全生命周期统一调度、Screen/Overlay 双模式面板管理、DOTween 驱动过渡动画、主题驱动的视觉参数管理。
 
 ## 层级定位
 
 | 维度 | 说明 |
 |------|------|
-| L2-services 层 | 属于独立 Service 模块，不依赖其他 L2 模块 |
+| Services 层 | 属于独立 Service 模块，不依赖其他 L2 模块 |
 | 所属 L2 | GameState, EventDispatcher, Scene, Player 等 Service |
 | 跨层调用 | 通过 EventDispatcher 订阅 GameState/Scene 事件；通过 Service 代理读取 PlayerService |
 

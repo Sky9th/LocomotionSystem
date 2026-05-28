@@ -1,12 +1,12 @@
-# L2-audio · 音频系统
+# L2_Audio · 音频系统
 
 > 基于 AudioSetSO 的多变体音频系统。AudioManager 管理音量分组，AudioChannel 提供静态 Play 方法，Request/Response 模式分离职责。
 
-**源文件目录**: `Assets/Scripts/Audio/`
+**源文件目录**: `Assets/Scripts/Services/L2_Audio/`
 
 ## 层级定位
 
-L2-services 复合 Service。AudioManager 继承 BaseService 由 GameService 管理生命周期，音频数据以 ScriptableObject (AudioSetSO) 形式配置、子模块继承扩展。
+Services 复合 Service。AudioManager 继承 BaseService 由 GameService 管理生命周期，音频数据以 ScriptableObject (AudioSetSO) 形式配置、子模块继承扩展。
 
 - **被 L1 管理**: GameService.Bootstrap() 发现并注册 AudioManager。
 - **被 L3 消费**: Character 模块 (CharacterAudio) 构造请求并调用 AudioChannel 播放。

@@ -73,6 +73,6 @@ BaseService 构造时:
 | [log-manager.md](log-manager.md) | 全局管理器，频道缓存，Appender 列表，Emit 分发 |
 | [log-channel.md](log-channel.md) | 日志频道，级别过滤，便捷输出方法 |
 | [log-level.md](log-level.md) | 级别枚举定义 |
-| [L4-appender/i-log-appender.md](L4-appender/i-log-appender.md) | 输出器接口 |
-| [L4-appender/console-appender.md](L4-appender/console-appender.md) | Unity Debug.Log 输出实现 |
-| [L4-compat/logger.md](L4-compat/logger.md) | 旧版 Logger 格式器（待废弃） |
+| [appender/i-log-appender.md](appender/i-log-appender.md) | 输出器接口 |
+| [appender/console-appender.md](appender/console-appender.md) | Unity Debug.Log 输出实现 |
+| [compat/logger.md](compat/logger.md) | 旧版 Logger 格式器（待废弃） |

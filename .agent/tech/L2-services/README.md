@@ -1,4 +1,4 @@
-# L2-services · Service 层
+# Services · Service 层
 
 > 每个 Service 继承 BaseService，由 L1 GameService 管理生命周期。Service 使用 L3 Module 完成具体功能。
 
@@ -34,7 +34,7 @@ L2 运行时:
       -> PlayerService.CreatePlayer() -> SPlayerSpawnedEvent
         -> CameraService 开始跟随
 
-  GameStateService <- SIActionUIEscape (来自 L2-input)
+  GameStateService <- SIActionUIEscape (来自 L2_Input)
     -> PublishState(SGameState)
       -> TimeService -> Time.timeScale = 0 (暂停)
       -> GameService -> TeardownSession (回主菜单)
@@ -98,11 +98,11 @@ L2 Teardown (Playing -> MainMenu):
 | [player-service.md](L2-player-service/player-service.md) | PlayerService -- Spawn/Despawn/位置追踪 |
 | [camera-service.md](L2-camera-service/camera-service.md) | CameraService -- Cinemachine + 鼠标地面坐标 |
 
-### 复合 Service 及虚拟 L2
+### 复合 Service 及 L3 模块
 
 | 模块 | 内容 |
 |------|------|
 | [L2-input](L2-input/README.md) | 复合 Service -- Input actions, structs, 按键映射 |
 | [L2-ui](L2-ui/README.md) | 复合 Service -- UI 面板、组件、主题系统 |
 | [L2-audio](L2-audio/README.md) | 复合 Service -- 音频管理、数据通道 |
-| L2-modules | 虚拟 L2 -- 独立模块容器 ([Character](L2-modules/L3-character/README.md), [Stats](L2-modules/L3-stats/README.md), [Pathfinding](L2-modules/L3-pathfinding/README.md)) |
+| L2-modules | 占位容器 -- L3 独立模块 ([Character](L2-modules/L3-character/README.md), [Stats](L2-modules/L3-stats/README.md), [Pathfinding](L2-modules/L3-pathfinding/README.md)) |

@@ -1,12 +1,12 @@
-# L2-input · 输入服务
+# L2_Input · 输入服务
 
 ## 层级定位
 
 | 层级 | 说明 |
 |------|------|
 | **L2 (Services)** | InputService 属于服务层，由 GameService.Bootstrap() 驱动生命周期，依赖 EventDispatcher 进行模块间通信 |
-| **L4 (Actions)** | InputActionHandler 系列属于动作处理器层，每个 SO 资产对应一个 Input Action，统一生命周期模式 |
-| **L5 (Player / System / UI)** | 具体行为分解：玩家动作 (移动/朝向/按钮)、系统动作 (时间控制)、UI 动作 (ESC 菜单) |
+| **Actions** | 自身代码 — InputActionHandler 系列，每个 SO 资产对应一个 Input Action |
+| **Structs** | 自身代码 — 输入数据结构体 (DTO) |
 
 输入系统的设计遵循"数据单向流动"原则：**输入层只生成 DTO，不操作游戏对象**。所有输入数据通过 EventDispatcher 广播，消费方自行订阅。
 
@@ -36,7 +36,7 @@
         │                   │                   │
         ▼                   ▼                   ▼
 ┌──────────────┐  ┌─────────────────┐  ┌──────────────────┐
-│ L5-Player    │  │ L5-System       │  │ L5-UI            │
+│ Player       │  │ System          │  │ (IAUIEscape)     │
 │ IAPlayerMove │  │ IASystemTimeSlow│  │ IAUIEscape       │
 │ IAPlayerLook │  │ IASystemTimeRes │  └────────┬─────────┘
 │ IAPlayerC×9  │  └────────┬────────┘           │
@@ -99,40 +99,40 @@
 |------|------|
 | [input-service.md](input-service.md) | InputService — 生命周期、权限控制、Handler 编排 |
 
-### L4 Actions
+### Actions (L2 自身代码)
 
 | 文件 | 内容 |
 |------|------|
-| [L4-actions/input-action-handler.md](L4-actions/input-action-handler.md) | InputActionHandler — SO 基类、生命周期 |
-| [L4-actions/L5-player/ia-player-move.md](L4-actions/L5-player/ia-player-move.md) | IAPlayerMove — WASD → 世界方向 |
-| [L4-actions/L5-player/ia-player-look.md](L4-actions/L5-player/ia-player-look.md) | IAPlayerLook — 鼠标 Delta → 朝向 |
-| [L4-actions/L5-player/button/ia-player-crouch.md](L4-actions/L5-player/button/ia-player-crouch.md) | IAPlayerCrouch — 蹲下 |
-| [L4-actions/L5-player/button/ia-player-jump.md](L4-actions/L5-player/button/ia-player-jump.md) | IAPlayerJump — 跳跃 |
-| [L4-actions/L5-player/button/ia-player-primary-interact.md](L4-actions/L5-player/button/ia-player-primary-interact.md) | IAPlayerPrimaryInteract — 主交互 |
-| [L4-actions/L5-player/button/ia-player-prone.md](L4-actions/L5-player/button/ia-player-prone.md) | IAPlayerProne — 趴下 |
-| [L4-actions/L5-player/button/ia-player-run.md](L4-actions/L5-player/button/ia-player-run.md) | IAPlayerRun — 跑步切换 |
-| [L4-actions/L5-player/button/ia-player-secondary-interact.md](L4-actions/L5-player/button/ia-player-secondary-interact.md) | IAPlayerSecondaryInteract — 副交互 |
-| [L4-actions/L5-player/button/ia-player-sprint.md](L4-actions/L5-player/button/ia-player-sprint.md) | IAPlayerSprint — 冲刺 |
-| [L4-actions/L5-player/button/ia-player-stand.md](L4-actions/L5-player/button/ia-player-stand.md) | IAPlayerStand — 站立 |
-| [L4-actions/L5-player/button/ia-player-walk.md](L4-actions/L5-player/button/ia-player-walk.md) | IAPlayerWalk — 行走切换 |
-| [L4-actions/L5-system/ia-system-time-slow.md](L4-actions/L5-system/ia-system-time-slow.md) | IASystemTimeSlow — 时间减速 |
-| [L4-actions/L5-system/ia-system-time-resume.md](L4-actions/L5-system/ia-system-time-resume.md) | IASystemTimeResume — 时间恢复 |
-| [L4-actions/L5-ui/ia-ui-escape.md](L4-actions/L5-ui/ia-ui-escape.md) | IAUIEscape — ESC 键暂停 |
+| [actions/input-action-handler.md](actions/input-action-handler.md) | InputActionHandler — SO 基类、生命周期 |
+| [actions/L5-player/ia-player-move.md](actions/L5-player/ia-player-move.md) | IAPlayerMove — WASD → 世界方向 |
+| [actions/L5-player/ia-player-look.md](actions/L5-player/ia-player-look.md) | IAPlayerLook — 鼠标 Delta → 朝向 |
+| [actions/L5-player/L5-button/ia-player-crouch.md](actions/L5-player/L5-button/ia-player-crouch.md) | IAPlayerCrouch — 蹲下 |
+| [actions/L5-player/L5-button/ia-player-jump.md](actions/L5-player/L5-button/ia-player-jump.md) | IAPlayerJump — 跳跃 |
+| [actions/L5-player/L5-button/ia-player-primary-interact.md](actions/L5-player/L5-button/ia-player-primary-interact.md) | IAPlayerPrimaryInteract — 主交互 |
+| [actions/L5-player/L5-button/ia-player-prone.md](actions/L5-player/L5-button/ia-player-prone.md) | IAPlayerProne — 趴下 |
+| [actions/L5-player/L5-button/ia-player-run.md](actions/L5-player/L5-button/ia-player-run.md) | IAPlayerRun — 跑步切换 |
+| [actions/L5-player/L5-button/ia-player-secondary-interact.md](actions/L5-player/L5-button/ia-player-secondary-interact.md) | IAPlayerSecondaryInteract — 副交互 |
+| [actions/L5-player/L5-button/ia-player-sprint.md](actions/L5-player/L5-button/ia-player-sprint.md) | IAPlayerSprint — 冲刺 |
+| [actions/L5-player/L5-button/ia-player-stand.md](actions/L5-player/L5-button/ia-player-stand.md) | IAPlayerStand — 站立 |
+| [actions/L5-player/L5-button/ia-player-walk.md](actions/L5-player/L5-button/ia-player-walk.md) | IAPlayerWalk — 行走切换 |
+| [actions/L5-system/ia-system-time-slow.md](actions/L5-system/ia-system-time-slow.md) | IASystemTimeSlow — 时间减速 |
+| [actions/L5-system/ia-system-time-resume.md](actions/L5-system/ia-system-time-resume.md) | IASystemTimeResume — 时间恢复 |
+| [actions/L5-ui/ia-ui-escape.md](actions/L5-ui/ia-ui-escape.md) | IAUIEscape — ESC 键暂停 |
 
-### Structs
+### Structs (L2 自身代码)
 
 | 文件 | 内容 |
 |------|------|
-| [structs/s-action-ui-escape.md](structs/s-action-ui-escape.md) | SIActionUIEscape — ESC 动作 DTO |
-| [structs/control/s-action-move.md](structs/control/s-action-move.md) | SIActionMove — 移动 DTO |
-| [structs/control/s-action-look.md](structs/control/s-action-look.md) | SIActionLook — 朝向 DTO |
-| [structs/control/button/s-button-input-state.md](structs/control/button/s-button-input-state.md) | SButtonInputState — 按钮状态 model |
-| [structs/control/button/s-action-crouch.md](structs/control/button/s-action-crouch.md) | SIActionCrouch — 蹲下 DTO |
-| [structs/control/button/s-action-jump.md](structs/control/button/s-action-jump.md) | SIActionJump — 跳跃 DTO |
-| [structs/control/button/s-action-primary-interact.md](structs/control/button/s-action-primary-interact.md) | SIActionPrimaryInteract — 主交互 DTO |
-| [structs/control/button/s-action-prone.md](structs/control/button/s-action-prone.md) | SIActionProne — 趴下 DTO |
-| [structs/control/button/s-action-run.md](structs/control/button/s-action-run.md) | SIActionRun — 跑步切换 DTO |
-| [structs/control/button/s-action-secondary-interact.md](structs/control/button/s-action-secondary-interact.md) | SIActionSecondaryInteract — 副交互 DTO |
-| [structs/control/button/s-action-sprint.md](structs/control/button/s-action-sprint.md) | SIActionSprint — 冲刺 DTO |
-| [structs/control/button/s-action-stand.md](structs/control/button/s-action-stand.md) | SIActionStand — 站立 DTO |
-| [structs/control/button/s-action-walk.md](structs/control/button/s-action-walk.md) | SIActionWalk — 行走切换 DTO |
+| [L4-structs/s-action-ui-escape.md](L4-structs/s-action-ui-escape.md) | SIActionUIEscape — ESC 动作 DTO |
+| [L4-structs/L5-control/s-action-move.md](L4-structs/L5-control/s-action-move.md) | SIActionMove — 移动 DTO |
+| [L4-structs/L5-control/s-action-look.md](L4-structs/L5-control/s-action-look.md) | SIActionLook — 朝向 DTO |
+| [L4-structs/L5-control/L5-button/s-button-input-state.md](L4-structs/L5-control/L5-button/s-button-input-state.md) | SButtonInputState — 按钮状态 model |
+| [L4-structs/L5-control/L5-button/s-action-crouch.md](L4-structs/L5-control/L5-button/s-action-crouch.md) | SIActionCrouch — 蹲下 DTO |
+| [L4-structs/L5-control/L5-button/s-action-jump.md](L4-structs/L5-control/L5-button/s-action-jump.md) | SIActionJump — 跳跃 DTO |
+| [L4-structs/L5-control/L5-button/s-action-primary-interact.md](L4-structs/L5-control/L5-button/s-action-primary-interact.md) | SIActionPrimaryInteract — 主交互 DTO |
+| [L4-structs/L5-control/L5-button/s-action-prone.md](L4-structs/L5-control/L5-button/s-action-prone.md) | SIActionProne — 趴下 DTO |
+| [L4-structs/L5-control/L5-button/s-action-run.md](L4-structs/L5-control/L5-button/s-action-run.md) | SIActionRun — 跑步切换 DTO |
+| [L4-structs/L5-control/L5-button/s-action-secondary-interact.md](L4-structs/L5-control/L5-button/s-action-secondary-interact.md) | SIActionSecondaryInteract — 副交互 DTO |
+| [L4-structs/L5-control/L5-button/s-action-sprint.md](L4-structs/L5-control/L5-button/s-action-sprint.md) | SIActionSprint — 冲刺 DTO |
+| [L4-structs/L5-control/L5-button/s-action-stand.md](L4-structs/L5-control/L5-button/s-action-stand.md) | SIActionStand — 站立 DTO |
+| [L4-structs/L5-control/L5-button/s-action-walk.md](L4-structs/L5-control/L5-button/s-action-walk.md) | SIActionWalk — 行走切换 DTO |

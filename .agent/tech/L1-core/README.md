@@ -1,4 +1,4 @@
-# L1-core · GameManager 层
+# L1_Core · GameManager 层
 
 > 根节点层 — 持有并管理所有 L2 Service，不包含业务逻辑。
 

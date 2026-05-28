@@ -2,7 +2,7 @@
 
 > Gizmo 绘制辅助，提供编辑器调试可视化能力。
 
-**源文件目录**: `Assets/Scripts/Utility/`
+**源文件目录**: `Assets/Scripts/Shared/Utility/`
 
 ## 层级定位
 
@@ -10,7 +10,7 @@
 
 - **被所有模块消费**: GizmoDebugUtility 被任何模块的 OnDrawGizmos 回调调用。
 - **无上层依赖**: 纯工具代码，仅依赖 UnityEditor API（条件编译）。
-- **与 Logging 分离**: 旧 Logger（Utility/Logger.cs）已归入 shared/logging 管理，不在此重复。
+- **与 Logging 分离**: 旧 Logger（Utility/Logger.cs）已归入 Shared/Logging 管理，不在此重复。
 
 ## 调用链
 
