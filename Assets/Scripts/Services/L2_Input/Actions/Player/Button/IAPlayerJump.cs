@@ -2,7 +2,7 @@ using RedDust.Shared;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace RedDust.Input
+namespace RedDust.GameInput
 {
     [CreateAssetMenu(menuName = "Inputs/Player/IA Player Jump")]
     public class IAPlayerJump : InputActionHandler

@@ -1,4 +1,4 @@
-namespace RedDust.SceneService
+namespace RedDust.GameScene
 {
     /// <summary>
     /// Published via EventDispatcher when a scene transition finishes.

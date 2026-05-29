@@ -1,9 +1,9 @@
 using RedDust.Core;
-using RedDust.GameStateService;
-using RedDust.SceneService;
+using RedDust.GameState;
+using RedDust.GameScene;
 using UnityEngine;
 
-namespace RedDust.TimeService
+namespace RedDust.GameTime
 {
     public class TimeService : BaseService
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace RedDust.Input
+namespace RedDust.GameInput
 {
     /// <summary>
     /// Payload emitted whenever the player presses the Escape key (typically used

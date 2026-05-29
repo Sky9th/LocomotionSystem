@@ -1,10 +1,10 @@
 using System;
-using RedDust.EventDispatcher;
-using RedDust.GameStateService;
+using RedDust.Core;
+using RedDust.GameState;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace RedDust.Input
+namespace RedDust.GameInput
 {
     /// <summary>
     /// Base class for input helper ScriptableObjects. It owns shared context

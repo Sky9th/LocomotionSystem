@@ -1,8 +1,8 @@
 using RedDust.Core;
-using RedDust.Input;
+using RedDust.GameInput;
 using UnityEngine;
 
-namespace RedDust.GameStateService
+namespace RedDust.GameState
 {
 	/// <summary>
 	/// Central authority for high-level game state transitions. Other systems request
@@ -106,6 +106,7 @@ namespace RedDust.GameStateService
 			base.OnSubscriptionsActivated();
 			if (Dispatcher != null)
 			{
+				Dispatcher.Subscribe<SGameStateRequest>(HandleStateRequest);
 				Dispatcher.Subscribe<SIActionUIEscape>(HandleEscapeIntent);
 			}
 		}
@@ -114,8 +115,14 @@ namespace RedDust.GameStateService
 		{
 			if (Dispatcher != null)
 			{
+				Dispatcher.Unsubscribe<SGameStateRequest>(HandleStateRequest);
 				Dispatcher.Unsubscribe<SIActionUIEscape>(HandleEscapeIntent);
 			}
+		}
+
+		private void HandleStateRequest(SGameStateRequest evt, MetaStruct _)
+		{
+			RequestState(evt.TargetState);
 		}
 
 		private void HandleEscapeIntent(SIActionUIEscape payload, MetaStruct meta)

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace RedDust.TimeService
+namespace RedDust.GameTime
 {
     /// <summary>
     /// Signals a desired world speed multiplier for gameplay.

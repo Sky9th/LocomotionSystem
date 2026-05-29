@@ -1,8 +1,8 @@
-using RedDust.GameStateService;
+using RedDust.GameState;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace RedDust.Input
+namespace RedDust.GameInput
 {
     /// <summary>
     /// Translates the "Look" action into a normalized SPlayerLookIAction payload.

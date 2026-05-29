@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace RedDust.Stats
 {
-    [CreateAssetMenu(fileName = "StatsNode", menuName = "Game/Stats/Stats Node")]
+    [CreateAssetMenu(fileName = "StatsNode", menuName = "RedDust/Stats/Stats Node")]
     public class StatsNodeSO : ScriptableObject
     {
         public string Id;

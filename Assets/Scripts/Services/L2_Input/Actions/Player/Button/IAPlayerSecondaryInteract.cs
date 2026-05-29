@@ -1,8 +1,7 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace RedDust.Input
+namespace RedDust.GameInput
 {
     [CreateAssetMenu(menuName = "Inputs/Player/IA Player SecondaryInteract")]
     public class IAPlayerSecondaryInteract : InputActionHandler

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine.InputSystem;
 
-namespace RedDust.Input
+namespace RedDust.GameInput
 {
     [Serializable]
     public struct SIActionSecondaryInteract

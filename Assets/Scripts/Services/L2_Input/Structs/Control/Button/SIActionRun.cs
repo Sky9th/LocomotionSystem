@@ -1,7 +1,7 @@
 using System;
 using UnityEngine.InputSystem;
 
-namespace RedDust.Input
+namespace RedDust.GameInput
 {
     /// <summary>
     /// Canonical payload that represents a jump intent from the player.

@@ -10,7 +10,7 @@ namespace RedDust.Character.Animation
     /// </summary>
     [CreateAssetMenu(
         fileName = "LocomotionAnimationProfile",
-        menuName = "Game/Locomotion/Animation Profile")]
+        menuName = "RedDust/Character/Animation/Locomotion Animation Profile")]
     public sealed class LocomotionAnimationProfile : ScriptableObject
     {
         [Header("Head Look")]

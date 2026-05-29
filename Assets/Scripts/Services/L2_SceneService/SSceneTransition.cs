@@ -1,4 +1,4 @@
-namespace RedDust.SceneService
+namespace RedDust.GameScene
 {
     /// <summary>
     /// Scene status pushed to GameContext. Poll for current scene identity,

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace RedDust.Character.Animation
 {
     [CreateAssetMenu(
-        menuName = "Game/Animation Alias Profile")]
+        menuName = "RedDust/Character/Animation Alias Profile")]
     public class AnimationAliasProfile : ScriptableObject
     {
         [Header("Clips")]

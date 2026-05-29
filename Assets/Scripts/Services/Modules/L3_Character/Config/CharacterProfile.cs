@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace RedDust.Character
 {
-    [CreateAssetMenu(fileName = "CharacterProfile", menuName = "Game/Character/Character Profile")]
+    [CreateAssetMenu(fileName = "CharacterProfile", menuName = "RedDust/Character/Character Profile")]
     public sealed class CharacterProfile : ScriptableObject
     {
         [Header("Ground")]

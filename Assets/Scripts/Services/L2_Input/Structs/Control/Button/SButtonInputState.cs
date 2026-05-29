@@ -1,7 +1,7 @@
 using System;
 using UnityEngine.InputSystem;
 
-namespace RedDust.Input
+namespace RedDust.GameInput
 {
     /// <summary>
     /// Shared state model for button-like input actions.

@@ -9,7 +9,7 @@ namespace RedDust.Character.Animation
     /// </summary>
     [CreateAssetMenu(
         fileName = "LocomotionModeProfile",
-        menuName = "Game/Locomotion/Mode Profile")]
+        menuName = "RedDust/Character/Animation/Locomotion Mode Profile")]
     public sealed class LocomotionModeProfile : ScriptableObject
     {
         [Header("Locomotion Mode Key")]

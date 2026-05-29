@@ -7,7 +7,7 @@ namespace RedDust.Core
     /// Contains direct references so high-level systems (camera, UI, etc.) can
     /// immediately bind to the correct transforms without additional lookups.
     /// </summary>
-    public sealed class SPlayerSpawnedEvent
+    public readonly struct SPlayerSpawnedEvent
     {
         public SPlayerSpawnedEvent(Transform root, bool isLocalPlayer)
         {

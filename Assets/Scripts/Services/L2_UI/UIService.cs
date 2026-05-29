@@ -1,10 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using RedDust.Character;
 using RedDust.Core;
-using RedDust.GameStateService;
-using RedDust.PlayerService;
-using RedDust.SceneService;
+using RedDust.GameState;
+using RedDust.GameScene;
 using UnityEngine;
 
 namespace RedDust.UI
@@ -26,6 +25,7 @@ namespace RedDust.UI
         private bool hasCurrentScreen;
         private readonly List<UIOverlay> activeOverlays = new();
         private EGameState pendingTargetState;
+        private CharacterActor _playerActor;
 
         public bool IsInputBlocked { get; private set; }
 
@@ -40,6 +40,7 @@ namespace RedDust.UI
         {
             if (Dispatcher == null) return;
             Dispatcher.Subscribe<SGameState>(HandleGameState);
+            Dispatcher.Subscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
             Dispatcher.Subscribe<SSceneLoadStart>(HandleSceneLoadStart);
             Dispatcher.Subscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
         }
@@ -56,6 +57,7 @@ namespace RedDust.UI
         {
             if (Dispatcher == null) return;
             Dispatcher.Unsubscribe<SGameState>(HandleGameState);
+            Dispatcher.Unsubscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
             Dispatcher.Unsubscribe<SSceneLoadStart>(HandleSceneLoadStart);
             Dispatcher.Unsubscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
         }
@@ -160,6 +162,7 @@ namespace RedDust.UI
 
         public void OnGameplaySessionEnd()
         {
+            _playerActor = null;
             HideAllOverlays();
         }
 
@@ -171,9 +174,8 @@ namespace RedDust.UI
 
         public bool TryGetPlayerStats(out System.Collections.Generic.Dictionary<string, (float current, float max)> stats)
         {
-            stats = null;
-            if (!TryResolveService(out RedDust.PlayerService.PlayerService ps)) return false;
-            return ps.TryGetPlayerStats(out stats);
+            stats = _playerActor != null ? _playerActor.LastStats : null;
+            return stats != null;
         }
 
         public void RequestNewGame()
@@ -213,8 +215,7 @@ namespace RedDust.UI
 
         public void RequestResume()
         {
-            if (TryResolveService(out RedDust.GameStateService.GameStateService gs))
-                gs.RequestState(EGameState.Playing);
+            Dispatcher.Publish(new SGameStateRequest(EGameState.Playing));
         }
 
         public void RequestQuit()
@@ -263,8 +264,8 @@ namespace RedDust.UI
         {
             loadingCanvasGroup.alpha = 0f;
 
-            if (pendingTargetState != EGameState.Initializing && TryResolveService(out RedDust.GameStateService.GameStateService gs))
-                gs.RequestState(pendingTargetState);
+            if (pendingTargetState != EGameState.Initializing)
+                Dispatcher.Publish(new SGameStateRequest(pendingTargetState));
 
             IsInputBlocked = false;
         }
@@ -341,6 +342,12 @@ namespace RedDust.UI
             overlayStates[id] = new PanelState { Instance = overlay };
             overlay.Initialize(this);
             return true;
+        }
+
+        private void HandlePlayerSpawned(SPlayerSpawnedEvent evt, MetaStruct _)
+        {
+            if (!evt.IsLocalPlayer) return;
+            _playerActor = evt.Root != null ? evt.Root.GetComponent<CharacterActor>() : null;
         }
 
         private void HandleGameState(SGameState state, MetaStruct meta = default)

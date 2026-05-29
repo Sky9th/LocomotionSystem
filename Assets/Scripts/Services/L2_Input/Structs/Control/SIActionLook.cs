@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace RedDust.Input
+namespace RedDust.GameInput
 {
     /// <summary>
     /// Canonical payload that represents aggregated look deltas (mouse/controller) for the player camera.

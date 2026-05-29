@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using RedDust.Core;
 using UnityEngine;
 
-namespace RedDust.EventDispatcher
+namespace RedDust.Core
 {
     /// <summary>
     /// Lightweight event bus used to decouple gameplay systems.

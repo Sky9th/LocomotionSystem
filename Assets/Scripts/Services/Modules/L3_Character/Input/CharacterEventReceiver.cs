@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 using RedDust.Core;
-using RedDust.EventDispatcher;
-using RedDust.Input;
+using RedDust.GameInput;
 using UnityEngine;
 
 namespace RedDust.Character

@@ -1,9 +1,9 @@
 using System;
 using RedDust.Core;
-using RedDust.GameStateService;
+using RedDust.GameState;
 using UnityEngine;
 
-namespace RedDust.Input
+namespace RedDust.GameInput
 {
     /// <summary>
     /// Central coordinator for all gameplay input helpers. It owns their lifecycle,

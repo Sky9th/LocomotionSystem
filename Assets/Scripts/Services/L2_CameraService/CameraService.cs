@@ -3,7 +3,7 @@ using RedDust.Core;
 using RedDust.Shared;
 using UnityEngine;
 
-namespace RedDust.CameraService
+namespace RedDust.GameCamera
 {
     [DefaultExecutionOrder(-400)]
     [DisallowMultipleComponent]
@@ -217,7 +217,7 @@ namespace RedDust.CameraService
             var outputCamera = cameraBrain != null ? cameraBrain.OutputCamera : null;
             if (outputCamera == null) return (Vector3.zero, false);
 
-            var ray = outputCamera.ScreenPointToRay(UnityEngine.Input.mousePosition);
+            var ray = outputCamera.ScreenPointToRay(Input.mousePosition);
             var groundPlane = new Plane(Vector3.up, Vector3.zero);
 
             if (groundPlane.Raycast(ray, out float distance))

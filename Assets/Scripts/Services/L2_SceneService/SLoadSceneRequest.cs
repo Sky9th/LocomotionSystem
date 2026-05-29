@@ -1,4 +1,4 @@
-namespace RedDust.SceneService
+namespace RedDust.GameScene
 {
     public readonly struct SLoadSceneRequest
     {

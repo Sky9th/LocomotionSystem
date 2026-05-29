@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using RedDust.EventDispatcher;
-using RedDust.GameStateService;
-using RedDust.SceneService;
+using RedDust.GameState;
+using RedDust.GameScene;
 using RedDust.Shared;
 using UnityEngine;
 
@@ -18,7 +17,6 @@ namespace RedDust.Core
 
         [SerializeField] private GameContext gameContext;
         [SerializeField] private EventDispatcherService eventDispatcher;
-        [SerializeField] private RedDust.GameStateService.GameStateService gameState;
 
         [SerializeField]
         private readonly List<BaseService> registeredServices = new();
@@ -126,17 +124,7 @@ namespace RedDust.Core
 #if UNITY_EDITOR
             var activeScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
             if (activeScene.name != "Core")
-            {
-                var sceneService = GetComponentInChildren<RedDust.SceneService.SceneService>();
-                if (sceneService != null)
-                    sceneService.SetCurrentContentScene(activeScene.name);
-
-                var coreScene = UnityEngine.SceneManagement.SceneManager.GetSceneByName("Core");
-                if (coreScene.isLoaded)
-                    UnityEngine.SceneManagement.SceneManager.SetActiveScene(coreScene);
-
-                eventDispatcher.Publish(new SSceneLoadComplete(activeScene.name, null));
-            }
+                eventDispatcher.Publish(new SLoadSceneRequest(activeScene.name));
 #endif
         }
 

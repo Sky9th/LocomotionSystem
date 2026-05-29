@@ -1,5 +1,5 @@
 using System;
-using RedDust.GameStateService;
+using RedDust.GameState;
 
 namespace RedDust.Core
 {

@@ -1,10 +1,8 @@
-using System.Collections.Generic;
-using RedDust.Character;
 using RedDust.Core;
-using RedDust.SceneService;
+using RedDust.GameScene;
 using UnityEngine;
 
-namespace RedDust.PlayerService
+namespace RedDust.Player
 {
     [DisallowMultipleComponent]
     public class PlayerService : BaseService, IGameplaySessionHandler
@@ -13,20 +11,9 @@ namespace RedDust.PlayerService
         [SerializeField] private GameObject playerStartAnchor;
 
         private GameObject playerInstance;
-        // TODO: _currentPlayerActor.LastStats is a stopgap — PlayerService should
-        // collect stats through a proper push/pull interface with CharacterActor.
-        private CharacterActor _currentPlayerActor;
 
         public Transform CurrentPlayerTransform =>
             playerInstance != null ? playerInstance.transform : null;
-
-        public CharacterActor CurrentPlayerActor => _currentPlayerActor;
-
-        public bool TryGetPlayerStats(out Dictionary<string, (float current, float max)> stats)
-        {
-            stats = _currentPlayerActor != null ? _currentPlayerActor.LastStats : null;
-            return stats != null;
-        }
 
         protected override bool OnRegister(GameContext context)
         {
@@ -70,7 +57,6 @@ namespace RedDust.PlayerService
 
             playerInstance = Instantiate(playerPrefab, transform);
             playerInstance.name = playerPrefab.name;
-            _currentPlayerActor = playerInstance.GetComponent<CharacterActor>();
             if (playerStartAnchor != null)
                 playerInstance.transform.SetPositionAndRotation(playerStartAnchor.transform.position, playerStartAnchor.transform.rotation);
 
@@ -83,7 +69,6 @@ namespace RedDust.PlayerService
 
         public void OnGameplaySessionEnd()
         {
-            _currentPlayerActor = null;
             if (playerInstance != null)
             {
                 Destroy(playerInstance);

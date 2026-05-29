@@ -1,5 +1,5 @@
 using System;
-using RedDust.Input;
+using RedDust.GameInput;
 
 namespace RedDust.Character
 {

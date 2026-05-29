@@ -5,7 +5,7 @@
 | 目录 | 用途 | 更新时机 |
 |------|------|---------|
 | `design/` | 设计决策、玩家体验（WHY） | 设计变更、新系统定位 |
-| `tech/modules/` | 技术实现、数据流（HOW） | 模块实现变更 |
+| `tech/` | 技术实现，按 L1→L5 层级 + Shared 组织 | 模块实现变更 |
 | `tech/conventions/` | 命名规范、代码风格 | 约定变更 |
 | `plans/` | 长期/短期开发计划 | 计划推进 |
 | `sessions/` | 会话归档 `YYYY-MM-DD-主题.md` | 每次代码改动后 |
@@ -20,6 +20,7 @@
 ├── VERSION.md
 ├── design/
 │   ├── game-overview.md
+│   ├── l1-l5-layering.md
 │   ├── audio-system.md
 │   ├── death-mechanics.md
 │   ├── injury-system.md
@@ -30,44 +31,30 @@
 │   ├── stats-system.md
 │   └── ui-system.md
 ├── tech/
-│   ├── architecture.md
+│   ├── README.md                       ← 技术文档索引
 │   ├── conventions/
-│   │   ├── code-naming.md
+│   │   └── namespace-rules.md          ← namespace 映射表 + 豁免规则
+│   ├── shared/
 │   │   └── data-assets.md
-│   └── modules/
-│       ├── gamecontext.md
-│       ├── logging-system.md
-│       ├── scene-loading.md
-│       ├── service-architecture.md
-│       ├── time-system.md
-│       ├── ui-system.md
-│       ├── camera-system.md
-│       ├── event-dispatcher.md
-│       ├── prototype-builder.md
-│       ├── pathfinding.md
-│       ├── animation/
-│       │   ├── character-animation.md
-│       │   └── headlook-design.md
-│       ├── character/
-│       │   ├── index.md
-│       │   ├── scharacter-snapshot.md
-│       │   ├── animation-architecture-plan.md
-│       │   ├── animation-design.md
-│       │   ├── component-inventory.md
-│       │   ├── coverage-analysis.md
-│       │   ├── current-callchain.md
-│       │   ├── data-structures.md
-│       │   ├── evaluation.md
-│       │   ├── field-analysis.md
-│       │   ├── locomotion-design.md
-│       │   ├── module-analysis.md
-│       │   ├── runtime-trace.md
-│       │   ├── scene-setup.md
-│       │   ├── stats-rule-system.md
-│       │   └── target-callchain.md
-│       └── input/
-│           ├── input-manager.md
-│           └── mouse-interaction.md
+│   ├── L1-core/
+│   ├── L2-services/
+│   │   ├── README.md
+│   │   ├── L2-audio/
+│   │   ├── L2-camera-service/
+│   │   ├── L2-event-dispatcher/
+│   │   ├── L2-game-state-service/
+│   │   ├── L2-input/
+│   │   ├── L2-modules/
+│   │   │   ├── L3-character/
+│   │   │   ├── L3-pathfinding/
+│   │   │   └── L3-stats/
+│   │   ├── L2-player-service/
+│   │   ├── L2-scene-service/
+│   │   ├── L2-time-service/
+│   │   └── L2-ui/
+│   └── archive/
+│       ├── tech-v1/
+│       └── tech-v2/
 ├── plans/
 │   ├── long-term.md
 │   └── short-term.md
@@ -81,7 +68,10 @@
 │   ├── 2026-05-25-top-down-camera.md
 │   ├── 2026-05-26-mouse-input-pipeline.md
 │   ├── 2026-05-27-prototype-builder-tool.md
-│   └── 2026-05-27-infrastructure-cleanup.md
+│   ├── 2026-05-27-infrastructure-cleanup.md
+│   └── 2026-05-29-namespace-migration.md
 └── versions/
-    └── v0.0.1.md
+    ├── v0.0.1.md
+    ├── v0.1.0.md
+    └── v0.2.0.md
 ```

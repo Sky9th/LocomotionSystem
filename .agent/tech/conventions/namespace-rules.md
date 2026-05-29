@@ -19,15 +19,14 @@ namespace = "RedDust" + "." + 从 Scripts/ 起, 每个 L#_ 目录名去前缀后
 
 ```
 RedDust.Shared                                    ← Shared/
-RedDust.Core                                      ← L1_Core/
+RedDust.Core                                      ← L1_Core/ (含 EventDispatcherService)
 RedDust.Audio                                     ← Services/L2_Audio/
-RedDust.CameraService                             ← Services/L2_CameraService/
-RedDust.EventDispatcher                           ← Services/L2_EventDispatcher/
-RedDust.GameStateService                          ← Services/L2_GameStateService/
-RedDust.Input                                     ← Services/L2_Input/
-RedDust.PlayerService                             ← Services/L2_PlayerService/
-RedDust.SceneService                              ← Services/L2_SceneService/
-RedDust.TimeService                               ← Services/L2_TimeService/
+RedDust.GameCamera                                ← Services/L2_CameraService/
+RedDust.GameState                                 ← Services/L2_GameStateService/
+RedDust.GameInput                                 ← Services/L2_Input/
+RedDust.Player                                    ← Services/L2_PlayerService/
+RedDust.GameScene                                 ← Services/L2_SceneService/
+RedDust.GameTime                                  ← Services/L2_TimeService/
 RedDust.UI                                        ← Services/L2_UI/
 RedDust.Character                                 ← Services/Modules/L3_Character/ (Actor, Config, Input)
 RedDust.Character.Animation                       ← L3_Character/L4_Animation/ (Config, Requests)
@@ -38,11 +37,19 @@ RedDust.Character.Kinematic                       ← L3_Character/L4_Kinematic/
 RedDust.Character.Locomotion                      ← L3_Character/L4_Locomotion/ (Structs)
 RedDust.Character.Stats                           ← L3_Character/L4_Stats/ (Rules)
 RedDust.Stats                                     ← Services/Modules/L3_Stats/
-RedDust.Pathfinding                               ← Services/Modules/L3_Pathfinding/
+RedDust.Stats.Editor                              ← Services/Modules/L3_Stats/Editor/
+RedDust.Pathfinding                               ← Services/Modules/L3_Pathfinding/ (stub, 无代码)
 ```
+
+## 层级豁免
+
+以下类型不适用 L1-L5 单向依赖约束，可被任意层引用：
+
+- **契约定义枚举**（如 `EGameState`）—— 纯数据，定义游戏状态协议
+- **事件驱动 Struct**（如 `SSceneLoadComplete`、`SIActionMove`）—— 通过 EventDispatcher 分发，是跨层共享数据载体
 
 ## 注意事项
 
-- L2 Service 的 namespace 名可能与内部主类名相同（如 `RedDust.GameStateService` 包含 `GameStateService` 类），跨 namespace 引用时需用完全限定名
-- `RedDust.Input` namespace 与 `UnityEngine.Input` 冲突，引用 Unity Input API 时必须使用 `UnityEngine.Input.xxx`
+- `EventDispatcherService` 已从 L2_EventDispatcher 移至 L1_Core，namespace 合并到 `RedDust.Core`
+- `RedDust.GameInput`、`RedDust.GameTime`、`RedDust.GameCamera` 跳过 `Service` 后缀并添加 `Game` 前缀以避免 namespace/class 同名和 Unity 类型冲突（`Input`、`Time`、`Camera`）
 - 第三方代码（Plugins/, Packages/）的 namespace 不受此约定约束

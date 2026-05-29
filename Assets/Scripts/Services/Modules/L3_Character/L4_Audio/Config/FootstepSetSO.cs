@@ -3,7 +3,7 @@ using RedDust.Audio;
 
 namespace RedDust.Character.Audio
 {
-    [CreateAssetMenu(fileName = "FootstepSet", menuName = "Game/Character/Footstep Set")]
+    [CreateAssetMenu(fileName = "FootstepSet", menuName = "RedDust/Character/Audio/Footstep Set")]
     public class FootstepSetSO : AudioSetSO
     {
         public AudioClip clip;

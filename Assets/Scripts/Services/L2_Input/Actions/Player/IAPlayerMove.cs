@@ -1,10 +1,8 @@
-using System;
-using RedDust.GameStateService;
-using Unity.VisualScripting;
+using RedDust.GameState;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace RedDust.Input
+namespace RedDust.GameInput
 {
     /// <summary>
     /// Translates the "Move" action map into a world-space locomotion intent. The

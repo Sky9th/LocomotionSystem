@@ -1,9 +1,9 @@
-using RedDust.GameStateService;
-using RedDust.TimeService;
+using RedDust.GameState;
+using RedDust.GameTime;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace RedDust.Input
+namespace RedDust.GameInput
 {
     /// <summary>
     /// Publishes a time scale intent that slows global gameplay speed to a configured multiplier.

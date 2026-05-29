@@ -3,7 +3,7 @@ using RedDust.Core;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace RedDust.SceneService
+namespace RedDust.GameScene
 {
     public class SceneService : BaseService
     {

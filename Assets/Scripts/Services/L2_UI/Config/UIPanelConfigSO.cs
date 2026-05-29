@@ -5,7 +5,7 @@ using UnityEngine;
 namespace RedDust.UI
 {
 
-    [CreateAssetMenu(fileName = "PanelConfig", menuName = "Game/UI/Panel Config")]
+    [CreateAssetMenu(fileName = "PanelConfig", menuName = "RedDust/UI/Panel Config")]
     public class UIPanelConfigSO : ScriptableObject
     {
         [Serializable]

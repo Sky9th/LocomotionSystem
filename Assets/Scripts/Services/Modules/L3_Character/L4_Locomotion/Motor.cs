@@ -1,7 +1,7 @@
 using UnityEngine;
 using RedDust.Character;
 using RedDust.Character.Kinematic;
-using RedDust.Input;
+using RedDust.GameInput;
 
 namespace RedDust.Character.Locomotion
 {

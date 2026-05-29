@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace RedDust.Character.Locomotion
 {
-    [CreateAssetMenu(fileName = "LocomotionProfile", menuName = "Game/Character/Locomotion Profile")]
+    [CreateAssetMenu(fileName = "LocomotionProfile", menuName = "RedDust/Character/Locomotion Profile")]
     public sealed class LocomotionProfile : ScriptableObject
     {
         [Header("Motion")]
