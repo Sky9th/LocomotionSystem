@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using RedDust.Character.Animation;
 using RedDust.Character;
+using RedDust.Character.Director;
 using RedDust.Character.Kinematic;
 using RedDust.Character.Locomotion;
 using RedDust.Character.Stats;
@@ -34,7 +35,7 @@ namespace RedDust.Character
         internal SCharacterMotor LastMotor { get; private set; }
         internal SCharacterDiscrete LastDiscrete { get; private set; }
 
-        private CharacterEventReceiver inputModule;
+        private ICharacterDirector director;
         private CharacterRig characterRig;
         private CharacterKinematic characterKinematic;
         private ILocomotionSimulator locomotionSimulator;
@@ -46,7 +47,7 @@ namespace RedDust.Character
             characterAnimation = GetComponentInChildren<AnimationBrain>();
             characterRig = new CharacterRig(transform, characterAnimation?.transform ?? transform);
             characterAnimation?.SetRig(characterRig);
-            inputModule = new CharacterEventReceiver(this);
+            director = new PlayerDirector(this);
             characterKinematic = new CharacterKinematic(transform, transform, characterRig);
             locomotionSimulator = new GroundLocomotion();
 
@@ -68,13 +69,13 @@ namespace RedDust.Character
 
         private void OnEnable()
         {
-            if (autoSubscribeInput) inputModule?.Subscribe();
+            if (autoSubscribeInput && director is PlayerDirector pd) pd.Subscribe();
         }
 
         private void OnDisable()
         {
-            inputModule?.Unsubscribe();
-            inputModule?.Reset();
+            if (director is PlayerDirector pd) pd.Unsubscribe();
+            if (director is PlayerDirector pd2) pd2.Reset();
             characterKinematic?.Reset();
         }
 
@@ -85,23 +86,12 @@ namespace RedDust.Character
 
             var ctx = new CharacterFrameContext();
 
-            inputModule.ReadActions(out ctx.Input);
+            var intent = director.Evaluate();
+            ctx.Intent = intent;
+            ctx.Kinematic = characterKinematic.Evaluate(characterProfile, intent.LocomotionHeading,
+                intent.AimDirection, deltaTime);
 
-            Vector3 heading;
-            if (inputModule.ReadMouseGroundPosition(out Vector3 mouseWorldPos))
-            {
-                var dir = mouseWorldPos - transform.position;
-                dir.y = 0f;
-                heading = dir.sqrMagnitude > Mathf.Epsilon ? dir.normalized : transform.forward;
-            }
-            else
-            {
-                heading = transform.forward;
-            }
-
-            ctx.Kinematic = characterKinematic.Evaluate(characterProfile, heading, deltaTime);
-
-            locomotionSimulator.Simulate(ref ctx, locomotionProfile, deltaTime);
+            locomotionSimulator.Simulate(ref ctx, intent, locomotionProfile, deltaTime);
 
             PlanarSpeed = ctx.Motor.ActualPlanarVelocity.magnitude;
             LastKinematic = ctx.Kinematic;

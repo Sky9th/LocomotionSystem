@@ -26,23 +26,24 @@ namespace RedDust.Character.Kinematic
             previousGroundContact = SGroundContact.None;
         }
 
-        internal SCharacterKinematic Evaluate(CharacterProfile profile, Vector3 heading, float deltaTime)
+        internal SCharacterKinematic Evaluate(CharacterProfile profile, Vector3 locomotionHeading,
+            Vector3 aimDirection, float deltaTime)
         {
             if (profile == null) throw new ArgumentNullException(nameof(profile));
 
             var position = actorTransform.position;
             var bodyForward = actorTransform.forward;
 
-            var lookDirection = CharacterHeadLook.Evaluate(actorTransform.forward, modelRoot, actorTransform, profile);
+            var lookDirection = CharacterHeadLook.Evaluate(aimDirection, modelRoot, actorTransform, profile);
 
             var groundContact = EvaluateGroundContactAndApplyConstraints(profile, deltaTime, ref position);
             CharacterObstacleDetection.TryDetectForwardObstacle(
-                position, heading,
+                position, locomotionHeading,
                 profile.obstacleProbeVerticalOffset, profile.obstacleProbeDistance,
                 profile.obstacleLayerMask, profile.obstacleMinClimbHeight, profile.obstacleMaxClimbHeight,
                 profile.maxGroundSlopeAngle, out var obstacle);
 
-            return new SCharacterKinematic(position, bodyForward, heading, lookDirection, groundContact, obstacle);
+            return new SCharacterKinematic(position, bodyForward, locomotionHeading, lookDirection, groundContact, obstacle);
         }
 
         private SGroundContact EvaluateGroundContactAndApplyConstraints(

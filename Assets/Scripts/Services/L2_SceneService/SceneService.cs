@@ -27,6 +27,7 @@ namespace RedDust.GameScene
         protected override void OnSubscriptionsActivated()
         {
             Dispatcher.Subscribe<SLoadSceneRequest>(HandleLoadSceneRequest);
+            Dispatcher.Subscribe<SReloadSceneRequest>(HandleReloadSceneRequest);
             Dispatcher.Subscribe<SUnloadSceneRequest>(HandleUnloadSceneRequest);
         }
 
@@ -35,6 +36,7 @@ namespace RedDust.GameScene
             if (Dispatcher != null)
             {
                 Dispatcher.Unsubscribe<SLoadSceneRequest>(HandleLoadSceneRequest);
+                Dispatcher.Unsubscribe<SReloadSceneRequest>(HandleReloadSceneRequest);
                 Dispatcher.Unsubscribe<SUnloadSceneRequest>(HandleUnloadSceneRequest);
             }
         }
@@ -42,6 +44,11 @@ namespace RedDust.GameScene
         private void HandleLoadSceneRequest(SLoadSceneRequest request, MetaStruct meta)
         {
             StartCoroutine(LoadContentScene(request.SceneName));
+        }
+
+        private void HandleReloadSceneRequest(SReloadSceneRequest request, MetaStruct meta)
+        {
+            StartCoroutine(ReloadContentScene(request.SceneName));
         }
 
         private void HandleUnloadSceneRequest(SUnloadSceneRequest request, MetaStruct meta)
@@ -52,6 +59,44 @@ namespace RedDust.GameScene
         }
 
         private IEnumerator LoadContentScene(string sceneName)
+        {
+            var previousScene = currentContentScene;
+
+            if (SceneManager.GetSceneByName(sceneName).isLoaded)
+            {
+                currentContentScene = sceneName;
+                Dispatcher.Publish(new SSceneLoadComplete(sceneName, previousScene));
+                yield break;
+            }
+
+            Dispatcher.Publish(new SSceneLoadStart(sceneName));
+
+            PublishState(new SSceneTransition(sceneName, previousScene, true));
+
+            var op = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+            while (!op.isDone)
+                yield return null;
+
+            if (!string.IsNullOrEmpty(previousScene))
+            {
+                var oldScene = SceneManager.GetSceneByName(previousScene);
+                if (oldScene.isLoaded)
+                    yield return SceneManager.UnloadSceneAsync(oldScene);
+            }
+            currentContentScene = sceneName;
+
+            var elapsed = 0f;
+            while (elapsed < minLoadingDisplayTime)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                yield return null;
+            }
+
+            PublishState(new SSceneTransition(sceneName, previousScene, false));
+            Dispatcher.Publish(new SSceneLoadComplete(sceneName, previousScene));
+        }
+
+        private IEnumerator ReloadContentScene(string sceneName)
         {
             var previousScene = currentContentScene;
 

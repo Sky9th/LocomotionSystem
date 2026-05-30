@@ -1,7 +1,7 @@
 using UnityEngine;
 using RedDust.Character;
+using RedDust.Character.Director;
 using RedDust.Character.Kinematic;
-using RedDust.GameInput;
 
 namespace RedDust.Character.Locomotion
 {
@@ -10,26 +10,15 @@ namespace RedDust.Character.Locomotion
         private Vector2 currentLocalVelocity;
 
         internal SCharacterMotor Evaluate(
-            in SCharacterKinematic kin, in SCharacterInputActions inp,
+            in SCharacterKinematic kin, in SCharacterIntent intent,
             LocomotionProfile profile, float dt)
         {
-            var move = inp.MoveAction.Equals(SIActionMove.None) ? inp.LastMoveAction : inp.MoveAction;
-            var desired = ComputeDesired(move, profile.moveSpeed);
+            var speed = intent.HasMovement ? profile.moveSpeed : 0f;
+            var desired = new Vector2(0f, speed);
             currentLocalVelocity = Smooth(currentLocalVelocity, desired, profile.acceleration, dt);
             var planar = ConvertToWorld(currentLocalVelocity, kin.LocomotionHeading);
             var turnAngle = SignedAngle(kin.BodyForward, kin.LocomotionHeading);
             return new SCharacterMotor(desired, currentLocalVelocity, planar, turnAngle);
-        }
-
-        // ── Static Helpers ──
-
-        private static Vector2 ComputeDesired(SIActionMove action, float speed)
-        {
-            if (!action.HasInput || speed <= 0f) return Vector2.zero;
-            var input = action.RawInput;
-            var intensity = Mathf.Clamp01(input.magnitude);
-            if (input.sqrMagnitude > Mathf.Epsilon) input = input.normalized;
-            return input * (intensity * speed);
         }
 
         private static Vector2 Smooth(Vector2 cur, Vector2 des, float accel, float dt)

@@ -18,7 +18,7 @@ namespace RedDust.Character.Animation.Drivers
         {
             if (aliasProfile == null) return;
 
-            if (!ctx.Input.JumpAction.Button.IsRequested) return;
+            if (!ctx.Intent.JumpRequested) return;
 
             var phase = ctx.Discrete.Phase;
             if (phase != ELocomotionPhase.GroundedIdle && phase != ELocomotionPhase.GroundedMoving)
