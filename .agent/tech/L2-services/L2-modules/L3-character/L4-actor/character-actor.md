@@ -1,6 +1,6 @@
 # CharacterActor · 角色主控
 
-> `Character/Components/CharacterActor.cs` — MonoBehaviour，角色组合根，每帧 Evaluate() 入口
+> `Character/Actor/CharacterActor.cs` — MonoBehaviour，角色组合根，每帧流水线入口
 
 ## 调用链
 
@@ -13,7 +13,7 @@
     ├── GetComponentInChildren<AnimationBrain>()  → 先获取动画组件
     ├── new CharacterRig(transform, animation?.transform)  → modelRoot = animation 的 transform
     ├── characterAnimation?.SetRig(rig)           → 注入 Rig 到 Animation
-    ├── new CharacterEventReceiver(this)          → Input 模块
+    ├── new PlayerDirector(this)                  → Director (L4_Director)
     ├── new CharacterKinematic(transform, transform, rig)  → Kinematic 模块
     ├── new GroundLocomotion()                    → Locomotion 模块
     ├── new CharacterStats(statsTree)             → Stats 模块
@@ -21,16 +21,16 @@
 
   Update:
     ├── new CharacterFrameContext()               → 创建帧上下文
-    ├── inputModule.ReadActions(out ctx.Input)    → 读取输入
-    ├── 计算 heading (鼠标地面坐标 或 transform.forward fallback)
-    ├── characterKinematic.Evaluate(profile, heading, dt)  → ctx.Kinematic
-    ├── locomotionSimulator.Simulate(ref ctx, locomotionProfile, dt)  → ctx.Motor/Discrete
+    ├── director.Evaluate() → SCharacterIntent    → 取得意图
+    ├── ctx.Intent = intent                        → 写入帧上下文
+    ├── characterKinematic.Evaluate(profile, locomotionHeading, aimDirection, dt)  → ctx.Kinematic
+    ├── locomotionSimulator.Simulate(ref ctx, intent, locomotionProfile, dt)  → ctx.Motor/Discrete
     ├── PlanarSpeed + LastKinematic/LastMotor/LastDiscrete 缓存
     ├── stats?.Update(ctx, dt)                    → 数值更新 + 构建 LastStats
     └── characterAnimation?.Apply(in ctx)         → 动画应用
 
   OnDisable:
-    ├── inputModule?.Unsubscribe/Reset
+    ├── director (PlayerDirector)?.Unsubscribe/Reset
     └── characterKinematic?.Reset
 ```
 
@@ -43,7 +43,7 @@
 | 依赖 | ILocomotionSimulator | Simulate() 每帧仿真移动 |
 | 依赖 | AnimationBrain | Apply() 消费帧上下文驱动动画 |
 | 依赖 | CharacterStats | Update() 每帧更新数值 |
-| 依赖 | CharacterEventReceiver | 输入桥接，读取输入和相机 |
+| 依赖 | ICharacterDirector (L4_Director) | Evaluate() 产出 SCharacterIntent |
 | 依赖 | CharacterProfile | SO 配置 — 地面探针/障碍/HeadLook 参数 |
 | 依赖 | LocomotionProfile | SO 配置 — 速度/加速度/转向阈值 |
 | 依赖 | StatsTreeSO | Stats 树根节点，运行时实例化 |
@@ -68,37 +68,19 @@ private void Awake()
 ```
 - **用途**: 构造所有子模块实例，建立引用链
 - **调用者**: Unity 生命周期
-- **备注**: 先获取 AnimationBrain → 创建 Rig(modelRoot=animation.transform) → SetRig → Input → Kinematic → Locomotion → Stats → DumpStatsTree
-
-### DumpStatsTree()
-```csharp
-private void DumpStatsTree()
-```
-- **用途**: 调试用，在 Awake 中将 StatsTree 展开写到 Log
-- **调用者**: Awake 末尾
-- **备注**: statsTree 为 null 时只打一行日志
-
-### OnEnable()
-```csharp
-private void OnEnable()
-```
-- **用途**: 订阅输入事件
-- **调用者**: Unity 生命周期
-
-### OnDisable()
-```csharp
-private void OnDisable()
-```
-- **用途**: 取消输入订阅，重置 Kinematic 状态
-- **调用者**: Unity 生命周期
+- **备注**: Animation → Rig → Director → Kinematic → Locomotion → Stats → DumpStatsTree
 
 ### Update()
 ```csharp
 private void Update()
 ```
-- **用途**: 每帧评估流水线 — Input → Kinematic → Locomotion → Stats → Animation
+- **用途**: 每帧评估流水线 — Director → Kinematic → Locomotion → Stats → Animation
 - **调用者**: Unity 生命周期
-- **备注**: deltaTime <= 0 时跳过整帧；heading 由鼠标地面坐标或 transform.forward 决定
+- **备注**: deltaTime <= 0 时跳过整帧；意图由 ICharacterDirector.Evaluate() 统一产出
+
+### OnEnable() / OnDisable()
+- OnEnable: PlayerDirector.Subscribe() 订阅输入事件
+- OnDisable: PlayerDirector.Unsubscribe/Reset + Kinematic.Reset
 
 ## 内部机制
 
@@ -106,17 +88,14 @@ private void Update()
 
 ```
 1. new CharacterFrameContext()
-2. inputModule.ReadActions(out ctx.Input)          ← 读取输入动作聚合
-3. 计算 heading:
-   - 有鼠标地面位置 → 角色→鼠标方向 (y=0 flat)
-   - 无鼠标地面 → transform.forward
-4. ctx.Kinematic = characterKinematic.Evaluate(profile, heading, dt)
-5. locomotionSimulator.Simulate(ref ctx, locomotionProfile, dt)
+2. var intent = director.Evaluate()                 ← SCharacterIntent (L4_Director)
+3. ctx.Intent = intent
+4. ctx.Kinematic = characterKinematic.Evaluate(profile, intent.LocomotionHeading, intent.AimDirection, dt)
+5. locomotionSimulator.Simulate(ref ctx, intent, locomotionProfile, dt)
 6. PlanarSpeed = Motor.ActualPlanarVelocity.magnitude
    缓存 LastKinematic/LastMotor/LastDiscrete
 7. stats?.Update(ctx, dt)                          ← 数值规则 Tick
-8. if (stats != null) 构建 LastStats 字典
-9. characterAnimation?.Apply(in ctx)                ← 动画驱动
+8. characterAnimation?.Apply(in ctx)                ← 动画驱动
 ```
 
 ## 未来规划
@@ -124,6 +103,5 @@ private void Update()
 | 规划 | 状态 | 来源 |
 |------|------|------|
 | 输入 WASD 移动禁用 — Phase 4 A* Pathfinding 将驱动移动 | 待做 | 代码 TODO |
-| 非玩家角色 (NPC) 支持 | 远期 | 旧 module-analysis.md |
-| 事件回调桥接 — 外部系统通过 Dispatcher 通知 CharacterActor | 待做 | 旧 stats-rule-system.md |
+| 非玩家角色 (NPC) 支持 — AICharacterDirector | 远期 | L4_Director/AI/ 占位 |
 | stat 规则数量增长后考虑 Rule 配置化 | 远期 | 代码 TODO |

@@ -7,7 +7,7 @@
 ```
 被谁调:
   CharacterActor.Update()
-    → characterKinematic.Evaluate(profile, heading, dt)
+    → characterKinematic.Evaluate(profile, locomotionHeading, aimDirection, dt)
 
 调谁:
   CharacterHeadLook.Evaluate()              → 头部朝向计算
@@ -50,7 +50,7 @@ internal void Reset()
 
 ### Evaluate()
 ```csharp
-internal SCharacterKinematic Evaluate(CharacterProfile profile, Vector3 heading, float deltaTime)
+internal SCharacterKinematic Evaluate(CharacterProfile profile, Vector3 locomotionHeading, Vector3 aimDirection, float deltaTime)
 ```
 - **用途**: 完整运动学评估 — HeadLook + 地面检测 + 障碍检测 → 聚合输出
 - **参数**: `profile` — 角色 SO 配置；`heading` — 运动朝向；`deltaTime` — 帧时间
