@@ -74,8 +74,7 @@ namespace RedDust.Character
 
         private void OnDisable()
         {
-            if (director is PlayerDirector pd) pd.Unsubscribe();
-            if (director is PlayerDirector pd2) pd2.Reset();
+            if (director is PlayerDirector pd) { pd.Unsubscribe(); pd.Reset(); }
             characterKinematic?.Reset();
         }
 
