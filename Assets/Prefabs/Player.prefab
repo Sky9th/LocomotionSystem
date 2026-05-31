@@ -17,6 +17,8 @@ GameObject:
   - component: {fileID: 386188878043265307}
   - component: {fileID: 803302436353983027}
   - component: {fileID: 4210259612169661076}
+  - component: {fileID: 5654363114169968691}
+  - component: {fileID: -6460370526807817209}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -233,9 +235,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1073741824
   drawGizmos: 1
-  detailedGizmos: 0
+  detailedGizmos: 1
   startEndModifier:
-    addPoints: 0
+    addPoints: 1
     exactStartPoint: 3
     exactEndPoint: 3
     useRaycasting: 0
@@ -301,7 +303,7 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  endReachedDistance: 0.2
+  endReachedDistance: 0.5
   whenCloseToDestination: 0
   rvoDensityBehavior:
     enabled: 1
@@ -322,7 +324,7 @@ MonoBehaviour:
   maxAcceleration: -2.5
   rotationSpeed: 360
   slowdownDistance: 0.6
-  pickNextWaypointDist: 2
+  pickNextWaypointDist: 0.5
   alwaysDrawGizmos: 0
   slowWhenNotFacingTarget: 1
   preventMovingBackwards: 0
@@ -339,6 +341,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea988b70da5908046a22ebd7e8d33492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5654363114169968691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8667043660662020576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce1b5db8c307a3447956c710dd1eae9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  xMin: 0
+  xMax: 20
+  zMin: -10
+  zMax: 10
+  minDelay: 0.5
+  maxDelay: 3
+--- !u!114 &-6460370526807817209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8667043660662020576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb6a34d769a1e4ac7b0b30e433aa443c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1073741824
+  smoothType: 0
+  subdivisions: 2
+  iterations: 2
+  strength: 0.1
+  uniformLength: 1
+  maxSegmentLength: 0.6
+  bezierTangentLength: 0.4
+  offset: 0.1
+  factor: 0.1
 --- !u!1001 &7698765721122133654
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -753,8 +795,11 @@ MonoBehaviour:
   animancer: {fileID: 2514341874839075585}
   animator: {fileID: 4304622158265510663}
   aliasProfile: {fileID: 11400000, guid: f85ef9e02053e3542b741c132b6f8f5c, type: 2}
-  animationProfile: {fileID: 11400000, guid: 264e4d30fb02cbb4b93aefb446d194ea, type: 2}
+  animationProfile: {fileID: 11400000, guid: 8c24cbd0466513245b7b38493fcf3aeb, type: 2}
+  locomotionProfile: {fileID: 0}
   forwardRootMotion: 1
+  applyRootMotionRotation: 0
+  autoMatchAnimationSpeed: 1
   upperBodyMask: {fileID: 0}
   additiveMask: {fileID: 0}
   facialMask: {fileID: 0}
@@ -773,7 +818,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   aliasProfile: {fileID: 11400000, guid: f85ef9e02053e3542b741c132b6f8f5c, type: 2}
-  animationProfile: {fileID: 11400000, guid: 264e4d30fb02cbb4b93aefb446d194ea, type: 2}
+  animationProfile: {fileID: 11400000, guid: 8c24cbd0466513245b7b38493fcf3aeb, type: 2}
   locomotionProfile: {fileID: 11400000, guid: 2658baef4b1928c4ca79d1e7b70ab09a, type: 2}
 --- !u!114 &2783184157824111690
 MonoBehaviour:

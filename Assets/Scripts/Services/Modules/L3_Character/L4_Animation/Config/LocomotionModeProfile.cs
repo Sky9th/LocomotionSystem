@@ -17,7 +17,11 @@ namespace RedDust.Character.Animation
         [SerializeField] private EMovementGait gait = EMovementGait.Walk;
 
         [Header("Turn Speeds (deg/sec)")]
-        [SerializeField, Min(0f)] private float movingTurnSpeed = 360f;
+        [SerializeField, Min(0f)] private float movingTurnSpeed = 720f;
+
+        [Header("Animation Native Speed")]
+        [Tooltip("动画在 Speed=1.0 时的实际位移速度 (m/s)，用于计算 buff/减益乘积")]
+        [SerializeField, Min(0.01f)] private float animNativeSpeed = 5f;
 
         [Header("Turn Angles (deg)")]
         [SerializeField, Range(0f, 180f)] private float enterAngle = 90f;
@@ -28,6 +32,9 @@ namespace RedDust.Character.Animation
 
         /// <summary>Gait this mode is configured for.</summary>
         public EMovementGait Gait => gait;
+
+        /// <summary>Animation native speed at Speed=1.0 (m/s).</summary>
+        public float AnimNativeSpeed => animNativeSpeed;
 
         /// <summary>Turn speed when moving (walk/run/etc.).</summary>
         public float MovingTurnSpeed => movingTurnSpeed;

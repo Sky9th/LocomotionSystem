@@ -21,6 +21,8 @@ namespace RedDust.Character.Director
         internal SIActionProne ProneAction;
         internal SIActionStand StandAction;
         internal SIActionMove MoveAction;
+        internal SIActionPrimaryInteract PrimaryInteractAction;
+        internal SIActionSecondaryInteract SecondaryInteractAction;
 
         internal Vector3 MouseGroundPosition;
         internal bool HasMouseGround;
@@ -67,6 +69,8 @@ namespace RedDust.Character.Director
             ProneAction = SIActionProne.None;
             StandAction = SIActionStand.None;
             MoveAction = SIActionMove.None;
+            PrimaryInteractAction = SIActionPrimaryInteract.None;
+            SecondaryInteractAction = SIActionSecondaryInteract.None;
             MouseGroundPosition = Vector3.zero;
             HasMouseGround = false;
         }
@@ -82,6 +86,8 @@ namespace RedDust.Character.Director
             Register<SIActionCrouch>(PutAction);
             Register<SIActionProne>(PutAction);
             Register<SIActionStand>(PutAction);
+            Register<SIActionPrimaryInteract>(PutAction);
+            Register<SIActionSecondaryInteract>(PutAction);
             // TODO Phase 4
             // Register<SIActionMove>(PutAction);
         }
@@ -118,6 +124,16 @@ namespace RedDust.Character.Director
             { ProneAction = (SIActionProne)(object)payload; return; }
             if (typeof(TPayload) == typeof(SIActionStand))
             { StandAction = (SIActionStand)(object)payload; return; }
+            if (typeof(TPayload) == typeof(SIActionPrimaryInteract))
+            { PrimaryInteractAction = (SIActionPrimaryInteract)(object)payload; LogClick("LeftClick", PrimaryInteractAction.Button); return; }
+            if (typeof(TPayload) == typeof(SIActionSecondaryInteract))
+            { SecondaryInteractAction = (SIActionSecondaryInteract)(object)payload; LogClick("RightClick", SecondaryInteractAction.Button); return; }
+        }
+
+        private static void LogClick(string name, SButtonInputState state)
+        {
+            if (state.IsRequested)
+                Debug.Log($"[PlayerInput] {name} — Pressed, mouse: {Input.mousePosition}");
         }
 
         private static bool TryResolveDispatcher(out EventDispatcherService dispatcher)

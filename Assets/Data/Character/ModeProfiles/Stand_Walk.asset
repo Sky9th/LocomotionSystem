@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   posture: 0
   gait: 1
-  movingTurnSpeed: 360
-  enterAngle: 100
+  movingTurnSpeed: 720
+  animNativeSpeed: 1.8
+  enterAngle: 90
   exitAngle: 20

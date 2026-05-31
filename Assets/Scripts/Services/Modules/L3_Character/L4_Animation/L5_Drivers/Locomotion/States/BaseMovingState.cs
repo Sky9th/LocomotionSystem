@@ -7,12 +7,13 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         public BaseMovingState(BaseLayer owner) : base(owner) { }
 
         public override bool CanEnterState
-            => Owner.Ctx.Discrete.Phase == ELocomotionPhase.GroundedMoving
-            && !Owner.Ctx.Discrete.IsTurning;
+            => Owner.Ctx.Discrete.Phase == ELocomotionPhase.GroundedMoving;
+        // [Deprecated] 移除 !IsTurning 条件 — TurnInMoving 已废弃，移动中转身由 ApplyTurnStepRotation 处理
 
         public override void Tick()
         {
-            if (Owner.TrySetState(BaseStateKey.TurnInMoving)) return;
+            // [Deprecated] TurnInMoving 已废弃 — 移动中转身由 ApplyTurnStepRotation 即时旋转
+            // if (Owner.TrySetState(BaseStateKey.TurnInMoving)) return;
             if (Owner.TrySetState(BaseStateKey.Idle)) return;
             if (Owner.TrySetState(BaseStateKey.AirLoop)) return;
 
@@ -26,9 +27,10 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
             };
             Owner.PlayIfChanged(alias);
 
-            if (Owner.Layer.CurrentState is Vector2MixerState mixer && Owner.LocoProfile.moveSpeed > 0f)
+            float desiredGaitSpeed = Owner.LocoProfile != null ? Owner.LocoProfile.GetSpeedForGait(gait) : 0f;
+            if (Owner.Layer.CurrentState is Vector2MixerState mixer && desiredGaitSpeed > 0f)
             {
-                var parameter = Owner.Ctx.Motor.ActualLocalVelocity / Owner.LocoProfile.moveSpeed;
+                var parameter = Owner.Ctx.Motor.ActualLocalVelocity / desiredGaitSpeed;
                 if (parameter.sqrMagnitude > 1f) parameter.Normalize();
                 mixer.Parameter = parameter;
             }

@@ -13,11 +13,15 @@ namespace RedDust.Character.Locomotion
             in SCharacterKinematic kin, in SCharacterIntent intent,
             LocomotionProfile profile, float dt)
         {
-            var speed = intent.HasMovement ? profile.moveSpeed : 0f;
+            var turnAngle = SignedAngle(kin.BodyForward, kin.LocomotionHeading);
+
+            var speed = intent.HasMovement
+                ? profile.GetSpeedForGait(intent.DesiredGait) * intent.MovementSpeedMultiplier
+                : 0f;
+
             var desired = new Vector2(0f, speed);
             currentLocalVelocity = Smooth(currentLocalVelocity, desired, profile.acceleration, dt);
             var planar = ConvertToWorld(currentLocalVelocity, kin.LocomotionHeading);
-            var turnAngle = SignedAngle(kin.BodyForward, kin.LocomotionHeading);
             return new SCharacterMotor(desired, currentLocalVelocity, planar, turnAngle);
         }
 
@@ -29,7 +33,12 @@ namespace RedDust.Character.Locomotion
 
         private static Vector3 ConvertToWorld(Vector2 local, Vector3 heading)
         {
-            return new Vector3(local.x, 0f, local.y);
+            var fwd = heading;
+            fwd.y = 0f;
+            if (fwd.sqrMagnitude < Mathf.Epsilon) fwd = Vector3.forward;
+            fwd.Normalize();
+            var right = Vector3.Cross(Vector3.up, fwd).normalized;
+            return right * local.x + fwd * local.y;
         }
 
         private static float SignedAngle(Vector3 body, Vector3 heading)

@@ -92,6 +92,24 @@ namespace RedDust.GameCamera
                 CreateCameraPivot();
                 InitializeDefaultRig();
             }
+
+            // 读取 Body 的 FollowOffset
+            Vector3 followOffset = Vector3.zero;
+            if (defaultVirtualCamera != null)
+            {
+                var body = defaultVirtualCamera.GetCinemachineComponent<CinemachineTransposer>();
+                if (body != null) followOffset = body.m_FollowOffset;
+            }
+
+            // 瞬移摄像机到 玩家位置 + FollowOffset
+            var outputCamera = cameraBrain != null ? cameraBrain.OutputCamera : null;
+            if (outputCamera != null)
+                outputCamera.transform.position = evt.Root.position + followOffset;
+
+            cameraPivot.position = evt.Root.position;
+            if (defaultVirtualCamera != null)
+                defaultVirtualCamera.PreviousStateIsValid = false;
+
             isFollowingPlayer = true;
         }
 

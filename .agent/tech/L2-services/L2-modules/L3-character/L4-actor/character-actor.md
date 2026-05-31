@@ -105,3 +105,4 @@ private void Update()
 | 输入 WASD 移动禁用 — Phase 4 A* Pathfinding 将驱动移动 | 待做 | 代码 TODO |
 | 非玩家角色 (NPC) 支持 — AICharacterDirector | 远期 | L4_Director/AI/ 占位 |
 | stat 规则数量增长后考虑 Rule 配置化 | 远期 | 代码 TODO |
+| isPlayer 身份标记抽象 — Director 类型选择 / Config SO / Factory 装配 | TODO | 架构讨论待解决 |

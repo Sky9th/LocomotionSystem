@@ -4,6 +4,7 @@ using RedDust.Character.Animation;
 using RedDust.Character;
 using RedDust.Character.Director;
 using RedDust.Character.Kinematic;
+using RedDust.Character.Pathfinding;
 using RedDust.Character.Locomotion;
 using RedDust.Character.Stats;
 using RedDust.Stats;
@@ -34,8 +35,10 @@ namespace RedDust.Character
         internal SCharacterKinematic LastKinematic { get; private set; }
         internal SCharacterMotor LastMotor { get; private set; }
         internal SCharacterDiscrete LastDiscrete { get; private set; }
+        internal LocomotionProfile LocomotionProfile => locomotionProfile;
 
         private ICharacterDirector director;
+        private PathfindingAgent pathfindingAgent;
         private CharacterRig characterRig;
         private CharacterKinematic characterKinematic;
         private ILocomotionSimulator locomotionSimulator;
@@ -47,6 +50,7 @@ namespace RedDust.Character
             characterAnimation = GetComponentInChildren<AnimationBrain>();
             characterRig = new CharacterRig(transform, characterAnimation?.transform ?? transform);
             characterAnimation?.SetRig(characterRig);
+            pathfindingAgent = GetComponent<PathfindingAgent>();
             director = new PlayerDirector(this);
             characterKinematic = new CharacterKinematic(transform, transform, characterRig);
             locomotionSimulator = new GroundLocomotion();
@@ -87,6 +91,7 @@ namespace RedDust.Character
 
             var intent = director.Evaluate();
             ctx.Intent = intent;
+            if (pathfindingAgent != null) pathfindingAgent.UpdateGaitSpeed(intent.DesiredGait);
             ctx.Kinematic = characterKinematic.Evaluate(characterProfile, intent.LocomotionHeading,
                 intent.AimDirection, deltaTime);
 
@@ -97,16 +102,10 @@ namespace RedDust.Character
             LastMotor = ctx.Motor;
             LastDiscrete = ctx.Discrete;
             stats?.Update(ctx, deltaTime);
-
-            if (stats != null)
-            {
-                var dict = new Dictionary<string, (float current, float max)>();
-                foreach (var kv in stats.All)
-                    dict[kv.Key] = (kv.Value.Current, kv.Value.Def.Max);
-                LastStats = dict;
-            }
+            LastStats = stats?.LastStats;
 
             characterAnimation?.Apply(in ctx);
+            pathfindingAgent?.SyncPosition();
         }
     }
 }

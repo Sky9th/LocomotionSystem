@@ -1,5 +1,6 @@
 using UnityEngine;
 using RedDust.Character;
+using RedDust.Character.Pathfinding;
 
 namespace RedDust.Character.Director
 {
@@ -7,6 +8,7 @@ namespace RedDust.Character.Director
     {
         private readonly Transform ownerTransform;
         private readonly PlayerInputReceiver receiver;
+        private readonly PathfindingAgent agent;
 
         private EMovementGait currentGait = EMovementGait.Idle;
         private EPosture currentPosture = EPosture.Standing;
@@ -15,6 +17,7 @@ namespace RedDust.Character.Director
         {
             ownerTransform = owner.transform;
             receiver = new PlayerInputReceiver(owner);
+            agent = owner.GetComponent<PathfindingAgent>();
         }
 
         internal void Subscribe() => receiver.Subscribe();
@@ -28,12 +31,30 @@ namespace RedDust.Character.Director
 
         public SCharacterIntent Evaluate()
         {
+            ProcessClickToMove();
+
             return new SCharacterIntent(
                 ComputeLocomotionHeading(),
                 ComputeAimDirection(),
                 ResolveDesiredGait(),
                 ResolveDesiredPosture(),
-                false); // 攀爬/跳跃由寻路系统决定，非玩家输入
+                false, // 攀爬/跳跃由寻路系统决定，非玩家输入
+                ComputeSpeedMultiplier());
+        }
+
+        private void ProcessClickToMove()
+        {
+            if (agent == null) return;
+            if (!receiver.SecondaryInteractAction.Button.IsRequested) return;
+            if (!receiver.HasMouseGround) return;
+
+            agent.SetDestination(receiver.MouseGroundPosition);
+            currentGait = EMovementGait.Run;
+        }
+
+        private float ComputeSpeedMultiplier()
+        {
+            return agent != null ? agent.DesiredSpeedMultiplier : 1f;
         }
 
         private Vector3 ComputeAimDirection()
@@ -50,12 +71,17 @@ namespace RedDust.Character.Director
 
         private Vector3 ComputeLocomotionHeading()
         {
-            return ComputeAimDirection(); // TODO Phase 4 — separate from aim
+            if (agent != null && agent.HasPath && !agent.HasReachedDestination)
+                return agent.PathDirection;
+
+            return ComputeAimDirection(); // fallback: aim = locomotion when not pathfinding
         }
 
         private EMovementGait ResolveDesiredGait()
         {
-            if (!receiver.MoveAction.HasInput)
+            bool hasPathfindingIntent = agent != null && agent.HasPath && !agent.HasReachedDestination;
+
+            if (!receiver.MoveAction.HasInput && !hasPathfindingIntent)
             {
                 currentGait = EMovementGait.Idle;
                 return currentGait;

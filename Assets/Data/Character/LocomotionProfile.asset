@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3ea173c31cac124e88f4178ae99bf99, type: 3}
   m_Name: LocomotionProfile
   m_EditorClassIdentifier: 
-  moveSpeed: 4
-  acceleration: 5
+  walkSpeed: 1.8
+  runSpeed: 3
+  sprintSpeed: 5
+  crawlSpeed: 1
+  acceleration: 8
   canSprint: 1
   canCrouch: 1
   canProne: 1
   turnEnterAngle: 65
   turnCompletionAngle: 5
-  lookStabilityAngle: 2
-  lookStabilityDuration: 0.15

@@ -130,10 +130,35 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2675367199521931450, guid: c944287bd34c14149a516139d3693ed3,
+        type: 3}
+      propertyPath: debugRoof
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675367199521931450, guid: c944287bd34c14149a516139d3693ed3,
+        type: 3}
+      propertyPath: showGraphs
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675367199521931450, guid: c944287bd34c14149a516139d3693ed3,
+        type: 3}
+      propertyPath: showNavGraphs
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675367199521931450, guid: c944287bd34c14149a516139d3693ed3,
+        type: 3}
+      propertyPath: data.dataString
+      value: UEsDBBQAAAgIAABAIexRHNeZtQIAAPkFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQGFVMtuGjEU/RXkdYkGBGroroWEdJEEhVRZlCwc+w5jYeyRHwES8e+912NgIItKSGPOuY9zH/YnU8bXIIJ1U6fkvZXAfnQYndm3zom8gy1fWjNXH3CweVEyVGTEk80TD8oi3iM3b9cQnBI/zVKTcYFgNKq0bn0jlzC2PniES649IOVsIG+D0GeHbbPDLn8/6NvZ40mACeD+ZxWN0HxdgyS1J+Ne0b8aZId0TsYGq8l2xVV/SEms1spnNSzs6lTtmNc+Yi1oIBXH6pKO3hV5VKCWVUh/r9sBHsvSQ8j6HN9NlMNGNZHZL9t0b839qhH5znWkXL1RP0lrwt5/4bu9RJfOru+OmQvKESolVk98J7gPrfa24UlLfOrVhusVf9PwUoF5sFNno5FIBhfJNXroT1qhjrWNKxCrk12j9QAerGP9dVa906z2qfztPEB9LKRIM8roHw9+rm2aQE5ETEZGFBIcDvA3FpQWyOdEiJJI9H/my/amZeJWOR+QynoySrYzHBFIMAJy47tkYEjem42OYrFbPNDoRAxj6wwkNOurwXAddjMMGC5X4IJrybpgbjnduSwuc4erdOGS4JN9UVxQM7s5DtvhAvu01YfT31eaga/s5h589RiDVqbVbCIesL9ja0yzuf6cJK95dCUXLa8A2xAdTHjgKRmqwf2SLe0eG5g8TNSaVjnpT4JQP/1eqb0Vx7Q6wezBmnT5zr5J/TIqeX5B2HA4GoqSD3pCDgsB190CRiMxQJWDfgHfyyFLN0gZ7DbXs6ZdeUi4W+ZUi8HbcngQO1PH63RnpeObqfpY21Y7lCntXDgA89hEOBYLDpPgEyNvpMIy5xCCMmkr2eeCaStWIBcnh0Xq7M02OH6G1urdBkIWbJzewQUj+HgjcXPfFWwo++IoC4OBxtGBfFYa1rwmqtiz/T9QSwMEFAAACAgAAEAh7NNOShRsAAAAdwAAAAkAJABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQGrVipLLSrOzM9TslIw1TPRM9NRUEovSizIKAYKGII4pZkpIHa0kqmppWlyWqKJYXKKqUFyqoWuQaqlZbJJYnKqiZFBqnmaqVIsUH1JZUGqX2JuKkRPQGJJRlpmXkpmXrqee1FmijvIaKXYWgBQSwECLQAUAAAICAAAQCHsURzXmbUCAAD5BQAACwAkAAAAAAAAAAAAAAAAAAAAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwECLQAUAAAICAAAQCHs005KFGwAAAB3AAAACQAkAAAAAAAAAAAAAAACAwAAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsFBgAAAAACAAIAuAAAALkDAAAAAA==
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675367199521931450, guid: c944287bd34c14149a516139d3693ed3,
+        type: 3}
+      propertyPath: data.file_cachedStartup
+      value: 
+      objectReference: {fileID: 4900000, guid: 9488e92f87972034088572b817472406, type: 3}
     - target: {fileID: 3894078953817663475, guid: c944287bd34c14149a516139d3693ed3,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.3572817
+      value: 9999
       objectReference: {fileID: 0}
     - target: {fileID: 3894078953817663475, guid: c944287bd34c14149a516139d3693ed3,
         type: 3}
@@ -179,6 +204,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6975220665892660605, guid: c944287bd34c14149a516139d3693ed3,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.9219575
+      objectReference: {fileID: 0}
+    - target: {fileID: 6975220665892660605, guid: c944287bd34c14149a516139d3693ed3,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -4.313678
+      objectReference: {fileID: 0}
+    - target: {fileID: 6975220665892660605, guid: c944287bd34c14149a516139d3693ed3,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 10.718569
       objectReference: {fileID: 0}
     - target: {fileID: 6987912418579276946, guid: c944287bd34c14149a516139d3693ed3,
         type: 3}

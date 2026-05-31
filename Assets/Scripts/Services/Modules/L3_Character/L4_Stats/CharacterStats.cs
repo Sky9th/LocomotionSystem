@@ -11,6 +11,7 @@ namespace RedDust.Character.Stats
         private readonly List<CharacterStatRule> rules = new();
 
         public IReadOnlyDictionary<string, StatInstance> All => stats;
+        public Dictionary<string, (float current, float max)> LastStats { get; private set; }
         internal DamageRule DamageRule { get; private set; }
 
         internal CharacterStats(StatsTreeSO tree)
@@ -35,6 +36,11 @@ namespace RedDust.Character.Stats
 
             foreach (var kv in stats)
                 kv.Value.Tick(dt);
+
+            var dict = new Dictionary<string, (float current, float max)>();
+            foreach (var kv in stats)
+                dict[kv.Key] = (kv.Value.Current, kv.Value.Def.Max);
+            LastStats = dict;
         }
     }
 }

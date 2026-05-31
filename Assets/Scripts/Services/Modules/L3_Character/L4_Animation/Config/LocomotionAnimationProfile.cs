@@ -18,8 +18,8 @@ namespace RedDust.Character.Animation
 
         [Header("Turn Speeds By Mode")]
         public LocomotionModeProfile[] modeProfiles;
-        [Min(0f)] public float defaultInPlaceTurnSpeed = 100f;
-        [Min(0f)] public float defaultMovingTurnSpeed = 360f;
+        [Min(0f)] public float defaultInPlaceTurnSpeed = 360f;
+        [Min(0f)] public float defaultMovingTurnSpeed = 720f;
 
         [Header("Airborne")]
         public float landDistanceThreshold = 0.5f;

@@ -28,8 +28,13 @@ namespace RedDust.Character.Animation
         [SerializeField] private AnimationAliasProfile aliasProfile;
         [SerializeField] private LocomotionAnimationProfile animationProfile;
 
+        [Header("Locomotion")]
+        [SerializeField] private Locomotion.LocomotionProfile locomotionProfile;
+
         [Header("Root Motion")]
         [SerializeField] private bool forwardRootMotion = true;
+        [SerializeField] private bool applyRootMotionRotation = false;
+        [SerializeField] private bool autoMatchAnimationSpeed = true;
 
         [Header("Masks")]
         [SerializeField] private AvatarMask upperBodyMask;
@@ -46,6 +51,11 @@ namespace RedDust.Character.Animation
         // ── Core State ──
         private DriverArbiter fullBodyArbiter;
         private CharacterRig characterRig;
+
+        // ── Root Motion Speed Matching ──
+        public float SpeedMultiplier { get; private set; } = 1f;
+        private EMovementGait lastAppliedGait = (EMovementGait)(-1);
+        private object lastAppliedState;
 
         // ── Head Look ──
         private Vector2MixerState headLookMixer;
@@ -78,6 +88,12 @@ namespace RedDust.Character.Animation
             headLookLayer = BindLayer(HeadLook, headMask);
             footstepLayer = BindLayer(Footstep, footMask);
 
+            if (locomotionProfile == null)
+            {
+                var actor = GetComponentInParent<CharacterActor>();
+                if (actor != null) locomotionProfile = actor.LocomotionProfile;
+            }
+
             if (headLookLayer != null && aliasProfile != null && aliasProfile.lookMixer != null)
                 headLookMixer = headLookLayer.TryPlay(aliasProfile.lookMixer) as Vector2MixerState;
         }
@@ -91,7 +107,8 @@ namespace RedDust.Character.Animation
             else
                 characterRig.ApplyPositionPlanar(animator.deltaPosition);
 
-            characterRig.ApplyRotation(animator.deltaRotation);
+            if (applyRootMotionRotation)
+                characterRig.ApplyRotation(animator.deltaRotation);
         }
 
         // ── Core API ──
@@ -105,6 +122,7 @@ namespace RedDust.Character.Animation
         {
             fullBodyArbiter.Resolve(ctx, Time.deltaTime);
             UpdateHeadLook(ctx);
+            ApplySpeedMultiplier(ctx);
         }
 
         // ── Head Look ──
@@ -138,6 +156,49 @@ namespace RedDust.Character.Animation
                 child.Weight = 1f;
                 child.NormalizedTime = 1f;
             }
+        }
+
+        // ── Root Motion Speed Matching ──
+
+        private void ApplySpeedMultiplier(in CharacterFrameContext ctx)
+        {
+            if (!autoMatchAnimationSpeed || fullBodyLayer?.CurrentState == null) return;
+
+            var gait = ctx.Discrete.Gait;
+            var state = (object)fullBodyLayer.CurrentState;
+
+            if (gait == lastAppliedGait && state == lastAppliedState) return;
+            lastAppliedGait = gait;
+            lastAppliedState = state;
+
+            if (locomotionProfile == null || animationProfile == null)
+            {
+                SpeedMultiplier = 1f;
+                fullBodyLayer.CurrentState.Speed = 1f;
+                return;
+            }
+
+            var posture = ctx.Discrete.Posture;
+            float animNativeSpeed = -1f;
+            var profiles = animationProfile.modeProfiles;
+            if (profiles != null)
+            {
+                for (int i = 0; i < profiles.Length; i++)
+                {
+                    var m = profiles[i];
+                    if (m != null && m.Posture == posture && m.Gait == gait)
+                    {
+                        animNativeSpeed = m.AnimNativeSpeed;
+                        break;
+                    }
+                }
+            }
+
+            SpeedMultiplier = animNativeSpeed > 0f
+                ? locomotionProfile.GetSpeedForGait(gait) / animNativeSpeed
+                : 1f;
+
+            fullBodyLayer.CurrentState.Speed = SpeedMultiplier;
         }
 
         // ── Driver Management ──
