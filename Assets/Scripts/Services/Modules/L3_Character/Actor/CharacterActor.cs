@@ -22,6 +22,7 @@ namespace RedDust.Character
 
         [Header("Locomotion")]
         [SerializeField] private LocomotionProfile locomotionProfile;
+        [SerializeField] private LocomotionAnimationProfile locomotionAnimationProfile;
 
         [Header("Stats")]
         [SerializeField] private StatsTreeSO statsTree;
@@ -31,7 +32,6 @@ namespace RedDust.Character
 
         public bool IsPlayer => isPlayer;
         public Dictionary<string, (float current, float max)> LastStats { get; private set; }
-        internal float PlanarSpeed { get; private set; }
         internal SCharacterKinematic LastKinematic { get; private set; }
         internal SCharacterMotor LastMotor { get; private set; }
         internal SCharacterDiscrete LastDiscrete { get; private set; }
@@ -56,17 +56,6 @@ namespace RedDust.Character
             locomotionSimulator = new GroundLocomotion();
 
             stats = new CharacterStats(statsTree);
-
-            DumpStatsTree();
-        }
-
-        private void DumpStatsTree()
-        {
-            if (statsTree == null) { Debug.Log("[StatsTree] null"); return; }
-            var resolved = statsTree.Resolve();
-            var sb = new System.Text.StringBuilder($"[StatsTree] {statsTree.name} — {resolved.Count} stats\n");
-            foreach (var s in resolved)
-                sb.AppendLine($"  ✅ {s.Path}  ({s.Current})");
         }
 
         private void Start() { }
@@ -91,13 +80,13 @@ namespace RedDust.Character
 
             var intent = director.Evaluate();
             ctx.Intent = intent;
-            if (pathfindingAgent != null) pathfindingAgent.UpdateGaitSpeed(intent.DesiredGait);
+            ctx.LocomotionProfile = locomotionProfile;
+            ctx.LocomotionAnimationProfile = locomotionAnimationProfile;
             ctx.Kinematic = characterKinematic.Evaluate(characterProfile, intent.LocomotionHeading,
                 intent.AimDirection, deltaTime);
 
             locomotionSimulator.Simulate(ref ctx, intent, locomotionProfile, deltaTime);
 
-            PlanarSpeed = ctx.Motor.ActualPlanarVelocity.magnitude;
             LastKinematic = ctx.Kinematic;
             LastMotor = ctx.Motor;
             LastDiscrete = ctx.Discrete;
@@ -105,7 +94,7 @@ namespace RedDust.Character
             LastStats = stats?.LastStats;
 
             characterAnimation?.Apply(in ctx);
-            pathfindingAgent?.SyncPosition();
+            pathfindingAgent?.SyncLocomotion(in ctx.Discrete);
         }
     }
 }

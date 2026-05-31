@@ -16,7 +16,7 @@ namespace RedDust.Character.Locomotion
             var turnAngle = SignedAngle(kin.BodyForward, kin.LocomotionHeading);
 
             var speed = intent.HasMovement
-                ? profile.GetSpeedForGait(intent.DesiredGait) * intent.MovementSpeedMultiplier
+                ? profile.GetSpeedForGait(intent.DesiredGait)
                 : 0f;
 
             var desired = new Vector2(0f, speed);

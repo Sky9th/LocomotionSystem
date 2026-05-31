@@ -16,18 +16,14 @@ namespace RedDust.Character.Director
         // ── Actions ──
         public readonly bool JumpRequested;
 
-        // ── Speed ──
-        public readonly float MovementSpeedMultiplier;
-
-        public bool HasMovement => DesiredGait != EMovementGait.Idle && MovementSpeedMultiplier > 0f;
+        public bool HasMovement => DesiredGait != EMovementGait.Idle;
 
         public SCharacterIntent(
             Vector3 locomotionHeading,
             Vector3 aimDirection,
             EMovementGait desiredGait,
             EPosture desiredPosture,
-            bool jumpRequested,
-            float movementSpeedMultiplier = 1f)
+            bool jumpRequested)
         {
             LocomotionHeading = locomotionHeading.sqrMagnitude > Mathf.Epsilon
                 ? locomotionHeading.normalized
@@ -38,7 +34,6 @@ namespace RedDust.Character.Director
             DesiredGait = desiredGait;
             DesiredPosture = desiredPosture;
             JumpRequested = jumpRequested;
-            MovementSpeedMultiplier = Mathf.Clamp01(movementSpeedMultiplier);
         }
 
         public static SCharacterIntent None => new(

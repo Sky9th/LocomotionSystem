@@ -171,33 +171,7 @@ namespace RedDust.Character.Animation
             lastAppliedGait = gait;
             lastAppliedState = state;
 
-            if (locomotionProfile == null || animationProfile == null)
-            {
-                SpeedMultiplier = 1f;
-                fullBodyLayer.CurrentState.Speed = 1f;
-                return;
-            }
-
-            var posture = ctx.Discrete.Posture;
-            float animNativeSpeed = -1f;
-            var profiles = animationProfile.modeProfiles;
-            if (profiles != null)
-            {
-                for (int i = 0; i < profiles.Length; i++)
-                {
-                    var m = profiles[i];
-                    if (m != null && m.Posture == posture && m.Gait == gait)
-                    {
-                        animNativeSpeed = m.AnimNativeSpeed;
-                        break;
-                    }
-                }
-            }
-
-            SpeedMultiplier = animNativeSpeed > 0f
-                ? locomotionProfile.GetSpeedForGait(gait) / animNativeSpeed
-                : 1f;
-
+            SpeedMultiplier = ctx.Discrete.MotionSpeedScale;
             fullBodyLayer.CurrentState.Speed = SpeedMultiplier;
         }
 

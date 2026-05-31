@@ -107,6 +107,8 @@ MonoBehaviour:
   isPlayer: 1
   characterProfile: {fileID: 11400000, guid: 19080c489b2a47c4f85047f53e6224f6, type: 2}
   locomotionProfile: {fileID: 11400000, guid: 2658baef4b1928c4ca79d1e7b70ab09a, type: 2}
+  locomotionAnimationProfile: {fileID: 11400000, guid: 8c24cbd0466513245b7b38493fcf3aeb,
+    type: 2}
   statsTree: {fileID: 11400000, guid: 360382e3918493c4e898d1cc14cc6786, type: 2}
   autoSubscribeInput: 1
   drawDebugGizmos: 1

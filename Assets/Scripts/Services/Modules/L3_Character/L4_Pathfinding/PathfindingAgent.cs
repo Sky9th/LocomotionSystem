@@ -10,8 +10,6 @@ namespace RedDust.Character.Pathfinding
     {
         private Seeker seeker;
         private AIPath ai;
-        private LocomotionProfile locomotionProfile;
-        private EMovementGait currentGait = EMovementGait.Run;
 
         public Vector3 PathDirection
         {
@@ -30,24 +28,6 @@ namespace RedDust.Character.Pathfinding
 
         public Vector3 DesiredVelocity => ai != null ? ai.desiredVelocity : Vector3.zero;
 
-        /// <summary>
-        /// 归一化速度乘数 (0~1)。A* desiredVelocity 与配置最大速度的比值，
-        /// 供 Locomotion/Animation 等下游系统使用。
-        /// 接近路径终点时 A* 自动减速，此值会平滑下降。
-        /// </summary>
-        public float DesiredSpeedMultiplier
-        {
-            get
-            {
-                if (ai == null || locomotionProfile == null) return 1f;
-                // 无路径或已到达 → 不干预，让 Motor 自行决定
-                if (!ai.hasPath || ai.reachedEndOfPath) return 1f;
-                float maxSpeed = locomotionProfile.GetSpeedForGait(currentGait);
-                if (maxSpeed <= 0f) return 1f;
-                return Mathf.Clamp01(ai.desiredVelocity.magnitude / maxSpeed);
-            }
-        }
-
         // ── Mono ──
 
         private void Awake()
@@ -58,14 +38,6 @@ namespace RedDust.Character.Pathfinding
             ai.updatePosition = false;
             ai.updateRotation = false;
             ai.slowWhenNotFacingTarget = false;
-
-            var actor = GetComponent<CharacterActor>();
-            if (actor != null)
-            {
-                locomotionProfile = actor.LocomotionProfile;
-                if (locomotionProfile != null)
-                    ai.maxSpeed = locomotionProfile.GetSpeedForGait(currentGait);
-            }
         }
 
         private void Start()
@@ -75,18 +47,16 @@ namespace RedDust.Character.Pathfinding
 
         // ── API ──
 
-        /// <summary>每帧更新当前步态，同步 AIPath.maxSpeed</summary>
-        public void UpdateGaitSpeed(EMovementGait gait)
-        {
-            currentGait = gait;
-            if (ai != null && locomotionProfile != null)
-                ai.maxSpeed = locomotionProfile.GetSpeedForGait(gait);
-        }
-
-        public void SyncPosition()
+        /// <summary>
+        /// 同步 Locomotion 状态到 A*：设置有效最大速度并同步 Transform。
+        /// </summary>
+        public void SyncLocomotion(in SCharacterDiscrete discrete)
         {
             if (ai != null)
+            {
+                ai.maxSpeed = discrete.EffectiveMaxSpeed;
                 ai.FinalizeMovement(transform.position, transform.rotation);
+            }
         }
 
         public void SetDestination(Vector3 worldPoint)

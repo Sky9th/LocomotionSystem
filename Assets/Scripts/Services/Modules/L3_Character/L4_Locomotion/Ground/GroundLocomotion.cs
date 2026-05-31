@@ -11,7 +11,7 @@ namespace RedDust.Character.Locomotion
         public void Simulate(ref CharacterFrameContext ctx, in SCharacterIntent intent, LocomotionProfile profile, float dt)
         {
             ctx.Motor = motor.Evaluate(in ctx.Kinematic, in intent, profile, dt);
-            ctx.Discrete = stance.Evaluate(in ctx.Motor, in ctx.Kinematic, in intent, profile, dt);
+            ctx.Discrete = stance.Evaluate(in ctx.Motor, in ctx.Kinematic, in intent, profile, ctx.LocomotionAnimationProfile, dt);
         }
     }
 }

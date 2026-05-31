@@ -38,8 +38,7 @@ namespace RedDust.Character.Director
                 ComputeAimDirection(),
                 ResolveDesiredGait(),
                 ResolveDesiredPosture(),
-                false, // 攀爬/跳跃由寻路系统决定，非玩家输入
-                ComputeSpeedMultiplier());
+                false); // 攀爬/跳跃由寻路系统决定，非玩家输入
         }
 
         private void ProcessClickToMove()
@@ -50,11 +49,6 @@ namespace RedDust.Character.Director
 
             agent.SetDestination(receiver.MouseGroundPosition);
             currentGait = EMovementGait.Run;
-        }
-
-        private float ComputeSpeedMultiplier()
-        {
-            return agent != null ? agent.DesiredSpeedMultiplier : 1f;
         }
 
         private Vector3 ComputeAimDirection()
