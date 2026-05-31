@@ -84,7 +84,22 @@ internal void Apply(in CharacterFrameContext ctx)
 ```
 - **用途**: 每帧动画驱动入口
 - **调用者**: `CharacterActor.Update()`
-- **备注**: 先 resolve fullBodyArbiter，再 UpdateHeadLook
+- **备注**: 先 resolve fullBodyArbiter，再 UpdateHeadLook，最后 ApplySpeedMultiplier
+
+### SpeedMultiplier
+```csharp
+public float SpeedMultiplier { get; private set; } = 1f;
+```
+- **用途**: 步态动画速度乘数 = 角色期望移速 / 动画原生速度，供所有动画层读取
+- **备注**: gait 变化或 AnimationState 切换时更新
+
+### ApplySpeedMultiplier()
+```csharp
+private void ApplySpeedMultiplier(in CharacterFrameContext ctx)
+```
+- **用途**: gait 或 AnimationState 变化时计算并应用 SpeedMultiplier 到 FullBody 层
+- **调用者**: Apply()
+- **备注**: 遍历 animationProfile.modeProfiles 找到匹配的 animNativeSpeed，未配置则 Speed=1
 
 ### UpdateHeadLook()
 ```csharp
@@ -132,7 +147,7 @@ OnAnimatorMove():
   if !forwardRootMotion → return
   if suppressGroundLock → ApplyPosition (包含 Y)
   else → ApplyPositionPlanar (仅 XZ)
-  ApplyRotation (始终)
+  if applyRootMotionRotation → ApplyRotation (默认 false，由代码 ApplyTurnStepRotation 控制)
 ```
 
 ### HeadLook 混合
