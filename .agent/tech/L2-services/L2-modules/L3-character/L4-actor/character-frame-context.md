@@ -1,51 +1,34 @@
-# CharacterFrameContext · 帧内数据载体
+# CharacterFrameContext · 帧数据总线
 
-> `Character/Components/CharacterFrameContext.cs` — struct，Actor 每帧填充的帧数据总线
+> `Actor/CharacterFrameContext.cs` — struct，Actor 每帧填充
 
-## 调用链
+## 字段
 
-```
-创建者:
-  CharacterActor.Update()
-    → new CharacterFrameContext()
-    → 填充 .Input → .Kinematic → .Motor → .Discrete
-
-消费者:
-  AnimationBrain.Apply(in ctx)     → 驱动动画
-  CharacterStats.Update(ctx, dt)  → 数值规则 Tick
-  GroundLocomotion.Simulate(ref ctx) → Motor/Discrete 写入
-```
-
-## 耦合模块
-
-| 方向 | 模块 | 关系 |
+| 字段 | 类型 | 说明 |
 |------|------|------|
-| 被依赖 | AnimationBrain | Apply() 接收 ctx 读取全部字段 |
-| 被依赖 | CharacterStats | Update() 接收 ctx 读取 Discrete/Input |
-| 被依赖 | GroundLocomotion | Simulate() 接受 ref ctx 写入 Motor/Discrete |
-| 聚合 | SCharacterInputActions | Input 字段 |
-| 聚合 | SCharacterKinematic | Kinematic 字段 |
-| 聚合 | SCharacterMotor | Motor 字段 |
-| 聚合 | SCharacterDiscrete | Discrete 字段 |
+| Intent | SCharacterIntent | 导演层产出的意图 |
+| Kinematic | SCharacterKinematic | 运动学评估结果 |
+| Motor | SCharacterMotor | 运动仿真输出 |
+| Discrete | SCharacterDiscrete | 离散状态 (含 MotionSpeedScale/EffectiveMaxSpeed) |
+| LocomotionProfile | LocomotionProfile | 角色物理速度配置，Locomotion 模块读取 |
+| LocomotionAnimationProfile | LocomotionAnimationProfile | 动画原生速度配置，Locomotion 模块读取 |
 
-## 公开属性
+## 数据流
 
-```csharp
-public SCharacterInputActions Input;      // 当前帧输入动作聚合
-public SCharacterKinematic Kinematic;     // 运动学评估结果
-public SCharacterMotor Motor;             // 运动仿真结果 (速度/转角)
-public SCharacterDiscrete Discrete;       // 离散状态 (Phase/Gait/Posture)
 ```
-
-## 使用规则
-
-- Actor 每帧创建新实例，逐步骤填充字段
-- GroundLocomotion 通过 `ref` 写入 Motor 和 Discrete
-- AnimationBrain 通过 `in` 只读消费
-- 不跨帧缓存 — 每帧新建
-
-## 未来规划
-
-| 规划 | 状态 | 来源 |
-|------|------|------|
-| 扩展包含 Ability 上下文 | 远期 | 旧 animation-design.md |
+CharacterActor 填充:
+  ctx.Intent = director.Evaluate()
+  ctx.LocomotionProfile = locomotionProfile
+  ctx.LocomotionAnimationProfile = locomotionAnimationProfile
+  ctx.Kinematic = characterKinematic.Evaluate(...)
+  
+GroundLocomotion 写入:
+  ctx.Motor = motor.Evaluate(...)
+  ctx.Discrete = stance.Evaluate(...)  // 含 MotionSpeedScale + EffectiveMaxSpeed
+  
+AnimationBrain 消费:
+  characterAnimation.Apply(in ctx)
+  
+PathfindingAgent 消费:
+  agent.SyncLocomotion(in ctx.Discrete)
+```

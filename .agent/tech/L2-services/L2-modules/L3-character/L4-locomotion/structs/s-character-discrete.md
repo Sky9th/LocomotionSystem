@@ -1,44 +1,27 @@
-# SCharacterDiscrete · 离散状态结构体
+# SCharacterDiscrete · 角色离散运动状态
 
-> `Character/Locomotion/SCharacterDiscrete.cs` — [Serializable] readonly struct，角色离散状态
+> `L4_Locomotion/Structs/SCharacterDiscrete.cs` — readonly struct，Stance 输出
 
-## 调用链
+## 字段
 
-```
-创建者:
-  Stance.Evaluate() → new SCharacterDiscrete(...)
-
-消费者:
-  CharacterActor → LastDiscrete 缓存
-  BaseIdleState.CanEnterState → Phase==GroundedIdle && !IsTurning
-  BaseMovingState.CanEnterState → Phase==GroundedMoving && !IsTurning
-  BaseTurnInPlaceState.CanEnterState → Phase==GroundedIdle && IsTurning
-  BaseIdleToMovingState.CanEnterState → Phase==GroundedMoving && IsTurning
-  BaseTurnInMovingState.CanEnterState → Phase==GroundedMoving && IsTurning
-  BaseAirLoopState.CanEnterState → !IsGrounded
-  BaseMovingState.Tick → Gait 决定播放哪个 Mixer
-  SprintStaminaRule.ShouldActivate → Gait==Sprint
-  CharacterActor.Debug → Gizmo 标签
-```
-
-## 公开属性
-
-```csharp
-public ELocomotionPhase Phase { get; }       // 运动阶段 (GroundedIdle/GroundedMoving/Airborne/Landing)
-public EPosture Posture { get; }             // 姿势 (Standing/Crouching/Prone)
-public EMovementGait Gait { get; }           // 步态 (Idle/Walk/Run/Sprint/Crawl)
-public bool IsTurning { get; }               // 是否正在转向
-public static SCharacterDiscrete Default { get; }  // (GroundedIdle/Standing/Idle/false)
-```
-
-## 耦合模块
-
-| 方向 | 模块 | 关系 |
+| 字段 | 类型 | 说明 |
 |------|------|------|
-| 被依赖 | Stance | 创建者 |
-| 被依赖 | BaseLayer FSM States | 所有 7 个状态的 CanEnterState/Tick 判定 |
-| 被依赖 | SprintStaminaRule | Gait 判定 |
+| Phase | ELocomotionPhase | Airborne / GroundedIdle / GroundedMoving |
+| Posture | EPosture | Standing / Crouching / Prone |
+| Gait | EMovementGait | Idle / Walk / Run / Sprint / Crawl |
+| IsTurning | bool | 是否处于转向动画 |
+| MotionSpeedScale | float | 有效速度/步态速度比值，Stance 缓存计算 |
+| EffectiveMaxSpeed | float | gaitSpeed × MotionSpeedScale，Pathfinding 直接消费 |
 
-## 未来规划
+## 数据来源
 
-无。
+- Phase → Stance.EvaluatePhase (kin + motor)
+- Gait/Posture → SCharacterIntent 透传
+- IsTurning → Stance.EvaluateTurning (motor + profile)
+- MotionSpeedScale → Stance 缓存 (profile + animProfile，仅 gait/posture 变化时重算)
+- EffectiveMaxSpeed → Stance 计算 (gaitSpeed × MotionSpeedScale)
+
+## 消费者
+
+- AnimationBrain → 读 MotionSpeedScale 做动画速度匹配
+- PathfindingAgent.SyncLocomotion → 读 EffectiveMaxSpeed 设置 ai.maxSpeed
