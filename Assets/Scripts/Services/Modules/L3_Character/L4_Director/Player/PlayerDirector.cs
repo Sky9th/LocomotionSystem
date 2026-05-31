@@ -74,7 +74,7 @@ namespace RedDust.Character.Director
             if (agent != null && agent.HasPath && !agent.HasReachedDestination)
                 return agent.PathDirection;
 
-            return ComputeAimDirection(); // fallback: aim = locomotion when not pathfinding
+            return ownerTransform.forward; // 非寻路时保持当前朝向，不跟随鼠标
         }
 
         private EMovementGait ResolveDesiredGait()

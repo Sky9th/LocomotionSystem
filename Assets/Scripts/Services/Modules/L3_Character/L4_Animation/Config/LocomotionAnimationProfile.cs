@@ -14,7 +14,7 @@ namespace RedDust.Character.Animation
     public sealed class LocomotionAnimationProfile : ScriptableObject
     {
         [Header("Head Look")]
-        [Min(0f)] public float headLookSmoothingSpeed = 540f;
+        [Min(0f)] public float headLookSmoothingSpeed = 5f;
 
         [Header("Turn Speeds By Mode")]
         public LocomotionModeProfile[] modeProfiles;
