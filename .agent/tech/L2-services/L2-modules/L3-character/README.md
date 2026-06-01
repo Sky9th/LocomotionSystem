@@ -17,6 +17,7 @@
 | `L4-stats/` | 角色数值 — CharacterStats + Rule 模式驱动 |
 | `L4-audio/` | 角色音频 — 脚步/受击/状态音效 |
 | `L4-pathfinding/` | 寻路代理 — PathfindingAgent(Seeker+AIPath) + PathfindingTester |
+| `L4-combat/` | 战斗技能 — CombatComponent(中枢) + CombatDriver(动画驱动) + CombatPipeline(判定链) |
 | `L4-input/` | 角色输入 — EventDispatcher 桥接 + 输入聚合 |
 
 ## 调用链
@@ -24,8 +25,10 @@
 ```
 CharacterActor.Update()
   │
+  ├── [Combat] combat.Tick(dt)                        ← 冷却倒计时、ActiveEffect 过期
+  │
   ├── [Director] PlayerDirector.Evaluate() → SCharacterIntent
-  │   ├── PlayerInput → 鼠标/按键帧状态
+  │   ├── PlayerInput → 鼠标/按键帧状态 + Skill1~4
   │   └── PathfindingAgent → SetDestination / DesiredVelocity
   │
   ├── [Kinematic] CharacterKinematic.Evaluate()
@@ -39,16 +42,17 @@ CharacterActor.Update()
   │   └── Stance.Evaluate() → SCharacterDiscrete (Phase/Gait/Posture/IsTurning)
   │   → 输出 ctx.Motor + ctx.Discrete
   │
+  ├── [Stats] CharacterStats.Update()
+  │   └── Rules: Damage / Deplete / PassiveGain / SprintStamina / ToggleModifier
+  │
   ├── [Animation] AnimationBrain.Apply(ctx)
   │   └── DriverArbiter.Resolve()
   │       ├── LocomotionDriver → BaseLayer FSM (7 状态)
   │       │   ├── Idle / Moving / IdleToMoving
   │       │   ├── TurnInPlace / TurnInMoving
   │       │   └── AirLoop / AirLand
-  │       └── TraversalDriver → 攀爬/跨越动画
-  │
-  ├── [Stats] CharacterStats.TickRules(ctx, dt)
-  │   └── Rules: Damage / Deplete / PassiveGain / SprintStamina / ToggleModifier
+  │       ├── TraversalDriver → 攀爬/跨越动画
+  │       └── CombatDriver → 技能动画 + 命中检测 + 伤害施加
   │
   └── [Audio] CharacterAudio (AnimationBrain 脚步事件回调驱动)
 ```
@@ -59,6 +63,8 @@ CharacterActor.Update()
 |--------|-----------|------|
 | CharacterActor | Core (PlayerService) | 被 PlayerService 实例化和管理 |
 | CharacterActor | Core (CameraService) | 读取 SCameraSnapshot 获取朝向 |
+| CombatComponent | CharacterActor | 纯类，Update 中 Tick；管理 SkillBar + Tags + Effects |
+| CombatDriver | AnimationBrain (DriverArbiter) | 注册为 Driver，通过 SubmitRequest 播放技能动画 |
 | CharacterRig | CharacterKinematic, AnimationBrain, BaseLayer, TraversalDriver | 统一物理写入入口 |
 | Motor | CharacterKinematic | 读 BodyForward + LocomotionHeading 算 TurnAngle |
 | CharacterStats | Stats 框架 (05-stats) | 依赖 StatsTreeSO / StatInstance |
@@ -86,6 +92,7 @@ CharacterActor.Update()
 | 规划 | 状态 | 依赖 | 来源 |
 |------|------|------|------|
 | AIService 使用 CharacterActor 生成敌人 | 远期 | AI 系统 | 架构设计 |
+| L4_Combat 战斗技能子系统 | Phase 4.1 | SkillDefSO + CombatComponent + CombatDriver | skill-system-design |
 | Ability/Interaction/Movie 接入 Animation | 远期 | 对应系统的 ActionRequest | 旧 character-animation.md |
 | FootLayer 独立实现 | 待做 | — | 旧 animation-design.md |
 | UpperBody/Additive 动画层 | 远期 | 战斗/交互系统 | 旧 coverage-analysis.md |
@@ -193,6 +200,11 @@ CharacterActor.Update()
 |------|------|
 | [pathfinding-agent.md](L4-pathfinding/pathfinding-agent.md) | PathfindingAgent — Seeker+AIPath 寻路代理 |
 | [pathfinding-tester.md](L4-pathfinding/pathfinding-tester.md) | PathfindingTester — 随机目的地测试 |
+
+### combat/
+| 文件 | 内容 |
+|------|------|
+| [README.md](L4-combat/README.md) | L4_Combat — 三层架构、激活链路、Tag/冷却/连招机制、集成点 |
 
 ### input/
 | 文件 | 内容 |

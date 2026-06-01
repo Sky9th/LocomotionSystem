@@ -1,7 +1,7 @@
 # 长期开发计划
 
-> 更新: 2026-05-23
-> 来源: `.agent/design/` GDD + 子系统设计文档
+> 更新: 2026-06-02
+> 来源: `.agent/design/` GDD + 子系统设计文档 + [L4_Combat README](../tech/L2-services/L2-modules/L3-character/L4-combat/README.md)
 > 原则: 每步有可玩增量，每个子系统先跑通基本闭环 → 全生态联通 → 数值统一规划
 >      **设计文档不设具体数值，所有数值在系统骨架完成后从上至下统一规划**
 
@@ -10,17 +10,19 @@
 ## 当前进度
 
 ```
-短期计划 (Phase 4):  战斗闭环 — 进行中
-  前置: 俯视角切换 + NavMesh 寻路
-  目标: 俯视角地图上有丧尸，走路出声被听到，丧尸追来，你能砍它，它流血死亡掉落物品
+短期计划 (Phase 4):  战斗闭环 — 架构设计完成，4.1 施工中
+  前置: 俯视角切换 ✅  A* 寻路集成 ✅
+  目标: 4.1 战斗基础架构(Cone+RayLine 双搜索类型) → 4.2 敌人 AI(含噪声感知)
 
 已完成:
   角色运动 ✅    音效骨架 ✅    数值系统（Stats 树形架构 + 修改器管道）✅
   Stats 管理 ✅  HUD UI ✅     UI/Gameplay 时间线分离 ✅
   会话层显式化 ✅  Service 架构 ✅
+  俯视角切换 ✅   A* 寻路集成 ✅  SO Event Channel 架构 ✅
 
 设计完成:
   GDD ✅  伤病系统 ✅  噪音系统 ✅  负重/背包 ✅  死亡/存档 ✅
+  L4_Combat 战斗技能架构 ✅ (2026-06-01)
 ```
 
 ---
@@ -44,7 +46,7 @@
 
 ```
 RedDust
-├── 1. 战斗系统      — 6 武器类型、技能+熟练度、命中/破防/暴击管道
+├── 1. 战斗系统      — 三层架构(SkillDefSO→CombatComponent→CombatDriver)、Q/E/R/F 四槽、GameplayTag 门控、命中判定管道、6 武器类型扩展
 ├── 2. 敌人 AI       — 丧尸感知(听觉+视觉)/追击/攻击、噪音连锁反应
 ├── 3. 伤病系统      — 5 伤害类型×3 严重度×2 部位、治疗流程、丧尸化过程
 ├── 4. 噪音系统      — 6 级噪音、4 种类型、障碍衰减、丧尸连锁反应、潜行降噪
@@ -68,11 +70,18 @@ RedDust
 
 ### Phase 4: 战斗基础 + 敌人 AI 基础 + 噪音骨架 ← 当前
 
-> 在短期计划中，详见 [short-term.md](short-term.md)
+> 架构设计: [L4_Combat README](../tech/L2-services/L2-modules/L3-character/L4-combat/README.md)
+> 施工计划: [short-term.md](short-term.md)
+
+**4.1 近战基础架构**：GameplayTag + SkillDefSO/WeaponSkillSetSO(配置层) → CombatComponent/SkillBar(管理层) → CombatDriver/CombatPipeline(执行层)。Q/E/R/F 四槽，阶段机 Windup→Fire→Recovery。CombatPipeline 物理搜索两类型：Cone 扇形（横斩 Q）+ RayLine 射线（手枪 R）。闭环：按键→动画→搜索候选→命中→DamageRule→SHitEvent/SNoiseEvent 发布。
+
+**4.2 敌人 AI 基础**：复用 CombatComponent（纯类），行为 FSM，听觉感知（消费 4.1 的 SNoiseEvent）+ 视觉感知。含噪声感知消费端。
+
+**移入 Phase 5 的战斗扩展**（依赖资源/物品系统）：复杂远程 RangedDriver（Active 瞄准+SkillConfirm）、Buff/Debuff、多武器切换、熟练度、Circle 搜索类型技能。
 
 ---
 
-### Phase 5: 资源系统 + 负重 + 存档
+### Phase 5: 资源系统 + 负重 + 存档 + 战斗物品化
 
 > 设计文档: `inventory-weight.md` / `death-mechanics.md`
 
@@ -84,8 +93,10 @@ RedDust
 | 消耗品 | 食物回饥饿、水回口渴、绷带回 HP、止痛药降疼痛 |
 | 负重 | 每物品有重量 → 总负重 vs 负重上限 → 轻/中/重/超载四级 → 软上限惩罚 |
 | 存档 | 暂停菜单手动存档 + 据点自动存档 → 3 手动槽 + 1 自动槽 → 死亡画面读档 |
+| **战斗物品化** | 武器 = ItemDefSO + WeaponSkillSetSO 引用；弹药/消耗品；多武器切换（背包选择） |
+| **战斗扩展** | Buff/Debuff 系统（ActiveEffect → StatModifier）；远程武器 RangedDriver；熟练度成长 |
 
-**可玩增量**: 地上有东西→捡→负重增加→超载走不动→取舍→吃食物回饥饿→回家存档。
+**可玩增量**: 地上有东西→捡→负重增加→超载走不动→取舍→吃食物回饥饿→回家存档。捡到新武器→装备→技能槽替换→用不同技能打丧尸。
 
 **不做的**: 六大类完整分类、仓库系统、工具耐久/维修、大背包/军用背包。
 
@@ -184,7 +195,7 @@ RedDust
 
 此时所有子系统基本闭环跑通，进入扩展阶段：
 
-- **战斗扩展**: 远程武器、技能栏（Q/E/R）、熟练度成长（命中/破防/暴击）
+- **战斗扩展**: 连招系统（ComboWindow + 冷却豁免）、技能效果（击退/眩晕/流血）、HitReactDriver、投射物系统、完整四阶段判定管道（命中率/破防/暴击/格挡）
 - **伤病扩展**: 医疗熟练度、粉碎性骨折永久惩罚、烧伤分级、丧尸化 4 阶段完整过程
 - **噪音扩展**: 噪音连锁反应（第 2 层）、障碍物衰减、昼夜倍率、环境噪音
 - **敌人扩展**: 视觉感知（光线影响）、尸群协调、特殊感染者
