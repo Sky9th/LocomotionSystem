@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58a67fec07aa00944ae4aa580617020c, type: 3}
+  m_Name: InputRelay
+  m_EditorClassIdentifier: 
+  inputAction: {fileID: -5535836970285688143, guid: a7f8d78e4def66b45b53cbfc404ab4b4,
+    type: 3}
+  outputChannel: {fileID: 11400000, guid: 91c1027e4fd6961409ee57d545e35169, type: 2}

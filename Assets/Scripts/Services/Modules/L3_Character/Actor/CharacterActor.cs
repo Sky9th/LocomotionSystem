@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using RedDust.Core;
 using UnityEngine;
 using RedDust.Character.Animation;
 using RedDust.Character;
@@ -12,6 +13,7 @@ using RedDust.Stats;
 namespace RedDust.Character
 {
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(EventChannels))]
     public partial class CharacterActor : MonoBehaviour
     {
         [Header("Identity")]
@@ -27,8 +29,8 @@ namespace RedDust.Character
         [Header("Stats")]
         [SerializeField] private StatsTreeSO statsTree;
 
-        [Header("Input")]
-        [SerializeField] private bool autoSubscribeInput = true;
+        [Header("Hierarchy")]
+        [SerializeField] private Transform modelRoot;
 
         public bool IsPlayer => isPlayer;
         public Dictionary<string, (float current, float max)> LastStats { get; private set; }
@@ -37,7 +39,7 @@ namespace RedDust.Character
         internal SCharacterDiscrete LastDiscrete { get; private set; }
         internal LocomotionProfile LocomotionProfile => locomotionProfile;
 
-        private ICharacterDirector director;
+        private PlayerDirector director;
         private PathfindingAgent pathfindingAgent;
         private CharacterRig characterRig;
         private CharacterKinematic characterKinematic;
@@ -48,26 +50,25 @@ namespace RedDust.Character
         private void Awake()
         {
             characterAnimation = GetComponentInChildren<AnimationBrain>();
-            characterRig = new CharacterRig(transform, characterAnimation?.transform ?? transform);
+            if (modelRoot == null) modelRoot = transform;
+            characterRig = new CharacterRig(transform, modelRoot);
             characterAnimation?.SetRig(characterRig);
+            var eventChannels = GetComponent<EventChannels>();
             pathfindingAgent = GetComponent<PathfindingAgent>();
-            director = new PlayerDirector(this);
-            characterKinematic = new CharacterKinematic(transform, transform, characterRig);
-            locomotionSimulator = new GroundLocomotion();
 
+            director = new PlayerDirector(eventChannels, modelRoot, this);
+
+            characterKinematic = new CharacterKinematic(transform, modelRoot, characterRig);
+            locomotionSimulator = new GroundLocomotion();
             stats = new CharacterStats(statsTree);
         }
 
         private void Start() { }
 
-        private void OnEnable()
-        {
-            if (autoSubscribeInput && director is PlayerDirector pd) pd.Subscribe();
-        }
+        private void OnEnable() { }
 
         private void OnDisable()
         {
-            if (director is PlayerDirector pd) { pd.Unsubscribe(); pd.Reset(); }
             characterKinematic?.Reset();
         }
 

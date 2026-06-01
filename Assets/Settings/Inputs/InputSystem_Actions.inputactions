@@ -120,7 +120,7 @@
                     "id": "dfeb8844-8ad8-4037-9952-a61e7389c160",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press",
                     "initialStateCheck": false
                 },
                 {
@@ -129,7 +129,7 @@
                     "id": "38bbe166-c585-4f2c-b5d1-2f32cece0882",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press",
                     "initialStateCheck": false
                 }
             ],

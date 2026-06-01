@@ -6,36 +6,33 @@ using UnityEngine;
 namespace RedDust.GameInput
 {
     /// <summary>
-    /// Central coordinator for all gameplay input helpers. It owns their lifecycle,
-    /// aggregates snapshots, and keeps the EventDispatcher wiring deterministic.
+    /// 输入服务。管理 InputEvent 资产的生命周期：初始化、启停、状态权限。
     /// </summary>
     [DisallowMultipleComponent]
     public class InputService : BaseService
     {
-        [SerializeField] private InputActionHandler[] actionHandlers = Array.Empty<InputActionHandler>();
+        [SerializeField] private EventChannelBase[] inputEvents = Array.Empty<EventChannelBase>();
 
-        private bool actionsConfigured;
+        private bool inputEventsConfigured;
         private EGameState currentGameState = EGameState.Initializing;
         private bool hasGameStateSnapshot;
 
-        public bool AreActionsConfigured => actionsConfigured;
+        // ── Lifecycle ──
 
         protected override bool OnRegister(GameContext context)
         {
             context.RegisterService(this);
-            actionsConfigured = false;
+            inputEventsConfigured = false;
             return true;
         }
 
         protected override void OnDispatcherAttached()
         {
             base.OnDispatcherAttached();
-            InitializeInputHandlers();
+            InitializeInputEvents();
 
             if (isActiveAndEnabled)
-            {
-                EnableActions();
-            }
+                EnableInputEvents();
 
             SyncInitialGameState();
         }
@@ -45,76 +42,72 @@ namespace RedDust.GameInput
             Dispatcher.Subscribe<SGameState>(HandleGameStateChanged);
         }
 
-        private void InitializeInputHandlers()
-        {
-            if (actionsConfigured)
-            {
-                return;
-            }
-
-            foreach (var handler in actionHandlers)
-            {
-                handler?.InitializeHandler(Dispatcher);
-            }
-
-            actionsConfigured = true;
-        }
-
         private void OnEnable()
         {
             if (IsRegistered)
-            {
-                EnableActions();
-            }
+                EnableInputEvents();
         }
 
         private void OnDisable()
         {
-            DisableActions();
+            DisableInputEvents();
         }
 
         private void OnDestroy()
         {
             Dispatcher?.Unsubscribe<SGameState>(HandleGameStateChanged);
-
-            if (!actionsConfigured)
-            {
-                return;
-            }
-
-            foreach (var handler in actionHandlers)
-            {
-                handler?.Dispose();
-            }
+            DisposeInputEvents();
         }
 
-        private void EnableActions()
+        // ── InputEvent 管理 ──
+
+        private void InitializeInputEvents()
         {
-            if (!actionsConfigured)
+            if (inputEventsConfigured) return;
+
+            foreach (var obj in inputEvents)
             {
-                return;
+                if (obj is IInputEvent evt)
+                    evt.InitializeEvent();
             }
 
-            foreach (var handler in actionHandlers)
-            {
-                handler?.Enable();
-            }
-
-            EnforceHandlerStatePermissions();
+            inputEventsConfigured = true;
         }
 
-        private void DisableActions()
+        private void EnableInputEvents()
         {
-            if (!actionsConfigured)
-            {
-                return;
-            }
+            if (!inputEventsConfigured) return;
 
-            foreach (var handler in actionHandlers)
+            foreach (var obj in inputEvents)
             {
-                handler?.Disable();
+                if (obj is IInputEvent evt)
+                    evt.EnableEvent();
             }
         }
+
+        private void DisableInputEvents()
+        {
+            if (!inputEventsConfigured) return;
+
+            foreach (var obj in inputEvents)
+            {
+                if (obj is IInputEvent evt)
+                    evt.DisableEvent();
+            }
+        }
+
+        private void DisposeInputEvents()
+        {
+            if (!inputEventsConfigured) return;
+
+            foreach (var obj in inputEvents)
+            {
+                if (obj is IInputEvent evt)
+                    evt.DisposeEvent();
+            }
+        }
+
+        // ── Game State ──
 
         private void HandleGameStateChanged(SGameState snapshot, MetaStruct meta)
         {
@@ -124,62 +117,40 @@ namespace RedDust.GameInput
         private void SyncInitialGameState()
         {
             if (GameContext != null && GameContext.TryGetSnapshot(out SGameState snapshot))
-            {
                 ApplyGameState(snapshot.CurrentState, force: true);
-            }
             else
-            {
                 ApplyGameState(EGameState.Initializing, force: true);
-            }
         }
 
         private void ApplyGameState(EGameState nextState, bool force = false)
         {
             if (!force && hasGameStateSnapshot && nextState == currentGameState)
-            {
                 return;
-            }
 
             currentGameState = nextState;
             hasGameStateSnapshot = true;
 
-            if (!actionsConfigured)
-            {
-                return;
-            }
-
-            EnforceHandlerStatePermissions();
+            if (inputEventsConfigured)
+                EnforceStatePermissions();
         }
 
-        private void EnforceHandlerStatePermissions()
+        private void EnforceStatePermissions()
         {
-            if (!actionsConfigured)
-            {
-                return;
-            }
+            if (!inputEventsConfigured) return;
 
-            bool canEnableHandlers = IsRegistered && isActiveAndEnabled;
-            foreach (var handler in actionHandlers)
+            bool canEnable = IsRegistered && isActiveAndEnabled;
+            foreach (var obj in inputEvents)
             {
-                if (handler == null)
-                {
-                    continue;
-                }
+                if (obj is not IInputEvent evt) continue;
 
-                bool supportsState = hasGameStateSnapshot ? handler.SupportsState(currentGameState) : true;
-                if (!supportsState || !canEnableHandlers)
-                {
-                    handler.Disable();
-                }
+                bool supportsState = hasGameStateSnapshot ? evt.SupportsState(currentGameState) : true;
+                if (!supportsState || !canEnable)
+                    evt.DisableEvent();
                 else
-                {
-                    handler.Enable();
-                }
+                    evt.EnableEvent();
             }
         }
 
-        protected override void OnServicesReady()
-        {
-        }
+        protected override void OnServicesReady() { }
     }
 }

@@ -9,15 +9,15 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1947580238982052747}
+  - component: {fileID: 8721387818594905132}
+  - component: {fileID: 8772549948613042888}
   - component: {fileID: 5085968444530936421}
   - component: {fileID: 3610630312856158315}
-  - component: {fileID: 8721387818594905132}
   - component: {fileID: 7275533382615058559}
   - component: {fileID: 2855815212552599960}
   - component: {fileID: 386188878043265307}
   - component: {fileID: 803302436353983027}
   - component: {fileID: 4210259612169661076}
-  - component: {fileID: 5654363114169968691}
   - component: {fileID: -6460370526807817209}
   m_Layer: 6
   m_Name: Player
@@ -42,6 +42,43 @@ Transform:
   - {fileID: 7880520753254052221}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8721387818594905132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8667043660662020576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3c27899a95d0c943baf562b6b160204, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isPlayer: 1
+  characterProfile: {fileID: 11400000, guid: 19080c489b2a47c4f85047f53e6224f6, type: 2}
+  locomotionProfile: {fileID: 11400000, guid: 2658baef4b1928c4ca79d1e7b70ab09a, type: 2}
+  locomotionAnimationProfile: {fileID: 11400000, guid: 8c24cbd0466513245b7b38493fcf3aeb,
+    type: 2}
+  statsTree: {fileID: 11400000, guid: 360382e3918493c4e898d1cc14cc6786, type: 2}
+  modelRoot: {fileID: 7880520753254052221}
+  drawDebugGizmos: 1
+  debugArrowLength: 2
+--- !u!114 &8772549948613042888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8667043660662020576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2149d263bb253db4eb5ec19ecac9dc0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  channels:
+  - {fileID: 11400000, guid: 96075d5ec4282a042a8c10b1269f9bd4, type: 2}
+  - {fileID: 11400000, guid: 3e69d6f73a4165645bad72d9e35b1791, type: 2}
+  - {fileID: 11400000, guid: 91c1027e4fd6961409ee57d545e35169, type: 2}
 --- !u!54 &5085968444530936421
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -92,27 +129,6 @@ CapsuleCollider:
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
---- !u!114 &8721387818594905132
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8667043660662020576}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3c27899a95d0c943baf562b6b160204, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isPlayer: 1
-  characterProfile: {fileID: 11400000, guid: 19080c489b2a47c4f85047f53e6224f6, type: 2}
-  locomotionProfile: {fileID: 11400000, guid: 2658baef4b1928c4ca79d1e7b70ab09a, type: 2}
-  locomotionAnimationProfile: {fileID: 11400000, guid: 8c24cbd0466513245b7b38493fcf3aeb,
-    type: 2}
-  statsTree: {fileID: 11400000, guid: 360382e3918493c4e898d1cc14cc6786, type: 2}
-  autoSubscribeInput: 1
-  drawDebugGizmos: 1
-  debugArrowLength: 2
 --- !u!114 &7275533382615058559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -343,24 +359,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea988b70da5908046a22ebd7e8d33492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5654363114169968691
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8667043660662020576}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce1b5db8c307a3447956c710dd1eae9c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  xMin: 0
-  xMax: 20
-  zMin: -10
-  zMax: 10
-  minDelay: 0.5
-  maxDelay: 3
 --- !u!114 &-6460370526807817209
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using RedDust.Core;
 using UnityEngine;
 using RedDust.Character;
 using RedDust.Character.Pathfinding;
@@ -6,97 +7,96 @@ namespace RedDust.Character.Director
 {
     internal sealed class PlayerDirector : ICharacterDirector
     {
-        private readonly Transform ownerTransform;
-        private readonly PlayerInputReceiver receiver;
+        private readonly Transform modelRoot;
+        private readonly PlayerInput input;
         private readonly PathfindingAgent agent;
 
         private EMovementGait currentGait = EMovementGait.Idle;
         private EPosture currentPosture = EPosture.Standing;
 
-        internal PlayerDirector(CharacterActor owner)
+        internal PlayerDirector(EventChannels channels, Transform modelRoot, CharacterActor owner)
         {
-            ownerTransform = owner.transform;
-            receiver = new PlayerInputReceiver(owner);
+            this.modelRoot = modelRoot;
+            input = new PlayerInput(channels);
+            channels.RegisterListener(input);
             agent = owner.GetComponent<PathfindingAgent>();
-        }
-
-        internal void Subscribe() => receiver.Subscribe();
-        internal void Unsubscribe() => receiver.Unsubscribe();
-        internal void Reset()
-        {
-            receiver.Reset();
-            currentGait = EMovementGait.Idle;
-            currentPosture = EPosture.Standing;
         }
 
         public SCharacterIntent Evaluate()
         {
             ProcessClickToMove();
 
-            return new SCharacterIntent(
-                ComputeLocomotionHeading(),
-                ComputeAimDirection(),
-                ResolveDesiredGait(),
-                ResolveDesiredPosture(),
-                false); // 攀爬/跳跃由寻路系统决定，非玩家输入
+            var intent = new SCharacterIntent(
+                ComputeHeading(),
+                ComputeAim(),
+                ResolveGait(),
+                ResolvePosture(),
+                false);
+
+            if (agent != null && agent.HasPath)
+                input.SecondaryRequested = false;
+            input.ClearFrameSignals();
+
+            return intent;
         }
 
         private void ProcessClickToMove()
         {
             if (agent == null) return;
-            if (!receiver.SecondaryInteractAction.Button.IsRequested) return;
-            if (!receiver.HasMouseGround) return;
+            if (!input.SecondaryRequested) return;
+            if (!input.HasMouseGround) return;
 
-            agent.SetDestination(receiver.MouseGroundPosition);
+            agent.SetDestination(input.MouseGroundPosition);
             currentGait = EMovementGait.Run;
         }
 
-        private Vector3 ComputeAimDirection()
+        private Vector3 ComputeAim()
         {
-            if (receiver.HasMouseGround)
+            if (input.HasMouseGround)
             {
-                var dir = receiver.MouseGroundPosition - ownerTransform.position;
+                var dir = input.MouseGroundPosition - modelRoot.position;
                 dir.y = 0f;
                 if (dir.sqrMagnitude > Mathf.Epsilon)
                     return dir.normalized;
             }
-            return ownerTransform.forward;
+            return modelRoot.forward;
         }
 
-        private Vector3 ComputeLocomotionHeading()
+        private Vector3 ComputeHeading()
         {
             if (agent != null && agent.HasPath && !agent.HasReachedDestination)
                 return agent.PathDirection;
-
-            return ownerTransform.forward; // 非寻路时保持当前朝向，不跟随鼠标
+            return modelRoot.forward;
         }
 
-        private EMovementGait ResolveDesiredGait()
+        private EMovementGait ResolveGait()
         {
-            bool hasPathfindingIntent = agent != null && agent.HasPath && !agent.HasReachedDestination;
+            bool hasPath = agent != null && agent.HasPath && !agent.HasReachedDestination;
+            bool wantsMove = input.SecondaryRequested || hasPath;
 
-            if (!receiver.MoveAction.HasInput && !hasPathfindingIntent)
+            if (wantsMove)
+            {
+                if (input.SprintRequested)
+                    currentGait = currentGait == EMovementGait.Sprint ? EMovementGait.Run : EMovementGait.Sprint;
+
+                if (currentGait == EMovementGait.Idle)
+                    currentGait = EMovementGait.Run;
+            }
+            else
             {
                 currentGait = EMovementGait.Idle;
-                return currentGait;
             }
-
-            if (receiver.SprintAction.Button.IsRequested)
-                currentGait = currentGait == EMovementGait.Sprint ? EMovementGait.Run : EMovementGait.Sprint;
-
-            if (currentGait == EMovementGait.Idle)
-                currentGait = EMovementGait.Run;
 
             return currentGait;
         }
 
-        private EPosture ResolveDesiredPosture()
+        private EPosture ResolvePosture()
         {
-            if (receiver.StandAction.Button.IsRequested)
+            if (input.StandRequested)
                 currentPosture = EPosture.Standing;
-            else if (receiver.ProneAction.Button.IsRequested)
+            else if (input.ProneRequested)
                 currentPosture = EPosture.Prone;
-            else if (receiver.CrouchAction.Button.IsRequested)
+            else if (input.CrouchRequested)
                 currentPosture = EPosture.Crouching;
 
             return currentPosture;

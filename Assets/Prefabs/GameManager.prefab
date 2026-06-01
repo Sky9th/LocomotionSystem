@@ -91,6 +91,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   logLevel: 2
+  inputEvents:
+  - {fileID: 11400000, guid: 91c1027e4fd6961409ee57d545e35169, type: 2}
+  - {fileID: 11400000, guid: 96075d5ec4282a042a8c10b1269f9bd4, type: 2}
+  - {fileID: 11400000, guid: 3e69d6f73a4165645bad72d9e35b1791, type: 2}
   actionHandlers:
   - {fileID: 11400000, guid: f40b8d7ebb79ed64ebecd12c9e86669f, type: 2}
   - {fileID: 11400000, guid: 03fcc991a49c02a4387e36007f7f6e01, type: 2}
