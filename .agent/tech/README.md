@@ -33,7 +33,13 @@ tech/
 │   ├── game-context.md                 # GameContext — Service Registry + Snapshot Store
 │   ├── game-service.md                 # GameService — Bootstrap 五步启动
 │   ├── base-service.md                 # BaseService — 四阶段生命周期
-│   └── structs.md                      # MetaStruct + Core Context Structs
+│   ├── structs.md                      # MetaStruct + Core Context Structs
+│   └── events/                         # SO Event Channel 基础设施
+│       ├── README.md
+│       ├── event-channel-base.md       # EventChannelBase — 抽象根
+│       ├── game-event.md               # GameEvent<T> — 通用事件通道
+│       ├── event-channels.md           # EventChannels — 引用集中 + 驱动 IEventListener
+│       └── i-event-listener.md         # IEventListener — 订阅约定接口
 │
 ├── L2-services/                        # 占位容器: 所有 L2 Service
 │   ├── README.md
@@ -57,14 +63,14 @@ tech/
 │   │   ├── Data/                       # AudioChannel, AudioSetSO
 │   │   └── Structs/                    # AudioRequest, AudioResponse
 │   │
-│   ├── L2-input/                       # L2 Service (自身代码: Actions/ Structs/)
+│   ├── L2-input/                       # L2 Service (自身代码: Events/ Structs/)
 │   │   ├── README.md
 │   │   ├── input-service.md
-│   │   ├── Actions/
-│   │   │   ├── input-action-handler.md
-│   │   │   ├── IAUIEscape.cs
-│   │   │   ├── Player/                 # IAPlayerMove, IAPlayerLook + Button/
-│   │   │   └── System/                # IASystemTimeResume, IASystemTimeSlow
+│   │   ├── events/                     # SO Event Channel 输入事件
+│   │   │   ├── README.md
+│   │   │   ├── i-input-event.md       # IInputEvent — 生命周期接口
+│   │   │   ├── input-event.md         # InputEvent<T> — 泛型输入通道
+│   │   │   └── button-input-events.md # 具体按钮事件 ×6
 │   │   └── Structs/
 │   │       ├── SIActionUIEscape.cs
 │   │       └── Control/               # SIActionMove, SIActionLook + Button/
