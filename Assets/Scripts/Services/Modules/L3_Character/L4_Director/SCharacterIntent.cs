@@ -16,6 +16,10 @@ namespace RedDust.Character.Director
         // ── Actions ──
         public readonly bool JumpRequested;
 
+        // ── Override ──
+        public readonly bool OverrideMovementVelocity;
+        public readonly Vector3 ExternalMovementVelocity;
+
         public bool HasMovement => DesiredGait != EMovementGait.Idle;
 
         public SCharacterIntent(
@@ -23,7 +27,9 @@ namespace RedDust.Character.Director
             Vector3 aimDirection,
             EMovementGait desiredGait,
             EPosture desiredPosture,
-            bool jumpRequested)
+            bool jumpRequested,
+            Vector3 externalMovementVelocity = default,
+            bool overrideMovementVelocity = false)
         {
             LocomotionHeading = locomotionHeading.sqrMagnitude > Mathf.Epsilon
                 ? locomotionHeading.normalized
@@ -34,6 +40,8 @@ namespace RedDust.Character.Director
             DesiredGait = desiredGait;
             DesiredPosture = desiredPosture;
             JumpRequested = jumpRequested;
+            ExternalMovementVelocity = externalMovementVelocity;
+            OverrideMovementVelocity = overrideMovementVelocity;
         }
 
         public static SCharacterIntent None => new(

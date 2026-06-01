@@ -26,12 +26,16 @@ namespace RedDust.Character.Director
         {
             ProcessClickToMove();
 
+            bool hasActivePath = agent != null && agent.HasPath && !agent.HasReachedDestination;
+
             var intent = new SCharacterIntent(
                 ComputeHeading(),
                 ComputeAim(),
                 ResolveGait(),
                 ResolvePosture(),
-                false);
+                false,
+                agent?.DesiredVelocity ?? Vector3.zero,
+                hasActivePath);
 
             if (agent != null && agent.HasPath)
                 input.SecondaryRequested = false;
@@ -64,8 +68,12 @@ namespace RedDust.Character.Director
 
         private Vector3 ComputeHeading()
         {
-            if (agent != null && agent.HasPath && !agent.HasReachedDestination)
-                return agent.PathDirection;
+            if (agent != null && agent.HasPath)
+            {
+                var desired = agent.DesiredVelocity;
+                if (desired.sqrMagnitude > Mathf.Epsilon)
+                    return desired.normalized;
+            }
             return modelRoot.forward;
         }
 

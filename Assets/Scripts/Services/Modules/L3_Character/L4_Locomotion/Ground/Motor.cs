@@ -15,6 +15,15 @@ namespace RedDust.Character.Locomotion
         {
             var turnAngle = SignedAngle(kin.BodyForward, kin.LocomotionHeading);
 
+            if (intent.OverrideMovementVelocity)
+            {
+                var externalVel = intent.ExternalMovementVelocity;
+                externalVel.y = 0f;
+                var localVel = ConvertToLocal(externalVel, kin.LocomotionHeading);
+                currentLocalVelocity = localVel;
+                return new SCharacterMotor(localVel, localVel, externalVel, turnAngle);
+            }
+
             var speed = intent.HasMovement
                 ? profile.GetSpeedForGait(intent.DesiredGait)
                 : 0f;
@@ -39,6 +48,16 @@ namespace RedDust.Character.Locomotion
             fwd.Normalize();
             var right = Vector3.Cross(Vector3.up, fwd).normalized;
             return right * local.x + fwd * local.y;
+        }
+
+        private static Vector2 ConvertToLocal(Vector3 world, Vector3 heading)
+        {
+            var fwd = heading;
+            fwd.y = 0f;
+            if (fwd.sqrMagnitude < Mathf.Epsilon) fwd = Vector3.forward;
+            fwd.Normalize();
+            var right = Vector3.Cross(Vector3.up, fwd).normalized;
+            return new Vector2(Vector3.Dot(world, right), Vector3.Dot(world, fwd));
         }
 
         private static float SignedAngle(Vector3 body, Vector3 heading)

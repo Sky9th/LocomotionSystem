@@ -33,18 +33,18 @@
 - CameraService 通过 GameContext.TryGetSnapshot<SPlayer>() 读玩家位置
 - SCharacterSnapshot + SLocomotionState 删除，Animation 管线使用 CharacterFrameContext
 
-### 0.2 A\* Pathfinding Project 集成
+### 0.2 A\* Pathfinding Project 集成 ✅
 
-| 子项 | 说明 |
-|------|------|
-| GridGraph | 用插件 Editor 在地面 XZ 平面 bake 网格（调整 bounds/cellSize 覆盖场景） |
-| 适配脚本 | `GridAgent` — 持有 `Seeker`（查询）+ `AIPath`（移动），统一代理入口 |
-| 路径查询 | `Seeker.StartPath()` 异步算路 → 回调取 `Path.vectorPath` |
-| 移动驱动 | `AIPath` 输出 `desiredVelocity` → 填充 `SCharacterMotor.DesiredLocalVelocity` |
-| 移动集成 | 走现有平滑管道，不引入新的移动逻辑 |
-| 障碍标记 | 用插件的 `GraphUpdateScene` 组件标记静态不走到区域 |
+| 子项 | 说明 | 实现 |
+|------|------|------|
+| 适配脚本 | `PathfindingAgent` — 持有 `Seeker`（查询）+ `AIPath`（移动），统一代理入口 | ✅ |
+| 路径查询 | `Seeker.StartPath()` 异步算路 | ✅ |
+| 移动驱动 | AIPath `desiredVelocity` → `SCharacterIntent.ExternalMovementVelocity` → Motor override 分支 | ✅ |
+| 移动集成 | 走现有动画/root motion 管道，AIPath velocity 直接透传 | ✅ |
+| Click-to-Move | 右键 → `agent.SetDestination(mousePos)`，heading 使用 `desiredVelocity.normalized` | ✅ |
 
-**不做的（留到对应 Phase）**:
+**延后（到对应 Phase）**:
+- GridGraph bake + 障碍标记（Phase 4 战斗/AI 时逐步完善）
 - 动态障碍更新（Phase 6 建造时做）
 - Flow Field / 多 Agent 优化（Phase 10 尸潮时做）
 
@@ -129,7 +129,7 @@
 | 3.6 | Service 架构加固 | ✅ |
 | 3.7 | 数据流架构重构 (PublishState + Component 解耦) | ✅ |
 | 4 前置 | 俯视角切换 | ✅ |
-| 4 前置 | A\* Pathfinding 集成 | 待做 |
+| 4 前置 | A\* Pathfinding 集成 | ✅ |
 
 ---
 

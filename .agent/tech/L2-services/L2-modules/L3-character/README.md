@@ -9,12 +9,14 @@
 | L4 目录 | 职责 |
 |---------|------|
 | `L4-actor/` | 顶层组装 — CharacterActor 串联全链路，CharacterRig 统一物理写入 |
+| `L4-director/` | 意图控制 — ICharacterDirector 接口 + PlayerDirector 实现（输入+寻路→Intent） |
 | `L4-config/` | 配置与枚举 — CharacterProfile SO、LocomotionEnums |
 | `L4-kinematic/` | 运动学评估 — 地面检测、障碍检测、头部注视 |
 | `L4-locomotion/` | 移动仿真 — Motor(速度/转角) + Stance(Phase/Gait/Turning) |
 | `L4-animation/` | 动画表现 — Brain + Arbiter + Driver + FSM 7 状态机 |
 | `L4-stats/` | 角色数值 — CharacterStats + Rule 模式驱动 |
 | `L4-audio/` | 角色音频 — 脚步/受击/状态音效 |
+| `L4-pathfinding/` | 寻路代理 — PathfindingAgent(Seeker+AIPath) + PathfindingTester |
 | `L4-input/` | 角色输入 — EventDispatcher 桥接 + 输入聚合 |
 
 ## 调用链
@@ -22,7 +24,9 @@
 ```
 CharacterActor.Update()
   │
-  ├── [Input] CharacterEventReceiver → SCharacterInputActions
+  ├── [Director] PlayerDirector.Evaluate() → SCharacterIntent
+  │   ├── PlayerInput → 鼠标/按键帧状态
+  │   └── PathfindingAgent → SetDestination / DesiredVelocity
   │
   ├── [Kinematic] CharacterKinematic.Evaluate()
   │   ├── CharacterGroundDetection → SGroundContact
@@ -175,6 +179,20 @@ CharacterActor.Update()
 | [character-audio.md](L4-audio/character-audio.md) | CharacterAudio — 脚步事件音效 |
 | [config/character-audio-config-so.md](L4-audio/config/character-audio-config-so.md) | CharacterAudioConfigSO |
 | [config/footstep-set-so.md](L4-audio/config/footstep-set-so.md) | FootstepSetSO |
+
+### director/
+| 文件 | 内容 |
+|------|------|
+| [s-character-intent.md](L4-director/s-character-intent.md) | SCharacterIntent — 角色意图结构体，含寻路速度 override |
+| [i-character-director.md](L4-director/i-character-director.md) | ICharacterDirector 接口 |
+| [player/player-director.md](L4-director/player/player-director.md) | PlayerDirector — 玩家输入+寻路→Intent |
+| [player/player-input.md](L4-director/player/player-input.md) | PlayerInput — 输入聚合器 |
+
+### pathfinding/
+| 文件 | 内容 |
+|------|------|
+| [pathfinding-agent.md](L4-pathfinding/pathfinding-agent.md) | PathfindingAgent — Seeker+AIPath 寻路代理 |
+| [pathfinding-tester.md](L4-pathfinding/pathfinding-tester.md) | PathfindingTester — 随机目的地测试 |
 
 ### input/
 | 文件 | 内容 |
