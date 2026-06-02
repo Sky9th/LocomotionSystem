@@ -9,15 +9,15 @@ namespace RedDust.Character.Animation
     /// resolved via Animancer transition libraries and alias keys.
     /// </summary>
     [CreateAssetMenu(
-        fileName = "LocomotionAnimationProfile",
-        menuName = "RedDust/Character/Animation/Locomotion Animation Profile")]
-    public sealed class LocomotionAnimationProfile : ScriptableObject
+        fileName = "LocomotionAnimationConfigSO",
+        menuName = "RedDust/Animation/Locomotion Animation Config")]
+    public sealed class LocomotionAnimationConfigSO : ScriptableObject
     {
         [Header("Head Look")]
         [Min(0f)] public float headLookSmoothingSpeed = 5f;
 
         [Header("Turn Speeds By Mode")]
-        public LocomotionModeProfile[] modeProfiles;
+        public AnimationModeConfigSO[] modeProfiles;
         [Min(0f)] public float defaultInPlaceTurnSpeed = 360f;
         [Min(0f)] public float defaultMovingTurnSpeed = 720f;
 
@@ -49,7 +49,7 @@ namespace RedDust.Character.Animation
             {
                 for (int i = 0; i < modeProfiles.Length; i++)
                 {
-                    LocomotionModeProfile mode = modeProfiles[i];
+                    AnimationModeConfigSO mode = modeProfiles[i];
                     if (mode == null)
                     {
                         continue;
@@ -67,6 +67,6 @@ namespace RedDust.Character.Animation
 
         // Note: modeProfiles & GetTurnSpeed are animation-only tuning for
         // model rotation speed. All core locomotion thresholds now live in
-        // LocomotionProfile.
+        // LocomotionProfileSO.
     }
 }

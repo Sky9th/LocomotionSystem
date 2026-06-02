@@ -3,7 +3,7 @@ using RedDust.Audio;
 
 namespace RedDust.Character.Audio
 {
-    [CreateAssetMenu(fileName = "CharacterAudioConfig", menuName = "RedDust/Character/Audio Config")]
+    [CreateAssetMenu(fileName = "CharacterAudioConfigSO", menuName = "RedDust/Audio/Audio Config")]
     public class CharacterAudioConfigSO : AudioSetSO
     {
         public FootstepSetSO footsteps;

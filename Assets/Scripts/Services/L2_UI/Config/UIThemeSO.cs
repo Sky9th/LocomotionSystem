@@ -4,7 +4,7 @@ using UnityEngine;
 namespace RedDust.UI
 {
 
-    [CreateAssetMenu(fileName = "UITheme", menuName = "RedDust/UI/Theme")]
+    [CreateAssetMenu(fileName = "UIThemeSO", menuName = "RedDust/UI/Theme")]
     public class UIThemeSO : ScriptableObject
     {
         [Header("Panel")]

@@ -11,7 +11,7 @@ namespace RedDust.Character.Locomotion
 
         internal SCharacterMotor Evaluate(
             in SCharacterKinematic kin, in SCharacterIntent intent,
-            LocomotionProfile profile, float dt)
+            LocomotionProfileSO profile, float dt)
         {
             var turnAngle = SignedAngle(kin.BodyForward, kin.LocomotionHeading);
 
@@ -25,7 +25,7 @@ namespace RedDust.Character.Locomotion
             }
 
             var speed = intent.HasMovement
-                ? profile.GetSpeedForGait(intent.DesiredGait)
+                ? profile.GetSpeed(intent.DesiredPosture, intent.DesiredGait)
                 : 0f;
 
             var desired = new Vector2(0f, speed);

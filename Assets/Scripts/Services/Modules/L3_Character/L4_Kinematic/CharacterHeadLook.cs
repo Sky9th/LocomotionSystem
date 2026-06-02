@@ -17,7 +17,7 @@ namespace RedDust.Character.Kinematic
         }
 
         internal static Vector2 Evaluate(Vector3 viewForward, Transform modelRoot, Transform rootTransform,
-            CharacterProfile profile)
+            KinematicProfileSO profile)
         {
             var targetRotation = viewForward.sqrMagnitude > Mathf.Epsilon
                 ? Quaternion.LookRotation(viewForward)

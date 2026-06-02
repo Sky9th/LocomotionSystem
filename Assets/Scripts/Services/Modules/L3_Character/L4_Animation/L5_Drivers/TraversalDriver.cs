@@ -7,7 +7,7 @@ namespace RedDust.Character.Animation.Drivers
 {
     public sealed class TraversalDriver : BaseCharacterAnimationDriver
     {
-        [SerializeField] private AnimationAliasProfile aliasProfile;
+        [SerializeField] private AnimationClipSetSO aliasProfile;
 
         private Collider obstacleCollider;
         private Vector3 topPoint;

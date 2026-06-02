@@ -5,6 +5,6 @@ namespace RedDust.Character.Locomotion
 {
     internal interface ILocomotionSimulator
     {
-        void Simulate(ref CharacterFrameContext ctx, in SCharacterIntent intent, LocomotionProfile profile, float dt);
+        void Simulate(ref CharacterFrameContext ctx, in SCharacterIntent intent, LocomotionProfileSO profile, float dt);
     }
 }

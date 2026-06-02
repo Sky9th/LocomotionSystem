@@ -5,7 +5,7 @@ namespace RedDust.Stats
 {
     public class StatInstance
     {
-        public StatDefSO Def { get; }
+        public StatDefinitionSO Def { get; }
         public string Path { get; internal set; }
         public float Current { get; private set; }
 
@@ -16,7 +16,7 @@ namespace RedDust.Stats
         public event Action OnZero;
         public event Action<float> OnChanged;
 
-        internal StatInstance(StatDefSO def, float overrideDefault)
+        internal StatInstance(StatDefinitionSO def, float overrideDefault)
         {
             Def = def;
             Current = overrideDefault >= 0f ? overrideDefault : def.Default;

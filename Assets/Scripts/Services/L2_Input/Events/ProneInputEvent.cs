@@ -3,8 +3,8 @@ using UnityEngine.InputSystem;
 
 namespace RedDust.GameInput
 {
-    [CreateAssetMenu(menuName = "Events/Input/Prone Event", fileName = "ProneEvent")]
-    public sealed class ProneInputEvent : InputEvent<bool>
+    [CreateAssetMenu(menuName = "RedDust/Input/Prone Event", fileName = "ProneEventSO")]
+    public sealed class ProneInputEventSO : InputEvent<bool>
     {
         protected override void OnPerformed(InputAction.CallbackContext ctx)
         {

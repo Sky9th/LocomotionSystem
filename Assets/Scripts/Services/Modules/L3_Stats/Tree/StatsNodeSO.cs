@@ -2,13 +2,13 @@ using UnityEngine;
 
 namespace RedDust.Stats
 {
-    [CreateAssetMenu(fileName = "StatsNode", menuName = "RedDust/Stats/Stats Node")]
+    [CreateAssetMenu(fileName = "StatsNodeSO", menuName = "RedDust/Stats/Stats Node")]
     public class StatsNodeSO : ScriptableObject
     {
         public string Id;
         public bool IsEnabled = true;
         public bool IsFolder;
-        public StatDefSO Def;
+        public StatDefinitionSO Def;
         public StatsNodeSO[] Children;
         [Min(-1f)] public float OverrideValue = -1f;
 

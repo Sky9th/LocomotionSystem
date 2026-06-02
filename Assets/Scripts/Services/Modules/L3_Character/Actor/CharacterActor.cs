@@ -20,11 +20,10 @@ namespace RedDust.Character
         [SerializeField] private bool isPlayer;
 
         [Header("Config")]
-        [SerializeField] private CharacterProfile characterProfile;
+        [SerializeField] private CharacterProfileSO characterProfile;
 
         [Header("Locomotion")]
-        [SerializeField] private LocomotionProfile locomotionProfile;
-        [SerializeField] private LocomotionAnimationProfile locomotionAnimationProfile;
+        [SerializeField] private LocomotionAnimationConfigSO locomotionAnimationProfile;
 
         [Header("Stats")]
         [SerializeField] private StatsTreeSO statsTree;
@@ -37,7 +36,7 @@ namespace RedDust.Character
         internal SCharacterKinematic LastKinematic { get; private set; }
         internal SCharacterMotor LastMotor { get; private set; }
         internal SCharacterDiscrete LastDiscrete { get; private set; }
-        internal LocomotionProfile LocomotionProfile => locomotionProfile;
+        internal LocomotionProfileSO LocomotionProfile => characterProfile?.locomotion;
 
         private PlayerDirector director;
         private PathfindingAgent pathfindingAgent;
@@ -81,12 +80,13 @@ namespace RedDust.Character
 
             var intent = director.Evaluate();
             ctx.Intent = intent;
-            ctx.LocomotionProfile = locomotionProfile;
+            ctx.LocomotionProfile = characterProfile?.locomotion;
             ctx.LocomotionAnimationProfile = locomotionAnimationProfile;
-            ctx.Kinematic = characterKinematic.Evaluate(characterProfile, intent.LocomotionHeading,
+            ctx.KinematicProfile = characterProfile?.kinematic;
+            ctx.Kinematic = characterKinematic.Evaluate(characterProfile?.kinematic, intent.LocomotionHeading,
                 intent.AimDirection, deltaTime);
 
-            locomotionSimulator.Simulate(ref ctx, intent, locomotionProfile, deltaTime);
+            locomotionSimulator.Simulate(ref ctx, intent, characterProfile?.locomotion, deltaTime);
 
             LastKinematic = ctx.Kinematic;
             LastMotor = ctx.Motor;

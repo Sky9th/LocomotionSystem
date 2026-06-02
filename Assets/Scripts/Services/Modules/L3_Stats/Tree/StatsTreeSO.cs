@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace RedDust.Stats
 {
-    [CreateAssetMenu(fileName = "StatsTree", menuName = "RedDust/Stats/Stats Tree")]
+    [CreateAssetMenu(fileName = "StatsTreeSO", menuName = "RedDust/Stats/Stats Tree")]
     public class StatsTreeSO : ScriptableObject
     {
         public StatsTreeSO InheritsFrom;

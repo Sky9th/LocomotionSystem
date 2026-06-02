@@ -25,11 +25,11 @@ namespace RedDust.Character.Animation
         [SerializeField] private Animator animator;
 
         [Header("Animation Config")]
-        [SerializeField] private AnimationAliasProfile aliasProfile;
-        [SerializeField] private LocomotionAnimationProfile animationProfile;
+        [SerializeField] private AnimationClipSetSO aliasProfile;
+        [SerializeField] private LocomotionAnimationConfigSO animationProfile;
 
         [Header("Locomotion")]
-        [SerializeField] private Locomotion.LocomotionProfile locomotionProfile;
+        [SerializeField] private Locomotion.LocomotionProfileSO locomotionProfile;
 
         [Header("Root Motion")]
         [SerializeField] private bool forwardRootMotion = true;

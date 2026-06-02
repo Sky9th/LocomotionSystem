@@ -33,11 +33,11 @@ namespace RedDust.Character.Director
 
         public void BindEvents()
         {
-            channels.Get<SecondaryInteractEvent>()?.Register(OnSecondary);
-            channels.Get<SprintInputEvent>()?.Register(OnSprint);
-            channels.Get<CrouchInputEvent>()?.Register(OnCrouch);
-            channels.Get<ProneInputEvent>()?.Register(OnProne);
-            channels.Get<StandInputEvent>()?.Register(OnStand);
+            channels.Get<SecondaryInteractEventSO>()?.Register(OnSecondary);
+            channels.Get<SprintInputEventSO>()?.Register(OnSprint);
+            channels.Get<CrouchInputEventSO>()?.Register(OnCrouch);
+            channels.Get<ProneInputEventSO>()?.Register(OnProne);
+            channels.Get<StandInputEventSO>()?.Register(OnStand);
 
             // TEMP
             if (GameContext.Instance != null &&
@@ -49,11 +49,11 @@ namespace RedDust.Character.Director
 
         public void UnbindEvents()
         {
-            channels.Get<SecondaryInteractEvent>()?.Unregister(OnSecondary);
-            channels.Get<SprintInputEvent>()?.Unregister(OnSprint);
-            channels.Get<CrouchInputEvent>()?.Unregister(OnCrouch);
-            channels.Get<ProneInputEvent>()?.Unregister(OnProne);
-            channels.Get<StandInputEvent>()?.Unregister(OnStand);
+            channels.Get<SecondaryInteractEventSO>()?.Unregister(OnSecondary);
+            channels.Get<SprintInputEventSO>()?.Unregister(OnSprint);
+            channels.Get<CrouchInputEventSO>()?.Unregister(OnCrouch);
+            channels.Get<ProneInputEventSO>()?.Unregister(OnProne);
+            channels.Get<StandInputEventSO>()?.Unregister(OnStand);
 
             dispatcher?.Unsubscribe<SCameraSnapshot>(OnCameraSnapshot);
             dispatcher = null;

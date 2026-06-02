@@ -6,8 +6,8 @@ namespace RedDust.GameInput
     /// <summary>
     /// 主交互（左键）输入事件。Unity Input System 是发布者。
     /// </summary>
-    [CreateAssetMenu(menuName = "Events/Input/Primary Interact Event", fileName = "PrimaryInteractEvent")]
-    public sealed class PrimaryInteractEvent : InputEvent<bool>
+    [CreateAssetMenu(menuName = "RedDust/Input/Primary Interact Event", fileName = "PrimaryInteractEventSO")]
+    public sealed class PrimaryInteractEventSO : InputEvent<bool>
     {
         protected override void OnPerformed(InputAction.CallbackContext ctx)
         {

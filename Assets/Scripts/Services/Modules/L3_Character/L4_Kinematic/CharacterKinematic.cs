@@ -26,7 +26,7 @@ namespace RedDust.Character.Kinematic
             previousGroundContact = SGroundContact.None;
         }
 
-        internal SCharacterKinematic Evaluate(CharacterProfile profile, Vector3 locomotionHeading,
+        internal SCharacterKinematic Evaluate(KinematicProfileSO profile, Vector3 locomotionHeading,
             Vector3 aimDirection, float deltaTime)
         {
             if (profile == null) throw new ArgumentNullException(nameof(profile));
@@ -47,7 +47,7 @@ namespace RedDust.Character.Kinematic
         }
 
         private SGroundContact EvaluateGroundContactAndApplyConstraints(
-            CharacterProfile profile, float deltaTime, ref Vector3 position)
+            KinematicProfileSO profile, float deltaTime, ref Vector3 position)
         {
             var contact = EvaluateStableGroundContact(profile, position, deltaTime);
 
@@ -71,7 +71,7 @@ namespace RedDust.Character.Kinematic
             return contact;
         }
 
-        private SGroundContact EvaluateStableGroundContact(CharacterProfile profile, Vector3 position, float deltaTime)
+        private SGroundContact EvaluateStableGroundContact(KinematicProfileSO profile, Vector3 position, float deltaTime)
         {
             var contact = CharacterGroundDetection.EvaluateGroundContact(
                 position, profile.groundProbeHeight, profile.groundProbeRadius,

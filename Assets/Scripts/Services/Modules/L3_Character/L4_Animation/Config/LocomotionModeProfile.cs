@@ -8,9 +8,9 @@ namespace RedDust.Character.Animation
     /// This is v2-only and should not be used by the legacy Locomotion.
     /// </summary>
     [CreateAssetMenu(
-        fileName = "LocomotionModeProfile",
-        menuName = "RedDust/Character/Animation/Locomotion Mode Profile")]
-    public sealed class LocomotionModeProfile : ScriptableObject
+        fileName = "AnimationModeConfigSO",
+        menuName = "RedDust/Animation/Animation Mode Config")]
+    public sealed class AnimationModeConfigSO : ScriptableObject
     {
         [Header("Locomotion Mode Key")]
         [SerializeField] private EPosture posture = EPosture.Standing;

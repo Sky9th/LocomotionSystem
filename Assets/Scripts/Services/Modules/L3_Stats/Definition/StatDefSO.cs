@@ -2,8 +2,8 @@ using UnityEngine;
 
 namespace RedDust.Stats
 {
-    [CreateAssetMenu(fileName = "StatDef", menuName = "RedDust/Stats/Stat Definition")]
-    public class StatDefSO : ScriptableObject
+    [CreateAssetMenu(fileName = "StatDefinitionSO", menuName = "RedDust/Stats/Stat Definition")]
+    public class StatDefinitionSO : ScriptableObject
     {
         public string Id;
         public float Min;

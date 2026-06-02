@@ -15,9 +15,9 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         private StringAsset lastPlayedAlias;
         private AnimancerState currentAnimState;
 
-        internal AnimationAliasProfile Alias { get; }
-        internal LocomotionAnimationProfile AnimProfile { get; }
-        internal LocomotionProfile LocoProfile { get; }
+        internal AnimationClipSetSO Alias { get; }
+        internal LocomotionAnimationConfigSO AnimProfile { get; }
+        internal LocomotionProfileSO LocoProfile { get; }
         internal CharacterRig Rig { get; }
         internal CharacterFrameContext Ctx => ctx;
         internal float DeltaTime => deltaTime;
@@ -29,8 +29,8 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         internal System.Action FootstepCallback;
         private AnimancerState injectedMixer;
 
-        internal BaseLayer(AnimancerLayer layer, AnimationAliasProfile alias, LocomotionAnimationProfile animProfile,
-            LocomotionProfile locoProfile, CharacterRig rig)
+        internal BaseLayer(AnimancerLayer layer, AnimationClipSetSO alias, LocomotionAnimationConfigSO animProfile,
+            LocomotionProfileSO locoProfile, CharacterRig rig)
         {
             Layer = layer;
             Alias = alias;

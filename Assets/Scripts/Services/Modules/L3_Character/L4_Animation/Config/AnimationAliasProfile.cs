@@ -4,8 +4,9 @@ using UnityEngine;
 namespace RedDust.Character.Animation
 {
     [CreateAssetMenu(
-        menuName = "RedDust/Character/Animation Alias Profile")]
-    public class AnimationAliasProfile : ScriptableObject
+        fileName = "AnimationClipSetSO",
+        menuName = "RedDust/Animation/Animation Clip Set")]
+    public class AnimationClipSetSO : ScriptableObject
     {
         [Header("Clips")]
         public StringAsset idleL;

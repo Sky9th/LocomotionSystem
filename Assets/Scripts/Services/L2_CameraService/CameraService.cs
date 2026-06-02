@@ -15,7 +15,7 @@ namespace RedDust.GameCamera
         [SerializeField] private bool autoLocateBrain = true;
         [SerializeField] private bool autoLocateDefaultVirtualCamera = true;
 
-        [SerializeField] private GameProfile gameProfile;
+        [SerializeField] private GameProfileSO gameProfile;
 
         [SerializeField] private GameObject anchorPrefab;
 
@@ -133,7 +133,7 @@ namespace RedDust.GameCamera
         {
             if (gameProfile == null)
             {
-                Debug.LogError("[CameraService] Missing GameProfile reference.", this);
+                Debug.LogError("[CameraService] Missing GameProfileSO reference.", this);
             }
         }
 

@@ -17,7 +17,7 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
                 if (disc.Phase != ELocomotionPhase.GroundedMoving || !disc.IsTurning) return false;
 
                 var vel = Owner.Ctx.Motor.DesiredLocalVelocity;
-                var speed = Owner.LocoProfile != null ? Owner.LocoProfile.GetSpeedForGait(Owner.Ctx.Discrete.Gait) : 0f;
+                var speed = Owner.LocoProfile != null ? Owner.LocoProfile.GetSpeed(Owner.Ctx.Discrete.Posture, Owner.Ctx.Discrete.Gait) : 0f;
                 var forwardThreshold = speed > 0f ? speed * 0.9f : 0.01f;
                 var lateralThreshold = speed > 0f ? speed * 0.1f : 0.01f;
                 return vel.y >= forwardThreshold && Mathf.Abs(vel.x) <= lateralThreshold;
@@ -42,7 +42,7 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         public override void Tick()
         {
             var vel = Owner.Ctx.Motor.DesiredLocalVelocity;
-            var speed = Owner.LocoProfile != null ? Owner.LocoProfile.GetSpeedForGait(Owner.Ctx.Discrete.Gait) : 0f;
+            var speed = Owner.LocoProfile != null ? Owner.LocoProfile.GetSpeed(Owner.Ctx.Discrete.Posture, Owner.Ctx.Discrete.Gait) : 0f;
             if (vel.y < speed * 0.9f || Mathf.Abs(vel.x) > speed * 0.1f)
             { Owner.ForceSetState(BaseStateKey.Moving); return; }
 

@@ -3,8 +3,8 @@ using UnityEngine.InputSystem;
 
 namespace RedDust.GameInput
 {
-    [CreateAssetMenu(menuName = "Events/Input/Crouch Event", fileName = "CrouchEvent")]
-    public sealed class CrouchInputEvent : InputEvent<bool>
+    [CreateAssetMenu(menuName = "RedDust/Input/Crouch Event", fileName = "CrouchEventSO")]
+    public sealed class CrouchInputEventSO : InputEvent<bool>
     {
         protected override void OnPerformed(InputAction.CallbackContext ctx)
         {

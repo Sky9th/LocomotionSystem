@@ -27,7 +27,7 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
             };
             Owner.PlayIfChanged(alias);
 
-            float desiredGaitSpeed = Owner.LocoProfile != null ? Owner.LocoProfile.GetSpeedForGait(gait) : 0f;
+            float desiredGaitSpeed = Owner.LocoProfile != null ? Owner.LocoProfile.GetSpeed(Owner.Ctx.Discrete.Posture, gait) : 0f;
             if (Owner.Layer.CurrentState is Vector2MixerState mixer && desiredGaitSpeed > 0f)
             {
                 var parameter = Owner.Ctx.Motor.ActualLocalVelocity / desiredGaitSpeed;

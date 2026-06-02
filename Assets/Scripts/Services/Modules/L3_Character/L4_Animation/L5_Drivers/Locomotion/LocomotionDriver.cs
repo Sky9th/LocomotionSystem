@@ -8,9 +8,9 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
 {
     public sealed class LocomotionDriver : BaseCharacterAnimationDriver
     {
-        [SerializeField] private AnimationAliasProfile aliasProfile;
-        [SerializeField] private LocomotionAnimationProfile animationProfile;
-        [SerializeField] private LocomotionProfile locomotionProfile;
+        [SerializeField] private AnimationClipSetSO aliasProfile;
+        [SerializeField] private LocomotionAnimationConfigSO animationProfile;
+        [SerializeField] private LocomotionProfileSO locomotionProfile;
 
         private BaseLayer baseLayer;
 

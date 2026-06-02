@@ -66,8 +66,8 @@ namespace RedDust.Character
 
         private void DrawGround(Vector3 pos, SCharacterKinematic kin)
         {
-            float probeHeight = characterProfile.groundProbeHeight;
-            float probeRadius = characterProfile.groundProbeRadius;
+            float probeHeight = characterProfile.kinematic.groundProbeHeight;
+            float probeRadius = characterProfile.kinematic.groundProbeRadius;
 
             var origin = pos + Vector3.up * probeHeight;
             var maxDist = probeHeight + 10f;
@@ -95,9 +95,9 @@ namespace RedDust.Character
             float groundY = kin.GroundContact.IsGrounded ? kin.GroundContact.ContactPoint.y : pos.y;
             var groundPoint = new Vector3(obs.Point.x, groundY, obs.Point.z);
             Gizmos.color = Color.yellow;
-            Gizmos.DrawLine(groundPoint, groundPoint + Vector3.up * characterProfile.obstacleMaxClimbHeight);
+            Gizmos.DrawLine(groundPoint, groundPoint + Vector3.up * characterProfile.kinematic.obstacleMaxClimbHeight);
 
-            var topOrigin = new Vector3(obs.Point.x, groundY + characterProfile.obstacleMaxClimbHeight, obs.Point.z);
+            var topOrigin = new Vector3(obs.Point.x, groundY + characterProfile.kinematic.obstacleMaxClimbHeight, obs.Point.z);
             GizmoDebugUtility.DrawArrowLine(topOrigin, obs.TopPoint, Color.white, "H Probe");
 
             GizmoDebugUtility.DrawSphere(obs.TopPoint, 0.05f, Color.green, "Top");

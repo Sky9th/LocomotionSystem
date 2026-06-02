@@ -17,13 +17,13 @@ namespace RedDust.Character.Locomotion
 
         internal SCharacterDiscrete Evaluate(
             in SCharacterMotor motor, in SCharacterKinematic kin,
-            in SCharacterIntent intent, LocomotionProfile profile,
-            LocomotionAnimationProfile animProfile, float dt)
+            in SCharacterIntent intent, LocomotionProfileSO profile,
+            KinematicProfileSO kProfile, LocomotionAnimationConfigSO animProfile, float dt)
         {
             var phase = EvaluatePhase(in kin, in motor);
             var gait = intent.DesiredGait;
             var posture = intent.DesiredPosture;
-            var turning = EvaluateTurning(in motor, in kin, profile, dt, phase);
+            var turning = EvaluateTurning(in motor, in kin, kProfile, dt, phase);
 
             if (gait != cachedGait || posture != cachedPosture)
             {
@@ -33,7 +33,7 @@ namespace RedDust.Character.Locomotion
             }
 
             var motionSpeedScale = cachedMotionSpeedScale; // TODO: terrain / buff 叠加修正
-            var effectiveMaxSpeed = profile.GetSpeedForGait(gait) * motionSpeedScale;
+            var effectiveMaxSpeed = profile.GetSpeed(posture, gait) * motionSpeedScale;
             return new SCharacterDiscrete(phase, posture, gait, turning, motionSpeedScale, effectiveMaxSpeed);
         }
 
@@ -42,7 +42,7 @@ namespace RedDust.Character.Locomotion
         /// </summary>
         private static float ComputeBaseSpeedScale(
             EMovementGait gait, EPosture posture,
-            LocomotionProfile profile, LocomotionAnimationProfile animProfile)
+            LocomotionProfileSO profile, LocomotionAnimationConfigSO animProfile)
         {
             if (profile == null || animProfile == null) return 1f;
 
@@ -62,7 +62,7 @@ namespace RedDust.Character.Locomotion
             }
 
             return animNativeSpeed > 0f
-                ? profile.GetSpeedForGait(gait) / animNativeSpeed
+                ? profile.GetSpeed(posture, gait) / animNativeSpeed
                 : 1f;
         }
 
@@ -75,14 +75,14 @@ namespace RedDust.Character.Locomotion
         }
 
         private bool EvaluateTurning(in SCharacterMotor motor, in SCharacterKinematic kin,
-            LocomotionProfile profile, float dt, ELocomotionPhase phase)
+            KinematicProfileSO kProfile, float dt, ELocomotionPhase phase)
         {
             if (phase != ELocomotionPhase.GroundedIdle && phase != ELocomotionPhase.GroundedMoving)
             { isTurning = false; return false; }
 
             var absAngle = Mathf.Abs(motor.TurnAngle);
-            var wantsTurn = absAngle >= profile.turnEnterAngle;
-            var turnDone = absAngle <= profile.turnCompletionAngle;
+            var wantsTurn = absAngle >= kProfile.turnEnterAngle;
+            var turnDone = absAngle <= kProfile.turnCompletionAngle;
 
             if (!isTurning && wantsTurn) isTurning = true;
             else if (isTurning && turnDone) isTurning = false;
