@@ -6,7 +6,7 @@
 
 | 位置 | 命名格式 | 示例 |
 |------|---------|------|
-| **代码目录** (`Assets/Scripts/`) | `L{N}_{PascalCase}`，占位容器不带 L | `L1_Core/`, `L2_Audio/`, `Services/`, `Modules/` |
+| **代码目录** (`Assets/Scripts/`) | L1/L2/L3 用 `L{N}_{PascalCase}`，L4/L5 及占位容器不带 L | `L1_Core/`, `L2_Audio/`, `L3_Character/`, `Animation/`, `Drivers/`, `Services/` |
 | **文档目录** (`.agent/tech/`) | `L{N}-{kebab-case}`，纯文档不随 Unity 风格 | `L1-core/`, `L2-audio/`, `L4-animation/`, `L5-drivers/` |
 
 > **为什么不同？** 代码目录跟 Unity 项目惯例（PascalCase），文档目录保持 kebab-case 便于阅读。两者表示同一架构层级，仅命名风格不同。
@@ -18,8 +18,8 @@
 | **L1** | 根管理层 | 持有所有 Service，无业务逻辑 | `L1_Core/` |
 | **L2** | 系统服务 | 继承 BaseService，协调 L1↔L3 | `L2_Audio/`, `L2_Input/`, `L2_UI/` |
 | **L3** | 领域模块 | 独立领域，不隶属单一 L2，可被多个 Service 共用 | `L3_Character/`, `L3_Stats/` |
-| **L4** | 领域子系统 | L3 内部的**不同领域子系统**，承担独立功能 | `L4_Animation/`, `L4_Kinematic/`, `L4_Locomotion/`, `L4_Stats/`, `L4_Audio/` |
-| **L5** | 子系统的子系统 | L4 内部的**附属子系统**，承担其下一级独立功能 | `L5_Drivers/`, `L5_Locomotion/` |
+| **L4** | 领域子系统 | L3 内部的**不同领域子系统**，承担独立功能 | `Animation/`, `Kinematic/`, `Locomotion/`, `Stats/`, `Audio/`, `Combat/` |
+| **L5** | 子系统的子系统 | L4 内部的**附属子系统**，承担其下一级独立功能 | `Drivers/`（如 `Animation/Drivers/Locomotion/`） |
 
 > **不是 L4 的**：模块自身组件代码（`Actor/`、`Actions/`、`Core/`、`Components/`、`HUD/`）——这是代码分组，不是子系统。
 > **不是 L5 的**：按文件类型分组（`Config/`、`Structs/`、`Data/`、`Rules/`、`States/`、`Requests/`）——这是代码结构，不是子系统。
@@ -91,37 +91,37 @@ tech/
 │       │   ├── Config/                 # CharacterProfile, LocomotionEnums [代码结构]
 │       │   ├── Input/                  # CharacterEventReceiver, SCharacterInputActions [代码结构]
 │       │   │
-│       │   ├── L4-animation/           # L4: 动画子系统
+│       │   ├── animation/               # L4: 动画子系统
 │       │   │   ├── AnimationBrain.cs
 │       │   │   ├── DriverArbiter.cs
 │       │   │   ├── Config/             # AnimationAliasProfile, LocomotionAnimationProfile, LocomotionModeProfile
 │       │   │   ├── Requests/           # AnimationRequest, OnCompleteBehavior, OnInterruptedBehavior
-│       │   │   └── L5-drivers/         # L5: 驱动子系统
+│       │   │   └── drivers/            # L5: 驱动子系统
 │       │   │       ├── i-character-animation-driver.md
 │       │   │       ├── base-character-animation-driver.md
 │       │   │       ├── TraversalDriver.cs
-│       │   │       └── L5-locomotion/  # L5: 移动驱动子系统
+│       │   │       └── locomotion/     # L5: 移动驱动子系统
 │       │   │           ├── LocomotionDriver, BaseLayer, BaseStateKey
 │       │   │           └── States/     # 7 个 FSM state [代码结构]
 │       │   │
-│       │   ├── L4-audio/               # L4: 音效子系统
+│       │   ├── audio/                  # L4: 音效子系统
 │       │   │   ├── CharacterAudio.cs
 │       │   │   └── Config/             # CharacterAudioConfigSO, FootstepSetSO
-│       │   ├── L4-kinematic/           # L4: 运动学子系统
+│       │   ├── kinematic/              # L4: 运动学子系统
 │       │   │   ├── CharacterKinematic, GroundDetection, HeadLook, ObstacleDetection
 │       │   │   └── Structs/            # SCharacterKinematic, SGroundContact, SForwardObstacleDetection
-│       │   ├── L4-locomotion/          # L4: 移动控制子系统
+│       │   ├── locomotion/             # L4: 移动控制子系统
 │       │   │   ├── ILocomotionSimulator, GroundLocomotion, Motor, Stance
 │       │   │   ├── LocomotionProfile.cs
 │       │   │   └── Structs/            # SCharacterMotor, SCharacterDiscrete
-│       │   └── L4-stats/               # L4: 数值子系统
-│       │       ├── CharacterStats.cs
-│       │       └── Rules/              # 8 个 stat rule
-│       │   └── L4-combat/              # L4: 战斗技能子系统
+│       │   ├── stats/                  # L4: 数值子系统
+│       │   │   ├── CharacterStats.cs
+│       │   │   └── Rules/              # 8 个 stat rule
+│       │   └── combat/                 # L4: 战斗技能子系统
 │       │       ├── CombatComponent.cs   # 中枢管理器
 │       │       ├── Config/             # SkillDefSO, WeaponSkillSetSO
 │       │       ├── Runtime/            # SkillBar, CombatPipeline
-│       │       └── L5_Drivers/         # CombatDriver
+│       │       └── Drivers/            # CombatDriver
 │       │
 │       ├── L3-stats/                   # L3: Stat 数值框架 (自身代码: Definition/ Tree/ Instance/ Modifier/ Interfaces/ Editor/)
 │       │   ├── README.md
@@ -199,8 +199,7 @@ tech/
 | L1 层级 | `L1_Core/` | `L1-core/` |
 | L2 层级 | `L2_{Name}/` | `L2-{name}/` |
 | L3 层级 | `L3_{Name}/` | `L3-{name}/` |
-| L4 子系统 | `L4_{Name}/` (仅领域子系统) | `L4-{name}/` |
-| L5 子子系统 | `L5_{Name}/` (仅附属子系统) | `L5-{name}/` |
+| L4 子系统 | `{Name}/` (L3 直属子系统，无前缀) | `{name}/` |
+| L5 子子系统 | `{Name}/` (L4 直属子系统，无前缀) | `{name}/` |
 
-> 代码目录跟 Unity PascalCase + 下划线分隔 L 前缀；文档目录用 kebab-case 纯小写，便于阅读。两者 L 数字含义完全相同。
-> **L4/L5 不应用于普通代码分组**，仅当目录代表一个真正独立的子系统/子子系统时才带 L 前缀。
+> L1/L2/L3 保留 `L{N}_` 前缀（顶层模块入口）；L4/L5 目录名不带前缀，由嵌套表达层级关系。文档目录同步。
