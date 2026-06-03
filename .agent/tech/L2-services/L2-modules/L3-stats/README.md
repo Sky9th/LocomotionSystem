@@ -76,14 +76,17 @@ StatInstance 内部
 
 | 文件 | 内容 |
 |------|------|
-| [L4-definition/stat-def-so.md](L4-definition/stat-def-so.md) | Stat 定义 — Id/Min/Max/Default + 能力勾选 |
-| [L4-tree/stats-node-so.md](L4-tree/stats-node-so.md) | 树节点 — 父子关系 + Def 引用 + OverrideValue |
-| [L4-tree/stats-tree-so.md](L4-tree/stats-tree-so.md) | Stat 树 — InheritsFrom + Resolve() → StatInstance[] |
-| [L4-instance/stat-instance.md](L4-instance/stat-instance.md) | 运行时实例 — Current + modifiers + Tick 分派 |
-| [L4-modifier/stat-modifier.md](L4-modifier/stat-modifier.md) | 修改器 — Owner + Apply 委托 |
-| [L4-modifier/modifier-context.md](L4-modifier/modifier-context.md) | 修改器上下文 — Addend + Multiplier 累加容器 |
-| [L4-interfaces/i-stat-consumable.md](L4-interfaces/i-stat-consumable.md) | 可消耗接口契约 |
-| [L4-interfaces/i-stat-cumulative.md](L4-interfaces/i-stat-cumulative.md) | 可累积接口契约 |
-| [L4-interfaces/i-stat-derived.md](L4-interfaces/i-stat-derived.md) | 派生接口契约 |
-| [L4-interfaces/i-stat-restorable.md](L4-interfaces/i-stat-restorable.md) | 可恢复接口契约 |
-| [L4-editor/stats-tree-window.md](L4-editor/stats-tree-window.md) | 树编辑器 — EditorWindow 可视化编辑 |
+| [definition/stat-def-so.md](definition/stat-def-so.md) | Stat 定义 — Id/Min/Max/Default + 能力勾选 |
+| [tree/stats-node-so.md](tree/stats-node-so.md) | 树节点 (旧) — 父子关系 + Def 引用 + OverrideValue |
+| [tree/stats-tree-so.md](tree/stats-tree-so.md) | Stat 树 (旧) — InheritsFrom + Resolve() → StatInstance[] |
+| [tree/stats-tree-data.md](tree/stats-tree-data.md) | StatsTreeData (新) — JSON 树数据 + 继承合并算法 |
+| [instance/stat-instance.md](instance/stat-instance.md) | 运行时实例 — Current + modifiers + Tick 分派 |
+| [modifier/stat-modifier.md](modifier/stat-modifier.md) | 修改器 — Owner + Apply 委托 |
+| [modifier/modifier-context.md](modifier/modifier-context.md) | 修改器上下文 — Addend + Multiplier 累加容器 |
+| [interfaces/i-stat-consumable.md](interfaces/i-stat-consumable.md) | 可消耗接口契约 |
+| [interfaces/i-stat-cumulative.md](interfaces/i-stat-cumulative.md) | 可累积接口契约 |
+| [interfaces/i-stat-derived.md](interfaces/i-stat-derived.md) | 派生接口契约 |
+| [interfaces/i-stat-restorable.md](interfaces/i-stat-restorable.md) | 可恢复接口契约 |
+| [L4-editor/stats-tree-window.md](L4-editor/stats-tree-window.md) | 树编辑器 (旧) — EditorWindow 子资产管理 |
+| [L4-editor/stats-tree-editor-window.md](L4-editor/stats-tree-editor-window.md) | 树编辑器 (新) — JSON 驱动 + 继承合并视图 |
+

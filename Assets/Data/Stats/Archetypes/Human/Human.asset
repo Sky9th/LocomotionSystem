@@ -9,17 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41a08b0e5caf6364692f2188df7171e8, type: 3}
-  m_Name: Stamina
+  m_Script: {fileID: 11500000, guid: cb30adebbb5bb6f418ee6e6d886a8f46, type: 3}
+  m_Name: Human
   m_EditorClassIdentifier: 
-  Id: Stamina
-  Min: 0
-  Max: 100
-  Default: 100
-  isConsumable: 1
-  consumeRate: 2
-  consumeInterval: 0
-  isRestorable: 0
-  restoreRate: 0
-  restoreInterval: 0
-  isCumulative: 0
+  InheritsFrom: {fileID: 11400000, guid: 500c188cb7b789848bf667a60da890fe, type: 2}
+  treeJson: "{\n    \"Nodes\": []\n}"
+  defRefs: []

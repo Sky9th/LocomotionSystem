@@ -78,3 +78,4 @@ Unity 编辑器启动
 | [game-context-editor.md](game-context-editor.md) | GameContext Inspector 调试面板 |
 | [prototype/synty-prototype-browser.md](prototype/synty-prototype-browser.md) | Prototype 浏览器 EditorWindow |
 | [prototype/synty-prototype-menu.md](prototype/synty-prototype-menu.md) | 菜单入口 + 分类扫描 + 实例化 |
+| [editor-ui-patterns.md](editor-ui-patterns.md) | Editor UI 模式规范 — 卡片/间距/布局/按钮/常见陷阱 |

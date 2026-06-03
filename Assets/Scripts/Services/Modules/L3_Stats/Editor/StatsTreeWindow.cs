@@ -276,7 +276,7 @@ namespace RedDust.Stats.Editor
 
             if (entry.isOverride || entry.isLocalOnly)
             {
-                var newDef = (StatDefSO)EditorGUILayout.ObjectField(node.Def, typeof(StatDefSO), false, GUILayout.Width(180));
+                var newDef = (StatDefinitionSO)EditorGUILayout.ObjectField(node.Def, typeof(StatDefinitionSO), false, GUILayout.Width(180));
                 if (newDef != node.Def) { node.Def = newDef; hasChanges = true; }
             }
             else
@@ -324,7 +324,7 @@ namespace RedDust.Stats.Editor
 
             if (isEditable)
             {
-                var newDef = (StatDefSO)EditorGUILayout.ObjectField(displayNode.Def, typeof(StatDefSO), false, GUILayout.Width(180));
+                var newDef = (StatDefinitionSO)EditorGUILayout.ObjectField(displayNode.Def, typeof(StatDefinitionSO), false, GUILayout.Width(180));
                 if (newDef != displayNode.Def) { displayNode.Def = newDef; hasChanges = true; }
             }
             else
