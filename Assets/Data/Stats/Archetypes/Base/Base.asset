@@ -13,24 +13,21 @@ MonoBehaviour:
   m_Name: Base
   m_EditorClassIdentifier: 
   InheritsFrom: {fileID: 0}
-  treeJson: "{\n    \"Nodes\": [\n        {\n            \"Id\": \"NewFolder\",\n           
+  treeJson: "{\n    \"Nodes\": [\n        {\n            \"Id\": \"A\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": true,\n            \"IsOverride\":
-    false,\n            \"Children\": [\n                \"NewLeaf\",\n               
-    \"NewLeaf_1\"\n            ],\n            \"Def\": -1,\n            \"OverrideValue\":
-    -3.4028234663852887e38\n        },\n        {\n            \"Id\": \"NewFolder_1\",\n           
-    \"IsEnabled\": true,\n            \"IsFolder\": true,\n            \"IsOverride\":
-    false,\n            \"Children\": [],\n            \"Def\": -1,\n           
-    \"OverrideValue\": -3.4028234663852887e38\n        },\n        {\n           
-    \"Id\": \"NewFolder_2\",\n            \"IsEnabled\": true,\n            \"IsFolder\":
-    true,\n            \"IsOverride\": false,\n            \"Children\": [],\n           
-    \"Def\": -1,\n            \"OverrideValue\": -3.4028234663852887e38\n       
-    },\n        {\n            \"Id\": \"NewLeaf\",\n            \"IsEnabled\": true,\n           
-    \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"Children\":
-    [],\n            \"Def\": 0,\n            \"OverrideValue\": -3.4028234663852887e38\n       
-    },\n        {\n            \"Id\": \"NewLeaf_1\",\n            \"IsEnabled\":
-    true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
-    \"Children\": [],\n            \"Def\": 1,\n            \"OverrideValue\": -3.4028234663852887e38\n       
-    }\n    ]\n}"
+    false,\n            \"ParentId\": \"\",\n            \"Def\": -1,\n           
+    \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
+    },\n        {\n            \"Id\": \"B\",\n            \"IsEnabled\": true,\n           
+    \"IsFolder\": true,\n            \"IsOverride\": false,\n            \"ParentId\":
+    \"\",\n            \"Def\": -1,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"Agility\",\n           
+    \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
+    false,\n            \"ParentId\": \"A\",\n            \"Def\": 0,\n           
+    \"OverrideValue\": 150.0,\n            \"DuplicateId\": \"\"\n        },\n       
+    {\n            \"Id\": \"Charisma\",\n            \"IsEnabled\": true,\n           
+    \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
+    \"A\",\n            \"Def\": 1,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"DuplicateId\": \"\"\n        }\n    ]\n}"
   defRefs:
-  - {fileID: 11400000, guid: d5e1a2fae1ffaef459e7f777c38b42cf, type: 2}
-  - {fileID: 11400000, guid: 47db3ebc61e4d9a4898b7b1de8318e0a, type: 2}
+  - {fileID: 11400000, guid: befc5ed4dee7a074f84a6bc67d32925d, type: 2}
+  - {fileID: 11400000, guid: 03f20a947b5a94346bcb44d2bb7b7042, type: 2}

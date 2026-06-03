@@ -14,8 +14,8 @@ namespace RedDust.Stats
         public string Id;
         public bool IsEnabled = true;
         public bool IsFolder;
-        public bool IsOverride;             // true = overrides ancestor node at same Path
-        public string[] Children;           // child Ids (folders only)
+        public bool IsOverride;             // true = overrides ancestor node at same Id
+        public string ParentId;             // parent folder Id, "" = root
 
         /// <summary>Index into StatsTreeData.defRefs. -1 = unassigned.</summary>
         public int Def = -1;
@@ -25,6 +25,13 @@ namespace RedDust.Stats
         /// Sentinel chosen because MinValue is never a real stat value.
         /// </summary>
         public float OverrideValue = float.MinValue;
+
+        /// <summary>
+        /// When the desired Def.Id is already taken in the merged tree,
+        /// store it here so the UI can show the intended asset name.
+        /// Serialized so it survives save/load.
+        /// </summary>
+        public string DuplicateId;
 
         // -- runtime only, not serialized --
         [NonSerialized] public string Path;                // "Attributes/Core/Strength"

@@ -10,7 +10,10 @@ namespace RedDust.Stats.Editor
         private StatsTreeData tree;
         private List<JsonStatNode> ownNodes = new();       // this tree's raw nodes
         private List<JsonStatNode> workingNodes = new();   // merged display list
+        private List<JsonStatNode> parentMerged = new();   // cached: all ancestors merged
         private bool hasChanges;
+        private bool needsRebuild;
+        private bool hasCycle;
         private Vector2 scroll;
         private int myDepth;
         private readonly Dictionary<string, bool> foldouts = new();
@@ -22,6 +25,19 @@ namespace RedDust.Stats.Editor
 
         private void OnGUI()
         {
+            if (needsRebuild)
+            {
+                RebuildMergedView();
+                needsRebuild = false;
+            }
+
+            if (hasCycle)
+            {
+                EditorGUILayout.HelpBox(
+                    "Circular inheritance detected! Check InheritsFrom chain.",
+                    MessageType.Error);
+            }
+
             const float pad = 6f;
 
             GUILayout.Space(pad); // top — window edge ↔ first card
@@ -85,10 +101,20 @@ namespace RedDust.Stats.Editor
                 GUILayout.ExpandWidth(true));
             if (tree != null && newInherits != prevInherits)
             {
-                tree.InheritsFrom = newInherits;
-                EditorUtility.SetDirty(tree);
-                RebuildWorkingNodes();
-                hasChanges = true; // InheritsFrom change
+                if (newInherits != null && WouldCreateCycle(tree, newInherits))
+                {
+                    EditorUtility.DisplayDialog("Circular Inheritance",
+                        $"Cannot set '{newInherits.name}' — it would create a circular reference.",
+                        "OK");
+                }
+                else
+                {
+                    tree.InheritsFrom = newInherits;
+                    EditorUtility.SetDirty(tree);
+                    BuildParentMerged();
+                    RebuildMergedView();
+                    hasChanges = true;
+                }
             }
 
             EditorGUILayout.EndVertical();
@@ -156,14 +182,9 @@ namespace RedDust.Stats.Editor
         private void LoadTree()
         {
             foldouts.Clear();
+            hasCycle = false;
 
             if (tree == null) return;
-
-            // collect inherited nodes (top-down: root ancestor first)
-            var inherited = new List<(TreeDataContainer, StatsTreeData, int)>();
-            CollectInheritedNodes(tree.InheritsFrom, inherited);
-
-            myDepth = inherited.Count; // how many ancestors above me
 
             // deserialize own nodes
             ownNodes.Clear();
@@ -180,30 +201,139 @@ namespace RedDust.Stats.Editor
                     node.DefRef = tree.defRefs[node.Def];
             }
 
-            RebuildWorkingNodes();
+            BuildParentMerged();
+            RebuildMergedView();
             hasChanges = false;
             Repaint();
         }
 
-        private void RebuildWorkingNodes()
+        /// <summary>
+        /// Build the cached parent-merged list once (all ancestors merged).
+        /// Called from LoadTree; after that, only ownNodes change.
+        /// </summary>
+        private void BuildParentMerged()
         {
+            hasCycle = false;
             var inherited = new List<(TreeDataContainer, StatsTreeData, int)>();
             if (tree != null)
                 CollectInheritedNodes(tree.InheritsFrom, inherited);
             myDepth = inherited.Count;
 
-            // simple append for display — TODO: proper merge
-            workingNodes.Clear();
+            parentMerged.Clear();
             foreach (var (container, _, depth) in inherited)
+                MergeLayer(container.Nodes, parentMerged, depth);
+
+            RefreshPaths(parentMerged);
+        }
+
+        /// <summary>
+        /// Rebuild workingNodes from cached parentMerged + ownNodes.
+        /// Called after every edit to ownNodes.
+        /// </summary>
+        private void RebuildMergedView()
+        {
+            workingNodes.Clear();
+
+            // clone parent nodes so edits don't pollute the cache
+            foreach (var node in parentMerged)
+                workingNodes.Add(CloneNode(node));
+
+            // overlay own nodes
+            MergeLayer(ownNodes, workingNodes, myDepth);
+
+            RefreshPaths(workingNodes);
+        }
+
+        private static JsonStatNode CloneNode(JsonStatNode src)
+        {
+            return new JsonStatNode
             {
-                foreach (var node in container.Nodes)
-                    node.Depth = depth;
-                workingNodes.AddRange(container.Nodes);
+                Id = src.Id,
+                IsEnabled = src.IsEnabled,
+                IsFolder = src.IsFolder,
+                IsOverride = src.IsOverride,
+                ParentId = src.ParentId,
+                Def = src.Def,
+                OverrideValue = src.OverrideValue,
+                DefRef = src.DefRef,
+                DuplicateId = src.DuplicateId,
+                Depth = src.Depth,
+                Path = src.Path,
+            };
+        }
+
+        /// <summary>
+        /// Merge one layer into target by Id. Matching Id → override,
+        /// no match → append. Inherited nodes without ParentId inherit
+        /// ParentId from the matched target node.
+        /// </summary>
+        private static void MergeLayer(
+            List<JsonStatNode> source,
+            List<JsonStatNode> target,
+            int depth)
+        {
+            foreach (var node in source)
+            {
+                node.Depth = depth;
+                var existingIdx = target.FindIndex(n => n.Id == node.Id);
+                if (existingIdx >= 0)
+                {
+                    node.IsOverride = true;
+                    if (string.IsNullOrEmpty(node.ParentId))
+                        node.ParentId = target[existingIdx].ParentId;
+                    target[existingIdx] = node;
+                }
+                else
+                {
+                    target.Add(node);
+                }
             }
-            foreach (var node in ownNodes)
+        }
+
+        /// <summary>
+        /// Find all direct children of a folder by ParentId.
+        /// </summary>
+        private static List<JsonStatNode> GetChildren(
+            string parentId, List<JsonStatNode> nodes)
+        {
+            var result = new List<JsonStatNode>();
+            foreach (var n in nodes)
             {
-                node.Depth = myDepth;
-                workingNodes.Add(node);
+                if (n.ParentId == parentId)
+                    result.Add(n);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Rebuild Path for all nodes from roots downward.
+        /// Root = ParentId is null or empty.
+        /// </summary>
+        private static void RefreshPaths(List<JsonStatNode> nodes)
+        {
+            foreach (var n in nodes)
+            {
+                if (string.IsNullOrEmpty(n.ParentId))
+                    BuildPathRecursive(n, nodes, "");
+            }
+        }
+
+        private static void BuildPathRecursive(
+            JsonStatNode node, List<JsonStatNode> allNodes, string parentPath,
+            int depth = 0)
+        {
+            if (depth > 1000)
+                throw new System.StackOverflowException(
+                    "Tree path too deep (>1000). Circular ParentId?");
+
+            node.Path = string.IsNullOrEmpty(parentPath)
+                ? node.Id
+                : $"{parentPath}/{node.Id}";
+
+            if (node.IsFolder)
+            {
+                foreach (var child in GetChildren(node.Id, allNodes))
+                    BuildPathRecursive(child, allNodes, node.Path, depth + 1);
             }
         }
 
@@ -211,14 +341,34 @@ namespace RedDust.Stats.Editor
         /// Recursively collect inherited nodes top-down (root first).
         /// Depth = result.Count after root recursion = natural depth order.
         /// </summary>
+        private static bool WouldCreateCycle(StatsTreeData node, StatsTreeData proposedParent)
+        {
+            var visited = new HashSet<StatsTreeData>();
+            var current = proposedParent;
+            while (current != null)
+            {
+                if (current == node) return true;
+                if (!visited.Add(current)) return true;
+                current = current.InheritsFrom;
+            }
+            return false;
+        }
+
         private void CollectInheritedNodes(
             StatsTreeData current,
-            List<(TreeDataContainer container, StatsTreeData source, int depth)> result)
+            List<(TreeDataContainer container, StatsTreeData source, int depth)> result,
+            HashSet<StatsTreeData> visited = null)
         {
             if (current == null) return;
+            if (visited == null) visited = new HashSet<StatsTreeData>();
+            if (!visited.Add(current))
+            {
+                hasCycle = true;
+                return;
+            }
 
             // recurse to root first
-            CollectInheritedNodes(current.InheritsFrom, result);
+            CollectInheritedNodes(current.InheritsFrom, result, visited);
 
             // process this level — ancestors already added, so Count = my depth
             if (!string.IsNullOrEmpty(current.treeJson))
@@ -238,9 +388,36 @@ namespace RedDust.Stats.Editor
             }
         }
 
+        /// <summary>
+        /// Returns the set of Ids that appear more than once in workingNodes.
+        /// </summary>
+        private HashSet<string> GetDuplicateIds()
+        {
+            var seen = new HashSet<string>();
+            var dupes = new HashSet<string>();
+            foreach (var node in workingNodes)
+            {
+                if (!seen.Add(node.Id))
+                    dupes.Add(node.Id);
+            }
+            return dupes;
+        }
+
         private void Save()
         {
             if (tree == null) return;
+
+            // prevent save if any leaf is missing a Def
+            var missingDef = ownNodes.FindAll(
+                n => !n.IsFolder && n.DefRef == null);
+            if (missingDef.Count > 0)
+            {
+                EditorUtility.DisplayDialog("Missing Def",
+                    $"Cannot save. {missingDef.Count} leaf node(s) have no StatDefinition assigned:\n"
+                    + string.Join("\n", missingDef.ConvertAll(n => n.Id)),
+                    "OK");
+                return;
+            }
 
             // sync Def indices for own nodes
             foreach (var node in ownNodes)
@@ -279,7 +456,7 @@ namespace RedDust.Stats.Editor
                 IsFolder = true,
                 IsOverride = false,
             });
-            RebuildWorkingNodes();
+            needsRebuild = true;
             hasChanges = true;
             Repaint();
         }
@@ -291,33 +468,31 @@ namespace RedDust.Stats.Editor
             Repaint();
         }
 
-        private void DeleteNode(JsonStatNode target)
+        private void DeleteNode(JsonStatNode target, int depth = 0)
         {
-            // recursively delete children first (from ownNodes)
-            if (target.Children != null)
-            {
-                foreach (var childId in target.Children)
-                {
-                    var child = ownNodes.Find(n => n.Id == childId)
-                               ?? workingNodes.Find(n => n.Id == childId);
-                    if (child != null) DeleteNode(child);
-                }
-            }
+            if (depth > 1000)
+                throw new System.StackOverflowException(
+                    "Delete cascade too deep (>1000). Circular ParentId?");
 
-            // remove from any other node's Children array (in ownNodes)
-            foreach (var node in ownNodes)
+            // cascade-delete children (nodes whose ParentId points to target)
+            var children = GetChildren(target.Id, ownNodes);
+            foreach (var child in children)
+                DeleteNode(child, depth + 1);
+
+            // also cascade from workingNodes (for inherited children)
+            children = GetChildren(target.Id, workingNodes);
+            foreach (var child in children)
             {
-                if (node.Children == null) continue;
-                var list = new List<string>(node.Children);
-                list.Remove(target.Id);
-                node.Children = list.ToArray();
+                if (ownNodes.Exists(n => n.Id == child.Id)) continue;
+                workingNodes.Remove(child);
+                foldouts.Remove(child.Id);
             }
 
             ownNodes.Remove(target);
             workingNodes.Remove(target);
             foldouts.Remove(target.Id);
 
-            RebuildWorkingNodes();
+            needsRebuild = true;
             hasChanges = true;
             Repaint();
         }
@@ -325,22 +500,16 @@ namespace RedDust.Stats.Editor
         private void AddChildToFolder(JsonStatNode parent)
         {
             var id = GenerateUniqueId("NewLeaf");
-            var child = new JsonStatNode
+            ownNodes.Add(new JsonStatNode
             {
                 Id = id,
                 IsEnabled = true,
                 IsFolder = false,
                 IsOverride = false,
-            };
-            ownNodes.Add(child);
+                ParentId = parent.Id,
+            });
 
-            var list = parent.Children != null
-                ? new List<string>(parent.Children)
-                : new List<string>();
-            list.Add(id);
-            parent.Children = list.ToArray();
-
-            RebuildWorkingNodes();
+            needsRebuild = true;
             hasChanges = true;
             Repaint();
         }
@@ -352,13 +521,31 @@ namespace RedDust.Stats.Editor
             Repaint();
         }
 
+        /// <summary>
+        /// Find or create a writable copy of a node in ownNodes.
+        /// Inherited nodes are cloned as IsOverride=true on first edit.
+        /// </summary>
+        private JsonStatNode GetOrCreateOwn(JsonStatNode displayNode)
+        {
+            var own = ownNodes.Find(n => n.Id == displayNode.Id);
+            if (own != null) return own;
+
+            // inherited node being edited for the first time: create override
+            own = CloneNode(displayNode);
+            own.IsOverride = true;
+            own.Depth = myDepth;
+            ownNodes.Add(own);
+            return own;
+        }
+
         private string GenerateUniqueId(string baseId)
         {
-            if (!ownNodes.Exists(n => n.Id == baseId))
+            // check against full merged set (inherited + own) to avoid overriding
+            if (!workingNodes.Exists(n => n.Id == baseId))
                 return baseId;
 
             var i = 1;
-            while (ownNodes.Exists(n => n.Id == $"{baseId}_{i}"))
+            while (workingNodes.Exists(n => n.Id == $"{baseId}_{i}"))
                 i++;
             return $"{baseId}_{i}";
         }
@@ -366,6 +553,7 @@ namespace RedDust.Stats.Editor
         private void DrawBody()
         {
             const float pad = 6f;
+            var dupes = GetDuplicateIds();
 
             // -- Tree card --
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
@@ -425,8 +613,29 @@ namespace RedDust.Stats.Editor
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.Label($"[{node.Depth}]", EditorStyles.miniLabel,
                     GUILayout.Width(20));
-                var newName = EditorGUILayout.TextField(node.Id, GUILayout.Width(110));
-                if (newName != node.Id) { node.Id = newName; hasChanges = true; }
+                // folder name — editable only for own nodes
+                var isOwn = node.Depth >= myDepth;
+                if (isOwn)
+                {
+                    var newName = EditorGUILayout.TextField(node.Id, GUILayout.Width(110));
+                    if (newName != node.Id)
+                    {
+                        var oldId = node.Id;
+                        // update ownNodes entry
+                        var own = ownNodes.Find(n => n.Id == oldId);
+                        if (own != null) own.Id = newName;
+                        // update children's ParentId in ownNodes
+                        foreach (var n in ownNodes)
+                            if (n.ParentId == oldId) n.ParentId = newName;
+                        needsRebuild = true;
+                        hasChanges = true;
+                    }
+                }
+                else
+                {
+                    GUILayout.Label(node.Id, EditorStyles.label,
+                        GUILayout.Width(110));
+                }
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("＋", EditorStyles.miniButton, GUILayout.Width(20)))
                 {
@@ -434,17 +643,19 @@ namespace RedDust.Stats.Editor
                 }
                 GUILayout.Space(2f);
                 GUI.backgroundColor = new Color(0.9f, 0.3f, 0.3f);
+                GUI.enabled = node.Depth >= myDepth && !node.IsOverride;
                 if (GUILayout.Button("✕", EditorStyles.miniButton, GUILayout.Width(22)))
                 {
                     pendingDeletions.Add(node);
                 }
+                GUI.enabled = true;
                 GUI.backgroundColor = Color.white;
                 EditorGUILayout.EndHorizontal();
 
                 // leaf list card (only when expanded and has children)
-                var hasChildren = node.Children is { Length: > 0 };
+                var leafChildren = GetChildren(node.Id, workingNodes);
                 var expanded = foldouts.TryGetValue(node.Id, out var f) && f;
-                if (expanded && hasChildren)
+                if (expanded && leafChildren.Count > 0)
                 {
                     GUILayout.Space(2f);
                     EditorGUILayout.BeginVertical(EditorStyles.helpBox);
@@ -455,16 +666,10 @@ namespace RedDust.Stats.Editor
 
                     EditorGUILayout.BeginVertical(GUILayout.ExpandWidth(true));
 
-                    if (node.Children != null)
+                    for (var ci = 0; ci < leafChildren.Count; ci++)
                     {
-                        for (var ci = 0; ci < node.Children.Length; ci++)
-                        {
-                            var child = workingNodes.Find(
-                                n => n.Id == node.Children[ci]);
-                            if (child == null) continue;
-                            if (ci > 0) GUILayout.Space(2f);
-                            DrawLeafCard(child);
-                        }
+                        if (ci > 0) GUILayout.Space(2f);
+                        DrawLeafCard(leafChildren[ci]);
                     }
 
                     EditorGUILayout.EndVertical();
@@ -495,7 +700,8 @@ namespace RedDust.Stats.Editor
                         GUILayout.Height(rowH));
                     if (enabled != leaf.IsEnabled)
                     {
-                        leaf.IsEnabled = enabled;
+                        GetOrCreateOwn(leaf).IsEnabled = enabled;
+                        needsRebuild = true;
                         hasChanges = true;
                     }
                     GUILayout.Space(pad);
@@ -505,20 +711,50 @@ namespace RedDust.Stats.Editor
                     GUILayout.Space(4f); // textPad
 
                     // Depth + Id label
+                    var isDupe = dupes.Contains(leaf.Id);
+                    var isMissingDef = leaf.DefRef == null;
                     GUILayout.Label($"[{leaf.Depth}]", EditorStyles.miniLabel,
                         GUILayout.Width(20), GUILayout.Height(rowH));
-                    var defId = leaf.DefRef != null ? leaf.DefRef.Id : "—";
+                    var defId = !string.IsNullOrEmpty(leaf.DuplicateId)
+                        ? leaf.DuplicateId
+                        : leaf.DefRef != null ? leaf.DefRef.Id : "—";
                     GUILayout.Label(defId, EditorStyles.label,
                         GUILayout.Width(80), GUILayout.Height(rowH));
 
-                    // Def field
+                    // Def field — red if duplicate Id, missing Def, or has DuplicateId
+                    // Override nodes: Def is read-only (inherited from ancestor)
+                    var leafIsOwn = leaf.Depth >= myDepth;
+                    GUI.enabled = leafIsOwn && !leaf.IsOverride;
+                    if (isDupe || isMissingDef || !string.IsNullOrEmpty(leaf.DuplicateId))
+                        GUI.backgroundColor = new Color(0.9f, 0.3f, 0.3f);
                     var newDef = (StatDefinitionSO)EditorGUILayout.ObjectField(
                         leaf.DefRef, typeof(StatDefinitionSO), false,
                         GUILayout.ExpandWidth(true),
                         GUILayout.Height(rowH));
+                    GUI.backgroundColor = Color.white;
+                    GUI.enabled = true;
                     if (newDef != leaf.DefRef)
                     {
-                        leaf.DefRef = newDef;
+                        var own = GetOrCreateOwn(leaf);
+                        own.DefRef = newDef;
+                        if (newDef != null)
+                        {
+                            var idTaken = workingNodes.Exists(
+                                n => n.Id == newDef.Id && n != leaf);
+                            if (idTaken)
+                                own.DuplicateId = newDef.Id; // store intended Id
+                            else
+                            {
+                                own.Id = newDef.Id;
+                                leaf.Id = newDef.Id;
+                                own.DuplicateId = null;
+                            }
+                        }
+                        else
+                        {
+                            own.DuplicateId = null;
+                        }
+                        needsRebuild = true;
                         hasChanges = true;
                     }
 
@@ -526,45 +762,47 @@ namespace RedDust.Stats.Editor
 
                     // Val field
                     var hasOverride = leaf.OverrideValue != float.MinValue;
-                    // TODO: default should come from merged inheritance chain,
-                    // not just leaf.DefRef.Default — ancestor overrides affect it.
+                    var isOwnOverride = leafIsOwn && hasOverride;
                     var defVal = leaf.DefRef != null ? leaf.DefRef.Default : 0f;
                     var displayVal = hasOverride ? leaf.OverrideValue : defVal;
 
                     GUILayout.Label("Val",
-                        hasOverride ? EditorStyles.boldLabel : EditorStyles.miniLabel,
+                        isOwnOverride ? EditorStyles.boldLabel : EditorStyles.miniLabel,
                         GUILayout.Height(rowH));
 
                     var floatRect = EditorGUILayout.GetControlRect(
                         GUILayout.Width(50), GUILayout.Height(rowH));
                     var numStyle = new GUIStyle(EditorStyles.numberField)
                         { alignment = TextAnchor.MiddleRight };
-                    if (hasOverride) numStyle.fontStyle = FontStyle.Bold;
+                    if (isOwnOverride) numStyle.fontStyle = FontStyle.Bold;
                     var newVal = EditorGUI.FloatField(floatRect, displayVal, numStyle);
                     if (Mathf.Abs(newVal - displayVal) > 0.001f)
                     {
-                        leaf.OverrideValue = newVal;
+                        GetOrCreateOwn(leaf).OverrideValue = newVal;
+                        needsRebuild = true;
                         hasChanges = true;
                     }
 
-                    // Clear override
-                    GUI.enabled = hasOverride;
+                    // Clear override — only for own overrides
+                    GUI.enabled = isOwnOverride;
                     if (GUILayout.Button("↺", EditorStyles.miniButton,
                         GUILayout.Width(20), GUILayout.Height(rowH)))
                     {
-                        leaf.OverrideValue = float.MinValue;
+                        var own = ownNodes.Find(n => n.Id == leaf.Id);
+                        if (own != null) { ownNodes.Remove(own); needsRebuild = true; }
                         hasChanges = true;
-                        Repaint();
                     }
                     GUI.enabled = true;
 
-                    // Delete
+                    // Delete — only for non-override own nodes
                     GUI.backgroundColor = new Color(0.9f, 0.3f, 0.3f);
+                    GUI.enabled = leafIsOwn && !leaf.IsOverride;
                     if (GUILayout.Button("✕", EditorStyles.miniButton,
                         GUILayout.Width(22), GUILayout.Height(rowH)))
                     {
                         pendingDeletions.Add(leaf);
                     }
+                    GUI.enabled = true;
                     GUI.backgroundColor = Color.white;
 
                     GUILayout.Space(pad); // right
