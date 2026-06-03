@@ -6,7 +6,7 @@ namespace RedDust.Character.Combat
     /// 单次命中结果。CombatPipeline 产出，CombatComponent.ApplyDamage() 消费。
     /// 纯数据载体，不包含行为。
     /// </summary>
-    public readonly struct DamageInfo
+    public readonly struct SDamageInfo
     {
         /// <summary>被击中的 GameObject。</summary>
         public readonly GameObject Target;
@@ -23,7 +23,7 @@ namespace RedDust.Character.Combat
         /// <summary>伤害来源技能。可为 null。</summary>
         public readonly SkillDefSO SourceSkill;
 
-        public DamageInfo(GameObject target, float amount, Vector3 hitPoint, Vector3 hitDirection, SkillDefSO sourceSkill)
+        public SDamageInfo(GameObject target, float amount, Vector3 hitPoint, Vector3 hitDirection, SkillDefSO sourceSkill)
         {
             Target = target;
             Amount = amount;
@@ -32,6 +32,6 @@ namespace RedDust.Character.Combat
             SourceSkill = sourceSkill;
         }
 
-        public static DamageInfo None => default;
+        public static SDamageInfo None => default;
     }
 }

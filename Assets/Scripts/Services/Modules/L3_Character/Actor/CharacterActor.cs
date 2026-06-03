@@ -7,6 +7,7 @@ using RedDust.Character.Director;
 using RedDust.Character.Kinematic;
 using RedDust.Character.Pathfinding;
 using RedDust.Character.Locomotion;
+using RedDust.Character.Combat;
 using RedDust.Character.Stats;
 using RedDust.Stats;
 
@@ -45,6 +46,8 @@ namespace RedDust.Character
         private ILocomotionSimulator locomotionSimulator;
         private AnimationBrain characterAnimation;
         private CharacterStats stats;
+        private CombatComponent combat;
+        internal CombatComponent CombatComponent => combat;
 
         private void Awake()
         {
@@ -60,6 +63,7 @@ namespace RedDust.Character
             characterKinematic = new CharacterKinematic(transform, modelRoot, characterRig);
             locomotionSimulator = new GroundLocomotion();
             stats = new CharacterStats(statsTree);
+            combat = new CombatComponent(gameObject, stats);
         }
 
         private void Start() { }

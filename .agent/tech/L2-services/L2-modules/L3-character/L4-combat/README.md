@@ -9,28 +9,31 @@
 ## 三层架构
 
 ```
-┌─────────────────────────────────────────────┐
-│              配置层 (Data)                   │
-│  SkillDefSO        WeaponSkillSetSO         │
-│  技能定义数据       武器→技能组映射            │
-│  纯数据，无运行时状态。存放在 Assets/Data/     │
-└────────────────────┬────────────────────────┘
+┌──────────────────────────────────────────────────┐
+│              配置层 (Data)                        │
+│  SkillDefSO  ←── SkillActivationSO               │
+│  技能定义         激活方式、动画、阶段标记           │
+│               ←── SkillSearchSO                  │
+│                   搜索形状（Cone/Ray/Circle）       │
+│  纯数据，无运行时状态。存放在 Assets/Data/          │
+└────────────────────┬─────────────────────────────┘
                      │ 工厂创建
-┌────────────────────▼────────────────────────┐
-│         管理层 (CombatComponent)             │
-│  ┌──────────┐  ┌──────────┐  ┌───────────┐ │
-│  │ SkillBar │  │Effects[] │  │OwnedTags  │ │
-│  │ 4槽冷却   │  │活跃效果   │  │状态标签    │ │
-│  └──────────┘  └──────────┘  └───────────┘ │
-│  纯类。集中管理授予/冷却/标签/效果。           │
-└────────────────────┬────────────────────────┘
+┌────────────────────▼─────────────────────────────┐
+│         管理层 (CombatComponent)                   │
+│  ┌──────────┐  ┌──────────┐  ┌───────────┐       │
+│  │ SkillBar │  │Effects[] │  │OwnedTags  │       │
+│  │ 技能槽     │  │活跃效果   │  │状态标签    │       │
+│  └──────────┘  └──────────┘  └───────────┘       │
+│  纯类。集中管理授予/冷却/标签/效果。                 │
+│  TryActivate(SkillDefSO) — 不关心槽位              │
+└────────────────────┬─────────────────────────────┘
                      │ 驱动
-┌────────────────────▼────────────────────────┐
-│         执行层 (Driver + Pipeline)           │
-│  CombatDriver         CombatPipeline        │
-│  技能生命周期管理      纯函数判定链            │
-│  (ICharacterAnimationDriver 实现)            │
-└─────────────────────────────────────────────┘
+┌────────────────────▼─────────────────────────────┐
+│         执行层 (Driver + Pipeline)                 │
+│  CombatDriver         CombatPipeline              │
+│  技能生命周期管理      纯函数判定链                  │
+│  (ICharacterAnimationDriver 实现)                  │
+└──────────────────────────────────────────────────┘
 ```
 
 ## 调用链
@@ -285,7 +288,7 @@ CombatPipeline.Execute(skill, origin, direction, targetMask, stats, params)
 
 **纳入**：
 - GameplayTag + GameplayTagContainer（层级标签，门控/冷却/状态标记）
-- SkillDefSO + WeaponSkillSetSO（标签门控、消耗、冷却、搜索类型、LoS、动画 alias、噪音等级）
+- SkillDefSO + SkillActivationSO + SkillSearchSO（身份、激活方式、阶段、搜索形状）
 - ECombatSearchType 枚举（Cone / RayLine / Circle，4.1 实现 Cone + RayLine）
 - CombatComponent + SkillBar(4槽) + ActiveGameplayEffect（池化冷却）
 - CombatPipeline：物理搜索（SearchCandidates Cone+RayLine + FilterByLoS）+ 投骰跳过（100%）+ 伤害简化（flat）
@@ -327,24 +330,29 @@ CombatPipeline.Execute(skill, origin, direction, targetMask, stats, params)
 > **注意**: `GameplayTag.cs`、`GameplayTagContainer.cs`、`GameplayTagDefinitionSO.cs` 已提升至 `L1_Core/GameplayTag/`，作为全系统基础设施。
 
 ```
-L4_Combat/
+Combat/
 ├── CombatComponent.cs              # 中枢：技能/效果/标签管理
 ├── Config/
 │   ├── SkillDefSO.cs               # [SO] 单技能完整定义
-│   ├── WeaponSkillSetSO.cs         # [SO] 武器 → 技能组
+│   ├── SkillActivationSO.cs        # [SO] 激活方式 + 动画 + 阶段标记
+│   ├── SkillSearchSO.cs            # [SO] 搜索形状（抽象基类）
+│   ├── ConeSearchSO.cs             # [SO] 扇形搜索
+│   ├── RaySearchSO.cs              # [SO] 射线搜索
+│   ├── CircleSearchSO.cs           # [SO] 圆形搜索
 │   ├── GameplayEffectSO.cs         # [SO] 统一持续效果（冷却/Buff/Debuff）
-│   ├── SkillAnimationLayer.cs      # enum: FullBody / UpperBody
+│   ├── ESkillAnimationLayer.cs     # enum: FullBody / UpperBody
 │   ├── ESkillPhase.cs              # enum: 6 阶段
+│   ├── ESkillEventType.cs          # enum: Activated / Completed / Rejected
 │   └── ECombatSearchType.cs        # enum: Cone / RayLine / Circle
 ├── Runtime/
 │   ├── SkillBar.cs                 # 4 槽冷却管理
 │   ├── SkillSlot.cs                # 单槽状态
 │   ├── ActiveGameplayEffect.cs     # 运行中效果（池化）
 │   └── CombatPipeline.cs           # static 四阶段判定链
-├── L5_Drivers/
+├── Drivers/
 │   └── CombatDriver.cs             # 技能动画驱动
 └── Structs/
-    ├── DamageInfo.cs               # 伤害结果
+    ├── SDamageInfo.cs              # 伤害结果
     ├── SHitEvent.cs                # GameEvent 载荷
     ├── SSkillEvent.cs              # GameEvent 载荷
     └── SNoiseEvent.cs              # 噪音事件载荷

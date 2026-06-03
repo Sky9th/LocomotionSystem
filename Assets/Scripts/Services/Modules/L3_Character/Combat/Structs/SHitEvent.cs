@@ -13,7 +13,7 @@ namespace RedDust.Character.Combat
         public readonly GameObject Attacker;
 
         /// <summary>所有命中结果。</summary>
-        public readonly IReadOnlyList<DamageInfo> Hits;
+        public readonly IReadOnlyList<SDamageInfo> Hits;
 
         /// <summary>触发命中的技能。</summary>
         public readonly SkillDefSO Skill;
@@ -21,7 +21,7 @@ namespace RedDust.Character.Combat
         /// <summary>命中点（多目标时取首个）。</summary>
         public readonly Vector3 HitPosition;
 
-        public SHitEvent(GameObject attacker, IReadOnlyList<DamageInfo> hits, SkillDefSO skill, Vector3 hitPosition)
+        public SHitEvent(GameObject attacker, IReadOnlyList<SDamageInfo> hits, SkillDefSO skill, Vector3 hitPosition)
         {
             Attacker = attacker;
             Hits = hits;
