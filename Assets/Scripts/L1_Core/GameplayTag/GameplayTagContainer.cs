@@ -68,10 +68,7 @@ namespace RedDust.Core
         public bool HasTagExact(string query)
         {
             if (string.IsNullOrEmpty(query)) return false;
-            foreach (var tag in _tags)
-                if (tag.Tag == query)
-                    return true;
-            return false;
+            return _tags.Contains(new GameplayTag(query));
         }
 
         /// <summary>类型安全重载。</summary>

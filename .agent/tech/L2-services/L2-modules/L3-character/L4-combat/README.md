@@ -324,16 +324,17 @@ CombatPipeline.Execute(skill, origin, direction, targetMask, stats, params)
 
 ## 目录结构
 
+> **注意**: `GameplayTag.cs`、`GameplayTagContainer.cs`、`GameplayTagDefinitionSO.cs` 已提升至 `L1_Core/GameplayTag/`，作为全系统基础设施。
+
 ```
 L4_Combat/
 ├── CombatComponent.cs              # 中枢：技能/效果/标签管理
-├── GameplayTag.cs                  # 层级标签 (readonly struct)
-├── GameplayTagContainer.cs         # 标签集合 + 层级匹配
 ├── Config/
 │   ├── SkillDefSO.cs               # [SO] 单技能完整定义
 │   ├── WeaponSkillSetSO.cs         # [SO] 武器 → 技能组
+│   ├── GameplayEffectSO.cs         # [SO] 统一持续效果（冷却/Buff/Debuff）
 │   ├── SkillAnimationLayer.cs      # enum: FullBody / UpperBody
-│   ├── SkillPhase.cs               # enum: 6 阶段
+│   ├── ESkillPhase.cs              # enum: 6 阶段
 │   └── ECombatSearchType.cs        # enum: Cone / RayLine / Circle
 ├── Runtime/
 │   ├── SkillBar.cs                 # 4 槽冷却管理
