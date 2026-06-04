@@ -117,7 +117,7 @@ tech/
 │       │   ├── stats/                  # L4: 数值子系统
 │       │   │   ├── CharacterStats.cs
 │       │   │   └── Rules/              # 8 个 stat rule
-│       ├── ability/                  # L3: 通用能力子系统
+│       ├── L3-ability/                  # L3: 通用能力子系统
 │       │
 │       ├── L3-stats/                   # L3: Stat 数值框架 (自身代码: Definition/ Tree/ Instance/ Modifier/ Interfaces/ Editor/)
 │       │   ├── README.md

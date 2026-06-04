@@ -14,8 +14,8 @@ GameplayTag 是**全系统通用基础设施**，位于 L1_Core。对标 UE GAS 
 ## 调用链
 
 - 被 `GameplayTagContainer` 持有
-- 被 `CombatComponent`（及其他子系统）通过 `GameplayTagContainer` 间接使用（门控/冷却/状态查询）
-- SO 侧被 `SkillDefSO` 等配置引用
+- 被 `AbilityComponent`（及其他子系统）通过 `GameplayTagContainer` 间接使用（门控/冷却/状态查询）
+- SO 侧被 `AbilityDefSO` 等配置引用
 
 ## 公开属性
 
@@ -84,7 +84,7 @@ public sealed class GameplayTagDefinitionSO : ScriptableObject
 }
 ```
 
-**隐式转换**: `SkillDefSO.cooldownTag` 字段类型为 `GameplayTagDefinitionSO`，运行时查询自动转为 `GameplayTag`，代码不感知差异。
+**隐式转换**: `AbilityDefSO.cooldownTag` 字段类型为 `GameplayTagDefinitionSO`，运行时查询自动转为 `GameplayTag`，代码不感知差异。
 
 ## 未来规划
 

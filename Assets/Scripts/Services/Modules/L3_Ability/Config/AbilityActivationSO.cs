@@ -11,9 +11,9 @@ namespace RedDust.Ability
     /// 不命令动画走多快。animationSpeed 是唯一的调参旋钮——
     /// 实际阶段时间 = marker / animationSpeed。
     ///
-    /// AbilityDefSO 持有此资产引用，CombatDriver 消费。
+    /// AbilityDefSO 持有此资产引用，AbilityDriver 消费。
     /// </summary>
-    [CreateAssetMenu(menuName = "RedDust/Ability/Skill Activation", fileName = "Activation_")]
+    [CreateAssetMenu(menuName = "RedDust/Ability/Ability Activation", fileName = "Activation_")]
     public sealed class AbilityActivationSO : ScriptableObject
     {
         [Header("Activation Type")]
@@ -44,7 +44,7 @@ namespace RedDust.Ability
         [Tooltip("前摇时长（秒）。动画从开始到进入激发窗口的时间。")]
         public float windupDuration;
 
-        [Tooltip("激发窗口时长（秒）。此期间 CombatDriver 每帧执行命中检测。")]
+        [Tooltip("激发窗口时长（秒）。此期间 AbilityDriver 每帧执行命中检测。")]
         public float fireWindowDuration;
 
         [Tooltip("前摇期间是否可被打断（翻滚/格挡）。")]
@@ -53,7 +53,7 @@ namespace RedDust.Ability
         [Tooltip("后摇期间是否可被下一技能/翻滚打断。")]
         public bool canCancelRecovery;
 
-        // ── Recovery: 由 CombatDriver 运行时从 AnimationClip.length 计算 ──
+        // ── Recovery: 由 AbilityDriver 运行时从 AnimationClip.length 计算 ──
         // recovery = clipLength / animationSpeed - (windup + fire) / animationSpeed
     }
 }

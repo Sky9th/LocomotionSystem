@@ -28,8 +28,8 @@ SO 资产: Assets/Data/GameplayTags/    GameplayTagContainer
 
 | 文档 | 说明 |
 |------|------|
-| [gameplay-tag.md](../L2-services/L2-modules/L3-character/L4-combat/gameplay-tag.md) | GameplayTag struct 详解 |
-| [gameplay-tag-container.md](../L2-services/L2-modules/L3-character/L4-combat/gameplay-tag-container.md) | GameplayTagContainer 详解 |
+| [gameplay-tag.md](../L2-services/L2-modules/L3-ability/gameplay-tag.md) | GameplayTag struct 详解 |
+| [gameplay-tag-container.md](../L2-services/L2-modules/L3-ability/gameplay-tag-container.md) | GameplayTagContainer 详解 |
 
 ## 命名空间约定
 

@@ -5,7 +5,7 @@ namespace RedDust.Ability
     /// <summary>
     /// 技能目标搜索定义。回答「往哪打」。
     /// 抽象基类——具体搜索形状由子类 SO 定义。
-    /// AbilityDefSO 持有此引用，CombatPipeline 消费。
+    /// AbilityDefSO 持有此引用，AbilityPipeline 消费。
     ///
     /// 对标 UE GAS TargetData：定义搜索形状和过滤规则，不执行搜索本身。
     /// </summary>

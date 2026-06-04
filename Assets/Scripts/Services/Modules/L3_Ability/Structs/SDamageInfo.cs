@@ -3,7 +3,7 @@ using UnityEngine;
 namespace RedDust.Ability
 {
     /// <summary>
-    /// 单次命中结果。CombatPipeline 产出，AbilityComponent.ApplyDamage() 消费。
+    /// 单次命中结果。AbilityPipeline 产出，AbilityComponent.ApplyDamage() 消费。
     /// 纯数据载体，不包含行为。
     /// </summary>
     public readonly struct SDamageInfo

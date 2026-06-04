@@ -6,9 +6,9 @@ namespace RedDust.Ability
     /// <summary>
     /// 单个技能的完整数据定义。纯配置，无运行时状态。
     /// 身份 + 激活方式 + 搜索形状 + 效果数组。
-    /// 被 AbilityComponent / CombatPipeline / CombatDriver 消费。
+    /// 被 AbilityComponent / AbilityPipeline / AbilityDriver 消费。
     /// </summary>
-    [CreateAssetMenu(menuName = "RedDust/Ability/Skill Definition", fileName = "Skill_")]
+    [CreateAssetMenu(menuName = "RedDust/Ability/Ability Definition", fileName = "Ability_")]
     public sealed class AbilityDefSO : ScriptableObject
     {
         [Header("Identity")]
@@ -17,6 +17,7 @@ namespace RedDust.Ability
         public Sprite icon;
         [TextArea(2, 4)]
         public string description;
+        [Tooltip("技能分类标签。用于 TagMutualExclusionSO 互斥匹配，与 activeTag（激活期间持有）不同。")]
         public GameplayTagDefinitionSO categoryTag;
 
 

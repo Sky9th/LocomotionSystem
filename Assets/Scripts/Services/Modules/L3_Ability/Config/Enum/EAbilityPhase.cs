@@ -1,7 +1,7 @@
 namespace RedDust.Ability
 {
     /// <summary>
-    /// 技能动画驱动阶段。CombatDriver 内部状态机使用。
+    /// 技能动画驱动阶段。AbilityDriver 内部状态机使用。
     /// 4.1 仅使用 None→Windup→Fire→Recovery，Active/Cancelled 预留。
     /// </summary>
     public enum EAbilityPhase
