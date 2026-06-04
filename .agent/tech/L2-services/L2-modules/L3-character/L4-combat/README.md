@@ -9,31 +9,41 @@
 ## 三层架构
 
 ```
-┌──────────────────────────────────────────────────┐
-│              配置层 (Data)                        │
-│  SkillDefSO  ←── SkillActivationSO               │
-│  技能定义         激活方式、动画、阶段标记           │
-│               ←── SkillSearchSO                  │
-│                   搜索形状（Cone/Ray/Circle）       │
-│  纯数据，无运行时状态。存放在 Assets/Data/          │
-└────────────────────┬─────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│              配置层 (Data)                               │
+│                                                         │
+│  SkillDefSO (主动技能)          PassiveSkillSO (被动)     │
+│    ←── SkillActivationSO         ←── ETriggerEvent      │
+│    ←── SkillSearchSO             ←── ConditionTag       │
+│    ←── GameplayEffectSO[]        ←── GameplayEffectSO[] │
+│    ←── CooldownEffectSO          ←── CooldownEffectSO   │
+│    ←── NoiseEventSO                                     │
+│    ←── TagMutualExclusionSO                             │
+│                                                         │
+│  GameplayEffectSO (abstract)                            │
+│    ├── DamageEffectSO, ImpactEffectSO, ExecuteEffectSO │
+│    ├── CostEffectSO                                    │
+│    └── (BuffEffectSO: Phase 5+)                        │
+│                                                         │
+│  纯数据，无运行时状态。存放在 Assets/Data/                 │
+└────────────────────┬────────────────────────────────────┘
                      │ 工厂创建
-┌────────────────────▼─────────────────────────────┐
-│         管理层 (CombatComponent)                   │
-│  ┌──────────┐  ┌──────────┐  ┌───────────┐       │
-│  │ SkillBar │  │Effects[] │  │OwnedTags  │       │
-│  │ 技能槽     │  │活跃效果   │  │状态标签    │       │
-│  └──────────┘  └──────────┘  └───────────┘       │
-│  纯类。集中管理授予/冷却/标签/效果。                 │
-│  TryActivate(SkillDefSO) — 不关心槽位              │
-└────────────────────┬─────────────────────────────┘
+┌────────────────────▼────────────────────────────────────┐
+│         管理层 (CombatComponent)                          │
+│  ┌──────────────┐  ┌──────────────┐  ┌───────────────┐  │
+│  │ activeSkills │  │passiveSkills │  │ OwnedTags     │  │
+│  │ 主动技能列表   │  │ 被动技能列表   │  │ 状态标签       │  │
+│  └──────────────┘  └──────────────┘  └───────────────┘  │
+│  TryActivate(SkillDefSO) — 不关心槽位                     │
+│  被动匹配: 事件 → 条件 → 效果                              │
+└────────────────────┬────────────────────────────────────┘
                      │ 驱动
-┌────────────────────▼─────────────────────────────┐
-│         执行层 (Driver + Pipeline)                 │
-│  CombatDriver         CombatPipeline              │
-│  技能生命周期管理      纯函数判定链                  │
-│  (ICharacterAnimationDriver 实现)                  │
-└──────────────────────────────────────────────────┘
+┌────────────────────▼────────────────────────────────────┐
+│         执行层 (Driver + Pipeline)                        │
+│  CombatDriver         CombatPipeline                     │
+│  技能生命周期管理      纯函数判定链                         │
+│  (ICharacterAnimationDriver 实现)                         │
+└──────────────────────────────────────────────────────────┘
 ```
 
 ## 调用链
