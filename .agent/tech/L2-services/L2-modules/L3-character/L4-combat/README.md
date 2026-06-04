@@ -1,6 +1,6 @@
-# L4_Combat · 战斗技能子系统
+# L3_Ability · 通用能力子系统
 
-> `L3_Character/L4_Combat/` — 技能调度、伤害管道、战斗状态管理。L4 子系统，与 Animation/Locomotion/Kinematic/Stats 同级。
+> `L3_Ability/` — 独立模块。能力调度、伤害管道、效果管理。角色和陷阱通用。
 
 ## 层级定位
 

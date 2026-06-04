@@ -117,11 +117,7 @@ tech/
 │       │   ├── stats/                  # L4: 数值子系统
 │       │   │   ├── CharacterStats.cs
 │       │   │   └── Rules/              # 8 个 stat rule
-│       │   └── combat/                 # L4: 战斗技能子系统
-│       │       ├── CombatComponent.cs   # 中枢管理器
-│       │       ├── Config/             # SkillDefSO, WeaponSkillSetSO
-│       │       ├── Runtime/            # SkillBar, CombatPipeline
-│       │       └── Drivers/            # CombatDriver
+│       ├── ability/                  # L3: 通用能力子系统
 │       │
 │       ├── L3-stats/                   # L3: Stat 数值框架 (自身代码: Definition/ Tree/ Instance/ Modifier/ Interfaces/ Editor/)
 │       │   ├── README.md
