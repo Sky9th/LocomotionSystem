@@ -1,6 +1,7 @@
 using RedDust.Ability;
 using RedDust.Character.Stats;
 using RedDust.Core;
+using RedDust.Stats;
 using UnityEngine;
 
 namespace RedDust.Character.Combat
@@ -35,7 +36,11 @@ namespace RedDust.Character.Combat
         private void WireCallbacks()
         {
             if (ability != null)
+            {
                 ability.EffectCallback = OnEffectModify;
+                ability.PeekStatCallback = OnPeekStat;
+                ability.ModifyStatCallback = OnModifyStat;
+            }
 
             if (reactor != null)
             {
@@ -49,6 +54,19 @@ namespace RedDust.Character.Combat
         private void OnHitEvent(SDamageInfo hit) { }
 
         #region 修改器占位
+
+        /// <summary>
+        /// ③ 标准属性修改。直接走 StatInstance.Modify()。
+        /// </summary>
+        private float OnPeekStat(StatDefinitionSO def)
+        {
+            return stats?.Get(def)?.Current ?? 0f;
+        }
+
+        private void OnModifyStat(StatDefinitionSO def, float delta)
+        {
+            stats?.Get(def)?.Modify(delta);
+        }
 
         /// <summary>
         /// ⑥ 施展方伤害修正。在 AbilityExecutor 构造 SDamageInfo 时调用。
@@ -68,10 +86,15 @@ namespace RedDust.Character.Combat
         {
             float amount = hit.Amount;
 
+            float incoming = amount;
+
             // Mitigation — Endurance 减伤: 5 Endurance = 25%
             var endurance = stats.Get("Attributes/Endurance")?.Current ?? 0f;
             if (endurance > 0f)
                 amount *= 1f - endurance * 0.05f;
+
+            if (amount != incoming)
+                Debug.Log($"[Combat] {hit.Target.name} Mitigation: {incoming:F1} → {amount:F1} (endurance={endurance:F1})");
 
             // TODO: Phase 4.2 — 回避判定（闪避率）
             // TODO: Phase 4.2 — 吸收结算（护盾）
@@ -84,7 +107,13 @@ namespace RedDust.Character.Combat
         /// </summary>
         private void OnApplyDamage(SDamageInfo hit, float finalAmount)
         {
-            stats?.Get("Vitals/HP")?.Modify(-finalAmount);
+            var hp = stats?.Get("Vitals/HP");
+            if (hp != null)
+            {
+                var before = hp.Current;
+                hp.Modify(-finalAmount);
+                Debug.Log($"[Combat] {hit.Target.name} HP: {before:F1} -{finalAmount:F1} → {hp.Current:F1}");
+            }
         }
 
         /// <summary>

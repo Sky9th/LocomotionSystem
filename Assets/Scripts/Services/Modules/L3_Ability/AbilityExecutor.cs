@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using RedDust.Core;
+using RedDust.Stats;
 
 namespace RedDust.Ability
 {
@@ -29,6 +30,18 @@ namespace RedDust.Ability
         /// 参数: (效果SO, 目标, 基础伤害值) → 修改后的伤害值
         /// </summary>
         public System.Func<EffectSO, GameObject, float, float> EffectCallback;
+
+        /// <summary>② 条件门控回调。外部注入。null=通过，非null=拒绝原因（沉默/眩晕等）。</summary>
+        public System.Func<AbilityDefSO, string> ConditionCallback;
+
+        // TODO: Phase 4.2 — 特殊消耗回调，当前无真正需求，暂注释
+        // public System.Func<CostEffectSO, bool> CostCallback;
+
+        /// <summary>③ 属性值查询。(statDef) → 当前值。用于预检。</summary>
+        public System.Func<StatDefinitionSO, float> PeekStatCallback;
+
+        /// <summary>③ 标准属性修改。(statDef, delta) → void。预检已通过，必定执行。</summary>
+        public System.Action<StatDefinitionSO, float> ModifyStatCallback;
 
         // 冷却: tag → 到期时间戳
         private readonly Dictionary<string, float> cooldownEndTimes = new();
@@ -130,28 +143,28 @@ namespace RedDust.Ability
             return true;
         }
 
-        private bool PassCooldown(PassiveAbilitySO passive)
+        private bool PassCooldown(AbilitySO ability)
         {
-            if (passive.cooldownDuration <= 0f) return true;
+            if (ability.cooldownDuration <= 0f) return true;
 
-            var key = passive.sharedCooldownTag != null
-                ? passive.sharedCooldownTag.FullTag
-                : $"Passive.Cooldown.{passive.internalName}";
+            var key = ability.sharedCooldownTag != null
+                ? ability.sharedCooldownTag.FullTag
+                : $"Ability.Cooldown.{ability.internalName}";
 
             if (IsOnCooldown(key)) return false;
 
             return true;
         }
 
-        private void ApplyCooldown(PassiveAbilitySO passive)
+        private void ApplyCooldown(AbilitySO ability)
         {
-            if (passive.cooldownDuration <= 0f) return;
+            if (ability.cooldownDuration <= 0f) return;
 
-            var key = passive.sharedCooldownTag != null
-                ? passive.sharedCooldownTag.FullTag
-                : $"Passive.Cooldown.{passive.internalName}";
+            var key = ability.sharedCooldownTag != null
+                ? ability.sharedCooldownTag.FullTag
+                : $"Ability.Cooldown.{ability.internalName}";
 
-            AddCooldown(key, passive.cooldownDuration);
+            AddCooldown(key, ability.cooldownDuration);
         }
 
         #endregion
@@ -190,11 +203,19 @@ namespace RedDust.Ability
                         effect.effectTag,
                         target.transform.position,
                         target.transform.position - transform.position,
-                        source,
-                        effect.grantedTag
+                        source
                     );
 
                     target.GetComponent<AbilityReactor>()?.Resolve(hit);
+                }
+
+                // duration > 0 的效果 — 把自身的 effectTag 挂给目标
+                if (effect.duration > 0f && effect.effectTag != null)
+                {
+                    if (target == gameObject)
+                        OwnedTags.AddTag(effect.effectTag.FullTag);
+                    else
+                        target.GetComponent<Identity>()?.Tags.AddTag(effect.effectTag.FullTag);
                 }
             }
         }
@@ -207,6 +228,168 @@ namespace RedDust.Ability
         public void RemovePassive(PassiveAbilitySO passive)
         {
             // TODO: 从运行时列表移除被动技能
+        }
+
+        #endregion
+
+        #region Active
+
+        /// <summary>
+        /// 尝试激活主动技能。②→③→④→⑤→⑥→⑧ 完整管道，同步执行（瞬发）。
+        /// </summary>
+        /// <returns>true=激活成功，false=被门控拒绝。</returns>
+        public bool TryActivate(AbilityDefSO ability, Vector3 origin, Vector3 direction)
+        {
+            if (ability == null) return false;
+
+            Debug.Log($"[Ability] TryActivate: {ability.internalName} | origin={origin} dir={direction}");
+
+            // ── ② Gating ──
+            // 冷却
+            if (!PassCooldown(ability))
+            {
+                Debug.Log($"[Ability] ② Rejected: {ability.internalName} — on cooldown");
+                return false;
+            }
+
+            // 互斥
+            if (!ability.overrideExclusion && ability.activeTag != null)
+            {
+                if (OwnedTags.HasTag(ability.activeTag.FullTag))
+                {
+                    Debug.Log($"[Ability] ② Rejected: {ability.internalName} — mutual exclusion ({ability.activeTag.FullTag})");
+                    return false;
+                }
+            }
+
+            // 外部条件
+            if (ConditionCallback != null)
+            {
+                var reason = ConditionCallback(ability);
+                if (reason != null)
+                {
+                    Debug.Log($"[Ability] ② Rejected: {ability.internalName} — condition: {reason}");
+                    return false;
+                }
+            }
+
+            // ── ③ Cost ──
+            if (ability.selfEffects != null)
+            {
+                // Phase 1: 预检。确保全部消耗可负担，不实际扣费。
+                foreach (var effect in ability.selfEffects)
+                {
+                    if (effect is CostEffectSO cost && cost.statDef != null)
+                    {
+                        if (PeekStatCallback == null)
+                        {
+                            Debug.LogError($"[Ability] PeekStatCallback is null — cost check skipped for {ability.internalName}");
+                            return false;
+                        }
+                        var current = PeekStatCallback.Invoke(cost.statDef);
+                        if (current < cost.amount)
+                        {
+                            Debug.Log($"[Ability] ③ Cost fail: {ability.internalName} needs {cost.statDef.Id}={cost.amount}, current={current:F1}");
+                            return false;
+                        }
+                        Debug.Log($"[Ability] ③ Cost check: {cost.statDef.Id} current={current:F1} cost={cost.amount} → OK");
+                    }
+                }
+
+                // Phase 2: 扣除。预检通过，逐项执行。
+                foreach (var effect in ability.selfEffects)
+                {
+                    if (effect is CostEffectSO cost && cost.statDef != null)
+                    {
+                        ModifyStatCallback?.Invoke(cost.statDef, -cost.amount);
+                        var after = PeekStatCallback.Invoke(cost.statDef);
+                        Debug.Log($"[Ability] ③ Cost deduct: {cost.statDef.Id} -{cost.amount} → {after:F1}");
+                    }
+                }
+            }
+
+            // ③b 挂 activeTag
+            if (ability.activeTag != null)
+                OwnedTags.AddTag(ability.activeTag.FullTag);
+
+            // ── ④ Search ──
+            var targets = ability.search != null
+                ? AbilitySearchUtility.Execute(ability.search, gameObject, origin, direction)
+                : new List<GameObject>();
+
+            Debug.Log($"[Ability] ④ Search: {ability.internalName} type={ability.search?.searchType} hits={targets.Count}");
+
+            // ── ⑤ Effects ──
+            // selfEffects — 对施法者自身的伤害 / buff / tag
+            if (ability.selfEffects != null)
+            {
+                foreach (var effect in ability.selfEffects)
+                {
+                    if (effect is CostEffectSO) continue; // ③ 已处理
+
+                    if (effect is DamageEffectSO dmg)
+                    {
+                        var finalDamage = EffectCallback?.Invoke(effect, gameObject, dmg.baseDamage) ?? dmg.baseDamage;
+                        Debug.Log($"[Ability] ⑤ SelfDamage: {ability.internalName} → self base={dmg.baseDamage} final={finalDamage:F1}");
+                        var hit = new SDamageInfo(
+                            gameObject, gameObject, finalDamage,
+                            effect.effectTag,
+                            transform.position,
+                            Vector3.zero,
+                            ability
+                        );
+                        GetComponent<AbilityReactor>()?.Resolve(hit);
+                    }
+
+                    // duration > 0 的效果 — 把自身的 effectTag 挂给目标
+                    if (effect.duration > 0f && effect.effectTag != null)
+                    {
+                        OwnedTags.AddTag(effect.effectTag.FullTag);
+                        Debug.Log($"[Ability] ⑤ SelfTag: {ability.internalName} tag={effect.effectTag.FullTag} duration={effect.duration}s");
+                    }
+                }
+            }
+
+            // targetEffects → SDamageInfo → Reactor
+            if (ability.targetEffects != null && targets.Count > 0)
+            {
+                foreach (var target in targets)
+                {
+                    foreach (var effect in ability.targetEffects)
+                    {
+                        if (effect is DamageEffectSO dmg)
+                        {
+                            var finalDamage = EffectCallback?.Invoke(effect, target, dmg.baseDamage) ?? dmg.baseDamage;
+                            Debug.Log($"[Ability] ⑤ TargetDamage: {ability.internalName} → {target.name} base={dmg.baseDamage} final={finalDamage:F1}");
+                            var hit = new SDamageInfo(
+                                gameObject, target, finalDamage,
+                                effect.effectTag,
+                                target.transform.position,
+                                target.transform.position - origin,
+                                ability
+                            );
+                            target.GetComponent<AbilityReactor>()?.Resolve(hit);
+                        }
+
+                        // duration > 0 的效果 — 把自身的 effectTag 挂给目标
+                        if (effect.duration > 0f && effect.effectTag != null)
+                        {
+                            target.GetComponent<Identity>()?.Tags.AddTag(effect.effectTag.FullTag);
+                            Debug.Log($"[Ability] ⑤ TargetTag: {ability.internalName} → {target.name} tag={effect.effectTag.FullTag} duration={effect.duration}s");
+                        }
+                    }
+                }
+            }
+
+            // ③c 移除 activeTag（瞬发）
+            if (ability.activeTag != null)
+                OwnedTags.RemoveTag(ability.activeTag.FullTag);
+
+            // 冷却
+            ApplyCooldown(ability);
+
+            Debug.Log($"[Ability] ✅ Activated: {ability.internalName} | targets={targets.Count} cooldown={ability.cooldownDuration}s");
+            return true;
         }
 
         #endregion

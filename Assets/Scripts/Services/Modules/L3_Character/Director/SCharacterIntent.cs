@@ -15,6 +15,8 @@ namespace RedDust.Character.Director
 
         // ── Actions ──
         public readonly bool JumpRequested;
+        public readonly bool FirstSkillRequested;
+        public readonly bool SecondSkillRequested;
 
         // ── Override ──
         public readonly bool OverrideMovementVelocity;
@@ -28,6 +30,8 @@ namespace RedDust.Character.Director
             EMovementGait desiredGait,
             EPosture desiredPosture,
             bool jumpRequested,
+            bool firstSkillRequested = false,
+            bool secondSkillRequested = false,
             Vector3 externalMovementVelocity = default,
             bool overrideMovementVelocity = false)
         {
@@ -40,12 +44,14 @@ namespace RedDust.Character.Director
             DesiredGait = desiredGait;
             DesiredPosture = desiredPosture;
             JumpRequested = jumpRequested;
+            FirstSkillRequested = firstSkillRequested;
+            SecondSkillRequested = secondSkillRequested;
             ExternalMovementVelocity = externalMovementVelocity;
             OverrideMovementVelocity = overrideMovementVelocity;
         }
 
         public static SCharacterIntent None => new(
             Vector3.forward, Vector3.forward,
-            EMovementGait.Idle, EPosture.Standing, false);
+            EMovementGait.Idle, EPosture.Standing, false, false, false);
     }
 }

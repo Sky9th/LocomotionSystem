@@ -1159,6 +1159,54 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Combat",
+            "id": "647341ca-4bbc-467a-8738-b80fe774fc77",
+            "actions": [
+                {
+                    "name": "1stSkill",
+                    "type": "Button",
+                    "id": "91dc2b98-1768-4d33-b83a-93cc0bc6b2de",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "2ndSkill",
+                    "type": "Button",
+                    "id": "86c57a68-e6fd-4f2f-8d95-86c521c29a10",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "5f1e33d2-556e-472c-93c4-ef38ab51ce8c",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "1stSkill",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "86c06741-f7e2-4da5-848b-c070dca9ca6b",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "2ndSkill",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

@@ -119,7 +119,8 @@ tech/
 │       │   │   └── Structs/            # SCharacterMotor, SCharacterDiscrete
 │       │   ├── stats/                  # L4: 数值子系统
 │       │   │   ├── CharacterStats.cs
-│       │   │   └── Rules/              # 8 个 stat rule
+│       │   │   ├── physiology.md       # Physiology — 生理规则（帧驱动永久行为）
+│       │   │   └── Physiology/         # 5 个生理规则
 │       ├── L3-ability/                  # L3: 通用能力子系统
 │       │   ├── README.md
 │       │   ├── ability-pipeline-design.md  # Ability Pipeline — 八维度技能管道完整设计

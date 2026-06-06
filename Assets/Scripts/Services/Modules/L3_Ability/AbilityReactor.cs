@@ -34,15 +34,18 @@ namespace RedDust.Ability
         /// </summary>
         public void Resolve(SDamageInfo hit)
         {
-            float finalAmount = ResolutionCallback?.Invoke(hit) ?? hit.Amount;
+            float incoming = hit.Amount;
+            float finalAmount = ResolutionCallback?.Invoke(hit) ?? incoming;
 
             if (finalAmount <= 0f)
             {
+                Debug.Log($"[Reactor] {hit.Target.name} Resolve: incoming={incoming:F1} → avoided ({finalAmount:F1})");
                 OnDamagedCallback?.Invoke(hit, 0f);
                 hitEvent?.Raise(hit);
                 return;
             }
 
+            Debug.Log($"[Reactor] {hit.Target.name} Resolve: incoming={incoming:F1} → final={finalAmount:F1}");
             ApplyDamageCallback?.Invoke(hit, finalAmount);
             ReactionCallback?.Invoke(hit, finalAmount);
             OnDamagedCallback?.Invoke(hit, finalAmount);

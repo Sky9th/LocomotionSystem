@@ -95,19 +95,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 91c1027e4fd6961409ee57d545e35169, type: 2}
   - {fileID: 11400000, guid: 96075d5ec4282a042a8c10b1269f9bd4, type: 2}
   - {fileID: 11400000, guid: 3e69d6f73a4165645bad72d9e35b1791, type: 2}
-  actionHandlers:
-  - {fileID: 11400000, guid: f40b8d7ebb79ed64ebecd12c9e86669f, type: 2}
-  - {fileID: 11400000, guid: 03fcc991a49c02a4387e36007f7f6e01, type: 2}
-  - {fileID: 11400000, guid: 6bbab9c561509af44a4e4b2c2a749982, type: 2}
-  - {fileID: 11400000, guid: 99babbaf43a9ca845af56e5630c93d66, type: 2}
-  - {fileID: 11400000, guid: 251d29253f5b1794891c79b95fc6191e, type: 2}
-  - {fileID: 11400000, guid: 0881f918bc760034c9798b12d005f853, type: 2}
-  - {fileID: 11400000, guid: 3fa90155b8d7d4a4c988178eff707d2b, type: 2}
-  - {fileID: 11400000, guid: 7692693fb45cbec4285a6fee9cb7724b, type: 2}
-  - {fileID: 11400000, guid: 46b351c7f488dbb488edf3a486ec57fb, type: 2}
-  - {fileID: 11400000, guid: d3651902b20d0514d8468ca575232bf6, type: 2}
-  - {fileID: 11400000, guid: cf29858e3bb01944b87858465b827c99, type: 2}
-  - {fileID: 11400000, guid: 9cc110874109c5843add961a7d80190e, type: 2}
+  - {fileID: 11400000, guid: 5f2393f702592a1459236a93af3b7dea, type: 2}
+  - {fileID: 11400000, guid: 79813982c487b914e8d2cc2f34f94a47, type: 2}
 --- !u!1 &1179361730580851819
 GameObject:
   m_ObjectHideFlags: 0

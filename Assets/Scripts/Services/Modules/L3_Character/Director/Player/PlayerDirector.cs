@@ -10,6 +10,7 @@ namespace RedDust.Character.Director
         private readonly Transform modelRoot;
         private readonly PlayerInput input;
         private readonly PathfindingAgent agent;
+        private readonly CharacterActor owner;
 
         private EMovementGait currentGait = EMovementGait.Idle;
         private EPosture currentPosture = EPosture.Standing;
@@ -17,6 +18,7 @@ namespace RedDust.Character.Director
         internal PlayerDirector(EventHub channels, Transform modelRoot, CharacterActor owner)
         {
             this.modelRoot = modelRoot;
+            this.owner = owner;
             input = new PlayerInput(channels);
             channels.RegisterListener(input);
             agent = owner.GetComponent<PathfindingAgent>();
@@ -26,6 +28,36 @@ namespace RedDust.Character.Director
         {
             ProcessClickToMove();
 
+            // TODO: 临时方案 — 直接读 CharacterActor 槽位。技能树/装备系统完成后由 AbilitySlotManager 替代。
+            if (input.FirstSkillRequested)
+            {
+                var ability = owner.AbilityExecutor;
+                var def = owner.SkillSlot1;
+                if (ability == null)
+                    Debug.LogWarning("[PlayerDirector] AbilityExecutor is null — skill activation skipped");
+                else if (def == null)
+                    Debug.LogWarning("[PlayerDirector] SkillSlot1 is empty — skill activation skipped");
+                else
+                {
+                    Debug.Log($"[PlayerDirector] Activating SkillSlot1: {def.internalName}");
+                    ability.TryActivate(def, modelRoot.position, modelRoot.forward);
+                }
+            }
+            if (input.SencondSkillRequested)
+            {
+                var ability = owner.AbilityExecutor;
+                var def = owner.SkillSlot2;
+                if (ability == null)
+                    Debug.LogWarning("[PlayerDirector] AbilityExecutor is null — skill activation skipped");
+                else if (def == null)
+                    Debug.LogWarning("[PlayerDirector] SkillSlot2 is empty — skill activation skipped");
+                else
+                {
+                    Debug.Log($"[PlayerDirector] Activating SkillSlot2: {def.internalName}");
+                    ability.TryActivate(def, modelRoot.position, modelRoot.forward);
+                }
+            }
+
             bool hasActivePath = agent != null && agent.HasPath && !agent.HasReachedDestination;
 
             var intent = new SCharacterIntent(
@@ -34,6 +66,8 @@ namespace RedDust.Character.Director
                 ResolveGait(),
                 ResolvePosture(),
                 false,
+                input.FirstSkillRequested,
+                input.SencondSkillRequested,
                 agent?.DesiredVelocity ?? Vector3.zero,
                 hasActivePath);
 

@@ -1,4 +1,4 @@
-using RedDust.Core;
+using RedDust.Stats;
 using UnityEngine;
 
 namespace RedDust.Ability
@@ -10,8 +10,8 @@ namespace RedDust.Ability
     public sealed class CostEffectSO : EffectSO
     {
         [Header("Cost")]
-        [Tooltip("消耗的资源 stat。引用 GameplayTag 定位 StatInstance。")]
-        public GameplayTagDefinitionSO statTag;
+        [Tooltip("消耗的属性定义。拖入 StatDefinitionSO 资产。")]
+        public StatDefinitionSO statDef;
 
         [Tooltip("消耗量。正=扣减, 负=恢复。")]
         public float amount;

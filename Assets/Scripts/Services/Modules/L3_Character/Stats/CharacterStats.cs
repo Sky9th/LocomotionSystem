@@ -37,5 +37,16 @@ namespace RedDust.Character.Stats
         }
 
         public StatInstance Get(string path) => stats.TryGetValue(path, out var s) ? s : null;
+
+        public StatInstance Get(StatDefinitionSO def)
+        {
+            if (def == null) return null;
+            foreach (var kv in stats)
+            {
+                if (kv.Value.Def == def)
+                    return kv.Value;
+            }
+            return null;
+        }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using RedDust.Core;
 using RedDust.GameInput;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace RedDust.Character.Director
     /// </summary>
     internal sealed class PlayerInput : IEventListener
     {
-        private readonly EventHub channels;
+        private readonly EventHub eventHub;
 
         // ── 帧状态 ──
         internal bool SecondaryRequested { get; set; }
@@ -18,6 +19,8 @@ namespace RedDust.Character.Director
         internal bool CrouchRequested { get; set; }
         internal bool ProneRequested { get; set; }
         internal bool StandRequested { get; set; }
+        internal bool FirstSkillRequested { get; set; }
+        internal bool SencondSkillRequested { get; set; }
 
         // ── TEMP ──
         private EventDispatcherService dispatcher;
@@ -26,18 +29,26 @@ namespace RedDust.Character.Director
         internal Vector3 MouseGroundPosition => mouseGroundPosition;
         internal bool HasMouseGround => hasMouseGround;
 
-        internal PlayerInput(EventHub channels)
+        internal PlayerInput(EventHub eventHub)
         {
-            this.channels = channels;
+            this.eventHub = eventHub;
         }
 
         public void BindEvents()
         {
-            channels.Get<SecondaryInteractEventSO>()?.Register(OnSecondary);
-            channels.Get<SprintInputEventSO>()?.Register(OnSprint);
-            channels.Get<CrouchInputEventSO>()?.Register(OnCrouch);
-            channels.Get<ProneInputEventSO>()?.Register(OnProne);
-            channels.Get<StandInputEventSO>()?.Register(OnStand);
+
+            // Movement
+            eventHub.Get<SprintInputEventSO>().Register(OnSprint);
+            eventHub.Get<CrouchInputEventSO>().Register(OnCrouch);
+            eventHub.Get<ProneInputEventSO>().Register(OnProne);
+            eventHub.Get<StandInputEventSO>().Register(OnStand);
+
+            //Intereaction
+            eventHub.Get<SecondaryInteractEventSO>().Register(OnSecondary);
+
+            //Combat
+            eventHub.Get<FirstSkillInputEventSO>().Register(OnFirstActivatedSkill);
+            eventHub.Get<SecondSkillInputEventSO>().Register(OnSecondActivatedSkill);
 
             // TEMP
             if (GameContext.Instance != null &&
@@ -49,11 +60,14 @@ namespace RedDust.Character.Director
 
         public void UnbindEvents()
         {
-            channels.Get<SecondaryInteractEventSO>()?.Unregister(OnSecondary);
-            channels.Get<SprintInputEventSO>()?.Unregister(OnSprint);
-            channels.Get<CrouchInputEventSO>()?.Unregister(OnCrouch);
-            channels.Get<ProneInputEventSO>()?.Unregister(OnProne);
-            channels.Get<StandInputEventSO>()?.Unregister(OnStand);
+            eventHub.Get<SecondaryInteractEventSO>()?.Unregister(OnSecondary);
+            eventHub.Get<SprintInputEventSO>()?.Unregister(OnSprint);
+            eventHub.Get<CrouchInputEventSO>()?.Unregister(OnCrouch);
+            eventHub.Get<ProneInputEventSO>()?.Unregister(OnProne);
+            eventHub.Get<StandInputEventSO>()?.Unregister(OnStand);
+
+            eventHub.Get<FirstSkillInputEventSO>()?.Unregister(OnFirstActivatedSkill);
+            eventHub.Get<SecondSkillInputEventSO>()?.Unregister(OnSecondActivatedSkill);
 
             dispatcher?.Unsubscribe<SCameraSnapshot>(OnCameraSnapshot);
             dispatcher = null;
@@ -66,7 +80,9 @@ namespace RedDust.Character.Director
         private void OnCrouch(bool p) { if (p) CrouchRequested = true; }
         private void OnProne(bool p) { if (p) ProneRequested = true; }
         private void OnStand(bool p) { if (p) StandRequested = true; }
-
+        private void OnFirstActivatedSkill(bool p) { if (p) FirstSkillRequested = true; }
+        private void OnSecondActivatedSkill(bool p) { if (p) SencondSkillRequested = true; }
+        
         // TEMP
         private void OnCameraSnapshot(SCameraSnapshot snapshot, MetaStruct _)
         {
@@ -77,7 +93,8 @@ namespace RedDust.Character.Director
         internal void ClearFrameSignals()
         {
             SecondaryRequested = SprintRequested = CrouchRequested =
-                ProneRequested = StandRequested = false;
+                ProneRequested = StandRequested = FirstSkillRequested =
+                SencondSkillRequested = false;
         }
     }
 }

@@ -577,8 +577,9 @@ public class AbilityPipelineContext
 | 状态 | 内容 |
 |------|------|
 | ✅ 设计完成 | 八维度管道、五接口修改器、回调模式（不持有数组）、二组件拆分、SResolvedHit 定义 |
-| ✅ Done | TargetFilterCallback 回调模式落地（Trap 注入 → AbilityComponent 回传） |
-| Slice 1 | 落地 ConditionCallback + EffectCallback，实现 ②→⑤ 发送管道（参考 TargetFilter 的回调模式） |
-| Slice 2 | 落地 HitReactionComponent + IResolutionModifier + IReactionModifier |
+| ✅ Done | TargetFilterCallback 回调模式落地（Trap 注入 → AbilityExecutor 回传） |
+| ✅ Done | TryActivate 主动技能入口：②门控→③扣费→④搜索→⑤效果→⑥结算→⑧广播全链路 |
+| ✅ Done | PeekStatCallback + ModifyStatCallback 拆分（预检+扣除两阶段） |
+| Slice 2 | 落地 AbilityReactor + IResolutionModifier 分阶段 Avoidance/Mitigation/Absorption |
 | Slice 3 | AbilityDriver 阶段机 + 动画驱动 |
 | Phase 4.2+ | BuffEffectSO、投射物、位移、Circle 搜索、环境修改器注入 |

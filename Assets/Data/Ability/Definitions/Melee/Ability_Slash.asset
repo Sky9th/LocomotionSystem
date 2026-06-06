@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0cc97f32b034b9459eb499254e9ab21, type: 3}
+  m_Name: Ability_Slash
+  m_EditorClassIdentifier: 
+  internalName: Slash
+  displayName: 
+  icon: {fileID: 0}
+  description: 
+  targetEffects:
+  - {fileID: 11400000, guid: 360f197be79097943baccc96353b45b7, type: 2}
+  - {fileID: 11400000, guid: d82414f7c141e724393e0e99d93615e6, type: 2}
+  selfEffects: []
+  cooldownDuration: 3
+  sharedCooldownTag: {fileID: 0}
+  categoryTag: {fileID: 0}
+  activation: {fileID: 11400000, guid: fa7e76f6839fd8845b77a1581ecbdf47, type: 2}
+  search: {fileID: 11400000, guid: af76afcbe6a355f46b836260c4f4901a, type: 2}
+  activeTag: {fileID: 0}
+  overrideExclusion: 0
+  noise: {fileID: 0}
+  comboLinks: []

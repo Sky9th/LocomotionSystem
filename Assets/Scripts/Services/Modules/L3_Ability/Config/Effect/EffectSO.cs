@@ -19,10 +19,6 @@ namespace RedDust.Ability
         [Tooltip("持续时间（秒）。≤0 为瞬时效果，>0 持续 tick。")]
         public float duration;
 
-        [Header("Tag")]
-        [Tooltip("效果施加后给目标/自身挂的标签。过期后自动移除。冷却：Skill.Cooldown.X；Buff：Effect.Buff.X。")]
-        public GameplayTagDefinitionSO grantedTag;
-
         [Header("Stacking")]
         [Tooltip("是否可叠加。false 则重复施加时刷新持续时间。")]
         public bool stackable;

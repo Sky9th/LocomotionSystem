@@ -164,11 +164,11 @@ Ability 系统消费的标签用途：
 |------|------|
 | Done | 配置层就绪：AbilityDefSO, PassiveAbilitySO, EffectSO 子类, SearchSO 子类, HitEventSO |
 | Done | AbilityComponent: OnTriggerEnter/Exit 内置、被动匹配、冷却管道 |
-| ✅ 设计完成 | 八维度管道、四接口修改器、二组件拆分、SResolvedHit 定义 — 详见 [ability-pipeline-design.md](ability-pipeline-design.md) |
-| Slice 1 | 落地 IConditionModifier + IEffectModifier，实现 ②→⑤ 发送管道 |
-| Slice 2 | 落地 HitReactionComponent + IResolutionModifier + IReactionModifier |
+| ✅ 设计完成 | 八维度管道、五回调修改器、二组件拆分、SDamageInfo 定义 — 详见 [ability-pipeline-design.md](ability-pipeline-design.md) |
+| ✅ Done | TryActivate 主动技能入口：②门控→③扣费(P eek+Modify)→④搜索→⑤效果→⑥结算→⑧广播 |
+| Slice 2 | 落地 IResolutionModifier 分阶段 Avoidance/Mitigation/Absorption |
 | Slice 3 | AbilityDriver 阶段机 + 动画驱动 |
-| Phase 4.2+ | BuffEffectSO、投射物、位移、Circle 搜索、环境修改器注入 |
+| Phase 4.2+ | BuffEffectSO、投射物、位移、环境修改器注入 |
 
 ## 子文档索引
 

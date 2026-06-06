@@ -95,7 +95,7 @@ TryActivate(AbilityDefSO, origin, direction)
 | `AddCooldown(tag, duration)` | 对自身施加冷却标签 |
 | `IsOnCooldown(tag)` | 查询标签是否在冷却中 |
 | `NotifyEvent(eventType, subject)` | 通知内部事件，触发被动匹配 |
-| `TryActivate(AbilityDefSO, origin, direction)` | 主动技能入口 → ②③④⑤ → HitReactionComponent |
+| `TryActivate(AbilityDefSO, origin, direction)` | 主动技能入口 → ②③④⑤ → AbilityReactor（Slice 1 已实现） |
 
 ## 开放回调
 
@@ -104,8 +104,10 @@ TryActivate(AbilityDefSO, origin, direction)
 | 回调 | 签名 | 用途 | Phase |
 |------|------|------|-------|
 | `TargetFilterCallback` | `Func<PassiveAbilitySO, GameObject, string>` | 过滤目标。null=放行 | ✅ Done |
-| `ConditionCallback` | `Func<AbilityDefSO, string>` | ② 条件门控。null=通过 | Slice 1 |
-| `EffectCallback` | `Action<AbilityPipelineContext, SResolvedHit, GameObject>` | ⑤ 效果修改 | Slice 1 |
+| `ConditionCallback` | `Func<AbilityDefSO, string>` | ② 条件门控。null=通过 | ✅ Done |
+| `PeekStatCallback` | `Func<StatDefinitionSO, float>` | ③ 预检查询当前属性值 | ✅ Done |
+| `ModifyStatCallback` | `Action<StatDefinitionSO, float>` | ③ 属性扣除（预检通过后执行） | ✅ Done |
+| `EffectCallback` | `Func<EffectSO, GameObject, float, float>` | ⑤ 效果修改 | ✅ Done |
 
 ## 检视面板字段
 

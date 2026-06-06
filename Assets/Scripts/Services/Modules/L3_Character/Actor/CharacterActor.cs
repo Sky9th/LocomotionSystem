@@ -30,10 +30,17 @@ namespace RedDust.Character
         [Header("Stats")]
         [SerializeField] private StatsTreeSO statsTree;
 
+        // TODO: 临时方案 — 技能树/装备系统完成后替换为技能槽位子系统
+        [Header("Ability Slots (Temp)")]
+        [SerializeField] private AbilityDefSO skillSlot1;
+        [SerializeField] private AbilityDefSO skillSlot2;
+
         [Header("Hierarchy")]
         [SerializeField] private Transform modelRoot;
 
         public bool IsPlayer => isPlayer;
+        internal AbilityDefSO SkillSlot1 => skillSlot1;
+        internal AbilityDefSO SkillSlot2 => skillSlot2;
         public Dictionary<string, (float current, float max)> LastStats { get; private set; }
         internal SCharacterKinematic LastKinematic { get; private set; }
         internal SCharacterMotor LastMotor { get; private set; }

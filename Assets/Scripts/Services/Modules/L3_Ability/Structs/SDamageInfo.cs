@@ -30,13 +30,9 @@ namespace RedDust.Ability
         /// <summary>伤害来源技能。AbilityDefSO 或 PassiveAbilitySO。</summary>
         public readonly AbilitySO SourceAbility;
 
-        /// <summary>命中后应挂给目标的标签。null=不挂标签。由 EffectResolver 结算后写入。</summary>
-        public readonly GameplayTagDefinitionSO GrantedTag;
-
         public SDamageInfo(GameObject caster, GameObject target, float amount, GameplayTag effectTag,
             Vector3 hitPoint, Vector3 hitDirection,
-            AbilitySO sourceAbility = null,
-            GameplayTagDefinitionSO grantedTag = null)
+            AbilitySO sourceAbility = null)
         {
             Caster = caster;
             Target = target;
@@ -45,7 +41,6 @@ namespace RedDust.Ability
             HitPoint = hitPoint;
             HitDirection = hitDirection.normalized;
             SourceAbility = sourceAbility;
-            GrantedTag = grantedTag;
         }
 
         public static SDamageInfo None => default;

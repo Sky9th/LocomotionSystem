@@ -13,12 +13,20 @@
 4. 生成提交信息（body 加一行 `- docs: 归档文档至 .agent/`）
 5. **提交前展示完整提交信息，待用户确认后执行** `git add -A && git commit`
 
-## 提交信息
-
-尾行版号之前加一行文档归档记录：
+## 提交信息格式
 
 ```
+<type>(<scope>): <summary>
+
+- <change 1>
+- <change 2>
+- ...
+
 - docs: 归档至 sessions/xxx.md, tech/.../xxx.md
+
+vX.X.X
 ```
 
-其余格式（type/scope/body/版号）与系统默认规则一致，不再重复。
+**强制规则**：
+- 版号必须处于最后一行
+- 禁止添加 `Co-Authored-By` 行
