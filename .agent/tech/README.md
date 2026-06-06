@@ -37,6 +37,7 @@ tech/
 │   ├── gameplay-tag.md                 # GameplayTag 完整资产树 — 9 根 190 资产
 │   ├── gameplay-tag-runtime.md         # GameplayTag struct — 运行时值类型
 │   ├── gameplay-tag-container.md       # GameplayTagContainer — 标签集合
+│   ├── gameplay-tag-editor.md          # TagEditor — 可视化标签管理 + TagPicker
 │   └── events/                         # SO Event Channel 基础设施
 │       ├── README.md
 │       ├── event-channel-base.md       # EventChannelBase — 抽象根
