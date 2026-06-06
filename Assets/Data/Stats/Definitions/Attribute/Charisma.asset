@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 41a08b0e5caf6364692f2188df7171e8, type: 3}
-  m_Name: StatDef_Charisma
+  m_Name: Charisma
   m_EditorClassIdentifier: 
   Id: Charisma
   Min: 1

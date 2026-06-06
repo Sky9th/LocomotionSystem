@@ -12,7 +12,7 @@ namespace RedDust.Ability
     public abstract class EffectSO : ScriptableObject
     {
         [Header("Identity")]
-        [Tooltip("效果本身的身份标签。DamageEffect→Tag_Damage_Fire, Impact→Tag_Impact_Launch。防御/AI/VFX 用此路由。")]
+        [Tooltip("效果本身的身份标签。DamageEffect→Damage.Elemental.Fire, Impact→Impact.Launch。防御/AI/VFX 用此路由。")]
         public GameplayTagDefinitionSO effectTag;
 
         [Header("Duration")]

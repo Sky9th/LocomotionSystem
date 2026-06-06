@@ -50,6 +50,8 @@ GameService.Awake() [order=-500, DontDestroyOnLoad]
 | Bootstrap 失败回滚 | 待做 | [game-service.md](game-service.md)、[base-service.md](base-service.md) |
 | Editor 路径与运行时路径统一 | 待做 | [game-service.md](game-service.md) |
 | ActorRegistry 角色引用字典 | 待做 | [game-context.md](game-context.md) |
+| Phase 1 GameplayTag 资产创建 (21个) | 待做 | [gameplay-tag.md](gameplay-tag.md) |
+| Phase 2 GameplayTag 资产创建 (剩余) | 待做 | [gameplay-tag.md](gameplay-tag.md) |
 | 天气系统快照 | 远期 | [game-context.md](game-context.md) |
 | 多人支持 | 远期 | [game-context.md](game-context.md) |
 
@@ -60,4 +62,7 @@ GameService.Awake() [order=-500, DontDestroyOnLoad]
 | [game-context.md](game-context.md) | GameContext — Service Registry + Snapshot Store，每个方法 |
 | [game-service.md](game-service.md) | GameService — Bootstrap 五步启动 + TeardownSession |
 | [base-service.md](base-service.md) | BaseService — 四阶段生命周期 + TryResolveService + PublishState |
+| [gameplay-tag.md](gameplay-tag.md) | GameplayTag 完整资产树 — 9 根 190 资产，按 Phase 分阶段 |
+| [gameplay-tag-runtime.md](gameplay-tag-runtime.md) | GameplayTag struct — 运行时值类型，Matches/Depth/隐式转换 |
+| [gameplay-tag-container.md](gameplay-tag-container.md) | GameplayTagContainer — 标签集合，HasTag/HasTagExact/AddTag |
 | [structs.md](structs.md) | MetaStruct + 所有 Core Context Struct |

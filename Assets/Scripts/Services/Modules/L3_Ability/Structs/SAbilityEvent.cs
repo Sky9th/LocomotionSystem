@@ -2,7 +2,7 @@ namespace RedDust.Ability
 {
     /// <summary>
     /// 技能事件载荷。发布给 UI 层（冷却图标、激活反馈、拒绝原因）。
-    /// 通过 AbilityComponent.OnSkillEvent 或 GameEvent&lt;SAbilityEvent&gt; 发布。
+    /// 通过 AbilityExecutor.OnSkillEvent 或 GameEvent&lt;SAbilityEvent&gt; 发布。
     /// </summary>
     public readonly struct SAbilityEvent
     {

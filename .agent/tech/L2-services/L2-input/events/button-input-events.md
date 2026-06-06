@@ -38,4 +38,4 @@ protected override void OnCanceled(InputAction.CallbackContext ctx)
 |------|------|------|
 | → 继承 | InputEvent<bool> | 父类 |
 | ← 调度 | InputService | 管理生命周期（初始化/启停） |
-| ← 订阅 | PlayerInput | 通过 EventChannels.Get<T>() 取得后 Register |
+| ← 订阅 | PlayerInput | 通过 EventHub.Get<T>() 取得后 Register |

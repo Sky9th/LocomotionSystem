@@ -6,7 +6,7 @@
 
 独立 L3 模块，位于 `Services/Modules/L3_Ability/`。负责战斗行为的编排，不负责动画播放、属性存储、移动控制。
 
-## 三层架构
+## 架构概览
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
@@ -14,41 +14,54 @@
 │                                                                   │
 │  AbilityDefSO (主动技能)           PassiveAbilitySO (被动)         │
 │    ├── AbilityActivationSO           ├── ETriggerEvent            │
-│    ├── AbilitySearchSO               ├── ConditionTag             │
-│    │    ├── ConeSearchSO             ├── CooldownRuleSO           │
-│    │    ├── RaySearchSO              └── EffectSO[]               │
-│    │    └── CircleSearchSO (4.2+)                                 │
-│    ├── EffectSO[] (targetEffects)                                 │
-│    ├── EffectSO[] (selfEffects)                                    │
-│    ├── CooldownRuleSO                                              │
-│    ├── NoiseEventSO                                                │
-│    ├── TagMutualExclusionSO                                        │
+│    ├── AbilitySearchSO               │    OnEnterArea/OnKill/     │
+│    │    ├── ConeSearchSO             │    OnHit/OnDamaged/...     │
+│    │    ├── RaySearchSO              ├── targetRequiredTag        │
+│    │    └── CircleSearchSO           ├── cooldownDuration         │
+│    ├── EffectSO[] (targetEffects)    ├── sharedCooldownTag        │
+│    ├── EffectSO[] (selfEffects)      ├── EffectSO[] (targetEffects)│
+│    ├── cooldownDuration              ├── EffectSO[] (selfEffects) │
+│    ├── sharedCooldownTag             └── triggerChannel (可选)     │
+│    ├── NoiseEventSO                                               │
+│    ├── activeTag + categoryTag                                    │
 │    └── SComboLink[]                                                │
 │                                                                   │
-│  EffectSO (abstract)                                              │
-│    ├── DamageEffectSO                                              │
-│    ├── ImpactEffectSO                                              │
-│    ├── ExecuteEffectSO                                             │
-│    └── CostEffectSO                                                │
+│  EffectSO (abstract) — 纯数据，无运行时方法                        │
+│    ├── DamageEffectSO   (baseDamage + 穿透/上下限)                 │
+│    ├── ImpactEffectSO   (staggerValue + knockback)                │
+│    ├── ExecuteEffectSO  (hpThreshold)                             │
+│    └── CostEffectSO     (statTag + amount)                        │
 │                                                                   │
-│  纯数据，无运行时状态。                                             │
+│  每个 EffectSO 是完整的效果概念（"500度火焰"），数值固有。        │
+│  要不同的火就建不同的资产。SO 不写 Execute 方法，逻辑在管道层。   │
 └─────────────────────────┬──────────────────────────────────────────┘
-                          │ 运行时构造
+                          │
 ┌─────────────────────────▼──────────────────────────────────────────┐
-│                   管理层 (AbilityComponent)                          │
-│  TryActivate(AbilityDefSO) -- 不关心槽位                             │
-│  被动匹配: 事件→条件→效果                                            │
-│  Tick(dt): 冷却倒计时、Effect 过期                                   │
-└─────────────────────────┬──────────────────────────────────────────┘
-                          │ 驱动 (Slice 3+)
-┌─────────────────────────▼──────────────────────────────────────────┐
-│                   执行层 (Future)                                    │
-│  AbilityPipeline (未实现)              AbilityDriver (未实现)         │
-│  纯函数判定链                          技能生命周期管理                │
+│                   管道层 (Ability Pipeline)                           │
 │                                                                     │
-│  Slice 1: TryActivate 占位返回 false                                │
-│  Slice 2: Tick 冷却 + AbilityPipeline 接入                          │
-│  Slice 3+: AbilityDriver 阶段机 + 动画驱动                           │
+│  AbilityComponent (Caster 发送面)     HitReactionComponent (接收面) │
+│    ②→③→④→⑤                            ⑥→⑦                      │
+│          直接调用 targets[i].HitReactionComponent.Resolve()          │
+│                                → SResolvedHit → HitEventSO (⑧)     │
+│                                                                     │
+│  五接口修改器开放 ②⑤⑥⑦ + 目标过滤：ICondition / ITargetFilter / IEffect / IResolution / IReaction│
+│                                                                     │
+│  完整设计 → [ability-pipeline-design.md](ability-pipeline-design.md)│
+└─────────────────────────┬──────────────────────────────────────────┘
+                          │
+┌─────────────────────────▼──────────────────────────────────────────┐
+│                   管理层 (AbilityComponent + HitReactionComponent)   │
+│                                                                     │
+│  AbilityComponent (发送中枢):                                        │
+│    主动 — TryActivate(ability) → ②③④⑤ → HitReactionComponent      │
+│    被动 — NotifyEvent(event, subject) → match PassiveAbilitySO     │
+│    内部 — OwnedTags / runtimePassives[] / cooldownEndTimes          │
+│                                                                     │
+│  HitReactionComponent (接收中枢, 同 GameObject):                     │
+│    主动命中 — Resolve(SResolvedHit[], caster) → ⑥⑦ → ⑧            │
+│    裸伤害  — ReceiveRawDamage(damage, type, caster)                 │
+│    ⑥ — IResolutionModifier: Avoid (短路) → Mitigate (链式) → Absorb │
+│    ⑦ — IReactionModifier.React() → OnDamaged 被动匹配             │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -56,12 +69,12 @@
 
 ```
 L3_Ability/
-├── AbilityComponent.cs              # [MonoBehaviour] 中枢
+├── AbilityComponent.cs              # [MonoBehaviour] 中枢：触发器+被动匹配+冷却+SResolvedHit 管道
+├── HitEventSO.cs               # [SO] GameEvent<SHitEvent> — ⑧ 广播通道，发布 SResolvedHit
 ├── Config/
 │   ├── AbilityDefSO.cs              # [SO] 主动技能完整定义
 │   ├── AbilityActivationSO.cs       # [SO] 激活方式 + 动画 + 阶段标记
 │   ├── PassiveAbilitySO.cs          # [SO] 被动技能定义
-│   ├── CooldownRuleSO.cs            # [SO] 冷却规则
 │   ├── NoiseEventSO.cs              # [SO] 噪音事件定义
 │   ├── TagMutualExclusionSO.cs      # [SO] 全局标签互斥规则
 │   ├── Search/
@@ -70,7 +83,7 @@ L3_Ability/
 │   │   ├── RaySearchSO.cs           # [SO] 射线搜索
 │   │   └── CircleSearchSO.cs        # [SO] 圆形搜索 (Phase 4.2+)
 │   ├── Effect/
-│   │   ├── EffectSO.cs              # [SO] 效果抽象基类
+│   │   ├── EffectSO.cs              # [SO] 效果抽象基类 — 纯数据
 │   │   ├── DamageEffectSO.cs        # [SO] 伤害效果
 │   │   ├── ImpactEffectSO.cs        # [SO] 冲击效果
 │   │   ├── ExecuteEffectSO.cs       # [SO] 斩杀效果
@@ -85,81 +98,83 @@ L3_Ability/
 │       ├── ETargetFilter.cs
 │       └── ETriggerEvent.cs
 └── Structs/
-    ├── SAbilityEvent.cs
-    ├── SComboLink.cs
-    ├── SDamageInfo.cs
-    ├── SHitEvent.cs
-    └── SNoiseEvent.cs
+    ├── SAbilityEvent.cs           # UI 技能反馈事件
+    ├── SComboLink.cs              # 连招衔接定义
+    ├── SDamageInfo.cs             # 理想伤害载荷（⑤ 产出）
+    ├── SHitEvent.cs               # 命中广播载荷（⑧ 发布）
+    └── SNoiseEvent.cs             # 噪音广播载荷
 ```
+
+> 已删除 `CooldownRuleSO.cs`。冷却变为 `cooldownDuration` + `sharedCooldownTag` 直接写在 SO 上。
+> 不需要 `Trap.cs`。AbilityComponent 内置 OnTriggerEnter 处理。
 
 ## 调用链
 
 ```
 CharacterActor.Update()
-  ├── 0. ability.Tick(dt)
+  ├── 0. ability.Tick() — 清理冷却 + HitReactionComponent 结算本帧收到的伤害
   ├── 1. director.Evaluate() -> SCharacterIntent
   ├── 2. Kinematic.Evaluate()
   ├── 3. Locomotion.Simulate()
-  ├── 4. Stats.Update(ctx, dt)
+  ├── 4. Stats.Update(ctx, dt) + Stats.ApplyDamage(resolvedHits)
   ├── 5. Animation.Apply(in ctx)
-  │     └── DriverArbiter.Resolve()
-  │           └── AbilityDriver (Slice 3+)
-  │                 └── ability.TryActivate(skill, pos, dir)
-  │                       ├── Gate: TagMutualExclusionSO + CooldownRuleSO
-  │                       ├── Cost: CanPayCosts() -> stats.Modify()
-  │                       ├── Self: activeTag, selfEffects
-  │                       ├── Search: AbilitySearchSO -> AbilityPipeline
-  │                       ├── Target: targetEffects -> EffectSO.Apply()
-  │                       └── Noise: NoiseEventSO.Publish()
   └── 6. PathfindingAgent.SyncLocomotion()
+
+主动技能 → AbilityComponent.TryActivate() → HitReactionComponent.Resolve()
+陷阱触发 → AbilityComponent.OnTriggerEnter() → NotifyEvent()
 ```
 
 ## 核心机制
 
-### GameplayTag -- 层级标签
+### GameplayTag — 层级标签
 
-| 用途 | 机制 | 示例 |
-|------|------|------|
-| 门控 | TagMutualExclusionSO 集中管理互斥 | State.Attacking vs State.Reloading |
-| 冷却 | CooldownRuleSO 施加 cooldownTag | Skill.Cooldown.Slash |
-| 状态标记 | 技能激活时添加 activeTag | State.Attacking -> AI 读取 |
-| 路由 | effectTag 路由防御/AI/VFX | Tag_Damage_Fire -> 火抗公式 |
+> 完整标签树文档：[gameplay-tag.md](../../../L1-core/gameplay-tag.md) · 9 根 · 190 资产
 
-### 冷却模型
+Ability 系统消费的标签用途：
 
-冷却不是计时器变量，是对自身施加的 Duration 标签：
-激活 -> CooldownRuleSO(duration, cooldownTag) -> 标签加入 OwnedTags -> Tick -> 过期移除
+| 用途 | 字段 | 匹配方式 | 示例 |
+|------|------|---------|------|
+| 互斥门控 | `activeTag` | `HasTag` 前缀 | `State.Combat.Attacking` — 持有期间阻止其他 State.* |
+| 冷却门控 | `sharedCooldownTag` | `HasTagExact` 精确 | `Skill.Cooldown.FireGroup` — 联动冷却 |
+| 技能分类 | `categoryTag` | `HasTag` 前缀 | `Skill.Combat.Melee` — 被动条件匹配 |
+| 伤害路由 | `EffectSO.effectTag` | `HasTag` 前缀 | `Damage.Elemental.Fire` → 火抗公式 |
+| Buff 标记 | `EffectSO.grantedTag` | 写入 OwnedTags | `Effect.Buff.Fortify` — 过期移除 |
+| 消耗资源 | `CostEffectSO.statTag` | 精确查找 | `Stat.Vital.Stamina` — 定位 StatInstance |
+| 噪音类型 | `NoiseEventSO.noiseType` | `HasTag` 前缀 | `Noise.Combat.WeaponFire` → AI 追击 |
 
-### 技能阶段模型
+### EffectSO 设计原则
 
-None -> Windup -> Fire -> Recovery -> None
-(Cancelled 可打断 Windup/Recovery)
+- **纯数据**：SO 不写 Execute/Apply 方法，逻辑全在管道层 (Ability Pipeline)
+- **数值固有**：`DamageEffectSO(baseDamage=500)` = "500度火焰"。天火/地火/冥火是不同的资产
+- **运行时叠加**：`baseDamage` 是基础值，AbilityPipeline ⑤ IEffectModifier 叠加角色属性、目标抗性
+- **无需 SEffectInstance**：要不同值就建不同资产
 
-### 动画即时间轴
+### 互斥模型
 
-- Phase Markers 描述动画本身的自然阶段（speed=1.0 基准）
-- animationSpeed 是唯一调参旋钮：实际时间 = marker / speed
-- Recovery = clipLength/speed - (windup+fire)/speed
+`TagMutualExclusionSO` 只设 `[Tag_State]` 为互斥根。`State.*` 下的所有标签互为排斥——角色不能同时处于两个 State。
 
-## 被动技能
+`categoryTag`（如 `Skill.Combat.Melee`）**不**参与互斥。它用于被动条件匹配和目标过滤。
 
-与主动技能共享 EffectSO 体系，不走 activation/search/noise/combo 管道。
-
-- trigger 枚举: OnKill/OnHit/OnDamaged/OnLowHP/OnDodge/OnComboStage/OnEquip
-- triggerChannel: 外部 EventChannel，非 null 覆盖枚举
+> 冷却模型、被动技能细节 → [ability-component.md](ability-component.md)
+> 伤害管道 (八维度) → [ability-pipeline-design.md](ability-pipeline-design.md)
 
 ## Phase 状态
 
 | 状态 | 说明 |
 |------|------|
-| Done | 配置层全部 29 个 .cs 文件就绪，AbilityComponent 骨架 |
-| Slice 2 | Tick 冷却倒计时、CanPayCosts、AbilityPipeline 接入 |
-| Slice 3+ | AbilityDriver 阶段机、动画驱动、连招匹配 |
-| Phase 4.2+ | BuffEffectSO、投射物、位移、Circle 搜索 |
+| Done | 配置层就绪：AbilityDefSO, PassiveAbilitySO, EffectSO 子类, SearchSO 子类, HitEventSO |
+| Done | AbilityComponent: OnTriggerEnter/Exit 内置、被动匹配、冷却管道 |
+| ✅ 设计完成 | 八维度管道、四接口修改器、二组件拆分、SResolvedHit 定义 — 详见 [ability-pipeline-design.md](ability-pipeline-design.md) |
+| Slice 1 | 落地 IConditionModifier + IEffectModifier，实现 ②→⑤ 发送管道 |
+| Slice 2 | 落地 HitReactionComponent + IResolutionModifier + IReactionModifier |
+| Slice 3 | AbilityDriver 阶段机 + 动画驱动 |
+| Phase 4.2+ | BuffEffectSO、投射物、位移、Circle 搜索、环境修改器注入 |
 
 ## 子文档索引
 
 | 文档 | 说明 |
 |------|------|
-| [gameplay-tag.md](gameplay-tag.md) | GameplayTag |
-| [gameplay-tag-container.md](gameplay-tag-container.md) | GameplayTagContainer |
+| [ability-pipeline-design.md](ability-pipeline-design.md) | Ability Pipeline — 八维度技能管道完整设计 |
+| [ability-component.md](ability-component.md) | AbilityComponent — 能力执行中枢，API + 调用链 |
+
+> GameplayTag 基础设施文档位于 [L1-core](../../../L1-core/)：资产树、运行时 struct、容器用法。

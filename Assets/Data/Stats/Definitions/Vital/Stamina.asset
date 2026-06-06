@@ -17,7 +17,7 @@ MonoBehaviour:
   Max: 100
   Default: 100
   isConsumable: 1
-  consumeRate: 2
+  consumeRate: 0
   consumeInterval: 0
   isRestorable: 0
   restoreRate: 0

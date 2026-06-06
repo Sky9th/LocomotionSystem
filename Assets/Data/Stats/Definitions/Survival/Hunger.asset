@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 41a08b0e5caf6364692f2188df7171e8, type: 3}
-  m_Name: StatDef_Hunger
+  m_Name: Hunger
   m_EditorClassIdentifier: 
   Id: Hunger
   Min: 0
   Max: 100
   Default: 100
   isConsumable: 1
-  consumeRate: 2
+  consumeRate: 0.01
   consumeInterval: 0
   isRestorable: 0
   restoreRate: 0

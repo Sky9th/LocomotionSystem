@@ -5,12 +5,12 @@ using UnityEngine;
 namespace RedDust.Character.Director
 {
     /// <summary>
-    /// 玩家输入聚合器。纯类，通过 EventChannels 订阅事件，缓存帧状态。
+    /// 玩家输入聚合器。纯类，通过 EventHub 订阅事件，缓存帧状态。
     /// 由 CharacterActor 驱动 BindEvents / UnbindEvents。
     /// </summary>
     internal sealed class PlayerInput : IEventListener
     {
-        private readonly EventChannels channels;
+        private readonly EventHub channels;
 
         // ── 帧状态 ──
         internal bool SecondaryRequested { get; set; }
@@ -26,7 +26,7 @@ namespace RedDust.Character.Director
         internal Vector3 MouseGroundPosition => mouseGroundPosition;
         internal bool HasMouseGround => hasMouseGround;
 
-        internal PlayerInput(EventChannels channels)
+        internal PlayerInput(EventHub channels)
         {
             this.channels = channels;
         }

@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace RedDust.UI
@@ -12,11 +11,10 @@ namespace RedDust.UI
         [SerializeField] private UIStatBar thirstBar;
         [SerializeField] private UIStatBar staminaBar;
 
-        [Header("Stat Paths")]
-        [SerializeField] private string hpStatPath = "Vitals/HP";
-        [SerializeField] private string hungerStatPath = "Vitals/Hunger";
-        [SerializeField] private string thirstStatPath = "Vitals/Thirst";
-        [SerializeField] private string staminaStatPath = "Vitals/Stamina";
+        private const string hpStatPath = "Vitals/HP";
+        private const string hungerStatPath = "Survival/Hunger";
+        private const string thirstStatPath = "Survival/Thirst";
+        private const string staminaStatPath = "Vitals/Stamina";
 
         [Header("Refresh")]
         [SerializeField] private float refreshRate = 0.1f;

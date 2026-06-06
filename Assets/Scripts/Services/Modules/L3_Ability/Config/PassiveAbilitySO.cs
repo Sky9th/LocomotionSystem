@@ -8,19 +8,12 @@ namespace RedDust.Ability
     /// 与主动技能共享 EffectSO 体系，但不走 activation/search/noise/combo 管道。
     ///
     /// 两种触发路径：
-    /// - 常用: trigger 枚举，AbilityComponent 内部流程节点直接匹配（OnHit/OnKill/OnDamaged/OnDodge/OnComboStage/OnEquip）
+    /// - 常用: trigger 枚举，AbilityExecutor 内部流程节点直接匹配（OnHit/OnKill/OnDamaged/OnDodge/OnComboStage/OnEquip）
     /// - 罕用: triggerChannel 引用外部 EventChannel 资产（时间/天气/Boss阶段），非 null 时覆盖枚举匹配
     /// </summary>
-    [CreateAssetMenu(menuName = "RedDust/Ability/Passive Ability", fileName = "Passive_")]
-    public sealed class PassiveAbilitySO : ScriptableObject
+    [CreateAssetMenu(menuName = "RedDust/Ability/Definition/Passive", fileName = "Passive_")]
+    public sealed class PassiveAbilitySO : AbilitySO
     {
-        [Header("Identity")]
-        public string internalName;
-        public string displayName;
-        public Sprite icon;
-        [TextArea(2, 4)]
-        public string description;
-
         [Header("Trigger")]
         [Tooltip("触发事件类型。常用事件走枚举。")]
         public ETriggerEvent trigger;
@@ -32,18 +25,8 @@ namespace RedDust.Ability
         public float triggerValue;
 
         [Header("Condition")]
-        [Tooltip("事件主体需持有此标签才触发。null=无条件。")]
-        public GameplayTagDefinitionSO conditionTag;
+        [Tooltip("目标需持有此标签才触发。null=无条件。简单的门控用标签，复杂逻辑用 TargetFilterCallback。")]
+        public GameplayTagDefinitionSO targetRequiredTag;
 
-        [Header("Effects")]
-        [Tooltip("施加给事件主体（被击中的敌人/攻击者/Boss）。")]
-        public EffectSO[] targetEffects;
-
-        [Tooltip("施加给技能持有者自己。")]
-        public EffectSO[] selfEffects;
-
-        [Header("Cooldown")]
-        [Tooltip("触发冷却。null=每次事件都触发。")]
-        public CooldownRuleSO cooldownEffect;
     }
 }

@@ -6,18 +6,13 @@ namespace RedDust.Ability
     /// <summary>
     /// 单个技能的完整数据定义。纯配置，无运行时状态。
     /// 身份 + 激活方式 + 搜索形状 + 效果数组。
-    /// 被 AbilityComponent / AbilityPipeline / AbilityDriver 消费。
+    /// 被 AbilityExecutor / AbilityPipeline / AbilityDriver 消费。
     /// </summary>
-    [CreateAssetMenu(menuName = "RedDust/Ability/Ability Definition", fileName = "Ability_")]
-    public sealed class AbilityDefSO : ScriptableObject
+    [CreateAssetMenu(menuName = "RedDust/Ability/Definition/Active", fileName = "Ability_")]
+    public sealed class AbilityDefSO : AbilitySO
     {
         [Header("Identity")]
-        public string internalName;
-        public string displayName;
-        public Sprite icon;
-        [TextArea(2, 4)]
-        public string description;
-        [Tooltip("技能分类标签。用于 TagMutualExclusionSO 互斥匹配，与 activeTag（激活期间持有）不同。")]
+        [Tooltip("技能分类标签。用于被动条件匹配与目标过滤，与 activeTag（激活期间持有）不同。")]
         public GameplayTagDefinitionSO categoryTag;
 
 
@@ -30,17 +25,6 @@ namespace RedDust.Ability
         [Tooltip("技能「往哪打」的完整定义。搜索形状、范围、目标筛选。")]
         public AbilitySearchSO search;
 
-
-        [Header("Effects")]
-        [Tooltip("命中目标后施加的效果。DamageEffectSO, ImpactEffectSO, ExecuteEffectSO 等。")]
-        public EffectSO[] targetEffects;
-
-        [Tooltip("激活时对自己施加的效果。CostEffectSO, EffectSO 等。")]
-        public EffectSO[] selfEffects;
-
-        [Header("Cooldown")]
-        [Tooltip("冷却效果。门控用，激活前检查是否持有 cooldownTag。")]
-        public CooldownRuleSO cooldownEffect;
 
         [Header("Gating")]
         [Tooltip("激活期间持有的标签。结束时移除。与 TagMutualExclusionSO 配合做互斥门控。")]

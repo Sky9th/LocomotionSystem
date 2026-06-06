@@ -5,7 +5,7 @@
 ## 调用链
 
 ```
-EventChannelBase  ← GameEvent<T>, InputEvent<T>, EventChannels 继承或持有
+EventChannelBase  ← GameEvent<T>, InputEvent<T>, EventHub 继承或持有
      ↑
   无直接调用者 — 纯抽象根
 ```
@@ -16,7 +16,7 @@ EventChannelBase  ← GameEvent<T>, InputEvent<T>, EventChannels 继承或持有
 |------|------|------|
 | → 被继承 | GameEvent<T> | 父类 |
 | → 被继承 | InputEvent<T> (via IInputEvent) | 父类 |
-| → 被持有 | EventChannels | 数组元素类型 |
+| → 被持有 | EventHub | 数组元素类型 |
 
 ## 公开属性
 

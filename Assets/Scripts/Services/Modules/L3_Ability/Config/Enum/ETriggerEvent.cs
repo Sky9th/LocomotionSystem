@@ -28,5 +28,11 @@ namespace RedDust.Ability
 
         /// <summary>装备/激活时立即生效。</summary>
         OnEquip = 7,
+
+        /// <summary>实体进入触发器区域时（陷阱/环境）。</summary>
+        OnEnterArea = 8,
+
+        /// <summary>实体离开触发器区域时。</summary>
+        OnExitArea = 9,
     }
 }

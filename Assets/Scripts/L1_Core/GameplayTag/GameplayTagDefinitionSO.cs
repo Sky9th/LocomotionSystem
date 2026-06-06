@@ -38,13 +38,34 @@ namespace RedDust.Core
 
         private void OnEnable()
         {
+            AutoDeriveLeafName();
             RefreshCache();
         }
 
         private void OnValidate()
         {
             // 编辑器修改 leafName/parent 后立即刷新
+            AutoDeriveLeafName();
             RefreshCache();
+        }
+
+        private void AutoDeriveLeafName()
+        {
+            var assetName = name; // ScriptableObject.name = 文件名不含扩展名
+            if (string.IsNullOrEmpty(assetName)) return;
+            if (!assetName.StartsWith("Tag_")) return;
+
+            var derived = assetName.Substring(4); // "Tag_Species" → "Species"
+
+            if (leafName == derived) return;         // 已正确
+            if (string.IsNullOrEmpty(leafName))      // 空 → 自动填
+            {
+                leafName = derived;
+                return;
+            }
+            // 不匹配 → 修正（覆盖复制粘贴残留值）
+            Debug.LogWarning($"[GameplayTag] leafName mismatch: file={assetName}, was=\"{leafName}\", corrected=\"{derived}\"");
+            leafName = derived;
         }
 
         private void RefreshCache()

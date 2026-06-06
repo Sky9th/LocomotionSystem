@@ -28,7 +28,8 @@ namespace RedDust.Stats
         public void RemoveByOwner(object owner) => modifiers.RemoveAll(m => m.Owner == owner);
         public bool HasModifier(StatModifier m) => modifiers.Contains(m);
 
-        public void Tick(float dt)
+        /// <summary>按频率消耗/恢复。consumeRate/restoreRate × dt = 每帧实际变化量。</summary>
+        public void ApplyRates(float dt)
         {
             if (Def.IsConsumable)
                 TickConsume(dt);

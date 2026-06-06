@@ -25,7 +25,7 @@ PlayerInput / PlayerDirector / ...
 | → 实现 | IInputEvent | 接口 |
 | ← 继承 | SprintInputEvent 等 (×6) | 子类 |
 | ← 管理 | InputService | Initialize/Enable/Disable/Dispose |
-| ← 订阅 | PlayerInput | 通过 EventChannels.Get<T>() 获取 |
+| ← 订阅 | PlayerInput | 通过 EventHub.Get<T>() 获取 |
 
 ## 公开属性
 

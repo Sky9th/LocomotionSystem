@@ -14,7 +14,7 @@ namespace RedDust.Character.Director
         private EMovementGait currentGait = EMovementGait.Idle;
         private EPosture currentPosture = EPosture.Standing;
 
-        internal PlayerDirector(EventChannels channels, Transform modelRoot, CharacterActor owner)
+        internal PlayerDirector(EventHub channels, Transform modelRoot, CharacterActor owner)
         {
             this.modelRoot = modelRoot;
             input = new PlayerInput(channels);

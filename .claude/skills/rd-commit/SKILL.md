@@ -11,7 +11,7 @@
 2. 升级 `.agent/VERSION.md` + 创建 `.agent/versions/vX.X.X.md`
 3. **调用 `/rd-doc` 完成三层归档**（session / tech / design）
 4. 生成提交信息（body 加一行 `- docs: 归档文档至 .agent/`）
-5. `git add -A && git commit` — 代码 + 版本 + 文档一次提交
+5. **提交前展示完整提交信息，待用户确认后执行** `git add -A && git commit`
 
 ## 提交信息
 

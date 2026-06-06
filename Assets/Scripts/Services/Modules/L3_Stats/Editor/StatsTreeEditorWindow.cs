@@ -7,7 +7,7 @@ namespace RedDust.Stats.Editor
     public partial class StatsTreeEditorWindow : EditorWindow
     {
         // -- data --
-        private StatsTreeData tree;
+        private StatsTreeSO tree;
         private List<JsonStatNode> ownNodes = new();       // this tree's raw nodes
         private List<JsonStatNode> workingNodes = new();   // merged display list
         private List<JsonStatNode> parentMerged = new();   // cached: all ancestors merged
@@ -88,16 +88,16 @@ namespace RedDust.Stats.Editor
             // -- left block: fills remaining width after the 100px save button --
             EditorGUILayout.BeginVertical(GUILayout.ExpandWidth(true));
 
-            var newTree = (StatsTreeData)EditorGUILayout.ObjectField(
-                "Tree", tree, typeof(StatsTreeData), false,
+            var newTree = (StatsTreeSO)EditorGUILayout.ObjectField(
+                "Tree", tree, typeof(StatsTreeSO), false,
                 GUILayout.ExpandWidth(true));
             if (newTree != tree) { tree = newTree; LoadTree(); }
 
             GUILayout.Space(2f);
 
             var prevInherits = tree != null ? tree.InheritsFrom : null;
-            var newInherits = (StatsTreeData)EditorGUILayout.ObjectField(
-                "Inherits From", prevInherits, typeof(StatsTreeData), false,
+            var newInherits = (StatsTreeSO)EditorGUILayout.ObjectField(
+                "Inherits From", prevInherits, typeof(StatsTreeSO), false,
                 GUILayout.ExpandWidth(true));
             if (tree != null && newInherits != prevInherits)
             {
@@ -214,7 +214,7 @@ namespace RedDust.Stats.Editor
         private void BuildParentMerged()
         {
             hasCycle = false;
-            var inherited = new List<(TreeDataContainer, StatsTreeData, int)>();
+            var inherited = new List<(TreeDataContainer, StatsTreeSO, int)>();
             if (tree != null)
                 CollectInheritedNodes(tree.InheritsFrom, inherited);
             myDepth = inherited.Count;
@@ -341,9 +341,9 @@ namespace RedDust.Stats.Editor
         /// Recursively collect inherited nodes top-down (root first).
         /// Depth = result.Count after root recursion = natural depth order.
         /// </summary>
-        private static bool WouldCreateCycle(StatsTreeData node, StatsTreeData proposedParent)
+        private static bool WouldCreateCycle(StatsTreeSO node, StatsTreeSO proposedParent)
         {
-            var visited = new HashSet<StatsTreeData>();
+            var visited = new HashSet<StatsTreeSO>();
             var current = proposedParent;
             while (current != null)
             {
@@ -355,12 +355,12 @@ namespace RedDust.Stats.Editor
         }
 
         private void CollectInheritedNodes(
-            StatsTreeData current,
-            List<(TreeDataContainer container, StatsTreeData source, int depth)> result,
-            HashSet<StatsTreeData> visited = null)
+            StatsTreeSO current,
+            List<(TreeDataContainer container, StatsTreeSO source, int depth)> result,
+            HashSet<StatsTreeSO> visited = null)
         {
             if (current == null) return;
-            if (visited == null) visited = new HashSet<StatsTreeData>();
+            if (visited == null) visited = new HashSet<StatsTreeSO>();
             if (!visited.Add(current))
             {
                 hasCycle = true;

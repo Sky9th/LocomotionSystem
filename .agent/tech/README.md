@@ -34,11 +34,14 @@ tech/
 │   ├── game-service.md                 # GameService — Bootstrap 五步启动
 │   ├── base-service.md                 # BaseService — 四阶段生命周期
 │   ├── structs.md                      # MetaStruct + Core Context Structs
+│   ├── gameplay-tag.md                 # GameplayTag 完整资产树 — 9 根 190 资产
+│   ├── gameplay-tag-runtime.md         # GameplayTag struct — 运行时值类型
+│   ├── gameplay-tag-container.md       # GameplayTagContainer — 标签集合
 │   └── events/                         # SO Event Channel 基础设施
 │       ├── README.md
 │       ├── event-channel-base.md       # EventChannelBase — 抽象根
 │       ├── game-event.md               # GameEvent<T> — 通用事件通道
-│       ├── event-channels.md           # EventChannels — 引用集中 + 驱动 IEventListener
+│       ├── event-channels.md           # EventHub — 引用集中 + 驱动 IEventListener
 │       └── i-event-listener.md         # IEventListener — 订阅约定接口
 │
 ├── L2-services/                        # 占位容器: 所有 L2 Service
@@ -118,6 +121,9 @@ tech/
 │       │   │   ├── CharacterStats.cs
 │       │   │   └── Rules/              # 8 个 stat rule
 │       ├── L3-ability/                  # L3: 通用能力子系统
+│       │   ├── README.md
+│       │   ├── ability-pipeline-design.md  # Ability Pipeline — 八维度技能管道完整设计
+│       │   └── ability-component.md     #  AbilityComponent — 中枢，API + 调用链
 │       │
 │       ├── L3-stats/                   # L3: Stat 数值框架 (自身代码: Definition/ Tree/ Instance/ Modifier/ Interfaces/ Editor/)
 │       │   ├── README.md

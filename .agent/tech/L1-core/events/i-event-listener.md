@@ -5,7 +5,7 @@
 ## 调用链
 
 ```
-EventChannels.OnEnable/OnDisable
+EventHub.OnEnable/OnDisable
   │
   ▼
 IEventListener  ← 模块纯类实现
@@ -18,7 +18,7 @@ IEventListener  ← 模块纯类实现
 | 方向 | 模块 | 关系 |
 |------|------|------|
 | ← 实现 | PlayerInput | 输入事件订阅 |
-| ← 驱动 | EventChannels | OnEnable/OnDisable 调用 |
+| ← 驱动 | EventHub | OnEnable/OnDisable 调用 |
 
 ## 方法
 
@@ -27,14 +27,14 @@ IEventListener  ← 模块纯类实现
 void BindEvents()
 ```
 - **用途**: 注册所有事件监听
-- **调用者**: EventChannels.OnEnable
+- **调用者**: EventHub.OnEnable
 
 ### UnbindEvents()
 ```csharp
 void UnbindEvents()
 ```
 - **用途**: 取消所有事件监听
-- **调用者**: EventChannels.OnDisable
+- **调用者**: EventHub.OnDisable
 
 ## 未来规划
 

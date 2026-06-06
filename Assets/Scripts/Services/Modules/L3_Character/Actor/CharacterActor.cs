@@ -8,13 +8,14 @@ using RedDust.Character.Kinematic;
 using RedDust.Character.Pathfinding;
 using RedDust.Character.Locomotion;
 using RedDust.Ability;
+using RedDust.Character.Combat;
 using RedDust.Character.Stats;
 using RedDust.Stats;
 
 namespace RedDust.Character
 {
     [DisallowMultipleComponent]
-    [RequireComponent(typeof(EventChannels))]
+    [RequireComponent(typeof(EventHub))]
     public partial class CharacterActor : MonoBehaviour
     {
         [Header("Identity")]
@@ -46,8 +47,11 @@ namespace RedDust.Character
         private ILocomotionSimulator locomotionSimulator;
         private AnimationBrain characterAnimation;
         private CharacterStats stats;
-        private AbilityComponent ability;
-        internal AbilityComponent AbilityComponent => ability;
+        private AbilityExecutor ability;
+        private AbilityReactor reactor;
+        private CharacterCombat combat;
+        private EventHub eventHub;
+        internal AbilityExecutor AbilityExecutor => ability;
 
         private void Awake()
         {
@@ -55,18 +59,23 @@ namespace RedDust.Character
             if (modelRoot == null) modelRoot = transform;
             characterRig = new CharacterRig(transform, modelRoot);
             characterAnimation?.SetRig(characterRig);
-            var eventChannels = GetComponent<EventChannels>();
+            eventHub = GetComponent<EventHub>();
             pathfindingAgent = GetComponent<PathfindingAgent>();
 
-            director = new PlayerDirector(eventChannels, modelRoot, this);
+            director = new PlayerDirector(eventHub, modelRoot, this);
 
             characterKinematic = new CharacterKinematic(transform, modelRoot, characterRig);
             locomotionSimulator = new GroundLocomotion();
             stats = new CharacterStats(statsTree);
-            ability = GetComponent<AbilityComponent>();
+            ability = GetComponent<AbilityExecutor>();
+            reactor = GetComponent<AbilityReactor>();
+            combat = new CharacterCombat(ability, reactor, stats, eventHub);
         }
 
-        private void Start() { }
+        private void Start()
+        {
+            combat?.SubscribeEvents();
+        }
 
         private void OnEnable() { }
 
@@ -95,9 +104,9 @@ namespace RedDust.Character
             LastKinematic = ctx.Kinematic;
             LastMotor = ctx.Motor;
             LastDiscrete = ctx.Discrete;
-            stats?.Update(ctx, deltaTime);
+            stats?.Update(deltaTime);
             LastStats = stats?.LastStats;
-
+            
             characterAnimation?.Apply(in ctx);
             pathfindingAgent?.SyncLocomotion(in ctx.Discrete);
         }

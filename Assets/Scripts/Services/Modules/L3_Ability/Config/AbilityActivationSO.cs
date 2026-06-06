@@ -13,7 +13,7 @@ namespace RedDust.Ability
     ///
     /// AbilityDefSO 持有此资产引用，AbilityDriver 消费。
     /// </summary>
-    [CreateAssetMenu(menuName = "RedDust/Ability/Ability Activation", fileName = "Activation_")]
+    [CreateAssetMenu(menuName = "RedDust/Ability/Activation", fileName = "Activation_")]
     public sealed class AbilityActivationSO : ScriptableObject
     {
         [Header("Activation Type")]

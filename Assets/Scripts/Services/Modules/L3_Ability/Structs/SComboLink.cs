@@ -4,7 +4,7 @@ namespace RedDust.Ability
 {
     /// <summary>
     /// 连招衔接定义。当前技能 → 下一技能的单条映射。
-    /// AbilityDefSO.comboLinks[] 持有，AbilityComponent 在 combo window 内匹配。
+    /// AbilityDefSO.comboLinks[] 持有，AbilityExecutor 在 combo window 内匹配。
     ///
     /// 键→技 是角色层（输入映射），技→技衔接是技能层（此 struct）。
     /// </summary>

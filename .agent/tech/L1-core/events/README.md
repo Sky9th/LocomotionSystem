@@ -13,7 +13,7 @@ InputService (L2)
   ▼
 EventChannelBase  ← 所有事件通道的抽象根
   ├── GameEvent<T>            ← 通用事件通道（系统事件用）
-  └── EventChannels (MB)      ← 集中持有事件引用，驱动 IEventListener
+  └── EventHub (MB)      ← 集中持有事件引用，驱动 IEventListener
         │
         │  OnEnable/OnDisable
         ▼
@@ -26,7 +26,7 @@ EventChannelBase  ← 所有事件通道的抽象根
 |--------|------------|------|
 | EventChannelBase | — | 根本身，无依赖 |
 | GameEvent<T> | 继承 EventChannelBase | 系统事件发布方持有并调用 `Raise()` |
-| EventChannels | 持有 EventChannelBase[] | `Get<T>()` 供外部查找；`OnEnable` 驱动 listener |
+| EventHub | 持有 EventChannelBase[] | `Get<T>()` 供外部查找；`OnEnable` 驱动 listener |
 | IEventListener | — | 接口，无依赖；由模块纯类实现 |
 
 ## 设计决策
@@ -34,9 +34,9 @@ EventChannelBase  ← 所有事件通道的抽象根
 | 决策 | 原因 |
 |------|------|
 | EventChannelBase 不含 Listener 管理 | 给 GameEvent<T> 和 InputEvent<T> 独立设计空间 |
-| EventChannels 是 MB | 需要 `OnEnable`/`OnDisable` 生命周期，驱动订阅 |
+| EventHub 是 MB | 需要 `OnEnable`/`OnDisable` 生命周期，驱动订阅 |
 | IEventListener 只有 BindEvents/UnbindEvents | 最小接口，不与具体事件类型耦合 |
-| EventChannels.RegisterListener() 手动注册 | 纯类不是 Component，无法用 GetComponents 发现 |
+| EventHub.RegisterListener() 手动注册 | 纯类不是 Component，无法用 GetComponents 发现 |
 
 ## 未来规划
 
@@ -50,5 +50,5 @@ EventChannelBase  ← 所有事件通道的抽象根
 |------|------|
 | [event-channel-base.md](event-channel-base.md) | EventChannelBase — 抽象根 |
 | [game-event.md](game-event.md) | GameEvent<T> — 通用事件通道 |
-| [event-channels.md](event-channels.md) | EventChannels — 引用集中 + 驱动 |
+| [event-channels.md](event-channels.md) | EventHub — 引用集中 + 驱动 |
 | [i-event-listener.md](i-event-listener.md) | IEventListener — 订阅约定接口 |
