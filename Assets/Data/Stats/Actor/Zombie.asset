@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb30adebbb5bb6f418ee6e6d886a8f46, type: 3}
+  m_Name: Zombie
+  m_EditorClassIdentifier: 
+  InheritsFrom: {fileID: 11400000, guid: 9524a8534c5e0b748a7e7b968988f1af, type: 2}
+  treeJson: "{\n    \"Nodes\": [\n        {\n            \"Id\": \"Combat\",\n           
+    \"IsEnabled\": true,\n            \"IsFolder\": true,\n            \"IsOverride\":
+    false,\n            \"ParentId\": \"\",\n            \"Def\": -1,\n           
+    \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
+    },\n        {\n            \"Id\": \"ATK\",\n            \"IsEnabled\": true,\n           
+    \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
+    \"Combat\",\n            \"Def\": 0,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"Movement\",\n           
+    \"IsEnabled\": true,\n            \"IsFolder\": true,\n            \"IsOverride\":
+    false,\n            \"ParentId\": \"\",\n            \"Def\": -1,\n           
+    \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
+    },\n        {\n            \"Id\": \"Speed\",\n            \"IsEnabled\": true,\n           
+    \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
+    \"Movement\",\n            \"Def\": 1,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"Senses\",\n           
+    \"IsEnabled\": true,\n            \"IsFolder\": true,\n            \"IsOverride\":
+    false,\n            \"ParentId\": \"\",\n            \"Def\": -1,\n           
+    \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
+    },\n        {\n            \"Id\": \"NoiseReact\",\n            \"IsEnabled\":
+    true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
+    \"ParentId\": \"Senses\",\n            \"Def\": 2,\n            \"OverrideValue\":
+    -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n        },\n       
+    {\n            \"Id\": \"SightRange\",\n            \"IsEnabled\": true,\n           
+    \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
+    \"Senses\",\n            \"Def\": 3,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"DuplicateId\": \"\"\n        }\n    ]\n}"
+  defRefs:
+  - {fileID: 11400000, guid: bc5050bb3db19fd4eb97329eedc89f66, type: 2}
+  - {fileID: 11400000, guid: 1f465e2d54a510745a3901206ae8af1b, type: 2}
+  - {fileID: 11400000, guid: 1ab26bf9470fccb409c61ca0d61b115a, type: 2}
+  - {fileID: 11400000, guid: 83e0072ed9cb9a748b53f4dda89a9412, type: 2}

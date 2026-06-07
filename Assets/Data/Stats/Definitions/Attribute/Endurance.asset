@@ -16,3 +16,10 @@ MonoBehaviour:
   Min: 1
   Max: 10
   Default: 5
+  isConsumable: 0
+  consumeRate: 0
+  consumeInterval: 0
+  isRestorable: 0
+  restoreRate: 0
+  restoreInterval: 0
+  isCumulative: 0

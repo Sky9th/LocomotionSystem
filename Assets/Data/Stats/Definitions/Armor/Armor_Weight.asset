@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41a08b0e5caf6364692f2188df7171e8, type: 3}
+  m_Name: Armor_Weight
+  m_EditorClassIdentifier: 
+  Id: Armor_Weight
+  Min: 0.1
+  Max: 30
+  Default: 3
+  isConsumable: 0
+  consumeRate: 0
+  consumeInterval: 0
+  isRestorable: 0
+  restoreRate: 0
+  restoreInterval: 0
+  isCumulative: 0

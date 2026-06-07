@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb30adebbb5bb6f418ee6e6d886a8f46, type: 3}
+  m_Name: AmmoBase
+  m_EditorClassIdentifier: 
+  InheritsFrom: {fileID: 0}
+  treeJson: "{\n    \"Nodes\": [\n        {\n            \"Id\": \"Combat\",\n           
+    \"IsEnabled\": true,\n            \"IsFolder\": true,\n            \"IsOverride\":
+    false,\n            \"ParentId\": \"\",\n            \"Def\": -1,\n           
+    \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
+    },\n        {\n            \"Id\": \"BaseDamage\",\n            \"IsEnabled\":
+    true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
+    \"ParentId\": \"Combat\",\n            \"Def\": 0,\n            \"OverrideValue\":
+    -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n        },\n       
+    {\n            \"Id\": \"Penetration\",\n            \"IsEnabled\": true,\n           
+    \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
+    \"Combat\",\n            \"Def\": 1,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"NoiseRadius\",\n           
+    \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
+    false,\n            \"ParentId\": \"Combat\",\n            \"Def\": 2,\n           
+    \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
+    },\n        {\n            \"Id\": \"BulletWeight\",\n            \"IsEnabled\":
+    true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
+    \"ParentId\": \"Combat\",\n            \"Def\": 3,\n            \"OverrideValue\":
+    -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n        },\n       
+    {\n            \"Id\": \"OverPenetration\",\n            \"IsEnabled\": true,\n           
+    \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
+    \"Combat\",\n            \"Def\": 4,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"RecoilFactor\",\n           
+    \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
+    false,\n            \"ParentId\": \"Combat\",\n            \"Def\": 5,\n           
+    \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
+    },\n        {\n            \"Id\": \"Reliability\",\n            \"IsEnabled\":
+    true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
+    \"ParentId\": \"Combat\",\n            \"Def\": 6,\n            \"OverrideValue\":
+    -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n        },\n       
+    {\n            \"Id\": \"FoulingRate\",\n            \"IsEnabled\": true,\n           
+    \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
+    \"Combat\",\n            \"Def\": 7,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"Base\",\n           
+    \"IsEnabled\": true,\n            \"IsFolder\": true,\n            \"IsOverride\":
+    false,\n            \"ParentId\": \"\",\n            \"Def\": -1,\n           
+    \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
+    },\n        {\n            \"Id\": \"Weight\",\n            \"IsEnabled\": true,\n           
+    \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
+    \"Base\",\n            \"Def\": 8,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"DuplicateId\": \"\"\n        }\n    ]\n}"
+  defRefs:
+  - {fileID: 11400000, guid: 543ada3f4d83ed042b2543e3b35ccab6, type: 2}
+  - {fileID: 11400000, guid: 7582e7947791fcd4dafea0924714f813, type: 2}
+  - {fileID: 11400000, guid: c712624407016ca42bf4e75efdc2acfe, type: 2}
+  - {fileID: 11400000, guid: 06d3ca7fc2370ac428af56b50186e32b, type: 2}
+  - {fileID: 11400000, guid: 9a52c7b781df7284894f89ce5489326f, type: 2}
+  - {fileID: 11400000, guid: 54badb0a93c33db41b310a5e0e9abd88, type: 2}
+  - {fileID: 11400000, guid: a3df9c67a632f4944b14e383113f52ce, type: 2}
+  - {fileID: 11400000, guid: abcebb51e3fa2114790297dba3a63d1b, type: 2}
+  - {fileID: 11400000, guid: fe1fdaacbc320434286ad1e64af8d1de, type: 2}

@@ -9,7 +9,7 @@
 ```
 Game Stats
 │
-├── Character — 角色 (83)
+├── Character — 角色 (72)
 │   │
 │   ├── Vitals — 生命体征 (11)
 │   │   ├── HP                      生命值                Bounded
@@ -184,4 +184,20 @@ Game Stats
     ├── Tool_MaxDurability          最大耐久度            Bounded
     ├── Tool_Efficiency             效率系数              Bounded
     └── Tool_Weight                 重量                  Bounded
+
+├── Armor — 防具 (10)  ← 新增，不在原始 83 内
+│   ├── ArmorBase — 防具共用 (4)
+│   │   ├── Durability             当前耐久度            Bounded
+│   │   ├── MaxDurability          最大耐久度            Bounded
+│   │   ├── Weight                 重量                  Bounded
+│   │   └── DEF                    防御值                Bounded
+│   ├── HeadArmor (2)  +FlashResistBonus, +NightVisionBonus
+│   ├── BodyArmor (2)  +KnockdownBonus, +CarryWeightBonus
+│   └── LegArmor  (2)  +MoveSpeedBonus, +SneakSpeedBonus
+│
+└── Throwable — 投掷物 (2)  ← 新增，不在原始 83 内
+    ├── BlastRadius                爆炸/效果半径          Bounded
+    └── FuseTime                   引信时间              Bounded
 ```
+
+> **注意**: 本文档为 Stat 设计目录（WHAT），实际的 StatsTreeSO 继承链和 stat 分配见 `tech/.../tree/actor-tree-design.md` 和 `equipment-tree-design.md`。本文档计数（72 Character stats + Weapon/Building/Zombie/Environment/Tool/Armor/Throwable）与 Tree 设计中通过继承链去重后的最终统计可能不同。

@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb30adebbb5bb6f418ee6e6d886a8f46, type: 3}
+  m_Name: Bow
+  m_EditorClassIdentifier: 
+  InheritsFrom: {fileID: 11400000, guid: 665376aee9b26f341b1c06f26631787b, type: 2}
+  treeJson: "{\n    \"Nodes\": [\n        {\n            \"Id\": \"Combat\",\n           
+    \"IsEnabled\": true,\n            \"IsFolder\": true,\n            \"IsOverride\":
+    false,\n            \"ParentId\": \"\",\n            \"Def\": -1,\n           
+    \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
+    },\n        {\n            \"Id\": \"DrawSpeed\",\n            \"IsEnabled\":
+    true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
+    \"ParentId\": \"Combat\",\n            \"Def\": 0,\n            \"OverrideValue\":
+    -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n        },\n       
+    {\n            \"Id\": \"ArrowVelocity\",\n            \"IsEnabled\": true,\n           
+    \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
+    \"Combat\",\n            \"Def\": 1,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"HoldStamina\",\n           
+    \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
+    false,\n            \"ParentId\": \"Combat\",\n            \"Def\": 2,\n           
+    \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
+    }\n    ]\n}"
+  defRefs:
+  - {fileID: 11400000, guid: 23b0c0d2ea45de743a6c9e7c5c72fcfe, type: 2}
+  - {fileID: 11400000, guid: 27062f668b004bd439cb6965bdd119ac, type: 2}
+  - {fileID: 11400000, guid: d3d3b2a6dae0872489a69bbe75b5161a, type: 2}

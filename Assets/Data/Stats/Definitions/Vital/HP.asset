@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: HP
   Min: 0
-  Max: 100
+  Max: 500
   Default: 100
   isConsumable: 0
   consumeRate: 0

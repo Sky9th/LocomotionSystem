@@ -1,0 +1,297 @@
+{
+    "version": "1.0",
+    "description": "Exported from Unity Editor",
+    "definitions": [
+        {
+            "id": "Agility",
+            "category": "Attribute",
+            "min": 1.0,
+            "max": 10.0,
+            "defaultValue": 5.0,
+            "isConsumable": false,
+            "consumeRate": 0.0,
+            "consumeInterval": 0.0,
+            "isRestorable": false,
+            "restoreRate": 0.0,
+            "restoreInterval": 0.0,
+            "isCumulative": false
+        },
+        {
+            "id": "Charisma",
+            "category": "Attribute",
+            "min": 1.0,
+            "max": 10.0,
+            "defaultValue": 5.0,
+            "isConsumable": false,
+            "consumeRate": 0.0,
+            "consumeInterval": 0.0,
+            "isRestorable": false,
+            "restoreRate": 0.0,
+            "restoreInterval": 0.0,
+            "isCumulative": false
+        },
+        {
+            "id": "Endurance",
+            "category": "Attribute",
+            "min": 1.0,
+            "max": 10.0,
+            "defaultValue": 5.0,
+            "isConsumable": false,
+            "consumeRate": 0.0,
+            "consumeInterval": 0.0,
+            "isRestorable": false,
+            "restoreRate": 0.0,
+            "restoreInterval": 0.0,
+            "isCumulative": false
+        },
+        {
+            "id": "Intelligence",
+            "category": "Attribute",
+            "min": 1.0,
+            "max": 10.0,
+            "defaultValue": 5.0,
+            "isConsumable": false,
+            "consumeRate": 0.0,
+            "consumeInterval": 0.0,
+            "isRestorable": false,
+            "restoreRate": 0.0,
+            "restoreInterval": 0.0,
+            "isCumulative": false
+        },
+        {
+            "id": "Perception",
+            "category": "Attribute",
+            "min": 1.0,
+            "max": 10.0,
+            "defaultValue": 5.0,
+            "isConsumable": false,
+            "consumeRate": 0.0,
+            "consumeInterval": 0.0,
+            "isRestorable": false,
+            "restoreRate": 0.0,
+            "restoreInterval": 0.0,
+            "isCumulative": false
+        },
+        {
+            "id": "Strength",
+            "category": "Attribute",
+            "min": 1.0,
+            "max": 10.0,
+            "defaultValue": 5.0,
+            "isConsumable": false,
+            "consumeRate": 0.0,
+            "consumeInterval": 0.0,
+            "isRestorable": false,
+            "restoreRate": 0.0,
+            "restoreInterval": 0.0,
+            "isCumulative": false
+        },
+        {
+            "id": "Hunger",
+            "category": "Survival",
+            "min": 0.0,
+            "max": 100.0,
+            "defaultValue": 100.0,
+            "isConsumable": true,
+            "consumeRate": 0.009999999776482582,
+            "consumeInterval": 0.0,
+            "isRestorable": false,
+            "restoreRate": 0.0,
+            "restoreInterval": 0.0,
+            "isCumulative": false
+        },
+        {
+            "id": "Thirst",
+            "category": "Survival",
+            "min": 0.0,
+            "max": 100.0,
+            "defaultValue": 100.0,
+            "isConsumable": true,
+            "consumeRate": 0.009999999776482582,
+            "consumeInterval": 0.0,
+            "isRestorable": false,
+            "restoreRate": 0.0,
+            "restoreInterval": 0.0,
+            "isCumulative": false
+        },
+        {
+            "id": "HP",
+            "category": "Vital",
+            "min": 0.0,
+            "max": 100.0,
+            "defaultValue": 100.0,
+            "isConsumable": false,
+            "consumeRate": 0.0,
+            "consumeInterval": 0.0,
+            "isRestorable": false,
+            "restoreRate": 0.0,
+            "restoreInterval": 0.0,
+            "isCumulative": false
+        },
+        {
+            "id": "Stamina",
+            "category": "Vital",
+            "min": 0.0,
+            "max": 100.0,
+            "defaultValue": 100.0,
+            "isConsumable": true,
+            "consumeRate": 0.0,
+            "consumeInterval": 0.0,
+            "isRestorable": false,
+            "restoreRate": 0.0,
+            "restoreInterval": 0.0,
+            "isCumulative": false
+        }
+    ],
+    "trees": [
+        {
+            "name": "Human",
+            "directory": "Archetypes/Human",
+            "inheritsFrom": "",
+            "defRefs": [
+                "HP",
+                "Stamina",
+                "Agility",
+                "Charisma",
+                "Endurance",
+                "Intelligence",
+                "Perception",
+                "Strength",
+                "Hunger",
+                "Thirst"
+            ],
+            "nodes": [
+                {
+                    "Id": "Vitals",
+                    "IsEnabled": true,
+                    "IsFolder": true,
+                    "IsOverride": false,
+                    "ParentId": "",
+                    "Def": -1,
+                    "OverrideValue": -3.4028234663852887e38,
+                    "DuplicateId": ""
+                },
+                {
+                    "Id": "Attributes",
+                    "IsEnabled": true,
+                    "IsFolder": true,
+                    "IsOverride": false,
+                    "ParentId": "",
+                    "Def": -1,
+                    "OverrideValue": -3.4028234663852887e38,
+                    "DuplicateId": ""
+                },
+                {
+                    "Id": "HP",
+                    "IsEnabled": true,
+                    "IsFolder": false,
+                    "IsOverride": false,
+                    "ParentId": "Vitals",
+                    "Def": 0,
+                    "OverrideValue": -3.4028234663852887e38,
+                    "DuplicateId": ""
+                },
+                {
+                    "Id": "Stamina",
+                    "IsEnabled": true,
+                    "IsFolder": false,
+                    "IsOverride": false,
+                    "ParentId": "Vitals",
+                    "Def": 1,
+                    "OverrideValue": -3.4028234663852887e38,
+                    "DuplicateId": ""
+                },
+                {
+                    "Id": "Agility",
+                    "IsEnabled": true,
+                    "IsFolder": false,
+                    "IsOverride": false,
+                    "ParentId": "Attributes",
+                    "Def": 2,
+                    "OverrideValue": -3.4028234663852887e38,
+                    "DuplicateId": ""
+                },
+                {
+                    "Id": "Charisma",
+                    "IsEnabled": true,
+                    "IsFolder": false,
+                    "IsOverride": false,
+                    "ParentId": "Attributes",
+                    "Def": 3,
+                    "OverrideValue": -3.4028234663852887e38,
+                    "DuplicateId": ""
+                },
+                {
+                    "Id": "Endurance",
+                    "IsEnabled": true,
+                    "IsFolder": false,
+                    "IsOverride": false,
+                    "ParentId": "Attributes",
+                    "Def": 4,
+                    "OverrideValue": -3.4028234663852887e38,
+                    "DuplicateId": ""
+                },
+                {
+                    "Id": "Intelligence",
+                    "IsEnabled": true,
+                    "IsFolder": false,
+                    "IsOverride": false,
+                    "ParentId": "Attributes",
+                    "Def": 5,
+                    "OverrideValue": -3.4028234663852887e38,
+                    "DuplicateId": ""
+                },
+                {
+                    "Id": "Perception",
+                    "IsEnabled": true,
+                    "IsFolder": false,
+                    "IsOverride": false,
+                    "ParentId": "Attributes",
+                    "Def": 6,
+                    "OverrideValue": -3.4028234663852887e38,
+                    "DuplicateId": ""
+                },
+                {
+                    "Id": "Strength",
+                    "IsEnabled": true,
+                    "IsFolder": false,
+                    "IsOverride": false,
+                    "ParentId": "Attributes",
+                    "Def": 7,
+                    "OverrideValue": -3.4028234663852887e38,
+                    "DuplicateId": ""
+                },
+                {
+                    "Id": "Survival",
+                    "IsEnabled": true,
+                    "IsFolder": true,
+                    "IsOverride": false,
+                    "ParentId": "",
+                    "Def": -1,
+                    "OverrideValue": -3.4028234663852887e38,
+                    "DuplicateId": ""
+                },
+                {
+                    "Id": "Hunger",
+                    "IsEnabled": true,
+                    "IsFolder": false,
+                    "IsOverride": false,
+                    "ParentId": "Survival",
+                    "Def": 8,
+                    "OverrideValue": -3.4028234663852887e38,
+                    "DuplicateId": ""
+                },
+                {
+                    "Id": "Thirst",
+                    "IsEnabled": true,
+                    "IsFolder": false,
+                    "IsOverride": false,
+                    "ParentId": "Survival",
+                    "Def": 9,
+                    "OverrideValue": -3.4028234663852887e38,
+                    "DuplicateId": ""
+                }
+            ]
+        }
+    ]
+}

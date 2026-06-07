@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb30adebbb5bb6f418ee6e6d886a8f46, type: 3}
+  m_Name: LegArmor
+  m_EditorClassIdentifier: 
+  InheritsFrom: {fileID: 11400000, guid: 4cf6bab24ded6f94ebbca212500ec01f, type: 2}
+  treeJson: "{\n    \"Nodes\": [\n        {\n            \"Id\": \"Bonus\",\n           
+    \"IsEnabled\": true,\n            \"IsFolder\": true,\n            \"IsOverride\":
+    false,\n            \"ParentId\": \"\",\n            \"Def\": -1,\n           
+    \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
+    },\n        {\n            \"Id\": \"MoveSpeed\",\n            \"IsEnabled\":
+    true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
+    \"ParentId\": \"Bonus\",\n            \"Def\": 0,\n            \"OverrideValue\":
+    -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n        },\n       
+    {\n            \"Id\": \"SneakSpeed\",\n            \"IsEnabled\": true,\n           
+    \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
+    \"Bonus\",\n            \"Def\": 1,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"DuplicateId\": \"\"\n        }\n    ]\n}"
+  defRefs:
+  - {fileID: 11400000, guid: cd39988bdd2a26741942b8a313856f39, type: 2}
+  - {fileID: 11400000, guid: 7ab359b30859879489f4f9004d11c086, type: 2}

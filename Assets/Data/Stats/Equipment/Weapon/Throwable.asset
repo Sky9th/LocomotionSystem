@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb30adebbb5bb6f418ee6e6d886a8f46, type: 3}
+  m_Name: Throwable
+  m_EditorClassIdentifier: 
+  InheritsFrom: {fileID: 11400000, guid: 1722683dc9594194ba053f5c6a87a198, type: 2}
+  treeJson: "{\n    \"Nodes\": [\n        {\n            \"Id\": \"Combat\",\n           
+    \"IsEnabled\": true,\n            \"IsFolder\": true,\n            \"IsOverride\":
+    false,\n            \"ParentId\": \"\",\n            \"Def\": -1,\n           
+    \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
+    },\n        {\n            \"Id\": \"BlastRadius\",\n            \"IsEnabled\":
+    true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
+    \"ParentId\": \"Combat\",\n            \"Def\": 0,\n            \"OverrideValue\":
+    -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n        },\n       
+    {\n            \"Id\": \"FuseTime\",\n            \"IsEnabled\": true,\n           
+    \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
+    \"Combat\",\n            \"Def\": 1,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"DuplicateId\": \"\"\n        }\n    ]\n}"
+  defRefs:
+  - {fileID: 11400000, guid: 5e609711b4a9ca34e9cb96ce4f6632fa, type: 2}
+  - {fileID: 11400000, guid: 3d20d887d27659648a2474225c13b8fb, type: 2}

@@ -218,6 +218,9 @@ namespace RedDust.Stats.Editor
             int defsCreated = 0, defsSkipped = 0;
             int treesCreated = 0, treesSkipped = 0;
 
+            // 强制刷新 AssetDatabase，清除已删除资产的缓存引用
+            AssetDatabase.Refresh();
+
             StatExportFile importFile;
             try
             {
@@ -430,29 +433,26 @@ namespace RedDust.Stats.Editor
                 if (!Directory.Exists(treeDir))
                     Directory.CreateDirectory(treeDir);
 
-                // create tree asset
+                // create tree asset — set ALL fields BEFORE CreateAsset
                 var tree = ScriptableObject.CreateInstance<StatsTreeSO>();
-                AssetDatabase.CreateAsset(tree, assetPath);
                 tree.name = treeEntry.name;
 
-                // set defRefs
                 tree.defRefs = resolvedDefRefs.TryGetValue(treeEntry.name, out var refs)
                     ? refs
                     : new List<StatDefinitionSO>();
 
-                // serialize nodes as treeJson
                 var nodes = treeEntry.nodes ?? new List<JsonStatNode>();
                 var container = new TreeDataContainer { Nodes = nodes };
                 tree.treeJson = JsonUtility.ToJson(container, true);
-
-                // InheritsFrom set in Phase 4
                 tree.InheritsFrom = null;
+
+                Debug.Log($"[StatImporter] Creating tree: {assetPath}  nodes={nodes.Count}  treeJson_len={tree.treeJson.Length}");
+
+                AssetDatabase.CreateAsset(tree, assetPath);
 
                 EditorUtility.SetDirty(tree);
                 treesCreated++;
                 treeNameToAssetPath[treeEntry.name] = assetPath;
-
-                Debug.Log($"[StatImporter] Created tree: {assetPath}");
             }
 
             // ---- Phase 4: Link InheritsFrom ----

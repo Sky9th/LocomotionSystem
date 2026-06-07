@@ -80,6 +80,8 @@ StatInstance 内部
 | [tree/stats-node-so.md](tree/stats-node-so.md) | 树节点 (旧) — 父子关系 + Def 引用 + OverrideValue |
 | [tree/stats-tree-so.md](tree/stats-tree-so.md) | Stat 树 (旧) — InheritsFrom + Resolve() → StatInstance[] |
 | [tree/stats-tree-data.md](tree/stats-tree-data.md) | StatsTreeData (新) — JSON 树数据 + 继承合并算法 |
+| [tree/actor-tree-design.md](tree/actor-tree-design.md) | Actor Tree 层级设计 — Human/Zombie/Creature/Robot 继承链 + 56 stat 分配 |
+| [tree/equipment-tree-design.md](tree/equipment-tree-design.md) | 装备 Tree 层级设计 — Weapon/Armor/Tool + Building/Environment + 全量 109 stat 汇总 |
 | [instance/stat-instance.md](instance/stat-instance.md) | 运行时实例 — Current + modifiers + Tick 分派 |
 | [modifier/stat-modifier.md](modifier/stat-modifier.md) | 修改器 — Owner + Apply 委托 |
 | [modifier/modifier-context.md](modifier/modifier-context.md) | 修改器上下文 — Addend + Multiplier 累加容器 |
