@@ -271,7 +271,7 @@ namespace RedDust.Ability
             // sharedCooldownTag — 基类字段
             EditorGUILayout.BeginHorizontal();
             EditorUIUtility.LabelWithTooltip(a, "sharedCooldownTag", 90, "Shared CD");
-            v = (GameplayTagDefinitionSO)EditorGUILayout.ObjectField(
+            var v = (GameplayTagDefinitionSO)EditorGUILayout.ObjectField(
                 a.sharedCooldownTag, typeof(GameplayTagDefinitionSO), false);
             if (v != a.sharedCooldownTag) { a.sharedCooldownTag = v; EditorUtility.SetDirty(a); _onChanged?.Invoke(); }
             if (GUILayout.Button("Tag", EditorStyles.miniButton, GUILayout.Width(35)))

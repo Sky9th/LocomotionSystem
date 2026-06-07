@@ -29,7 +29,7 @@ namespace RedDust.Core.Editor
         private readonly Dictionary<string, bool> _foldouts = new();
         private Vector2 _scroll;
 
-        [MenuItem("Tools/RedDust/Tag Picker (Test)")]
+        [MenuItem("RedDust/Tag Picker (Test)")]
         private static void TestOpen()
         {
             var rect = new Rect(600, 300, 0, 0);

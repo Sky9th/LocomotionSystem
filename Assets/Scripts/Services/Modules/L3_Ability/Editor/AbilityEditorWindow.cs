@@ -26,7 +26,7 @@ namespace RedDust.Ability
         private string _rightSearchText = "";
         private readonly Dictionary<string, bool> _foldouts = new();
 
-        [MenuItem("Tools/RedDust/Ability Editor")]
+        [MenuItem("RedDust/Ability Editor")]
         private static void Open()
             => GetWindow<AbilityEditorWindow>("Ability Editor");
 
