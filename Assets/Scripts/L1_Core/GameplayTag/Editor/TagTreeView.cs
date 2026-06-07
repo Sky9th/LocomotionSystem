@@ -5,16 +5,6 @@ using UnityEngine;
 
 namespace RedDust.Core.Editor
 {
-    public class TagNode
-    {
-        public string LeafName;
-        public string FullTag;
-        public int Depth;
-        public bool Exists;
-        public TagNode Parent;
-        public List<TagNode> Children = new();
-    }
-
     /// <summary>
     /// 标签树共享渲染器。严格参照 StatsTreeEditorWindow 的嵌套布局。
     /// </summary>
@@ -23,14 +13,15 @@ namespace RedDust.Core.Editor
         private const float Pad = 6f;
         private const float FoldoutWidth = 14f;
         private const float FoldoutGap = 6f;
-        private const float DepthWidth = 24f;
+        private const float DepthWidth = 18f;
 
         public static void DrawTree(
             List<TagNode> roots,
             Dictionary<string, bool> foldouts,
             ref string selectedFullTag,
             string searchFilter = null,
-            string rootFilter = null)
+            string rootFilter = null,
+            System.Action<TagNode> onCreateChild = null)
         {
             if (roots == null || roots.Count == 0)
             {
@@ -42,34 +33,88 @@ namespace RedDust.Core.Editor
                 return;
             }
 
+            bool hasSearch = !string.IsNullOrEmpty(searchFilter);
+            var q = hasSearch ? searchFilter.ToLowerInvariant() : null;
+
+            // 先筛选可见的根节点
+            var visibleRoots = new List<TagNode>();
             foreach (var root in roots)
             {
-                if (!string.IsNullOrEmpty(rootFilter))
-                {
-                    if (root.LeafName != rootFilter.TrimEnd('.'))
-                        continue;
-                }
-                DrawNodeCard(root, foldouts, ref selectedFullTag, searchFilter);
+                if (!string.IsNullOrEmpty(rootFilter) && root.LeafName != rootFilter.TrimEnd('.'))
+                    continue;
+                if (hasSearch && !NodeOrDescendantsMatch(root, q))
+                    continue;
+                visibleRoots.Add(root);
             }
+
+            // 搜索时自动展开匹配路径
+            if (hasSearch)
+                foreach (var root in visibleRoots)
+                    AutoExpandMatching(root, q, foldouts);
+
+            // 渲染，间距只在可见节点间
+            for (var i = 0; i < visibleRoots.Count; i++)
+            {
+                if (i > 0) GUILayout.Space(Pad);
+                DrawNodeCard(visibleRoots[i], foldouts, ref selectedFullTag, searchFilter, q, onCreateChild);
+            }
+        }
+
+        private static bool NodeOrDescendantsMatch(TagNode node, string q)
+        {
+            if (node.FullTag.ToLowerInvariant().Contains(q))
+                return true;
+            foreach (var child in node.Children)
+                if (NodeOrDescendantsMatch(child, q))
+                    return true;
+            return false;
+        }
+
+        private static void AutoExpandMatching(TagNode node, string q, Dictionary<string, bool> foldouts)
+        {
+            if (HasMatchingDescendant(node, q))
+                foldouts[node.FullTag] = true;
+            foreach (var child in node.Children)
+                AutoExpandMatching(child, q, foldouts);
+        }
+
+        private static bool HasMatchingDescendant(TagNode node, string q)
+        {
+            foreach (var child in node.Children)
+            {
+                if (child.FullTag.ToLowerInvariant().Contains(q))
+                    return true;
+                if (HasMatchingDescendant(child, q))
+                    return true;
+            }
+            return false;
         }
 
         private static void DrawNodeCard(
             TagNode node,
             Dictionary<string, bool> foldouts,
             ref string selectedFullTag,
-            string searchFilter)
+            string searchFilter,
+            string searchQuery = null,
+            System.Action<TagNode> onCreateChild = null)
         {
             bool hasChildren = node.Children.Count > 0;
             bool isSelected = selectedFullTag == node.FullTag;
-            var rowH = EditorGUIUtility.singleLineHeight;
+            bool hasSearch = !string.IsNullOrEmpty(searchQuery);
 
             if (!foldouts.ContainsKey(node.FullTag))
                 foldouts[node.FullTag] = false;
 
-            // ── 行：foldout + 右块（参照 StatsTree DrawFolderCard）──
+            // 搜索时跳过不匹配且无匹配子孙的节点
+            if (hasSearch && !node.FullTag.ToLowerInvariant().Contains(searchQuery)
+                && !HasMatchingDescendant(node, searchQuery))
+                return;
+
+            var rowH = EditorGUIUtility.singleLineHeight;
+
+            // ── 行：折叠区始终占位（叶子用短横线 -）──
             EditorGUILayout.BeginHorizontal();
 
-            // 左：仅折叠箭头 — 固定 18px
             EditorGUILayout.BeginHorizontal(GUILayout.Width(FoldoutWidth + FoldoutGap));
             if (hasChildren)
             {
@@ -78,7 +123,9 @@ namespace RedDust.Core.Editor
             }
             else
             {
-                GUILayout.Space(FoldoutWidth);
+                var dashRect = GUILayoutUtility.GetRect(FoldoutWidth, rowH);
+                var dashStyle = new GUIStyle(EditorStyles.label) { alignment = TextAnchor.MiddleCenter };
+                GUI.Label(dashRect, "–", dashStyle);
             }
             GUILayout.Space(FoldoutGap);
             EditorGUILayout.EndHorizontal();
@@ -86,19 +133,27 @@ namespace RedDust.Core.Editor
             // 右块：深度 + 名称 + 子节点
             EditorGUILayout.BeginVertical(GUILayout.ExpandWidth(true));
 
-            // ── 名称行（深度在右块内，与 StatsTree 一致）──
+            // ── 名称行（深度在右块内）──
             EditorGUILayout.BeginHorizontal();
 
             GUILayout.Label($"[{node.Depth}]", EditorStyles.label, GUILayout.Width(DepthWidth));
 
             var label = node.LeafName;
+            var isMatch = hasSearch && node.FullTag.ToLowerInvariant().Contains(searchQuery);
 
-            var style = node.Exists
-                ? new GUIStyle(EditorStyles.label) { fontStyle = isSelected ? FontStyle.Bold : FontStyle.Normal }
-                : new GUIStyle(EditorStyles.label) { fontStyle = FontStyle.Bold, normal = { textColor = Color.grey } };
+            var style = new GUIStyle(EditorStyles.label)
+            {
+                fontStyle = (isSelected || isMatch) ? FontStyle.Bold : FontStyle.Normal,
+            };
 
             if (GUILayout.Button(label, style, GUILayout.ExpandWidth(true)))
                 selectedFullTag = node.FullTag;
+
+            if (node.Exists && onCreateChild != null && !hasSearch)
+            {
+                if (GUILayout.Button("＋", EditorStyles.miniButton, GUILayout.Width(20)))
+                    onCreateChild(node);
+            }
 
             EditorGUILayout.EndHorizontal();
 
@@ -106,28 +161,48 @@ namespace RedDust.Core.Editor
             bool expanded = foldouts.TryGetValue(node.FullTag, out var exp) && exp;
             if (hasChildren && expanded)
             {
-                GUILayout.Space(Pad);
-                EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-                GUILayout.Space(Pad);
-
-                EditorGUILayout.BeginHorizontal();
-                GUILayout.Space(Pad);
-                EditorGUILayout.BeginVertical(GUILayout.ExpandWidth(true));
-
-                for (var i = 0; i < node.Children.Count; i++)
+                // 搜索时检查是否有匹配的子节点，全部不匹配则隐藏卡片避免空白
+                bool anyVisible = !hasSearch;
+                if (hasSearch)
                 {
-                    if (i > 0) GUILayout.Space(Pad);
-                    DrawNodeCard(node.Children[i], foldouts, ref selectedFullTag, searchFilter);
+                    foreach (var child in node.Children)
+                        if (NodeOrDescendantsMatch(child, searchQuery)) { anyVisible = true; break; }
                 }
 
-                EditorGUILayout.EndVertical();
-                GUILayout.Space(Pad);
-                EditorGUILayout.EndHorizontal();
+                if (anyVisible)
+                {
+                    // 先筛选出需渲染的子节点
+                    var visibleChildren = new List<TagNode>();
+                    foreach (var child in node.Children)
+                        if (!hasSearch || NodeOrDescendantsMatch(child, searchQuery))
+                            visibleChildren.Add(child);
 
-                GUILayout.Space(Pad);
-                EditorGUILayout.EndVertical();
+                    if (visibleChildren.Count > 0)
+                    {
+                        GUILayout.Space(Pad);
+                        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+                        GUILayout.Space(Pad);
 
-                GUILayout.Space(Pad);
+                        EditorGUILayout.BeginHorizontal();
+                        GUILayout.Space(Pad);
+                        EditorGUILayout.BeginVertical(GUILayout.ExpandWidth(true));
+
+                        for (var i = 0; i < visibleChildren.Count; i++)
+                        {
+                            if (i > 0) GUILayout.Space(Pad);
+                            DrawNodeCard(visibleChildren[i], foldouts, ref selectedFullTag, searchFilter, searchQuery, onCreateChild);
+                        }
+
+                        EditorGUILayout.EndVertical();
+                        GUILayout.Space(Pad);
+                        EditorGUILayout.EndHorizontal();
+
+                        GUILayout.Space(Pad);
+                        EditorGUILayout.EndVertical();
+
+                        GUILayout.Space(Pad);
+                    }
+                }
             }
 
             EditorGUILayout.EndVertical();

@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -6,20 +7,16 @@ using UnityEngine;
 
 namespace RedDust.Core.Editor
 {
-    /// <summary>
-    /// 标签编辑器 — 独立管理窗口。
-    /// 查看/搜索/创建/删除 GameplayTag 资产。
-    /// Phase 1: 硬编码假数据，验证 UI 布局和交互流程。
-    /// </summary>
     public class TagEditorWindow : EditorWindow
     {
         private const float Pad = 6f;
         private const float InspectorWidth = 300f;
 
-        // -- 数据 (Phase 1: 假数据; Phase 2: TagTreeModel) --
-        private List<TagNode> _roots = new();
+        // -- 数据 --
+        private TagTreeModel _model;
+        private bool _needsRefresh = true;
 
-        // -- 视图状态 --
+        // -- 视图 --
         private string _searchText = "";
         private string _selectedFullTag;
         private readonly Dictionary<string, bool> _foldouts = new();
@@ -35,16 +32,22 @@ namespace RedDust.Core.Editor
 
         private void OnEnable()
         {
-            BuildFakeTree();
+            _model = new TagTreeModel();
+            _needsRefresh = true;
         }
 
         private void OnGUI()
         {
+            if (_needsRefresh)
+            {
+                _model.Refresh();
+                _needsRefresh = false;
+            }
+
             GUILayout.Space(Pad);
 
             EditorGUILayout.BeginHorizontal();
             GUILayout.Space(Pad);
-
             EditorGUILayout.BeginVertical();
 
             DrawHeader();
@@ -58,85 +61,10 @@ namespace RedDust.Core.Editor
             DrawStatusBar();
 
             EditorGUILayout.EndVertical();
-
             GUILayout.Space(Pad);
             EditorGUILayout.EndHorizontal();
 
             GUILayout.Space(Pad);
-        }
-
-        // ── Phase 1 假数据 ──
-        private void BuildFakeTree()
-        {
-            /*
-             * 模拟已存在的标签树:
-             * Damage (exists)
-             *   Physical (exists)
-             *     Slash (exists), Pierce (exists), Blunt (missing), Bite (missing)
-             *   Elemental (missing)
-             *     Fire (missing), Cold (missing)
-             *   Biological (exists)
-             *     Bleed (exists), Disease (missing)
-             */
-            var damage = MkRoot("Damage", true);
-            var physical = MkChild("Physical", "Damage", true, damage);
-            MkChild("Slash", "Damage.Physical", true, physical);
-            MkChild("Pierce", "Damage.Physical.Pierce", true, physical);
-            MkChild("Blunt", "Damage.Physical.Blunt", false, physical);
-            MkChild("Bite", "Damage.Physical.Bite", false, physical);
-
-            var elemental = MkChild("Elemental", "Damage.Elemental", false, damage);
-            MkChild("Fire", "Damage.Elemental.Fire", false, elemental);
-            MkChild("Cold", "Damage.Elemental.Cold", false, elemental);
-
-            var biological = MkChild("Biological", "Damage.Biological", true, damage);
-            MkChild("Bleed", "Damage.Biological.Bleed", true, biological);
-            MkChild("Disease", "Damage.Biological.Disease", false, biological);
-
-            _roots.Add(damage);
-        }
-
-        private TagNode MkRoot(string leafName, bool exists)
-        {
-            var node = new TagNode { LeafName = leafName, FullTag = leafName, Depth = 1, Exists = exists };
-            _roots.Add(node);
-            return node;
-        }
-
-        private TagNode MkChild(string leafName, string fullTag, bool exists, TagNode parent)
-        {
-            var node = new TagNode
-            {
-                LeafName = leafName,
-                FullTag = fullTag,
-                Depth = parent.Depth + 1,
-                Exists = exists,
-                Parent = parent
-            };
-            parent.Children.Add(node);
-            return node;
-        }
-
-        private TagNode FindNode(string fullTag)
-        {
-            TagNode Search(List<TagNode> nodes)
-            {
-                foreach (var n in nodes)
-                {
-                    if (n.FullTag == fullTag) return n;
-                    var found = Search(n.Children);
-                    if (found != null) return found;
-                }
-                return null;
-            }
-            return Search(_roots);
-        }
-
-        private int CountNodes(List<TagNode> nodes)
-        {
-            int count = 0;
-            foreach (var n in nodes) { count += 1 + CountNodes(n.Children); }
-            return count;
         }
 
         // ── Header ──
@@ -167,12 +95,12 @@ namespace RedDust.Core.Editor
 
             if (GUILayout.Button("＋ Create Tag", GUILayout.Height(24)))
             {
-                // TODO Phase 2
+                StartCreateRoot();
             }
 
             if (GUILayout.Button("🔄 Refresh", GUILayout.Height(24)))
             {
-                BuildFakeTree();
+                _needsRefresh = true;
                 _foldouts.Clear();
                 _selectedFullTag = null;
             }
@@ -202,7 +130,7 @@ namespace RedDust.Core.Editor
                     Walk(n.Children);
                 }
             }
-            Walk(_roots);
+            Walk(_model.Roots);
         }
 
         // ── Search ──
@@ -216,7 +144,7 @@ namespace RedDust.Core.Editor
             EditorGUILayout.LabelField("Search", EditorStyles.label, GUILayout.Width(45));
             _searchText = EditorGUILayout.TextField(_searchText, GUILayout.ExpandWidth(true));
 
-            if (!string.IsNullOrEmpty(_searchText) && GUILayout.Button("✕", EditorStyles.miniButton, GUILayout.Width(20))) // ✕
+            if (!string.IsNullOrEmpty(_searchText) && GUILayout.Button("✕", EditorStyles.miniButton, GUILayout.Width(20)))
             {
                 _searchText = "";
                 GUI.FocusControl(null);
@@ -232,15 +160,9 @@ namespace RedDust.Core.Editor
         private void DrawMainContent()
         {
             EditorGUILayout.BeginHorizontal();
-
-            // -- 左: Tag Tree --
             DrawTreePanel();
-
             GUILayout.Space(Pad);
-
-            // -- 右: Inspector --
             DrawInspectorPanel();
-
             EditorGUILayout.EndHorizontal();
         }
 
@@ -263,7 +185,7 @@ namespace RedDust.Core.Editor
             EditorGUILayout.BeginHorizontal();
             GUILayout.Space(Pad);
             EditorGUILayout.BeginVertical();
-            TagTreeView.DrawTree(_roots, _foldouts, ref _selectedFullTag, _searchText);
+            TagTreeView.DrawTree(_model.Roots, _foldouts, ref _selectedFullTag, _searchText, onCreateChild: StartCreateChild);
             EditorGUILayout.EndVertical();
             GUILayout.Space(Pad);
             EditorGUILayout.EndHorizontal();
@@ -281,7 +203,9 @@ namespace RedDust.Core.Editor
 
             EditorGUILayout.BeginHorizontal();
             GUILayout.Space(Pad);
-            EditorGUILayout.LabelField("Create Tag", EditorStyles.boldLabel);
+            var panelTitle = _isCreating ? "Create Tag"
+                : (string.IsNullOrEmpty(_selectedFullTag) ? "Properties" : "Tag Details");
+            EditorGUILayout.LabelField(panelTitle, EditorStyles.boldLabel);
             GUILayout.FlexibleSpace();
             GUILayout.Space(Pad);
             EditorGUILayout.EndHorizontal();
@@ -290,24 +214,20 @@ namespace RedDust.Core.Editor
 
             _inspectorScroll = EditorGUILayout.BeginScrollView(_inspectorScroll);
 
-            if (string.IsNullOrEmpty(_selectedFullTag))
+            if (_isCreating)
+            {
+                DrawCreateForm(_creatingUnderFullTag);
+            }
+            else if (string.IsNullOrEmpty(_selectedFullTag))
             {
                 DrawEmptyInspector();
             }
             else
             {
-                var node = FindNode(_selectedFullTag);
-                if (node == null)
-                {
-                    DrawEmptyInspector();
-                }
-                else if (node.Exists)
+                var node = _model.Find(_selectedFullTag);
+                if (node != null)
                 {
                     DrawTagDetails(node);
-                }
-                else
-                {
-                    DrawCreateForm(node);
                 }
             }
 
@@ -322,14 +242,12 @@ namespace RedDust.Core.Editor
         {
             EditorGUILayout.BeginHorizontal();
             GUILayout.Space(Pad);
-            var greyLabel = new GUIStyle(EditorStyles.label) { alignment = TextAnchor.MiddleCenter };
-            greyLabel.normal.textColor = Color.grey;
-            EditorGUILayout.LabelField("Select a tag to inspect", greyLabel);
+            EditorGUILayout.LabelField("Select a tag or click ＋ to create", EditorStyles.label);
             GUILayout.Space(Pad);
             EditorGUILayout.EndHorizontal();
         }
 
-        // ── 已有标签 → 详情 ──
+        // ── 已有标签详情 ──
         private void DrawTagDetails(TagNode node)
         {
             EditorGUILayout.BeginHorizontal();
@@ -339,49 +257,52 @@ namespace RedDust.Core.Editor
             EditorGUILayout.LabelField("Tag Details", EditorStyles.boldLabel);
             GUILayout.Space(Pad);
 
-            // LeafName
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Leaf", EditorStyles.label, GUILayout.Width(60));
             EditorGUILayout.LabelField(node.LeafName, EditorStyles.label);
             EditorGUILayout.EndHorizontal();
 
-            // FullTag
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("FullTag", EditorStyles.label, GUILayout.Width(60));
             EditorGUILayout.LabelField(node.FullTag, EditorStyles.label);
             EditorGUILayout.EndHorizontal();
 
-            // Depth
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Depth", EditorStyles.label, GUILayout.Width(60));
             EditorGUILayout.LabelField(node.Depth.ToString(), EditorStyles.label);
             EditorGUILayout.EndHorizontal();
 
-            // Parent
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Parent", EditorStyles.label, GUILayout.Width(60));
             EditorGUILayout.LabelField(node.Parent?.FullTag ?? "(root)", EditorStyles.label);
             EditorGUILayout.EndHorizontal();
 
-            // Children count
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Children", EditorStyles.label, GUILayout.Width(60));
             EditorGUILayout.LabelField(node.Children.Count.ToString(), EditorStyles.label);
             EditorGUILayout.EndHorizontal();
 
+            var path = AssetDatabase.GetAssetPath(node.Asset);
+            if (!string.IsNullOrEmpty(path))
+            {
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Asset", EditorStyles.label, GUILayout.Width(60));
+                EditorGUILayout.LabelField(path, EditorStyles.label);
+                EditorGUILayout.EndHorizontal();
+            }
+
             GUILayout.Space(Pad);
 
-            // Actions
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Ping Asset", GUILayout.Height(24)))
             {
-                // TODO Phase 2: EditorGUIUtility.PingObject(node.Asset)
+                EditorGUIUtility.PingObject(node.Asset);
             }
 
             GUI.backgroundColor = new Color(0.9f, 0.3f, 0.3f);
             if (GUILayout.Button("Delete", GUILayout.Height(24), GUILayout.Width(80)))
             {
-                // TODO Phase 2
+                DeleteTag(node);
             }
             GUI.backgroundColor = Color.white;
             EditorGUILayout.EndHorizontal();
@@ -391,25 +312,20 @@ namespace RedDust.Core.Editor
             EditorGUILayout.EndHorizontal();
         }
 
-        // ── 未创建标签 → 创建表单 ──
-        private void DrawCreateForm(TagNode node)
+        // ── 创建表单（parentFullTag=null → 根标签；非null → 子标签）──
+        private void DrawCreateForm(string parentFullTag)
         {
+            var isRoot = string.IsNullOrEmpty(parentFullTag);
+            var fullTag = isRoot ? _createLeafName : $"{parentFullTag}.{_createLeafName}";
+            if (!string.IsNullOrEmpty(_createLeafName))
+                fullTag = isRoot ? _createLeafName : $"{parentFullTag}.{_createLeafName}";
+
             EditorGUILayout.BeginHorizontal();
             GUILayout.Space(Pad);
             EditorGUILayout.BeginVertical();
 
-            EditorGUILayout.LabelField($"Will create: {node.FullTag}", EditorStyles.label);
-
-            // 祖先检查
-            var missingAncestors = GetMissingAncestors(node);
-            if (missingAncestors.Count > 0)
-            {
-                GUILayout.Space(4f);
-                EditorGUILayout.HelpBox(
-                    $"Missing ancestors will also be created:\n{string.Join("\n", missingAncestors)}",
-                    MessageType.Info);
-            }
-
+            var title = isRoot ? "Create Root Tag" : $"Create Child of '{parentFullTag}'";
+            EditorGUILayout.LabelField(title, EditorStyles.boldLabel);
             GUILayout.Space(Pad);
 
             EditorGUILayout.BeginHorizontal();
@@ -417,9 +333,18 @@ namespace RedDust.Core.Editor
             _createLeafName = EditorGUILayout.TextField(_createLeafName);
             EditorGUILayout.EndHorizontal();
 
-            if (string.IsNullOrEmpty(_createLeafName))
+            if (!isRoot && !string.IsNullOrEmpty(_createLeafName))
             {
-                _createLeafName = node.LeafName;
+                var projected = $"{parentFullTag}.{_createLeafName}";
+                var missing = _model.GetMissingAncestors(projected);
+                if (missing.Count > 0)
+                {
+                    GUILayout.Space(4f);
+                    EditorGUILayout.HelpBox(
+                        $"Will also create:\n{string.Join("\n", missing)}",
+                        MessageType.Info);
+                }
+                EditorGUILayout.LabelField($"FullTag: {projected}", EditorStyles.label);
             }
 
             GUILayout.Space(Pad);
@@ -429,61 +354,143 @@ namespace RedDust.Core.Editor
             GUI.backgroundColor = hasName ? new Color(0.4f, 0.8f, 0.4f) : Color.white;
             if (GUILayout.Button("Create Tag", GUILayout.Height(24)))
             {
-                // TODO Phase 2: TagCreator.CreateTagChain(node.FullTag)
-                Debug.Log($"[TagEditor] Create: {node.FullTag} (TODO Phase 2)");
+                var target = isRoot ? _createLeafName : $"{parentFullTag}.{_createLeafName}";
+                try
+                {
+                    var created = TagCreator.CreateTagChain(target);
+                    _needsRefresh = true;
+                    _selectedFullTag = created.FullTag;
+                    _isCreating = false;
+                    _creatingUnderFullTag = null;
+                    _createLeafName = "";
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[TagEditor] Failed to create tag '{target}': {ex.Message}");
+                }
             }
             GUI.enabled = true;
             GUI.backgroundColor = Color.white;
+
+            GUILayout.Space(Pad);
+
+            if (GUILayout.Button("Cancel", GUILayout.Height(24)))
+            {
+                _isCreating = false;
+                _creatingUnderFullTag = null;
+                _createLeafName = "";
+            }
 
             EditorGUILayout.EndVertical();
             GUILayout.Space(Pad);
             EditorGUILayout.EndHorizontal();
         }
 
-        private List<string> GetMissingAncestors(TagNode node)
+        // ── 创建入口 ──
+        private bool _isCreating;
+        private string _creatingUnderFullTag;
+
+        private void StartCreateRoot()
         {
-            var missing = new List<string>();
-            var current = node.Parent;
-            while (current != null)
+            _isCreating = true;
+            _creatingUnderFullTag = null;
+            _selectedFullTag = null;
+            _createLeafName = "";
+        }
+
+        private void StartCreateChild(TagNode parent)
+        {
+            _isCreating = true;
+            _creatingUnderFullTag = parent.FullTag;
+            _selectedFullTag = null;
+            _createLeafName = "";
+        }
+
+        // ── 删除 ──
+        private void DeleteTag(TagNode node)
+        {
+            if (node == null || node.Asset == null) return;
+
+            var tagPath = AssetDatabase.GetAssetPath(node.Asset);
+
+            // 1. 检查外部引用
+            var referencers = FindReferencers(tagPath);
+            if (referencers.Count > 0)
             {
-                if (!current.Exists)
-                    missing.Insert(0, current.FullTag);
-                current = current.Parent;
+                EditorUtility.DisplayDialog("Cannot Delete",
+                    $"'{node.FullTag}' is referenced by {referencers.Count} other asset(s):\n\n{string.Join("\n", referencers)}\n\nRemove those references first.",
+                    "OK");
+                return;
             }
-            return missing;
+
+            // 2. 收集子孙
+            var descendants = new List<GameplayTagDefinitionSO>();
+            CollectDescendants(node, descendants);
+
+            // 3. 确认
+            var msg = descendants.Count > 0
+                ? $"Delete '{node.FullTag}'?\n\nThis tag has {descendants.Count} child tag(s):\n{string.Join("\n", descendants.ConvertAll(t => $"  - {t.FullTag}"))}\n\nThese will also be deleted."
+                : $"Delete '{node.FullTag}'?\n\nNo child tags. No external references.";
+
+            if (!EditorUtility.DisplayDialog("Delete Tag", msg, "Delete", "Cancel"))
+                return;
+
+            // 4. 执行
+            foreach (var child in descendants)
+                AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(child));
+            AssetDatabase.DeleteAsset(tagPath);
+            AssetDatabase.SaveAssets();
+
+            _selectedFullTag = null;
+            _needsRefresh = true;
+        }
+
+        /// <summary>查找引用了指定路径资产的所有资产</summary>
+        private static List<string> FindReferencers(string assetPath)
+        {
+            var refs = new List<string>();
+            var guid = AssetDatabase.AssetPathToGUID(assetPath);
+            if (string.IsNullOrEmpty(guid)) return refs;
+
+            var allGuids = AssetDatabase.FindAssets("", new[] { "Assets/Data", "Assets/Scripts" });
+            foreach (var g in allGuids)
+            {
+                var p = AssetDatabase.GUIDToAssetPath(g);
+                if (p == assetPath) continue;
+                if (p.EndsWith(".cs")) continue;
+
+                var deps = AssetDatabase.GetDependencies(p, false);
+                if (Array.IndexOf(deps, assetPath) >= 0)
+                    refs.Add(p);
+            }
+            return refs;
+        }
+
+        private void CollectDescendants(TagNode node, List<GameplayTagDefinitionSO> result)
+        {
+            foreach (var child in node.Children)
+            {
+                if (child.Asset != null) result.Add(child.Asset);
+                CollectDescendants(child, result);
+            }
         }
 
         // ── 状态栏 ──
         private void DrawStatusBar()
         {
-            var total = CountNodes(_roots);
-            var existing = CountExisting(_roots);
-
             EditorGUILayout.BeginHorizontal();
             GUILayout.Space(Pad);
 
-            EditorGUILayout.LabelField($"{existing} existing · {total - existing} needed", EditorStyles.label);
+            EditorGUILayout.LabelField($"{_model.TotalCount} tags", EditorStyles.label);
 
             if (!string.IsNullOrEmpty(_selectedFullTag))
             {
                 GUILayout.FlexibleSpace();
-                var sel = FindNode(_selectedFullTag);
                 EditorGUILayout.LabelField(_selectedFullTag, EditorStyles.label);
             }
 
             GUILayout.Space(Pad);
             EditorGUILayout.EndHorizontal();
-        }
-
-        private int CountExisting(List<TagNode> nodes)
-        {
-            int count = 0;
-            foreach (var n in nodes)
-            {
-                if (n.Exists) count++;
-                count += CountExisting(n.Children);
-            }
-            return count;
         }
     }
 }
