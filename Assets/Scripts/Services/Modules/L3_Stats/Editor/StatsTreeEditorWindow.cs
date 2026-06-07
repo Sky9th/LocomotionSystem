@@ -19,7 +19,7 @@ namespace RedDust.Stats.Editor
         private readonly Dictionary<string, bool> foldouts = new();
         private readonly List<JsonStatNode> pendingDeletions = new();
 
-        [MenuItem("RedDust/Stats Tree Editor")]
+        [MenuItem("RedDust/Stats Tree Editor", priority = 40)]
         private static void Open()
             => GetWindow<StatsTreeEditorWindow>("Stats Tree (JSON)");
 

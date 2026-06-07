@@ -12,7 +12,7 @@ namespace RedDust.Shared
 {
     private static List<CategoryData> s_cache;
 
-    [MenuItem("RedDust/Synty Prototype Browser")]
+    [MenuItem("RedDust/Synty Prototype Browser", priority = 60)]
     private static void Browse() => SyntyPrototypeBrowser.Open(GetCategories());
 
     public static List<CategoryData> GetCategories()
