@@ -89,4 +89,5 @@ StatInstance 内部
 | [interfaces/i-stat-restorable.md](interfaces/i-stat-restorable.md) | 可恢复接口契约 |
 | [L4-editor/stats-tree-window.md](L4-editor/stats-tree-window.md) | 树编辑器 (旧) — EditorWindow 子资产管理 |
 | [L4-editor/stats-tree-editor-window.md](L4-editor/stats-tree-editor-window.md) | 树编辑器 (新) — JSON 驱动 + 继承合并视图 |
+| [L4-editor/stat-import-export.md](L4-editor/stat-import-export.md) | Stat 导入导出 — JSON ↔ .asset 批量转换 |
 
