@@ -130,20 +130,20 @@ namespace RedDust.Ability
             // 1. 收集所有技能，按 filter 分类
             var all = AllAbilities;
 
-            // 2. 为每个有 categoryTag 的技能创建路径
+            // 2. 为每个有 abilityTag 的技能创建路径
             foreach (var ability in all)
             {
-                var catTag = ability.categoryTag;
-                if (catTag == null)
+                var aTag = ability.abilityTag;
+                if (aTag == null)
                 {
-                    // 无 categoryTag → 放 Uncategorized
+                    // 无 abilityTag → 放 Uncategorized
                     AddToFolder("Uncategorized", 0, ability, null);
                     continue;
                 }
 
                 // 按 tag parent 链构建文件夹路径
                 var tagChain = new List<GameplayTagDefinitionSO>();
-                var t = catTag;
+                var t = aTag;
                 while (t != null)
                 {
                     tagChain.Add(t);

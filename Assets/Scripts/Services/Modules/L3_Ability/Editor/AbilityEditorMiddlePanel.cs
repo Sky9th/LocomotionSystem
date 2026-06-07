@@ -245,36 +245,22 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════════════
         private static void DrawTagFields(AbilitySO a)
         {
-            // categoryTag — 基类字段，主动被动通用
+            // abilityTag — 基类字段，主动被动通用
             EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(a, "categoryTag", 90, "Category");
-            var v = (GameplayTagDefinitionSO)EditorGUILayout.ObjectField(
-                a.categoryTag, typeof(GameplayTagDefinitionSO), false);
-            if (v != a.categoryTag) { a.categoryTag = v; EditorUtility.SetDirty(a); _onChanged?.Invoke(); }
+            EditorUIUtility.LabelWithTooltip(a, "abilityTag", 90, "Ability");
+            var at = (GameplayTagDefinitionSO)EditorGUILayout.ObjectField(
+                a.abilityTag, typeof(GameplayTagDefinitionSO), false);
+            if (at != a.abilityTag) { a.abilityTag = at; EditorUtility.SetDirty(a); _onChanged?.Invoke(); }
             if (GUILayout.Button("Tag", EditorStyles.miniButton, GUILayout.Width(35)))
             {
                 var r = GUIUtility.GUIToScreenRect(GUILayoutUtility.GetLastRect());
-                TagPicker.Show(r, allowCreate: true, currentFullTag: a.categoryTag?.FullTag,
-                    onSelected: t => { if (a.categoryTag != t) { a.categoryTag = t; EditorUtility.SetDirty(a); _onChanged?.Invoke(); } });
+                TagPicker.Show(r, allowCreate: true, currentFullTag: a.abilityTag?.FullTag,
+                    onSelected: t => { if (a.abilityTag != t) { a.abilityTag = t; EditorUtility.SetDirty(a); _onChanged?.Invoke(); } });
             }
             EditorGUILayout.EndHorizontal();
 
-            // activeTag + overrideExclusion — 仅 AbilityDefSO
             if (a is AbilityDefSO def)
             {
-                EditorGUILayout.BeginHorizontal();
-                EditorUIUtility.LabelWithTooltip(def, "activeTag", 90, "Active");
-                var at = (GameplayTagDefinitionSO)EditorGUILayout.ObjectField(
-                    def.activeTag, typeof(GameplayTagDefinitionSO), false);
-                if (at != def.activeTag) { def.activeTag = at; EditorUtility.SetDirty(def); _onChanged?.Invoke(); }
-                if (GUILayout.Button("Tag", EditorStyles.miniButton, GUILayout.Width(35)))
-                {
-                    var r = GUIUtility.GUIToScreenRect(GUILayoutUtility.GetLastRect());
-                    TagPicker.Show(r, allowCreate: true, currentFullTag: def.activeTag?.FullTag,
-                        onSelected: t => { if (def.activeTag != t) { def.activeTag = t; EditorUtility.SetDirty(def); _onChanged?.Invoke(); } });
-                }
-                EditorGUILayout.EndHorizontal();
-
                 EditorGUILayout.BeginHorizontal();
                 EditorUIUtility.LabelWithTooltip(def, "overrideExclusion", 90, "Override Exclusion");
                 var ex = EditorGUILayout.Toggle(def.overrideExclusion);

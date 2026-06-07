@@ -125,6 +125,7 @@ tech/
 │       ├── L3-ability/                  # L3: 通用能力子系统
 │       │   ├── README.md
 │       │   ├── ability-pipeline-design.md  # Ability Pipeline — 八维度技能管道完整设计
+│       │   ├── ability-inventory.md     #  Ability Inventory — 技能全量树 + 闭环测试集
 │       │   └── ability-component.md     #  AbilityComponent — 中枢，API + 调用链
 │       │
 │       ├── L3-stats/                   # L3: Stat 数值框架 (自身代码: Definition/ Tree/ Instance/ Modifier/ Interfaces/ Editor/)

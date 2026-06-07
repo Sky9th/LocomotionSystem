@@ -48,6 +48,9 @@ namespace RedDust.Ability
         private readonly List<string> cooldownExpiredBuffer = new();
         private float cooldownCleanupAccum;
 
+        // 冷却 key → abilityTag.FullTag，冷却到期后一并移除
+        private readonly Dictionary<string, string> cooldownAbilityTags = new();
+
         private void Awake()
         {
             if (initialPassives == null) return;
@@ -79,6 +82,13 @@ namespace RedDust.Ability
             {
                 OwnedTags.RemoveTag(key);
                 cooldownEndTimes.Remove(key);
+
+                // 移除关联的 abilityTag
+                if (cooldownAbilityTags.TryGetValue(key, out var abilityTag))
+                {
+                    OwnedTags.RemoveTag(abilityTag);
+                    cooldownAbilityTags.Remove(key);
+                }
             }
         }
 
@@ -165,6 +175,12 @@ namespace RedDust.Ability
                 : $"Ability.Cooldown.{ability.internalName}";
 
             AddCooldown(key, ability.cooldownDuration);
+
+            // 记录关联的 abilityTag，冷却到期后一并移除
+            if (ability.abilityTag != null)
+            {
+                cooldownAbilityTags[key] = ability.abilityTag.FullTag;
+            }
         }
 
         #endregion
@@ -252,13 +268,27 @@ namespace RedDust.Ability
                 return false;
             }
 
-            // 互斥
-            if (!ability.overrideExclusion && ability.activeTag != null)
+            // 互斥 — 默认检查 abilityTag.Parent + 额外互斥标签
+            if (!ability.overrideExclusion)
             {
-                if (OwnedTags.HasTag(ability.activeTag.FullTag))
+                // 默认：同父标签下互斥
+                if (ability.abilityTag?.Parent != null && OwnedTags.HasTag(ability.abilityTag.Parent.FullTag))
                 {
-                    Debug.Log($"[Ability] ② Rejected: {ability.internalName} — mutual exclusion ({ability.activeTag.FullTag})");
+                    Debug.Log($"[Ability] ② Rejected: {ability.internalName} — mutual exclusion ({ability.abilityTag.Parent.FullTag})");
                     return false;
+                }
+
+                // 额外互斥标签：跨分类互斥
+                if (ability.extraExclusionTags != null)
+                {
+                    foreach (var tag in ability.extraExclusionTags)
+                    {
+                        if (tag != null && OwnedTags.HasTag(tag.FullTag))
+                        {
+                            Debug.Log($"[Ability] ② Rejected: {ability.internalName} — extra exclusion ({tag.FullTag})");
+                            return false;
+                        }
+                    }
                 }
             }
 
@@ -308,9 +338,9 @@ namespace RedDust.Ability
                 }
             }
 
-            // ③b 挂 activeTag
-            if (ability.activeTag != null)
-                OwnedTags.AddTag(ability.activeTag.FullTag);
+            // ③b 有冷却时挂 abilityTag（冷却结束移除，见 ApplyCooldown）
+            if (ability.cooldownDuration > 0f && ability.abilityTag != null)
+                OwnedTags.AddTag(ability.abilityTag.FullTag);
 
             // ── ④ Search ──
             var targets = ability.search != null
@@ -381,11 +411,7 @@ namespace RedDust.Ability
                 }
             }
 
-            // ③c 移除 activeTag（瞬发）
-            if (ability.activeTag != null)
-                OwnedTags.RemoveTag(ability.activeTag.FullTag);
-
-            // 冷却
+            // 冷却（移除 cooldown key + abilityTag）
             ApplyCooldown(ability);
 
             Debug.Log($"[Ability] ✅ Activated: {ability.internalName} | targets={targets.Count} cooldown={ability.cooldownDuration}s");

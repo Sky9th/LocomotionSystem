@@ -22,11 +22,11 @@ namespace RedDust.Ability
 
 
         [Header("Gating")]
-        [Tooltip("激活期间持有的标签。结束时移除。与 TagMutualExclusionSO 配合做互斥门控。")]
-        public GameplayTagDefinitionSO activeTag;
-
-        [Tooltip("无视全局互斥。true=此技能可在互斥标签存在时激活（如翻滚、急救）。")]
+        [Tooltip("无视互斥门控。true=此技能可在互斥标签存在时激活（如翻滚、急救）。")]
         public bool overrideExclusion;
+
+        [Tooltip("额外互斥标签。除了默认的 abilityTag.Parent 前缀匹配外，持有这些标签也会阻止激活。用于跨分类互斥。")]
+        public GameplayTagDefinitionSO[] extraExclusionTags;
 
         [Header("Noise")]
         [Tooltip("噪音事件。激活时广播，AI 听觉系统消费。不在 effects 数组里。")]
