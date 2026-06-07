@@ -11,7 +11,7 @@ namespace RedDust.Ability
     /// - 常用: trigger 枚举，AbilityExecutor 内部流程节点直接匹配（OnHit/OnKill/OnDamaged/OnDodge/OnComboStage/OnEquip）
     /// - 罕用: triggerChannel 引用外部 EventChannel 资产（时间/天气/Boss阶段），非 null 时覆盖枚举匹配
     /// </summary>
-    [CreateAssetMenu(menuName = "RedDust/Ability/Definition/Passive", fileName = "Passive_")]
+    [CreateAssetMenu(menuName = "RedDust/Ability/Passive Ability", fileName = "Passive_")]
     public sealed class PassiveAbilitySO : AbilitySO
     {
         [Header("Trigger")]

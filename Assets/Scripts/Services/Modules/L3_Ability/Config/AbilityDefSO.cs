@@ -8,14 +8,9 @@ namespace RedDust.Ability
     /// 身份 + 激活方式 + 搜索形状 + 效果数组。
     /// 被 AbilityExecutor / AbilityPipeline / AbilityDriver 消费。
     /// </summary>
-    [CreateAssetMenu(menuName = "RedDust/Ability/Definition/Active", fileName = "Ability_")]
+    [CreateAssetMenu(menuName = "RedDust/Ability/Active Ability", fileName = "Ability_")]
     public sealed class AbilityDefSO : AbilitySO
     {
-        [Header("Identity")]
-        [Tooltip("技能分类标签。用于被动条件匹配与目标过滤，与 activeTag（激活期间持有）不同。")]
-        public GameplayTagDefinitionSO categoryTag;
-
-
         [Header("Activation")]
         [Tooltip("技能「怎么放」的完整定义。动画、阶段时机、激活方式。")]
         public AbilityActivationSO activation;

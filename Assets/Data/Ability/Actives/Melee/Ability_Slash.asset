@@ -16,15 +16,15 @@ MonoBehaviour:
   displayName: 
   icon: {fileID: 0}
   description: 
+  categoryTag: {fileID: 11400000, guid: 3e771ac6a515b4a43bbfe34e25a6e1bb, type: 2}
   targetEffects:
-  - {fileID: 11400000, guid: 360f197be79097943baccc96353b45b7, type: 2}
   - {fileID: 11400000, guid: d82414f7c141e724393e0e99d93615e6, type: 2}
+  - {fileID: 11400000, guid: 360f197be79097943baccc96353b45b7, type: 2}
   selfEffects: []
   cooldownDuration: 3
   sharedCooldownTag: {fileID: 0}
-  categoryTag: {fileID: 0}
-  activation: {fileID: 11400000, guid: fa7e76f6839fd8845b77a1581ecbdf47, type: 2}
-  search: {fileID: 11400000, guid: af76afcbe6a355f46b836260c4f4901a, type: 2}
+  activation: {fileID: 0}
+  search: {fileID: 0}
   activeTag: {fileID: 0}
   overrideExclusion: 0
   noise: {fileID: 0}

@@ -17,6 +17,9 @@ namespace RedDust.Ability
         [TextArea(2, 4)]
         public string description;
 
+        [Tooltip("技能分类标签。主动/被动都用此字段组织目录结构。与 activeTag（激活期间持有）不同。")]
+        public GameplayTagDefinitionSO categoryTag;
+
         [Header("Effects")]
         [Tooltip("施加给目标的效果。")]
         public EffectSO[] targetEffects;

@@ -1,22 +1,52 @@
 # Editor UI Patterns · RedDust 项目 Editor 规范
 
-> 从 StatsTreeEditorWindow 开发过程中提炼的 IMGUI 编辑器 UI 规范。适用于所有 RedDust Editor 窗口。
+> 从 StatsTreeEditorWindow / TagEditorWindow / AbilityEditorWindow 开发过程中提炼的 IMGUI 编辑器 UI 规范。适用于所有 RedDust Editor 窗口。
 
 ## 核心原则
 
-1. **卡片即容器** — 所有逻辑区块用 `EditorStyles.helpBox` 包裹
-2. **间距统一推导** — 全部间距从 `pad=6` 出发，不出现魔术数字
-3. **左右分块布局** — 左自动撑满，右固定宽度，`FlexibleSpace` 隔开
+1. **卡片即容器** — 所有逻辑区块用 `EditorUIUtility.DrawCard(pad, ...)` 包裹，禁止裸 `EditorStyles.helpBox`
+2. **间距统一推导** — 全部间距从 `pad=6` 出发，卡片内边距 = 卡片间隙 = `pad`，不出现魔术数字
+3. **宽高外置** — 卡片本身不控制宽高（100% 宽），由外层 `BeginHorizontal(options)` 控制
+4. **子卡片单一责任** — 每个子卡片管理自己的四边内边距，间隙由 `EditorUIUtility.CardGap(pad)` 统一
 
 ## 空间常量
 
 | 常量 | 值 | 来源 |
 |------|-----|------|
-| `pad` | 6 | 统一内边距（卡片内上/下/左/右） |
-| `toggleW` | 14 | IsEnabled 开关宽度 |
+| `pad` | 6 | 统一内边距 + 卡片间隙 |
 | `foldoutW` | 14 | 折叠三角宽度（叶节点保留为占位对齐） |
-| `textPad` | 4 | LabelField 补偿偏移 |
-| `childIndent` | 20 | 子节点缩进量 |
+| `foldoutGap` | 6 | 折叠区右侧间距 |
+| `depthW` | 18 | 树节点每层缩进量 |
+
+## Utility 函数
+
+`EditorUIUtility` 位于 `Assets/Scripts/Shared/Editor/EditorUIUtility.cs`，命名空间 `RedDust.Shared.EditorUI`。
+
+```csharp
+// 绘制标准卡片：helpBox + pad 四边内边距
+EditorUIUtility.DrawCard(pad, () =>
+{
+    // 内容 — 自动获得 pad 上/下/左/右内边距
+});
+
+// 卡片间隙 — 值应与内边距 pad 一致
+EditorUIUtility.CardGap(pad);
+```
+
+**内部结构**：
+```
+BeginVertical(helpBox)
+  Space(pad)              ← 上内边距
+  BeginHorizontal
+    Space(pad)            ← 左内边距
+    BeginVertical
+      [content]
+    EndVertical
+    Space(pad)            ← 右内边距
+  EndHorizontal
+  Space(pad)              ← 下内边距
+EndVertical
+```
 
 ## 间距规则
 
@@ -27,118 +57,94 @@ Window edge
 │ Space(pad)     ← 上
 │ ┌─ BeginHorizontal ────────────────┐
 │ │ Space(pad)   ← 左                │
-│ │ content                          │
+│ │ content (BeginVertical)          │
 │ │ Space(pad)   ← 右                │
 │ └──────────────────────────────────┘
 │ Space(pad)     ← 下
 Window edge
 ```
 
-窗口边缘与首/末卡片间距 = `pad`。整个窗口内容包在 `BeginHorizontal` + `BeginVertical` 中统一控制。
+窗口边缘间距 = `pad`。窗口内容包在 `BeginHorizontal` + `BeginVertical` 中。
 
-### 卡片级
+### 卡片级（统一规则）
 
 ```
-┌─ BeginVertical(helpBox) ──────────┐
-│ Space(pad)              ← 上       │
-│ ┌─ BeginHorizontal ──────────────┐ │
-│ │ Space(pad)    ← 左             │ │
-│ │ ┌─ BeginVertical(ExpandWidth) ┐│ │
-│ │ │ content                     ││ │
-│ │ └─────────────────────────────┘│ │
-│ │ Space(pad)    ← 右             │ │
-│ └────────────────────────────────┘ │
-│ Space(pad)              ← 下       │
-└────────────────────────────────────┘
+外层 BeginHorizontal(Width, ExpandHeight)    ← 控制卡片尺寸
+  DrawCard(pad, () => { content })
+EndHorizontal
 ```
 
-**关键**：卡片内部再包一层 `BeginHorizontal` + `BeginVertical(ExpandWidth)` 来管理左右 padding，而不是靠外层。这样缩进层次清晰，嵌套卡片也能复用。
+- **所有卡片**走 `DrawCard`，禁止裸 helpBox
+- **宽度**：外层 `BeginHorizontal(Width)` 约束；不设 Width = 100%
+- **高度**：外层 `BeginHorizontal(ExpandHeight=true)` 撑满
+- **卡片间**：`CardGap(pad)` — 间隙值 = 内边距值
 
-### 卡片间距
+### 卡片内行间距
 
 | 位置 | 值 | 语义 |
 |------|-----|------|
-| 卡片 ↔ 卡片（同组兄弟） | `Space(2)` | 紧凑，表示归属关系 |
-| 卡片 ↔ 卡片（跨组/根级） | `Space(pad)` | 与内部 padding 一致 |
-| 卡片内 Row ↔ Row | `Space(2)` | 行间紧凑 |
+| 卡片内 Row ↔ Row | `Space(pad)` | 与内边距一致 |
+| 卡片 ↔ 卡片 | `CardGap(pad)` | 与内边距一致 |
+| 标题 ↔ Scroll | `Space(pad)` | 与内边距一致 |
 
 ## 布局模式
 
-### 模式 A：左右分块（Header）
+### 模式 A：多栏布局
 
 ```
-BeginHorizontal
-  Space(pad)                    ← 左内边距
-  BeginVertical(ExpandWidth)    ← 左块，自动撑满
-    Row 1
-    Row 2
-  EndVertical
-  Space(pad)                    ← 左右块间隙
-  Button(Width:100)             ← 右块，固定宽度
-  Space(pad)                    ← 右内边距
-EndHorizontal
-```
-
-**规则**：
-- 左块 `ExpandWidth(true)`，右块固定宽度
-- 不加 `FlexibleSpace`——左 ExpandWidth 自然把右块推到右端
-- 左块的子控件也需 `ExpandWidth(true)` 才能撑满
-
-### 模式 B：左右分块（Toolbar / Folder Row）
-
-```
-BeginHorizontal
-  Space(pad)                    ← 左内边距
-  [左按钮 / 标签 ...]           ← 左对齐块
-  FlexibleSpace                 ← 隔开左右
-  [右按钮 ...]                  ← 右对齐块
-  Space(pad)                    ← 右内边距
-EndHorizontal
-```
-
-**适用**：左右两侧都是固定宽度控件，中间 `FlexibleSpace` 隔开。
-
-### 模式 C：折叠区 + 内容区（Folder Card）
-
-```
-BeginHorizontal
-  Space(pad)
-  GetRect(35, lineHeight)       ← 折叠按钮固定 35px
-  EditorGUI.Foldout(foldRect)
-  Space(4)                      ← textPad
-  BeginVertical(ExpandWidth)    ← 内容区，与折叠按钮右侧对齐
-    [toolbar row]               ← 模式 B
-    Space(2)
-    [子卡片列表]                 ← 模式 D
-  EndVertical
-  Space(pad)
-EndHorizontal
-```
-
-**规则**：
-- 折叠按钮用 `GUILayoutUtility.GetRect(35f, ...)` + `EditorGUI.Foldout` 固定宽度
-- 内容区是独立 Vertical，天然与上层文字对齐
-- 子卡片无需手动计算缩进——在 Vertical 内部自然对齐
-
-### 模式 D：子卡片列表（Leaf List）
-
-```
-BeginVertical(helpBox)          ← 列表容器卡片
-  Space(pad)
-  BeginHorizontal
-    Space(pad)
-    BeginVertical(ExpandWidth)
-      DrawChildCard()           ← 复用卡片级模式
-      Space(2)
-      DrawChildCard()
-    EndVertical
-    Space(pad)
+BeginHorizontal                  ← 栏容器
+  BeginHorizontal(Width, ExpandHeight)  ← 栏 1
+    DrawCard(pad, () => { ... })
   EndHorizontal
-  Space(pad)
-EndVertical
+  Space(pad)                     ← 栏间隙
+  BeginHorizontal(ExpandWidth, ExpandHeight)  ← 栏 2
+    DrawCard(pad, () => { ... })
+  EndHorizontal
+EndHorizontal
 ```
 
-**规则**：与父卡片结构完全一致，递归嵌套。
+**规则**：
+- 每栏 = `BeginHorizontal(尺寸选项)` → `DrawCard` → `EndHorizontal`
+- 固定宽用 `Width(...)`，自适应用 `ExpandWidth(true)`
+- 栏间隙 = `CardGap(pad)`
+
+### 模式 B：子卡片列表
+
+```
+DrawCard(pad, () =>
+{
+    DrawCard(pad, () => { ... });   ← 子卡片在内层，100% 宽
+    CardGap(pad);
+    DrawCard(pad, () => { ... });
+    CardGap(pad);
+    DrawCard(pad, () => { ... });
+});
+```
+
+**规则**：每个子区块是独立 `DrawCard`，间隙 `CardGap`。嵌套不会影响外层内边距——外层只管自己的 Space(pad)，内层 DrawCard 只加自己的边框和内边距。
+
+### 模式 C：折叠树节点
+
+```
+DrawCard(pad, () =>
+{
+    BeginHorizontal;
+      // 折叠区 14+6=20px
+      BeginHorizontal(Width(20));
+        foldRect(14) 或 dash
+        Space(6)
+      EndHorizontal;
+      // 名称
+      BeginVertical(ExpandWidth);
+        Space(depth * 18);  ← 文字缩进，非卡片嵌套
+        名称 label/button
+        [子节点卡片列表 — 模式 B，在 DrawCard 外部]
+      EndVertical;
+    EndHorizontal;
+});
+```
+
+**规则**：树节点是独立卡片（`DrawCard`），递归嵌套。缩进在文字层（`Space(depth * 18)`），不靠卡片层级。
 
 ## 按钮规范
 
@@ -146,39 +152,19 @@ EndVertical
 |------|------|------|------|
 | 主操作（Save） | `GUILayout.Button` | Width(100) | 脏：绿 `(0.4, 0.8, 0.4)` / 净：灰色 disabled |
 | 工具栏按钮 | `GUILayout.Button` | Height(24) | 默认 |
-| 添加/操作 | `EditorStyles.miniButton` | Width(20) | 默认 |
+| 文字按钮 | `GUILayout.Button(label, labelStyle)` | ExpandWidth | 用 label style 去边框 |
+| 添加/操作 | `EditorStyles.miniButton` | Width(28-35) | 默认 |
 | 删除 | `EditorStyles.miniButton` + 红底 | Width(20) | `(0.9, 0.3, 0.3)` → 用完恢复 Color.white |
-| 清除值 | `EditorStyles.miniButton` | Width(20) | 默认 （`↺` 符号，非破坏性） |
 
-**颜色恢复规则**：修改 `GUI.backgroundColor` 后必须在同一代码块内恢复 `Color.white`，否则后续控件全部染色。
-
-## 叶节点卡片
-
-单行布局，通过 foldout 占位与文件夹对齐：
-
-```
-┌─ leaf helpBox ───────────────────────────────────────┐
-│ Space(6)                                              │
-│ [6] [✓14] [6] [空14] [4] [Def ▲] Flex [50] [↺][✕紅][6]│
-│ Space(6)                                              │
-└──────────────────────────────────────────────────────┘
-```
-
-| 元素 | 控件 | 宽度 |
-|------|------|------|
-| IsEnabled | `Toggle("", true, Width(14))` | 14 |
-| foldout 占位 | `Space(14)` | 14 — 保证与文件夹文字对齐 |
-| textPad | `Space(4)` | 4 |
-| Def 字段 | `ObjectField(null, ...)` | ExpandWidth |
-| Val 数值 | `FloatField(..., Width(50))` | 50 |
-| 清除覆盖 | `miniButton("↺", Width(20))` | 20 |
-| 删除 | `miniButton("✕", Width(20))` 红底 | 20 |
+**颜色恢复规则**：修改 `GUI.backgroundColor` 后必须在同一代码块内恢复 `Color.white`。
 
 ## 常见陷阱
 
-1. **`Foldout` 不支持 `GUILayoutOption`** → 用 `GetRect` + `EditorGUI.Foldout` 固定宽度
-2. **`Toggle(bool, GUILayoutOption)` 重载冲突** → 用 `Toggle("", bool, GUILayoutOption)` 带空 label
-3. **`ExpandWidth` 与 `FlexibleSpace` 冲突** → 模式 A 用 ExpandWidth 自然推右，模式 B 用 FlexSpace
-4. **`GUI.backgroundColor` 泄漏** → 修改后立即恢复
-5. **卡片内容贴边** → 卡片内部必须再包 Horizontal+Vertical 做 padding
-6. **`EditorGUILayout.BeginVertical(helpBox)` 不会自动 ExpandWidth** → 嵌套在 Horizontal 中需显式传 `GUILayout.ExpandWidth(true)`
+1. **禁止裸 helpBox** → 必须走 `EditorUIUtility.DrawCard`，避免手动间距不一致
+2. **卡片嵌套合法** → 内层 `DrawCard` 不影响外层内边距，各自管理自己的边框和 Space(pad)
+3. **禁止 emoji** → Unity IMGUI 默认字体不渲染 emoji，用纯文本
+4. **禁止 `Space(2)`, `Space(4)` 等魔术数字** → 统一用 `pad`、`CardGap`
+5. **`Foldout` 不支持 `GUILayoutOption`** → 用 `GetRect` + `EditorGUI.Foldout` 固定宽度
+6. **`ref` 参数不能进 lambda** → 先捕获到本地变量，lambda 结束后回写
+7. **`GUI.backgroundColor` 泄漏** → 修改后立即恢复 `Color.white`
+8. **命名空间避免 `*.Editor`** → 与 `UnityEditor.Editor` 类名冲突，用 `*.EditorUI` 等
