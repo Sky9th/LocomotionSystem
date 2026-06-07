@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "description": "全量 Stat 定义 + 21 Trees。基于 actor-tree-design.md + equipment-tree-design.md。136 stats, 21 trees。",
+  "description": "全量 Stat 定义 + 21 Trees。134 stats, 21 trees。",
   "definitions": [
     {
       "id": "HP",
@@ -17,44 +17,16 @@
       "isCumulative": false
     },
     {
-      "id": "MaxHP",
-      "category": "Vital",
-      "min": 1,
-      "max": 500,
-      "defaultValue": 100,
-      "isConsumable": false,
-      "consumeRate": 0,
-      "consumeInterval": 0,
-      "isRestorable": false,
-      "restoreRate": 0,
-      "restoreInterval": 0,
-      "isCumulative": false
-    },
-    {
       "id": "Stamina",
       "category": "Vital",
       "min": 0,
-      "max": 100,
+      "max": 200,
       "defaultValue": 100,
       "isConsumable": false,
       "consumeRate": 0,
       "consumeInterval": 0,
       "isRestorable": true,
       "restoreRate": 20,
-      "restoreInterval": 0,
-      "isCumulative": false
-    },
-    {
-      "id": "MaxStamina",
-      "category": "Vital",
-      "min": 1,
-      "max": 200,
-      "defaultValue": 100,
-      "isConsumable": false,
-      "consumeRate": 0,
-      "consumeInterval": 0,
-      "isRestorable": false,
-      "restoreRate": 0,
       "restoreInterval": 0,
       "isCumulative": false
     },
@@ -1913,8 +1885,7 @@
       "directory": "Actor",
       "inheritsFrom": "",
       "defRefs": [
-        "HP",
-        "MaxHP"
+        "HP"
       ],
       "nodes": [
         {
@@ -1934,15 +1905,6 @@
           "Def": 0,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
-        },
-        {
-          "Id": "MaxHP",
-          "IsEnabled": true,
-          "IsFolder": false,
-          "ParentId": "Vitals",
-          "Def": 1,
-          "OverrideValue": -3.4028234663852886e+38,
-          "DuplicateId": ""
         }
       ]
     },
@@ -1952,7 +1914,6 @@
       "inheritsFrom": "Actor",
       "defRefs": [
         "Stamina",
-        "MaxStamina",
         "Hunger",
         "Thirst",
         "BodyTemp",
@@ -2029,7 +1990,7 @@
           "DuplicateId": ""
         },
         {
-          "Id": "MaxStamina",
+          "Id": "Hunger",
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Vitals",
@@ -2038,7 +1999,7 @@
           "DuplicateId": ""
         },
         {
-          "Id": "Hunger",
+          "Id": "Thirst",
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Vitals",
@@ -2047,7 +2008,7 @@
           "DuplicateId": ""
         },
         {
-          "Id": "Thirst",
+          "Id": "BodyTemp",
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Vitals",
@@ -2056,7 +2017,7 @@
           "DuplicateId": ""
         },
         {
-          "Id": "BodyTemp",
+          "Id": "Blood",
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Vitals",
@@ -2065,7 +2026,7 @@
           "DuplicateId": ""
         },
         {
-          "Id": "Blood",
+          "Id": "Infection",
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Vitals",
@@ -2074,7 +2035,7 @@
           "DuplicateId": ""
         },
         {
-          "Id": "Infection",
+          "Id": "Consciousness",
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Vitals",
@@ -2083,20 +2044,11 @@
           "DuplicateId": ""
         },
         {
-          "Id": "Consciousness",
-          "IsEnabled": true,
-          "IsFolder": false,
-          "ParentId": "Vitals",
-          "Def": 7,
-          "OverrideValue": -3.4028234663852886e+38,
-          "DuplicateId": ""
-        },
-        {
           "Id": "Pain",
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Vitals",
-          "Def": 8,
+          "Def": 7,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2114,7 +2066,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Attributes",
-          "Def": 9,
+          "Def": 8,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2123,7 +2075,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Attributes",
-          "Def": 10,
+          "Def": 9,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2132,7 +2084,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Attributes",
-          "Def": 11,
+          "Def": 10,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2141,7 +2093,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Attributes",
-          "Def": 12,
+          "Def": 11,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2150,7 +2102,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Attributes",
-          "Def": 13,
+          "Def": 12,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2159,7 +2111,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Attributes",
-          "Def": 14,
+          "Def": 13,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2168,7 +2120,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Attributes",
-          "Def": 15,
+          "Def": 14,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2197,7 +2149,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Combat",
-          "Def": 16,
+          "Def": 15,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2206,7 +2158,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Combat",
-          "Def": 17,
+          "Def": 16,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2215,7 +2167,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Combat",
-          "Def": 18,
+          "Def": 17,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2224,7 +2176,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Combat",
-          "Def": 19,
+          "Def": 18,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2233,7 +2185,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Combat",
-          "Def": 20,
+          "Def": 19,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2242,7 +2194,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Combat",
-          "Def": 21,
+          "Def": 20,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2251,7 +2203,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Combat",
-          "Def": 22,
+          "Def": 21,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2260,7 +2212,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Combat",
-          "Def": 23,
+          "Def": 22,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2269,7 +2221,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Combat",
-          "Def": 24,
+          "Def": 23,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2278,7 +2230,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Work",
-          "Def": 25,
+          "Def": 24,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2287,7 +2239,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Work",
-          "Def": 26,
+          "Def": 25,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2296,7 +2248,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Work",
-          "Def": 27,
+          "Def": 26,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2305,7 +2257,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Work",
-          "Def": 28,
+          "Def": 27,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2314,7 +2266,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Work",
-          "Def": 29,
+          "Def": 28,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2323,7 +2275,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Work",
-          "Def": 30,
+          "Def": 29,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2332,7 +2284,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Work",
-          "Def": 31,
+          "Def": 30,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2341,7 +2293,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Work",
-          "Def": 32,
+          "Def": 31,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2350,7 +2302,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Work",
-          "Def": 33,
+          "Def": 32,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2359,7 +2311,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Work",
-          "Def": 34,
+          "Def": 33,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2368,7 +2320,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Work",
-          "Def": 35,
+          "Def": 34,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2377,7 +2329,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Work",
-          "Def": 36,
+          "Def": 35,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2395,7 +2347,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Needs",
-          "Def": 37,
+          "Def": 36,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2404,7 +2356,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Needs",
-          "Def": 38,
+          "Def": 37,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2413,7 +2365,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Needs",
-          "Def": 39,
+          "Def": 38,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2422,7 +2374,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Needs",
-          "Def": 40,
+          "Def": 39,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2431,7 +2383,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Needs",
-          "Def": 41,
+          "Def": 40,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2449,7 +2401,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Movement",
-          "Def": 42,
+          "Def": 41,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2458,7 +2410,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Movement",
-          "Def": 43,
+          "Def": 42,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2476,7 +2428,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Resistance",
-          "Def": 44,
+          "Def": 43,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2485,7 +2437,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Resistance",
-          "Def": 45,
+          "Def": 44,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2494,7 +2446,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Resistance",
-          "Def": 46,
+          "Def": 45,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2503,7 +2455,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Resistance",
-          "Def": 47,
+          "Def": 46,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2512,7 +2464,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Resistance",
-          "Def": 48,
+          "Def": 47,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2521,7 +2473,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Resistance",
-          "Def": 49,
+          "Def": 48,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2530,7 +2482,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Resistance",
-          "Def": 50,
+          "Def": 49,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2539,7 +2491,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Resistance",
-          "Def": 51,
+          "Def": 50,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2548,7 +2500,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Resistance",
-          "Def": 52,
+          "Def": 51,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2566,7 +2518,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Vision",
-          "Def": 53,
+          "Def": 52,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2575,7 +2527,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Vision",
-          "Def": 54,
+          "Def": 53,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2584,7 +2536,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "Vision",
-          "Def": 55,
+          "Def": 54,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         },
@@ -2602,7 +2554,7 @@
           "IsEnabled": true,
           "IsFolder": false,
           "ParentId": "NPC",
-          "Def": 56,
+          "Def": 55,
           "OverrideValue": -3.4028234663852886e+38,
           "DuplicateId": ""
         }

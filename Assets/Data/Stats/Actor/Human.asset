@@ -20,64 +20,60 @@ MonoBehaviour:
     },\n        {\n            \"Id\": \"Stamina\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
     \"Vitals\",\n            \"Def\": 0,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
-    \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"MaxStamina\",\n           
+    \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"Hunger\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
     false,\n            \"ParentId\": \"Vitals\",\n            \"Def\": 1,\n           
     \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
-    },\n        {\n            \"Id\": \"Hunger\",\n            \"IsEnabled\": true,\n           
+    },\n        {\n            \"Id\": \"Thirst\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
     \"Vitals\",\n            \"Def\": 2,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
-    \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"Thirst\",\n           
+    \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"BodyTemp\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
     false,\n            \"ParentId\": \"Vitals\",\n            \"Def\": 3,\n           
     \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
-    },\n        {\n            \"Id\": \"BodyTemp\",\n            \"IsEnabled\":
-    true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
-    \"ParentId\": \"Vitals\",\n            \"Def\": 4,\n            \"OverrideValue\":
-    -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n        },\n       
-    {\n            \"Id\": \"Blood\",\n            \"IsEnabled\": true,\n           
+    },\n        {\n            \"Id\": \"Blood\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
-    \"Vitals\",\n            \"Def\": 5,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"Vitals\",\n            \"Def\": 4,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
     \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"Infection\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
-    false,\n            \"ParentId\": \"Vitals\",\n            \"Def\": 6,\n           
+    false,\n            \"ParentId\": \"Vitals\",\n            \"Def\": 5,\n           
     \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
     },\n        {\n            \"Id\": \"Consciousness\",\n            \"IsEnabled\":
     true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
-    \"ParentId\": \"Vitals\",\n            \"Def\": 7,\n            \"OverrideValue\":
+    \"ParentId\": \"Vitals\",\n            \"Def\": 6,\n            \"OverrideValue\":
     -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n        },\n       
     {\n            \"Id\": \"Pain\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
-    \"Vitals\",\n            \"Def\": 8,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"Vitals\",\n            \"Def\": 7,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
     \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"Attributes\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": true,\n            \"IsOverride\":
     false,\n            \"ParentId\": \"\",\n            \"Def\": -1,\n           
     \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
     },\n        {\n            \"Id\": \"Strength\",\n            \"IsEnabled\":
     true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
-    \"ParentId\": \"Attributes\",\n            \"Def\": 9,\n            \"OverrideValue\":
+    \"ParentId\": \"Attributes\",\n            \"Def\": 8,\n            \"OverrideValue\":
     -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n        },\n       
     {\n            \"Id\": \"Agility\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
-    \"Attributes\",\n            \"Def\": 10,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"Attributes\",\n            \"Def\": 9,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
     \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"Endurance\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
-    false,\n            \"ParentId\": \"Attributes\",\n            \"Def\": 11,\n           
+    false,\n            \"ParentId\": \"Attributes\",\n            \"Def\": 10,\n           
     \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
     },\n        {\n            \"Id\": \"Intelligence\",\n            \"IsEnabled\":
     true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
-    \"ParentId\": \"Attributes\",\n            \"Def\": 12,\n            \"OverrideValue\":
+    \"ParentId\": \"Attributes\",\n            \"Def\": 11,\n            \"OverrideValue\":
     -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n        },\n       
     {\n            \"Id\": \"Perception\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
-    \"Attributes\",\n            \"Def\": 13,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"Attributes\",\n            \"Def\": 12,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
     \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"Charisma\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
-    false,\n            \"ParentId\": \"Attributes\",\n            \"Def\": 14,\n           
+    false,\n            \"ParentId\": \"Attributes\",\n            \"Def\": 13,\n           
     \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
     },\n        {\n            \"Id\": \"Luck\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
-    \"Attributes\",\n            \"Def\": 15,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"Attributes\",\n            \"Def\": 14,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
     \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"Combat\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": true,\n            \"IsOverride\":
     false,\n            \"ParentId\": \"\",\n            \"Def\": -1,\n           
@@ -87,175 +83,174 @@ MonoBehaviour:
     \"\",\n            \"Def\": -1,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
     \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"BladeProf\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
-    false,\n            \"ParentId\": \"Combat\",\n            \"Def\": 16,\n           
+    false,\n            \"ParentId\": \"Combat\",\n            \"Def\": 15,\n           
     \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
     },\n        {\n            \"Id\": \"AxeProf\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
-    \"Combat\",\n            \"Def\": 17,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"Combat\",\n            \"Def\": 16,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
     \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"StaffProf\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
-    false,\n            \"ParentId\": \"Combat\",\n            \"Def\": 18,\n           
+    false,\n            \"ParentId\": \"Combat\",\n            \"Def\": 17,\n           
     \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
     },\n        {\n            \"Id\": \"UnarmedProf\",\n            \"IsEnabled\":
     true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
-    \"ParentId\": \"Combat\",\n            \"Def\": 19,\n            \"OverrideValue\":
+    \"ParentId\": \"Combat\",\n            \"Def\": 18,\n            \"OverrideValue\":
     -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n        },\n       
     {\n            \"Id\": \"PistolProf\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
-    \"Combat\",\n            \"Def\": 20,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"Combat\",\n            \"Def\": 19,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
     \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"ShotgunProf\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
-    false,\n            \"ParentId\": \"Combat\",\n            \"Def\": 21,\n           
+    false,\n            \"ParentId\": \"Combat\",\n            \"Def\": 20,\n           
     \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
     },\n        {\n            \"Id\": \"RifleProf\",\n            \"IsEnabled\":
     true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
-    \"ParentId\": \"Combat\",\n            \"Def\": 22,\n            \"OverrideValue\":
+    \"ParentId\": \"Combat\",\n            \"Def\": 21,\n            \"OverrideValue\":
     -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n        },\n       
     {\n            \"Id\": \"ThrowableProf\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
-    \"Combat\",\n            \"Def\": 23,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"Combat\",\n            \"Def\": 22,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
     \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"DefensiveProf\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
-    false,\n            \"ParentId\": \"Combat\",\n            \"Def\": 24,\n           
+    false,\n            \"ParentId\": \"Combat\",\n            \"Def\": 23,\n           
     \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
     },\n        {\n            \"Id\": \"CookProf\",\n            \"IsEnabled\":
     true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
-    \"ParentId\": \"Work\",\n            \"Def\": 25,\n            \"OverrideValue\":
+    \"ParentId\": \"Work\",\n            \"Def\": 24,\n            \"OverrideValue\":
     -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n        },\n       
     {\n            \"Id\": \"FarmProf\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
-    \"Work\",\n            \"Def\": 26,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"Work\",\n            \"Def\": 25,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
     \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"BuildProf\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
-    false,\n            \"ParentId\": \"Work\",\n            \"Def\": 27,\n           
+    false,\n            \"ParentId\": \"Work\",\n            \"Def\": 26,\n           
     \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
     },\n        {\n            \"Id\": \"GatherProf\",\n            \"IsEnabled\":
     true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
-    \"ParentId\": \"Work\",\n            \"Def\": 28,\n            \"OverrideValue\":
+    \"ParentId\": \"Work\",\n            \"Def\": 27,\n            \"OverrideValue\":
     -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n        },\n       
     {\n            \"Id\": \"CraftProf\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
-    \"Work\",\n            \"Def\": 29,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"Work\",\n            \"Def\": 28,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
     \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"MedicalProf\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
-    false,\n            \"ParentId\": \"Work\",\n            \"Def\": 30,\n           
+    false,\n            \"ParentId\": \"Work\",\n            \"Def\": 29,\n           
     \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
     },\n        {\n            \"Id\": \"ResearchProf\",\n            \"IsEnabled\":
     true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
-    \"ParentId\": \"Work\",\n            \"Def\": 31,\n            \"OverrideValue\":
+    \"ParentId\": \"Work\",\n            \"Def\": 30,\n            \"OverrideValue\":
     -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n        },\n       
     {\n            \"Id\": \"TradeProf\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
-    \"Work\",\n            \"Def\": 32,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"Work\",\n            \"Def\": 31,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
     \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"StealthProf\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
-    false,\n            \"ParentId\": \"Work\",\n            \"Def\": 33,\n           
+    false,\n            \"ParentId\": \"Work\",\n            \"Def\": 32,\n           
     \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
     },\n        {\n            \"Id\": \"SurvivalProf\",\n            \"IsEnabled\":
     true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
-    \"ParentId\": \"Work\",\n            \"Def\": 34,\n            \"OverrideValue\":
+    \"ParentId\": \"Work\",\n            \"Def\": 33,\n            \"OverrideValue\":
     -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n        },\n       
     {\n            \"Id\": \"LockpickingProf\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
-    \"Work\",\n            \"Def\": 35,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"Work\",\n            \"Def\": 34,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
     \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"TrapProf\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
-    false,\n            \"ParentId\": \"Work\",\n            \"Def\": 36,\n           
+    false,\n            \"ParentId\": \"Work\",\n            \"Def\": 35,\n           
     \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
     },\n        {\n            \"Id\": \"Needs\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": true,\n            \"IsOverride\": false,\n            \"ParentId\":
     \"\",\n            \"Def\": -1,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
     \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"Morale\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
-    false,\n            \"ParentId\": \"Needs\",\n            \"Def\": 37,\n           
+    false,\n            \"ParentId\": \"Needs\",\n            \"Def\": 36,\n           
     \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
     },\n        {\n            \"Id\": \"Sleepiness\",\n            \"IsEnabled\":
     true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
-    \"ParentId\": \"Needs\",\n            \"Def\": 38,\n            \"OverrideValue\":
+    \"ParentId\": \"Needs\",\n            \"Def\": 37,\n            \"OverrideValue\":
     -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n        },\n       
     {\n            \"Id\": \"Comfort\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
-    \"Needs\",\n            \"Def\": 39,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"Needs\",\n            \"Def\": 38,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
     \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"SocialNeed\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
-    false,\n            \"ParentId\": \"Needs\",\n            \"Def\": 40,\n           
+    false,\n            \"ParentId\": \"Needs\",\n            \"Def\": 39,\n           
     \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
     },\n        {\n            \"Id\": \"Boredom\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
-    \"Needs\",\n            \"Def\": 41,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"Needs\",\n            \"Def\": 40,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
     \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"Movement\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": true,\n            \"IsOverride\":
     false,\n            \"ParentId\": \"\",\n            \"Def\": -1,\n           
     \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
     },\n        {\n            \"Id\": \"CarryWeight\",\n            \"IsEnabled\":
     true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
-    \"ParentId\": \"Movement\",\n            \"Def\": 42,\n            \"OverrideValue\":
+    \"ParentId\": \"Movement\",\n            \"Def\": 41,\n            \"OverrideValue\":
     -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n        },\n       
     {\n            \"Id\": \"CurrentWeight\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
-    \"Movement\",\n            \"Def\": 43,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"Movement\",\n            \"Def\": 42,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
     \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"Resistance\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": true,\n            \"IsOverride\":
     false,\n            \"ParentId\": \"\",\n            \"Def\": -1,\n           
     \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
     },\n        {\n            \"Id\": \"BleedResist\",\n            \"IsEnabled\":
     true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
-    \"ParentId\": \"Resistance\",\n            \"Def\": 44,\n            \"OverrideValue\":
+    \"ParentId\": \"Resistance\",\n            \"Def\": 43,\n            \"OverrideValue\":
     -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n        },\n       
     {\n            \"Id\": \"InfectionResist\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
-    \"Resistance\",\n            \"Def\": 45,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"Resistance\",\n            \"Def\": 44,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
     \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"BluntResist\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
-    false,\n            \"ParentId\": \"Resistance\",\n            \"Def\": 46,\n           
+    false,\n            \"ParentId\": \"Resistance\",\n            \"Def\": 45,\n           
     \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
     },\n        {\n            \"Id\": \"FractureResist\",\n            \"IsEnabled\":
     true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
-    \"ParentId\": \"Resistance\",\n            \"Def\": 47,\n            \"OverrideValue\":
+    \"ParentId\": \"Resistance\",\n            \"Def\": 46,\n            \"OverrideValue\":
     -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n        },\n       
     {\n            \"Id\": \"FireResist\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
-    \"Resistance\",\n            \"Def\": 48,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"Resistance\",\n            \"Def\": 47,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
     \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"PoisonResist\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
-    false,\n            \"ParentId\": \"Resistance\",\n            \"Def\": 49,\n           
+    false,\n            \"ParentId\": \"Resistance\",\n            \"Def\": 48,\n           
     \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
     },\n        {\n            \"Id\": \"ColdResist\",\n            \"IsEnabled\":
     true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
-    \"ParentId\": \"Resistance\",\n            \"Def\": 50,\n            \"OverrideValue\":
+    \"ParentId\": \"Resistance\",\n            \"Def\": 49,\n            \"OverrideValue\":
     -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n        },\n       
     {\n            \"Id\": \"ElectricResist\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
-    \"Resistance\",\n            \"Def\": 51,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"Resistance\",\n            \"Def\": 50,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
     \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"RadiationResist\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
-    false,\n            \"ParentId\": \"Resistance\",\n            \"Def\": 52,\n           
+    false,\n            \"ParentId\": \"Resistance\",\n            \"Def\": 51,\n           
     \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
     },\n        {\n            \"Id\": \"Vision\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": true,\n            \"IsOverride\": false,\n            \"ParentId\":
     \"\",\n            \"Def\": -1,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
     \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"SightRange\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
-    false,\n            \"ParentId\": \"Vision\",\n            \"Def\": 53,\n           
+    false,\n            \"ParentId\": \"Vision\",\n            \"Def\": 52,\n           
     \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
     },\n        {\n            \"Id\": \"NightVision\",\n            \"IsEnabled\":
     true,\n            \"IsFolder\": false,\n            \"IsOverride\": false,\n           
-    \"ParentId\": \"Vision\",\n            \"Def\": 54,\n            \"OverrideValue\":
+    \"ParentId\": \"Vision\",\n            \"Def\": 53,\n            \"OverrideValue\":
     -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n        },\n       
     {\n            \"Id\": \"FlashResist\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
-    \"Vision\",\n            \"Def\": 55,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"Vision\",\n            \"Def\": 54,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
     \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"NPC\",\n           
     \"IsEnabled\": true,\n            \"IsFolder\": true,\n            \"IsOverride\":
     false,\n            \"ParentId\": \"\",\n            \"Def\": -1,\n           
     \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
     },\n        {\n            \"Id\": \"Loyalty\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
-    \"NPC\",\n            \"Def\": 56,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
+    \"NPC\",\n            \"Def\": 55,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
     \"DuplicateId\": \"\"\n        }\n    ]\n}"
   defRefs:
   - {fileID: 11400000, guid: a4daa9f1e55be4b4f81b14abf9dba4ff, type: 2}
-  - {fileID: 11400000, guid: 8bd0e24c321277c4d8d3756d48391b83, type: 2}
   - {fileID: 11400000, guid: 7a15ed3ce1391104db43f19f8560db13, type: 2}
   - {fileID: 11400000, guid: 47db3ebc61e4d9a4898b7b1de8318e0a, type: 2}
   - {fileID: 11400000, guid: 485edbb705fe62f4da4454ecacb5fec4, type: 2}

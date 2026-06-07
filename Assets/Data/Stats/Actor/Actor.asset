@@ -20,11 +20,6 @@ MonoBehaviour:
     },\n        {\n            \"Id\": \"HP\",\n            \"IsEnabled\": true,\n           
     \"IsFolder\": false,\n            \"IsOverride\": false,\n            \"ParentId\":
     \"Vitals\",\n            \"Def\": 0,\n            \"OverrideValue\": -3.4028234663852887e38,\n           
-    \"DuplicateId\": \"\"\n        },\n        {\n            \"Id\": \"MaxHP\",\n           
-    \"IsEnabled\": true,\n            \"IsFolder\": false,\n            \"IsOverride\":
-    false,\n            \"ParentId\": \"Vitals\",\n            \"Def\": 1,\n           
-    \"OverrideValue\": -3.4028234663852887e38,\n            \"DuplicateId\": \"\"\n       
-    }\n    ]\n}"
+    \"DuplicateId\": \"\"\n        }\n    ]\n}"
   defRefs:
   - {fileID: 11400000, guid: d5e1a2fae1ffaef459e7f777c38b42cf, type: 2}
-  - {fileID: 11400000, guid: 2f488cc384f464946b954548c7e10d98, type: 2}

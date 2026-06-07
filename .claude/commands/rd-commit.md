@@ -101,12 +101,16 @@ v0.4.1
    - 根据改动量决定升级级别（patch/minor/major）
    - 创建 `.agent/versions/vX.X.X.md` 写版本 changelog
    - 更新 `.agent/VERSION.md`
-3. **生成提交信息**，body 每行 `- ` 开头，≤80 字符
-4. `git commit`
-5. 执行 `/rd-doc` 三层归档：
+3. **归档文档**（版本文件已写入，一并提交）：
    - `sessions/YYYY-MM-DD-主题.md` — 会话记录
-   - `tech/modules/<模块>.md` — 技术改动
-   - `design/<子系统>.md` — 设计决策
+   - `tech/` — 有新增/修改模块时更新技术文档
+   - `design/` — 有设计决策时更新
+4. **生成提交信息并展示**，body 每行 `- ` 开头，≤80 字符。**用 `AskUserQuestion` 弹出确认按钮**：
+   - question: "确认提交？"
+   - header: "Commit"
+   - 两个选项: "提交" (label: "提交") / "取消" (label: "取消")
+   - 点"提交" → 执行 `git add -A && git commit -m "<message>"`
+   - 点"取消" → 终止，不做任何操作
 
 ## 版号
 
