@@ -36,6 +36,13 @@ namespace RedDust.Properties.Editor
         private bool _hasChanges;
         private string _highlightedNodeId;
         private string _searchFilter = "";
+
+        // Drag & drop reorder
+        private string _dragNodeId;
+        private string _dragParentId;
+        private int _dropIndex = -1;
+        private string _dropParentId;
+        private float _bestDropDistance;
         private Vector2 _centerScroll;
 
         /// <summary>
@@ -157,6 +164,10 @@ namespace RedDust.Properties.Editor
             // Tree scroll
             _centerScroll = EditorGUILayout.BeginScrollView(_centerScroll);
 
+            // Reset per-frame drag state
+            _dropParentId = null;
+            _bestDropDistance = float.MaxValue;
+
             for (int i = 0; i < _centerTreeRoots.Count; i++)
             {
                 var root = _centerTreeRoots[i];
@@ -165,6 +176,23 @@ namespace RedDust.Properties.Editor
 
                 if (i > 0) Shared.EditorUI.EditorUIUtility.CardGap(Pad);
                 DrawCenterNode(root);
+            }
+
+            // Handle drag end at top level
+            if (_dragNodeId != null && Event.current.type == EventType.DragExited)
+            {
+                CleanupDrag();
+                Repaint();
+            }
+
+            // Finalize drop: all folders evaluated, best match wins
+            if (_dragNodeId != null && Event.current.type == EventType.DragPerform && !string.IsNullOrEmpty(_dropParentId))
+            {
+                DragAndDrop.AcceptDrag();
+                ReorderLeaf(_dragNodeId, _dropParentId, _dropIndex);
+                CleanupDrag();
+                Repaint();
+                Event.current.Use();
             }
 
             // "Add Folder" at bottom of tree
@@ -464,24 +492,53 @@ namespace RedDust.Properties.Editor
 
                 EditorGUILayout.EndHorizontal();
 
+                // --- Collect visible children (regardless of expansion) ---
+                var visibleChildren = new List<CenterTreeNode>();
+                for (int i = 0; i < node.Children.Count; i++)
+                {
+                    var child = node.Children[i];
+                    if (child.IsFolder) continue;
+                    if (!string.IsNullOrEmpty(_searchFilter))
+                    {
+                        var q = _searchFilter.ToLowerInvariant();
+                        if (!child.NodeId.ToLowerInvariant().Contains(q)
+                            && (child.Def == null || !child.Def.Id.ToLowerInvariant().Contains(q)))
+                            continue;
+                    }
+                    visibleChildren.Add(child);
+                }
+
                 // --- Nested property cards (when expanded) ---
-                if (hasLeaves && _centerFoldouts.TryGetValue(node.NodeId, out var expanded) && expanded)
+                var cardRects = new List<Rect>();
+                bool expanded = _centerFoldouts.TryGetValue(node.NodeId, out var exp) && exp;
+                if (hasLeaves && expanded)
                 {
                     Shared.EditorUI.EditorUIUtility.CardGap(Pad);
-                    for (int i = 0; i < node.Children.Count; i++)
+
+                    for (int i = 0; i < visibleChildren.Count; i++)
                     {
-                        var child = node.Children[i];
-                        if (child.IsFolder) continue;
-                        if (!string.IsNullOrEmpty(_searchFilter))
+                        if (visibleChildren[i].NodeId == _dragNodeId)
                         {
-                            var q = _searchFilter.ToLowerInvariant();
-                            if (!child.NodeId.ToLowerInvariant().Contains(q)
-                                && (child.Def == null || !child.Def.Id.ToLowerInvariant().Contains(q)))
-                                continue;
+                            cardRects.Add(GUILayoutUtility.GetRect(0, 0));
+                            continue;
                         }
-                        DrawLeafCard(child);
+                        DrawLeafCard(visibleChildren[i]);
+                        cardRects.Add(GUILayoutUtility.GetLastRect());
                     }
+
+                    // Draw floating card at mouse position during drag
+                    if (_dragNodeId != null)
+                        DrawFloatingCard();
                 }
+                else if (_dragNodeId != null)
+                {
+                    // Collapsed or empty: use header area as drop zone
+                    cardRects.Add(GUILayoutUtility.GetLastRect());
+                }
+
+                // Handle drop (for all folders, expanded or not)
+                if (_dragNodeId != null)
+                    HandlePropertyDrop(node.NodeId, visibleChildren, cardRects);
 
                 EditorGUILayout.EndVertical();
                 EditorGUILayout.EndHorizontal();
@@ -541,6 +598,218 @@ namespace RedDust.Properties.Editor
             });
 
             GUI.backgroundColor = oldCardBg;
+
+            // --- Drag initiation ---
+            var cardRect = GUILayoutUtility.GetLastRect();
+            if (Event.current.type == EventType.MouseDrag && cardRect.Contains(Event.current.mousePosition))
+            {
+                _dragNodeId = node.NodeId;
+                _dragParentId = FindParentId(node.NodeId);
+                DragAndDrop.PrepareStartDrag();
+                DragAndDrop.objectReferences = new UnityEngine.Object[] { _tree };
+                DragAndDrop.StartDrag("PropertyDrag");
+                Event.current.Use();
+            }
+        }
+
+        /// <summary>
+        /// Detect drop position from card rects, handle DragUpdated/DragPerform,
+        /// and draw an overlay indicator line. Does NOT consume layout space.
+        /// </summary>
+        private void HandlePropertyDrop(string parentId, List<CenterTreeNode> children, List<Rect> cardRects)
+        {
+            if (_dragNodeId == null) return;
+            if (cardRects.Count == 0) return;
+
+            var evt = Event.current;
+            var mouseY = evt.mousePosition.y;
+
+            // Empty/collapsed folder: check if mouse is over the header area
+            if (children.Count == 0)
+            {
+                if (!cardRects[0].Contains(evt.mousePosition)) return;
+                if (evt.type == EventType.DragUpdated || evt.type == EventType.DragPerform)
+                {
+                    _dropIndex = 0;
+                    _dropParentId = parentId;
+                    DragAndDrop.visualMode = DragAndDropVisualMode.Move;
+                    if (evt.type == EventType.DragPerform)
+                    {
+                        DragAndDrop.AcceptDrag();
+                        ReorderLeaf(_dragNodeId, parentId, 0);
+                        CleanupDrag();
+                    }
+                    Repaint();
+                    evt.Use();
+                }
+                if (_dropIndex == 0 && _dropParentId == parentId && Event.current.type == EventType.Repaint)
+                {
+                    var r = cardRects[0];
+                    EditorGUI.DrawRect(new Rect(r.x, r.y, r.width, 4), new Color(0.3f, 0.7f, 1f, 0.8f));
+                }
+                return;
+            }
+
+            // Filter placeholder rects (from skipped dragged card)
+            var validRects = new List<Rect>();
+            for (int i = 0; i < cardRects.Count; i++)
+                if (cardRects[i].height > 0)
+                    validRects.Add(cardRects[i]);
+
+            if (validRects.Count == 0) return;
+
+            // Calculate distance from mouse to this folder's cards area
+            float areaTop = validRects[0].y;
+            float areaBottom = validRects[validRects.Count - 1].yMax;
+            float distToArea = mouseY < areaTop ? areaTop - mouseY
+                             : mouseY > areaBottom ? mouseY - areaBottom
+                             : 0;
+
+            // Determine insert index from card rect midpoints
+            int insertIndex = children.Count;
+            for (int i = 0; i < cardRects.Count; i++)
+            {
+                if (cardRects[i].height <= 0) continue;
+                float midY = cardRects[i].center.y;
+                if (mouseY < midY) { insertIndex = i; break; }
+            }
+
+            // Track best match: the folder closest to the mouse wins
+            if (evt.type == EventType.DragUpdated || evt.type == EventType.DragPerform)
+            {
+                if (string.IsNullOrEmpty(_dropParentId) || distToArea < _bestDropDistance)
+                {
+                    _dropIndex = insertIndex;
+                    _dropParentId = parentId;
+                    _bestDropDistance = distToArea;
+                    DragAndDrop.visualMode = DragAndDropVisualMode.Move;
+                }
+                Repaint();
+            }
+
+            // Draw overlay indicator at winning folder
+            if (_dropIndex >= 0 && _dropParentId == parentId && Event.current.type == EventType.Repaint)
+            {
+                Rect indicatorRect;
+                if (_dropIndex < cardRects.Count)
+                {
+                    var r = cardRects[_dropIndex];
+                    indicatorRect = new Rect(r.x, r.y - 2, r.width, 4);
+                }
+                else
+                {
+                    var r = cardRects[cardRects.Count - 1];
+                    indicatorRect = new Rect(r.x, r.yMax, r.width, 4);
+                }
+                EditorGUI.DrawRect(indicatorRect, new Color(0.3f, 0.7f, 1f, 0.8f));
+            }
+        }
+
+        private void DrawFloatingCard()
+        {
+            if (_dragNodeId == null) return;
+
+            // Find the dragged node
+            CenterTreeNode dragNode = null;
+            foreach (var (_, node) in _centerNodeIndex)
+                if (node.NodeId == _dragNodeId) { dragNode = node; break; }
+            if (dragNode == null) return;
+
+            var mousePos = Event.current.mousePosition;
+            float cardWidth = 280f;
+            float cardHeight = EditorGUIUtility.singleLineHeight + Pad * 2;
+
+            var floatingRect = new Rect(mousePos.x + 10, mousePos.y - cardHeight / 2, cardWidth, cardHeight);
+
+            // Semi-transparent background
+            var oldColor = GUI.color;
+            GUI.color = new Color(1, 1, 1, 0.85f);
+            GUI.Box(floatingRect, "", EditorStyles.helpBox);
+            GUI.color = oldColor;
+
+            // Content
+            var contentRect = new Rect(floatingRect.x + Pad, floatingRect.y + Pad,
+                cardWidth - Pad * 2, cardHeight - Pad * 2);
+
+            var nameStyle = new GUIStyle(EditorStyles.label)
+            {
+                alignment = TextAnchor.MiddleLeft,
+                fontSize = EditorStyles.label.fontSize
+            };
+
+            GUI.Label(new Rect(contentRect.x, contentRect.y, cardWidth * 0.7f, contentRect.height),
+                dragNode.NodeId, nameStyle);
+
+            var typeStyle = new GUIStyle(EditorStyles.label)
+            {
+                alignment = TextAnchor.MiddleRight,
+                fontSize = EditorStyles.label.fontSize
+            };
+            GUI.Label(new Rect(contentRect.x + cardWidth * 0.7f, contentRect.y, cardWidth * 0.3f - Pad * 2, contentRect.height),
+                dragNode.Def != null ? dragNode.Def.Type.ToString() : "-", typeStyle);
+        }
+
+        private void CleanupDrag()
+        {
+            _dragNodeId = null;
+            _dragParentId = null;
+            _dropIndex = -1;
+            _dropParentId = null;
+            _bestDropDistance = float.MaxValue;
+        }
+
+        private string FindParentId(string nodeId)
+        {
+            foreach (var n in _ownNodes)
+                if (n.NodeId == nodeId && !string.IsNullOrEmpty(n.DefId))
+                    return n.ParentId;
+            return "";
+        }
+
+        private void ReorderLeaf(string nodeId, string targetParentId, int insertIndex)
+        {
+            // Find the node
+            var node = _ownNodes.FirstOrDefault(n => n.NodeId == nodeId && !string.IsNullOrEmpty(n.DefId));
+            if (node == null) return;
+
+            Undo.RecordObject(_tree, "Reorder Property");
+
+            // Remove from current position
+            _ownNodes.Remove(node);
+
+            // Find all siblings in target parent and their positions
+            var siblings = new List<int>(); // indices in _ownNodes
+            for (int i = 0; i < _ownNodes.Count; i++)
+            {
+                var n = _ownNodes[i];
+                if (n.ParentId == targetParentId && !string.IsNullOrEmpty(n.DefId))
+                    siblings.Add(i);
+            }
+
+            // Determine insert position in _ownNodes
+            int targetListIndex;
+            if (insertIndex >= siblings.Count)
+            {
+                // Insert after last sibling
+                targetListIndex = siblings.Count > 0 ? siblings[siblings.Count - 1] + 1 : _ownNodes.Count;
+            }
+            else
+            {
+                targetListIndex = siblings[insertIndex];
+            }
+
+            // Update parent if changed
+            node.ParentId = targetParentId;
+
+            // Insert at target position
+            _ownNodes.Insert(targetListIndex, node);
+
+            // Save to treeJson so RefreshAfterEdit doesn't overwrite the reorder
+            _tree.treeJson = JsonUtility.ToJson(new PropertyTreeContainer { Nodes = _ownNodes }, true);
+            EditorUtility.SetDirty(_tree);
+
+            _hasChanges = true;
+            RefreshAfterEdit();
         }
 
         private void HandleNodeDragDrop(Rect cardRect, CenterTreeNode node)
@@ -684,11 +953,24 @@ namespace RedDust.Properties.Editor
                 AssignPath(child, node.Path);
         }
 
-        private static void SortTreeNodes(List<CenterTreeNode> nodes)
+        private void SortTreeNodes(List<CenterTreeNode> nodes)
         {
             nodes.Sort((a, b) =>
             {
+                // Folders always first
                 if (a.IsFolder != b.IsFolder) return a.IsFolder ? -1 : 1;
+
+                if (!a.IsFolder)
+                {
+                    // Leaves: follow _ownNodes order; inherited fall back to alpha
+                    int ia = _ownNodes.FindIndex(n => n.NodeId == a.NodeId);
+                    int ib = _ownNodes.FindIndex(n => n.NodeId == b.NodeId);
+                    if (ia >= 0 && ib >= 0) return ia.CompareTo(ib);
+                    if (ia < 0 && ib < 0) return string.CompareOrdinal(a.NodeId, b.NodeId);
+                    return ia >= 0 ? -1 : 1; // local before inherited
+                }
+
+                // Folders: alpha
                 return string.CompareOrdinal(a.NodeId, b.NodeId);
             });
             foreach (var n in nodes) SortTreeNodes(n.Children);

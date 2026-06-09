@@ -33,7 +33,20 @@ L3_Properties 系统落地后，需要 Editor 工具来可视化编辑 PropertyT
 - 移除 DefId 和 Source 列 → 名称和颜色已区分继承/自身
 - 移除 inline 编辑（双击重命名）→ 简化，后续再加
 
-## 经验教训
+## 2026-06-10 下午 — 拖拽排序
+
+### 实现
+- **拖起**：`MouseDrag` → `PrepareStartDrag` + `objectReferences` + `StartDrag`
+- **拖中**：浮动卡片跟随鼠标（`GUI.Box` 半透明），原位置跳过渲染
+- **放下**：全局最优距离匹配（每个文件夹算距鼠标距离，最近者胜出）→ `ReorderLeaf`
+- **排序持久化**：`ReorderLeaf` 先存 `treeJson` 再 `RefreshAfterEdit`，避免被 `LoadOwnNodes` 覆写
+- **SortTreeNodes**：改为实例方法，叶子按 `_ownNodes` 顺序排，不再字母排序覆盖
+
+### 踩坑
+- Unity Mono 的 `Dictionary` 不保证迭代顺序，`ResolveAllNodes` 返回的字典顺序不可预测
+- `DragUpdated`/`DragPerform` 中 `GUI.Box` 不在 Repaint 时不渲染 → 指示线移到事件外绘制
+- 占布局空间的 `GetControlRect` drop zone 导致拖拽时卡片间距变大 → 改为 `EditorGUI.DrawRect` 覆盖层
+- 首次尝试的 `HandleDropBetween` 每个文件夹都消费事件 → 改为全局最优匹配
 
 - `EditorStyles.toolbarSearchField` 的 `fixedHeight` 覆盖 `GUILayout.Height()`
 - `GUIStyle.none` 基样式缺少布局属性，破坏卡片循环
