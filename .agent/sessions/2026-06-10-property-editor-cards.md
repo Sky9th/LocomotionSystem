@@ -40,7 +40,35 @@ L3_Properties 系统落地后，需要 Editor 工具来可视化编辑 PropertyT
 - **拖中**：浮动卡片跟随鼠标（`GUI.Box` 半透明），原位置跳过渲染
 - **放下**：全局最优距离匹配（每个文件夹算距鼠标距离，最近者胜出）→ `ReorderLeaf`
 - **排序持久化**：`ReorderLeaf` 先存 `treeJson` 再 `RefreshAfterEdit`，避免被 `LoadOwnNodes` 覆写
-- **SortTreeNodes**：改为实例方法，叶子按 `_ownNodes` 顺序排，不再字母排序覆盖
+- **SortTreeNodes**：改为实例方法，叶子 + 文件夹都按 `_ownNodes` 顺序排，不再字母排序覆盖
+
+## 2026-06-10 后续 — 右侧属性池 + 拖入 + 删除修复 + 文件夹拖拽
+
+### 右侧属性池
+- 搜索栏 + 属性卡片列表（字母排序）
+- 已使用属性绿色背景标记
+- 属性行 `MouseDrag` → `StartDrag("DefDrag")` 带 `PropertyDefSO`
+- 拖入文件夹：`HandleDefDrop` 最近匹配 + `AddDefToFolder` 指定插入位置
+- `AddDefToFolder` 先存 `treeJson` 再 `RefreshAfterEdit`
+
+### 删除修复
+- `DeleteLeaf` / `DeleteFolderByNode` / `AddFolder` / `AddLeafToNode` 全部持久化 treeJson
+
+### 文件夹拖拽排序
+- `≡` 锚点拖拽（10px），悬浮高亮
+- `HandleFolderReorder` 覆盖层指示线，复用属性排序模式
+- `ReorderFolder` 在 `_ownNodes` 中重排根级文件夹
+- `IsDraggingFolder()` 检查 `DefId` 为空 → 文件夹/属性拖拽互不干扰
+- `GUI.enabled` 拖拽期间禁用文件夹输入框
+- `string.IsNullOrEmpty` 防空字符串泄漏
+
+### 搜索优化
+- 搜索匹配属性加粗高亮，不再隐藏未匹配属性
+
+### 踩坑
+- `_folderDropIndex` 泄漏 → 每帧重置
+- `_dragNodeId` 空字符串导致全局禁用 → `string.IsNullOrEmpty` 替换所有判空
+- `SortTreeNodes` 文件夹按字母排序 → 改为按 `_ownNodes` 顺序
 
 ### 踩坑
 - Unity Mono 的 `Dictionary` 不保证迭代顺序，`ResolveAllNodes` 返回的字典顺序不可预测

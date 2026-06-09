@@ -38,11 +38,15 @@ namespace RedDust.Properties.Editor
         private string _searchFilter = "";
 
         // Drag & drop reorder
-        private string _dragNodeId;
-        private string _dragParentId;
+        private string _dragNodeId = null;
+        private string _dragParentId = null;
         private int _dropIndex = -1;
         private string _dropParentId;
         private float _bestDropDistance;
+        private float _defDropTargetY;
+        private string _defDropTargetNodeId;
+        private int _defDropIndex;
+        private int _folderDropIndex = -1;
         private Vector2 _centerScroll;
 
         /// <summary>
@@ -167,26 +171,51 @@ namespace RedDust.Properties.Editor
             // Reset per-frame drag state
             _dropParentId = null;
             _bestDropDistance = float.MaxValue;
+            _defDropTargetY = float.MinValue;
+            _defDropTargetNodeId = null;
+            _folderDropIndex = -1;
 
-            for (int i = 0; i < _centerTreeRoots.Count; i++)
+            // Collect visible roots
+            var visibleRoots = new List<CenterTreeNode>();
+            foreach (var root in _centerTreeRoots)
+                if (root.IsFolder) visibleRoots.Add(root);
+
+            bool draggingFolder = IsDraggingFolder();
+
+            // Draw and capture rects
+            var folderRects = new List<Rect>();
+            for (int i = 0; i < visibleRoots.Count; i++)
             {
-                var root = _centerTreeRoots[i];
-                // Root must be folder — skip leaves at root level
-                if (!root.IsFolder) continue;
+                var root = visibleRoots[i];
 
                 if (i > 0) Shared.EditorUI.EditorUIUtility.CardGap(Pad);
+
+                if (root.NodeId == _dragNodeId && draggingFolder)
+                {
+                    folderRects.Add(GUILayoutUtility.GetRect(0, 0));
+                    continue;
+                }
+
                 DrawCenterNode(root);
+                folderRects.Add(GUILayoutUtility.GetLastRect());
+            }
+
+            // Overlay drop handling (no layout space, same pattern as property reorder)
+            if (draggingFolder)
+            {
+                HandleFolderReorder(visibleRoots, folderRects);
+                DrawFloatingCard();
             }
 
             // Handle drag end at top level
-            if (_dragNodeId != null && Event.current.type == EventType.DragExited)
+            if (!string.IsNullOrEmpty(_dragNodeId) && Event.current.type == EventType.DragExited)
             {
                 CleanupDrag();
                 Repaint();
             }
 
-            // Finalize drop: all folders evaluated, best match wins
-            if (_dragNodeId != null && Event.current.type == EventType.DragPerform && !string.IsNullOrEmpty(_dropParentId))
+            // Finalize property reorder
+            if (!string.IsNullOrEmpty(_dragNodeId) && Event.current.type == EventType.DragPerform && !string.IsNullOrEmpty(_dropParentId))
             {
                 DragAndDrop.AcceptDrag();
                 ReorderLeaf(_dragNodeId, _dropParentId, _dropIndex);
@@ -195,10 +224,27 @@ namespace RedDust.Properties.Editor
                 Event.current.Use();
             }
 
+            // Finalize DefSO drop from right panel: closest folder below mouse wins
+            if (string.IsNullOrEmpty(_dragNodeId) && Event.current.type == EventType.DragPerform && !string.IsNullOrEmpty(_defDropTargetNodeId))
+            {
+                var dragDef = DragAndDrop.objectReferences.Length > 0
+                    ? DragAndDrop.objectReferences[0] as PropertyDefSO : null;
+                if (dragDef != null && !_usedDefIds.Contains(dragDef.Id))
+                {
+                    DragAndDrop.AcceptDrag();
+                    AddDefToFolder(_defDropTargetNodeId, dragDef, _defDropIndex);
+                }
+                _defDropTargetNodeId = null;
+                _defDropTargetY = float.MinValue;
+                _defDropIndex = 0;
+                Repaint();
+                Event.current.Use();
+            }
+
             // "Add Folder" at bottom of tree
             Shared.EditorUI.EditorUIUtility.CardGap(Pad);
             if (GUILayout.Button("+ Add Folder", GUILayout.Height(22)))
-                NewFolderDialog.Show(name => AddFolder(name));
+                AddFolder("New Folder");
 
             EditorGUILayout.EndScrollView();
         }
@@ -210,7 +256,7 @@ namespace RedDust.Properties.Editor
                 EditorGUILayout.BeginHorizontal();
 
                 // Search field
-                EditorGUILayout.LabelField("Search", EditorStyles.label, GUILayout.Width(45));
+                EditorGUILayout.LabelField("Search", new GUIStyle(EditorStyles.label) { alignment = TextAnchor.MiddleLeft }, GUILayout.Width(45), GUILayout.Height(22));
                 EditorGUI.BeginChangeCheck();
                 _searchFilter = EditorGUILayout.TextField(_searchFilter, GUILayout.ExpandWidth(true), GUILayout.Height(22));
                 if (EditorGUI.EndChangeCheck()) Repaint();
@@ -221,7 +267,7 @@ namespace RedDust.Properties.Editor
 
                 // Add folder button
                 if (GUILayout.Button("+ Add Folder", GUILayout.Height(22)))
-                    NewFolderDialog.Show(name => AddFolder(name));
+                    AddFolder("New Folder");
 
                 EditorGUILayout.EndHorizontal();
             });
@@ -276,7 +322,7 @@ namespace RedDust.Properties.Editor
             {
                 // Search row
                 EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Search", EditorStyles.label, GUILayout.Width(45));
+                EditorGUILayout.LabelField("Search", new GUIStyle(EditorStyles.label) { alignment = TextAnchor.MiddleLeft }, GUILayout.Width(45), GUILayout.Height(22));
                 EditorGUI.BeginChangeCheck();
                 _leftSearch = EditorGUILayout.TextField(_leftSearch, GUILayout.ExpandWidth(true), GUILayout.Height(22));
                 if (EditorGUI.EndChangeCheck()) RefreshTreeList();
@@ -424,18 +470,41 @@ namespace RedDust.Properties.Editor
 
             Shared.EditorUI.EditorUIUtility.DrawCard(Pad, () =>
             {
+                const float AnchorWidth = 10f;
                 const float FoldoutWidth = 14f;
                 const float FoldoutGap = 6f;
 
                 EditorGUILayout.BeginHorizontal();
 
-                // --- Foldout (left, fixed 20px) ---
+                // --- Anchor + Foldout (left, fixed 30px) ---
                 float rowH = EditorGUIUtility.singleLineHeight;
                 bool hasLeaves = node.Children.Count > 0;
                 if (!_centerFoldouts.ContainsKey(node.NodeId))
                     _centerFoldouts[node.NodeId] = true;
 
-                EditorGUILayout.BeginHorizontal(GUILayout.Width(FoldoutWidth + FoldoutGap));
+                EditorGUILayout.BeginHorizontal(GUILayout.Width(AnchorWidth + FoldoutWidth + FoldoutGap));
+
+                // Drag anchor "≡" — hover highlight
+                var anchorRect = GUILayoutUtility.GetRect(AnchorWidth, rowH);
+                bool anchorHover = anchorRect.Contains(Event.current.mousePosition);
+                var anchorColor = anchorHover ? new Color(0.7f, 0.7f, 0.7f) : Color.gray;
+                var anchorStyle = new GUIStyle(EditorStyles.label)
+                    { alignment = TextAnchor.MiddleCenter, fontSize = 10 };
+                anchorStyle.normal.textColor = anchorColor;
+                GUI.Label(anchorRect, "≡", anchorStyle);
+
+                if (Event.current.type == EventType.MouseDrag
+                    && anchorRect.Contains(Event.current.mousePosition)
+                    && string.IsNullOrEmpty(_dragNodeId) && node.IsLocal)
+                {
+                    _dragNodeId = node.NodeId;
+                    DragAndDrop.PrepareStartDrag();
+                    DragAndDrop.objectReferences = new UnityEngine.Object[] { _tree };
+                    DragAndDrop.StartDrag("FolderDrag");
+                    Event.current.Use();
+                }
+
+                // Foldout
                 if (hasLeaves)
                 {
                     var foldRect = GUILayoutUtility.GetRect(FoldoutWidth, rowH);
@@ -459,7 +528,9 @@ namespace RedDust.Properties.Editor
 
                 // Editable folder name
                 GUI.SetNextControlName($"folder_{node.NodeId}");
+                GUI.enabled = string.IsNullOrEmpty(_dragNodeId);
                 var newName = EditorGUILayout.TextField(node.NodeId, GUILayout.Width(160));
+                GUI.enabled = true;
                 if (newName != node.NodeId && !string.IsNullOrWhiteSpace(newName) && !newName.Contains("/"))
                 {
                     // Commit rename on Enter or focus loss
@@ -491,20 +562,13 @@ namespace RedDust.Properties.Editor
                 }
 
                 EditorGUILayout.EndHorizontal();
+                var headerEndY = GUILayoutUtility.GetLastRect().yMax;
 
-                // --- Collect visible children (regardless of expansion) ---
                 var visibleChildren = new List<CenterTreeNode>();
                 for (int i = 0; i < node.Children.Count; i++)
                 {
                     var child = node.Children[i];
                     if (child.IsFolder) continue;
-                    if (!string.IsNullOrEmpty(_searchFilter))
-                    {
-                        var q = _searchFilter.ToLowerInvariant();
-                        if (!child.NodeId.ToLowerInvariant().Contains(q)
-                            && (child.Def == null || !child.Def.Id.ToLowerInvariant().Contains(q)))
-                            continue;
-                    }
                     visibleChildren.Add(child);
                 }
 
@@ -522,23 +586,28 @@ namespace RedDust.Properties.Editor
                             cardRects.Add(GUILayoutUtility.GetRect(0, 0));
                             continue;
                         }
-                        DrawLeafCard(visibleChildren[i]);
+                        bool match = !string.IsNullOrEmpty(_searchFilter)
+                            && (visibleChildren[i].NodeId.ToLowerInvariant().Contains(_searchFilter.ToLowerInvariant())
+                                || (visibleChildren[i].Def != null && visibleChildren[i].Def.Id.ToLowerInvariant().Contains(_searchFilter.ToLowerInvariant())));
+                        DrawLeafCard(visibleChildren[i], match);
                         cardRects.Add(GUILayoutUtility.GetLastRect());
                     }
 
                     // Draw floating card at mouse position during drag
-                    if (_dragNodeId != null)
+                    if (!string.IsNullOrEmpty(_dragNodeId))
                         DrawFloatingCard();
                 }
-                else if (_dragNodeId != null)
+                else if (!string.IsNullOrEmpty(_dragNodeId))
                 {
                     // Collapsed or empty: use header area as drop zone
                     cardRects.Add(GUILayoutUtility.GetLastRect());
                 }
 
-                // Handle drop (for all folders, expanded or not)
-                if (_dragNodeId != null)
+                // Handle property reorder drop
+                if (!string.IsNullOrEmpty(_dragNodeId))
                     HandlePropertyDrop(node.NodeId, visibleChildren, cardRects);
+
+                HandleDefDrop(node, headerEndY, visibleChildren, cardRects);
 
                 EditorGUILayout.EndVertical();
                 EditorGUILayout.EndHorizontal();
@@ -546,10 +615,49 @@ namespace RedDust.Properties.Editor
         }
 
         /// <summary>
+        /// Accept PropertyDefSO drops from the right panel into this folder.
+        /// (Separate from property reorder to avoid conflict with _dragNodeId system.)
+        /// </summary>
+        private void HandleDefDrop(CenterTreeNode node, float headerEndY, List<CenterTreeNode> children, List<Rect> cardRects)
+        {
+            var evt = Event.current;
+            if (evt.type != EventType.DragUpdated && evt.type != EventType.DragPerform) return;
+            if (!string.IsNullOrEmpty(_dragNodeId)) return;
+
+            var dragDef = DragAndDrop.objectReferences.Length > 0
+                ? DragAndDrop.objectReferences[0] as PropertyDefSO : null;
+            if (dragDef == null) return;
+
+            // Mouse must be below this folder's header
+            if (evt.mousePosition.y < headerEndY) return;
+
+            // Track closest folder below mouse (highest headerEndY that's still ≤ mouse)
+            if (headerEndY > _defDropTargetY)
+            {
+                _defDropTargetY = headerEndY;
+                _defDropTargetNodeId = node.NodeId;
+
+                // Calculate insert index from card rects
+                _defDropIndex = children.Count;
+                var mouseY = evt.mousePosition.y;
+                for (int i = 0; i < cardRects.Count; i++)
+                {
+                    if (cardRects[i].height <= 0) continue;
+                    if (mouseY < cardRects[i].center.y) { _defDropIndex = i; break; }
+                }
+
+                DragAndDrop.visualMode = _usedDefIds.Contains(dragDef.Id)
+                    ? DragAndDropVisualMode.Rejected
+                    : DragAndDropVisualMode.Copy;
+                Repaint();
+            }
+        }
+
+        /// <summary>
         /// Draw a single property leaf as a bordered card row.
         /// Own properties: normal background. Inherited: gray background + gray text.
         /// </summary>
-        private void DrawLeafCard(CenterTreeNode node)
+        private void DrawLeafCard(CenterTreeNode node, bool searchMatch = false)
         {
             bool isLocal = node.IsLocal;
             var textColor = isLocal ? Color.white : ColorInherit;
@@ -559,18 +667,17 @@ namespace RedDust.Properties.Editor
 
             Shared.EditorUI.EditorUIUtility.DrawCard(Pad, () =>
             {
-                EditorGUILayout.BeginHorizontal();
+                var rowH = EditorGUIUtility.singleLineHeight;
+                EditorGUILayout.BeginHorizontal(GUILayout.Height(rowH));
 
                 // --- Name ---
                 GUI.color = textColor;
-                if (isLocal)
+                var nameStyle = new GUIStyle(EditorStyles.label)
                 {
-                    GUILayout.Label(node.NodeId, EditorStyles.label, GUILayout.ExpandWidth(true));
-                }
-                else
-                {
-                    GUILayout.Label(node.NodeId, EditorStyles.label, GUILayout.ExpandWidth(true));
-                }
+                    alignment = TextAnchor.MiddleLeft,
+                    fontStyle = searchMatch ? FontStyle.Bold : FontStyle.Normal
+                };
+                GUILayout.Label(node.NodeId, nameStyle, GUILayout.ExpandWidth(true), GUILayout.Height(rowH));
                 GUI.color = Color.white;
 
                 // --- Type ---
@@ -580,7 +687,7 @@ namespace RedDust.Properties.Editor
                     alignment = TextAnchor.MiddleRight
                 };
                 GUILayout.Label(node.Def != null ? node.Def.Type.ToString() : "-",
-                    typeStyle, GUILayout.Width(90));
+                    typeStyle, GUILayout.Width(90), GUILayout.Height(rowH));
                 GUI.color = Color.white;
 
                 // --- Delete ---
@@ -618,7 +725,8 @@ namespace RedDust.Properties.Editor
         /// </summary>
         private void HandlePropertyDrop(string parentId, List<CenterTreeNode> children, List<Rect> cardRects)
         {
-            if (_dragNodeId == null) return;
+            if (string.IsNullOrEmpty(_dragNodeId)) return;
+            if (IsDraggingFolder()) return; // Folder drag uses separate system
             if (cardRects.Count == 0) return;
 
             var evt = Event.current;
@@ -707,7 +815,7 @@ namespace RedDust.Properties.Editor
 
         private void DrawFloatingCard()
         {
-            if (_dragNodeId == null) return;
+            if (string.IsNullOrEmpty(_dragNodeId)) return;
 
             // Find the dragged node
             CenterTreeNode dragNode = null;
@@ -756,6 +864,104 @@ namespace RedDust.Properties.Editor
             _dropIndex = -1;
             _dropParentId = null;
             _bestDropDistance = float.MaxValue;
+            _folderDropIndex = -1;
+        }
+
+        private bool IsDraggingFolder()
+        {
+            if (string.IsNullOrEmpty(_dragNodeId)) return false;
+            foreach (var n in _ownNodes)
+                if (n.NodeId == _dragNodeId && string.IsNullOrEmpty(n.DefId)) return true;
+            return false;
+        }
+
+        private void HandleFolderReorder(List<CenterTreeNode> roots, List<Rect> folderRects)
+        {
+            if (!IsDraggingFolder()) return;
+            if (folderRects.Count == 0) return;
+
+            var evt = Event.current;
+            var mouseY = evt.mousePosition.y;
+
+            // Filter valid rects
+            var validRects = new List<Rect>();
+            for (int i = 0; i < folderRects.Count; i++)
+                if (folderRects[i].height > 0)
+                    validRects.Add(folderRects[i]);
+            if (validRects.Count == 0) return;
+
+            float areaTop = validRects[0].y - Pad;
+            if (mouseY < areaTop) return;
+
+            // Calculate insert index from rect midpoints
+            int insertIndex = roots.Count;
+            for (int i = 0; i < folderRects.Count; i++)
+            {
+                if (folderRects[i].height <= 0) continue;
+                if (mouseY < folderRects[i].center.y) { insertIndex = i; break; }
+            }
+
+            if (evt.type == EventType.DragUpdated)
+            {
+                _folderDropIndex = insertIndex;
+                DragAndDrop.visualMode = DragAndDropVisualMode.Move;
+                Repaint();
+                evt.Use();
+            }
+            else if (evt.type == EventType.DragPerform)
+            {
+                DragAndDrop.AcceptDrag();
+                ReorderFolder(_dragNodeId, insertIndex);
+                CleanupDrag();
+                Repaint();
+                evt.Use();
+            }
+
+            // Draw overlay indicator (only use valid rects)
+            if (_folderDropIndex >= 0 && Event.current.type == EventType.Repaint && validRects.Count > 0)
+            {
+                Rect indicatorRect;
+                int validIdx = 0;
+                for (int i = 0; i < _folderDropIndex && i < folderRects.Count; i++)
+                    if (folderRects[i].height > 0) validIdx++;
+                if (validIdx < validRects.Count)
+                {
+                    var r = validRects[validIdx];
+                    indicatorRect = new Rect(r.x, r.y - 2, r.width, 4);
+                }
+                else
+                {
+                    var r = validRects[validRects.Count - 1];
+                    indicatorRect = new Rect(r.x, r.yMax, r.width, 4);
+                }
+                EditorGUI.DrawRect(indicatorRect, new Color(0.3f, 0.7f, 1f, 0.8f));
+            }
+        }
+
+        private void ReorderFolder(string nodeId, int targetIndex)
+        {
+            var node = _ownNodes.FirstOrDefault(n => n.NodeId == nodeId && string.IsNullOrEmpty(n.DefId));
+            if (node == null) return;
+
+            Undo.RecordObject(_tree, "Reorder Folder");
+            _ownNodes.Remove(node);
+
+            // Find target position among root folders
+            int insertAt = _ownNodes.Count;
+            int rootCount = 0;
+            for (int i = 0; i < _ownNodes.Count; i++)
+            {
+                if (string.IsNullOrEmpty(_ownNodes[i].ParentId) && string.IsNullOrEmpty(_ownNodes[i].DefId))
+                {
+                    if (rootCount == targetIndex) { insertAt = i; break; }
+                    rootCount++;
+                }
+            }
+
+            _ownNodes.Insert(insertAt, node);
+            _tree.treeJson = JsonUtility.ToJson(new PropertyTreeContainer { Nodes = _ownNodes }, true);
+            EditorUtility.SetDirty(_tree);
+            _hasChanges = true; RefreshAfterEdit();
         }
 
         private string FindParentId(string nodeId)
@@ -854,6 +1060,127 @@ namespace RedDust.Properties.Editor
         // ============================================================
         private void DrawRightContent()
         {
+            // Search
+            DrawRightSearch();
+            Shared.EditorUI.EditorUIUtility.CardGap(Pad);
+
+            // Def pool card
+            Shared.EditorUI.EditorUIUtility.DrawCard(Pad, () =>
+            {
+                EditorGUILayout.LabelField("Property Pool", EditorStyles.boldLabel);
+                GUILayout.Space(Pad);
+
+                _rightScroll = EditorGUILayout.BeginScrollView(_rightScroll);
+
+                // Filter and sort
+                var filtered = new List<PropertyDefSO>();
+                foreach (var d in _allDefs)
+                {
+                    if (string.IsNullOrEmpty(_rightSearch)
+                        || d.Id.ToLowerInvariant().Contains(_rightSearch.ToLowerInvariant())
+                        || d.Type.ToString().ToLowerInvariant().Contains(_rightSearch.ToLowerInvariant()))
+                        filtered.Add(d);
+                }
+                filtered.Sort((a, b) => string.CompareOrdinal(a.Id, b.Id));
+
+                foreach (var def in filtered)
+                {
+                    bool used = _usedDefIds.Contains(def.Id);
+                    DrawRightDefRow(def, used);
+                }
+
+                if (filtered.Count == 0)
+                    EditorGUILayout.LabelField("No definitions found.", EditorStyles.centeredGreyMiniLabel);
+
+                EditorGUILayout.EndScrollView();
+
+                // Drop zone for removing properties from tree
+                HandleRightPanelDrop();
+            });
+        }
+
+        private void DrawRightSearch()
+        {
+            Shared.EditorUI.EditorUIUtility.DrawCard(Pad, () =>
+            {
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Search", new GUIStyle(EditorStyles.label) { alignment = TextAnchor.MiddleLeft }, GUILayout.Width(45), GUILayout.Height(22));
+                EditorGUI.BeginChangeCheck();
+                _rightSearch = EditorGUILayout.TextField(_rightSearch, GUILayout.ExpandWidth(true), GUILayout.Height(22));
+                if (EditorGUI.EndChangeCheck()) RefreshDefPool();
+                if (!string.IsNullOrEmpty(_rightSearch) && GUILayout.Button("x", EditorStyles.miniButton, GUILayout.Width(20)))
+                { _rightSearch = ""; RefreshDefPool(); GUI.FocusControl(null); }
+                EditorGUILayout.EndHorizontal();
+            });
+        }
+
+        private void DrawRightDefRow(PropertyDefSO def, bool isUsed)
+        {
+            var rowH = EditorGUIUtility.singleLineHeight;
+
+            var oldBg = GUI.backgroundColor;
+            if (isUsed) GUI.backgroundColor = new Color(0.2f, 0.3f, 0.2f, 0.5f);
+
+            Shared.EditorUI.EditorUIUtility.DrawCard(2, () =>
+            {
+                EditorGUILayout.BeginHorizontal(GUILayout.Height(rowH));
+
+                var nameStyle = new GUIStyle(EditorStyles.label)
+                {
+                    alignment = TextAnchor.MiddleLeft,
+                    normal = { textColor = isUsed ? Color.gray : Color.white }
+                };
+                GUILayout.Label(def.Id, nameStyle, GUILayout.ExpandWidth(true), GUILayout.Height(rowH));
+
+                var typeStyle = new GUIStyle(EditorStyles.label)
+                {
+                    alignment = TextAnchor.MiddleRight,
+                    fontSize = EditorStyles.miniLabel.fontSize,
+                    normal = { textColor = isUsed ? Color.gray : new Color(0.7f, 0.7f, 0.7f) }
+                };
+                GUILayout.Label(def.Type.ToString(), typeStyle, GUILayout.Width(70), GUILayout.Height(rowH));
+
+                EditorGUILayout.EndHorizontal();
+            });
+
+            GUI.backgroundColor = oldBg;
+
+            // Drag initiation — start drag with this PropertyDefSO
+            var rowRect = GUILayoutUtility.GetLastRect();
+            if (Event.current.type == EventType.MouseDrag && rowRect.Contains(Event.current.mousePosition))
+            {
+                DragAndDrop.PrepareStartDrag();
+                DragAndDrop.objectReferences = new UnityEngine.Object[] { def };
+                DragAndDrop.StartDrag("DefDrag");
+                Event.current.Use();
+            }
+        }
+
+        private void HandleRightPanelDrop()
+        {
+            var evt = Event.current;
+            if (string.IsNullOrEmpty(_dragNodeId)) return;
+
+            // Use a generous drop zone covering the right panel area
+            var dropRect = GUILayoutUtility.GetRect(0, EditorGUIUtility.singleLineHeight * 3, GUILayout.ExpandWidth(true));
+
+            if (evt.type == EventType.DragUpdated || evt.type == EventType.DragPerform)
+            {
+                DragAndDrop.visualMode = DragAndDropVisualMode.Move;
+
+                // Draw drop indicator
+                if (Event.current.type == EventType.Repaint)
+                    EditorGUI.DrawRect(dropRect, new Color(0.9f, 0.3f, 0.3f, 0.4f));
+
+                if (evt.type == EventType.DragPerform)
+                {
+                    DragAndDrop.AcceptDrag();
+                    DeleteLeaf(_dragNodeId);
+                    CleanupDrag();
+                }
+                Repaint();
+                evt.Use();
+            }
         }
 
         private static string DefSummary(PropertyDefSO def)
@@ -970,8 +1297,12 @@ namespace RedDust.Properties.Editor
                     return ia >= 0 ? -1 : 1; // local before inherited
                 }
 
-                // Folders: alpha
-                return string.CompareOrdinal(a.NodeId, b.NodeId);
+                // Folders: follow _ownNodes order; fall back to alpha
+                int fa = _ownNodes.FindIndex(n => n.NodeId == a.NodeId);
+                int fb = _ownNodes.FindIndex(n => n.NodeId == b.NodeId);
+                if (fa >= 0 && fb >= 0) return fa.CompareTo(fb);
+                if (fa < 0 && fb < 0) return string.CompareOrdinal(a.NodeId, b.NodeId);
+                return fa >= 0 ? -1 : 1;
             });
             foreach (var n in nodes) SortTreeNodes(n.Children);
         }
@@ -1050,6 +1381,38 @@ namespace RedDust.Properties.Editor
         {
             Undo.RecordObject(_tree, "Add Leaf");
             _ownNodes.Add(new PropertyNode { NodeId = nodeId, ParentId = parentNodeId, DefId = "" });
+            _tree.treeJson = JsonUtility.ToJson(new PropertyTreeContainer { Nodes = _ownNodes }, true);
+            EditorUtility.SetDirty(_tree);
+            _hasChanges = true; RefreshAfterEdit();
+        }
+
+        private void AddDefToFolder(string parentNodeId, PropertyDefSO def, int insertIndex = -1)
+        {
+            Undo.RecordObject(_tree, "Add Property");
+            var node = new PropertyNode { NodeId = def.Id, ParentId = parentNodeId, DefId = def.Id };
+
+            if (insertIndex < 0)
+            {
+                _ownNodes.Add(node);
+            }
+            else
+            {
+                // Find insert position in _ownNodes relative to siblings
+                int targetIndex = _ownNodes.Count;
+                int siblingCount = 0;
+                for (int i = 0; i < _ownNodes.Count; i++)
+                {
+                    if (_ownNodes[i].ParentId == parentNodeId && !string.IsNullOrEmpty(_ownNodes[i].DefId))
+                    {
+                        if (siblingCount == insertIndex) { targetIndex = i; break; }
+                        siblingCount++;
+                    }
+                }
+                _ownNodes.Insert(targetIndex, node);
+            }
+
+            _tree.treeJson = JsonUtility.ToJson(new PropertyTreeContainer { Nodes = _ownNodes }, true);
+            EditorUtility.SetDirty(_tree);
             _hasChanges = true; RefreshAfterEdit();
         }
 
@@ -1093,6 +1456,8 @@ namespace RedDust.Properties.Editor
         {
             var nodeId = DisplayName(leafPath);
             _ownNodes.RemoveAll(n => n.NodeId == nodeId && !string.IsNullOrEmpty(n.DefId));
+            _tree.treeJson = JsonUtility.ToJson(new PropertyTreeContainer { Nodes = _ownNodes }, true);
+            EditorUtility.SetDirty(_tree);
             _hasChanges = true; RefreshAfterEdit();
         }
 
@@ -1113,14 +1478,34 @@ namespace RedDust.Properties.Editor
                 foreach (var id in ids)
                     _ownNodes.RemoveAll(n => n.NodeId == id && !string.IsNullOrEmpty(n.DefId));
             }
+            _tree.treeJson = JsonUtility.ToJson(new PropertyTreeContainer { Nodes = _ownNodes }, true);
+            EditorUtility.SetDirty(_tree);
             _hasChanges = true; RefreshAfterEdit();
         }
 
         private void AddFolder(string name)
         {
             if (string.IsNullOrWhiteSpace(name) || name.Contains("/")) return;
+
+            // Auto-rename if duplicate
+            var usedNames = new HashSet<string>();
+            foreach (var n in _ownNodes) usedNames.Add(n.NodeId);
+            string finalName = name;
+            int suffix = 1;
+            while (usedNames.Contains(finalName))
+                finalName = $"{name} {++suffix}";
+
             Undo.RecordObject(_tree, "Add Folder");
-            _ownNodes.Add(new PropertyNode { NodeId = name, ParentId = "", DefId = "" });
+            // Insert after last root-level node
+            int insertAt = _ownNodes.Count;
+            for (int i = _ownNodes.Count - 1; i >= 0; i--)
+            {
+                if (string.IsNullOrEmpty(_ownNodes[i].ParentId))
+                { insertAt = i + 1; break; }
+            }
+            _ownNodes.Insert(insertAt, new PropertyNode { NodeId = finalName, ParentId = "", DefId = "" });
+            _tree.treeJson = JsonUtility.ToJson(new PropertyTreeContainer { Nodes = _ownNodes }, true);
+            EditorUtility.SetDirty(_tree);
             _hasChanges = true; RefreshAfterEdit();
         }
 
@@ -1179,36 +1564,6 @@ namespace RedDust.Properties.Editor
                     GUI.backgroundColor = Color.white;
                     if (GUILayout.Button("Cancel", GUILayout.Height(24))) Close();
                     EditorGUILayout.EndHorizontal();
-                }
-            }
-        }
-
-        private static class NewFolderDialog
-        {
-            public static void Show(Action<string> cb)
-            {
-                var w = CreateInstance<NewFolderPopup>();
-                w._cb = cb; w.minSize = new Vector2(250, 80); w.maxSize = new Vector2(350, 110); w.ShowUtility();
-            }
-            private class NewFolderPopup : EditorWindow
-            {
-                public Action<string> _cb;
-                private string _name = "";
-                private void OnGUI()
-                {
-                    EditorGUILayout.LabelField("Add Folder", EditorStyles.boldLabel);
-                    _name = EditorGUILayout.TextField("Name", _name);
-                    bool valid = !string.IsNullOrWhiteSpace(_name) && !_name.Contains("/");
-                    EditorGUILayout.BeginHorizontal();
-                    GUI.backgroundColor = ColorSave;
-                    EditorGUI.BeginDisabledGroup(!valid);
-                    if (GUILayout.Button("Add", GUILayout.Height(24))) { _cb?.Invoke(_name); Close(); }
-                    EditorGUI.EndDisabledGroup();
-                    GUI.backgroundColor = Color.white;
-                    if (GUILayout.Button("Cancel", GUILayout.Height(24))) Close();
-                    EditorGUILayout.EndHorizontal();
-                    if (!string.IsNullOrWhiteSpace(_name) && !valid)
-                        EditorGUILayout.HelpBox("Name cannot be empty or contain '/'.", MessageType.Warning);
                 }
             }
         }
