@@ -48,6 +48,7 @@ StatInstance 内部
 |--------|-----------|------|
 | StatDefSO、StatsTreeSO | 02-character CharacterStats | 构造时传入 StatsTreeSO，Resolve() 产出 StatInstance |
 | StatInstance | 02-character Rules | 各 Rule 通过 AddModifier/RemoveByOwner/Modify 操作 |
+| StatsTreeSO (Equipment 族) | L3-equipment GearDefSO | GearDefSO 引用 StatsTreeSO 获取 stat 集合，通过 overrides 覆写值 |
 | StatsTreeWindow | UnityEditor | 依赖 Editor API，运行时不可用 |
 | 整个模块 | — | 纯 SO + runtime class，无 GameContext 反向依赖 |
 

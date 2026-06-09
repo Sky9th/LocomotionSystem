@@ -86,16 +86,18 @@ Fire 阶段执行。从 Caster 出发，按搜索形状检测可命中目标。
 
 ### ⑤ 效果 (Effects) — "产生什么载荷"
 
-读 EffectSO 字段，构造**理想伤害数据**。此时未触及目标防御。
+从装备系统获取 DamageSource，构造**理想伤害数据**。此时未触及目标防御。
+
+> **伤害模型**：详见 [damage-source-model.md](../../design/damage-source-model.md)。核心——装备决定伤害地基，Ability 不持有 Damage Effect。
 
 | 方向 | 字段 | 处理 |
 |------|------|------|
-| 对外 | `targetEffects[]` | DamageEffectSO / ImpactEffectSO / ExecuteEffectSO → 构造 `SResolvedHit`（理想值）|
+| 对外 | 装备注入 | 从 Equipment 获取 DamageSource（近战武器 baseDamage / 弹药 EffectSO）→ 构造 `SResolvedHit`（理想值）。`targetEffects[]` 仅放 **非伤害特殊效果**（ImpactEffectSO / ExecuteEffectSO） |
 | 对内 | `selfEffects[]` | CostEffectSO 在 ②→③ 间扣费；Buff grantedTag 在此时写入 Caster.OwnedTags |
 
-**开放点**：`IEffectModifier.Modify(ctx, hit)` — 链式修改伤害值（如力量加成、武器附魔）。
+**开放点**：`IEffectModifier.Modify(ctx, hit)` — 链式修改伤害值。**仅近战注册**（力量/熟练度修正），枪械不注册（弹药动能不随人变，感知影响命中率，不影响伤害）。
 
-**产出**：`SResolvedHit[]`（理想值，FinalDamage = IncomingDamage）。
+**产出**：`SResolvedHit[]`（理想值，IncomingDamage = 装备基底，FinalDamage = IncomingDamage 经 ⑤ 修正后）。
 
 ### ⑥ 结算 (Resolution) — "实际发生什么"
 
@@ -282,8 +284,9 @@ public System.Action<AbilityPipelineContext, SResolvedHit, GameObject> EffectCal
 
 - **挂钩维度**：⑤ 效果
 - **承载方式**：同 GameObject 上的外部实体（如 Stats 组件）在 Awake 设 `ability.EffectCallback`
-- **执行模式**：链式传递。每个修改器修改 `hit.FinalDamage`，传给下一个
-- **示例**：力量 +30% 伤害 → `hit.FinalDamage *= 1.3f`
+- **执行模式**：链式传递。每个修改器修改 `hit.IncomingDamage`，传给下一个。**仅近战注册**（力量/熟练度对装备基底做乘算修正），枪械不注册此回调（弹药动能不随人变）
+- **示例**：力量 +30% 近战伤害 → `hit.IncomingDamage *= 1.3f`
+- **约束**：修改器不改变装备基底本身——一把锈刀在力量 10 的人手里不能让刀变锋利，只是挥得更有力（+力修正），刀仍然钝（低 baseDamage）
 - **参考**：遵循与 ITargetFilterModifier 相同的回调模式
 
 ### IResolutionModifier（结算回调 · Slice 2）

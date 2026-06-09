@@ -21,6 +21,9 @@
 ├── design/
 │   ├── game-overview.md
 │   ├── l1-l5-layering.md
+│   ├── damage-source-model.md
+│   ├── effect-inventory.md
+│   ├── equipment-system.md
 │   ├── audio-system.md
 │   ├── death-mechanics.md
 │   ├── injury-system.md
@@ -46,6 +49,7 @@
 │   │   ├── L2-input/
 │   │   ├── L2-modules/
 │   │   │   ├── L3-character/
+│   │   │   ├── L3-equipment/
 │   │   │   ├── L3-pathfinding/
 │   │   │   └── L3-stats/
 │   │   ├── L2-player-service/

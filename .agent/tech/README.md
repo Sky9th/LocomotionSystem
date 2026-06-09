@@ -137,6 +137,11 @@ tech/
 │       │   ├── Interfaces/             # IStatConsumable 等 4 个接口
 │       │   └── Editor/                 # StatsTreeWindow
 │       │
+│       ├── L3-equipment/              # L3: 装备系统 (自身代码: GearDefSO/ GearInstance/ Editor/)
+│       │   ├── README.md               # 模块总览 — 两层架构 + 三层叠加 + 万物皆 GearDefSO
+│       │   ├── gear-def-so.md           # GearDefSO — 装备/零件定义资产，字段详解
+│       │   └── gear-instance.md         # GearInstance — 运行时装备个体，工厂 + 叠加
+│       │
 │       └── L3-pathfinding/             # L3: 寻路系统
 │           └── README.md
 │

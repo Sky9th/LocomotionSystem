@@ -101,6 +101,7 @@ CharacterActor.Update()
 | Stats 外部事件桥接 (CombatSystem → DamageRule) | 待做 | — | 旧 stats-rule-system.md |
 | Stat 规则配置化 (当前硬编码) | 待做 | 05-stats | 代码 TODO |
 | 根运动迁移到 AnimationBrain | 待做 | — | 旧 animation-architecture-plan.md |
+| EquipmentComponent 装备槽位 | 待做 | L3-equipment (GearDefSO, GearInstance) | [equipment-system.md](../../../../design/equipment-system.md) |
 | 受击/死亡/呼吸音效 | 待做 | 06-audio | 代码预留 |
 
 ## 子文档索引
@@ -172,8 +173,6 @@ CharacterActor.Update()
 |------|------|
 | [character-stats.md](L4-stats/character-stats.md) | CharacterStats — StatsTree + Rule 容器 |
 | [rules/character-stat-rule.md](L4-stats/L5-rules/character-stat-rule.md) | CharacterStatRule 基类 |
-| [rules/damage-rule.md](L4-stats/L5-rules/damage-rule.md) | DamageRule — 伤害→HP |
-| [rules/batch-damage-rule.md](L4-stats/L5-rules/batch-damage-rule.md) | BatchDamageRule 基类 |
 | [rules/deplete-chain-rule.md](L4-stats/L5-rules/deplete-chain-rule.md) | DepleteChainRule 基类 |
 | [rules/hunger-deplete-rule.md](L4-stats/L5-rules/hunger-deplete-rule.md) | HungerDepleteRule — 饥饿→HP |
 | [rules/passive-gain-rule.md](L4-stats/L5-rules/passive-gain-rule.md) | PassiveGainRule 基类 |

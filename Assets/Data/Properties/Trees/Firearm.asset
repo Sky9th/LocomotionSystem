@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e47e6b69f1db8742ab169ebce8acc1e, type: 3}
+  m_Name: Firearm
+  m_EditorClassIdentifier: 
+  InheritsFrom: {fileID: 11400000, guid: 6a7919189d3d0e24e82bb2954dba5a8d, type: 2}
+  treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"Combat\",\n           
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
+    \"NodeId\": \"FireRate\",\n            \"ParentId\": \"Combat\",\n           
+    \"DefId\": \"FireRate\"\n        },\n        {\n            \"NodeId\": \"MuzzleVelocity\",\n           
+    \"ParentId\": \"Combat\",\n            \"DefId\": \"MuzzleVelocity\"\n       
+    },\n        {\n            \"NodeId\": \"BarrelLength\",\n            \"ParentId\":
+    \"Combat\",\n            \"DefId\": \"BarrelLength\"\n        },\n        {\n           
+    \"NodeId\": \"Reliability\",\n            \"ParentId\": \"Combat\",\n           
+    \"DefId\": \"Reliability\"\n        },\n        {\n            \"NodeId\": \"Tags\",\n           
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
+    \"NodeId\": \"IsAutomatic\",\n            \"ParentId\": \"Tags\",\n           
+    \"DefId\": \"IsAutomatic\"\n        },\n        {\n            \"NodeId\": \"GearType\",\n           
+    \"ParentId\": \"Tags\",\n            \"DefId\": \"GearType\"\n        }\n   
+    ]\n}"
