@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using RedDust.Core;
-using RedDust.Stats;
+using RedDust.Properties;
 using UnityEditor;
 using UnityEngine;
 
@@ -50,7 +50,7 @@ namespace RedDust.Ability
             public float hpThreshold;
 
             // Cost
-            public string statDefId;
+            public string defId;
             public float amount;
         }
 
@@ -121,7 +121,7 @@ namespace RedDust.Ability
                         break;
                     case CostEffectSO c:
                         entry.effectType = "Cost";
-                        entry.statDefId = c.statDef?.Id;
+                        entry.defId = c.def?.Id;
                         entry.amount = c.amount;
                         break;
                     default:
@@ -205,20 +205,20 @@ namespace RedDust.Ability
                     tagByFullTag[t.FullTag] = t;
             }
 
-            // Build StatDefinitionSO lookup by Id
-            var statById = new Dictionary<string, StatDefinitionSO>();
-            var statGuids = AssetDatabase.FindAssets("t:StatDefinitionSO");
-            foreach (var sg in statGuids)
+            // Build PropertyDefSO lookup by Id
+            var defById = new Dictionary<string, PropertyDefSO>();
+            var defGuids = AssetDatabase.FindAssets("t:PropertyDefSO");
+            foreach (var dg in defGuids)
             {
-                var sp = AssetDatabase.GUIDToAssetPath(sg);
-                var s = AssetDatabase.LoadAssetAtPath<StatDefinitionSO>(sp);
-                if (s != null && !string.IsNullOrEmpty(s.Id))
-                    statById[s.Id] = s;
+                var dp = AssetDatabase.GUIDToAssetPath(dg);
+                var d = AssetDatabase.LoadAssetAtPath<PropertyDefSO>(dp);
+                if (d != null && !string.IsNullOrEmpty(d.Id))
+                    defById[d.Id] = d;
             }
 
             // Resolve per entry
             var resolved = new List<(EffectEntry entry, GameplayTagDefinitionSO effectTag,
-                GameplayTagDefinitionSO[] blockedTags, StatDefinitionSO statDef)>();
+                GameplayTagDefinitionSO[] blockedTags, PropertyDefSO def)>();
             foreach (var entry in valid)
             {
                 // effectTag
@@ -243,19 +243,19 @@ namespace RedDust.Ability
                     }
                 }
 
-                // statDef (Cost only)
-                StatDefinitionSO resolvedStat = null;
-                if (entry.effectType == "Cost" && !string.IsNullOrEmpty(entry.statDefId))
+                // def (Cost only)
+                PropertyDefSO resolvedStat = null;
+                if (entry.effectType == "Cost" && !string.IsNullOrEmpty(entry.defId))
                 {
-                    if (!statById.TryGetValue(entry.statDefId, out resolvedStat))
-                        errors.Add($"'{entry.name}': statDefId '{entry.statDefId}' not found in project");
+                    if (!defById.TryGetValue(entry.defId, out resolvedStat))
+                        errors.Add($"'{entry.name}': defId '{entry.defId}' not found in project");
                 }
 
                 resolved.Add((entry, resolvedTag, resolvedBlocked.ToArray(), resolvedStat));
             }
 
             // ── Phase 4: Create/Update assets ──
-            foreach (var (entry, effTag, blockedTags, statDef) in resolved)
+            foreach (var (entry, effTag, blockedTags, def) in resolved)
             {
                 var dirName = string.IsNullOrWhiteSpace(entry.directory) ? "" : entry.directory;
                 var assetDir = string.IsNullOrEmpty(dirName)
@@ -274,7 +274,7 @@ namespace RedDust.Ability
                         skipped++;
                         continue;
                     }
-                    ApplyFields(existing, entry, effTag, blockedTags, statDef);
+                    ApplyFields(existing, entry, effTag, blockedTags, def);
                     EditorUtility.SetDirty(existing);
                     skipped++;
                     continue;
@@ -312,7 +312,7 @@ namespace RedDust.Ability
                 if (instance == null) { errors.Add($"'{entry.name}': unknown type"); skipped++; continue; }
 
                 instance.name = entry.name;
-                ApplyFields(instance, entry, effTag, blockedTags, statDef);
+                ApplyFields(instance, entry, effTag, blockedTags, def);
                 AssetDatabase.CreateAsset(instance, assetPath);
                 created++;
                 Debug.Log($"[EffectImporter] Created: {assetPath}");
@@ -346,7 +346,7 @@ namespace RedDust.Ability
 
         private static void ApplyFields(EffectSO instance, EffectEntry entry,
             GameplayTagDefinitionSO effTag, GameplayTagDefinitionSO[] blockedTags,
-            StatDefinitionSO statDef)
+            PropertyDefSO def)
         {
             instance.effectTag = effTag;
             instance.duration = entry.duration;
@@ -374,7 +374,7 @@ namespace RedDust.Ability
                     x.hpThreshold = Mathf.Clamp01(entry.hpThreshold);
                     break;
                 case CostEffectSO c:
-                    c.statDef = statDef;
+                    c.def = def;
                     c.amount = entry.amount;
                     break;
             }

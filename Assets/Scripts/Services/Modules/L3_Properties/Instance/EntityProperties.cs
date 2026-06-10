@@ -273,20 +273,6 @@ namespace RedDust.Properties
         /// <summary>每帧驱动所有 FloatState 消耗/恢复/Modifier。</summary>
         public void Tick(float dt) { foreach (var s in _floatStates.Values) s.Tick(dt); }
 
-        /// <summary>返回所有 Float 属性的 (Current, Max) 快照，UI 轮询用。</summary>
-        public Dictionary<string, FloatSnapshot> GetFloatSnapshot()
-        {
-            var snap = new Dictionary<string, FloatSnapshot>();
-            foreach (var (path, s) in _floatStates) snap[path] = new FloatSnapshot { Current = s.Current, Max = s.Max };
-            foreach (var (path, v) in _floats)
-            {
-                if (snap.ContainsKey(path)) continue;
-                if (_structure.TryGetValue(path, out var d) && d.Type == PropertyType.Float)
-                    snap[path] = new FloatSnapshot { Current = v, Max = d.Max };
-            }
-            return snap;
-        }
-
 
         // ============================================================
         // 内部工具
@@ -344,6 +330,4 @@ namespace RedDust.Properties
         }
     }
 
-    /// <summary>Float 属性帧级快照。</summary>
-    public struct FloatSnapshot { public float Current; public float Max; public float Normalized => Max > 0f ? Current / Max : 0f; }
 }

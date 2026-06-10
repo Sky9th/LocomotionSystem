@@ -630,5 +630,5 @@ EntityProperties 构造 (一次性全解析)              │     └── _mod
 |------|------|
 | [entity-def-so.md](entity-def-so.md) | EntityDefSO — 实体定义抽象基类 |
 | [entity-properties.md](entity-properties.md) | EntityProperties — 单实例属性表、Set/Modify/Load、Guard、事件、Tick、快照 |
-| [property-component.md](property-component.md) | PropertyComponent — MonoBehaviour 门面 |
+| [property-agent.md](property-agent.md) | PropertyAgent — MonoBehaviour 门面 |
 | — | FloatState / FloatModifier 属于 Character/Stats — 见 [float-state.md](../L3-character/L4-stats/float-state.md)

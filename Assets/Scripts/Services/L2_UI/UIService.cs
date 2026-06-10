@@ -3,6 +3,7 @@ using DG.Tweening;
 using RedDust.Character;
 using RedDust.Core;
 using RedDust.GameState;
+using RedDust.Properties;
 using RedDust.GameScene;
 using UnityEngine;
 
@@ -172,10 +173,10 @@ namespace RedDust.UI
             return GameContext != null && GameContext.TryGetSnapshot(out snapshot);
         }
 
-        public bool TryGetPlayerStats(out System.Collections.Generic.Dictionary<string, (float current, float max)> stats)
+        public bool TryGetPlayerProps(out IPropertyReader props)
         {
-            stats = _playerActor != null ? _playerActor.LastStats : null;
-            return stats != null;
+            props = _playerActor != null ? _playerActor.Props : null;
+            return props != null;
         }
 
         public void RequestNewGame()

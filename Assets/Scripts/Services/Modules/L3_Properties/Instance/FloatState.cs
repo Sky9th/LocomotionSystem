@@ -61,7 +61,7 @@ namespace RedDust.Properties
 
         public void AddModifier(FloatModifier m)
         {
-            if (m.CustomTick != null) { AddCustom(m); return; } // 自定义接管，不走 rate/delta
+            if (m.CustomTick != null) { AddCustom(m); return; }
             if (m.OnApplyRate != null) _rateMods.Add(m);
             if (m.Delta != 0f) AddDelta(m);
         }
@@ -167,7 +167,8 @@ namespace RedDust.Properties
             // 4. Delta 每秒
             if (fireSecond)
                 foreach (var m in _deltaPerSecond)
-                    if (m.Condition?.Invoke() ?? true) Modify(m.Delta);
+                    if (m.Condition?.Invoke() ?? true)
+                        Modify(m.Delta);
 
             // 5. Delta 每分钟
             if (fireMinute)

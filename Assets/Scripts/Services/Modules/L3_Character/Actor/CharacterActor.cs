@@ -9,13 +9,13 @@ using RedDust.Character.Pathfinding;
 using RedDust.Character.Locomotion;
 using RedDust.Ability;
 using RedDust.Character.Combat;
-using RedDust.Character.Stats;
-using RedDust.Stats;
+using RedDust.Properties;
 
 namespace RedDust.Character
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(EventHub))]
+    [RequireComponent(typeof(PropertyAgent))]
     public partial class CharacterActor : MonoBehaviour
     {
         [Header("Identity")]
@@ -26,9 +26,6 @@ namespace RedDust.Character
 
         [Header("Locomotion")]
         [SerializeField] private LocomotionAnimationConfigSO locomotionAnimationProfile;
-
-        [Header("Stats")]
-        [SerializeField] private StatsTreeSO statsTree;
 
         // TODO: 临时方案 — 技能树/装备系统完成后替换为技能槽位子系统
         [Header("Ability Slots (Temp)")]
@@ -41,7 +38,7 @@ namespace RedDust.Character
         public bool IsPlayer => isPlayer;
         internal AbilityDefSO SkillSlot1 => skillSlot1;
         internal AbilityDefSO SkillSlot2 => skillSlot2;
-        public Dictionary<string, (float current, float max)> LastStats { get; private set; }
+        public IPropertyReader Props { get; private set; }
         internal SCharacterKinematic LastKinematic { get; private set; }
         internal SCharacterMotor LastMotor { get; private set; }
         internal SCharacterDiscrete LastDiscrete { get; private set; }
@@ -53,7 +50,7 @@ namespace RedDust.Character
         private CharacterKinematic characterKinematic;
         private ILocomotionSimulator locomotionSimulator;
         private AnimationBrain characterAnimation;
-        private CharacterStats stats;
+        private PropertyAgent agent;
         private AbilityExecutor ability;
         private AbilityReactor reactor;
         private CharacterCombat combat;
@@ -73,14 +70,16 @@ namespace RedDust.Character
 
             characterKinematic = new CharacterKinematic(transform, modelRoot, characterRig);
             locomotionSimulator = new GroundLocomotion();
-            stats = new CharacterStats(statsTree);
+            Props = agent = GetComponent<PropertyAgent>();
             ability = GetComponent<AbilityExecutor>();
             reactor = GetComponent<AbilityReactor>();
-            combat = new CharacterCombat(ability, reactor, stats, eventHub);
+            combat = new CharacterCombat(ability, reactor, agent, eventHub);
         }
 
         private void Start()
         {
+            // TODO: 修改器应统一管理模块注入，不应散落在 Actor 中
+            agent.AddModifier(new FloatModifier { Owner = this, TargetPath = "Vitals/Hunger", Frequency = ModifierFrequency.PerSecond, Delta = -0.01f });
             combat?.SubscribeEvents();
         }
 
@@ -111,8 +110,6 @@ namespace RedDust.Character
             LastKinematic = ctx.Kinematic;
             LastMotor = ctx.Motor;
             LastDiscrete = ctx.Discrete;
-            stats?.Update(deltaTime);
-            LastStats = stats?.LastStats;
             
             characterAnimation?.Apply(in ctx);
             pathfindingAgent?.SyncLocomotion(in ctx.Discrete);

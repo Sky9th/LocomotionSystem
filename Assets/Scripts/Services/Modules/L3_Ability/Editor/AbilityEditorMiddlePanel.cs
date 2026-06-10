@@ -408,7 +408,7 @@ namespace RedDust.Ability
             if (e is ExecuteEffectSO x)
                 return $"Execute · {e.effectTag?.FullTag ?? "—"} · threshold:{x.hpThreshold:P0}";
             if (e is CostEffectSO c)
-                return $"Cost · {c.statDef?.name ?? "—"} · amount:{c.amount:F0}";
+                return $"Cost · {c.def?.name ?? "—"} · amount:{c.amount:F0}";
             return $"{e.GetType().Name.Replace("EffectSO", "")} · {e.effectTag?.FullTag ?? "—"}";
         }
 

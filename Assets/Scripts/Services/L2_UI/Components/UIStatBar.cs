@@ -45,7 +45,7 @@ namespace RedDust.UI
 
             SetValue(current / max);
             if (valueLabel != null)
-                valueLabel.text = $"{current:F0}/{max:F0}";
+                valueLabel.text = $"{current:F1}/{max:F1}";
         }
 
         private void Update()

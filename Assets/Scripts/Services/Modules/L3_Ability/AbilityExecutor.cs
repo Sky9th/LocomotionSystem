@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using RedDust.Core;
-using RedDust.Stats;
+using RedDust.Properties;
 
 namespace RedDust.Ability
 {
@@ -37,11 +37,11 @@ namespace RedDust.Ability
         // TODO: Phase 4.2 — 特殊消耗回调，当前无真正需求，暂注释
         // public System.Func<CostEffectSO, bool> CostCallback;
 
-        /// <summary>③ 属性值查询。(statDef) → 当前值。用于预检。</summary>
-        public System.Func<StatDefinitionSO, float> PeekStatCallback;
+        /// <summary>③ 属性值查询。(def) → 当前值。用于预检。</summary>
+        public System.Func<PropertyDefSO, float> PeekStatCallback;
 
         /// <summary>③ 标准属性修改。(statDef, delta) → void。预检已通过，必定执行。</summary>
-        public System.Action<StatDefinitionSO, float> ModifyStatCallback;
+        public System.Action<PropertyDefSO, float> ModifyStatCallback;
 
         // 冷却: tag → 到期时间戳
         private readonly Dictionary<string, float> cooldownEndTimes = new();
@@ -309,31 +309,31 @@ namespace RedDust.Ability
                 // Phase 1: 预检。确保全部消耗可负担，不实际扣费。
                 foreach (var effect in ability.selfEffects)
                 {
-                    if (effect is CostEffectSO cost && cost.statDef != null)
+                    if (effect is CostEffectSO cost && cost.def != null)
                     {
                         if (PeekStatCallback == null)
                         {
                             Debug.LogError($"[Ability] PeekStatCallback is null — cost check skipped for {ability.internalName}");
                             return false;
                         }
-                        var current = PeekStatCallback.Invoke(cost.statDef);
+                        var current = PeekStatCallback.Invoke(cost.def);
                         if (current < cost.amount)
                         {
-                            Debug.Log($"[Ability] ③ Cost fail: {ability.internalName} needs {cost.statDef.Id}={cost.amount}, current={current:F1}");
+                            Debug.Log($"[Ability] ③ Cost fail: {ability.internalName} needs {cost.def.Id}={cost.amount}, current={current:F1}");
                             return false;
                         }
-                        Debug.Log($"[Ability] ③ Cost check: {cost.statDef.Id} current={current:F1} cost={cost.amount} → OK");
+                        Debug.Log($"[Ability] ③ Cost check: {cost.def.Id} current={current:F1} cost={cost.amount} → OK");
                     }
                 }
 
                 // Phase 2: 扣除。预检通过，逐项执行。
                 foreach (var effect in ability.selfEffects)
                 {
-                    if (effect is CostEffectSO cost && cost.statDef != null)
+                    if (effect is CostEffectSO cost && cost.def != null)
                     {
-                        ModifyStatCallback?.Invoke(cost.statDef, -cost.amount);
-                        var after = PeekStatCallback.Invoke(cost.statDef);
-                        Debug.Log($"[Ability] ③ Cost deduct: {cost.statDef.Id} -{cost.amount} → {after:F1}");
+                        ModifyStatCallback?.Invoke(cost.def, -cost.amount);
+                        var after = PeekStatCallback.Invoke(cost.def);
+                        Debug.Log($"[Ability] ③ Cost deduct: {cost.def.Id} -{cost.amount} → {after:F1}");
                     }
                 }
             }

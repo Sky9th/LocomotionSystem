@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 803302436353983027}
   - component: {fileID: 4210259612169661076}
   - component: {fileID: -6460370526807817209}
+  - component: {fileID: 5316400108329507275}
   m_Layer: 6
   m_Name: NPC
   m_TagString: Player
@@ -73,7 +74,7 @@ MonoBehaviour:
   characterProfile: {fileID: 11400000, guid: 19080c489b2a47c4f85047f53e6224f6, type: 2}
   locomotionAnimationProfile: {fileID: 11400000, guid: 8c24cbd0466513245b7b38493fcf3aeb,
     type: 2}
-  statsTree: {fileID: 11400000, guid: 85e478e2b9966d64bb336a07452a8810, type: 2}
+  characterDef: {fileID: 0}
   skillSlot1: {fileID: 0}
   skillSlot2: {fileID: 0}
   modelRoot: {fileID: 7880520753254052221}
@@ -297,6 +298,19 @@ MonoBehaviour:
   bezierTangentLength: 0.4
   offset: 0.1
   factor: 0.1
+--- !u!114 &5316400108329507275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8667043660662020576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ac4441024cd53e4ba1ca66b7052fe24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _def: {fileID: 11400000, guid: b2fde4bcaa690e2488a110dbbaf3ad2b, type: 2}
 --- !u!1001 &7698765721122133654
 PrefabInstance:
   m_ObjectHideFlags: 0

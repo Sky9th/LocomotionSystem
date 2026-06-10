@@ -205,7 +205,7 @@ namespace RedDust.Ability
             if (eff is ExecuteEffectSO x)
                 return $"Execute · {eff.effectTag?.FullTag ?? "-"} · threshold:{x.hpThreshold:P0}";
             if (eff is CostEffectSO c)
-                return $"Cost · {c.statDef?.name ?? "-"} · amount:{c.amount:F0}";
+                return $"Cost · {c.def?.name ?? "-"} · amount:{c.amount:F0}";
             return $"{type} · {eff.effectTag?.FullTag ?? "-"}";
         }
 

@@ -5,8 +5,8 @@ using System.IO;
 using System.Linq;
 using RedDust.Core;
 using RedDust.Core.Editor;
+using RedDust.Properties;
 using RedDust.Shared.EditorUI;
-using RedDust.Stats;
 using UnityEditor;
 using UnityEngine;
 
@@ -447,10 +447,9 @@ namespace RedDust.Ability
         private void DrawCostFields(CostEffectSO c)
         {
             EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(c, "statDef", 100);
-            var sd = (StatDefinitionSO)EditorGUILayout.ObjectField(
-                c.statDef, typeof(StatDefinitionSO), false);
-            if (sd != c.statDef) { c.statDef = sd; SetDirty(); }
+            EditorUIUtility.LabelWithTooltip(c, "def", 100);
+            var def = (PropertyDefSO)EditorGUILayout.ObjectField(c.def, typeof(PropertyDefSO), false);
+            if (def != c.def) { c.def = def; SetDirty(); }
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
