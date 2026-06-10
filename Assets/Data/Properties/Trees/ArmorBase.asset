@@ -21,12 +21,13 @@ MonoBehaviour:
     {\n            \"NodeId\": \"Durability\",\n            \"ParentId\": \"Base\",\n           
     \"DefId\": \"Durability\"\n        },\n        {\n            \"NodeId\": \"IsTwoHanded\",\n           
     \"ParentId\": \"Base\",\n            \"DefId\": \"IsTwoHanded\"\n        },\n       
-    {\n            \"NodeId\": \"GearType\",\n            \"ParentId\": \"Resist\",\n           
-    \"DefId\": \"GearType\"\n        },\n        {\n            \"NodeId\": \"KnockdownResist\",\n           
-    \"ParentId\": \"Resist\",\n            \"DefId\": \"KnockdownResist\"\n       
-    },\n        {\n            \"NodeId\": \"Resist\",\n            \"ParentId\":
-    \"\",\n            \"DefId\": \"\"\n        },\n        {\n            \"NodeId\":
-    \"New Folder 2\",\n            \"ParentId\": \"\",\n            \"DefId\": \"\"\n       
-    },\n        {\n            \"NodeId\": \"Base\",\n            \"ParentId\": \"\",\n           
-    \"DefId\": \"\"\n        },\n        {\n            \"NodeId\": \"New Folder\",\n           
-    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        }\n    ]\n}"
+    {\n            \"NodeId\": \"KnockdownResist\",\n            \"ParentId\": \"Resist\",\n           
+    \"DefId\": \"KnockdownResist\"\n        },\n        {\n            \"NodeId\":
+    \"GearType\",\n            \"ParentId\": \"Resist\",\n            \"DefId\":
+    \"GearType\"\n        },\n        {\n            \"NodeId\": \"New Folder 2\",\n           
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
+    \"NodeId\": \"Base\",\n            \"ParentId\": \"\",\n            \"DefId\":
+    \"\"\n        },\n        {\n            \"NodeId\": \"Resist\",\n           
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
+    \"NodeId\": \"New Folder\",\n            \"ParentId\": \"\",\n            \"DefId\":
+    \"\"\n        }\n    ]\n}"

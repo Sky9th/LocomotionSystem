@@ -528,7 +528,7 @@ namespace RedDust.Properties.Editor
 
                 // Editable folder name
                 GUI.SetNextControlName($"folder_{node.NodeId}");
-                GUI.enabled = string.IsNullOrEmpty(_dragNodeId);
+                GUI.enabled = string.IsNullOrEmpty(_dragNodeId) && node.IsLocal;
                 var newName = EditorGUILayout.TextField(node.NodeId, GUILayout.Width(160));
                 GUI.enabled = true;
                 if (newName != node.NodeId && !string.IsNullOrWhiteSpace(newName) && !newName.Contains("/"))
@@ -708,7 +708,7 @@ namespace RedDust.Properties.Editor
 
             // --- Drag initiation ---
             var cardRect = GUILayoutUtility.GetLastRect();
-            if (Event.current.type == EventType.MouseDrag && cardRect.Contains(Event.current.mousePosition))
+            if (isLocal && Event.current.type == EventType.MouseDrag && cardRect.Contains(Event.current.mousePosition))
             {
                 _dragNodeId = node.NodeId;
                 _dragParentId = FindParentId(node.NodeId);
@@ -994,14 +994,23 @@ namespace RedDust.Properties.Editor
 
             // Determine insert position in _ownNodes
             int targetListIndex;
-            if (insertIndex >= siblings.Count)
+            // Map insertIndex (all children) to local-only position (inherited come first)
+            int inheritedBefore = 0;
+            if (_centerNodeIndex.TryGetValue(targetParentId, out var parentNode))
+                foreach (var child in parentNode.Children)
+                    if (!child.IsLocal) inheritedBefore++;
+            int localInsert = insertIndex - inheritedBefore;
+            if (localInsert < 0) localInsert = 0;
+            if (localInsert > siblings.Count) localInsert = siblings.Count;
+
+            if (localInsert >= siblings.Count)
             {
                 // Insert after last sibling
                 targetListIndex = siblings.Count > 0 ? siblings[siblings.Count - 1] + 1 : _ownNodes.Count;
             }
             else
             {
-                targetListIndex = siblings[insertIndex];
+                targetListIndex = siblings[localInsert];
             }
 
             // Update parent if changed
@@ -1292,9 +1301,10 @@ namespace RedDust.Properties.Editor
                     // Leaves: follow _ownNodes order; inherited fall back to alpha
                     int ia = _ownNodes.FindIndex(n => n.NodeId == a.NodeId);
                     int ib = _ownNodes.FindIndex(n => n.NodeId == b.NodeId);
-                    if (ia >= 0 && ib >= 0) return ia.CompareTo(ib);
+                    // Inherited first (alpha), then local (_ownNodes order)
                     if (ia < 0 && ib < 0) return string.CompareOrdinal(a.NodeId, b.NodeId);
-                    return ia >= 0 ? -1 : 1; // local before inherited
+                    if (ia >= 0 && ib >= 0) return ia.CompareTo(ib);
+                    return ia < 0 ? -1 : 1; // inherited before local
                 }
 
                 // Folders: follow _ownNodes order; fall back to alpha
@@ -1397,15 +1407,25 @@ namespace RedDust.Properties.Editor
             }
             else
             {
-                // Find insert position in _ownNodes relative to siblings
-                int targetIndex = _ownNodes.Count;
+                // Count local siblings first
                 int siblingCount = 0;
+                for (int i = 0; i < _ownNodes.Count; i++)
+                    if (_ownNodes[i].ParentId == parentNodeId && !string.IsNullOrEmpty(_ownNodes[i].DefId))
+                        siblingCount++;
+
+                // Clamp to local-only range (inherited children come after locals)
+                int localInsert = insertIndex;
+                if (localInsert > siblingCount) localInsert = siblingCount;
+
+                // Find insert position
+                int targetIndex = _ownNodes.Count;
+                int count = 0;
                 for (int i = 0; i < _ownNodes.Count; i++)
                 {
                     if (_ownNodes[i].ParentId == parentNodeId && !string.IsNullOrEmpty(_ownNodes[i].DefId))
                     {
-                        if (siblingCount == insertIndex) { targetIndex = i; break; }
-                        siblingCount++;
+                        if (count == localInsert) { targetIndex = i; break; }
+                        count++;
                     }
                 }
                 _ownNodes.Insert(targetIndex, node);
