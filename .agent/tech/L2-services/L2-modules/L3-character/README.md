@@ -172,6 +172,8 @@ CharacterActor.Update()
 | 文件 | 内容 |
 |------|------|
 | [character-stats.md](L4-stats/character-stats.md) | CharacterStats — StatsTree + Rule 容器 |
+| [float-state.md](L4-stats/float-state.md) | FloatState — Float 运行时状态（Tick/Modify/事件），Properties 消费层 |
+| [float-modifier.md](L4-stats/float-modifier.md) | FloatModifier + RateContext — 持久帧级修改器，A/B/C 三类 |
 | [rules/character-stat-rule.md](L4-stats/L5-rules/character-stat-rule.md) | CharacterStatRule 基类 |
 | [rules/deplete-chain-rule.md](L4-stats/L5-rules/deplete-chain-rule.md) | DepleteChainRule 基类 |
 | [rules/hunger-deplete-rule.md](L4-stats/L5-rules/hunger-deplete-rule.md) | HungerDepleteRule — 饥饿→HP |

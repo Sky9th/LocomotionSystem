@@ -598,3 +598,37 @@ PropertySystem ───── 替代 ────→ StatsSystem (废弃)
       │
       └── 独立 ────── StatInstance / StatModifier (float 运行时引擎，阶段三桥接)
 ```
+
+---
+
+## 十三、消费层（运行时）
+
+> 2026-06-10 · 已在 `Assets/Scripts/Services/Modules/L3_Properties/` 实现
+
+### 架构
+
+```
+EntityDefSO (资产)                        PropertyComponent (MonoBehaviour 门面)
+  ├── Template → PropertyTreeSO                 ├── _def → EntityDefSO
+  └── OverridesJson                             ├── _props → EntityProperties (内部)
+                                                 │     ├── _structure (Path→Def)
+PropertyTreeSO.ResolveStructure()                │     ├── _floats / _ints / _strings / ... (类型分桶)
+        │                                        │     ├── _floatStates (FloatState 运行时)
+        ▼                                        │     ├── _guards (修改前拦截)
+EntityProperties 构造 (一次性全解析)              │     └── _modifiers (Modifier 索引)
+        │                                        │
+        ▼                                        └── 公开 API: Get/Set/Modify/AddModifier/...
+  _resolved 字典 (所有属性最终值)
+  FloatState[] (存在伴生 Rate 的 Float)
+
+所有消费者 → PropertyComponent (GetComponent)
+```
+
+### 文档索引
+
+| 文件 | 内容 |
+|------|------|
+| [entity-def-so.md](entity-def-so.md) | EntityDefSO — 实体定义抽象基类 |
+| [entity-properties.md](entity-properties.md) | EntityProperties — 单实例属性表、Set/Modify/Load、Guard、事件、Tick、快照 |
+| [property-component.md](property-component.md) | PropertyComponent — MonoBehaviour 门面 |
+| — | FloatState / FloatModifier 属于 Character/Stats — 见 [float-state.md](../L3-character/L4-stats/float-state.md)
