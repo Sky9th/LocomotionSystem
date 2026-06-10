@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: MaxDurability
   m_EditorClassIdentifier: 
   Id: MaxDurability
+  Description: "\u6700\u5927\u8010\u4E45\u5EA6\u3002\u8DE8\u65CF\u5171\u7528(Weapon/Armor/Tool/Container/Building)\u3002\u65B0\u7269\u54C1Durability=MaxDurability\u3002"
   Type: 0
   IsDeprecated: 0
-  Min: 0
+  Min: 1
   Max: 9999
   DefaultFloat: 100
   MinInt: 0

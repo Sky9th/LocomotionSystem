@@ -13,11 +13,14 @@ MonoBehaviour:
   m_Name: Accuracy
   m_EditorClassIdentifier: 
   Id: Accuracy
+  Description: "\u8FDC\u7A0B\u6B66\u5668\u57FA\u7840\u547D\u4E2D\u7387(0-1)\u3002\u6700\u7EC8\u547D\u4E2D
+    = Weapon.Accuracy + Perception\xD70.03 + Prof\xD70.01\u3002\u624B\u67AA=0.6 \u6B65\u67AA=0.85
+    \u9730\u5F39=0.4\u3002"
   Type: 0
   IsDeprecated: 0
   Min: 0
   Max: 1
-  DefaultFloat: 0.8
+  DefaultFloat: 0.7
   MinInt: 0
   MaxInt: 100
   DefaultInt: 0

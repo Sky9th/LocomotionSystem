@@ -13,9 +13,12 @@ MonoBehaviour:
   m_Name: MuzzleVelocity
   m_EditorClassIdentifier: 
   Id: MuzzleVelocity
+  Description: "\u67AA\u53E3\u521D\u901F(m/s)\u3002\u5F39\u836FBaseVelocity \xD7
+    \u67AA\u7BA1\u7CFB\u6570 \u2192 \u6700\u7EC8\u521D\u901F\u3002\u5F71\u54CD\u4F24\u5BB3\u548C\u5F39\u9053\u3002\u624B\u67AA=350
+    \u6B65\u67AA=900\u3002"
   Type: 0
   IsDeprecated: 0
-  Min: 10
+  Min: 100
   Max: 2000
   DefaultFloat: 400
   MinInt: 0

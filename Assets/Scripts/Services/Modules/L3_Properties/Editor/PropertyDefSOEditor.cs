@@ -17,6 +17,7 @@ namespace RedDust.Properties.Editor
 
             // Identity — always visible
             EditorGUILayout.PropertyField(serializedObject.FindProperty("Id"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("Description"));
             EditorGUILayout.PropertyField(serializedObject.FindProperty("Type"));
             EditorGUILayout.PropertyField(serializedObject.FindProperty("IsDeprecated"));
 

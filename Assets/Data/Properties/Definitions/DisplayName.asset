@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: DisplayName
   m_EditorClassIdentifier: 
   Id: DisplayName
+  Description: "\u7269\u54C1/\u5B9E\u4F53\u663E\u793A\u540D\u79F0\u3002\u7528\u4E8EUI
+    Tooltip\u3001\u80CC\u5305\u754C\u9762\u3002\u652F\u6301\u672C\u5730\u5316(\u8FDC\u671F)\u3002"
   Type: 3
   IsDeprecated: 0
   Min: 0

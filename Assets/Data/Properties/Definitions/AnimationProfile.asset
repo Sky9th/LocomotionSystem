@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: AnimationProfile
   m_EditorClassIdentifier: 
   Id: AnimationProfile
+  Description: "\u52A8\u753B\u8986\u5199Profile\u5F15\u7528\u3002\u51B3\u5B9A\u88C5\u5907\u540E\u7684\u52A8\u753B\u8868\u73B0(\u5982\u624B\u67AA\u5355\u624Bvs\u6B65\u67AA\u62B5\u80A9)\u3002AnimationBrain\u6D88\u8D39\u3002"
   Type: 6
   IsDeprecated: 0
   Min: 0

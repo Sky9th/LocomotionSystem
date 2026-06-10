@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e56e5e7ec7eb8fa4d8f875b0e63eee81, type: 3}
+  m_Name: SlotCount
+  m_EditorClassIdentifier: 
+  Id: SlotCount
+  Description: "\u80CC\u5305\u5185\u90E8\u683C\u5B50\u6570\u3002\u51B3\u5B9A\u53EF\u643A\u5E26\u7269\u54C1\u6570\u91CF\u3002\u5C0F\u80CC\u5305=10
+    \u5927\u767B\u5C71\u5305=50\u3002ContainerBase\u5C5E\u6027\u3002"
+  Type: 1
+  IsDeprecated: 0
+  Min: 1
+  Max: 50
+  DefaultFloat: 100
+  MinInt: 0
+  MaxInt: 100
+  DefaultInt: 10
+  DefaultBool: 0
+  DefaultString: 
+  DefaultAssetGUID: 
+  AssetTypeConstraint: 

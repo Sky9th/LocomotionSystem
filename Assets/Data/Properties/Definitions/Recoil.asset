@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: Recoil
   m_EditorClassIdentifier: 
   Id: Recoil
+  Description: "\u8FDC\u7A0B\u6B66\u5668\u540E\u5750\u529B(0-100)\u3002\u5F71\u54CD\u8FDE\u7EED\u5C04\u51FB\u7CBE\u5EA6\u3002\u624B\u67AA=20
+    \u6B65\u67AA=35 \u9730\u5F39=50\u3002"
   Type: 0
   IsDeprecated: 0
   Min: 0
-  Max: 10
-  DefaultFloat: 1
+  Max: 100
+  DefaultFloat: 30
   MinInt: 0
   MaxInt: 100
   DefaultInt: 0

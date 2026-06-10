@@ -51,6 +51,177 @@ namespace RedDust.Properties.Editor
             }
         }
 
+        // ── DefDetail (read-only popup) ──
+
+        public static class DefDetailPopup
+        {
+            private const float LabelWidth = 100f;
+            private static readonly Color ColorLabel = new(0.55f, 0.55f, 0.55f);
+            private static readonly Color ColorValue = Color.white;
+
+            private static GUIStyle _labelStyle;
+            private static GUIStyle LabelStyle => _labelStyle ??= new GUIStyle(EditorStyles.label)
+            {
+                alignment = TextAnchor.MiddleLeft,
+                normal = { textColor = ColorLabel },
+                fontSize = EditorStyles.label.fontSize,
+            };
+            private static GUIStyle _valueStyle;
+            private static GUIStyle ValueStyle => _valueStyle ??= new GUIStyle(EditorStyles.label)
+            {
+                alignment = TextAnchor.MiddleLeft,
+                normal = { textColor = ColorValue },
+                fontSize = EditorStyles.label.fontSize,
+                wordWrap = true,
+            };
+            private static GUIStyle _headerStyle;
+            private static GUIStyle HeaderStyle => _headerStyle ??= new GUIStyle(EditorStyles.boldLabel)
+            {
+                alignment = TextAnchor.MiddleLeft,
+                fontSize = 14,
+            };
+
+            public static void Show(PropertyDefSO def)
+            {
+                var w = ScriptableObject.CreateInstance<DefDetailWindow>();
+                w._def = def;
+                w.minSize = new Vector2(380, 240);
+                w.maxSize = new Vector2(520, 600);
+                w.titleContent = new GUIContent($"Def: {def.Id}");
+                w.ShowUtility();
+            }
+
+            private class DefDetailWindow : EditorWindow
+            {
+                public PropertyDefSO _def;
+                private Vector2 _scroll;
+
+                private void OnGUI()
+                {
+                    if (_def == null) { Close(); return; }
+                    var pad = 6f;
+                    GUILayout.Space(pad);
+                    EditorGUILayout.BeginHorizontal(); GUILayout.Space(pad);
+                    EditorGUILayout.BeginVertical();
+
+                    _scroll = EditorGUILayout.BeginScrollView(_scroll);
+
+                    // Header card
+                    DrawCard(pad, () =>
+                    {
+                        EditorGUILayout.LabelField(_def.Id, HeaderStyle);
+                        GUILayout.Space(2);
+                        DrawFieldRow("Type", _def.Type.ToString());
+                        if (_def.IsDeprecated)
+                            DrawFieldRow("Status", "⚠ Deprecated");
+                    });
+
+                    GUILayout.Space(pad);
+
+                    // Description — always shown, even if empty
+                    DrawCard(pad, () =>
+                    {
+                        EditorGUILayout.BeginHorizontal();
+                        EditorGUILayout.LabelField("Description", LabelStyle, GUILayout.Width(LabelWidth));
+                        var desc = string.IsNullOrEmpty(_def.Description) ? "(none)" : _def.Description;
+                        EditorGUILayout.LabelField(desc, ValueStyle, GUILayout.ExpandWidth(true));
+                        EditorGUILayout.EndHorizontal();
+                    });
+                    GUILayout.Space(pad);
+
+                    // Type-specific constraints
+                    DrawCard(pad, () => DrawTypeFields(pad));
+
+                    if (_def.IsDeprecated)
+                    {
+                        GUILayout.Space(pad);
+                        var warnStyle = new GUIStyle(EditorStyles.helpBox)
+                        {
+                            normal = { background = MakeColorTex(new Color(0.5f, 0.3f, 0.1f, 0.4f)) },
+                            padding = new RectOffset(8, 8, 6, 6),
+                        };
+                        EditorGUILayout.LabelField("⚠ This definition is marked as Deprecated. It should not be used in new trees.", warnStyle);
+                    }
+
+                    EditorGUILayout.EndScrollView();
+
+                    GUILayout.Space(pad);
+                    if (GUILayout.Button("Close", GUILayout.Height(24))) Close();
+
+                    EditorGUILayout.EndVertical();
+                    GUILayout.Space(pad); EditorGUILayout.EndHorizontal();
+                    GUILayout.Space(pad);
+                }
+
+                private void DrawTypeFields(float pad)
+                {
+                    EditorGUILayout.LabelField("Constraints", EditorStyles.boldLabel);
+                    GUILayout.Space(4);
+
+                    switch (_def.Type)
+                    {
+                        case PropertyType.Float:
+                            DrawFieldRow("Min", _def.Min.ToString("G"));
+                            DrawFieldRow("Max", _def.Max.ToString("G"));
+                            DrawFieldRow("Default", _def.DefaultFloat.ToString("G"));
+                            break;
+                        case PropertyType.Int:
+                            DrawFieldRow("Min", _def.MinInt.ToString());
+                            DrawFieldRow("Max", _def.MaxInt.ToString());
+                            DrawFieldRow("Default", _def.DefaultInt.ToString());
+                            break;
+                        case PropertyType.Bool:
+                            DrawFieldRow("Default", _def.DefaultBool ? "true" : "false");
+                            break;
+                        case PropertyType.String:
+                            DrawFieldRow("Default", string.IsNullOrEmpty(_def.DefaultString) ? "(empty)" : _def.DefaultString);
+                            break;
+                        case PropertyType.GameplayTag:
+                            EditorGUILayout.LabelField("Single GameplayTag reference. No numeric constraints.", ValueStyle);
+                            break;
+                        case PropertyType.GameplayTagList:
+                            EditorGUILayout.LabelField("GameplayTag array reference. No numeric constraints.", ValueStyle);
+                            break;
+                        case PropertyType.AssetRef:
+                            DrawFieldRow("Asset Type", string.IsNullOrEmpty(_def.AssetTypeConstraint) ? "(any)" : _def.AssetTypeConstraint);
+                            break;
+                        case PropertyType.AssetRefList:
+                            EditorGUILayout.LabelField("Asset reference array. No constraints.", ValueStyle);
+                            break;
+                    }
+                }
+
+                private void DrawFieldRow(string label, string value)
+                {
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.LabelField(label, LabelStyle, GUILayout.Width(LabelWidth));
+                    EditorGUILayout.LabelField(value, ValueStyle, GUILayout.ExpandWidth(true));
+                    EditorGUILayout.EndHorizontal();
+                }
+
+                private static void DrawCard(float pad, Action content)
+                {
+                    EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+                    GUILayout.Space(pad);
+                    EditorGUILayout.BeginHorizontal(); GUILayout.Space(pad);
+                    EditorGUILayout.BeginVertical();
+                    content();
+                    EditorGUILayout.EndVertical();
+                    GUILayout.Space(pad); EditorGUILayout.EndHorizontal();
+                    GUILayout.Space(pad);
+                    EditorGUILayout.EndVertical();
+                }
+
+                private static Texture2D MakeColorTex(Color color)
+                {
+                    var tex = new Texture2D(1, 1);
+                    tex.SetPixel(0, 0, color);
+                    tex.Apply();
+                    return tex;
+                }
+            }
+        }
+
         // ── CreateDef ──
 
         public static class CreateDefDialog
@@ -59,8 +230,8 @@ namespace RedDust.Properties.Editor
             {
                 var w = ScriptableObject.CreateInstance<CreateDefPopup>();
                 w._onCreated = onCreated;
-                w.minSize = new Vector2(320, 200);
-                w.maxSize = new Vector2(420, 400);
+                w.minSize = new Vector2(360, 320);
+                w.maxSize = new Vector2(480, 600);
                 w.ShowUtility();
             }
 
@@ -68,6 +239,7 @@ namespace RedDust.Properties.Editor
             {
                 public Action<PropertyDefSO> _onCreated;
                 private string _id = "";
+                private string _description = "";
                 private PropertyType _type = PropertyType.Float;
                 private bool _isDeprecated;
 
@@ -103,6 +275,8 @@ namespace RedDust.Properties.Editor
 
                     _id = EditorGUILayout.TextField("Id", _id);
                     _type = (PropertyType)EditorGUILayout.EnumPopup("Type", _type);
+                    GUILayout.Space(pad);
+                    _description = EditorGUILayout.TextField("Description", _description, GUILayout.Height(40));
                     GUILayout.Space(pad);
 
                     // Type-specific fields
@@ -173,6 +347,7 @@ namespace RedDust.Properties.Editor
                     }
                     var def = CreateInstance<PropertyDefSO>();
                     def.Id = _id;
+                    def.Description = _description;
                     def.Type = _type;
                     def.IsDeprecated = _isDeprecated;
                     def.Min = _min;

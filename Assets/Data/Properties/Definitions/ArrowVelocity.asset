@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: ArrowVelocity
   m_EditorClassIdentifier: 
   Id: ArrowVelocity
+  Description: "\u7BAD\u77E2\u901F\u5EA6(m/s)\u3002\u5F71\u54CD\u5F39\u9053\u548C\u4F24\u5BB3\u3002Bow\u4E13\u5C5E\u5C5E\u6027(\u8FDC\u671F)\u3002"
   Type: 0
   IsDeprecated: 0
-  Min: 10
-  Max: 500
-  DefaultFloat: 80
+  Min: 50
+  Max: 300
+  DefaultFloat: 150
   MinInt: 0
   MaxInt: 100
   DefaultInt: 0

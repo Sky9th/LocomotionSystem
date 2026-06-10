@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: KnockdownResist
   m_EditorClassIdentifier: 
   Id: KnockdownResist
+  Description: "\u51FB\u5012\u6297\u6027(0-100)\u3002\u964D\u4F4E\u88AB\u51FB\u5012\u6982\u7387\u3002\u53D7BodyArmor\u62A4\u7532\u52A0\u6210\uFF0C\u540C\u65F6\u88ABHuman
+    Resistance\u548CArmor Bonus\u5F15\u7528\u3002"
   Type: 0
   IsDeprecated: 0
   Min: 0
-  Max: 1
+  Max: 100
   DefaultFloat: 0
   MinInt: 0
   MaxInt: 100

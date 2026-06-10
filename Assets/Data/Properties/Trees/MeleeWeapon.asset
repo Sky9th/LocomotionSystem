@@ -29,5 +29,16 @@ MonoBehaviour:
     \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
     \"NodeId\": \"DamageType\",\n            \"ParentId\": \"Tags\",\n           
     \"DefId\": \"DamageType\"\n        },\n        {\n            \"NodeId\": \"IsTwoHanded\",\n           
-    \"ParentId\": \"Tags\",\n            \"DefId\": \"IsTwoHanded\"\n        }\n   
-    ]\n}"
+    \"ParentId\": \"Tags\",\n            \"DefId\": \"IsTwoHanded\"\n        },\n       
+    {\n            \"NodeId\": \"Presentation\",\n            \"ParentId\": \"\",\n           
+    \"DefId\": \"\"\n        },\n        {\n            \"NodeId\": \"Icon\",\n           
+    \"ParentId\": \"Presentation\",\n            \"DefId\": \"Icon\"\n        },\n       
+    {\n            \"NodeId\": \"VisualPrefab\",\n            \"ParentId\": \"Presentation\",\n           
+    \"DefId\": \"VisualPrefab\"\n        },\n        {\n            \"NodeId\": \"DisplayName\",\n           
+    \"ParentId\": \"Presentation\",\n            \"DefId\": \"DisplayName\"\n       
+    },\n        {\n            \"NodeId\": \"Behavior\",\n            \"ParentId\":
+    \"\",\n            \"DefId\": \"\"\n        },\n        {\n            \"NodeId\":
+    \"AnimationProfile\",\n            \"ParentId\": \"Behavior\",\n            \"DefId\":
+    \"AnimationProfile\"\n        },\n        {\n            \"NodeId\": \"AudioProfile\",\n           
+    \"ParentId\": \"Behavior\",\n            \"DefId\": \"AudioProfile\"\n       
+    }\n    ]\n}"

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e56e5e7ec7eb8fa4d8f875b0e63eee81, type: 3}
+  m_Name: TimeOfDay
+  m_EditorClassIdentifier: 
+  Id: TimeOfDay
+  Description: "\u5F53\u524D\u65F6\u95F4(\u5C0F\u65F6, 0-24)\u30028=\u65E9\u6668
+    12=\u6B63\u5348 20=\u9EC4\u660F 0=\u5348\u591C\u3002\u5F71\u54CD\u5149\u7167\u3001\u4E27\u5C38\u89C6\u89C9\u8303\u56F4\u3001\u566A\u97F3\u4F20\u64AD\u3002Environment\u5168\u5C40\u5355\u4F8B\u5C5E\u6027(\u8FDC\u671F)\u3002\u7531TimeService\u5199\u5165\u3002"
+  Type: 0
+  IsDeprecated: 0
+  Min: 0
+  Max: 24
+  DefaultFloat: 8
+  MinInt: 0
+  MaxInt: 100
+  DefaultInt: 0
+  DefaultBool: 0
+  DefaultString: 
+  DefaultAssetGUID: 
+  AssetTypeConstraint: 

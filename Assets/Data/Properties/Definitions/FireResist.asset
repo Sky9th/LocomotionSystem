@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e56e5e7ec7eb8fa4d8f875b0e63eee81, type: 3}
+  m_Name: FireResist
+  m_EditorClassIdentifier: 
+  Id: FireResist
+  Description: "\u706B\u7130\u6297\u6027(0-100)\u3002\u964D\u4F4E\u70E7\u4F24(Burn)\u4F24\u5BB3\u3002\u53D7\u62A4\u7532\u3001\u9632\u5177\u5F71\u54CD\u3002"
+  Type: 0
+  IsDeprecated: 0
+  Min: 0
+  Max: 100
+  DefaultFloat: 0
+  MinInt: 0
+  MaxInt: 100
+  DefaultInt: 0
+  DefaultBool: 0
+  DefaultString: 
+  DefaultAssetGUID: 
+  AssetTypeConstraint: 

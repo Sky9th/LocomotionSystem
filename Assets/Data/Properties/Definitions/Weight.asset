@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Weight
   m_EditorClassIdentifier: 
   Id: Weight
+  Description: "\u7269\u54C1\u91CD\u91CF(kg)\u3002\u8DE8\u65CF\u5171\u7528(Weapon/Ammo/Armor/Tool/Consumable)\u3002\u6240\u6709\u7269\u54C1\u91CD\u91CF\u4E4B\u548C=CurrentWeight(\u8FD0\u884C\u65F6\u8BA1\u7B97\uFF0C\u4E0D\u8FDBTree)\u3002"
   Type: 0
   IsDeprecated: 0
   Min: 0

@@ -13,20 +13,21 @@ MonoBehaviour:
   m_Name: Rifle
   m_EditorClassIdentifier: 
   InheritsFrom: {fileID: 11400000, guid: 9a299f3685247b740984e999711c3b12, type: 2}
-  treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"ScopeZoom\",\n           
-    \"ParentId\": \"Combat\",\n            \"DefId\": \"ScopeZoom\"\n        },\n       
-    {\n            \"NodeId\": \"AimTime\",\n            \"ParentId\": \"Combat\",\n           
-    \"DefId\": \"AimTime\"\n        },\n        {\n            \"NodeId\": \"Presentation\",\n           
+  treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"Combat\",\n           
     \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
-    \"NodeId\": \"Icon\",\n            \"ParentId\": \"Presentation\",\n           
-    \"DefId\": \"Icon\"\n        },\n        {\n            \"NodeId\": \"VisualPrefab\",\n           
-    \"ParentId\": \"Presentation\",\n            \"DefId\": \"VisualPrefab\"\n       
-    },\n        {\n            \"NodeId\": \"DisplayName\",\n            \"ParentId\":
-    \"Presentation\",\n            \"DefId\": \"DisplayName\"\n        },\n       
-    {\n            \"NodeId\": \"Description\",\n            \"ParentId\": \"Presentation\",\n           
-    \"DefId\": \"Description\"\n        },\n        {\n            \"NodeId\": \"Behavior\",\n           
-    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
-    \"NodeId\": \"AnimationProfile\",\n            \"ParentId\": \"Behavior\",\n           
-    \"DefId\": \"AnimationProfile\"\n        },\n        {\n            \"NodeId\":
-    \"AudioProfile\",\n            \"ParentId\": \"Behavior\",\n            \"DefId\":
-    \"AudioProfile\"\n        }\n    ]\n}"
+    \"NodeId\": \"ScopeZoom\",\n            \"ParentId\": \"Combat\",\n           
+    \"DefId\": \"ScopeZoom\"\n        },\n        {\n            \"NodeId\": \"AimTime\",\n           
+    \"ParentId\": \"Combat\",\n            \"DefId\": \"AimTime\"\n        },\n       
+    {\n            \"NodeId\": \"Presentation\",\n            \"ParentId\": \"\",\n           
+    \"DefId\": \"\"\n        },\n        {\n            \"NodeId\": \"Icon\",\n           
+    \"ParentId\": \"Presentation\",\n            \"DefId\": \"Icon\"\n        },\n       
+    {\n            \"NodeId\": \"VisualPrefab\",\n            \"ParentId\": \"Presentation\",\n           
+    \"DefId\": \"VisualPrefab\"\n        },\n        {\n            \"NodeId\": \"DisplayName\",\n           
+    \"ParentId\": \"Presentation\",\n            \"DefId\": \"DisplayName\"\n       
+    },\n        {\n            \"NodeId\": \"Description\",\n            \"ParentId\":
+    \"Presentation\",\n            \"DefId\": \"Description\"\n        },\n       
+    {\n            \"NodeId\": \"Behavior\",\n            \"ParentId\": \"\",\n           
+    \"DefId\": \"\"\n        },\n        {\n            \"NodeId\": \"AnimationProfile\",\n           
+    \"ParentId\": \"Behavior\",\n            \"DefId\": \"AnimationProfile\"\n       
+    },\n        {\n            \"NodeId\": \"AudioProfile\",\n            \"ParentId\":
+    \"Behavior\",\n            \"DefId\": \"AudioProfile\"\n        }\n    ]\n}"

@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: SneakSpeed
   m_EditorClassIdentifier: 
   Id: SneakSpeed
+  Description: "\u6F5C\u884C\u901F\u5EA6\u52A0\u6210\u500D\u7387(-1\u52302)\u3002\u8D1F\u503C=\u66F4\u6162\u6F5C\u884C
+    \u6B63\u503C=\u66F4\u5FEB\u6F5C\u884C\u3002LegArmor\u4E13\u5C5EBonus\u5C5E\u6027\u3002"
   Type: 0
   IsDeprecated: 0
   Min: -1

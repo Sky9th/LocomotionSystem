@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: Reach
   m_EditorClassIdentifier: 
   Id: Reach
+  Description: "\u8FD1\u6218\u653B\u51FB\u8DDD\u79BB(\u7C73)\u3002\u5315\u9996=0.6
+    \u5251=1.2 \u77DB=2.5 \u68CD=2.0 \u65A7=1.0\u3002"
   Type: 0
   IsDeprecated: 0
-  Min: 0
-  Max: 10
-  DefaultFloat: 1.5
+  Min: 0.5
+  Max: 3
+  DefaultFloat: 1.2
   MinInt: 0
   MaxInt: 100
   DefaultInt: 0

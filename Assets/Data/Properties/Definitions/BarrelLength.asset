@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: BarrelLength
   m_EditorClassIdentifier: 
   Id: BarrelLength
+  Description: "\u67AA\u7BA1\u957F\u5EA6(inch)\u3002\u5F71\u54CD\u521D\u901F(\u67AA\u7BA1\u8D8A\u957F\u521D\u901F\u8D8A\u9AD8\uFF0C16\u5BF8\u4EE5\u4E0A\u9012\u51CF)\u548C\u5BA4\u5185\u673A\u52A8\u6027\u3002\u624B\u67AA=4
+    \u6B65\u67AA=16 \u9730\u5F39=18\u3002"
   Type: 0
   IsDeprecated: 0
-  Min: 0
-  Max: 2
-  DefaultFloat: 0.5
+  Min: 2
+  Max: 24
+  DefaultFloat: 6
   MinInt: 0
   MaxInt: 100
   DefaultInt: 0

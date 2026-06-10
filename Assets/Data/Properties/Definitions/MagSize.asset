@@ -13,14 +13,16 @@ MonoBehaviour:
   m_Name: MagSize
   m_EditorClassIdentifier: 
   Id: MagSize
+  Description: "\u5F39\u5939\u5BB9\u91CF(\u53D1)\u3002\u624B\u67AA=12 \u6B65\u67AA=20
+    \u9730\u5F39=5\u3002\u6574\u6570\u3002"
   Type: 1
   IsDeprecated: 0
-  Min: 0
+  Min: 1
   Max: 100
   DefaultFloat: 100
-  MinInt: 1
-  MaxInt: 200
-  DefaultInt: 30
+  MinInt: 0
+  MaxInt: 100
+  DefaultInt: 10
   DefaultBool: 0
   DefaultString: 
   DefaultAssetGUID: 

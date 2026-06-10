@@ -22,4 +22,16 @@ MonoBehaviour:
     \"DefId\": \"Weight\"\n        },\n        {\n            \"NodeId\": \"Resist\",\n           
     \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
     \"NodeId\": \"ResistTypes\",\n            \"ParentId\": \"Resist\",\n           
-    \"DefId\": \"ResistTypes\"\n        }\n    ]\n}"
+    \"DefId\": \"ResistTypes\"\n        },\n        {\n            \"NodeId\": \"Combat\",\n           
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
+    \"NodeId\": \"DEF\",\n            \"ParentId\": \"Combat\",\n            \"DefId\":
+    \"DEF\"\n        },\n        {\n            \"NodeId\": \"Coverage\",\n           
+    \"ParentId\": \"Combat\",\n            \"DefId\": \"Coverage\"\n        },\n       
+    {\n            \"NodeId\": \"TraumaTransfer\",\n            \"ParentId\": \"Combat\",\n           
+    \"DefId\": \"TraumaTransfer\"\n        },\n        {\n            \"NodeId\":
+    \"Penalty\",\n            \"ParentId\": \"\",\n            \"DefId\": \"\"\n       
+    },\n        {\n            \"NodeId\": \"MoveSpeedPenalty\",\n            \"ParentId\":
+    \"Penalty\",\n            \"DefId\": \"MoveSpeedPenalty\"\n        },\n       
+    {\n            \"NodeId\": \"StaminaRegenPenalty\",\n            \"ParentId\":
+    \"Penalty\",\n            \"DefId\": \"StaminaRegenPenalty\"\n        }\n   
+    ]\n}"

@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Durability
   m_EditorClassIdentifier: 
   Id: Durability
+  Description: "\u5F53\u524D\u8010\u4E45\u5EA6\u30020=\u7269\u54C1\u635F\u574F/\u4E0D\u53EF\u7528\u3002\u8DE8\u65CF\u5171\u7528(Weapon/Armor/Tool/Container)\u3002\u4F4E\u8010\u4E45\u89E6\u53D1\u6027\u80FD\u60E9\u7F5A(50%\u4EE5\u4E0B\xD70.8,
+    20%\u4EE5\u4E0B\xD70.5)\u3002"
   Type: 0
   IsDeprecated: 0
   Min: 0

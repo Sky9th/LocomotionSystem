@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: MoveSpeed
   m_EditorClassIdentifier: 
   Id: MoveSpeed
+  Description: "\u79FB\u52A8\u901F\u5EA6\u52A0\u6210\u500D\u7387(-1\u52302)\u3002\u8D1F\u503C=\u51CF\u901F
+    \u6B63\u503C=\u52A0\u901F\u3002LegArmor\u4E13\u5C5EBonus\u5C5E\u6027(\u79FB\u901F\u52A0\u6210)\u3002"
   Type: 0
   IsDeprecated: 0
   Min: -1

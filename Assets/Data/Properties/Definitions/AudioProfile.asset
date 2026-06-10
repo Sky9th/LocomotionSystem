@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: AudioProfile
   m_EditorClassIdentifier: 
   Id: AudioProfile
+  Description: "\u97F3\u6548Profile\u5F15\u7528\u3002\u51B3\u5B9A\u88C5\u5907\u7684\u97F3\u6548\u8868\u73B0(\u51FB\u53D1/\u6362\u5F39/\u7A7A\u4ED3)\u3002CharacterAudio\u6D88\u8D39\u3002"
   Type: 6
   IsDeprecated: 0
   Min: 0

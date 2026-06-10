@@ -8,6 +8,9 @@ namespace RedDust.Properties
         [Header("Identity")]
         public string Id;
 
+        [TextArea(2, 6)]
+        public string Description;
+
         public PropertyType Type;
 
         public bool IsDeprecated;

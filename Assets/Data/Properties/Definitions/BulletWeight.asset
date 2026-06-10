@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e56e5e7ec7eb8fa4d8f875b0e63eee81, type: 3}
+  m_Name: BulletWeight
+  m_EditorClassIdentifier: 
+  Id: BulletWeight
+  Description: "\u5F39\u5934\u91CD\u91CF(grain)\u3002\u91CD\u5F39=\u9AD8\u7A7F\u900F\u9AD8\u540E\u5EA7\uFF1B\u8F7B\u5F39=\u9AD8\u901F\u4F4E\u7A7F\u900F\u30029mm=115gr
+    5.56mm=62gr 12ga=438gr\u3002AmmoBase\u5C5E\u6027\u3002"
+  Type: 0
+  IsDeprecated: 0
+  Min: 20
+  Max: 800
+  DefaultFloat: 115
+  MinInt: 0
+  MaxInt: 100
+  DefaultInt: 0
+  DefaultBool: 0
+  DefaultString: 
+  DefaultAssetGUID: 
+  AssetTypeConstraint: 

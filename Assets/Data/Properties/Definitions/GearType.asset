@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: GearType
   m_EditorClassIdentifier: 
   Id: GearType
+  Description: "\u88C5\u5907\u7C7B\u578B\u6807\u7B7E\u3002\u5F15\u7528Equipment.Part.*\u6807\u7B7E(\u5982Equipment.Part.Receiver)\u3002\u51B3\u5B9A\u88C5\u5907\u69FD\u4F4D\u548C\u96F6\u4EF6\u517C\u5BB9\u6027\u3002\u9700\u5148\u521B\u5EFATag\u8D44\u4EA7\u3002"
   Type: 4
   IsDeprecated: 0
   Min: 0

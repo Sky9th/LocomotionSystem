@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: VisualPrefab
   m_EditorClassIdentifier: 
   Id: VisualPrefab
+  Description: "\u7269\u54C1/\u88C5\u59073D\u8868\u73B0Prefab\u5F15\u7528(GameObject)\u3002\u7528\u4E8E\u88C5\u5907\u540E\u89D2\u8272\u5916\u89C2\u6216\u4E16\u754C\u4E2D\u7684\u6389\u843D\u7269\u6A21\u578B\u3002"
   Type: 6
   IsDeprecated: 0
   Min: 0

@@ -13,10 +13,13 @@ MonoBehaviour:
   m_Name: AttackSpeed
   m_EditorClassIdentifier: 
   Id: AttackSpeed
+  Description: "\u8FD1\u6218\u653B\u51FB\u901F\u5EA6\u500D\u7387\u30020.5=\u6162(\u65A7)
+    1.0=\u6807\u51C6(\u5251) 1.2=\u5FEB(\u5315\u9996)\u3002\u6700\u7EC8\u653B\u901F
+    = Weapon.AttackSpeed \xD7 (1 + Agility\xD70.02)\u3002"
   Type: 0
   IsDeprecated: 0
-  Min: 0.1
-  Max: 10
+  Min: 0.5
+  Max: 3
   DefaultFloat: 1
   MinInt: 0
   MaxInt: 100

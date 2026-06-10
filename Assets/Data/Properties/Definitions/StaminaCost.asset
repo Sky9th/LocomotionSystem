@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: StaminaCost
   m_EditorClassIdentifier: 
   Id: StaminaCost
+  Description: "\u8FD1\u6218\u6BCF\u6B21\u6325\u51FB\u6D88\u8017\u4F53\u529B\u3002\u8F7B\u51FB=3
+    \u91CD\u51FB=8 \u7279\u6B8A\u6280=15\u3002"
   Type: 0
   IsDeprecated: 0
-  Min: 0
-  Max: 100
-  DefaultFloat: 10
+  Min: 1
+  Max: 30
+  DefaultFloat: 5
   MinInt: 0
   MaxInt: 100
   DefaultInt: 0

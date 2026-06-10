@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: Spread
   m_EditorClassIdentifier: 
   Id: Spread
+  Description: "\u9730\u5F39\u67AA\u6563\u5E03\u89D2(\u5EA6)\u3002\u5F71\u54CD\u5F39\u4E38\u5206\u5E03\u8303\u56F4\u3002\u89D2\u5EA6\u8D8A\u5927\u6563\u5E03\u8D8A\u5BBD\u3002"
   Type: 0
   IsDeprecated: 0
-  Min: 0
-  Max: 1
-  DefaultFloat: 0.15
+  Min: 2
+  Max: 30
+  DefaultFloat: 12
   MinInt: 0
   MaxInt: 100
   DefaultInt: 0

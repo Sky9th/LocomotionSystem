@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e56e5e7ec7eb8fa4d8f875b0e63eee81, type: 3}
+  m_Name: DEF_Building
+  m_EditorClassIdentifier: 
+  Id: DEF_Building
+  Description: "\u5EFA\u7B51\u9632\u5FA1\u503C(\u51CF\u4F24)\u3002\u6728\u5899=5
+    \u77F3\u5899=20 \u6DF7\u51DD\u571F=50\u3002Building\u4E13\u5C5E\u5C5E\u6027\u3002"
+  Type: 0
+  IsDeprecated: 0
+  Min: 0
+  Max: 100
+  DefaultFloat: 20
+  MinInt: 0
+  MaxInt: 100
+  DefaultInt: 0
+  DefaultBool: 0
+  DefaultString: 
+  DefaultAssetGUID: 
+  AssetTypeConstraint: 

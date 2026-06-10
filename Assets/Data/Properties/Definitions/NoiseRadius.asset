@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: NoiseRadius
   m_EditorClassIdentifier: 
   Id: NoiseRadius
+  Description: "\u566A\u97F3\u534A\u5F84(\u7C73)\u3002\u6B66\u5668/\u5F39\u836F\u51FB\u53D1\u65F6\u4EA7\u751F\u7684\u566A\u97F3\u4F20\u64AD\u8303\u56F4\u30025\u7EA7(\u624B\u67AA)=40m
+    6\u7EA7(\u6B65\u67AA/\u9730\u5F39)=80m\u3002\u4E0E\u566A\u97F3\u7CFB\u7EDF\u8054\u52A8\u3002"
   Type: 0
   IsDeprecated: 0
-  Min: 0
+  Min: 5
   Max: 500
   DefaultFloat: 50
   MinInt: 0

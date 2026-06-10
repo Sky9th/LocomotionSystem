@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Description
   m_EditorClassIdentifier: 
   Id: Description
+  Description: "\u7269\u54C1/\u5B9E\u4F53\u8BE6\u7EC6\u63CF\u8FF0\u6587\u672C\u3002\u7528\u4E8EUI
+    Tooltip\u8BE6\u60C5\u5C55\u5F00\u3002"
   Type: 3
   IsDeprecated: 0
   Min: 0

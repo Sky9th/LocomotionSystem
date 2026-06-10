@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: PelletCount
   m_EditorClassIdentifier: 
   Id: PelletCount
+  Description: "\u9730\u5F39\u67AA\u5F39\u4E38\u6570\u91CF\u3002\u6BCF\u6B21\u51FB\u53D1\u5C04\u51FA\u591A\u4E2A\u5F39\u4E38\uFF0C\u6BCF\u4E2A\u72EC\u7ACB\u5224\u5B9A\u547D\u4E2D\u548C\u4F24\u5BB3\u3002\u6807\u51C6=8\u3002"
   Type: 1
   IsDeprecated: 0
-  Min: 0
-  Max: 100
+  Min: 3
+  Max: 15
   DefaultFloat: 100
-  MinInt: 1
-  MaxInt: 20
+  MinInt: 0
+  MaxInt: 100
   DefaultInt: 8
   DefaultBool: 0
   DefaultString: 

@@ -22,6 +22,7 @@ namespace RedDust.Properties.Editor
             public string id;
             public string type;
             public bool isDeprecated;
+            public string description;
 
             public float min;
             public float max = 100f;
@@ -86,6 +87,7 @@ namespace RedDust.Properties.Editor
                 EnsureDirectory(DefinitionsRoot);
                 var def = ScriptableObject.CreateInstance<PropertyDefSO>();
                 def.Id = entry.id;
+                def.Description = entry.description ?? string.Empty;
                 def.Type = propType;
                 def.IsDeprecated = entry.isDeprecated;
                 def.Min = entry.min;
@@ -175,6 +177,7 @@ namespace RedDust.Properties.Editor
                 export.definitions.Add(new PropertyDefEntry
                 {
                     id = def.Id, type = def.Type.ToString(), isDeprecated = def.IsDeprecated,
+                    description = def.Description,
                     min = def.Min, max = def.Max, defaultFloat = def.DefaultFloat,
                     minInt = def.MinInt, maxInt = def.MaxInt, defaultInt = def.DefaultInt,
                     defaultString = def.DefaultString, defaultAssetGUID = def.DefaultAssetGUID,

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e56e5e7ec7eb8fa4d8f875b0e63eee81, type: 3}
+  m_Name: Morale
+  m_EditorClassIdentifier: 
+  Id: Morale
+  Description: "\u58EB\u6C14\u503C\u3002\u5F71\u54CDNPC\u5DE5\u4F5C/\u6218\u6597\u6548\u7387(\xD70.5\u7CFB\u6570)\u3002\u53D7\u98DF\u7269\u591A\u6837\u6027\u3001\u5C45\u4F4F\u73AF\u5883\u3001\u5C38\u6F6E\u4F24\u4EA1\u5F71\u54CD\u300250=\u4E2D\u6027
+    0=\u7EDD\u671B 100=\u9AD8\u6602\u3002A\u6D4B\u4EC5NPC\u53D7\u58EB\u6C14\u5F71\u54CD\u3002"
+  Type: 0
+  IsDeprecated: 0
+  Min: 0
+  Max: 100
+  DefaultFloat: 50
+  MinInt: 0
+  MaxInt: 100
+  DefaultInt: 0
+  DefaultBool: 0
+  DefaultString: 
+  DefaultAssetGUID: 
+  AssetTypeConstraint: 

@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: ResistTypes
   m_EditorClassIdentifier: 
   Id: ResistTypes
+  Description: "\u62A4\u7532\u6297\u6027\u7C7B\u578B\u6807\u7B7E\u5217\u8868\u3002\u5F15\u7528Damage.*\u6807\u7B7E(\u5982Damage.Physical.Slash,
+    Damage.Elemental.Fire)\u3002\u51B3\u5B9A\u62A4\u7532\u5BF9\u54EA\u4E9B\u4F24\u5BB3\u7C7B\u578B\u6709\u6548\u3002"
   Type: 5
   IsDeprecated: 0
   Min: 0

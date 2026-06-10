@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Platform
   m_EditorClassIdentifier: 
   Id: Platform
+  Description: "\u6B66\u5668/\u96F6\u4EF6\u5E73\u53F0\u6807\u7B7E\u3002\u5F15\u7528Platform.*\u6807\u7B7E(\u5982Platform.Glock)\u3002\u540C\u4E00\u5E73\u53F0\u7684\u96F6\u4EF6\u53EF\u4E92\u6362\u5B89\u88C5\u3002\u9700\u5148\u521B\u5EFATag\u8D44\u4EA7\u3002"
   Type: 4
   IsDeprecated: 0
   Min: 0

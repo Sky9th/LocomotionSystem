@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: CompatibleAmmo
   m_EditorClassIdentifier: 
   Id: CompatibleAmmo
+  Description: "\u517C\u5BB9\u5F39\u836F\u53E3\u5F84\u6807\u7B7E\u5217\u8868\u3002\u5F15\u7528Caliber.*\u6807\u7B7E(\u5982Caliber.9mm)\u3002\u51B3\u5B9A\u8BE5\u6B66\u5668\u53EF\u4F7F\u7528\u54EA\u4E9B\u5F39\u836F\u7C7B\u578B\u3002"
   Type: 5
   IsDeprecated: 0
   Min: 0

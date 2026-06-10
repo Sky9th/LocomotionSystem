@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: Knockback
   m_EditorClassIdentifier: 
   Id: Knockback
+  Description: "\u8FD1\u6218\u51FB\u9000\u8DDD\u79BB(\u7C73)\u30020=\u65E0\u51FB\u9000
+    10=\u5927\u5E45\u51FB\u9000\u3002Staff=4 Blade=1 Axe=3\u3002"
   Type: 0
   IsDeprecated: 0
   Min: 0
-  Max: 100
-  DefaultFloat: 0
+  Max: 10
+  DefaultFloat: 2
   MinInt: 0
   MaxInt: 100
   DefaultInt: 0

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Icon
   m_EditorClassIdentifier: 
   Id: Icon
+  Description: "\u7269\u54C1/\u88C5\u5907\u56FE\u6807\u5F15\u7528(Sprite)\u3002\u7528\u4E8E\u80CC\u5305UI\u3001\u88C5\u5907\u680F\u3001\u5730\u9762\u7269\u54C1\u663E\u793A\u3002"
   Type: 6
   IsDeprecated: 0
   Min: 0

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: ScopeZoom
   m_EditorClassIdentifier: 
   Id: ScopeZoom
+  Description: "\u7784\u51C6\u955C\u500D\u7387(\xD7)\u30021=\u94C1\u7784 4=ACOG 12=\u9AD8\u500D\u72D9\u51FB\u955C\u3002\u6B65\u67AA\u4E13\u5C5E\u5C5E\u6027\u3002"
   Type: 0
   IsDeprecated: 0
   Min: 1

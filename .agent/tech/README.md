@@ -137,6 +137,11 @@ tech/
 │       │   ├── Interfaces/             # IStatConsumable 等 4 个接口
 │       │   └── Editor/                 # StatsTreeWindow
 │       │
+│       ├── L3-properties/               # L3: 通用属性系统 (自身代码: Definition/ Tree/ Instance/ Editor/)
+│       │   ├── README.md               # 模块总览 — Schema/Data 分离 + 8 类型 + 继承合并
+│       │   ├── property-inventory.md    # Property Inventory — 全量属性与属性树设计（~180 props, 29 trees）
+│       │   └── implementation-plan.md   # 实现计划 — 4 阶段迁移
+│       │
 │       ├── L3-equipment/              # L3: 装备系统 (自身代码: GearDefSO/ GearInstance/ Editor/)
 │       │   ├── README.md               # 模块总览 — 两层架构 + 三层叠加 + 万物皆 GearDefSO
 │       │   ├── gear-def-so.md           # GearDefSO — 装备/零件定义资产，字段详解

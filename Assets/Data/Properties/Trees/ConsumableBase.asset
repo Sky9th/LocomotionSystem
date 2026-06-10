@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e47e6b69f1db8742ab169ebce8acc1e, type: 3}
+  m_Name: ConsumableBase
+  m_EditorClassIdentifier: 
+  InheritsFrom: {fileID: 0}
+  treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"Base\",\n           
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
+    \"NodeId\": \"Weight\",\n            \"ParentId\": \"Base\",\n            \"DefId\":
+    \"Weight\"\n        },\n        {\n            \"NodeId\": \"ConsumeTime\",\n           
+    \"ParentId\": \"Base\",\n            \"DefId\": \"ConsumeTime\"\n        },\n       
+    {\n            \"NodeId\": \"StackSize\",\n            \"ParentId\": \"Base\",\n           
+    \"DefId\": \"StackSize\"\n        },\n        {\n            \"NodeId\": \"Tags\",\n           
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
+    \"NodeId\": \"ConsumableType\",\n            \"ParentId\": \"Tags\",\n           
+    \"DefId\": \"ConsumableType\"\n        }\n    ]\n}"

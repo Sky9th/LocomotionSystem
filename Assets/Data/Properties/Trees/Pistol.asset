@@ -13,13 +13,15 @@ MonoBehaviour:
   m_Name: Pistol
   m_EditorClassIdentifier: 
   InheritsFrom: {fileID: 11400000, guid: 9a299f3685247b740984e999711c3b12, type: 2}
-  treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"HolsterSpeed\",\n           
-    \"ParentId\": \"Combat\",\n            \"DefId\": \"HolsterSpeed\"\n        },\n       
-    {\n            \"NodeId\": \"HipFirePenalty\",\n            \"ParentId\": \"Combat\",\n           
-    \"DefId\": \"HipFirePenalty\"\n        },\n        {\n            \"NodeId\":
-    \"Presentation\",\n            \"ParentId\": \"\",\n            \"DefId\": \"\"\n       
-    },\n        {\n            \"NodeId\": \"Icon\",\n            \"ParentId\": \"Presentation\",\n           
-    \"DefId\": \"Icon\"\n        },\n        {\n            \"NodeId\": \"VisualPrefab\",\n           
+  treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"Combat\",\n           
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
+    \"NodeId\": \"HolsterSpeed\",\n            \"ParentId\": \"Combat\",\n           
+    \"DefId\": \"HolsterSpeed\"\n        },\n        {\n            \"NodeId\": \"HipFirePenalty\",\n           
+    \"ParentId\": \"Combat\",\n            \"DefId\": \"HipFirePenalty\"\n       
+    },\n        {\n            \"NodeId\": \"Presentation\",\n            \"ParentId\":
+    \"\",\n            \"DefId\": \"\"\n        },\n        {\n            \"NodeId\":
+    \"Icon\",\n            \"ParentId\": \"Presentation\",\n            \"DefId\":
+    \"Icon\"\n        },\n        {\n            \"NodeId\": \"VisualPrefab\",\n           
     \"ParentId\": \"Presentation\",\n            \"DefId\": \"VisualPrefab\"\n       
     },\n        {\n            \"NodeId\": \"DisplayName\",\n            \"ParentId\":
     \"Presentation\",\n            \"DefId\": \"DisplayName\"\n        },\n       

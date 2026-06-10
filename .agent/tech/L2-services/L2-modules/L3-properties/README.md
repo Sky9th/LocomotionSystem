@@ -6,8 +6,9 @@
 
 - 标签体系 → `L1-core/gameplay-tag.md` — PropertyDefSO 的 GameplayTag 类型依赖 Tag 系统做校验
 - 伤害地基 → [damage-source-model.md](damage-source-model.md) — ATK 是 DamageEffectSO[]，不依赖属性系统，但属性系统需支持 AssetRefList 类型
-- 装备系统 → [equipment-system.md](equipment-system.md) — GearDefSO 作为实例层消费方
-- Stats 系统 → `.agent/tech/L2-services/L2-modules/L3-stats/README.md` — 当前数值框架，Properties 成型后删除
+- 装备系统 → [equipment-system.md](../../../../design/equipment-system.md) — GearDefSO 作为实例层消费方
+- Stats 系统 → `../L3-stats/README.md` — 当前数值框架，Properties 成型后删除
+- **属性清单** → [property-inventory.md](property-inventory.md) — 全量属性与属性树设计（~180 props, 29 trees, 8 族）
 
 ---
 

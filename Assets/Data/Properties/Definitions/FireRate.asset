@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: FireRate
   m_EditorClassIdentifier: 
   Id: FireRate
+  Description: "\u67AA\u68B0\u5C04\u901F(\u53D1/\u79D2)\u30020.5=2\u79D21\u53D1 12=\u5168\u81EA\u52A8\u9AD8\u901F\u3002\u624B\u67AA=4
+    \u6B65\u67AA=3 \u9730\u5F39=1\u3002"
   Type: 0
   IsDeprecated: 0
-  Min: 0.1
-  Max: 60
-  DefaultFloat: 10
+  Min: 0.5
+  Max: 12
+  DefaultFloat: 5
   MinInt: 0
   MaxInt: 100
   DefaultInt: 0

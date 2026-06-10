@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: DrawSpeed
   m_EditorClassIdentifier: 
   Id: DrawSpeed
+  Description: "\u62C9\u5F13\u901F\u5EA6\u500D\u7387\u3002>1\u5FEB <1\u6162\u3002\u5F71\u54CD\u5F13\u7684\u5C04\u901F\u3002Bow\u4E13\u5C5E\u5C5E\u6027(\u8FDC\u671F)\u3002"
   Type: 0
   IsDeprecated: 0
-  Min: 0.1
-  Max: 5
+  Min: 0.5
+  Max: 3
   DefaultFloat: 1
   MinInt: 0
   MaxInt: 100

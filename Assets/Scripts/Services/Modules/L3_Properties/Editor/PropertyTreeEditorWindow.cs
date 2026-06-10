@@ -715,14 +715,20 @@ namespace RedDust.Properties.Editor
                 var rowH = EditorGUIUtility.singleLineHeight;
                 EditorGUILayout.BeginHorizontal(GUILayout.Height(rowH));
 
-                // --- Name ---
+                // --- Name (native tooltip = Def.Description, with Type fallback) ---
                 GUI.color = textColor;
+                var tooltip = node.Def != null
+                    ? (string.IsNullOrEmpty(node.Def.Description)
+                        ? node.Def.Type.ToString()
+                        : $"{node.Def.Description}\n\nType: {node.Def.Type}")
+                    : "-";
+                var nameContent = new GUIContent(node.NodeId, tooltip);
                 var nameStyle = new GUIStyle(EditorStyles.label)
                 {
                     alignment = TextAnchor.MiddleLeft,
                     fontStyle = searchMatch ? FontStyle.Bold : FontStyle.Normal
                 };
-                GUILayout.Label(node.NodeId, nameStyle, GUILayout.ExpandWidth(true), GUILayout.Height(rowH));
+                GUILayout.Label(nameContent, nameStyle, GUILayout.ExpandWidth(true), GUILayout.Height(rowH));
                 GUI.color = Color.white;
 
                 // --- Type ---
@@ -732,8 +738,19 @@ namespace RedDust.Properties.Editor
                     alignment = TextAnchor.MiddleRight
                 };
                 GUILayout.Label(node.Def != null ? node.Def.Type.ToString() : "-",
-                    typeStyle, GUILayout.Width(90), GUILayout.Height(rowH));
+                    typeStyle, GUILayout.Width(60), GUILayout.Height(rowH));
                 GUI.color = Color.white;
+
+                // --- Detail button "?" ---
+                if (node.Def != null)
+                {
+                    var oldInfoBg = GUI.backgroundColor;
+                    GUI.backgroundColor = new Color(0.4f, 0.6f, 0.9f);
+                    if (GUILayout.Button("?", EditorStyles.miniButton, GUILayout.Width(20)))
+                        PropertyTreeEditorPopups.DefDetailPopup.Show(node.Def);
+                    GUI.backgroundColor = oldInfoBg;
+                }
+                else GUILayout.Space(20);
 
                 // --- Delete ---
                 if (isLocal)
@@ -1162,20 +1179,24 @@ namespace RedDust.Properties.Editor
             {
                 EditorGUILayout.BeginHorizontal(GUILayout.Height(rowH));
 
+                // Name with type in tooltip: "(Float) description"
+                var tooltipRight = string.IsNullOrEmpty(def.Description)
+                    ? $"({def.Type})"
+                    : $"({def.Type}) {def.Description}";
+                var nameContent = new GUIContent(def.Id, tooltipRight);
                 var nameStyle = new GUIStyle(EditorStyles.label)
                 {
                     alignment = TextAnchor.MiddleLeft,
                     normal = { textColor = isUsed ? Color.gray : Color.white }
                 };
-                GUILayout.Label(def.Id, nameStyle, GUILayout.ExpandWidth(true), GUILayout.Height(rowH));
+                GUILayout.Label(nameContent, nameStyle, GUILayout.ExpandWidth(true), GUILayout.Height(rowH));
 
-                var typeStyle = new GUIStyle(EditorStyles.label)
-                {
-                    alignment = TextAnchor.MiddleRight,
-                    fontSize = EditorStyles.miniLabel.fontSize,
-                    normal = { textColor = isUsed ? Color.gray : new Color(0.7f, 0.7f, 0.7f) }
-                };
-                GUILayout.Label(def.Type.ToString(), typeStyle, GUILayout.Width(70), GUILayout.Height(rowH));
+                // Detail button "?"
+                var oldInfoBg = GUI.backgroundColor;
+                GUI.backgroundColor = new Color(0.4f, 0.6f, 0.9f);
+                if (GUILayout.Button("?", EditorStyles.miniButton, GUILayout.Width(20), GUILayout.Height(rowH)))
+                    PropertyTreeEditorPopups.DefDetailPopup.Show(def);
+                GUI.backgroundColor = oldInfoBg;
 
                 // Delete
                 var oldDelBg = GUI.backgroundColor;
