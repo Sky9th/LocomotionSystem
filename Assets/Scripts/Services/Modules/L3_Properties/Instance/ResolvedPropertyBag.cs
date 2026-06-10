@@ -24,6 +24,7 @@ namespace RedDust.Properties
         private readonly Dictionary<string, string[]> _tagLists = new();
         private readonly Dictionary<string, UnityEngine.Object> _assetRefs = new();
         private readonly Dictionary<string, UnityEngine.Object[]> _assetRefLists = new();
+        private readonly HashSet<string> _keys = new(); // O(1) single lookup for TryGet
 
         // ---- type-safe getters ----
 
@@ -36,12 +37,7 @@ namespace RedDust.Properties
         public T GetAsset<T>(string path) where T : UnityEngine.Object => _assetRefs.TryGetValue(path, out var v) ? v as T : null;
         public T[] GetAssetList<T>(string path) where T : UnityEngine.Object => _assetRefLists.TryGetValue(path, out var v) ? v as T[] : null;
 
-        public bool TryGet(string path)
-        {
-            return _floats.ContainsKey(path) || _ints.ContainsKey(path) || _bools.ContainsKey(path)
-                || _strings.ContainsKey(path) || _tags.ContainsKey(path) || _tagLists.ContainsKey(path)
-                || _assetRefs.ContainsKey(path) || _assetRefLists.ContainsKey(path);
-        }
+        public bool TryGet(string path) => _keys.Contains(path);
 
         // ---- build from structure + overrides ----
 
@@ -59,6 +55,7 @@ namespace RedDust.Properties
             foreach (var (path, def) in structure)
             {
                 if (def == null) continue;
+                bag._keys.Add(path);
 
                 if (overrides.TryGetValue(path, out var rawValue))
                 {

@@ -17,6 +17,10 @@ namespace RedDust.Properties.Editor
         private const float FoldoutWidth = 14f;
         private const float FoldoutGap = 6f;
 
+        private static GUIStyle _dashLabel;
+        private static GUIStyle DashLabel => _dashLabel ??= new GUIStyle(EditorStyles.label)
+            { alignment = TextAnchor.MiddleCenter };
+
         /// <summary>
         /// Draw the tree list.
         /// </summary>
@@ -27,7 +31,8 @@ namespace RedDust.Properties.Editor
             string searchFilter = null,
             Action<PropertyTreeSO> onSelect = null,
             Color selectedColor = default,
-            Action<PropertyTreeSO> onDelete = null)
+            Action<PropertyTreeSO> onDelete = null,
+            Action<PropertyTreeSO> onCreateChild = null)
         {
             if (roots == null || roots.Count == 0)
                 return;
@@ -57,7 +62,7 @@ namespace RedDust.Properties.Editor
             {
                 if (i > 0) EditorUIUtility.CardGap(Pad);
                 DrawNodeCard(visibleRoots[i], foldouts, ref selectedTree,
-                    q, hasSearch, onSelect, selectedColor, onDelete);
+                    q, hasSearch, onSelect, selectedColor, onDelete, onCreateChild);
             }
         }
 
@@ -71,7 +76,8 @@ namespace RedDust.Properties.Editor
             bool hasSearch,
             Action<PropertyTreeSO> onSelect,
             Color selectedColor,
-            Action<PropertyTreeSO> onDelete = null)
+            Action<PropertyTreeSO> onDelete = null,
+            Action<PropertyTreeSO> onCreateChild = null)
         {
             // Capture ref to local (avoids lambda limitation)
             var sel = selectedTree;
@@ -108,9 +114,7 @@ namespace RedDust.Properties.Editor
                 else
                 {
                     var dashRect = GUILayoutUtility.GetRect(FoldoutWidth, rowH);
-                    var dashStyle = new GUIStyle(EditorStyles.label)
-                        { alignment = TextAnchor.MiddleCenter };
-                    GUI.Label(dashRect, "-", dashStyle);
+                    GUI.Label(dashRect, "-", DashLabel);
                 }
 
                 GUI.backgroundColor = foldBg;
@@ -149,6 +153,16 @@ namespace RedDust.Properties.Editor
                     GUI.color = oldColor;
                 }
 
+                // Create child button — quickly create a tree inheriting from this one
+                if (onCreateChild != null)
+                {
+                    var oldBg = GUI.backgroundColor;
+                    GUI.backgroundColor = new Color(0.3f, 0.7f, 0.3f);
+                    if (GUILayout.Button("+", EditorStyles.miniButton, GUILayout.Width(20)))
+                        onCreateChild(node.Tree);
+                    GUI.backgroundColor = oldBg;
+                }
+
                 // Delete button (only for leaf trees with no inheritors)
                 if (!node.HasChildren && onDelete != null)
                 {
@@ -182,7 +196,7 @@ namespace RedDust.Properties.Editor
                         {
                             if (i > 0) EditorUIUtility.CardGap(Pad);
                             DrawNodeCard(visibleChildren[i], foldouts, ref sel,
-                                q, hasSearch, onSelect, selectedColor, onDelete);
+                                q, hasSearch, onSelect, selectedColor, onDelete, onCreateChild);
                         }
                     }
                 }

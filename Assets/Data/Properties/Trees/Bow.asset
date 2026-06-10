@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: Bow
   m_EditorClassIdentifier: 
   InheritsFrom: {fileID: 11400000, guid: 6a7919189d3d0e24e82bb2954dba5a8d, type: 2}
-  treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"Combat\",\n           
-    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
-    \"NodeId\": \"DrawSpeed\",\n            \"ParentId\": \"Combat\",\n           
-    \"DefId\": \"DrawSpeed\"\n        },\n        {\n            \"NodeId\": \"ArrowVelocity\",\n           
-    \"ParentId\": \"Combat\",\n            \"DefId\": \"ArrowVelocity\"\n       
-    },\n        {\n            \"NodeId\": \"HoldStamina\",\n            \"ParentId\":
-    \"Combat\",\n            \"DefId\": \"HoldStamina\"\n        }\n    ]\n}"
+  treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"DrawSpeed\",\n           
+    \"ParentId\": \"Combat\",\n            \"DefId\": \"DrawSpeed\"\n        },\n       
+    {\n            \"NodeId\": \"ArrowVelocity\",\n            \"ParentId\": \"Combat\",\n           
+    \"DefId\": \"ArrowVelocity\"\n        },\n        {\n            \"NodeId\":
+    \"HoldStamina\",\n            \"ParentId\": \"Combat\",\n            \"DefId\":
+    \"HoldStamina\"\n        }\n    ]\n}"

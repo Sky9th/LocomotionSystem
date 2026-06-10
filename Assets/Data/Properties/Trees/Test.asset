@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e47e6b69f1db8742ab169ebce8acc1e, type: 3}
+  m_Name: Test
+  m_EditorClassIdentifier: 
+  InheritsFrom: {fileID: 0}
+  treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"New Folder\",\n           
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
+    \"NodeId\": \"New Folder 2\",\n            \"ParentId\": \"\",\n            \"DefId\":
+    \"\"\n        },\n        {\n            \"NodeId\": \"AttackSpeed\",\n           
+    \"ParentId\": \"New Folder\",\n            \"DefId\": \"AttackSpeed\"\n       
+    },\n        {\n            \"NodeId\": \"ATK\",\n            \"ParentId\": \"New
+    Folder\",\n            \"DefId\": \"ATK\"\n        },\n        {\n           
+    \"NodeId\": \"AudioProfile\",\n            \"ParentId\": \"New Folder\",\n           
+    \"DefId\": \"AudioProfile\"\n        },\n        {\n            \"NodeId\": \"AimTime\",\n           
+    \"ParentId\": \"New Folder\",\n            \"DefId\": \"AimTime\"\n        },\n       
+    {\n            \"NodeId\": \"AmmoCount\",\n            \"ParentId\": \"New Folder\",\n           
+    \"DefId\": \"AmmoCount\"\n        },\n        {\n            \"NodeId\": \"Accuracy\",\n           
+    \"ParentId\": \"New Folder 2\",\n            \"DefId\": \"Accuracy\"\n       
+    }\n    ]\n}"

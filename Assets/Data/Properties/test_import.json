@@ -101,7 +101,6 @@
       "treeName": "Firearm",
       "inheritsFrom": "RangedWeapon",
       "nodes": [
-        {"nodeId":"Combat","parentId":"","defId":""},
         {"nodeId":"FireRate","parentId":"Combat","defId":"FireRate"},
         {"nodeId":"MuzzleVelocity","parentId":"Combat","defId":"MuzzleVelocity"},
         {"nodeId":"BarrelLength","parentId":"Combat","defId":"BarrelLength"},
@@ -115,7 +114,6 @@
       "treeName": "Pistol",
       "inheritsFrom": "Firearm",
       "nodes": [
-        {"nodeId":"Combat","parentId":"","defId":""},
         {"nodeId":"HolsterSpeed","parentId":"Combat","defId":"HolsterSpeed"},
         {"nodeId":"HipFirePenalty","parentId":"Combat","defId":"HipFirePenalty"},
         {"nodeId":"Presentation","parentId":"","defId":""},
@@ -131,7 +129,6 @@
       "treeName": "Rifle",
       "inheritsFrom": "Firearm",
       "nodes": [
-        {"nodeId":"Combat","parentId":"","defId":""},
         {"nodeId":"ScopeZoom","parentId":"Combat","defId":"ScopeZoom"},
         {"nodeId":"AimTime","parentId":"Combat","defId":"AimTime"},
         {"nodeId":"Presentation","parentId":"","defId":""},
@@ -148,7 +145,6 @@
       "treeName": "Shotgun",
       "inheritsFrom": "Firearm",
       "nodes": [
-        {"nodeId":"Combat","parentId":"","defId":""},
         {"nodeId":"PelletCount","parentId":"Combat","defId":"PelletCount"},
         {"nodeId":"Spread","parentId":"Combat","defId":"Spread"},
         {"nodeId":"Presentation","parentId":"","defId":""},
@@ -160,7 +156,6 @@
       "treeName": "Bow",
       "inheritsFrom": "RangedWeapon",
       "nodes": [
-        {"nodeId":"Combat","parentId":"","defId":""},
         {"nodeId":"DrawSpeed","parentId":"Combat","defId":"DrawSpeed"},
         {"nodeId":"ArrowVelocity","parentId":"Combat","defId":"ArrowVelocity"},
         {"nodeId":"HoldStamina","parentId":"Combat","defId":"HoldStamina"}

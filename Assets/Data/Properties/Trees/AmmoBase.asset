@@ -15,19 +15,11 @@ MonoBehaviour:
   InheritsFrom: {fileID: 0}
   treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"Base\",\n           
     \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
-    \"NodeId\": \"Combat\",\n            \"ParentId\": \"\",\n            \"DefId\":
-    \"\"\n        },\n        {\n            \"NodeId\": \"Weight\",\n           
-    \"ParentId\": \"Combat\",\n            \"DefId\": \"Weight\"\n        },\n       
-    {\n            \"NodeId\": \"DamageType\",\n            \"ParentId\": \"Combat\",\n           
+    \"NodeId\": \"Weight\",\n            \"ParentId\": \"Base\",\n            \"DefId\":
+    \"Weight\"\n        },\n        {\n            \"NodeId\": \"Combat\",\n           
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
+    \"NodeId\": \"DamageType\",\n            \"ParentId\": \"Combat\",\n           
     \"DefId\": \"DamageType\"\n        },\n        {\n            \"NodeId\": \"Compat\",\n           
     \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
     \"NodeId\": \"Platform\",\n            \"ParentId\": \"Compat\",\n           
-    \"DefId\": \"Platform\"\n        },\n        {\n            \"NodeId\": \"Description\",\n           
-    \"ParentId\": \"Compat\",\n            \"DefId\": \"Description\"\n        },\n       
-    {\n            \"NodeId\": \"CarryWeight\",\n            \"ParentId\": \"Combat\",\n           
-    \"DefId\": \"CarryWeight\"\n        },\n        {\n            \"NodeId\": \"CritMulti\",\n           
-    \"ParentId\": \"Combat\",\n            \"DefId\": \"CritMulti\"\n        },\n       
-    {\n            \"NodeId\": \"FuseTime\",\n            \"ParentId\": \"Compat\",\n           
-    \"DefId\": \"FuseTime\"\n        },\n        {\n            \"NodeId\": \"FireRate\",\n           
-    \"ParentId\": \"Compat\",\n            \"DefId\": \"FireRate\"\n        }\n   
-    ]\n}"
+    \"DefId\": \"Platform\"\n        }\n    ]\n}"

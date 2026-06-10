@@ -16,7 +16,7 @@ MonoBehaviour:
   treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"Base\",\n           
     \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
     \"NodeId\": \"Durability\",\n            \"ParentId\": \"Base\",\n           
-    \"DefId\": \"Durability\"\n        },\n        {\n            \"NodeId\": \"Weight\",\n           
-    \"ParentId\": \"Base\",\n            \"DefId\": \"Weight\"\n        },\n       
-    {\n            \"NodeId\": \"MaxDurability\",\n            \"ParentId\": \"Base\",\n           
-    \"DefId\": \"MaxDurability\"\n        }\n    ]\n}"
+    \"DefId\": \"Durability\"\n        },\n        {\n            \"NodeId\": \"MaxDurability\",\n           
+    \"ParentId\": \"Base\",\n            \"DefId\": \"MaxDurability\"\n        },\n       
+    {\n            \"NodeId\": \"Weight\",\n            \"ParentId\": \"Base\",\n           
+    \"DefId\": \"Weight\"\n        }\n    ]\n}"

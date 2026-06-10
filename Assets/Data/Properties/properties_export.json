@@ -1,0 +1,1304 @@
+{
+    "version": "1.0",
+    "description": "Exported from Unity Editor",
+    "definitions": [
+        {
+            "id": "Accuracy",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 1.0,
+            "defaultFloat": 0.800000011920929,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "AimTime",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 5.0,
+            "defaultFloat": 0.5,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "AmmoCount",
+            "type": "Int",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 100.0,
+            "defaultFloat": 100.0,
+            "minInt": 0,
+            "maxInt": 999,
+            "defaultInt": 90,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "AnimationProfile",
+            "type": "AssetRef",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 100.0,
+            "defaultFloat": 100.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": "UnityEngine.Object"
+        },
+        {
+            "id": "ArrowVelocity",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 10.0,
+            "max": 500.0,
+            "defaultFloat": 80.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "ATK",
+            "type": "AssetRefList",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 100.0,
+            "defaultFloat": 100.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "AttackSpeed",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.10000000149011612,
+            "max": 10.0,
+            "defaultFloat": 1.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "AudioProfile",
+            "type": "AssetRef",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 100.0,
+            "defaultFloat": 100.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": "UnityEngine.Object"
+        },
+        {
+            "id": "BarrelLength",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 2.0,
+            "defaultFloat": 0.5,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "BlastRadius",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 50.0,
+            "defaultFloat": 5.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "CarryWeight",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 200.0,
+            "defaultFloat": 20.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "CompatibleAmmo",
+            "type": "GameplayTagList",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 100.0,
+            "defaultFloat": 100.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "CritMulti",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 1.0,
+            "max": 10.0,
+            "defaultFloat": 2.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "DamageType",
+            "type": "GameplayTag",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 100.0,
+            "defaultFloat": 100.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "Description",
+            "type": "String",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 100.0,
+            "defaultFloat": 100.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "DisplayName",
+            "type": "String",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 100.0,
+            "defaultFloat": 100.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "Unnamed",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "DrawSpeed",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.10000000149011612,
+            "max": 5.0,
+            "defaultFloat": 1.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "Durability",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 9999.0,
+            "defaultFloat": 100.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "FireRate",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.10000000149011612,
+            "max": 60.0,
+            "defaultFloat": 10.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "FlashResist",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 1.0,
+            "defaultFloat": 0.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "FuseTime",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.5,
+            "max": 30.0,
+            "defaultFloat": 3.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "GearType",
+            "type": "GameplayTag",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 100.0,
+            "defaultFloat": 100.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "HipFirePenalty",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 1.0,
+            "defaultFloat": 0.30000001192092898,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "HoldStamina",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 100.0,
+            "defaultFloat": 15.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "HolsterSpeed",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.10000000149011612,
+            "max": 5.0,
+            "defaultFloat": 1.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "Icon",
+            "type": "AssetRef",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 100.0,
+            "defaultFloat": 100.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": "UnityEngine.Sprite"
+        },
+        {
+            "id": "IsAutomatic",
+            "type": "Bool",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 100.0,
+            "defaultFloat": 100.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "IsTwoHanded",
+            "type": "Bool",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 100.0,
+            "defaultFloat": 100.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "Knockback",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 100.0,
+            "defaultFloat": 0.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "KnockdownResist",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 1.0,
+            "defaultFloat": 0.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "MagSize",
+            "type": "Int",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 100.0,
+            "defaultFloat": 100.0,
+            "minInt": 1,
+            "maxInt": 200,
+            "defaultInt": 30,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "MaxDurability",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 9999.0,
+            "defaultFloat": 100.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "MoveSpeed",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": -1.0,
+            "max": 2.0,
+            "defaultFloat": 0.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "MuzzleVelocity",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 10.0,
+            "max": 2000.0,
+            "defaultFloat": 400.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "NightVision",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 1.0,
+            "defaultFloat": 0.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "NoiseRadius",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 500.0,
+            "defaultFloat": 50.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "PelletCount",
+            "type": "Int",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 100.0,
+            "defaultFloat": 100.0,
+            "minInt": 1,
+            "maxInt": 20,
+            "defaultInt": 8,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "Platform",
+            "type": "GameplayTag",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 100.0,
+            "defaultFloat": 100.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "Reach",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 10.0,
+            "defaultFloat": 1.5,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "Recoil",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 10.0,
+            "defaultFloat": 1.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "Reliability",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 1.0,
+            "defaultFloat": 0.949999988079071,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "ReloadSpeed",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.10000000149011612,
+            "max": 10.0,
+            "defaultFloat": 1.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "ResistTypes",
+            "type": "GameplayTagList",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 100.0,
+            "defaultFloat": 100.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "ScopeZoom",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 1.0,
+            "max": 20.0,
+            "defaultFloat": 4.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "SneakSpeed",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": -1.0,
+            "max": 2.0,
+            "defaultFloat": 0.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "Spread",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 1.0,
+            "defaultFloat": 0.15000000596046449,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "StaminaCost",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 100.0,
+            "defaultFloat": 10.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "StunChance",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 1.0,
+            "defaultFloat": 0.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        },
+        {
+            "id": "VisualPrefab",
+            "type": "AssetRef",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 100.0,
+            "defaultFloat": 100.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": "UnityEngine.GameObject"
+        },
+        {
+            "id": "Weight",
+            "type": "Float",
+            "isDeprecated": false,
+            "min": 0.0,
+            "max": 999.0,
+            "defaultFloat": 5.0,
+            "minInt": 0,
+            "maxInt": 100,
+            "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "",
+            "assetTypeConstraint": ""
+        }
+    ],
+    "trees": [
+        {
+            "treeName": "aaa",
+            "inheritsFrom": "Test",
+            "nodes": [
+                {
+                    "nodeId": "New Folder 4",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "New Folder",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "New Folder 2",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "New Folder 3",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "CompatibleAmmo",
+                    "parentId": "New Folder 3",
+                    "defId": "CompatibleAmmo"
+                },
+                {
+                    "nodeId": "CarryWeight",
+                    "parentId": "New Folder 4",
+                    "defId": "CarryWeight"
+                }
+            ]
+        },
+        {
+            "treeName": "AmmoBase",
+            "inheritsFrom": "",
+            "nodes": [
+                {
+                    "nodeId": "Base",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "Weight",
+                    "parentId": "Base",
+                    "defId": "Weight"
+                },
+                {
+                    "nodeId": "Combat",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "DamageType",
+                    "parentId": "Combat",
+                    "defId": "DamageType"
+                },
+                {
+                    "nodeId": "Compat",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "Platform",
+                    "parentId": "Compat",
+                    "defId": "Platform"
+                }
+            ]
+        },
+        {
+            "treeName": "ArmorBase",
+            "inheritsFrom": "",
+            "nodes": [
+                {
+                    "nodeId": "Base",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "Durability",
+                    "parentId": "Base",
+                    "defId": "Durability"
+                },
+                {
+                    "nodeId": "MaxDurability",
+                    "parentId": "Base",
+                    "defId": "MaxDurability"
+                },
+                {
+                    "nodeId": "Weight",
+                    "parentId": "Base",
+                    "defId": "Weight"
+                },
+                {
+                    "nodeId": "Resist",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "ResistTypes",
+                    "parentId": "Resist",
+                    "defId": "ResistTypes"
+                }
+            ]
+        },
+        {
+            "treeName": "BodyArmor",
+            "inheritsFrom": "ArmorBase",
+            "nodes": [
+                {
+                    "nodeId": "Combat",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "KnockdownResist",
+                    "parentId": "Combat",
+                    "defId": "KnockdownResist"
+                },
+                {
+                    "nodeId": "CarryWeight",
+                    "parentId": "Combat",
+                    "defId": "CarryWeight"
+                }
+            ]
+        },
+        {
+            "treeName": "Bow",
+            "inheritsFrom": "RangedWeapon",
+            "nodes": [
+                {
+                    "nodeId": "DrawSpeed",
+                    "parentId": "Combat",
+                    "defId": "DrawSpeed"
+                },
+                {
+                    "nodeId": "ArrowVelocity",
+                    "parentId": "Combat",
+                    "defId": "ArrowVelocity"
+                },
+                {
+                    "nodeId": "HoldStamina",
+                    "parentId": "Combat",
+                    "defId": "HoldStamina"
+                }
+            ]
+        },
+        {
+            "treeName": "Firearm",
+            "inheritsFrom": "RangedWeapon",
+            "nodes": [
+                {
+                    "nodeId": "FireRate",
+                    "parentId": "Combat",
+                    "defId": "FireRate"
+                },
+                {
+                    "nodeId": "MuzzleVelocity",
+                    "parentId": "Combat",
+                    "defId": "MuzzleVelocity"
+                },
+                {
+                    "nodeId": "BarrelLength",
+                    "parentId": "Combat",
+                    "defId": "BarrelLength"
+                },
+                {
+                    "nodeId": "Reliability",
+                    "parentId": "Combat",
+                    "defId": "Reliability"
+                },
+                {
+                    "nodeId": "Tags",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "IsAutomatic",
+                    "parentId": "Tags",
+                    "defId": "IsAutomatic"
+                },
+                {
+                    "nodeId": "GearType",
+                    "parentId": "Tags",
+                    "defId": "GearType"
+                }
+            ]
+        },
+        {
+            "treeName": "HeadArmor",
+            "inheritsFrom": "ArmorBase",
+            "nodes": [
+                {
+                    "nodeId": "Combat",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "FlashResist",
+                    "parentId": "Combat",
+                    "defId": "FlashResist"
+                },
+                {
+                    "nodeId": "NightVision",
+                    "parentId": "Combat",
+                    "defId": "NightVision"
+                }
+            ]
+        },
+        {
+            "treeName": "LegArmor",
+            "inheritsFrom": "ArmorBase",
+            "nodes": [
+                {
+                    "nodeId": "Combat",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "MoveSpeed",
+                    "parentId": "Combat",
+                    "defId": "MoveSpeed"
+                },
+                {
+                    "nodeId": "SneakSpeed",
+                    "parentId": "Combat",
+                    "defId": "SneakSpeed"
+                }
+            ]
+        },
+        {
+            "treeName": "MeleeWeapon",
+            "inheritsFrom": "WeaponBase",
+            "nodes": [
+                {
+                    "nodeId": "Combat",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "ATK",
+                    "parentId": "Combat",
+                    "defId": "ATK"
+                },
+                {
+                    "nodeId": "AttackSpeed",
+                    "parentId": "Combat",
+                    "defId": "AttackSpeed"
+                },
+                {
+                    "nodeId": "CritMulti",
+                    "parentId": "Combat",
+                    "defId": "CritMulti"
+                },
+                {
+                    "nodeId": "StunChance",
+                    "parentId": "Combat",
+                    "defId": "StunChance"
+                },
+                {
+                    "nodeId": "Knockback",
+                    "parentId": "Combat",
+                    "defId": "Knockback"
+                },
+                {
+                    "nodeId": "Reach",
+                    "parentId": "Combat",
+                    "defId": "Reach"
+                },
+                {
+                    "nodeId": "StaminaCost",
+                    "parentId": "Combat",
+                    "defId": "StaminaCost"
+                },
+                {
+                    "nodeId": "Tags",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "DamageType",
+                    "parentId": "Tags",
+                    "defId": "DamageType"
+                },
+                {
+                    "nodeId": "IsTwoHanded",
+                    "parentId": "Tags",
+                    "defId": "IsTwoHanded"
+                }
+            ]
+        },
+        {
+            "treeName": "Pistol",
+            "inheritsFrom": "Firearm",
+            "nodes": [
+                {
+                    "nodeId": "HolsterSpeed",
+                    "parentId": "Combat",
+                    "defId": "HolsterSpeed"
+                },
+                {
+                    "nodeId": "HipFirePenalty",
+                    "parentId": "Combat",
+                    "defId": "HipFirePenalty"
+                },
+                {
+                    "nodeId": "Presentation",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "Icon",
+                    "parentId": "Presentation",
+                    "defId": "Icon"
+                },
+                {
+                    "nodeId": "VisualPrefab",
+                    "parentId": "Presentation",
+                    "defId": "VisualPrefab"
+                },
+                {
+                    "nodeId": "DisplayName",
+                    "parentId": "Presentation",
+                    "defId": "DisplayName"
+                },
+                {
+                    "nodeId": "Behavior",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "AnimationProfile",
+                    "parentId": "Behavior",
+                    "defId": "AnimationProfile"
+                },
+                {
+                    "nodeId": "AudioProfile",
+                    "parentId": "Behavior",
+                    "defId": "AudioProfile"
+                }
+            ]
+        },
+        {
+            "treeName": "PistolAmmo",
+            "inheritsFrom": "AmmoBase",
+            "nodes": []
+        },
+        {
+            "treeName": "RangedWeapon",
+            "inheritsFrom": "WeaponBase",
+            "nodes": [
+                {
+                    "nodeId": "Combat",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "ATK",
+                    "parentId": "Combat",
+                    "defId": "ATK"
+                },
+                {
+                    "nodeId": "Accuracy",
+                    "parentId": "Combat",
+                    "defId": "Accuracy"
+                },
+                {
+                    "nodeId": "ReloadSpeed",
+                    "parentId": "Combat",
+                    "defId": "ReloadSpeed"
+                },
+                {
+                    "nodeId": "MagSize",
+                    "parentId": "Combat",
+                    "defId": "MagSize"
+                },
+                {
+                    "nodeId": "AmmoCount",
+                    "parentId": "Combat",
+                    "defId": "AmmoCount"
+                },
+                {
+                    "nodeId": "NoiseRadius",
+                    "parentId": "Combat",
+                    "defId": "NoiseRadius"
+                },
+                {
+                    "nodeId": "Recoil",
+                    "parentId": "Combat",
+                    "defId": "Recoil"
+                },
+                {
+                    "nodeId": "Compat",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "CompatibleAmmo",
+                    "parentId": "Compat",
+                    "defId": "CompatibleAmmo"
+                }
+            ]
+        },
+        {
+            "treeName": "Rifle",
+            "inheritsFrom": "Firearm",
+            "nodes": [
+                {
+                    "nodeId": "ScopeZoom",
+                    "parentId": "Combat",
+                    "defId": "ScopeZoom"
+                },
+                {
+                    "nodeId": "AimTime",
+                    "parentId": "Combat",
+                    "defId": "AimTime"
+                },
+                {
+                    "nodeId": "Presentation",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "Icon",
+                    "parentId": "Presentation",
+                    "defId": "Icon"
+                },
+                {
+                    "nodeId": "VisualPrefab",
+                    "parentId": "Presentation",
+                    "defId": "VisualPrefab"
+                },
+                {
+                    "nodeId": "DisplayName",
+                    "parentId": "Presentation",
+                    "defId": "DisplayName"
+                },
+                {
+                    "nodeId": "Description",
+                    "parentId": "Presentation",
+                    "defId": "Description"
+                },
+                {
+                    "nodeId": "Behavior",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "AnimationProfile",
+                    "parentId": "Behavior",
+                    "defId": "AnimationProfile"
+                },
+                {
+                    "nodeId": "AudioProfile",
+                    "parentId": "Behavior",
+                    "defId": "AudioProfile"
+                }
+            ]
+        },
+        {
+            "treeName": "RifleAmmo",
+            "inheritsFrom": "AmmoBase",
+            "nodes": []
+        },
+        {
+            "treeName": "Shotgun",
+            "inheritsFrom": "Firearm",
+            "nodes": [
+                {
+                    "nodeId": "PelletCount",
+                    "parentId": "Combat",
+                    "defId": "PelletCount"
+                },
+                {
+                    "nodeId": "Spread",
+                    "parentId": "Combat",
+                    "defId": "Spread"
+                },
+                {
+                    "nodeId": "Presentation",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "Icon",
+                    "parentId": "Presentation",
+                    "defId": "Icon"
+                },
+                {
+                    "nodeId": "VisualPrefab",
+                    "parentId": "Presentation",
+                    "defId": "VisualPrefab"
+                }
+            ]
+        },
+        {
+            "treeName": "ShotgunShell",
+            "inheritsFrom": "AmmoBase",
+            "nodes": []
+        },
+        {
+            "treeName": "Test",
+            "inheritsFrom": "",
+            "nodes": [
+                {
+                    "nodeId": "New Folder",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "New Folder 2",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "AttackSpeed",
+                    "parentId": "New Folder",
+                    "defId": "AttackSpeed"
+                },
+                {
+                    "nodeId": "ATK",
+                    "parentId": "New Folder",
+                    "defId": "ATK"
+                },
+                {
+                    "nodeId": "AudioProfile",
+                    "parentId": "New Folder",
+                    "defId": "AudioProfile"
+                },
+                {
+                    "nodeId": "AimTime",
+                    "parentId": "New Folder",
+                    "defId": "AimTime"
+                },
+                {
+                    "nodeId": "AmmoCount",
+                    "parentId": "New Folder",
+                    "defId": "AmmoCount"
+                },
+                {
+                    "nodeId": "Accuracy",
+                    "parentId": "New Folder 2",
+                    "defId": "Accuracy"
+                }
+            ]
+        },
+        {
+            "treeName": "Throwable",
+            "inheritsFrom": "WeaponBase",
+            "nodes": [
+                {
+                    "nodeId": "Combat",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "BlastRadius",
+                    "parentId": "Combat",
+                    "defId": "BlastRadius"
+                },
+                {
+                    "nodeId": "FuseTime",
+                    "parentId": "Combat",
+                    "defId": "FuseTime"
+                }
+            ]
+        },
+        {
+            "treeName": "WeaponBase",
+            "inheritsFrom": "",
+            "nodes": [
+                {
+                    "nodeId": "Base",
+                    "parentId": "",
+                    "defId": ""
+                },
+                {
+                    "nodeId": "Durability",
+                    "parentId": "Base",
+                    "defId": "Durability"
+                },
+                {
+                    "nodeId": "MaxDurability",
+                    "parentId": "Base",
+                    "defId": "MaxDurability"
+                },
+                {
+                    "nodeId": "Weight",
+                    "parentId": "Base",
+                    "defId": "Weight"
+                }
+            ]
+        }
+    ]
+}

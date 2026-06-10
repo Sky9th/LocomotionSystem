@@ -525,7 +525,7 @@ ResolvedPropertyBag                StatInstance[] (Resolve 产出)
 
 ---
 
-## 十一、Editor 实现 (v0.10.0)
+## 十一、Editor 实现 (v0.10.5)
 
 ### PropertyTreeEditorWindow
 
@@ -533,15 +533,26 @@ ResolvedPropertyBag                StatInstance[] (Resolve 产出)
 
 | 栏 | 宽度 | 内容 |
 |---|---|---|
-| 左 | 320px | Tree 列表（继承链 + 本地节点数），搜索/新建/刷新 |
+| 左 | 320px | Tree 列表（继承链 + 本地节点数），搜索/新建子Tree/刷新 |
 | 中 | expand | 树编辑：Folder 卡片（可编辑名称）嵌套 Property 卡片（名称 + Type）|
-| 右 | 320px | 预留 Property Pool |
+| 右 | 320px | Property Pool：Def 列表 + 搜索 + 拖拽创建 |
 
 卡片风格：统一 `EditorUIUtility.DrawCard(Pad)`，继承属性灰底灰字。
 
 ### PropertyTreeListView
 
-左侧 Tree 列表渲染，选中高亮 + 折叠展开。与 TagTreeView / AbilityTreeView 一致的嵌套卡片模式。
+左侧 Tree 列表渲染，选中高亮 + 折叠展开。每个节点显示：
+
+- 蓝色选中 / 搜索粗体高亮
+- 继承链标签（灰色 `<- Ancestor`）
+- 绿色 `+` 按钮：快速创建子 Tree（InheritsFrom 预填）
+- 红色 `x` 按钮：删除叶子 Tree（无继承者时）
+
+### PropertyTreeEditorPopups (v0.10.5 提取)
+
+两个独立弹窗类：
+- `NewTreeDialog.Show(cb, parent)` — 支持可选预填父 Tree
+- `CreateDefDialog.Show(onCreated)` — 按 PropertyType 显示对应字段组
 
 ### PropertyDefSOEditor
 
@@ -549,7 +560,23 @@ PropertyDefSO 按类型显示不同 Inspector 字段组的自定义 Editor。
 
 ### PropertyImportExport
 
-JSON ↔ .asset 往返导入导出。
+JSON ↔ .asset 往返导入导出。支持 `test_import.json` 格式：`version + description + definitions[] + trees[{treeName, inheritsFrom, nodes[{nodeId, parentId, defId}]}]`。
+
+### NodeId 冲突防护 (v0.10.5)
+
+- **检测**: `MergeAllNodes(out ancestorConflicts)` 记录被祖先遮盖的 NodeId
+- **IsLocal 判断**: `_localIds.Contains(nodeId) && !ancestorConflicts.Contains(nodeId)` — 对文件夹和叶子都正确
+- **预防**: `AddFolder`, `TryRenameFolder`, `AddDefToFolder` 三个入口检查继承节点名，冲突时自动后缀或弹窗拒绝
+- **警告**: 每个冲突每 session 仅警告一次（`_warnedConflicts` HashSet 去重）
+- **排序**: `SortTreeNodes` 用 `IsLocal` 属性分组（继承优先），不依赖有歧义的 `_ownNodes.FindIndex`
+
+### GUIStyle 缓存 (v0.10.5)
+
+惰性属性 (`??=`) 替代 `static readonly` — Unity Editor 的 `EditorStyles` 在 static ctor 阶段未初始化，必须延迟到首次 OnGUI 访问。
+
+### EditorUIUtility.DrawHeaderCard (v0.10.5)
+
+标准编辑器 Header 卡片：`[Title] [Subtitle(灰色右对齐)] [..FlexibleSpace..] [Save* 按钮]`。供所有 EditorWindow 复用。
 
 ---
 

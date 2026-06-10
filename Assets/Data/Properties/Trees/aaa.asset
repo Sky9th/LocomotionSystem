@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e47e6b69f1db8742ab169ebce8acc1e, type: 3}
+  m_Name: aaa
+  m_EditorClassIdentifier: 
+  InheritsFrom: {fileID: 11400000, guid: cb9cc50785f97944cb0b7d460c71447a, type: 2}
+  treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"New Folder
+    4\",\n            \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n       
+    {\n            \"NodeId\": \"New Folder 5\",\n            \"ParentId\": \"\",\n           
+    \"DefId\": \"\"\n        },\n        {\n            \"NodeId\": \"New Folder
+    3\",\n            \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n       
+    {\n            \"NodeId\": \"New Folder 6\",\n            \"ParentId\": \"\",\n           
+    \"DefId\": \"\"\n        },\n        {\n            \"NodeId\": \"Description\",\n           
+    \"ParentId\": \"New Folder 4\",\n            \"DefId\": \"Description\"\n       
+    },\n        {\n            \"NodeId\": \"DamageType\",\n            \"ParentId\":
+    \"New Folder 5\",\n            \"DefId\": \"DamageType\"\n        },\n       
+    {\n            \"NodeId\": \"DrawSpeed\",\n            \"ParentId\": \"New Folder
+    3\",\n            \"DefId\": \"DrawSpeed\"\n        },\n        {\n           
+    \"NodeId\": \"Durability\",\n            \"ParentId\": \"New Folder 6\",\n           
+    \"DefId\": \"Durability\"\n        }\n    ]\n}"

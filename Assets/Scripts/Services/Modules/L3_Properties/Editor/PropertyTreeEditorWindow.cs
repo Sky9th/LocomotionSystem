@@ -13,12 +13,29 @@ namespace RedDust.Properties.Editor
         private const float RightWidth = 320f;
         private const float DragThreshold = 10f;
 
-        private static readonly Color ColorLocal = new(0.3f, 0.7f, 0.3f);
         private static readonly Color ColorInherit = Color.gray;
-        private static readonly Color ColorSave = new(0.4f, 0.8f, 0.4f);
         private static readonly Color ColorDelete = new(0.9f, 0.3f, 0.3f);
-        private static readonly Color ColorDrop = new(0.3f, 0.8f, 0.3f, 0.25f);
         private static readonly Color ColorSelected = new(0.3f, 0.5f, 0.8f, 0.3f);
+
+        // Cached GUIStyles — lazy-init to avoid NRE during static ctor (EditorStyles not ready yet)
+        private static GUIStyle _emptyCenterStyle;
+        private static GUIStyle EmptyCenterStyle => _emptyCenterStyle ??= new GUIStyle(EditorStyles.label)
+            { alignment = TextAnchor.MiddleCenter, fontSize = 13, normal = { textColor = Color.gray } };
+        private static GUIStyle _searchToolbarLabel;
+        private static GUIStyle SearchToolbarLabel => _searchToolbarLabel ??= new GUIStyle(EditorStyles.label)
+            { alignment = TextAnchor.MiddleLeft };
+        private static GUIStyle _dashLabel;
+        private static GUIStyle DashLabel => _dashLabel ??= new GUIStyle(EditorStyles.label)
+            { alignment = TextAnchor.MiddleCenter };
+        private static GUIStyle _anchorIcon;
+        private static GUIStyle AnchorIcon => _anchorIcon ??= new GUIStyle(EditorStyles.label)
+            { alignment = TextAnchor.MiddleCenter, fontSize = 10 };
+        private static GUIStyle _floatingNameStyle;
+        private static GUIStyle FloatingNameStyle => _floatingNameStyle ??= new GUIStyle(EditorStyles.label)
+            { alignment = TextAnchor.MiddleLeft, fontSize = EditorStyles.label.fontSize };
+        private static GUIStyle _floatingTypeStyle;
+        private static GUIStyle FloatingTypeStyle => _floatingTypeStyle ??= new GUIStyle(EditorStyles.label)
+            { alignment = TextAnchor.MiddleRight, fontSize = EditorStyles.label.fontSize };
 
         // -- left --
         private List<PropertyTreeListItem> _leftTreeRoots = new();
@@ -33,6 +50,8 @@ namespace RedDust.Properties.Editor
         private Dictionary<string, bool> _centerFoldouts = new();             // NodeId → expanded
         private List<PropertyNode> _ownNodes = new();
         private HashSet<string> _localIds = new();
+        private HashSet<string> _inheritedNodeIds = new(); // cached, updated in BuildCenterTree
+        private HashSet<string> _warnedConflicts = new(); // suppress duplicate warnings per session
         private bool _hasChanges;
         private string _searchFilter = "";
 
@@ -122,31 +141,9 @@ namespace RedDust.Properties.Editor
         // ---- header ----
         private void DrawHeader()
         {
-            Shared.EditorUI.EditorUIUtility.DrawCard(Pad, () =>
-            {
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Property Tree Editor", EditorStyles.largeLabel);
-
-                var sub = new GUIStyle(EditorStyles.label)
-                {
-                    alignment = TextAnchor.MiddleRight,
-                    normal = { textColor = Color.gray }
-                };
-                EditorGUILayout.LabelField("L3_Properties · Editor", sub, GUILayout.Width(180));
-
-                GUILayout.FlexibleSpace();
-
-                var oldBg = GUI.backgroundColor;
-                if (_hasChanges) GUI.backgroundColor = ColorSave;
-                EditorGUI.BeginDisabledGroup(!_hasChanges);
-                var label = _hasChanges ? "Save *" : "Save";
-                if (GUILayout.Button(label, GUILayout.Height(24), GUILayout.Width(80)))
-                    Save();
-                EditorGUI.EndDisabledGroup();
-                GUI.backgroundColor = oldBg;
-
-                EditorGUILayout.EndHorizontal();
-            });
+            Shared.EditorUI.EditorUIUtility.DrawHeaderCard(
+                Pad, "Property Tree Editor", "L3_Properties · Editor",
+                _hasChanges, Save);
         }
 
         private void DrawCenterContent()
@@ -154,8 +151,7 @@ namespace RedDust.Properties.Editor
             if (_tree == null)
             {
                 GUILayout.FlexibleSpace();
-                EditorGUILayout.LabelField("No tree selected.",
-                    new GUIStyle(EditorStyles.label) { alignment = TextAnchor.MiddleCenter, fontSize = 13, normal = { textColor = Color.gray } });
+                EditorGUILayout.LabelField("No tree selected.", EmptyCenterStyle);
                 GUILayout.FlexibleSpace();
                 return;
             }
@@ -255,7 +251,7 @@ namespace RedDust.Properties.Editor
                 EditorGUILayout.BeginHorizontal();
 
                 // Search field
-                EditorGUILayout.LabelField("Search", new GUIStyle(EditorStyles.label) { alignment = TextAnchor.MiddleLeft }, GUILayout.Width(45), GUILayout.Height(22));
+                EditorGUILayout.LabelField("Search", SearchToolbarLabel, GUILayout.Width(45), GUILayout.Height(22));
                 EditorGUI.BeginChangeCheck();
                 _searchFilter = EditorGUILayout.TextField(_searchFilter, GUILayout.ExpandWidth(true), GUILayout.Height(22));
                 if (EditorGUI.EndChangeCheck()) Repaint();
@@ -321,7 +317,7 @@ namespace RedDust.Properties.Editor
             {
                 // Search row
                 EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Search", new GUIStyle(EditorStyles.label) { alignment = TextAnchor.MiddleLeft }, GUILayout.Width(45), GUILayout.Height(22));
+                EditorGUILayout.LabelField("Search", SearchToolbarLabel, GUILayout.Width(45), GUILayout.Height(22));
                 EditorGUI.BeginChangeCheck();
                 _leftSearch = EditorGUILayout.TextField(_leftSearch, GUILayout.ExpandWidth(true), GUILayout.Height(22));
                 if (EditorGUI.EndChangeCheck()) RefreshTreeList();
@@ -334,7 +330,7 @@ namespace RedDust.Properties.Editor
                 // Action buttons
                 EditorGUILayout.BeginHorizontal();
                 if (GUILayout.Button("+ New", GUILayout.Height(22)))
-                    NewTreeDialog.Show((name, parent) => { CreateTree(name, parent); RefreshTreeList(); });
+                    PropertyTreeEditorPopups.NewTreeDialog.Show((name, parent) => { CreateTree(name, parent); RefreshTreeList(); });
                 if (GUILayout.Button("Refresh", GUILayout.Height(22)))
                 {
                     PropertyDefinitionRegistry.Invalidate();
@@ -356,7 +352,8 @@ namespace RedDust.Properties.Editor
                 _leftSearch,
                 onSelect: HandleTreeSelect,
                 selectedColor: ColorSelected,
-                onDelete: HandleTreeDelete);
+                onDelete: HandleTreeDelete,
+                onCreateChild: HandleCreateChild);
 
             if (_leftTreeRoots.Count == 0)
             {
@@ -479,6 +476,16 @@ namespace RedDust.Properties.Editor
             RefreshTreeList();
         }
 
+        private void HandleCreateChild(PropertyTreeSO parent)
+        {
+            if (parent == null) return;
+            PropertyTreeEditorPopups.NewTreeDialog.Show((name, p) =>
+            {
+                CreateTree(name, p);
+                RefreshTreeList();
+            }, parent);
+        }
+
         #region Center tree rendering
 
         /// <summary>
@@ -517,11 +524,10 @@ namespace RedDust.Properties.Editor
                 // Drag anchor "≡" — hover highlight
                 var anchorRect = GUILayoutUtility.GetRect(AnchorWidth, rowH);
                 bool anchorHover = anchorRect.Contains(Event.current.mousePosition);
-                var anchorColor = anchorHover ? new Color(0.7f, 0.7f, 0.7f) : Color.gray;
-                var anchorStyle = new GUIStyle(EditorStyles.label)
-                    { alignment = TextAnchor.MiddleCenter, fontSize = 10 };
-                anchorStyle.normal.textColor = anchorColor;
-                GUI.Label(anchorRect, "≡", anchorStyle);
+                var oldAnchorColor = GUI.color;
+                GUI.color = anchorHover ? new Color(0.7f, 0.7f, 0.7f) : Color.gray;
+                GUI.Label(anchorRect, "≡", AnchorIcon);
+                GUI.color = oldAnchorColor;
 
                 if (Event.current.type == EventType.MouseDrag
                     && anchorRect.Contains(Event.current.mousePosition)
@@ -544,8 +550,7 @@ namespace RedDust.Properties.Editor
                 else
                 {
                     var dashRect = GUILayoutUtility.GetRect(FoldoutWidth, rowH);
-                    GUI.Label(dashRect, "-", new GUIStyle(EditorStyles.label)
-                        { alignment = TextAnchor.MiddleCenter });
+                    GUI.Label(dashRect, "-", DashLabel);
                 }
                 GUILayout.Space(FoldoutGap);
                 EditorGUILayout.EndHorizontal();
@@ -637,9 +642,15 @@ namespace RedDust.Properties.Editor
                     cardRects.Add(GUILayoutUtility.GetLastRect());
                 }
 
-                // Handle property reorder drop
+                // Handle property reorder drop — exclude dragged node from sibling list
                 if (!string.IsNullOrEmpty(_dragNodeId))
-                    HandlePropertyDrop(node.NodeId, visibleChildren, cardRects);
+                {
+                    var siblings = new List<CenterTreeNode>();
+                    foreach (var c in visibleChildren)
+                        if (c.NodeId != _dragNodeId)
+                            siblings.Add(c);
+                    HandlePropertyDrop(node.NodeId, siblings, cardRects);
+                }
 
                 HandleDefDrop(node, headerEndY, visibleChildren, cardRects);
 
@@ -873,22 +884,11 @@ namespace RedDust.Properties.Editor
             var contentRect = new Rect(floatingRect.x + Pad, floatingRect.y + Pad,
                 cardWidth - Pad * 2, cardHeight - Pad * 2);
 
-            var nameStyle = new GUIStyle(EditorStyles.label)
-            {
-                alignment = TextAnchor.MiddleLeft,
-                fontSize = EditorStyles.label.fontSize
-            };
-
             GUI.Label(new Rect(contentRect.x, contentRect.y, cardWidth * 0.7f, contentRect.height),
-                dragNode.NodeId, nameStyle);
+                dragNode.NodeId, FloatingNameStyle);
 
-            var typeStyle = new GUIStyle(EditorStyles.label)
-            {
-                alignment = TextAnchor.MiddleRight,
-                fontSize = EditorStyles.label.fontSize
-            };
             GUI.Label(new Rect(contentRect.x + cardWidth * 0.7f, contentRect.y, cardWidth * 0.3f - Pad * 2, contentRect.height),
-                dragNode.Def != null ? dragNode.Def.Type.ToString() : "-", typeStyle);
+                dragNode.Def != null ? dragNode.Def.Type.ToString() : "-", FloatingTypeStyle);
         }
 
         private void CleanupDrag()
@@ -1092,7 +1092,7 @@ namespace RedDust.Properties.Editor
             {
                 if (GUILayout.Button("+ Add", GUILayout.Height(22)))
                 {
-                    CreateDefDialog.Show(def =>
+                    PropertyTreeEditorPopups.CreateDefDialog.Show(def =>
                     {
                         RefreshDefPool();
                         RefreshUsedDefs();
@@ -1141,7 +1141,7 @@ namespace RedDust.Properties.Editor
             Shared.EditorUI.EditorUIUtility.DrawCard(Pad, () =>
             {
                 EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Search", new GUIStyle(EditorStyles.label) { alignment = TextAnchor.MiddleLeft }, GUILayout.Width(45), GUILayout.Height(22));
+                EditorGUILayout.LabelField("Search", SearchToolbarLabel, GUILayout.Width(45), GUILayout.Height(22));
                 EditorGUI.BeginChangeCheck();
                 _rightSearch = EditorGUILayout.TextField(_rightSearch, GUILayout.ExpandWidth(true), GUILayout.Height(22));
                 if (EditorGUI.EndChangeCheck()) RefreshDefPool();
@@ -1242,20 +1242,6 @@ namespace RedDust.Properties.Editor
             }
         }
 
-        private static string DefSummary(PropertyDefSO def)
-        {
-            return def.Type switch
-            {
-                PropertyType.Float => $"M:{def.Min}-{def.Max} D:{def.DefaultFloat}",
-                PropertyType.Int => $"M:{def.MinInt}-{def.MaxInt} D:{def.DefaultInt}",
-                PropertyType.Bool => def.DefaultBool ? "true" : "false",
-                PropertyType.String => string.IsNullOrEmpty(def.DefaultString) ? "" : $"\"{def.DefaultString}\"",
-                PropertyType.AssetRef => string.IsNullOrEmpty(def.AssetTypeConstraint) ? ""
-                    : def.AssetTypeConstraint.Split('.').Last(),
-                _ => ""
-            };
-        }
-
         // ============================================================
         //  Data
         // ============================================================
@@ -1287,17 +1273,33 @@ namespace RedDust.Properties.Editor
             if (_tree == null) return;
 
             PropertyDefinitionRegistry.Invalidate();
-            var allNodes = _tree.ResolveAllNodes();
+            var allNodes = _tree.ResolveAllNodes(out var ancestorConflicts);
 
-            // Create CenterTreeNodes for all merged nodes
+            // Cache inherited NodeIds for name-conflict checks (AddFolder, TryRenameFolder, etc.)
+            _inheritedNodeIds.Clear();
+            foreach (var (nodeId, _) in allNodes)
+                if (!_localIds.Contains(nodeId) || ancestorConflicts.Contains(nodeId))
+                    _inheritedNodeIds.Add(nodeId);
+
+            // Create CenterTreeNodes for all merged nodes.
+            // IsLocal = true ONLY when the node genuinely originates from this tree,
+            // i.e. it is NOT shadowed by an inherited ancestor with the same NodeId.
             foreach (var (nodeId, node) in allNodes)
             {
+                bool isLocal = _localIds.Contains(nodeId) && !ancestorConflicts.Contains(nodeId);
+
+                if (ancestorConflicts.Contains(nodeId) && _warnedConflicts.Add(nodeId))
+                {
+                    Debug.LogWarning($"[PropertyTreeEditor] NodeId conflict: '{nodeId}' was shadowed by an inherited ancestor. " +
+                        "The ancestor's version is shown (non-editable). To override it, rename the local node to a unique NodeId.");
+                }
+
                 var displayNode = new CenterTreeNode
                 {
                     NodeId = nodeId,
                     Def = string.IsNullOrEmpty(node.DefId)
                         ? null : PropertyDefinitionRegistry.FindById(node.DefId),
-                    IsLocal = _localIds.Contains(nodeId),
+                    IsLocal = isLocal,
                 };
                 _centerNodeIndex[nodeId] = displayNode;
             }
@@ -1345,23 +1347,19 @@ namespace RedDust.Properties.Editor
                 // Folders always first
                 if (a.IsFolder != b.IsFolder) return a.IsFolder ? -1 : 1;
 
-                if (!a.IsFolder)
-                {
-                    // Leaves: follow _ownNodes order; inherited fall back to alpha
-                    int ia = _ownNodes.FindIndex(n => n.NodeId == a.NodeId);
-                    int ib = _ownNodes.FindIndex(n => n.NodeId == b.NodeId);
-                    // Inherited first (alpha), then local (_ownNodes order)
-                    if (ia < 0 && ib < 0) return string.CompareOrdinal(a.NodeId, b.NodeId);
-                    if (ia >= 0 && ib >= 0) return ia.CompareTo(ib);
-                    return ia < 0 ? -1 : 1; // inherited before local
-                }
+                // Inherited always before local (uses IsLocal, not _ownNodes.FindIndex,
+                // because FindIndex can hit a conflicting local node with the same NodeId)
+                if (a.IsLocal != b.IsLocal) return a.IsLocal ? 1 : -1;
 
-                // Folders: inherited first (alpha), then local (_ownNodes order)
-                int fa = _ownNodes.FindIndex(n => n.NodeId == a.NodeId);
-                int fb = _ownNodes.FindIndex(n => n.NodeId == b.NodeId);
-                if (fa < 0 && fb < 0) return string.CompareOrdinal(a.NodeId, b.NodeId);
-                if (fa >= 0 && fb >= 0) return fa.CompareTo(fb);
-                return fa < 0 ? -1 : 1; // inherited before local
+                // Both inherited → alpha
+                if (!a.IsLocal) return string.CompareOrdinal(a.NodeId, b.NodeId);
+
+                // Both local → follow _ownNodes order
+                int ia = _ownNodes.FindIndex(n => n.NodeId == a.NodeId);
+                int ib = _ownNodes.FindIndex(n => n.NodeId == b.NodeId);
+                if (ia < 0 && ib < 0) return string.CompareOrdinal(a.NodeId, b.NodeId);
+                if (ia >= 0 && ib >= 0) return ia.CompareTo(ib);
+                return ia < 0 ? -1 : 1;
             });
             foreach (var n in nodes) SortTreeNodes(n.Children);
         }
@@ -1440,7 +1438,15 @@ namespace RedDust.Properties.Editor
         private void AddDefToFolder(string parentNodeId, PropertyDefSO def, int insertIndex = -1)
         {
             Undo.RecordObject(_tree, "Add Property");
-            var node = new PropertyNode { NodeId = def.Id, ParentId = parentNodeId, DefId = def.Id };
+
+            // Auto-suffix if NodeId conflicts with inherited or existing local nodes
+            var inheritedIds = GetInheritedNodeIds();
+            string nodeId = def.Id;
+            int suffix = 1;
+            while (inheritedIds.Contains(nodeId) || _ownNodes.Any(n => n.NodeId == nodeId))
+                nodeId = $"{def.Id} {++suffix}";
+
+            var node = new PropertyNode { NodeId = nodeId, ParentId = parentNodeId, DefId = def.Id };
 
             if (insertIndex < 0)
             {
@@ -1477,24 +1483,6 @@ namespace RedDust.Properties.Editor
             _hasChanges = true; RefreshAfterEdit();
         }
 
-        private void ReplaceDef(string leafPath, PropertyDefSO def)
-        {
-            var nodeId = DisplayName(leafPath);
-            var node = _ownNodes.FirstOrDefault(n => n.NodeId == nodeId);
-            if (node == null) return;
-            Undo.RecordObject(_tree, "Replace Def");
-            node.DefId = def.Id; _hasChanges = true; RefreshAfterEdit();
-        }
-
-        private void RenameLeaf(string leafPath, string newNodeId)
-        {
-            var oldNodeId = DisplayName(leafPath);
-            var node = _ownNodes.FirstOrDefault(n => n.NodeId == oldNodeId);
-            if (node == null || string.IsNullOrWhiteSpace(newNodeId) || newNodeId == oldNodeId) return;
-            Undo.RecordObject(_tree, "Rename Leaf");
-            node.NodeId = newNodeId; _hasChanges = true; RefreshAfterEdit();
-        }
-
         private void TryRenameFolder(string oldNodeId, string newNodeId)
         {
             if (string.IsNullOrWhiteSpace(newNodeId))
@@ -1508,7 +1496,14 @@ namespace RedDust.Properties.Editor
                 EditorUtility.DisplayDialog("Invalid Name", "Folder name cannot contain '/'.", "OK");
                 return;
             }
-            // Check duplicate
+            // Check duplicate — own nodes AND inherited
+            var inheritedIds = GetInheritedNodeIds();
+            if (inheritedIds.Contains(newNodeId))
+            {
+                EditorUtility.DisplayDialog("Duplicate Name",
+                    $"'{newNodeId}' already exists in an inherited Tree. Choose a different name.", "OK");
+                return;
+            }
             foreach (var n in _ownNodes)
                 if (n.NodeId == newNodeId && string.IsNullOrEmpty(n.DefId))
                 {
@@ -1569,12 +1564,19 @@ namespace RedDust.Properties.Editor
             _hasChanges = true; RefreshAfterEdit();
         }
 
+        /// <summary>Get all NodeIds from the inherited (non-local) part of the merged tree.
+        /// Uses the cache populated by BuildCenterTree to avoid redundant merge.</summary>
+        private HashSet<string> GetInheritedNodeIds()
+        {
+            return _inheritedNodeIds;
+        }
+
         private void AddFolder(string name)
         {
             if (string.IsNullOrWhiteSpace(name) || name.Contains("/")) return;
 
-            // Auto-rename if duplicate
-            var usedNames = new HashSet<string>();
+            // Auto-rename if duplicate — check both own AND inherited nodes
+            var usedNames = GetInheritedNodeIds();
             foreach (var n in _ownNodes) usedNames.Add(n.NodeId);
             string finalName = name;
             int suffix = 1;
@@ -1623,174 +1625,7 @@ namespace RedDust.Properties.Editor
         }
 
         // ============================================================
-        //  Popups
+        //  Popups — now in PropertyTreeEditorPopups.cs
         // ============================================================
-        private static class NewTreeDialog
-        {
-            public static void Show(Action<string, PropertyTreeSO> cb)
-            {
-                var w = CreateInstance<NewTreePopup>();
-                w._cb = cb; w.minSize = new Vector2(300, 100); w.maxSize = new Vector2(400, 140); w.ShowUtility();
-            }
-            private class NewTreePopup : EditorWindow
-            {
-                public Action<string, PropertyTreeSO> _cb;
-                private string _name = "";
-                private PropertyTreeSO _parent;
-                private void OnGUI()
-                {
-                    EditorGUILayout.LabelField("New PropertyTree", EditorStyles.boldLabel);
-                    _name = EditorGUILayout.TextField("Name", _name);
-                    _parent = (PropertyTreeSO)EditorGUILayout.ObjectField("InheritsFrom", _parent, typeof(PropertyTreeSO), false);
-                    EditorGUILayout.BeginHorizontal();
-                    GUI.backgroundColor = ColorSave;
-                    EditorGUI.BeginDisabledGroup(string.IsNullOrWhiteSpace(_name));
-                    if (GUILayout.Button("Create", GUILayout.Height(24))) { _cb?.Invoke(_name, _parent); Close(); }
-                    EditorGUI.EndDisabledGroup();
-                    GUI.backgroundColor = Color.white;
-                    if (GUILayout.Button("Cancel", GUILayout.Height(24))) Close();
-                    EditorGUILayout.EndHorizontal();
-                }
-            }
-        }
-
-        private static class CreateDefDialog
-        {
-            public static void Show(Action<PropertyDefSO> onCreated)
-            {
-                var w = CreateInstance<CreateDefPopup>();
-                w._onCreated = onCreated;
-                w.minSize = new Vector2(320, 200);
-                w.maxSize = new Vector2(420, 400);
-                w.ShowUtility();
-            }
-
-            private class CreateDefPopup : EditorWindow
-            {
-                public Action<PropertyDefSO> _onCreated;
-                private string _id = "";
-                private PropertyType _type = PropertyType.Float;
-                private bool _isDeprecated;
-
-                // Float
-                private float _min;
-                private float _max = 100f;
-                private float _defaultFloat = 100f;
-
-                // Int
-                private int _minInt;
-                private int _maxInt = 100;
-                private int _defaultInt;
-
-                // Bool
-                private bool _defaultBool;
-
-                // String
-                private string _defaultString = "";
-
-                // AssetRef
-                private string _assetTypeConstraint = "";
-
-                private void OnGUI()
-                {
-                    var pad = 6f;
-                    GUILayout.Space(pad);
-                    EditorGUILayout.BeginHorizontal();
-                    GUILayout.Space(pad);
-                    EditorGUILayout.BeginVertical();
-
-                    EditorGUILayout.LabelField("Create Property Definition", EditorStyles.boldLabel);
-                    GUILayout.Space(pad);
-
-                    _id = EditorGUILayout.TextField("Id", _id);
-                    _type = (PropertyType)EditorGUILayout.EnumPopup("Type", _type);
-                    GUILayout.Space(pad);
-
-                    // Type-specific fields
-                    switch (_type)
-                    {
-                        case PropertyType.Float:
-                            _min = EditorGUILayout.FloatField("Min", _min);
-                            _max = EditorGUILayout.FloatField("Max", _max);
-                            _defaultFloat = EditorGUILayout.FloatField("Default", _defaultFloat);
-                            break;
-                        case PropertyType.Int:
-                            _minInt = EditorGUILayout.IntField("Min", _minInt);
-                            _maxInt = EditorGUILayout.IntField("Max", _maxInt);
-                            _defaultInt = EditorGUILayout.IntField("Default", _defaultInt);
-                            break;
-                        case PropertyType.Bool:
-                            _defaultBool = EditorGUILayout.Toggle("Default", _defaultBool);
-                            break;
-                        case PropertyType.String:
-                            _defaultString = EditorGUILayout.TextField("Default", _defaultString);
-                            break;
-                        case PropertyType.AssetRef:
-                            _assetTypeConstraint = EditorGUILayout.TextField("Asset Type Constraint", _assetTypeConstraint);
-                            break;
-                    }
-
-                    GUILayout.Space(pad);
-                    _isDeprecated = EditorGUILayout.Toggle("Deprecated", _isDeprecated);
-                    GUILayout.Space(pad);
-
-                    EditorGUILayout.BeginHorizontal();
-                    bool valid = !string.IsNullOrWhiteSpace(_id);
-                    GUI.backgroundColor = ColorSave;
-                    EditorGUI.BeginDisabledGroup(!valid);
-                    if (GUILayout.Button("Create", GUILayout.Height(24)))
-                    {
-                        var existing = AssetDatabase.LoadAssetAtPath<PropertyDefSO>($"Assets/Data/Properties/Definitions/{_id}.asset");
-                        if (existing != null)
-                        {
-                            EditorUtility.DisplayDialog("Duplicate ID",
-                                $"A PropertyDefinition with Id '{_id}' already exists.", "OK");
-                        }
-                        else
-                        {
-                            var def = CreateDef();
-                            _onCreated?.Invoke(def);
-                            Close();
-                        }
-                    }
-                    EditorGUI.EndDisabledGroup();
-                    GUI.backgroundColor = Color.white;
-                    if (GUILayout.Button("Cancel", GUILayout.Height(24))) Close();
-                    EditorGUILayout.EndHorizontal();
-
-                    EditorGUILayout.EndVertical();
-                    GUILayout.Space(pad);
-                    EditorGUILayout.EndHorizontal();
-                    GUILayout.Space(pad);
-                }
-
-                private PropertyDefSO CreateDef()
-                {
-                    var dir = "Assets/Data/Properties/Definitions";
-                    if (!AssetDatabase.IsValidFolder(dir))
-                    {
-                        var parts = dir.Split('/');
-                        AssetDatabase.CreateFolder(string.Join("/", parts.Take(parts.Length - 1)), parts.Last());
-                    }
-                    var def = CreateInstance<PropertyDefSO>();
-                    def.Id = _id;
-                    def.Type = _type;
-                    def.IsDeprecated = _isDeprecated;
-                    def.Min = _min;
-                    def.Max = _max;
-                    def.DefaultFloat = _defaultFloat;
-                    def.MinInt = _minInt;
-                    def.MaxInt = _maxInt;
-                    def.DefaultInt = _defaultInt;
-                    def.DefaultBool = _defaultBool;
-                    def.DefaultString = _defaultString;
-                    def.AssetTypeConstraint = _assetTypeConstraint;
-                    AssetDatabase.CreateAsset(def, $"{dir}/{_id}.asset");
-                    AssetDatabase.SaveAssets();
-                    AssetDatabase.Refresh();
-                    return def;
-                }
-            }
-        }
     }
 }

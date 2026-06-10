@@ -13,6 +13,4 @@ MonoBehaviour:
   m_Name: RifleAmmo
   m_EditorClassIdentifier: 
   InheritsFrom: {fileID: 11400000, guid: bf1fcbacd1bcb3145ae7c50785f374c3, type: 2}
-  treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"BarrelLength\",\n           
-    \"ParentId\": \"Combat\",\n            \"DefId\": \"BarrelLength\"\n        }\n   
-    ]\n}"
+  treeJson: "{\n    \"Nodes\": []\n}"
