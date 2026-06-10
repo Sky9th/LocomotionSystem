@@ -13,10 +13,14 @@ MonoBehaviour:
   m_Name: HeadArmor
   m_EditorClassIdentifier: 
   InheritsFrom: {fileID: 11400000, guid: dde941a44d00660488fa0654ac1fb6e1, type: 2}
-  treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"Combat\",\n           
-    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
-    \"NodeId\": \"FlashResist\",\n            \"ParentId\": \"New Folder\",\n           
-    \"DefId\": \"FlashResist\"\n        },\n        {\n            \"NodeId\": \"NightVision\",\n           
-    \"ParentId\": \"New Folder\",\n            \"DefId\": \"NightVision\"\n       
-    },\n        {\n            \"NodeId\": \"AimTime\",\n            \"ParentId\":
-    \"New Folder\",\n            \"DefId\": \"AimTime\"\n        }\n    ]\n}"
+  treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"AimTime\",\n           
+    \"ParentId\": \"Base\",\n            \"DefId\": \"AimTime\"\n        },\n       
+    {\n            \"NodeId\": \"NightVision\",\n            \"ParentId\": \"Base\",\n           
+    \"DefId\": \"NightVision\"\n        },\n        {\n            \"NodeId\": \"FlashResist\",\n           
+    \"ParentId\": \"Base\",\n            \"DefId\": \"FlashResist\"\n        },\n       
+    {\n            \"NodeId\": \"New Folder 2\",\n            \"ParentId\": \"\",\n           
+    \"DefId\": \"\"\n        },\n        {\n            \"NodeId\": \"New Folder
+    4\",\n            \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n       
+    {\n            \"NodeId\": \"New Folder 3\",\n            \"ParentId\": \"\",\n           
+    \"DefId\": \"\"\n        },\n        {\n            \"NodeId\": \"New Folder\",\n           
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        }\n    ]\n}"

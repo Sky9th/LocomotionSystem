@@ -26,7 +26,8 @@ namespace RedDust.Properties.Editor
             ref PropertyTreeSO selectedTree,
             string searchFilter = null,
             Action<PropertyTreeSO> onSelect = null,
-            Color selectedColor = default)
+            Color selectedColor = default,
+            Action<PropertyTreeSO> onDelete = null)
         {
             if (roots == null || roots.Count == 0)
                 return;
@@ -56,7 +57,7 @@ namespace RedDust.Properties.Editor
             {
                 if (i > 0) EditorUIUtility.CardGap(Pad);
                 DrawNodeCard(visibleRoots[i], foldouts, ref selectedTree,
-                    q, hasSearch, onSelect, selectedColor);
+                    q, hasSearch, onSelect, selectedColor, onDelete);
             }
         }
 
@@ -69,7 +70,8 @@ namespace RedDust.Properties.Editor
             string q,
             bool hasSearch,
             Action<PropertyTreeSO> onSelect,
-            Color selectedColor)
+            Color selectedColor,
+            Action<PropertyTreeSO> onDelete = null)
         {
             // Capture ref to local (avoids lambda limitation)
             var sel = selectedTree;
@@ -147,6 +149,16 @@ namespace RedDust.Properties.Editor
                     GUI.color = oldColor;
                 }
 
+                // Delete button (only for leaf trees with no inheritors)
+                if (!node.HasChildren && onDelete != null)
+                {
+                    var oldBg = GUI.backgroundColor;
+                    GUI.backgroundColor = new Color(0.9f, 0.3f, 0.3f);
+                    if (GUILayout.Button("x", EditorStyles.miniButton, GUILayout.Width(20)))
+                        onDelete(node.Tree);
+                    GUI.backgroundColor = oldBg;
+                }
+
                 EditorGUILayout.EndHorizontal();
                 EditorGUILayout.EndVertical();
 
@@ -170,7 +182,7 @@ namespace RedDust.Properties.Editor
                         {
                             if (i > 0) EditorUIUtility.CardGap(Pad);
                             DrawNodeCard(visibleChildren[i], foldouts, ref sel,
-                                q, hasSearch, onSelect, selectedColor);
+                                q, hasSearch, onSelect, selectedColor, onDelete);
                         }
                     }
                 }

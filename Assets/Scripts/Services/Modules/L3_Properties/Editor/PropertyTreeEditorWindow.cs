@@ -34,7 +34,6 @@ namespace RedDust.Properties.Editor
         private List<PropertyNode> _ownNodes = new();
         private HashSet<string> _localIds = new();
         private bool _hasChanges;
-        private string _highlightedNodeId;
         private string _searchFilter = "";
 
         // Drag & drop reorder
@@ -356,7 +355,8 @@ namespace RedDust.Properties.Editor
                 ref _tree,
                 _leftSearch,
                 onSelect: HandleTreeSelect,
-                selectedColor: ColorSelected);
+                selectedColor: ColorSelected,
+                onDelete: HandleTreeDelete);
 
             if (_leftTreeRoots.Count == 0)
             {
@@ -449,6 +449,36 @@ namespace RedDust.Properties.Editor
             SelectTree(tree);
         }
 
+        private void HandleTreeDelete(PropertyTreeSO tree)
+        {
+            if (tree == null) return;
+            var path = AssetDatabase.GetAssetPath(tree);
+            if (string.IsNullOrEmpty(path)) return;
+
+            // Verify no child trees inherit from this one
+            foreach (var guid in AssetDatabase.FindAssets("t:PropertyTreeSO"))
+            {
+                var p = AssetDatabase.GUIDToAssetPath(guid);
+                if (p == path) continue;
+                var t = AssetDatabase.LoadAssetAtPath<PropertyTreeSO>(p);
+                if (t != null && t.InheritsFrom == tree)
+                {
+                    EditorUtility.DisplayDialog("Cannot Delete",
+                        $"'{tree.name}' has child trees that inherit from it.\nDelete '{t.name}' first.", "OK");
+                    return;
+                }
+            }
+
+            if (!EditorUtility.DisplayDialog("Delete Tree",
+                $"Delete '{tree.name}'?\nThis will delete the asset file permanently.", "Delete", "Cancel"))
+                return;
+
+            if (_tree == tree) { _tree = null; _centerTreeRoots.Clear(); }
+            AssetDatabase.DeleteAsset(path);
+            AssetDatabase.SaveAssets();
+            RefreshTreeList();
+        }
+
         #region Center tree rendering
 
         /// <summary>
@@ -531,14 +561,18 @@ namespace RedDust.Properties.Editor
                 GUI.enabled = string.IsNullOrEmpty(_dragNodeId) && node.IsLocal;
                 var newName = EditorGUILayout.TextField(node.NodeId, GUILayout.Width(160));
                 GUI.enabled = true;
-                if (newName != node.NodeId && !string.IsNullOrWhiteSpace(newName) && !newName.Contains("/"))
+
+                // Commit rename on Enter or focus loss
+                if (newName != node.NodeId)
                 {
-                    // Commit rename on Enter or focus loss
                     var evt = Event.current;
-                    if (evt.type == EventType.KeyDown && (evt.keyCode == KeyCode.Return || evt.keyCode == KeyCode.KeypadEnter))
+                    bool isEnter = evt.type == EventType.KeyDown && (evt.keyCode == KeyCode.Return || evt.keyCode == KeyCode.KeypadEnter);
+                    bool lostFocus = Event.current.type == EventType.Repaint
+                        && GUI.GetNameOfFocusedControl() != $"folder_{node.NodeId}";
+                    if (isEnter || lostFocus)
                     {
-                        RenameFolder(node.NodeId, newName);
-                        evt.Use();
+                        TryRenameFolder(node.NodeId, newName);
+                        if (isEnter) evt.Use();
                     }
                 }
 
@@ -946,14 +980,21 @@ namespace RedDust.Properties.Editor
             Undo.RecordObject(_tree, "Reorder Folder");
             _ownNodes.Remove(node);
 
-            // Find target position among root folders
+            // Map targetIndex (all root folders) to local-only position (inherited first)
+            int inheritedBefore = 0;
+            foreach (var root in _centerTreeRoots)
+                if (root.IsFolder && !root.IsLocal) inheritedBefore++;
+            int localTarget = targetIndex - inheritedBefore;
+            if (localTarget < 0) localTarget = 0;
+
+            // Find target position among LOCAL root folders
             int insertAt = _ownNodes.Count;
             int rootCount = 0;
             for (int i = 0; i < _ownNodes.Count; i++)
             {
                 if (string.IsNullOrEmpty(_ownNodes[i].ParentId) && string.IsNullOrEmpty(_ownNodes[i].DefId))
                 {
-                    if (rootCount == targetIndex) { insertAt = i; break; }
+                    if (rootCount == localTarget) { insertAt = i; break; }
                     rootCount++;
                 }
             }
@@ -1027,33 +1068,6 @@ namespace RedDust.Properties.Editor
             RefreshAfterEdit();
         }
 
-        private void HandleNodeDragDrop(Rect cardRect, CenterTreeNode node)
-        {
-            var evt = Event.current;
-            if (evt.type == EventType.DragUpdated || evt.type == EventType.DragPerform)
-            {
-                if (cardRect.Contains(evt.mousePosition))
-                {
-                    var dragDef = DragAndDrop.objectReferences.Length > 0
-                        ? DragAndDrop.objectReferences[0] as PropertyDefSO : null;
-
-                    if (dragDef != null && !_usedDefIds.Contains(dragDef.Id))
-                    {
-                        DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
-                        _highlightedNodeId = node.NodeId;
-                        if (evt.type == EventType.DragPerform)
-                        { DragAndDrop.AcceptDrag(); AddLeafToNode(node.NodeId, dragDef.Id); _highlightedNodeId = null; }
-                        Repaint();
-                        evt.Use();
-                    }
-                    else
-                    { DragAndDrop.visualMode = DragAndDropVisualMode.Rejected; _highlightedNodeId = null; }
-                }
-                else if (_highlightedNodeId == node.NodeId) { _highlightedNodeId = null; Repaint(); }
-            }
-            else if (evt.type == EventType.DragExited) { _highlightedNodeId = null; Repaint(); }
-        }
-
         private int CountLocalDescendants(CenterTreeNode node)
         {
             int count = 0;
@@ -1071,6 +1085,20 @@ namespace RedDust.Properties.Editor
         {
             // Search
             DrawRightSearch();
+            Shared.EditorUI.EditorUIUtility.CardGap(Pad);
+
+            // Add button
+            Shared.EditorUI.EditorUIUtility.DrawCard(Pad, () =>
+            {
+                if (GUILayout.Button("+ Add", GUILayout.Height(22)))
+                {
+                    CreateDefDialog.Show(def =>
+                    {
+                        RefreshDefPool();
+                        RefreshUsedDefs();
+                    });
+                }
+            });
             Shared.EditorUI.EditorUIUtility.CardGap(Pad);
 
             // Def pool card
@@ -1149,6 +1177,28 @@ namespace RedDust.Properties.Editor
                 };
                 GUILayout.Label(def.Type.ToString(), typeStyle, GUILayout.Width(70), GUILayout.Height(rowH));
 
+                // Delete
+                var oldDelBg = GUI.backgroundColor;
+                GUI.backgroundColor = ColorDelete;
+                if (GUILayout.Button("x", EditorStyles.miniButton, GUILayout.Width(20), GUILayout.Height(rowH)))
+                {
+                    if (isUsed)
+                    {
+                        EditorUtility.DisplayDialog("Cannot Delete",
+                            $"'{def.Id}' is used in the current tree. Remove it from the tree first.", "OK");
+                    }
+                    else if (EditorUtility.DisplayDialog("Delete Definition",
+                        $"Delete '{def.Id}'?\nThis will delete the asset file permanently.", "Delete", "Cancel"))
+                    {
+                        AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(def));
+                        AssetDatabase.SaveAssets();
+                        RefreshDefPool();
+                        RefreshUsedDefs();
+                        GUIUtility.ExitGUI();
+                    }
+                }
+                GUI.backgroundColor = oldDelBg;
+
                 EditorGUILayout.EndHorizontal();
             });
 
@@ -1214,7 +1264,6 @@ namespace RedDust.Properties.Editor
             _tree = tree;
             _hasChanges = false;
             _searchFilter = "";
-            _highlightedNodeId = null;
             LoadOwnNodes();
             BuildCenterTree();
             RefreshUsedDefs();
@@ -1307,12 +1356,12 @@ namespace RedDust.Properties.Editor
                     return ia < 0 ? -1 : 1; // inherited before local
                 }
 
-                // Folders: follow _ownNodes order; fall back to alpha
+                // Folders: inherited first (alpha), then local (_ownNodes order)
                 int fa = _ownNodes.FindIndex(n => n.NodeId == a.NodeId);
                 int fb = _ownNodes.FindIndex(n => n.NodeId == b.NodeId);
-                if (fa >= 0 && fb >= 0) return fa.CompareTo(fb);
                 if (fa < 0 && fb < 0) return string.CompareOrdinal(a.NodeId, b.NodeId);
-                return fa >= 0 ? -1 : 1;
+                if (fa >= 0 && fb >= 0) return fa.CompareTo(fb);
+                return fa < 0 ? -1 : 1; // inherited before local
             });
             foreach (var n in nodes) SortTreeNodes(n.Children);
         }
@@ -1387,14 +1436,6 @@ namespace RedDust.Properties.Editor
         // ============================================================
         //  Edit ops
         // ============================================================
-        private void AddLeafToNode(string parentNodeId, string nodeId)
-        {
-            Undo.RecordObject(_tree, "Add Leaf");
-            _ownNodes.Add(new PropertyNode { NodeId = nodeId, ParentId = parentNodeId, DefId = "" });
-            _tree.treeJson = JsonUtility.ToJson(new PropertyTreeContainer { Nodes = _ownNodes }, true);
-            EditorUtility.SetDirty(_tree);
-            _hasChanges = true; RefreshAfterEdit();
-        }
 
         private void AddDefToFolder(string parentNodeId, PropertyDefSO def, int insertIndex = -1)
         {
@@ -1454,6 +1495,29 @@ namespace RedDust.Properties.Editor
             node.NodeId = newNodeId; _hasChanges = true; RefreshAfterEdit();
         }
 
+        private void TryRenameFolder(string oldNodeId, string newNodeId)
+        {
+            if (string.IsNullOrWhiteSpace(newNodeId))
+            {
+                EditorUtility.DisplayDialog("Invalid Name", "Folder name cannot be empty.", "OK");
+                return;
+            }
+            if (newNodeId == oldNodeId) return;
+            if (newNodeId.Contains("/"))
+            {
+                EditorUtility.DisplayDialog("Invalid Name", "Folder name cannot contain '/'.", "OK");
+                return;
+            }
+            // Check duplicate
+            foreach (var n in _ownNodes)
+                if (n.NodeId == newNodeId && string.IsNullOrEmpty(n.DefId))
+                {
+                    EditorUtility.DisplayDialog("Duplicate Name", $"A folder named '{newNodeId}' already exists.", "OK");
+                    return;
+                }
+            RenameFolder(oldNodeId, newNodeId);
+        }
+
         private void RenameFolder(string oldNodeId, string newNodeId)
         {
             if (string.IsNullOrWhiteSpace(newNodeId) || newNodeId == oldNodeId || newNodeId.Contains("/"))
@@ -1469,6 +1533,8 @@ namespace RedDust.Properties.Editor
                 if (child.ParentId == oldNodeId)
                     child.ParentId = newNodeId;
             }
+            _tree.treeJson = JsonUtility.ToJson(new PropertyTreeContainer { Nodes = _ownNodes }, true);
+            EditorUtility.SetDirty(_tree);
             _hasChanges = true; RefreshAfterEdit();
         }
 
@@ -1584,6 +1650,145 @@ namespace RedDust.Properties.Editor
                     GUI.backgroundColor = Color.white;
                     if (GUILayout.Button("Cancel", GUILayout.Height(24))) Close();
                     EditorGUILayout.EndHorizontal();
+                }
+            }
+        }
+
+        private static class CreateDefDialog
+        {
+            public static void Show(Action<PropertyDefSO> onCreated)
+            {
+                var w = CreateInstance<CreateDefPopup>();
+                w._onCreated = onCreated;
+                w.minSize = new Vector2(320, 200);
+                w.maxSize = new Vector2(420, 400);
+                w.ShowUtility();
+            }
+
+            private class CreateDefPopup : EditorWindow
+            {
+                public Action<PropertyDefSO> _onCreated;
+                private string _id = "";
+                private PropertyType _type = PropertyType.Float;
+                private bool _isDeprecated;
+
+                // Float
+                private float _min;
+                private float _max = 100f;
+                private float _defaultFloat = 100f;
+
+                // Int
+                private int _minInt;
+                private int _maxInt = 100;
+                private int _defaultInt;
+
+                // Bool
+                private bool _defaultBool;
+
+                // String
+                private string _defaultString = "";
+
+                // AssetRef
+                private string _assetTypeConstraint = "";
+
+                private void OnGUI()
+                {
+                    var pad = 6f;
+                    GUILayout.Space(pad);
+                    EditorGUILayout.BeginHorizontal();
+                    GUILayout.Space(pad);
+                    EditorGUILayout.BeginVertical();
+
+                    EditorGUILayout.LabelField("Create Property Definition", EditorStyles.boldLabel);
+                    GUILayout.Space(pad);
+
+                    _id = EditorGUILayout.TextField("Id", _id);
+                    _type = (PropertyType)EditorGUILayout.EnumPopup("Type", _type);
+                    GUILayout.Space(pad);
+
+                    // Type-specific fields
+                    switch (_type)
+                    {
+                        case PropertyType.Float:
+                            _min = EditorGUILayout.FloatField("Min", _min);
+                            _max = EditorGUILayout.FloatField("Max", _max);
+                            _defaultFloat = EditorGUILayout.FloatField("Default", _defaultFloat);
+                            break;
+                        case PropertyType.Int:
+                            _minInt = EditorGUILayout.IntField("Min", _minInt);
+                            _maxInt = EditorGUILayout.IntField("Max", _maxInt);
+                            _defaultInt = EditorGUILayout.IntField("Default", _defaultInt);
+                            break;
+                        case PropertyType.Bool:
+                            _defaultBool = EditorGUILayout.Toggle("Default", _defaultBool);
+                            break;
+                        case PropertyType.String:
+                            _defaultString = EditorGUILayout.TextField("Default", _defaultString);
+                            break;
+                        case PropertyType.AssetRef:
+                            _assetTypeConstraint = EditorGUILayout.TextField("Asset Type Constraint", _assetTypeConstraint);
+                            break;
+                    }
+
+                    GUILayout.Space(pad);
+                    _isDeprecated = EditorGUILayout.Toggle("Deprecated", _isDeprecated);
+                    GUILayout.Space(pad);
+
+                    EditorGUILayout.BeginHorizontal();
+                    bool valid = !string.IsNullOrWhiteSpace(_id);
+                    GUI.backgroundColor = ColorSave;
+                    EditorGUI.BeginDisabledGroup(!valid);
+                    if (GUILayout.Button("Create", GUILayout.Height(24)))
+                    {
+                        var existing = AssetDatabase.LoadAssetAtPath<PropertyDefSO>($"Assets/Data/Properties/Definitions/{_id}.asset");
+                        if (existing != null)
+                        {
+                            EditorUtility.DisplayDialog("Duplicate ID",
+                                $"A PropertyDefinition with Id '{_id}' already exists.", "OK");
+                        }
+                        else
+                        {
+                            var def = CreateDef();
+                            _onCreated?.Invoke(def);
+                            Close();
+                        }
+                    }
+                    EditorGUI.EndDisabledGroup();
+                    GUI.backgroundColor = Color.white;
+                    if (GUILayout.Button("Cancel", GUILayout.Height(24))) Close();
+                    EditorGUILayout.EndHorizontal();
+
+                    EditorGUILayout.EndVertical();
+                    GUILayout.Space(pad);
+                    EditorGUILayout.EndHorizontal();
+                    GUILayout.Space(pad);
+                }
+
+                private PropertyDefSO CreateDef()
+                {
+                    var dir = "Assets/Data/Properties/Definitions";
+                    if (!AssetDatabase.IsValidFolder(dir))
+                    {
+                        var parts = dir.Split('/');
+                        AssetDatabase.CreateFolder(string.Join("/", parts.Take(parts.Length - 1)), parts.Last());
+                    }
+                    var def = CreateInstance<PropertyDefSO>();
+                    def.Id = _id;
+                    def.Type = _type;
+                    def.IsDeprecated = _isDeprecated;
+                    def.Min = _min;
+                    def.Max = _max;
+                    def.DefaultFloat = _defaultFloat;
+                    def.MinInt = _minInt;
+                    def.MaxInt = _maxInt;
+                    def.DefaultInt = _defaultInt;
+                    def.DefaultBool = _defaultBool;
+                    def.DefaultString = _defaultString;
+                    def.AssetTypeConstraint = _assetTypeConstraint;
+                    AssetDatabase.CreateAsset(def, $"{dir}/{_id}.asset");
+                    AssetDatabase.SaveAssets();
+                    AssetDatabase.Refresh();
+                    return def;
                 }
             }
         }
