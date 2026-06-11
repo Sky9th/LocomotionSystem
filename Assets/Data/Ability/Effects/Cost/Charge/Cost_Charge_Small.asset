@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 141cf4e8366df5c47949c79fda63fae0, type: 3}
   m_Name: Cost_Charge_Small
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 0}
+  effectTag: {fileID: 11400000, guid: 460e9e3a4b5aa29428a5ae7c042ee7b9, type: 2}
   description: "\u7535\u91CF\u6D88\u8017\u3002\u7535\u51FB\u9677\u9631/\u80FD\u91CF\u6B66\u5668\u3002\u6263
     5 \u7535\u91CF"
   duration: 0

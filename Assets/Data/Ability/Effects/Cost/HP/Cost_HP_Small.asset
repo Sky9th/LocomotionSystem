@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 141cf4e8366df5c47949c79fda63fae0, type: 3}
   m_Name: Cost_HP_Small
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 0}
+  effectTag: {fileID: 11400000, guid: c702240394258e24498bb122899142ce, type: 2}
   description: "\u751F\u547D\u6D88\u8017\xB7\u5C0F\u3002\u81EA\u6B8B\u7C7B\u6280\u80FD\u3002\u6263
     10 HP"
   duration: 0

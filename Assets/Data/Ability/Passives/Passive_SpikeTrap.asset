@@ -16,13 +16,12 @@ MonoBehaviour:
   displayName: 
   icon: {fileID: 0}
   description: 
-  categoryTag: {fileID: 0}
-  targetEffects:
-  - {fileID: 11400000, guid: 0bd127f07af559847a9025d38550f583, type: 2}
+  abilityTag: {fileID: 0}
+  targetEffects: []
   selfEffects: []
   cooldownDuration: 3
   sharedCooldownTag: {fileID: 0}
   trigger: 8
   triggerChannel: {fileID: 0}
   triggerValue: 0
-  targetRequiredTag: {fileID: 11400000, guid: 9fdc0cfad16fbdb42a8aca245e055c5d, type: 2}
+  targetRequiredTag: {fileID: 0}

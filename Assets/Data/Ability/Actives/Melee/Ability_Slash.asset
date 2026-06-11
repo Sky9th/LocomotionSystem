@@ -16,16 +16,14 @@ MonoBehaviour:
   displayName: 
   icon: {fileID: 0}
   description: 
-  categoryTag: {fileID: 11400000, guid: 3e771ac6a515b4a43bbfe34e25a6e1bb, type: 2}
-  targetEffects:
-  - {fileID: 11400000, guid: d82414f7c141e724393e0e99d93615e6, type: 2}
-  - {fileID: 11400000, guid: 360f197be79097943baccc96353b45b7, type: 2}
+  abilityTag: {fileID: 0}
+  targetEffects: []
   selfEffects: []
   cooldownDuration: 3
   sharedCooldownTag: {fileID: 0}
   activation: {fileID: 0}
   search: {fileID: 0}
-  activeTag: {fileID: 0}
   overrideExclusion: 0
+  extraExclusionTags: []
   noise: {fileID: 0}
   comboLinks: []

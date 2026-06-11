@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 141cf4e8366df5c47949c79fda63fae0, type: 3}
   m_Name: Cost_Durability_Small
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 0}
+  effectTag: {fileID: 11400000, guid: 69c84f1505295a744975a381136cba40, type: 2}
   description: "\u8010\u4E45\u6D88\u8017\xB7\u5C0F\u3002\u8FD1\u6218\u6BCF\u6B21\u547D\u4E2D\u3002\u6263
     1 \u8010\u4E45"
   duration: 0

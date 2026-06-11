@@ -45,19 +45,19 @@
     { "effectType": "Execute", "name": "Execute_LowHP_20", "directory": "Execute", "effectTag": "Execute.Threshold", "duration": 0, "hpThreshold": 0.2,  "description": "斩杀·20%。目标 HP 低于 20% 时即死" },
     { "effectType": "Execute", "name": "Execute_LowHP_30", "directory": "Execute", "effectTag": "Execute.Threshold", "duration": 0, "hpThreshold": 0.3,  "description": "斩杀·30%。目标 HP 低于 30% 时即死" },
 
-    { "effectType": "Cost", "name": "Cost_Stamina_Small",  "directory": "Cost/Stamina", "description": "体力消耗·小。轻攻击/翻滚/推踢。扣 15 体力", "defId": "Stamina", "amount": 15 },
-    { "effectType": "Cost", "name": "Cost_Stamina_Medium", "directory": "Cost/Stamina", "description": "体力消耗·中。重攻击/盾击/防御姿态。扣 30 体力", "defId": "Stamina", "amount": 30 },
-    { "effectType": "Cost", "name": "Cost_Stamina_Large",  "directory": "Cost/Stamina", "description": "体力消耗·大。特殊技/大翻滚。扣 50 体力", "defId": "Stamina", "amount": 50 },
-    { "effectType": "Cost", "name": "Cost_HP_Small",       "directory": "Cost/HP",      "description": "生命消耗·小。自残类技能。扣 10 HP", "defId": "HP", "amount": 10 },
-    { "effectType": "Cost", "name": "Cost_HP_Medium",      "directory": "Cost/HP",      "description": "生命消耗·中。紧急技能代价。扣 25 HP", "defId": "HP", "amount": 25 },
-    { "effectType": "Cost", "name": "Cost_HP_Restore",     "directory": "Cost/HP",      "description": "生命恢复。绷带/医疗包。回 20 HP", "defId": "HP", "amount": -20 },
-    { "effectType": "Cost", "name": "Cost_Ammo_Pistol",    "directory": "Cost/Ammo",    "description": "弹药消耗·手枪。扣 1 发", "defId": "Ammo", "amount": 1 },
-    { "effectType": "Cost", "name": "Cost_Ammo_Rifle",     "directory": "Cost/Ammo",    "description": "弹药消耗·步枪。扣 1 发", "defId": "Ammo", "amount": 1 },
-    { "effectType": "Cost", "name": "Cost_Ammo_Shotgun",   "directory": "Cost/Ammo",    "description": "弹药消耗·霰弹枪。扣 1 发", "defId": "Ammo", "amount": 1 },
-    { "effectType": "Cost", "name": "Cost_Ammo_Throwable", "directory": "Cost/Ammo",    "description": "弹药消耗·投掷物。扣 1 个", "defId": "Ammo", "amount": 1 },
-    { "effectType": "Cost", "name": "Cost_Durability_Small","directory": "Cost/Durability","description": "耐久消耗·小。近战每次命中。扣 1 耐久", "defId": "Durability", "amount": 1 },
-    { "effectType": "Cost", "name": "Cost_Durability_Block","directory": "Cost/Durability","description": "耐久消耗·格挡。扣 3 耐久", "defId": "Durability", "amount": 3 },
-    { "effectType": "Cost", "name": "Cost_Fuel_Small",      "directory": "Cost/Fuel",    "description": "燃料消耗。燃烧瓶/爆炸物。扣 1 燃料", "defId": "Fuel", "amount": 1 },
-    { "effectType": "Cost", "name": "Cost_Charge_Small",    "directory": "Cost/Charge",  "description": "电量消耗。电击陷阱/能量武器。扣 5 电量", "defId": "Charge", "amount": 5 }
+    { "effectType": "Cost", "name": "Cost_Stamina_Small",  "directory": "Cost/Stamina", "effectTag": "Cost.Stamina", "description": "体力消耗·小。轻攻击/翻滚/推踢。扣 15 体力", "defId": "Stamina", "amount": 15 },
+    { "effectType": "Cost", "name": "Cost_Stamina_Medium", "directory": "Cost/Stamina", "effectTag": "Cost.Stamina", "description": "体力消耗·中。重攻击/盾击/防御姿态。扣 30 体力", "defId": "Stamina", "amount": 30 },
+    { "effectType": "Cost", "name": "Cost_Stamina_Large",  "directory": "Cost/Stamina", "effectTag": "Cost.Stamina", "description": "体力消耗·大。特殊技/大翻滚。扣 50 体力", "defId": "Stamina", "amount": 50 },
+    { "effectType": "Cost", "name": "Cost_HP_Small",       "directory": "Cost/HP",      "effectTag": "Cost.HP",      "description": "生命消耗·小。自残类技能。扣 10 HP", "defId": "HP", "amount": 10 },
+    { "effectType": "Cost", "name": "Cost_HP_Medium",      "directory": "Cost/HP",      "effectTag": "Cost.HP",      "description": "生命消耗·中。紧急技能代价。扣 25 HP", "defId": "HP", "amount": 25 },
+    { "effectType": "Cost", "name": "Cost_HP_Restore",     "directory": "Cost/HP",      "effectTag": "Cost.HP",      "description": "生命恢复。绷带/医疗包。回 20 HP", "defId": "HP", "amount": -20 },
+    { "effectType": "Cost", "name": "Cost_Ammo_Pistol",    "directory": "Cost/Ammo",    "effectTag": "Cost.Ammo",    "description": "弹药消耗·手枪。扣 1 发", "defId": "Ammo", "amount": 1 },
+    { "effectType": "Cost", "name": "Cost_Ammo_Rifle",     "directory": "Cost/Ammo",    "effectTag": "Cost.Ammo",    "description": "弹药消耗·步枪。扣 1 发", "defId": "Ammo", "amount": 1 },
+    { "effectType": "Cost", "name": "Cost_Ammo_Shotgun",   "directory": "Cost/Ammo",    "effectTag": "Cost.Ammo",    "description": "弹药消耗·霰弹枪。扣 1 发", "defId": "Ammo", "amount": 1 },
+    { "effectType": "Cost", "name": "Cost_Ammo_Throwable", "directory": "Cost/Ammo",    "effectTag": "Cost.Ammo",    "description": "弹药消耗·投掷物。扣 1 个", "defId": "Ammo", "amount": 1 },
+    { "effectType": "Cost", "name": "Cost_Durability_Small","directory": "Cost/Durability","effectTag": "Cost.Durability","description": "耐久消耗·小。近战每次命中。扣 1 耐久", "defId": "Durability", "amount": 1 },
+    { "effectType": "Cost", "name": "Cost_Durability_Block","directory": "Cost/Durability","effectTag": "Cost.Durability","description": "耐久消耗·格挡。扣 3 耐久", "defId": "Durability", "amount": 3 },
+    { "effectType": "Cost", "name": "Cost_Fuel_Small",      "directory": "Cost/Fuel",    "effectTag": "Cost.Fuel",    "description": "燃料消耗。燃烧瓶/爆炸物。扣 1 燃料", "defId": "Fuel", "amount": 1 },
+    { "effectType": "Cost", "name": "Cost_Charge_Small",    "directory": "Cost/Charge",  "effectTag": "Cost.Charge",  "description": "电量消耗。电击陷阱/能量武器。扣 5 电量", "defId": "Charge", "amount": 5 }
   ]
 }

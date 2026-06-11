@@ -33,6 +33,41 @@
       "description": "斩杀标签根——处决阈值"
     },
     {
+      "name": "Tag_Cost",
+      "parent": null,
+      "description": "消耗标签根——资源消耗/恢复路由"
+    },
+    {
+      "name": "Tag_Stamina",
+      "parent": "Cost",
+      "description": "体力消耗"
+    },
+    {
+      "name": "Tag_HP",
+      "parent": "Cost",
+      "description": "生命消耗/恢复"
+    },
+    {
+      "name": "Tag_Ammo",
+      "parent": "Cost",
+      "description": "弹药消耗"
+    },
+    {
+      "name": "Tag_Durability",
+      "parent": "Cost",
+      "description": "耐久消耗"
+    },
+    {
+      "name": "Tag_Fuel",
+      "parent": "Cost",
+      "description": "燃料消耗"
+    },
+    {
+      "name": "Tag_Charge",
+      "parent": "Cost",
+      "description": "电量消耗"
+    },
+    {
       "name": "Tag_Faction",
       "parent": "Actor",
       "description": "阵营"
