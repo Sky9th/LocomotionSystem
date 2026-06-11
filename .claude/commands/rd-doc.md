@@ -9,8 +9,8 @@ allowed-tools: Read, Write, Edit, Glob, Bash, Grep
 ## 分类规则
 
 根据内容性质选择目录：
-- **design/** — 设计决策、系统定位、玩家体验（WHY）
-- **tech/** — 技术实现、调用链、API 文档（HOW），按 L1→L5 架构层级组织，**编写时使用 rd-tech-doc skill**
+- **design/** — **偏策划**：设计决策、系统定位、玩家体验、数值设计（WHAT & WHY），面向策划和设计讨论
+- **tech/** — **偏技术**：技术实现、代码调用链、API 文档、架构设计（HOW），面向程序员，按 L1→L5 架构层级组织，**编写时使用 rd-tech-doc skill**
 - **tech/conventions/** — 命名规范、代码风格
 - **plans/** — 长期/短期开发计划
 - **sessions/** — 会话归档（YYYY-MM-DD-主题.md）
@@ -50,17 +50,17 @@ allowed-tools: Read, Write, Edit, Glob, Bash, Grep
 
 如果本次会话修改了代码，**必须同时归档三层**：
 
-| 层 | 目录 | 内容 | 示例 |
-|----|------|------|------|
-| 会话 | `sessions/` | 本次改了什么、为什么、已知问题 | `YYYY-MM-DD-主题.md` |
-| 技术 | `tech/` | 模块实现细节、调用链、API | 使用 rd-tech-doc skill 更新 |
-| 设计 | `design/` | 设计决策、为什么这样改 | 俯视角 → 更新 `game-overview.md` 或新建设计文档 |
+| 层 | 目录 | 内容 | 受众 | 示例 |
+|----|------|------|------|------|
+| 会话 | `sessions/` | 本次改了什么、为什么、已知问题 | 开发者 | `YYYY-MM-DD-主题.md` |
+| 技术 | `tech/` | 模块实现细节、调用链、API、架构 | **程序员** | 使用 rd-tech-doc skill 更新 |
+| 设计 | `design/` | 设计决策、系统定位、玩法机制 | **策划** | 俯视角 → 更新 `game-overview.md` 或新建设计文档 |
 
 **流程**：
 1. 通过 `git diff --stat` 确定改动了哪些模块
 2. 创建/更新 session 文件（会话归档）
-3. 调用 **rd-tech-doc skill** 更新 `tech/` 对应模块文档
-4. 涉及设计决策时更新 `design/<子系统>.md`（设计归档）
+3. 调用 **rd-tech-doc skill** 更新 `tech/` 对应模块文档（技术实现 → 程序员）
+4. 涉及设计决策/玩法变更时更新 `design/<子系统>.md`（设计意图 → 策划）
 5. 已有文档过时时同步更新（如改名、删除、调用链变化）
 
 ## 版本控制

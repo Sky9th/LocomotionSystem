@@ -17,7 +17,7 @@
 |------|------|---------|------|
 | **L1** | 根管理层 | 持有所有 Service，无业务逻辑 | `L1_Core/` |
 | **L2** | 系统服务 | 继承 BaseService，协调 L1↔L3 | `L2_Audio/`, `L2_Input/`, `L2_UI/` |
-| **L3** | 领域模块 | 独立领域，不隶属单一 L2，可被多个 Service 共用 | `L3_Character/`, `L3_Stats/` |
+| **L3** | 领域模块 | 独立领域，不隶属单一 L2，可被多个 Service 共用 | `L3_Character/`, `L3_Ability/` |
 | **L4** | 领域子系统 | L3 内部的**不同领域子系统**，承担独立功能 | `Animation/`, `Kinematic/`, `Locomotion/`, `Stats/`, `Audio/`, `Combat/` |
 | **L5** | 子系统的子系统 | L4 内部的**附属子系统**，承担其下一级独立功能 | `Drivers/`（如 `Animation/Drivers/Locomotion/`） |
 
@@ -118,26 +118,14 @@ tech/
 │       │   │   ├── ILocomotionSimulator, GroundLocomotion, Motor, Stance
 │       │   │   ├── LocomotionProfile.cs
 │       │   │   └── Structs/            # SCharacterMotor, SCharacterDiscrete
-│       │   ├── stats/                  # L4: 数值子系统
-│       │   │   ├── CharacterStats.cs
-│       │   │   ├── physiology.md       # Physiology — 生理规则（帧驱动永久行为）
-│       │   │   └── Physiology/         # 5 个生理规则
+│       │       stats/                       # L4: 数值子系统 (已删除，由 L3-properties 替代)
 │       ├── L3-ability/                  # L3: 通用能力子系统
 │       │   ├── README.md
 │       │   ├── ability-pipeline-design.md  # Ability Pipeline — 八维度技能管道完整设计
 │       │   ├── ability-inventory.md     #  Ability Inventory — 技能全量树 + 闭环测试集
 │       │   └── ability-component.md     #  AbilityComponent — 中枢，API + 调用链
 │       │
-│       ├── L3-stats/                   # L3: Stat 数值框架 (自身代码: Definition/ Tree/ Instance/ Modifier/ Interfaces/ Editor/)
-│       │   ├── README.md
-│       │   ├── Definition/             # StatDefSO
-│       │   ├── Tree/                   # StatsNodeSO, StatsTreeSO
-│       │   ├── Instance/               # StatInstance
-│       │   ├── Modifier/               # StatModifier, ModifierContext
-│       │   ├── Interfaces/             # IStatConsumable 等 4 个接口
-│       │   └── Editor/                 # StatsTreeWindow
-│       │
-│       ├── L3-properties/               # L3: 通用属性系统 (自身代码: Definition/ Tree/ Instance/ Editor/)
+│       ├── L3-properties/               # L3: 通用属性系统 (替代 L3-stats)
 │       │   ├── README.md               # 模块总览 — Schema/Data 分离 + 8 类型 + 继承合并
 │       │   ├── property-inventory.md    # Property Inventory — 全量属性与属性树设计（~180 props, 29 trees）
 │       │   └── implementation-plan.md   # 实现计划 — 4 阶段迁移
@@ -184,7 +172,7 @@ tech/
 | Services/L2_Input/ | L3-input/ | 提升至 L2 |
 | Services/L2_UI/ | L3-ui/ | 提升至 L2 |
 | Services/Modules/L3_Character/ | L3-character/ | 直接迁移 |
-| Services/Modules/L3_Stats/ | L3-stats/ | 重组 |
+| Services/Modules/L3_Stats/ | (已删除，由 L3-properties 替代) | — |
 | Services/Modules/L3_Pathfinding/ | L3-pathfinding/ | 直接迁移 |
 | Shared/Logging/ | L3-logging/ | 移至 Shared |
 | Shared/Editor/ | L3-editor/ | 移至 Shared |
@@ -198,7 +186,7 @@ tech/
 | L2 Service 不直接互相引用 | 通过 GameContext 或 EventDispatcher |
 | L3 不依赖特定 L2 | Character 不 import PlayerService |
 | L3 可被多个 L2 共用 | Character ← PlayerService + AIService |
-| L4 是 L3 的领域子系统 | Animation, Kinematic, Locomotion, Stats, Audio 各自承担独立功能 |
+| L4 是 L3 的领域子系统 | Animation, Kinematic, Locomotion, Audio 各自承担独立功能 |
 | L4 只被同模块调用 | L4_Animation 只被 Character 内部使用 |
 | L5 是 L4 的附属子系统 | L5_Drivers 是 Animation 的驱动子系统，L5_Locomotion 是 Drivers 的移动子系统 |
 | L5 只被同子系统调用 | L5_Locomotion 只被 L5_Drivers 内部使用 |

@@ -29,19 +29,6 @@ namespace RedDust.Core.Editor
         private readonly Dictionary<string, bool> _foldouts = new();
         private Vector2 _scroll;
 
-        [MenuItem("RedDust/Tag Picker (Test)", priority = 22)]
-        private static void TestOpen()
-        {
-            var rect = new Rect(600, 300, 0, 0);
-            Show(rect, rootFilter: null, allowCreate: true, onSelected: tag =>
-            {
-                if (tag != null)
-                    Debug.Log($"[TagPicker] Selected: {tag.FullTag}");
-                else
-                    Debug.Log("[TagPicker] Cancelled / new tag requested");
-            });
-        }
-
         // ── 静态入口 ──
         public static void Show(
             Rect activatorRect,

@@ -60,7 +60,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initialTags:
   - {fileID: 11400000, guid: 79f39f36937038f45af4ea7bd5d35912, type: 2}
-  - {fileID: 11400000, guid: 5fea941d358cf034082b6053e2367fdd, type: 2}
+  - {fileID: 11400000, guid: 5505cab366507894ba217b84b24f5af7, type: 2}
 --- !u!114 &8721387818594905132
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -77,7 +77,6 @@ MonoBehaviour:
   characterProfile: {fileID: 11400000, guid: 19080c489b2a47c4f85047f53e6224f6, type: 2}
   locomotionAnimationProfile: {fileID: 11400000, guid: 8c24cbd0466513245b7b38493fcf3aeb,
     type: 2}
-  statsTree: {fileID: 11400000, guid: 85e478e2b9966d64bb336a07452a8810, type: 2}
   skillSlot1: {fileID: 11400000, guid: ef8318ed27b3de8488a40daf2011fd93, type: 2}
   skillSlot2: {fileID: 0}
   modelRoot: {fileID: 7880520753254052221}
