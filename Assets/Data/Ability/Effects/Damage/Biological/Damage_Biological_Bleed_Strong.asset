@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd502afaf7ff75c47b42269f0eb3c4c9, type: 3}
+  m_Name: Damage_Biological_Bleed_Strong
+  m_EditorClassIdentifier: 
+  effectTag: {fileID: 11400000, guid: c2b20101734dc134788135b34b4829fc, type: 2}
+  description: "\u6D41\u8840\u4F24\u5BB3\xB7\u91CD\u3002\u500D\u7387 3.0\uFF0C10
+    \u79D2\u3002\u52A8\u8109\u7834\u88C2/\u91CD\u4F24\u6495\u88C2"
+  duration: 10
+  stackable: 1
+  maxStacks: 1
+  applicationBlockedTags: []
+  baseValue: 0
+  modAdd: 0
+  modMult: 3
+  priority: 0

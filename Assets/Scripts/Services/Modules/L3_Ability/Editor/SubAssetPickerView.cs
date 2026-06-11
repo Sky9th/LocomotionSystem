@@ -199,7 +199,7 @@ namespace RedDust.Ability
             if (e is not EffectSO eff) return null;
             var type = eff.GetType().Name.Replace("EffectSO", "");
             if (eff is DamageEffectSO d)
-                return $"Damage · {eff.effectTag?.FullTag ?? "-"} · base:{d.baseDamage:F0}";
+                return $"Damage · {eff.effectTag?.FullTag ?? "-"} · base:{d.baseValue:F0}";  // TODO: was baseDamage
             if (eff is ImpactEffectSO i)
                 return $"Impact · {eff.effectTag?.FullTag ?? "-"} · stagger:{i.staggerValue:F0}";
             if (eff is ExecuteEffectSO x)

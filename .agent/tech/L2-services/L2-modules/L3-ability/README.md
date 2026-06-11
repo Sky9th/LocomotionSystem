@@ -144,9 +144,9 @@ Ability 系统消费的标签用途：
 
 ### EffectSO 设计原则
 
-- **纯数据**：SO 不写 Execute/Apply 方法，逻辑全在管道层 (Ability Pipeline)
-- **数值固有**：`DamageEffectSO(baseDamage=500)` = "500度火焰"。天火/地火/冥火是不同的资产
-- **运行时叠加**：`baseDamage` 是基础值，AbilityPipeline ⑤ IEffectModifier 叠加角色属性、目标抗性
+- **纯数据**：SO 不写 Execute/Apply 方法，逻辑全在管道层
+- **共享契约**：DamageEffectSO 的 `baseValue` 由装备填入，`modAdd/modMult/priority` 由 Ability 填入。详见 [damage-effect-so.md](damage-effect-so.md)
+- **运行时叠加**：`(baseValue + modAdd) × modMult`，同 effectTag 多 Effect 按 priority 排序叠算
 - **无需 SEffectInstance**：要不同值就建不同资产
 
 ### 互斥模型
@@ -176,5 +176,7 @@ Ability 系统消费的标签用途：
 |------|------|
 | [ability-pipeline-design.md](ability-pipeline-design.md) | Ability Pipeline — 八维度技能管道完整设计 |
 | [ability-component.md](ability-component.md) | AbilityComponent — 能力执行中枢，API + 调用链 |
+| [effect-so.md](effect-so.md) | EffectSO — 效果抽象基类 |
+| [damage-effect-so.md](damage-effect-so.md) | DamageEffectSO — 伤害效果契约（装备/Ability 共享） |
 
 > GameplayTag 基础设施文档位于 [L1-core](../../../L1-core/)：资产树、运行时 struct、容器用法。

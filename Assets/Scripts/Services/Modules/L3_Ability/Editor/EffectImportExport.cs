@@ -27,6 +27,7 @@ namespace RedDust.Ability
         {
             public string effectType;  // "Damage" | "Impact" | "Execute" | "Cost"
             public string name;        // asset name (without .asset)
+            public string description;  // designer-readable text
             public string directory;   // relative to EffectsRoot, e.g. "Damage/Fire"
             public string effectTag;   // FullTag string, nullable
             public float duration;
@@ -35,11 +36,10 @@ namespace RedDust.Ability
             public string[] applicationBlockedTags; // FullTag strings, nullable
 
             // Damage
-            public float baseDamage;
-            public float armorPenetration;
-            public float shieldPenetration;
-            public float minDamage;
-            public float maxDamage;
+            public float baseValue;
+            public float modAdd;
+            public float modMult = 1f;
+            public int priority;
 
             // Impact
             public float staggerValue;
@@ -84,6 +84,7 @@ namespace RedDust.Ability
                 var entry = new EffectEntry
                 {
                     name = effect.name,
+                    description = effect.description,
                     effectTag = effect.effectTag?.FullTag,
                     duration = effect.duration,
                     stackable = effect.stackable,
@@ -103,11 +104,10 @@ namespace RedDust.Ability
                 {
                     case DamageEffectSO d:
                         entry.effectType = "Damage";
-                        entry.baseDamage = d.baseDamage;
-                        entry.armorPenetration = d.armorPenetration;
-                        entry.shieldPenetration = d.shieldPenetration;
-                        entry.minDamage = d.minDamage;
-                        entry.maxDamage = d.maxDamage;
+                        entry.baseValue = d.baseValue;
+                        entry.modAdd = d.modAdd;
+                        entry.modMult = d.modMult;
+                        entry.priority = d.priority;
                         break;
                     case ImpactEffectSO i:
                         entry.effectType = "Impact";
@@ -349,6 +349,7 @@ namespace RedDust.Ability
             PropertyDefSO def)
         {
             instance.effectTag = effTag;
+            instance.description = entry.description;
             instance.duration = entry.duration;
             instance.stackable = entry.stackable;
             instance.maxStacks = entry.maxStacks;
@@ -357,11 +358,10 @@ namespace RedDust.Ability
             switch (instance)
             {
                 case DamageEffectSO d:
-                    d.baseDamage = entry.baseDamage;
-                    d.armorPenetration = entry.armorPenetration;
-                    d.shieldPenetration = Mathf.Clamp01(entry.shieldPenetration);
-                    d.minDamage = entry.minDamage;
-                    d.maxDamage = entry.maxDamage;
+                    d.baseValue = entry.baseValue;
+                    d.modAdd = entry.modAdd;
+                    d.modMult = entry.modMult;
+                    d.priority = entry.priority;
                     break;
                 case ImpactEffectSO i:
                     i.staggerValue = entry.staggerValue;
@@ -593,8 +593,12 @@ namespace RedDust.Ability
             if (hasErrors)
             {
                 GUILayout.Space(4);
-                foreach (var e in _lastErrors)
-                    EditorGUILayout.LabelField($"  ⚠ {e}", EditorStyles.miniLabel);
+                EditorGUILayout.TextArea(string.Join("\n", _lastErrors), EditorStyles.miniLabel, GUILayout.MinHeight(40));
+            }
+            else
+            {
+                GUILayout.Space(4);
+                EditorGUILayout.TextArea("No errors.", EditorStyles.miniLabel, GUILayout.MinHeight(20));
             }
 
             EditorGUILayout.EndVertical();

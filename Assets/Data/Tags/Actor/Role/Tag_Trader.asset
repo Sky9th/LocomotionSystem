@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: Trader
   parent: {fileID: 11400000, guid: 312cb537682416e44bacc2c64712a010, type: 2}
+  description: 

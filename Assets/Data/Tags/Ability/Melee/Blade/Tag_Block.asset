@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: Block
   parent: {fileID: 11400000, guid: 64dcca79f25197a40b39fe51853d61e8, type: 2}
+  description: 

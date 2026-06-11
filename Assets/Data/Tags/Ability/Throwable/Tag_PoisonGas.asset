@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: PoisonGas
   parent: {fileID: 11400000, guid: 8dc211d9e6815124d97572525ebec342, type: 2}
+  description: 

@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: Eskrima
   parent: {fileID: 11400000, guid: ad98a609fd058a44ab5e5ecbb132a130, type: 2}
+  description: 

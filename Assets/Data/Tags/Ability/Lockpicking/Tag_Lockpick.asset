@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: Lockpick
   parent: {fileID: 11400000, guid: 77c8f697786042b41a6a8c35a25ae1f8, type: 2}
+  description: 

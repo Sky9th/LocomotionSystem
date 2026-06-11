@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: SuppressiveBlast
   parent: {fileID: 11400000, guid: c2c50f24386922c4e9db4f5ffed23f7b, type: 2}
+  description: 

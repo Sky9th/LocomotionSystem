@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: Shotgun
   parent: {fileID: 11400000, guid: d894f0053f642064cb4aedd8758d1e33, type: 2}
+  description: 

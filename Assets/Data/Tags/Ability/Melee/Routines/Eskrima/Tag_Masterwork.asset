@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: Masterwork
   parent: {fileID: 11400000, guid: 8f6f15f79750bb54aa98cec820c57382, type: 2}
+  description: 

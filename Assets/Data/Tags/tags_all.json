@@ -2,242 +2,1145 @@
   "version": "1.0",
   "description": "全量标签：Actor(已有) + Ability(主动技能全量，ch1-11) + Noise + Stat。directory 由 parent FullTag 自动派生（点→斜杠），无需手工指定。",
   "tags": [
-    { "name": "Tag_Actor",   "parent": null },
-    { "name": "Tag_Ability", "parent": null },
-    { "name": "Tag_Noise",   "parent": null },
-
-    { "name": "Tag_Faction",  "parent": "Actor" },
-    { "name": "Tag_Identity", "parent": "Actor" },
-    { "name": "Tag_Role",     "parent": "Actor" },
-    { "name": "Tag_Species",  "parent": "Actor" },
-
-    { "name": "Tag_Enclave",   "parent": "Actor.Faction" },
-    { "name": "Tag_Mercenary", "parent": "Actor.Faction" },
-    { "name": "Tag_Nomad",     "parent": "Actor.Faction" },
-    { "name": "Tag_Raider",    "parent": "Actor.Faction" },
-    { "name": "Tag_Survivor",  "parent": "Actor.Faction" },
-
-    { "name": "Tag_Companion", "parent": "Actor.Identity" },
-    { "name": "Tag_Hostile",   "parent": "Actor.Identity" },
-    { "name": "Tag_NPC",       "parent": "Actor.Identity" },
-    { "name": "Tag_Player",    "parent": "Actor.Identity" },
-
-    { "name": "Tag_Brute",    "parent": "Actor.Role" },
-    { "name": "Tag_Engineer", "parent": "Actor.Role" },
-    { "name": "Tag_Guard",    "parent": "Actor.Role" },
-    { "name": "Tag_Leader",   "parent": "Actor.Role" },
-    { "name": "Tag_Medic",    "parent": "Actor.Role" },
-    { "name": "Tag_Scout",    "parent": "Actor.Role" },
-    { "name": "Tag_Sniper",   "parent": "Actor.Role" },
-    { "name": "Tag_Trader",   "parent": "Actor.Role" },
-
-    { "name": "Tag_Creature", "parent": "Actor.Species" },
-    { "name": "Tag_Human",    "parent": "Actor.Species" },
-    { "name": "Tag_Mutant",   "parent": "Actor.Species" },
-    { "name": "Tag_Robot",    "parent": "Actor.Species" },
-
-    { "name": "Tag_Melee",       "parent": "Ability" },
-    { "name": "Tag_Ranged",      "parent": "Ability" },
-    { "name": "Tag_Throwable",   "parent": "Ability" },
-    { "name": "Tag_Defensive",   "parent": "Ability" },
-    { "name": "Tag_Stealth",     "parent": "Ability" },
-    { "name": "Tag_Medical",     "parent": "Ability" },
-    { "name": "Tag_Survival",    "parent": "Ability" },
-    { "name": "Tag_Craft",       "parent": "Ability" },
-    { "name": "Tag_Trade",       "parent": "Ability" },
-    { "name": "Tag_Lockpicking", "parent": "Ability" },
-    { "name": "Tag_Trap",        "parent": "Ability" },
-    { "name": "Tag_Universal",   "parent": "Ability" },
-
-    { "name": "Tag_Blade",    "parent": "Ability.Melee" },
-    { "name": "Tag_Staff",    "parent": "Ability.Melee" },
-    { "name": "Tag_Axe",      "parent": "Ability.Melee" },
-    { "name": "Tag_Routines", "parent": "Ability.Melee" },
-
-    { "name": "Tag_Pistol",  "parent": "Ability.Ranged" },
-    { "name": "Tag_Shotgun", "parent": "Ability.Ranged" },
-    { "name": "Tag_Rifle",   "parent": "Ability.Ranged" },
-
-    { "name": "Tag_LightCut",    "parent": "Ability.Melee.Blade" },
-    { "name": "Tag_HeavyChop",   "parent": "Ability.Melee.Blade" },
-    { "name": "Tag_Block",       "parent": "Ability.Melee.Blade" },
-
-    { "name": "Tag_LightSwing",  "parent": "Ability.Melee.Staff" },
-    { "name": "Tag_HeavySmash",  "parent": "Ability.Melee.Staff" },
-    { "name": "Tag_Block",       "parent": "Ability.Melee.Staff" },
-
-    { "name": "Tag_LightHack",   "parent": "Ability.Melee.Axe" },
-    { "name": "Tag_HeavyCleave", "parent": "Ability.Melee.Axe" },
-    { "name": "Tag_Block",       "parent": "Ability.Melee.Axe" },
-
-    { "name": "Tag_Boxing",    "parent": "Ability.Melee.Routines" },
-    { "name": "Tag_MuayThai",  "parent": "Ability.Melee.Routines" },
-    { "name": "Tag_BajiQuan",  "parent": "Ability.Melee.Routines" },
-    { "name": "Tag_WingChun",  "parent": "Ability.Melee.Routines" },
-    { "name": "Tag_TaiChi",    "parent": "Ability.Melee.Routines" },
-    { "name": "Tag_Judo",      "parent": "Ability.Melee.Routines" },
-    { "name": "Tag_Eskrima",   "parent": "Ability.Melee.Routines" },
-    { "name": "Tag_Kendo",     "parent": "Ability.Melee.Routines" },
-    { "name": "Tag_MiaoDao",   "parent": "Ability.Melee.Routines" },
-    { "name": "Tag_KravMaga",  "parent": "Ability.Melee.Routines" },
-    { "name": "Tag_Sanda",     "parent": "Ability.Melee.Routines" },
-
-    { "name": "Tag_Fragment",   "parent": "Ability.Melee.Routines.Boxing" },
-    { "name": "Tag_Complete",   "parent": "Ability.Melee.Routines.Boxing" },
-    { "name": "Tag_Refined",    "parent": "Ability.Melee.Routines.Boxing" },
-    { "name": "Tag_Masterwork", "parent": "Ability.Melee.Routines.Boxing" },
-
-    { "name": "Tag_Fragment",   "parent": "Ability.Melee.Routines.MuayThai" },
-    { "name": "Tag_Complete",   "parent": "Ability.Melee.Routines.MuayThai" },
-    { "name": "Tag_Refined",    "parent": "Ability.Melee.Routines.MuayThai" },
-    { "name": "Tag_Masterwork", "parent": "Ability.Melee.Routines.MuayThai" },
-
-    { "name": "Tag_Fragment",   "parent": "Ability.Melee.Routines.BajiQuan" },
-    { "name": "Tag_Complete",   "parent": "Ability.Melee.Routines.BajiQuan" },
-    { "name": "Tag_Refined",    "parent": "Ability.Melee.Routines.BajiQuan" },
-    { "name": "Tag_Masterwork", "parent": "Ability.Melee.Routines.BajiQuan" },
-
-    { "name": "Tag_Fragment",   "parent": "Ability.Melee.Routines.WingChun" },
-    { "name": "Tag_Complete",   "parent": "Ability.Melee.Routines.WingChun" },
-    { "name": "Tag_Refined",    "parent": "Ability.Melee.Routines.WingChun" },
-    { "name": "Tag_Masterwork", "parent": "Ability.Melee.Routines.WingChun" },
-
-    { "name": "Tag_Fragment",   "parent": "Ability.Melee.Routines.TaiChi" },
-    { "name": "Tag_Complete",   "parent": "Ability.Melee.Routines.TaiChi" },
-    { "name": "Tag_Refined",    "parent": "Ability.Melee.Routines.TaiChi" },
-    { "name": "Tag_Masterwork", "parent": "Ability.Melee.Routines.TaiChi" },
-
-    { "name": "Tag_Fragment",   "parent": "Ability.Melee.Routines.Judo" },
-    { "name": "Tag_Complete",   "parent": "Ability.Melee.Routines.Judo" },
-    { "name": "Tag_Refined",    "parent": "Ability.Melee.Routines.Judo" },
-    { "name": "Tag_Masterwork", "parent": "Ability.Melee.Routines.Judo" },
-
-    { "name": "Tag_Fragment",   "parent": "Ability.Melee.Routines.Eskrima" },
-    { "name": "Tag_Complete",   "parent": "Ability.Melee.Routines.Eskrima" },
-    { "name": "Tag_Refined",    "parent": "Ability.Melee.Routines.Eskrima" },
-    { "name": "Tag_Masterwork", "parent": "Ability.Melee.Routines.Eskrima" },
-
-    { "name": "Tag_Fragment",   "parent": "Ability.Melee.Routines.Kendo" },
-    { "name": "Tag_Complete",   "parent": "Ability.Melee.Routines.Kendo" },
-    { "name": "Tag_Refined",    "parent": "Ability.Melee.Routines.Kendo" },
-    { "name": "Tag_Masterwork", "parent": "Ability.Melee.Routines.Kendo" },
-
-    { "name": "Tag_Fragment",   "parent": "Ability.Melee.Routines.MiaoDao" },
-    { "name": "Tag_Complete",   "parent": "Ability.Melee.Routines.MiaoDao" },
-    { "name": "Tag_Refined",    "parent": "Ability.Melee.Routines.MiaoDao" },
-    { "name": "Tag_Masterwork", "parent": "Ability.Melee.Routines.MiaoDao" },
-
-    { "name": "Tag_Fragment",   "parent": "Ability.Melee.Routines.KravMaga" },
-    { "name": "Tag_Complete",   "parent": "Ability.Melee.Routines.KravMaga" },
-    { "name": "Tag_Refined",    "parent": "Ability.Melee.Routines.KravMaga" },
-    { "name": "Tag_Masterwork", "parent": "Ability.Melee.Routines.KravMaga" },
-
-    { "name": "Tag_Fragment",   "parent": "Ability.Melee.Routines.Sanda" },
-    { "name": "Tag_Complete",   "parent": "Ability.Melee.Routines.Sanda" },
-    { "name": "Tag_Refined",    "parent": "Ability.Melee.Routines.Sanda" },
-    { "name": "Tag_Masterwork", "parent": "Ability.Melee.Routines.Sanda" },
-
-    { "name": "Tag_NormalFire",    "parent": "Ability.Ranged.Pistol" },
-    { "name": "Tag_QuickDraw",     "parent": "Ability.Ranged.Pistol" },
-    { "name": "Tag_Akimbo",        "parent": "Ability.Ranged.Pistol" },
-    { "name": "Tag_SpeedReload",   "parent": "Ability.Ranged.Pistol" },
-    { "name": "Tag_MovingFire",    "parent": "Ability.Ranged.Pistol" },
-
-    { "name": "Tag_NormalFire",       "parent": "Ability.Ranged.Shotgun" },
-    { "name": "Tag_CloseQuarters",    "parent": "Ability.Ranged.Shotgun" },
-    { "name": "Tag_StockStrike",      "parent": "Ability.Ranged.Shotgun" },
-    { "name": "Tag_CombatLoad",       "parent": "Ability.Ranged.Shotgun" },
-    { "name": "Tag_SuppressiveBlast", "parent": "Ability.Ranged.Shotgun" },
-
-    { "name": "Tag_NormalFire",       "parent": "Ability.Ranged.Rifle" },
-    { "name": "Tag_BreathControl",    "parent": "Ability.Ranged.Rifle" },
-    { "name": "Tag_BracedFire",       "parent": "Ability.Ranged.Rifle" },
-    { "name": "Tag_FollowUpShot",     "parent": "Ability.Ranged.Rifle" },
-    { "name": "Tag_LongRangeSniping", "parent": "Ability.Ranged.Rifle" },
-
-    { "name": "Tag_Molotov",        "parent": "Ability.Throwable" },
-    { "name": "Tag_FragGrenade",    "parent": "Ability.Throwable" },
-    { "name": "Tag_SmokeGrenade",   "parent": "Ability.Throwable" },
-    { "name": "Tag_Flashbang",      "parent": "Ability.Throwable" },
-    { "name": "Tag_AcidVial",       "parent": "Ability.Throwable" },
-    { "name": "Tag_PoisonGas",      "parent": "Ability.Throwable" },
-    { "name": "Tag_ThrowingKnife",  "parent": "Ability.Throwable" },
-    { "name": "Tag_BaitBottle",     "parent": "Ability.Throwable" },
-
-    { "name": "Tag_GuardStance",   "parent": "Ability.Defensive" },
-    { "name": "Tag_ShieldBash",    "parent": "Ability.Defensive" },
-    { "name": "Tag_HunkerDown",    "parent": "Ability.Defensive" },
-    { "name": "Tag_CoveringFire",  "parent": "Ability.Defensive" },
-    { "name": "Tag_GuardianAura",  "parent": "Ability.Defensive" },
-    { "name": "Tag_ShieldWall",    "parent": "Ability.Defensive" },
-    { "name": "Tag_Parry",         "parent": "Ability.Defensive" },
-
-    { "name": "Tag_StealthMode",          "parent": "Ability.Stealth" },
-    { "name": "Tag_Assassination",        "parent": "Ability.Stealth" },
-    { "name": "Tag_Blackjack",            "parent": "Ability.Stealth" },
-    { "name": "Tag_ImprovisedCamouflage", "parent": "Ability.Stealth" },
-    { "name": "Tag_DistractionWhistle",   "parent": "Ability.Stealth" },
-    { "name": "Tag_DragBody",             "parent": "Ability.Stealth" },
-    { "name": "Tag_QuickEscape",          "parent": "Ability.Stealth" },
-
-    { "name": "Tag_QuickBandage",   "parent": "Ability.Medical" },
-    { "name": "Tag_Tourniquet",     "parent": "Ability.Medical" },
-    { "name": "Tag_Splint",         "parent": "Ability.Medical" },
-    { "name": "Tag_CPR",            "parent": "Ability.Medical" },
-    { "name": "Tag_Detoxification", "parent": "Ability.Medical" },
-    { "name": "Tag_DisinfectWound", "parent": "Ability.Medical" },
-    { "name": "Tag_CombatMedic",    "parent": "Ability.Medical" },
-    { "name": "Tag_Assessment",     "parent": "Ability.Medical" },
-
-    { "name": "Tag_MakeFire",         "parent": "Ability.Survival" },
-    { "name": "Tag_PurifyWater",      "parent": "Ability.Survival" },
-    { "name": "Tag_Shelter",          "parent": "Ability.Survival" },
-    { "name": "Tag_TrackPrey",        "parent": "Ability.Survival" },
-    { "name": "Tag_FieldDress",       "parent": "Ability.Survival" },
-    { "name": "Tag_ForagingFocus",    "parent": "Ability.Survival" },
-    { "name": "Tag_WeatherSense",     "parent": "Ability.Survival" },
-    { "name": "Tag_EmergencyShelter", "parent": "Ability.Survival" },
-
-    { "name": "Tag_FieldRepair",         "parent": "Ability.Craft" },
-    { "name": "Tag_WeaponSharpening",    "parent": "Ability.Craft" },
-    { "name": "Tag_AmmoReloading",       "parent": "Ability.Craft" },
-    { "name": "Tag_ImprovisedExplosive", "parent": "Ability.Craft" },
-    { "name": "Tag_WeaponModding",       "parent": "Ability.Craft" },
-    { "name": "Tag_PartSalvage",         "parent": "Ability.Craft" },
-    { "name": "Tag_CraftTrap",           "parent": "Ability.Craft" },
-    { "name": "Tag_ChemicalExtraction",  "parent": "Ability.Craft" },
-
-    { "name": "Tag_Haggle",     "parent": "Ability.Trade" },
-    { "name": "Tag_Appraise",   "parent": "Ability.Trade" },
-    { "name": "Tag_FastTalk",   "parent": "Ability.Trade" },
-    { "name": "Tag_Investment", "parent": "Ability.Trade" },
-
-    { "name": "Tag_Lockpick",      "parent": "Ability.Lockpicking" },
-    { "name": "Tag_ForceEntry",    "parent": "Ability.Lockpicking" },
-    { "name": "Tag_HackTerminal",  "parent": "Ability.Lockpicking" },
-    { "name": "Tag_ThermalCut",    "parent": "Ability.Lockpicking" },
-    { "name": "Tag_KeyImpression", "parent": "Ability.Lockpicking" },
-    { "name": "Tag_SecurityCheck", "parent": "Ability.Lockpicking" },
-
-    { "name": "Tag_BearTrap",     "parent": "Ability.Trap" },
-    { "name": "Tag_TripMine",     "parent": "Ability.Trap" },
-    { "name": "Tag_AlarmTrap",    "parent": "Ability.Trap" },
-    { "name": "Tag_GasTrap",      "parent": "Ability.Trap" },
-    { "name": "Tag_ShockTrap",    "parent": "Ability.Trap" },
-    { "name": "Tag_RazorWire",    "parent": "Ability.Trap" },
-    { "name": "Tag_PitfallSpike", "parent": "Ability.Trap" },
-    { "name": "Tag_OilSlick",     "parent": "Ability.Trap" },
-    { "name": "Tag_Tripwire",     "parent": "Ability.Trap" },
-    { "name": "Tag_NoiseDecoy",   "parent": "Ability.Trap" },
-
-    { "name": "Tag_CombatRoll",     "parent": "Ability.Universal" },
-    { "name": "Tag_PushKick",       "parent": "Ability.Universal" },
-    { "name": "Tag_EmergencyReload","parent": "Ability.Universal" },
-
-    { "name": "Tag_Combat",     "parent": "Noise" },
-    { "name": "Tag_MeleeSwing", "parent": "Noise.Combat" },
-    { "name": "Tag_WeaponFire", "parent": "Noise.Combat" },
-    { "name": "Tag_Impact",     "parent": "Noise.Combat" }
-
+    {
+      "name": "Tag_Actor",
+      "parent": null,
+      "description": "角色标签根"
+    },
+    {
+      "name": "Tag_Ability",
+      "parent": null,
+      "description": "技能标签根"
+    },
+    {
+      "name": "Tag_Noise",
+      "parent": null,
+      "description": "噪音标签根"
+    },
+    {
+      "name": "Tag_Damage",
+      "parent": null,
+      "description": "伤害标签根——路由到防御/抗性公式"
+    },
+    {
+      "name": "Tag_Impact",
+      "parent": null,
+      "description": "撞击噪音"
+    },
+    {
+      "name": "Tag_Execute",
+      "parent": null,
+      "description": "斩杀标签根——处决阈值"
+    },
+    {
+      "name": "Tag_Faction",
+      "parent": "Actor",
+      "description": "阵营"
+    },
+    {
+      "name": "Tag_Identity",
+      "parent": "Actor",
+      "description": "身份：玩家/NPC/敌对"
+    },
+    {
+      "name": "Tag_Role",
+      "parent": "Actor",
+      "description": "角色定位"
+    },
+    {
+      "name": "Tag_Species",
+      "parent": "Actor",
+      "description": "种族：人类/僵尸/变异体/机器"
+    },
+    {
+      "name": "Tag_Melee",
+      "parent": "Ability",
+      "description": "近战技能"
+    },
+    {
+      "name": "Tag_Ranged",
+      "parent": "Ability",
+      "description": "远程技能"
+    },
+    {
+      "name": "Tag_Throwable",
+      "parent": "Ability",
+      "description": "投掷物技能"
+    },
+    {
+      "name": "Tag_Defensive",
+      "parent": "Ability",
+      "description": "防御技能"
+    },
+    {
+      "name": "Tag_Stealth",
+      "parent": "Ability",
+      "description": "潜行技能"
+    },
+    {
+      "name": "Tag_Medical",
+      "parent": "Ability",
+      "description": "医疗技能"
+    },
+    {
+      "name": "Tag_Survival",
+      "parent": "Ability",
+      "description": "生存技能"
+    },
+    {
+      "name": "Tag_Craft",
+      "parent": "Ability",
+      "description": "制造技能"
+    },
+    {
+      "name": "Tag_Trade",
+      "parent": "Ability",
+      "description": "交易技能"
+    },
+    {
+      "name": "Tag_Lockpicking",
+      "parent": "Ability",
+      "description": "开锁技能"
+    },
+    {
+      "name": "Tag_Trap",
+      "parent": "Ability",
+      "description": "陷阱技能"
+    },
+    {
+      "name": "Tag_Universal",
+      "parent": "Ability",
+      "description": "通用技能"
+    },
+    {
+      "name": "Tag_Combat",
+      "parent": "Noise",
+      "description": "战斗噪音"
+    },
+    {
+      "name": "Tag_Physical",
+      "parent": "Damage",
+      "description": "物理伤害类型"
+    },
+    {
+      "name": "Tag_Elemental",
+      "parent": "Damage",
+      "description": "元素伤害类型"
+    },
+    {
+      "name": "Tag_Biological",
+      "parent": "Damage",
+      "description": "生物伤害类型"
+    },
+    {
+      "name": "Tag_True",
+      "parent": "Damage",
+      "description": "真实伤害——无视全部防御"
+    },
+    {
+      "name": "Tag_Fall",
+      "parent": "Damage",
+      "description": "坠落伤害——按高度缩放"
+    },
+    {
+      "name": "Tag_Light",
+      "parent": "Impact",
+      "description": "轻硬直"
+    },
+    {
+      "name": "Tag_Medium",
+      "parent": "Impact",
+      "description": "中硬直"
+    },
+    {
+      "name": "Tag_Heavy",
+      "parent": "Impact",
+      "description": "重硬直/击倒"
+    },
+    {
+      "name": "Tag_Launch",
+      "parent": "Impact",
+      "description": "击飞"
+    },
+    {
+      "name": "Tag_Pull",
+      "parent": "Impact",
+      "description": "拉近"
+    },
+    {
+      "name": "Tag_Threshold",
+      "parent": "Execute",
+      "description": "斩杀阈值——HP%低于此值即死"
+    },
+    {
+      "name": "Tag_Enclave",
+      "parent": "Actor.Faction",
+      "description": "飞地"
+    },
+    {
+      "name": "Tag_Mercenary",
+      "parent": "Actor.Faction",
+      "description": "佣兵"
+    },
+    {
+      "name": "Tag_Nomad",
+      "parent": "Actor.Faction",
+      "description": "游民"
+    },
+    {
+      "name": "Tag_Raider",
+      "parent": "Actor.Faction",
+      "description": "劫掠者"
+    },
+    {
+      "name": "Tag_Survivor",
+      "parent": "Actor.Faction",
+      "description": "幸存者"
+    },
+    {
+      "name": "Tag_Companion",
+      "parent": "Actor.Identity",
+      "description": "同伴"
+    },
+    {
+      "name": "Tag_Hostile",
+      "parent": "Actor.Identity",
+      "description": "敌对"
+    },
+    {
+      "name": "Tag_NPC",
+      "parent": "Actor.Identity",
+      "description": "中立NPC"
+    },
+    {
+      "name": "Tag_Player",
+      "parent": "Actor.Identity",
+      "description": "玩家"
+    },
+    {
+      "name": "Tag_Brute",
+      "parent": "Actor.Role",
+      "description": "重装"
+    },
+    {
+      "name": "Tag_Engineer",
+      "parent": "Actor.Role",
+      "description": "工程师"
+    },
+    {
+      "name": "Tag_Guard",
+      "parent": "Actor.Role",
+      "description": "护卫"
+    },
+    {
+      "name": "Tag_Leader",
+      "parent": "Actor.Role",
+      "description": "首领"
+    },
+    {
+      "name": "Tag_Medic",
+      "parent": "Actor.Role",
+      "description": "医疗兵"
+    },
+    {
+      "name": "Tag_Scout",
+      "parent": "Actor.Role",
+      "description": "侦察兵"
+    },
+    {
+      "name": "Tag_Sniper",
+      "parent": "Actor.Role",
+      "description": "狙击手"
+    },
+    {
+      "name": "Tag_Trader",
+      "parent": "Actor.Role",
+      "description": "商人"
+    },
+    {
+      "name": "Tag_Creature",
+      "parent": "Actor.Species",
+      "description": "动物/怪物"
+    },
+    {
+      "name": "Tag_Human",
+      "parent": "Actor.Species",
+      "description": "人类"
+    },
+    {
+      "name": "Tag_Mutant",
+      "parent": "Actor.Species",
+      "description": "变异体"
+    },
+    {
+      "name": "Tag_Robot",
+      "parent": "Actor.Species",
+      "description": "机器人"
+    },
+    {
+      "name": "Tag_Blade",
+      "parent": "Ability.Melee",
+      "description": "刃器"
+    },
+    {
+      "name": "Tag_Staff",
+      "parent": "Ability.Melee",
+      "description": "长棍"
+    },
+    {
+      "name": "Tag_Axe",
+      "parent": "Ability.Melee",
+      "description": "斧"
+    },
+    {
+      "name": "Tag_Routines",
+      "parent": "Ability.Melee",
+      "description": "武术套路"
+    },
+    {
+      "name": "Tag_Pistol",
+      "parent": "Ability.Ranged",
+      "description": "手枪"
+    },
+    {
+      "name": "Tag_Shotgun",
+      "parent": "Ability.Ranged",
+      "description": "霰弹枪"
+    },
+    {
+      "name": "Tag_Rifle",
+      "parent": "Ability.Ranged",
+      "description": "步枪"
+    },
+    {
+      "name": "Tag_Molotov",
+      "parent": "Ability.Throwable",
+      "description": "燃烧瓶"
+    },
+    {
+      "name": "Tag_FragGrenade",
+      "parent": "Ability.Throwable",
+      "description": "破片手雷"
+    },
+    {
+      "name": "Tag_SmokeGrenade",
+      "parent": "Ability.Throwable",
+      "description": "烟雾弹"
+    },
+    {
+      "name": "Tag_Flashbang",
+      "parent": "Ability.Throwable",
+      "description": "闪光弹"
+    },
+    {
+      "name": "Tag_AcidVial",
+      "parent": "Ability.Throwable",
+      "description": "酸液瓶"
+    },
+    {
+      "name": "Tag_PoisonGas",
+      "parent": "Ability.Throwable",
+      "description": "毒气弹"
+    },
+    {
+      "name": "Tag_ThrowingKnife",
+      "parent": "Ability.Throwable",
+      "description": "投掷飞刀"
+    },
+    {
+      "name": "Tag_BaitBottle",
+      "parent": "Ability.Throwable",
+      "description": "诱饵瓶"
+    },
+    {
+      "name": "Tag_GuardStance",
+      "parent": "Ability.Defensive",
+      "description": "防御姿态"
+    },
+    {
+      "name": "Tag_ShieldBash",
+      "parent": "Ability.Defensive",
+      "description": "盾击"
+    },
+    {
+      "name": "Tag_HunkerDown",
+      "parent": "Ability.Defensive",
+      "description": "蹲伏"
+    },
+    {
+      "name": "Tag_CoveringFire",
+      "parent": "Ability.Defensive",
+      "description": "掩护射击"
+    },
+    {
+      "name": "Tag_GuardianAura",
+      "parent": "Ability.Defensive",
+      "description": "守护光环"
+    },
+    {
+      "name": "Tag_ShieldWall",
+      "parent": "Ability.Defensive",
+      "description": "盾墙"
+    },
+    {
+      "name": "Tag_Parry",
+      "parent": "Ability.Defensive",
+      "description": "招架"
+    },
+    {
+      "name": "Tag_StealthMode",
+      "parent": "Ability.Stealth",
+      "description": "潜行模式"
+    },
+    {
+      "name": "Tag_Assassination",
+      "parent": "Ability.Stealth",
+      "description": "暗杀"
+    },
+    {
+      "name": "Tag_Blackjack",
+      "parent": "Ability.Stealth",
+      "description": "闷棍"
+    },
+    {
+      "name": "Tag_ImprovisedCamouflage",
+      "parent": "Ability.Stealth",
+      "description": "伪装"
+    },
+    {
+      "name": "Tag_DistractionWhistle",
+      "parent": "Ability.Stealth",
+      "description": "吸引口哨"
+    },
+    {
+      "name": "Tag_DragBody",
+      "parent": "Ability.Stealth",
+      "description": "拖拽尸体"
+    },
+    {
+      "name": "Tag_QuickEscape",
+      "parent": "Ability.Stealth",
+      "description": "快速脱逃"
+    },
+    {
+      "name": "Tag_QuickBandage",
+      "parent": "Ability.Medical",
+      "description": "快速包扎"
+    },
+    {
+      "name": "Tag_Tourniquet",
+      "parent": "Ability.Medical",
+      "description": "止血带"
+    },
+    {
+      "name": "Tag_Splint",
+      "parent": "Ability.Medical",
+      "description": "夹板"
+    },
+    {
+      "name": "Tag_CPR",
+      "parent": "Ability.Medical",
+      "description": "心肺复苏"
+    },
+    {
+      "name": "Tag_Detoxification",
+      "parent": "Ability.Medical",
+      "description": "解毒"
+    },
+    {
+      "name": "Tag_DisinfectWound",
+      "parent": "Ability.Medical",
+      "description": "伤口消毒"
+    },
+    {
+      "name": "Tag_CombatMedic",
+      "parent": "Ability.Medical",
+      "description": "战地医生"
+    },
+    {
+      "name": "Tag_Assessment",
+      "parent": "Ability.Medical",
+      "description": "伤情评估"
+    },
+    {
+      "name": "Tag_MakeFire",
+      "parent": "Ability.Survival",
+      "description": "生火"
+    },
+    {
+      "name": "Tag_PurifyWater",
+      "parent": "Ability.Survival",
+      "description": "净水"
+    },
+    {
+      "name": "Tag_Shelter",
+      "parent": "Ability.Survival",
+      "description": "搭建避难所"
+    },
+    {
+      "name": "Tag_TrackPrey",
+      "parent": "Ability.Survival",
+      "description": "追踪猎物"
+    },
+    {
+      "name": "Tag_FieldDress",
+      "parent": "Ability.Survival",
+      "description": "野外处理猎物"
+    },
+    {
+      "name": "Tag_ForagingFocus",
+      "parent": "Ability.Survival",
+      "description": "专注采集"
+    },
+    {
+      "name": "Tag_WeatherSense",
+      "parent": "Ability.Survival",
+      "description": "感知天气"
+    },
+    {
+      "name": "Tag_EmergencyShelter",
+      "parent": "Ability.Survival",
+      "description": "紧急避难所"
+    },
+    {
+      "name": "Tag_FieldRepair",
+      "parent": "Ability.Craft",
+      "description": "战场修理"
+    },
+    {
+      "name": "Tag_WeaponSharpening",
+      "parent": "Ability.Craft",
+      "description": "武器磨砺"
+    },
+    {
+      "name": "Tag_AmmoReloading",
+      "parent": "Ability.Craft",
+      "description": "弹药复装"
+    },
+    {
+      "name": "Tag_ImprovisedExplosive",
+      "parent": "Ability.Craft",
+      "description": "简易爆炸物"
+    },
+    {
+      "name": "Tag_WeaponModding",
+      "parent": "Ability.Craft",
+      "description": "武器改装"
+    },
+    {
+      "name": "Tag_PartSalvage",
+      "parent": "Ability.Craft",
+      "description": "零件拆解"
+    },
+    {
+      "name": "Tag_CraftTrap",
+      "parent": "Ability.Craft",
+      "description": "制作陷阱"
+    },
+    {
+      "name": "Tag_ChemicalExtraction",
+      "parent": "Ability.Craft",
+      "description": "化学提取"
+    },
+    {
+      "name": "Tag_Haggle",
+      "parent": "Ability.Trade",
+      "description": "讨价还价"
+    },
+    {
+      "name": "Tag_Appraise",
+      "parent": "Ability.Trade",
+      "description": "鉴定估价"
+    },
+    {
+      "name": "Tag_FastTalk",
+      "parent": "Ability.Trade",
+      "description": "话术"
+    },
+    {
+      "name": "Tag_Investment",
+      "parent": "Ability.Trade",
+      "description": "投资"
+    },
+    {
+      "name": "Tag_Lockpick",
+      "parent": "Ability.Lockpicking",
+      "description": "撬锁"
+    },
+    {
+      "name": "Tag_ForceEntry",
+      "parent": "Ability.Lockpicking",
+      "description": "强行进入"
+    },
+    {
+      "name": "Tag_HackTerminal",
+      "parent": "Ability.Lockpicking",
+      "description": "入侵终端"
+    },
+    {
+      "name": "Tag_ThermalCut",
+      "parent": "Ability.Lockpicking",
+      "description": "热切割"
+    },
+    {
+      "name": "Tag_KeyImpression",
+      "parent": "Ability.Lockpicking",
+      "description": "钥匙复制"
+    },
+    {
+      "name": "Tag_SecurityCheck",
+      "parent": "Ability.Lockpicking",
+      "description": "安全检查"
+    },
+    {
+      "name": "Tag_BearTrap",
+      "parent": "Ability.Trap",
+      "description": "捕兽夹"
+    },
+    {
+      "name": "Tag_TripMine",
+      "parent": "Ability.Trap",
+      "description": "绊雷"
+    },
+    {
+      "name": "Tag_AlarmTrap",
+      "parent": "Ability.Trap",
+      "description": "警报陷阱"
+    },
+    {
+      "name": "Tag_GasTrap",
+      "parent": "Ability.Trap",
+      "description": "毒气陷阱"
+    },
+    {
+      "name": "Tag_ShockTrap",
+      "parent": "Ability.Trap",
+      "description": "电击陷阱"
+    },
+    {
+      "name": "Tag_RazorWire",
+      "parent": "Ability.Trap",
+      "description": "铁丝网"
+    },
+    {
+      "name": "Tag_PitfallSpike",
+      "parent": "Ability.Trap",
+      "description": "尖刺陷阱"
+    },
+    {
+      "name": "Tag_OilSlick",
+      "parent": "Ability.Trap",
+      "description": "油滑陷阱"
+    },
+    {
+      "name": "Tag_Tripwire",
+      "parent": "Ability.Trap",
+      "description": "绊线"
+    },
+    {
+      "name": "Tag_NoiseDecoy",
+      "parent": "Ability.Trap",
+      "description": "噪音诱饵"
+    },
+    {
+      "name": "Tag_CombatRoll",
+      "parent": "Ability.Universal",
+      "description": "战斗翻滚"
+    },
+    {
+      "name": "Tag_PushKick",
+      "parent": "Ability.Universal",
+      "description": "推踢"
+    },
+    {
+      "name": "Tag_EmergencyReload",
+      "parent": "Ability.Universal",
+      "description": "紧急换弹"
+    },
+    {
+      "name": "Tag_MeleeSwing",
+      "parent": "Noise.Combat",
+      "description": "近战挥舞噪音"
+    },
+    {
+      "name": "Tag_WeaponFire",
+      "parent": "Noise.Combat",
+      "description": "枪声噪音"
+    },
+    {
+      "name": "Tag_Impact",
+      "parent": "Noise.Combat",
+      "description": "撞击噪音"
+    },
+    {
+      "name": "Tag_Slash",
+      "parent": "Damage.Physical",
+      "description": "切割——刃器砍击"
+    },
+    {
+      "name": "Tag_Blunt",
+      "parent": "Damage.Physical",
+      "description": "钝击——锤/棍/拳"
+    },
+    {
+      "name": "Tag_Pierce",
+      "parent": "Damage.Physical",
+      "description": "穿刺——枪械/弓箭/刺刀"
+    },
+    {
+      "name": "Tag_Bite",
+      "parent": "Damage.Physical",
+      "description": "撕咬——僵尸/野兽"
+    },
+    {
+      "name": "Tag_Explosive",
+      "parent": "Damage.Physical",
+      "description": "爆炸——手雷/地雷/油桶"
+    },
+    {
+      "name": "Tag_Crush",
+      "parent": "Damage.Physical",
+      "description": "碾压——重物/建筑坍塌/载具"
+    },
+    {
+      "name": "Tag_Fire",
+      "parent": "Damage.Elemental",
+      "description": "火焰——燃烧瓶/火焰武器"
+    },
+    {
+      "name": "Tag_Cold",
+      "parent": "Damage.Elemental",
+      "description": "寒冷——极寒环境/冰霜武器"
+    },
+    {
+      "name": "Tag_Shock",
+      "parent": "Damage.Elemental",
+      "description": "电击——电击陷阱/能量武器"
+    },
+    {
+      "name": "Tag_Acid",
+      "parent": "Damage.Elemental",
+      "description": "酸蚀——酸液/腐蚀剂"
+    },
+    {
+      "name": "Tag_Poison",
+      "parent": "Damage.Elemental",
+      "description": "毒素——毒气/淬毒"
+    },
+    {
+      "name": "Tag_Radiation",
+      "parent": "Damage.Elemental",
+      "description": "辐射——辐射区/核废料"
+    },
+    {
+      "name": "Tag_Bleed",
+      "parent": "Damage.Biological",
+      "description": "流血——锯齿刀/铁丝网"
+    },
+    {
+      "name": "Tag_Disease",
+      "parent": "Damage.Biological",
+      "description": "疾病——感染/瘟疫"
+    },
+    {
+      "name": "Tag_Suffocation",
+      "parent": "Damage.Biological",
+      "description": "窒息——烟雾/毒气/溺水"
+    },
+    {
+      "name": "Tag_LightCut",
+      "parent": "Ability.Melee.Blade",
+      "description": "轻砍"
+    },
+    {
+      "name": "Tag_HeavyChop",
+      "parent": "Ability.Melee.Blade",
+      "description": "重砍"
+    },
+    {
+      "name": "Tag_Block",
+      "parent": "Ability.Melee.Blade",
+      "description": "格挡"
+    },
+    {
+      "name": "Tag_LightSwing",
+      "parent": "Ability.Melee.Staff",
+      "description": "轻挥"
+    },
+    {
+      "name": "Tag_HeavySmash",
+      "parent": "Ability.Melee.Staff",
+      "description": "重击"
+    },
+    {
+      "name": "Tag_Block",
+      "parent": "Ability.Melee.Staff",
+      "description": "格挡"
+    },
+    {
+      "name": "Tag_LightHack",
+      "parent": "Ability.Melee.Axe",
+      "description": "轻劈"
+    },
+    {
+      "name": "Tag_HeavyCleave",
+      "parent": "Ability.Melee.Axe",
+      "description": "重劈"
+    },
+    {
+      "name": "Tag_Block",
+      "parent": "Ability.Melee.Axe",
+      "description": "格挡"
+    },
+    {
+      "name": "Tag_Boxing",
+      "parent": "Ability.Melee.Routines",
+      "description": "拳击"
+    },
+    {
+      "name": "Tag_MuayThai",
+      "parent": "Ability.Melee.Routines",
+      "description": "泰拳"
+    },
+    {
+      "name": "Tag_BajiQuan",
+      "parent": "Ability.Melee.Routines",
+      "description": "八极拳"
+    },
+    {
+      "name": "Tag_WingChun",
+      "parent": "Ability.Melee.Routines",
+      "description": "咏春"
+    },
+    {
+      "name": "Tag_TaiChi",
+      "parent": "Ability.Melee.Routines",
+      "description": "太极"
+    },
+    {
+      "name": "Tag_Judo",
+      "parent": "Ability.Melee.Routines",
+      "description": "柔道"
+    },
+    {
+      "name": "Tag_Eskrima",
+      "parent": "Ability.Melee.Routines",
+      "description": "菲律宾魔杖"
+    },
+    {
+      "name": "Tag_Kendo",
+      "parent": "Ability.Melee.Routines",
+      "description": "剑道"
+    },
+    {
+      "name": "Tag_MiaoDao",
+      "parent": "Ability.Melee.Routines",
+      "description": "苗刀"
+    },
+    {
+      "name": "Tag_KravMaga",
+      "parent": "Ability.Melee.Routines",
+      "description": "以色列格斗术"
+    },
+    {
+      "name": "Tag_Sanda",
+      "parent": "Ability.Melee.Routines",
+      "description": "散打"
+    },
+    {
+      "name": "Tag_NormalFire",
+      "parent": "Ability.Ranged.Pistol",
+      "description": "普通射击"
+    },
+    {
+      "name": "Tag_QuickDraw",
+      "parent": "Ability.Ranged.Pistol",
+      "description": "快速拔枪"
+    },
+    {
+      "name": "Tag_Akimbo",
+      "parent": "Ability.Ranged.Pistol",
+      "description": "双持"
+    },
+    {
+      "name": "Tag_SpeedReload",
+      "parent": "Ability.Ranged.Pistol",
+      "description": "快速换弹"
+    },
+    {
+      "name": "Tag_MovingFire",
+      "parent": "Ability.Ranged.Pistol",
+      "description": "移动射击"
+    },
+    {
+      "name": "Tag_NormalFire",
+      "parent": "Ability.Ranged.Shotgun",
+      "description": "普通射击"
+    },
+    {
+      "name": "Tag_CloseQuarters",
+      "parent": "Ability.Ranged.Shotgun",
+      "description": "近距离作战"
+    },
+    {
+      "name": "Tag_StockStrike",
+      "parent": "Ability.Ranged.Shotgun",
+      "description": "枪托打击"
+    },
+    {
+      "name": "Tag_CombatLoad",
+      "parent": "Ability.Ranged.Shotgun",
+      "description": "战斗装填"
+    },
+    {
+      "name": "Tag_SuppressiveBlast",
+      "parent": "Ability.Ranged.Shotgun",
+      "description": "压制射击"
+    },
+    {
+      "name": "Tag_NormalFire",
+      "parent": "Ability.Ranged.Rifle",
+      "description": "普通射击"
+    },
+    {
+      "name": "Tag_BreathControl",
+      "parent": "Ability.Ranged.Rifle",
+      "description": "呼吸控制"
+    },
+    {
+      "name": "Tag_BracedFire",
+      "parent": "Ability.Ranged.Rifle",
+      "description": "依托射击"
+    },
+    {
+      "name": "Tag_FollowUpShot",
+      "parent": "Ability.Ranged.Rifle",
+      "description": "追射"
+    },
+    {
+      "name": "Tag_LongRangeSniping",
+      "parent": "Ability.Ranged.Rifle",
+      "description": "远距离狙击"
+    },
+    {
+      "name": "Tag_Fragment",
+      "parent": "Ability.Melee.Routines.Boxing",
+      "description": "残篇"
+    },
+    {
+      "name": "Tag_Complete",
+      "parent": "Ability.Melee.Routines.Boxing",
+      "description": "完整"
+    },
+    {
+      "name": "Tag_Refined",
+      "parent": "Ability.Melee.Routines.Boxing",
+      "description": "精炼"
+    },
+    {
+      "name": "Tag_Masterwork",
+      "parent": "Ability.Melee.Routines.Boxing",
+      "description": "杰作"
+    },
+    {
+      "name": "Tag_Fragment",
+      "parent": "Ability.Melee.Routines.MuayThai",
+      "description": "残篇"
+    },
+    {
+      "name": "Tag_Complete",
+      "parent": "Ability.Melee.Routines.MuayThai",
+      "description": "完整"
+    },
+    {
+      "name": "Tag_Refined",
+      "parent": "Ability.Melee.Routines.MuayThai",
+      "description": "精炼"
+    },
+    {
+      "name": "Tag_Masterwork",
+      "parent": "Ability.Melee.Routines.MuayThai",
+      "description": "杰作"
+    },
+    {
+      "name": "Tag_Fragment",
+      "parent": "Ability.Melee.Routines.BajiQuan",
+      "description": "残篇"
+    },
+    {
+      "name": "Tag_Complete",
+      "parent": "Ability.Melee.Routines.BajiQuan",
+      "description": "完整"
+    },
+    {
+      "name": "Tag_Refined",
+      "parent": "Ability.Melee.Routines.BajiQuan",
+      "description": "精炼"
+    },
+    {
+      "name": "Tag_Masterwork",
+      "parent": "Ability.Melee.Routines.BajiQuan",
+      "description": "杰作"
+    },
+    {
+      "name": "Tag_Fragment",
+      "parent": "Ability.Melee.Routines.WingChun",
+      "description": "残篇"
+    },
+    {
+      "name": "Tag_Complete",
+      "parent": "Ability.Melee.Routines.WingChun",
+      "description": "完整"
+    },
+    {
+      "name": "Tag_Refined",
+      "parent": "Ability.Melee.Routines.WingChun",
+      "description": "精炼"
+    },
+    {
+      "name": "Tag_Masterwork",
+      "parent": "Ability.Melee.Routines.WingChun",
+      "description": "杰作"
+    },
+    {
+      "name": "Tag_Fragment",
+      "parent": "Ability.Melee.Routines.TaiChi",
+      "description": "残篇"
+    },
+    {
+      "name": "Tag_Complete",
+      "parent": "Ability.Melee.Routines.TaiChi",
+      "description": "完整"
+    },
+    {
+      "name": "Tag_Refined",
+      "parent": "Ability.Melee.Routines.TaiChi",
+      "description": "精炼"
+    },
+    {
+      "name": "Tag_Masterwork",
+      "parent": "Ability.Melee.Routines.TaiChi",
+      "description": "杰作"
+    },
+    {
+      "name": "Tag_Fragment",
+      "parent": "Ability.Melee.Routines.Judo",
+      "description": "残篇"
+    },
+    {
+      "name": "Tag_Complete",
+      "parent": "Ability.Melee.Routines.Judo",
+      "description": "完整"
+    },
+    {
+      "name": "Tag_Refined",
+      "parent": "Ability.Melee.Routines.Judo",
+      "description": "精炼"
+    },
+    {
+      "name": "Tag_Masterwork",
+      "parent": "Ability.Melee.Routines.Judo",
+      "description": "杰作"
+    },
+    {
+      "name": "Tag_Fragment",
+      "parent": "Ability.Melee.Routines.Eskrima",
+      "description": "残篇"
+    },
+    {
+      "name": "Tag_Complete",
+      "parent": "Ability.Melee.Routines.Eskrima",
+      "description": "完整"
+    },
+    {
+      "name": "Tag_Refined",
+      "parent": "Ability.Melee.Routines.Eskrima",
+      "description": "精炼"
+    },
+    {
+      "name": "Tag_Masterwork",
+      "parent": "Ability.Melee.Routines.Eskrima",
+      "description": "杰作"
+    },
+    {
+      "name": "Tag_Fragment",
+      "parent": "Ability.Melee.Routines.Kendo",
+      "description": "残篇"
+    },
+    {
+      "name": "Tag_Complete",
+      "parent": "Ability.Melee.Routines.Kendo",
+      "description": "完整"
+    },
+    {
+      "name": "Tag_Refined",
+      "parent": "Ability.Melee.Routines.Kendo",
+      "description": "精炼"
+    },
+    {
+      "name": "Tag_Masterwork",
+      "parent": "Ability.Melee.Routines.Kendo",
+      "description": "杰作"
+    },
+    {
+      "name": "Tag_Fragment",
+      "parent": "Ability.Melee.Routines.MiaoDao",
+      "description": "残篇"
+    },
+    {
+      "name": "Tag_Complete",
+      "parent": "Ability.Melee.Routines.MiaoDao",
+      "description": "完整"
+    },
+    {
+      "name": "Tag_Refined",
+      "parent": "Ability.Melee.Routines.MiaoDao",
+      "description": "精炼"
+    },
+    {
+      "name": "Tag_Masterwork",
+      "parent": "Ability.Melee.Routines.MiaoDao",
+      "description": "杰作"
+    },
+    {
+      "name": "Tag_Fragment",
+      "parent": "Ability.Melee.Routines.KravMaga",
+      "description": "残篇"
+    },
+    {
+      "name": "Tag_Complete",
+      "parent": "Ability.Melee.Routines.KravMaga",
+      "description": "完整"
+    },
+    {
+      "name": "Tag_Refined",
+      "parent": "Ability.Melee.Routines.KravMaga",
+      "description": "精炼"
+    },
+    {
+      "name": "Tag_Masterwork",
+      "parent": "Ability.Melee.Routines.KravMaga",
+      "description": "杰作"
+    },
+    {
+      "name": "Tag_Fragment",
+      "parent": "Ability.Melee.Routines.Sanda",
+      "description": "残篇"
+    },
+    {
+      "name": "Tag_Complete",
+      "parent": "Ability.Melee.Routines.Sanda",
+      "description": "完整"
+    },
+    {
+      "name": "Tag_Refined",
+      "parent": "Ability.Melee.Routines.Sanda",
+      "description": "精炼"
+    },
+    {
+      "name": "Tag_Masterwork",
+      "parent": "Ability.Melee.Routines.Sanda",
+      "description": "杰作"
+    }
   ]
 }

@@ -19,7 +19,10 @@ MonoBehaviour:
     \"DefId\": \"Durability\"\n        },\n        {\n            \"NodeId\": \"MaxDurability\",\n           
     \"ParentId\": \"Base\",\n            \"DefId\": \"MaxDurability\"\n        },\n       
     {\n            \"NodeId\": \"Weight\",\n            \"ParentId\": \"Base\",\n           
-    \"DefId\": \"Weight\"\n        },\n        {\n            \"NodeId\": \"Work\",\n           
+    \"DefId\": \"Weight\"\n        },\n        {\n            \"NodeId\": \"Fuel\",\n           
+    \"ParentId\": \"Base\",\n            \"DefId\": \"Fuel\"\n        },\n       
+    {\n            \"NodeId\": \"Charge\",\n            \"ParentId\": \"Base\",\n           
+    \"DefId\": \"Charge\"\n        },\n        {\n            \"NodeId\": \"Work\",\n           
     \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
     \"NodeId\": \"Efficiency\",\n            \"ParentId\": \"Work\",\n           
     \"DefId\": \"Efficiency\"\n        },\n        {\n            \"NodeId\": \"MaterialTier\",\n           

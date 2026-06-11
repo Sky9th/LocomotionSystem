@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: Enclave
   parent: {fileID: 11400000, guid: b914618c194a9e34ca5a72d63c79cb73, type: 2}
+  description: 

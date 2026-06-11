@@ -402,7 +402,7 @@ namespace RedDust.Ability
         {
             if (e == null) return null;
             if (e is DamageEffectSO d)
-                return $"Damage · {e.effectTag?.FullTag ?? "—"} · base:{d.baseDamage:F0} · dur:{e.duration:F1}s";
+                return $"Damage · {e.effectTag?.FullTag ?? "—"} · base:{d.baseValue:F0} · dur:{e.duration:F1}s";  // TODO: was baseDamage
             if (e is ImpactEffectSO i)
                 return $"Impact · {e.effectTag?.FullTag ?? "—"} · stagger:{i.staggerValue:F0}";
             if (e is ExecuteEffectSO x)

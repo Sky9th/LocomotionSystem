@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd502afaf7ff75c47b42269f0eb3c4c9, type: 3}
+  m_Name: Damage_Elemental_Radiation_Strong
+  m_EditorClassIdentifier: 
+  effectTag: {fileID: 11400000, guid: fe4b7bd23b602004b934d78beb6acf28, type: 2}
+  description: "\u8F90\u5C04\u4F24\u5BB3\xB7\u5F3A\u3002\u500D\u7387 2.5\uFF0C60
+    \u79D2\u3002\u6838\u5E9F\u6599\u533A/\u6838\u7206\u6B8B\u4F59"
+  duration: 60
+  stackable: 0
+  maxStacks: 1
+  applicationBlockedTags: []
+  baseValue: 0
+  modAdd: 0
+  modMult: 2.5
+  priority: 0

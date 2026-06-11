@@ -15,6 +15,9 @@ namespace RedDust.Ability
         [Tooltip("效果本身的身份标签。DamageEffect→Damage.Elemental.Fire, Impact→Impact.Launch。防御/AI/VFX 用此路由。")]
         public GameplayTagDefinitionSO effectTag;
 
+        [Tooltip("效果描述。策划可读的说明文本。")]
+        public string description;
+
         [Header("Duration")]
         [Tooltip("持续时间（秒）。≤0 为瞬时效果，>0 持续 tick。")]
         public float duration;

@@ -1,0 +1,1853 @@
+{
+    "version": "1.1",
+    "description": "全量属性与属性树 — 30 Trees, ~185 PropertyDefs, 8族。基于 property-inventory.md 设计，经双Agent交叉验证修复。",
+    "definitions": [
+        {
+            "id": "HP",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "当前生命值。0=死亡。Actor根属性，所有可交互实体共用。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "MaxHP",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "最大生命值。Actor根属性，所有可交互实体共用。",
+            "min": 1.0, "max": 500.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Stamina",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "当前体力值。运动/战斗消耗，静止时恢复。消耗型(Consumable)。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "MaxStamina",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "最大体力值。受Endurance属性加成。",
+            "min": 1.0, "max": 200.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Hunger",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "当前饥饿度。持续消耗，0时HP持续扣除(5/s)。进食恢复。消耗型(Consumable)。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Thirst",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "当前口渴度。持续消耗，0时Stamina持续扣除。饮水恢复。消耗型(Consumable)。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "BodyTemp",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "当前体温。向环境气温漂移。<20失温 >80中暑。受ColdResist和衣物影响。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 50.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Blood",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "当前血量。受伤(割伤/咬伤)时消耗，0=失血死亡。有自然凝血恢复。消耗型(Consumable)。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Infection",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "当前感染值。咬伤累积，>10发热 >30意识模糊 >60器官衰竭 >90丧尸化。累积型(Cumulative)，只增不减。抗生素可延缓但不可逆。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Consciousness",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "当前意识值。剧痛/重伤/感染降低，0=昏迷(无法行动)。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Pain",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "当前疼痛值。受伤增加，>60触发行动惩罚(攻速/移速降低)。静止缓慢恢复。消耗型(Consumable)。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Strength",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "力量属性(1-10)。影响近战伤害倍率(×0.05/点)和负重上限(+10kg/点)。Human基础属性。",
+            "min": 1.0, "max": 10.0, "defaultFloat": 5.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Agility",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "敏捷属性(1-10)。影响移速(×0.03/点)、闪避率(×3/点)、攻速(×0.02/点)。Human基础属性。",
+            "min": 1.0, "max": 10.0, "defaultFloat": 5.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Endurance",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "体质属性(1-10)。影响减伤(×0.03/点)、MaxStamina、体力恢复速度(-3%消耗/点)。Human基础属性。",
+            "min": 1.0, "max": 10.0, "defaultFloat": 5.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Intelligence",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "智力属性(1-10)。影响科技研究速度、医疗效率。Human基础属性。",
+            "min": 1.0, "max": 10.0, "defaultFloat": 5.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Perception",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "感知属性(1-10)。影响命中率(+3%/点)、暴击率(+2%/点)、侦测潜行距离。Human基础属性。",
+            "min": 1.0, "max": 10.0, "defaultFloat": 5.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Charisma",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "魅力属性(1-10)。影响交易价格折扣、NPC士气加成。Human基础属性。",
+            "min": 1.0, "max": 10.0, "defaultFloat": 5.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "BladeProf",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "刀剑熟练度(0-100)。使用刀剑武器命中目标时累积。影响命中率(+1%/点)、暴击率(+1%/点)、破防率。累积型(Cumulative)。绑定Ability.Melee.Blade。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "AxeProf",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "斧熟练度(0-100)。使用斧武器命中目标时累积。累积型(Cumulative)。绑定Ability.Melee.Axe。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "StaffProf",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "棍杖熟练度(0-100)。使用棍杖武器命中目标时累积。累积型(Cumulative)。绑定Ability.Melee.Staff。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "UnarmedProf",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "徒手/武术熟练度(0-100)。空手或使用武术套路时累积。累积型(Cumulative)。绑定Ability.Melee.Routines。A测暂不启用。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "PistolProf",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "手枪熟练度(0-100)。使用手枪命中目标时累积。累积型(Cumulative)。绑定Ability.Ranged.Pistol。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "ShotgunProf",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "霰弹枪熟练度(0-100)。使用霰弹枪命中目标时累积。累积型(Cumulative)。绑定Ability.Ranged.Shotgun。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "RifleProf",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "步枪熟练度(0-100)。使用步枪命中目标时累积。累积型(Cumulative)。绑定Ability.Ranged.Rifle。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "ThrowableProf",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "投掷物熟练度(0-100)。使用投掷物时累积。累积型(Cumulative)。绑定Ability.Throwable。A测暂不启用。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "DefensiveProf",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "防御熟练度(0-100)。格挡/闪避/盾牌使用时累积。累积型(Cumulative)。绑定Ability.Defensive。A测暂不启用。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "CookProf",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "烹饪熟练度(0-100)。NPC持续从事烹饪工作时累积。影响食物品质和士气加成。累积型(Cumulative)。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "FarmProf",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "耕种熟练度(0-100)。NPC持续从事耕种工作时累积。影响作物产量和收获效率。累积型(Cumulative)。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "BuildProf",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "建造熟练度(0-100)。NPC持续从事建造工作时累积。影响建造速度和建筑耐久。累积型(Cumulative)。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "GatherProf",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "采集熟练度(0-100)。NPC持续从事采集(木材/石材/草药)时累积。影响采集速度和稀有产出概率。累积型(Cumulative)。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "CraftProf",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "制作熟练度(0-100)。NPC持续从事制作(工具/武器/零件)时累积。影响制作品质和材料消耗。累积型(Cumulative)。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "MedicalProf",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "医疗熟练度(0-100)。NPC/玩家进行医疗行为时累积。影响治疗效果和成功率。A测暂不启用(Phase 12+)。累积型(Cumulative)。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "ResearchProf",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "研究熟练度(0-100)。NPC持续从事科技研究时累积。影响研究速度。累积型(Cumulative)。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "TradeProf",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "交易熟练度(0-100)。NPC/玩家进行交易时累积。影响买卖价格。累积型(Cumulative)。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "StealthProf",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "潜行熟练度(0-100)。潜行移动时累积。影响噪音降低(移动-1级/交互-1级)和潜行侦测难度。累积型(Cumulative)。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "SurvivalProf",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "生存熟练度(0-100)。从事生火/净化水/辨识植物等生存行为时累积。影响生存技能成功率。累积型(Cumulative)。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "LockpickingProf",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "开锁/破解熟练度(0-100)。开锁或破解电子设备时累积。A测暂不启用。累积型(Cumulative)。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "TrapProf",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "陷阱熟练度(0-100)。布置/拆除陷阱时累积。A测暂不启用。累积型(Cumulative)。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Morale",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "士气值。影响NPC工作/战斗效率(×0.5系数)。受食物多样性、居住环境、尸潮伤亡影响。50=中性 0=绝望 100=高昂。A测仅NPC受士气影响。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 50.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Sleepiness",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "困意值。持续累积(0.008/s)，>50效率惩罚 >80强制休息。睡眠时快速恢复(3/s)。消耗型(Consumable)。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Comfort",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "舒适度。受居住环境(床/房间)、天气影响。影响NPC士气变化速率。50=基本舒适。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 50.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "SocialNeed",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "社交需求。独处时累积，与NPC对话/活动降低。影响NPC士气。A测暂不启用(远期NPC社交系统)。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 50.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Boredom",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "无聊度。重复工作累积(0.005/s)，娱乐活动降低(5/s)。影响NPC工作效率。消耗型(Consumable)。A测暂不启用。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "CarryWeight",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "负重上限(kg)。公式: 50 + Strength×10 + 背包加成。超出后移速惩罚递增。Actor/Human属性，同时被BodyArmor和Container引用加成。",
+            "min": 10.0, "max": 200.0, "defaultFloat": 50.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "BleedResist",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "流血抗性(0-100)。降低割伤(Laceration)的流血速率。受护甲、体质影响。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "InfectionResist",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "感染抗性(0-100)。降低咬伤(Bite)的感染累积速率。受护甲、体质影响。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "BluntResist",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "钝器抗性(0-100)。降低钝器伤(Blunt)的击倒概率和体力上限惩罚。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "FractureResist",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "骨折抗性(0-100)。降低重击/跌落时的骨折概率。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "FireResist",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "火焰抗性(0-100)。降低烧伤(Burn)伤害。受护甲、防具影响。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "PoisonResist",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "中毒抗性(0-100)。降低毒素伤害和DoT累积速率。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "ColdResist",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "寒冷抗性(0-100)。减缓体温(BodyTemp)下降速率。受衣物、护甲影响。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "ElectricResist",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "电击抗性(0-100)。降低电击伤害。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "RadiationResist",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "辐射抗性(0-100)。减缓辐射累积速率。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "PainResist",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "疼痛抗性(0-100)。减缓受伤时疼痛(Pain)累积速率。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "KnockdownResist",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "击倒抗性(0-100)。降低被击倒概率。受BodyArmor护甲加成，同时被Human Resistance和Armor Bonus引用。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "SightRange",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "视野距离(米)。玩家和NPC的视觉范围。受Perception影响。同时被Human Vision和Zombie Senses引用。",
+            "min": 5.0, "max": 50.0, "defaultFloat": 20.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "NightVision_Human",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "夜视能力(0-100)。Human专用百分比标度。0=无夜视 100=全彩夜视。注意：装备族NightVision使用0~1倍率标度，此为独立Def。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "FlashResist_Human",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "闪光抗性(0-100)。Human专用百分比标度。降低闪光弹致盲时间。注意：装备族FlashResist使用0~1倍率标度，此为独立Def。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Loyalty",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "NPC忠诚度(0-100)。>70高效率 <30可能叛逃。受待遇/士气/事件影响。累积型(Cumulative)。仅NPC，玩家无此属性。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 50.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "ATK_Zombie",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "丧尸攻击力。每次攻击的基础伤害值。Zombie专用属性。",
+            "min": 1.0, "max": 50.0, "defaultFloat": 10.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "ZombieSpeed",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "丧尸移动速度(m/s)。Zombie专用属性。不同丧尸类型通过Spawn Config覆盖(如Runner=8, Tank=1.5)。",
+            "min": 0.5, "max": 10.0, "defaultFloat": 3.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "NoiseReact",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "丧尸听觉范围(米)。听到噪音后Alerted→向声源移动。Zombie专用属性。不同丧尸类型通过Spawn Config覆盖。",
+            "min": 5.0, "max": 100.0, "defaultFloat": 30.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Durability",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "当前耐久度。0=物品损坏/不可用。跨族共用(Weapon/Armor/Tool/Container)。低耐久触发性能惩罚(50%以下×0.8, 20%以下×0.5)。",
+            "min": 0.0, "max": 9999.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "MaxDurability",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "最大耐久度。跨族共用(Weapon/Armor/Tool/Container/Building)。新物品Durability=MaxDurability。",
+            "min": 1.0, "max": 9999.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Weight",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "物品重量(kg)。跨族共用(Weapon/Ammo/Armor/Tool/Consumable)。所有物品重量之和=CurrentWeight(运行时计算，不进Tree)。",
+            "min": 0.0, "max": 999.0, "defaultFloat": 5.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "ATK",
+            "type": "AssetRefList",
+            "isDeprecated": false,
+            "description": "近战武器攻击力——DamageEffectSO[]数组。每个元素引用一个Damage Effect资产(如Damage_Physical_Slash)。MeleeWeapon使用；RangedWeapon的ATK为空/不使用(远程伤害地基在Ammo.BaseDamage)。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "AttackSpeed",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "近战攻击速度倍率。0.5=慢(斧) 1.0=标准(剑) 1.2=快(匕首)。最终攻速 = Weapon.AttackSpeed × (1 + Agility×0.02)。",
+            "min": 0.5, "max": 3.0, "defaultFloat": 1.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "CritMulti",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "近战暴击伤害倍率。1.5=150%伤害。不同武器类型差异: Blade=2.0 Staff=1.5 Axe=1.8。",
+            "min": 1.0, "max": 5.0, "defaultFloat": 1.5,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "StunChance",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "近战眩晕概率(0-1)。触发后目标短暂硬直。Staff类武器眩晕概率较高(0.15)。",
+            "min": 0.0, "max": 1.0, "defaultFloat": 0.1,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Knockback",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "近战击退距离(米)。0=无击退 10=大幅击退。Staff=4 Blade=1 Axe=3。",
+            "min": 0.0, "max": 10.0, "defaultFloat": 2.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Reach",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "近战攻击距离(米)。匕首=0.6 剑=1.2 矛=2.5 棍=2.0 斧=1.0。",
+            "min": 0.5, "max": 3.0, "defaultFloat": 1.2,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "StaminaCost",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "近战每次挥击消耗体力。轻击=3 重击=8 特殊技=15。",
+            "min": 1.0, "max": 30.0, "defaultFloat": 5.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "DamageType",
+            "type": "GameplayTag",
+            "isDeprecated": false,
+            "description": "伤害类型标签。引用Damage.*标签树(如Damage.Physical.Slash)。路由到伤害公式和护甲抗性。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "IsTwoHanded",
+            "type": "Bool",
+            "isDeprecated": false,
+            "description": "是否双手武器。true=占用双手槽位 false=可单手持握。影响装备槽位逻辑。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Accuracy",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "远程武器基础命中率(0-1)。最终命中 = Weapon.Accuracy + Perception×0.03 + Prof×0.01。手枪=0.6 步枪=0.85 霰弹=0.4。",
+            "min": 0.0, "max": 1.0, "defaultFloat": 0.7,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "ReloadSpeed",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "远程武器换弹速度倍率。>1快 <1慢。受熟练度和武器设计影响。",
+            "min": 0.5, "max": 3.0, "defaultFloat": 1.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "MagSize",
+            "type": "Int",
+            "isDeprecated": false,
+            "description": "弹夹容量(发)。手枪=12 步枪=20 霰弹=5。整数。",
+            "min": 1, "max": 100, "defaultInt": 10,
+            "minInt": 0, "maxInt": 100,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "AmmoCount",
+            "type": "Int",
+            "isDeprecated": false,
+            "description": "弹夹内剩余弹药(发)。运行时值——Spawn时初始化为MagSize，战斗中实时变化。Tree中仅定义其存在性和约束。",
+            "min": 0, "max": 500, "defaultInt": 10,
+            "minInt": 0, "maxInt": 100,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "NoiseRadius",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "噪音半径(米)。武器/弹药击发时产生的噪音传播范围。5级(手枪)=40m 6级(步枪/霰弹)=80m。与噪音系统联动。",
+            "min": 5.0, "max": 500.0, "defaultFloat": 50.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Recoil",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "远程武器后坐力(0-100)。影响连续射击精度。手枪=20 步枪=35 霰弹=50。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 30.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "CompatibleAmmo",
+            "type": "GameplayTagList",
+            "isDeprecated": false,
+            "description": "兼容弹药口径标签列表。引用Caliber.*标签(如Caliber.9mm)。决定该武器可使用哪些弹药类型。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "FireRate",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "枪械射速(发/秒)。0.5=2秒1发 12=全自动高速。手枪=4 步枪=3 霰弹=1。",
+            "min": 0.5, "max": 12.0, "defaultFloat": 5.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "MuzzleVelocity",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "枪口初速(m/s)。弹药BaseVelocity × 枪管系数 → 最终初速。影响伤害和弹道。手枪=350 步枪=900。",
+            "min": 100.0, "max": 2000.0, "defaultFloat": 400.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "BarrelLength",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "枪管长度(inch)。影响初速(枪管越长初速越高，16寸以上递减)和室内机动性。手枪=4 步枪=16 霰弹=18。",
+            "min": 2.0, "max": 24.0, "defaultFloat": 6.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Reliability",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "枪械单发正常循环概率(0-1)。95%=5%故障率。随耐久降低和污损增加而下降。手枪=0.9 步枪=0.95。",
+            "min": 0.1, "max": 1.0, "defaultFloat": 0.95,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "IsAutomatic",
+            "type": "Bool",
+            "isDeprecated": false,
+            "description": "是否全自动枪械。true=可连发 false=半自动/手动。影响射击模式和FireRate计算。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "GearType",
+            "type": "GameplayTag",
+            "isDeprecated": false,
+            "description": "装备类型标签。引用Equipment.Part.*标签(如Equipment.Part.Receiver)。决定装备槽位和零件兼容性。需先创建Tag资产。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "HolsterSpeed",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "拔枪/收枪速度倍率。>1快 <1慢。手枪专属属性，手枪通常较快(1.5)。",
+            "min": 0.5, "max": 3.0, "defaultFloat": 1.5,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "HipFirePenalty",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "腰射精度惩罚(0-0.5)。腰射(不瞄准)时Accuracy降低此值。手枪专属，手枪腰射惩罚较小(0.15)。",
+            "min": 0.0, "max": 0.5, "defaultFloat": 0.15,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "ScopeZoom",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "瞄准镜倍率(×)。1=铁瞄 4=ACOG 12=高倍狙击镜。步枪专属属性。",
+            "min": 1.0, "max": 20.0, "defaultFloat": 4.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "AimTime",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "瞄准时间(秒)。从腰射切换到精确瞄准的耗时。步枪专属，受ScopeZoom影响(倍率越高越慢)。",
+            "min": 0.3, "max": 3.0, "defaultFloat": 0.8,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "PelletCount",
+            "type": "Int",
+            "isDeprecated": false,
+            "description": "霰弹枪弹丸数量。每次击发射出多个弹丸，每个独立判定命中和伤害。标准=8。",
+            "min": 3, "max": 15, "defaultInt": 8,
+            "minInt": 0, "maxInt": 100,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Spread",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "霰弹枪散布角(度)。影响弹丸分布范围。角度越大散布越宽。",
+            "min": 2.0, "max": 30.0, "defaultFloat": 12.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "DrawSpeed",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "拉弓速度倍率。>1快 <1慢。影响弓的射速。Bow专属属性(远期)。",
+            "min": 0.5, "max": 3.0, "defaultFloat": 1.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "ArrowVelocity",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "箭矢速度(m/s)。影响弹道和伤害。Bow专属属性(远期)。",
+            "min": 50.0, "max": 300.0, "defaultFloat": 150.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "HoldStamina",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "满弓时每秒消耗体力。保持拉弓状态的Stamina消耗。Bow专属属性(远期)。",
+            "min": 0.0, "max": 20.0, "defaultFloat": 5.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "BlastRadius",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "爆炸/效果半径(米)。投掷物爆炸或效果扩散范围。如手雷=10m。Throwable专属。",
+            "min": 0.0, "max": 50.0, "defaultFloat": 5.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "FuseTime",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "引信时间(秒)。投掷后到爆炸/生效的延迟。标准手雷=3s。Throwable专属。",
+            "min": 0.5, "max": 30.0, "defaultFloat": 3.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "BaseDamage",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "弹药基础伤害。弹头终端动能贡献。与武器ATK加算得最终伤害。9mm=15 5.56mm=35 12ga=50。AmmoBase核心属性。",
+            "min": 1.0, "max": 100.0, "defaultFloat": 15.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Penetration",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "弹药穿透值。与目标Armor DEF对抗。FMJ=2 AP=5 JHP=1。AmmoBase核心属性。",
+            "min": 0.0, "max": 20.0, "defaultFloat": 2.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "BulletWeight",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "弹头重量(grain)。重弹=高穿透高后座；轻弹=高速低穿透。9mm=115gr 5.56mm=62gr 12ga=438gr。AmmoBase属性。",
+            "min": 20.0, "max": 800.0, "defaultFloat": 115.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "OverPenetration",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "穿透掩体/目标倾向(0-1)。0=停靶 1=穿到底。AP弹=0.85 HP弹=0.1。AmmoBase属性。",
+            "min": 0.0, "max": 1.0, "defaultFloat": 0.3,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "RecoilFactor",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "弹药后座力倍率。影响枪械最终后座力。标准弹=1.0 +P弹=1.3 亚音速=0.7。AmmoBase属性。",
+            "min": 0.5, "max": 2.0, "defaultFloat": 1.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "AmmoReliability",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "弹药击发可靠性(0-1)。1.0=100%可靠。旧弹/手装弹<1.0。与枪械Reliability独立判定。AmmoBase属性。",
+            "min": 0.5, "max": 1.0, "defaultFloat": 1.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "FoulingRate",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "弹药污损倍率。影响枪管清洁度下降速度。标准弹=1.0 腐蚀弹=3.0+。AmmoBase属性。",
+            "min": 0.0, "max": 5.0, "defaultFloat": 1.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Platform",
+            "type": "GameplayTag",
+            "isDeprecated": false,
+            "description": "武器/零件平台标签。引用Platform.*标签(如Platform.Glock)。同一平台的零件可互换安装。需先创建Tag资产。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "DEF",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "护甲基础防御值。减伤公式: 最终减伤 = DEF × (1 + Endurance×0.03)。ArmorBase核心属性。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 10.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Coverage",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "防护面积比例(0.1-1.0)。未覆盖部位DEF=0。全覆盖板甲=1.0 插板背心=0.6 护胫=0.3。ArmorBase核心属性。",
+            "min": 0.1, "max": 1.0, "defaultFloat": 0.6,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "TraumaTransfer",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "冲击传导比例(0-1)。被挡住时仍受 伤害×Trauma% 的钝伤。锁子甲=0.7(高) 插板=0.3(低)。ArmorBase核心属性。",
+            "min": 0.0, "max": 1.0, "defaultFloat": 0.5,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "MoveSpeedPenalty",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "护甲移速惩罚比例(0-0.5)。最终移速 = BaseMoveSpeed × (1 - MoveSpeedPenalty)。重甲=0.3 轻甲=0.05。ArmorBase属性。",
+            "min": 0.0, "max": 0.5, "defaultFloat": 0.1,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "StaminaRegenPenalty",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "护甲体力恢复惩罚比例(0-0.5)。最终体力恢复 = BaseRegen × (1 - StaminaRegenPenalty)。重甲=0.3 轻甲=0.05。ArmorBase属性。",
+            "min": 0.0, "max": 0.5, "defaultFloat": 0.1,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "ResistTypes",
+            "type": "GameplayTagList",
+            "isDeprecated": false,
+            "description": "护甲抗性类型标签列表。引用Damage.*标签(如Damage.Physical.Slash, Damage.Elemental.Fire)。决定护甲对哪些伤害类型有效。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "FlashResist",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "闪光抗性倍率(0-1)。装备族用倍率标度。降低闪光弹致盲时间。HeadArmor专属。注意: Actor族用0-100标度的独立Def(FlashResist_Human)。",
+            "min": 0.0, "max": 1.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "NightVision",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "夜视能力倍率(0-1)。装备族用倍率标度。0=无夜视 1=全彩夜视。HeadArmor专属。注意: Actor族用0-100标度的独立Def(NightVision_Human)。",
+            "min": 0.0, "max": 1.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "MoveSpeed",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "移动速度加成倍率(-1到2)。负值=减速 正值=加速。LegArmor专属Bonus属性(移速加成)。",
+            "min": -1.0, "max": 2.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "SneakSpeed",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "潜行速度加成倍率(-1到2)。负值=更慢潜行 正值=更快潜行。LegArmor专属Bonus属性。",
+            "min": -1.0, "max": 2.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "CarryWeightBonus",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "负重上限加成(kg)。背包/容器核心属性。直接增加CarryWeight。登山包=30kg 小背包=10kg。ContainerBase核心属性。",
+            "min": 5.0, "max": 200.0, "defaultFloat": 20.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "SlotCount",
+            "type": "Int",
+            "isDeprecated": false,
+            "description": "背包内部格子数。决定可携带物品数量。小背包=10 大登山包=50。ContainerBase属性。",
+            "min": 1, "max": 50, "defaultInt": 10,
+            "minInt": 0, "maxInt": 100,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "MoveSpeedPenalty_Container",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "背包移速惩罚比例(0-0.3)。背包越重/越大惩罚越高。ContainerBase属性。注意: 独立于ArmorBase的MoveSpeedPenalty，两者叠加。",
+            "min": 0.0, "max": 0.3, "defaultFloat": 0.05,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Efficiency",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "工具工作效率倍率。1.0=基准效率 >1更快 <1更慢。铁斧=1.3 石斧=0.8。ToolBase核心属性。",
+            "min": 0.1, "max": 3.0, "defaultFloat": 1.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "MaterialTier",
+            "type": "Int",
+            "isDeprecated": false,
+            "description": "工具/材料等级(1-6)。1=石 2=铜 3=铁 4=钢 5=合金 6=碳化物。影响效率乘数和可采集资源等级。ToolBase属性。",
+            "min": 1, "max": 6, "defaultInt": 1,
+            "minInt": 0, "maxInt": 100,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "StaminaCostPerUse",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "工具每次使用消耗体力。镐子=5(采矿累) 厨具=1(烹饪轻)。ToolBase属性。",
+            "min": 0.5, "max": 10.0, "defaultFloat": 2.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Ammo",
+            "type": "Int",
+            "isDeprecated": false,
+            "description": "当前弹药数。弹匣/弹仓内剩余。1=每次射击消耗1发。0=需换弹。",
+            "min": 0, "max": 100, "defaultInt": 0,
+            "minInt": 0, "maxInt": 100, "defaultFloat": 0.0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Fuel",
+            "type": "Int",
+            "isDeprecated": false,
+            "description": "燃料。油灯/燃烧瓶/爆炸物消耗。每次使用扣对应数量。0=无油。",
+            "min": 0, "max": 100, "defaultInt": 0,
+            "minInt": 0, "maxInt": 100, "defaultFloat": 0.0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Charge",
+            "type": "Int",
+            "isDeprecated": false,
+            "description": "电量。电击陷阱/能量武器/手电等设备消耗。0=无电。",
+            "min": 0, "max": 100, "defaultInt": 0,
+            "minInt": 0, "maxInt": 100, "defaultFloat": 0.0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "ToolType",
+            "type": "GameplayTag",
+            "isDeprecated": false,
+            "description": "工具类型标签。引用Tool.*标签(如Tool.Axe)。决定NPC可从事的工作类型。需先创建Tag资产。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "ConsumeTime",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "消耗品使用时间(秒)。直接吃=0.5s 包扎=3s 手术=5s。ConsumableBase属性。",
+            "min": 0.1, "max": 10.0, "defaultFloat": 1.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "StackSize",
+            "type": "Int",
+            "isDeprecated": false,
+            "description": "最大堆叠数。同一格内可堆叠的最大数量。子弹=50 绷带=20 食物=10 武器=1。ConsumableBase属性。",
+            "min": 1, "max": 999, "defaultInt": 20,
+            "minInt": 0, "maxInt": 100,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "ConsumableType",
+            "type": "GameplayTag",
+            "isDeprecated": false,
+            "description": "消耗品类型标签。引用Consumable.*标签(如Consumable.Food)。决定使用方式和效果路由。需先创建Tag资产。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Nutrition",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "食物饥饿恢复值。基础食材=10 熟食=25 大餐=50。Food专属属性。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 10.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Hydration",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "饮料/食物口渴恢复值。水=30 汤=15 干粮=0。Food专属属性。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "MoraleBonus",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "食用/使用后士气加成。高级料理=20 普通食物=0。Food/Medical共用属性。",
+            "min": -50.0, "max": 50.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "SpoilageTime",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "食物变质时间(小时)。0=不会坏(罐头/干粮) 48=新鲜食材 168=腌制食品。过期后Nutrition和MoraleBonus归零甚至变负。Food专属属性。",
+            "min": 0.0, "max": 720.0, "defaultFloat": 48.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "HealAmount",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "药品HP恢复量。绷带=20 手术包=80。Medical专属属性。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 20.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "BleedStop",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "止血效果(0-1)。1.0=完全止血。绷带=0.5 止血带=1.0。Medical专属属性。",
+            "min": 0.0, "max": 1.0, "defaultFloat": 0.5,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "InfectionCleanse",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "感染值降低量。消毒剂=30 抗生素=50(延缓)。Medical专属属性。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "PainRelief",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "疼痛值降低量。止痛药=30 吗啡=80。Medical专属属性。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Rarity",
+            "type": "Int",
+            "isDeprecated": false,
+            "description": "物品稀有度(1-5)。1=普通(随处可见) 2=罕见 3=稀有 4=史诗 5=传说(唯一)。影响搜刮概率和交易价值。Material专属属性。",
+            "min": 1, "max": 5, "defaultInt": 1,
+            "minInt": 0, "maxInt": 100,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "MaterialType_Tag",
+            "type": "GameplayTag",
+            "isDeprecated": false,
+            "description": "材料类型标签。引用Material.*标签(如Material.Wood)。决定可用于哪些配方。需先创建Tag资产。Material专属属性。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "DEF_Building",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "建筑防御值(减伤)。木墙=5 石墙=20 混凝土=50。Building专属属性。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 20.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "MaterialType_Building",
+            "type": "Int",
+            "isDeprecated": false,
+            "description": "建筑材料类型(0-4)。0=木 1=石 2=金属 3=混凝土 4=复合。决定耐久曲线、修理方式和Flammability。Building专属属性。",
+            "min": 0, "max": 4, "defaultInt": 0,
+            "minInt": 0, "maxInt": 100,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Flammability",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "建筑可燃性(0-1)。0=防火(混凝土) 1=速燃(木材)。与MaterialType_Building关联。Building属性。",
+            "min": 0.0, "max": 1.0, "defaultFloat": 0.5,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "SoundDampening",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "建筑隔音效果(%)。石墙=80 木墙=20 金属=10(共振)。影响噪音传播衰减。Building属性。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 20.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "WeatherResist",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "建筑耐候性(%)。0=雨中腐烂 100=完全防水。影响内部Comfort和物品保存(远期)。Building属性。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 50.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "WorkSpeed_Building",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "设施工作效率倍率。工作台=1.5(加速制作) 高级灶台=1.3(加速烹饪)。Building属性。",
+            "min": 0.1, "max": 3.0, "defaultFloat": 1.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "RestComfort",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "休息舒适度(0-100)。影响Sleepiness恢复速度。0=睡地面(慢) 50=睡袋 100=高级床(快)。Building属性。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 20.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Icon",
+            "type": "AssetRef",
+            "isDeprecated": false,
+            "description": "物品/装备图标引用(Sprite)。用于背包UI、装备栏、地面物品显示。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": "UnityEngine.Sprite"
+        },
+        {
+            "id": "VisualPrefab",
+            "type": "AssetRef",
+            "isDeprecated": false,
+            "description": "物品/装备3D表现Prefab引用(GameObject)。用于装备后角色外观或世界中的掉落物模型。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": "UnityEngine.GameObject"
+        },
+        {
+            "id": "AnimationProfile",
+            "type": "AssetRef",
+            "isDeprecated": false,
+            "description": "动画覆写Profile引用。决定装备后的动画表现(如手枪单手vs步枪抵肩)。AnimationBrain消费。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": "UnityEngine.Object"
+        },
+        {
+            "id": "AudioProfile",
+            "type": "AssetRef",
+            "isDeprecated": false,
+            "description": "音效Profile引用。决定装备的音效表现(击发/换弹/空仓)。CharacterAudio消费。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": "UnityEngine.Object"
+        },
+        {
+            "id": "DisplayName",
+            "type": "String",
+            "isDeprecated": false,
+            "description": "物品/实体显示名称。用于UI Tooltip、背包界面。支持本地化(远期)。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "Unnamed",
+            "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Description",
+            "type": "String",
+            "isDeprecated": false,
+            "description": "物品/实体详细描述文本。用于UI Tooltip详情展开。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "",
+            "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "FogDensity",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "雾浓度(0-100)。0=晴天 100=浓雾(大幅降低SightRange)。Environment全局单例属性(远期)。由WeatherService驱动。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Temperature_Env",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "环境气温(°C)。-30=极寒 20=舒适 50=酷热。影响BodyTemp漂移方向。Environment全局单例属性(远期)。由TimeService/WeatherService驱动。",
+            "min": -30.0, "max": 50.0, "defaultFloat": 20.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Humidity",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "环境湿度(%)。0=干燥 100=暴雨。影响体感温度、食物变质速度、火药可靠性(远期)。Environment全局单例属性(远期)。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 50.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "TimeOfDay",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "当前时间(小时, 0-24)。8=早晨 12=正午 20=黄昏 0=午夜。影响光照、丧尸视觉范围、噪音传播。Environment全局单例属性(远期)。由TimeService写入。",
+            "min": 0.0, "max": 24.0, "defaultFloat": 8.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        }
+    ],
+    "trees": [
+        {
+            "treeName": "Actor",
+            "inheritsFrom": "",
+            "nodes": [
+                { "nodeId": "Vitals", "parentId": "", "defId": "" },
+                { "nodeId": "HP", "parentId": "Vitals", "defId": "HP" },
+                { "nodeId": "MaxHP", "parentId": "Vitals", "defId": "MaxHP" }
+            ]
+        },
+        {
+            "treeName": "Human",
+            "inheritsFrom": "Actor",
+            "nodes": [
+                { "nodeId": "Vitals", "parentId": "", "defId": "" },
+                { "nodeId": "Stamina", "parentId": "Vitals", "defId": "Stamina" },
+                { "nodeId": "MaxStamina", "parentId": "Vitals", "defId": "MaxStamina" },
+                { "nodeId": "Hunger", "parentId": "Vitals", "defId": "Hunger" },
+                { "nodeId": "Thirst", "parentId": "Vitals", "defId": "Thirst" },
+                { "nodeId": "BodyTemp", "parentId": "Vitals", "defId": "BodyTemp" },
+                { "nodeId": "Blood", "parentId": "Vitals", "defId": "Blood" },
+                { "nodeId": "Infection", "parentId": "Vitals", "defId": "Infection" },
+                { "nodeId": "Consciousness", "parentId": "Vitals", "defId": "Consciousness" },
+                { "nodeId": "Pain", "parentId": "Vitals", "defId": "Pain" },
+                { "nodeId": "Attributes", "parentId": "", "defId": "" },
+                { "nodeId": "Strength", "parentId": "Attributes", "defId": "Strength" },
+                { "nodeId": "Agility", "parentId": "Attributes", "defId": "Agility" },
+                { "nodeId": "Endurance", "parentId": "Attributes", "defId": "Endurance" },
+                { "nodeId": "Intelligence", "parentId": "Attributes", "defId": "Intelligence" },
+                { "nodeId": "Perception", "parentId": "Attributes", "defId": "Perception" },
+                { "nodeId": "Charisma", "parentId": "Attributes", "defId": "Charisma" },
+                { "nodeId": "Combat", "parentId": "", "defId": "" },
+                { "nodeId": "BladeProf", "parentId": "Combat", "defId": "BladeProf" },
+                { "nodeId": "AxeProf", "parentId": "Combat", "defId": "AxeProf" },
+                { "nodeId": "StaffProf", "parentId": "Combat", "defId": "StaffProf" },
+                { "nodeId": "UnarmedProf", "parentId": "Combat", "defId": "UnarmedProf" },
+                { "nodeId": "PistolProf", "parentId": "Combat", "defId": "PistolProf" },
+                { "nodeId": "ShotgunProf", "parentId": "Combat", "defId": "ShotgunProf" },
+                { "nodeId": "RifleProf", "parentId": "Combat", "defId": "RifleProf" },
+                { "nodeId": "ThrowableProf", "parentId": "Combat", "defId": "ThrowableProf" },
+                { "nodeId": "DefensiveProf", "parentId": "Combat", "defId": "DefensiveProf" },
+                { "nodeId": "Work", "parentId": "", "defId": "" },
+                { "nodeId": "CookProf", "parentId": "Work", "defId": "CookProf" },
+                { "nodeId": "FarmProf", "parentId": "Work", "defId": "FarmProf" },
+                { "nodeId": "BuildProf", "parentId": "Work", "defId": "BuildProf" },
+                { "nodeId": "GatherProf", "parentId": "Work", "defId": "GatherProf" },
+                { "nodeId": "CraftProf", "parentId": "Work", "defId": "CraftProf" },
+                { "nodeId": "MedicalProf", "parentId": "Work", "defId": "MedicalProf" },
+                { "nodeId": "ResearchProf", "parentId": "Work", "defId": "ResearchProf" },
+                { "nodeId": "TradeProf", "parentId": "Work", "defId": "TradeProf" },
+                { "nodeId": "StealthProf", "parentId": "Work", "defId": "StealthProf" },
+                { "nodeId": "SurvivalProf", "parentId": "Work", "defId": "SurvivalProf" },
+                { "nodeId": "LockpickingProf", "parentId": "Work", "defId": "LockpickingProf" },
+                { "nodeId": "TrapProf", "parentId": "Work", "defId": "TrapProf" },
+                { "nodeId": "Needs", "parentId": "", "defId": "" },
+                { "nodeId": "Morale", "parentId": "Needs", "defId": "Morale" },
+                { "nodeId": "Sleepiness", "parentId": "Needs", "defId": "Sleepiness" },
+                { "nodeId": "Comfort", "parentId": "Needs", "defId": "Comfort" },
+                { "nodeId": "SocialNeed", "parentId": "Needs", "defId": "SocialNeed" },
+                { "nodeId": "Boredom", "parentId": "Needs", "defId": "Boredom" },
+                { "nodeId": "Movement", "parentId": "", "defId": "" },
+                { "nodeId": "CarryWeight", "parentId": "Movement", "defId": "CarryWeight" },
+                { "nodeId": "Resistance", "parentId": "", "defId": "" },
+                { "nodeId": "BleedResist", "parentId": "Resistance", "defId": "BleedResist" },
+                { "nodeId": "InfectionResist", "parentId": "Resistance", "defId": "InfectionResist" },
+                { "nodeId": "BluntResist", "parentId": "Resistance", "defId": "BluntResist" },
+                { "nodeId": "FractureResist", "parentId": "Resistance", "defId": "FractureResist" },
+                { "nodeId": "FireResist", "parentId": "Resistance", "defId": "FireResist" },
+                { "nodeId": "PoisonResist", "parentId": "Resistance", "defId": "PoisonResist" },
+                { "nodeId": "ColdResist", "parentId": "Resistance", "defId": "ColdResist" },
+                { "nodeId": "ElectricResist", "parentId": "Resistance", "defId": "ElectricResist" },
+                { "nodeId": "RadiationResist", "parentId": "Resistance", "defId": "RadiationResist" },
+                { "nodeId": "PainResist", "parentId": "Resistance", "defId": "PainResist" },
+                { "nodeId": "KnockdownResist", "parentId": "Resistance", "defId": "KnockdownResist" },
+                { "nodeId": "Vision", "parentId": "", "defId": "" },
+                { "nodeId": "SightRange", "parentId": "Vision", "defId": "SightRange" },
+                { "nodeId": "NightVision", "parentId": "Vision", "defId": "NightVision_Human" },
+                { "nodeId": "FlashResist", "parentId": "Vision", "defId": "FlashResist_Human" },
+                { "nodeId": "NPC", "parentId": "", "defId": "" },
+                { "nodeId": "Loyalty", "parentId": "NPC", "defId": "Loyalty" }
+            ]
+        },
+        {
+            "treeName": "Zombie",
+            "inheritsFrom": "Actor",
+            "nodes": [
+                { "nodeId": "Vitals", "parentId": "", "defId": "" },
+                { "nodeId": "Combat", "parentId": "", "defId": "" },
+                { "nodeId": "ATK_Zombie", "parentId": "Combat", "defId": "ATK_Zombie" },
+                { "nodeId": "Movement", "parentId": "", "defId": "" },
+                { "nodeId": "ZombieSpeed", "parentId": "Movement", "defId": "ZombieSpeed" },
+                { "nodeId": "Senses", "parentId": "", "defId": "" },
+                { "nodeId": "NoiseReact", "parentId": "Senses", "defId": "NoiseReact" },
+                { "nodeId": "SightRange", "parentId": "Senses", "defId": "SightRange" }
+            ]
+        },
+        {
+            "treeName": "WeaponBase",
+            "inheritsFrom": "",
+            "nodes": [
+                { "nodeId": "Base", "parentId": "", "defId": "" },
+                { "nodeId": "Durability", "parentId": "Base", "defId": "Durability" },
+                { "nodeId": "MaxDurability", "parentId": "Base", "defId": "MaxDurability" },
+                { "nodeId": "Weight", "parentId": "Base", "defId": "Weight" }
+            ]
+        },
+        {
+            "treeName": "MeleeWeapon",
+            "inheritsFrom": "WeaponBase",
+            "nodes": [
+                { "nodeId": "Combat", "parentId": "", "defId": "" },
+                { "nodeId": "ATK", "parentId": "Combat", "defId": "ATK" },
+                { "nodeId": "AttackSpeed", "parentId": "Combat", "defId": "AttackSpeed" },
+                { "nodeId": "CritMulti", "parentId": "Combat", "defId": "CritMulti" },
+                { "nodeId": "StunChance", "parentId": "Combat", "defId": "StunChance" },
+                { "nodeId": "Knockback", "parentId": "Combat", "defId": "Knockback" },
+                { "nodeId": "Reach", "parentId": "Combat", "defId": "Reach" },
+                { "nodeId": "StaminaCost", "parentId": "Combat", "defId": "StaminaCost" },
+                { "nodeId": "Tags", "parentId": "", "defId": "" },
+                { "nodeId": "DamageType", "parentId": "Tags", "defId": "DamageType" },
+                { "nodeId": "IsTwoHanded", "parentId": "Tags", "defId": "IsTwoHanded" },
+                { "nodeId": "Presentation", "parentId": "", "defId": "" },
+                { "nodeId": "Icon", "parentId": "Presentation", "defId": "Icon" },
+                { "nodeId": "VisualPrefab", "parentId": "Presentation", "defId": "VisualPrefab" },
+                { "nodeId": "DisplayName", "parentId": "Presentation", "defId": "DisplayName" },
+                { "nodeId": "Behavior", "parentId": "", "defId": "" },
+                { "nodeId": "AnimationProfile", "parentId": "Behavior", "defId": "AnimationProfile" },
+                { "nodeId": "AudioProfile", "parentId": "Behavior", "defId": "AudioProfile" }
+            ]
+        },
+        {
+            "treeName": "RangedWeapon",
+            "inheritsFrom": "WeaponBase",
+            "nodes": [
+                { "nodeId": "Combat", "parentId": "", "defId": "" },
+                { "nodeId": "ATK", "parentId": "Combat", "defId": "ATK" },
+                { "nodeId": "Accuracy", "parentId": "Combat", "defId": "Accuracy" },
+                { "nodeId": "ReloadSpeed", "parentId": "Combat", "defId": "ReloadSpeed" },
+                { "nodeId": "MagSize", "parentId": "Combat", "defId": "MagSize" },
+                { "nodeId": "AmmoCount", "parentId": "Combat", "defId": "AmmoCount" },
+                { "nodeId": "NoiseRadius", "parentId": "Combat", "defId": "NoiseRadius" },
+                { "nodeId": "Recoil", "parentId": "Combat", "defId": "Recoil" },
+                { "nodeId": "Compat", "parentId": "", "defId": "" },
+                { "nodeId": "CompatibleAmmo", "parentId": "Compat", "defId": "CompatibleAmmo" }
+            ]
+        },
+        {
+            "treeName": "Firearm",
+            "inheritsFrom": "RangedWeapon",
+            "nodes": [
+                { "nodeId": "Combat", "parentId": "", "defId": "" },
+                { "nodeId": "FireRate", "parentId": "Combat", "defId": "FireRate" },
+                { "nodeId": "MuzzleVelocity", "parentId": "Combat", "defId": "MuzzleVelocity" },
+                { "nodeId": "BarrelLength", "parentId": "Combat", "defId": "BarrelLength" },
+                { "nodeId": "Reliability", "parentId": "Combat", "defId": "Reliability" },
+                { "nodeId": "Tags", "parentId": "", "defId": "" },
+                { "nodeId": "IsAutomatic", "parentId": "Tags", "defId": "IsAutomatic" },
+                { "nodeId": "GearType", "parentId": "Tags", "defId": "GearType" }
+            ]
+        },
+        {
+            "treeName": "Pistol",
+            "inheritsFrom": "Firearm",
+            "nodes": [
+                { "nodeId": "Combat", "parentId": "", "defId": "" },
+                { "nodeId": "HolsterSpeed", "parentId": "Combat", "defId": "HolsterSpeed" },
+                { "nodeId": "HipFirePenalty", "parentId": "Combat", "defId": "HipFirePenalty" },
+                { "nodeId": "Presentation", "parentId": "", "defId": "" },
+                { "nodeId": "Icon", "parentId": "Presentation", "defId": "Icon" },
+                { "nodeId": "VisualPrefab", "parentId": "Presentation", "defId": "VisualPrefab" },
+                { "nodeId": "DisplayName", "parentId": "Presentation", "defId": "DisplayName" },
+                { "nodeId": "Behavior", "parentId": "", "defId": "" },
+                { "nodeId": "AnimationProfile", "parentId": "Behavior", "defId": "AnimationProfile" },
+                { "nodeId": "AudioProfile", "parentId": "Behavior", "defId": "AudioProfile" }
+            ]
+        },
+        {
+            "treeName": "Rifle",
+            "inheritsFrom": "Firearm",
+            "nodes": [
+                { "nodeId": "Combat", "parentId": "", "defId": "" },
+                { "nodeId": "ScopeZoom", "parentId": "Combat", "defId": "ScopeZoom" },
+                { "nodeId": "AimTime", "parentId": "Combat", "defId": "AimTime" },
+                { "nodeId": "Presentation", "parentId": "", "defId": "" },
+                { "nodeId": "Icon", "parentId": "Presentation", "defId": "Icon" },
+                { "nodeId": "VisualPrefab", "parentId": "Presentation", "defId": "VisualPrefab" },
+                { "nodeId": "DisplayName", "parentId": "Presentation", "defId": "DisplayName" },
+                { "nodeId": "Description", "parentId": "Presentation", "defId": "Description" },
+                { "nodeId": "Behavior", "parentId": "", "defId": "" },
+                { "nodeId": "AnimationProfile", "parentId": "Behavior", "defId": "AnimationProfile" },
+                { "nodeId": "AudioProfile", "parentId": "Behavior", "defId": "AudioProfile" }
+            ]
+        },
+        {
+            "treeName": "Shotgun",
+            "inheritsFrom": "Firearm",
+            "nodes": [
+                { "nodeId": "Combat", "parentId": "", "defId": "" },
+                { "nodeId": "PelletCount", "parentId": "Combat", "defId": "PelletCount" },
+                { "nodeId": "Spread", "parentId": "Combat", "defId": "Spread" },
+                { "nodeId": "Presentation", "parentId": "", "defId": "" },
+                { "nodeId": "Icon", "parentId": "Presentation", "defId": "Icon" },
+                { "nodeId": "VisualPrefab", "parentId": "Presentation", "defId": "VisualPrefab" },
+                { "nodeId": "DisplayName", "parentId": "Presentation", "defId": "DisplayName" },
+                { "nodeId": "Description", "parentId": "Presentation", "defId": "Description" },
+                { "nodeId": "Behavior", "parentId": "", "defId": "" },
+                { "nodeId": "AnimationProfile", "parentId": "Behavior", "defId": "AnimationProfile" },
+                { "nodeId": "AudioProfile", "parentId": "Behavior", "defId": "AudioProfile" }
+            ]
+        },
+        {
+            "treeName": "Bow",
+            "inheritsFrom": "RangedWeapon",
+            "nodes": [
+                { "nodeId": "Combat", "parentId": "", "defId": "" },
+                { "nodeId": "DrawSpeed", "parentId": "Combat", "defId": "DrawSpeed" },
+                { "nodeId": "ArrowVelocity", "parentId": "Combat", "defId": "ArrowVelocity" },
+                { "nodeId": "HoldStamina", "parentId": "Combat", "defId": "HoldStamina" },
+                { "nodeId": "Presentation", "parentId": "", "defId": "" },
+                { "nodeId": "Icon", "parentId": "Presentation", "defId": "Icon" },
+                { "nodeId": "VisualPrefab", "parentId": "Presentation", "defId": "VisualPrefab" },
+                { "nodeId": "DisplayName", "parentId": "Presentation", "defId": "DisplayName" },
+                { "nodeId": "Behavior", "parentId": "", "defId": "" },
+                { "nodeId": "AnimationProfile", "parentId": "Behavior", "defId": "AnimationProfile" },
+                { "nodeId": "AudioProfile", "parentId": "Behavior", "defId": "AudioProfile" }
+            ]
+        },
+        {
+            "treeName": "Throwable",
+            "inheritsFrom": "WeaponBase",
+            "nodes": [
+                { "nodeId": "Combat", "parentId": "", "defId": "" },
+                { "nodeId": "BlastRadius", "parentId": "Combat", "defId": "BlastRadius" },
+                { "nodeId": "FuseTime", "parentId": "Combat", "defId": "FuseTime" },
+                { "nodeId": "Presentation", "parentId": "", "defId": "" },
+                { "nodeId": "Icon", "parentId": "Presentation", "defId": "Icon" },
+                { "nodeId": "VisualPrefab", "parentId": "Presentation", "defId": "VisualPrefab" },
+                { "nodeId": "DisplayName", "parentId": "Presentation", "defId": "DisplayName" },
+                { "nodeId": "Behavior", "parentId": "", "defId": "" },
+                { "nodeId": "AnimationProfile", "parentId": "Behavior", "defId": "AnimationProfile" },
+                { "nodeId": "AudioProfile", "parentId": "Behavior", "defId": "AudioProfile" }
+            ]
+        },
+        {
+            "treeName": "AmmoBase",
+            "inheritsFrom": "",
+            "nodes": [
+                { "nodeId": "Base", "parentId": "", "defId": "" },
+                { "nodeId": "Weight", "parentId": "Base", "defId": "Weight" },
+                { "nodeId": "Ammo", "parentId": "Base", "defId": "Ammo" },
+                { "nodeId": "Combat", "parentId": "", "defId": "" },
+                { "nodeId": "BaseDamage", "parentId": "Combat", "defId": "BaseDamage" },
+                { "nodeId": "Penetration", "parentId": "Combat", "defId": "Penetration" },
+                { "nodeId": "NoiseRadius", "parentId": "Combat", "defId": "NoiseRadius" },
+                { "nodeId": "BulletWeight", "parentId": "Combat", "defId": "BulletWeight" },
+                { "nodeId": "OverPenetration", "parentId": "Combat", "defId": "OverPenetration" },
+                { "nodeId": "AmmoReliability", "parentId": "Combat", "defId": "AmmoReliability" },
+                { "nodeId": "FoulingRate", "parentId": "Combat", "defId": "FoulingRate" },
+                { "nodeId": "Recoil", "parentId": "", "defId": "" },
+                { "nodeId": "RecoilFactor", "parentId": "Recoil", "defId": "RecoilFactor" },
+                { "nodeId": "Tags", "parentId": "", "defId": "" },
+                { "nodeId": "DamageType", "parentId": "Tags", "defId": "DamageType" },
+                { "nodeId": "Compat", "parentId": "", "defId": "" },
+                { "nodeId": "Platform", "parentId": "Compat", "defId": "Platform" }
+            ]
+        },
+        {
+            "treeName": "PistolAmmo",
+            "inheritsFrom": "AmmoBase",
+            "nodes": []
+        },
+        {
+            "treeName": "RifleAmmo",
+            "inheritsFrom": "AmmoBase",
+            "nodes": []
+        },
+        {
+            "treeName": "ShotgunShell",
+            "inheritsFrom": "AmmoBase",
+            "nodes": []
+        },
+        {
+            "treeName": "ArmorBase",
+            "inheritsFrom": "",
+            "nodes": [
+                { "nodeId": "Base", "parentId": "", "defId": "" },
+                { "nodeId": "Durability", "parentId": "Base", "defId": "Durability" },
+                { "nodeId": "MaxDurability", "parentId": "Base", "defId": "MaxDurability" },
+                { "nodeId": "Weight", "parentId": "Base", "defId": "Weight" },
+                { "nodeId": "Resist", "parentId": "", "defId": "" },
+                { "nodeId": "ResistTypes", "parentId": "Resist", "defId": "ResistTypes" },
+                { "nodeId": "Combat", "parentId": "", "defId": "" },
+                { "nodeId": "DEF", "parentId": "Combat", "defId": "DEF" },
+                { "nodeId": "Coverage", "parentId": "Combat", "defId": "Coverage" },
+                { "nodeId": "TraumaTransfer", "parentId": "Combat", "defId": "TraumaTransfer" },
+                { "nodeId": "Penalty", "parentId": "", "defId": "" },
+                { "nodeId": "MoveSpeedPenalty", "parentId": "Penalty", "defId": "MoveSpeedPenalty" },
+                { "nodeId": "StaminaRegenPenalty", "parentId": "Penalty", "defId": "StaminaRegenPenalty" }
+            ]
+        },
+        {
+            "treeName": "HeadArmor",
+            "inheritsFrom": "ArmorBase",
+            "nodes": [
+                { "nodeId": "Combat", "parentId": "", "defId": "" },
+                { "nodeId": "FlashResist", "parentId": "Combat", "defId": "FlashResist" },
+                { "nodeId": "NightVision", "parentId": "Combat", "defId": "NightVision" }
+            ]
+        },
+        {
+            "treeName": "BodyArmor",
+            "inheritsFrom": "ArmorBase",
+            "nodes": [
+                { "nodeId": "Combat", "parentId": "", "defId": "" },
+                { "nodeId": "KnockdownResist", "parentId": "Combat", "defId": "KnockdownResist" },
+                { "nodeId": "CarryWeight", "parentId": "Combat", "defId": "CarryWeight" }
+            ]
+        },
+        {
+            "treeName": "LegArmor",
+            "inheritsFrom": "ArmorBase",
+            "nodes": [
+                { "nodeId": "Combat", "parentId": "", "defId": "" },
+                { "nodeId": "MoveSpeed", "parentId": "Combat", "defId": "MoveSpeed" },
+                { "nodeId": "SneakSpeed", "parentId": "Combat", "defId": "SneakSpeed" }
+            ]
+        },
+        {
+            "treeName": "ContainerBase",
+            "inheritsFrom": "",
+            "nodes": [
+                { "nodeId": "Base", "parentId": "", "defId": "" },
+                { "nodeId": "Durability", "parentId": "Base", "defId": "Durability" },
+                { "nodeId": "MaxDurability", "parentId": "Base", "defId": "MaxDurability" },
+                { "nodeId": "Weight", "parentId": "Base", "defId": "Weight" },
+                { "nodeId": "Capacity", "parentId": "", "defId": "" },
+                { "nodeId": "CarryWeightBonus", "parentId": "Capacity", "defId": "CarryWeightBonus" },
+                { "nodeId": "SlotCount", "parentId": "Capacity", "defId": "SlotCount" },
+                { "nodeId": "Penalty", "parentId": "", "defId": "" },
+                { "nodeId": "MoveSpeedPenalty_Container", "parentId": "Penalty", "defId": "MoveSpeedPenalty_Container" },
+                { "nodeId": "Presentation", "parentId": "", "defId": "" },
+                { "nodeId": "Icon", "parentId": "Presentation", "defId": "Icon" },
+                { "nodeId": "VisualPrefab", "parentId": "Presentation", "defId": "VisualPrefab" },
+                { "nodeId": "DisplayName", "parentId": "Presentation", "defId": "DisplayName" }
+            ]
+        },
+        {
+            "treeName": "ToolBase",
+            "inheritsFrom": "",
+            "nodes": [
+                { "nodeId": "Base", "parentId": "", "defId": "" },
+                { "nodeId": "Durability", "parentId": "Base", "defId": "Durability" },
+                { "nodeId": "MaxDurability", "parentId": "Base", "defId": "MaxDurability" },
+                { "nodeId": "Weight", "parentId": "Base", "defId": "Weight" },
+                { "nodeId": "Fuel", "parentId": "Base", "defId": "Fuel" },
+                { "nodeId": "Charge", "parentId": "Base", "defId": "Charge" },
+                { "nodeId": "Work", "parentId": "", "defId": "" },
+                { "nodeId": "Efficiency", "parentId": "Work", "defId": "Efficiency" },
+                { "nodeId": "MaterialTier", "parentId": "Work", "defId": "MaterialTier" },
+                { "nodeId": "StaminaCostPerUse", "parentId": "Work", "defId": "StaminaCostPerUse" },
+                { "nodeId": "Tags", "parentId": "", "defId": "" },
+                { "nodeId": "ToolType", "parentId": "Tags", "defId": "ToolType" }
+            ]
+        },
+        {
+            "treeName": "ConsumableBase",
+            "inheritsFrom": "",
+            "nodes": [
+                { "nodeId": "Base", "parentId": "", "defId": "" },
+                { "nodeId": "Weight", "parentId": "Base", "defId": "Weight" },
+                { "nodeId": "ConsumeTime", "parentId": "Base", "defId": "ConsumeTime" },
+                { "nodeId": "StackSize", "parentId": "Base", "defId": "StackSize" },
+                { "nodeId": "Tags", "parentId": "", "defId": "" },
+                { "nodeId": "ConsumableType", "parentId": "Tags", "defId": "ConsumableType" }
+            ]
+        },
+        {
+            "treeName": "Food",
+            "inheritsFrom": "ConsumableBase",
+            "nodes": [
+                { "nodeId": "Nutrition", "parentId": "", "defId": "" },
+                { "nodeId": "Nutrition_Val", "parentId": "Nutrition", "defId": "Nutrition" },
+                { "nodeId": "Hydration", "parentId": "Nutrition", "defId": "Hydration" },
+                { "nodeId": "Quality", "parentId": "", "defId": "" },
+                { "nodeId": "MoraleBonus", "parentId": "Quality", "defId": "MoraleBonus" },
+                { "nodeId": "SpoilageTime", "parentId": "Quality", "defId": "SpoilageTime" }
+            ]
+        },
+        {
+            "treeName": "Medical",
+            "inheritsFrom": "ConsumableBase",
+            "nodes": [
+                { "nodeId": "Heal", "parentId": "", "defId": "" },
+                { "nodeId": "HealAmount", "parentId": "Heal", "defId": "HealAmount" },
+                { "nodeId": "BleedStop", "parentId": "Heal", "defId": "BleedStop" },
+                { "nodeId": "InfectionCleanse", "parentId": "Heal", "defId": "InfectionCleanse" },
+                { "nodeId": "PainRelief", "parentId": "Heal", "defId": "PainRelief" },
+                { "nodeId": "Quality", "parentId": "", "defId": "" },
+                { "nodeId": "MoraleBonus", "parentId": "Quality", "defId": "MoraleBonus" }
+            ]
+        },
+        {
+            "treeName": "Material",
+            "inheritsFrom": "ConsumableBase",
+            "nodes": [
+                { "nodeId": "Quality", "parentId": "", "defId": "" },
+                { "nodeId": "Rarity", "parentId": "Quality", "defId": "Rarity" },
+                { "nodeId": "MaterialType_Tag", "parentId": "Quality", "defId": "MaterialType_Tag" }
+            ]
+        },
+        {
+            "treeName": "Building",
+            "inheritsFrom": "",
+            "nodes": [
+                { "nodeId": "Vitals", "parentId": "", "defId": "" },
+                { "nodeId": "Durability", "parentId": "Vitals", "defId": "Durability" },
+                { "nodeId": "MaxDurability", "parentId": "Vitals", "defId": "MaxDurability" },
+                { "nodeId": "WeatherResist", "parentId": "Vitals", "defId": "WeatherResist" },
+                { "nodeId": "Combat", "parentId": "", "defId": "" },
+                { "nodeId": "DEF_Building", "parentId": "Combat", "defId": "DEF_Building" },
+                { "nodeId": "MaterialType_Building", "parentId": "Combat", "defId": "MaterialType_Building" },
+                { "nodeId": "Flammability", "parentId": "Combat", "defId": "Flammability" },
+                { "nodeId": "SoundDampening", "parentId": "Combat", "defId": "SoundDampening" },
+                { "nodeId": "Work", "parentId": "", "defId": "" },
+                { "nodeId": "WorkSpeed_Building", "parentId": "Work", "defId": "WorkSpeed_Building" },
+                { "nodeId": "RestComfort", "parentId": "Work", "defId": "RestComfort" }
+            ]
+        },
+        {
+            "treeName": "Environment",
+            "inheritsFrom": "",
+            "nodes": [
+                { "nodeId": "Atmosphere", "parentId": "", "defId": "" },
+                { "nodeId": "FogDensity", "parentId": "Atmosphere", "defId": "FogDensity" },
+                { "nodeId": "Temperature_Env", "parentId": "Atmosphere", "defId": "Temperature_Env" },
+                { "nodeId": "Humidity", "parentId": "Atmosphere", "defId": "Humidity" },
+                { "nodeId": "Time", "parentId": "", "defId": "" },
+                { "nodeId": "TimeOfDay", "parentId": "Time", "defId": "TimeOfDay" }
+            ]
+        }
+    ]
+}

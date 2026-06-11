@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: Hostile
   parent: {fileID: 11400000, guid: bfc972dd99c53504782c5a210ff9674a, type: 2}
+  description: 

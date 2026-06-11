@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd502afaf7ff75c47b42269f0eb3c4c9, type: 3}
+  m_Name: Damage_Physical_Slash
+  m_EditorClassIdentifier: 
+  effectTag: {fileID: 11400000, guid: cb1240ebbb8e5d848b226a6860e9d34b, type: 2}
+  description: "\u5207\u5272\u4F24\u5BB3\u57FA\u7C7B\u3002\u5203\u5668\u780D\u51FB\uFF08\u5200/\u5251/\u65A7\uFF09\u3002\u5339\u914D\u62A4\u7532\u516C\u5F0F
+    Slash \u6297\u6027"
+  duration: 0
+  stackable: 0
+  maxStacks: 1
+  applicationBlockedTags: []
+  baseValue: 0
+  modAdd: 0
+  modMult: 1
+  priority: 0

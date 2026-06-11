@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: Medical
   parent: {fileID: 11400000, guid: b457c8c733fbb72418aab205e5ed22d6, type: 2}
+  description: 

@@ -24,6 +24,7 @@ namespace RedDust.Core
             public string name;
             public string parent;
             public string fullTag;
+            public string description;
             public string Directory => string.IsNullOrEmpty(parent) ? "" : parent.Replace('.', '/');
         }
 
@@ -97,6 +98,12 @@ namespace RedDust.Core
                 AssetDatabase.CreateAsset(tag, assetPath);
                 tag.name = entry.name; // CreateAsset 后必须显式再设一次 name，否则 leafName 推导失败
 
+                // 写入 description
+                var descField = typeof(GameplayTagDefinitionSO).GetField("description",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (descField != null && !string.IsNullOrEmpty(entry.description))
+                    descField.SetValue(tag, entry.description);
+
                 // 强制刷新（OnEnable 不可靠，cachedFullTag 非序列化）
                 var rf = typeof(GameplayTagDefinitionSO).GetMethod("AutoDeriveLeafName",
                     System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
@@ -149,21 +156,13 @@ namespace RedDust.Core
                 }
             }
 
-            // 第二-2轮：按 parent 深度排序（计算每个条目的依赖链长度）
+            // 第二-2轮：按 parent 深度排序（按 parent 字符串中 dot 数量计算深度）
             int GetDepth(string assetPath)
             {
                 var entry = pathToEntry[assetPath];
                 if (string.IsNullOrWhiteSpace(entry.parent)) return 0;
-                // 在 createdMap 中查找 parent 条目
-                foreach (var kv in createdMap)
-                {
-                    var e = pathToEntry[kv.Key];
-                    var tag = AssetDatabase.LoadAssetAtPath<GameplayTagDefinitionSO>(kv.Key);
-                    if (tag != null && tag.FullTag == entry.parent)
-                        return 1 + GetDepth(kv.Key);
-                }
-                // parent 不在本批次中（已有资产），深度=1
-                return 1;
+                // parent="Damage.Physical" → 1 dot → depth=2
+                return entry.parent.Count(c => c == '.') + 1;
             }
 
             pending.Sort((a, b) => GetDepth(a).CompareTo(GetDepth(b)));
@@ -521,8 +520,12 @@ namespace RedDust.Core
             if (_lastErrors.Count > 0)
             {
                 GUILayout.Space(4);
-                foreach (var e in _lastErrors)
-                    EditorGUILayout.LabelField($"  ⚠ {e}", EditorStyles.miniLabel, GUILayout.ExpandWidth(true));
+                EditorGUILayout.TextArea(string.Join("\n", _lastErrors), EditorStyles.miniLabel, GUILayout.MinHeight(40));
+            }
+            else
+            {
+                GUILayout.Space(4);
+                EditorGUILayout.TextArea("No errors.", EditorStyles.miniLabel, GUILayout.MinHeight(20));
             }
 
             EditorGUILayout.EndVertical();

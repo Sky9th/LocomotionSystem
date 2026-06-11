@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: EmergencyReload
   parent: {fileID: 11400000, guid: 9007433bef4472042aac5cac1108a5c3, type: 2}
+  description: 

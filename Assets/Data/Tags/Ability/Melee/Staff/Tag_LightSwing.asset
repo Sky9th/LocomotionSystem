@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: LightSwing
   parent: {fileID: 11400000, guid: 04bda44267ecf9645bdaf4398db046c6, type: 2}
+  description: 

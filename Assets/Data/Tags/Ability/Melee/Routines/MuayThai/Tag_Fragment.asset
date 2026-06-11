@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: Fragment
   parent: {fileID: 11400000, guid: 14a3b0a424bd0c34bb171efa0ead7df6, type: 2}
+  description: 

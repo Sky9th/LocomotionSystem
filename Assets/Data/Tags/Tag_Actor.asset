@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e09ce01e94152649b8d1386fddcf687, type: 3}
   m_Name: Tag_Actor
   m_EditorClassIdentifier: 
-  leafName: Actor
+  leafName: 
   parent: {fileID: 0}
+  description: 

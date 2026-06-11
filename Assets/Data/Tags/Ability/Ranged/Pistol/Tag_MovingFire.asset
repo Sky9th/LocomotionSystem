@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: MovingFire
   parent: {fileID: 11400000, guid: 0dffee68f34fbe24ba4d1136841f44b1, type: 2}
+  description: 

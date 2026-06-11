@@ -209,7 +209,9 @@ namespace RedDust.Ability
                 // 伤害效果 — 构造 SDamageInfo
                 if (effect is DamageEffectSO dmg)
                 {
-                    var baseDamage = dmg.baseDamage;
+                    // TODO: baseDamage 已改为 baseValue，装备系统填充。后续重写。
+                    /*
+                    var baseDamage = dmg.baseValue;
 
                     // 钩子：外部修改器调整伤害值
                     var finalDamage = EffectCallback?.Invoke(effect, target, baseDamage) ?? baseDamage;
@@ -223,6 +225,7 @@ namespace RedDust.Ability
                     );
 
                     target.GetComponent<AbilityReactor>()?.Resolve(hit);
+                    */
                 }
 
                 // duration > 0 的效果 — 把自身的 effectTag 挂给目标
@@ -359,8 +362,10 @@ namespace RedDust.Ability
 
                     if (effect is DamageEffectSO dmg)
                     {
-                        var finalDamage = EffectCallback?.Invoke(effect, gameObject, dmg.baseDamage) ?? dmg.baseDamage;
-                        Debug.Log($"[Ability] ⑤ SelfDamage: {ability.internalName} → self base={dmg.baseDamage} final={finalDamage:F1}");
+                        // TODO: baseDamage 已改为 baseValue，装备系统填充。后续重写。
+                        /*
+                        var finalDamage = EffectCallback?.Invoke(effect, gameObject, dmg.baseValue) ?? dmg.baseValue;
+                        Debug.Log($"[Ability] ⑤ SelfDamage: {ability.internalName} → self base={dmg.baseValue} final={finalDamage:F1}");
                         var hit = new SDamageInfo(
                             gameObject, gameObject, finalDamage,
                             effect.effectTag,
@@ -369,6 +374,7 @@ namespace RedDust.Ability
                             ability
                         );
                         GetComponent<AbilityReactor>()?.Resolve(hit);
+                        */
                     }
 
                     // duration > 0 的效果 — 把自身的 effectTag 挂给目标
@@ -389,8 +395,10 @@ namespace RedDust.Ability
                     {
                         if (effect is DamageEffectSO dmg)
                         {
-                            var finalDamage = EffectCallback?.Invoke(effect, target, dmg.baseDamage) ?? dmg.baseDamage;
-                            Debug.Log($"[Ability] ⑤ TargetDamage: {ability.internalName} → {target.name} base={dmg.baseDamage} final={finalDamage:F1}");
+                            // TODO: baseDamage 已改为 baseValue，装备系统填充。后续重写。
+                            /*
+                            var finalDamage = EffectCallback?.Invoke(effect, target, dmg.baseValue) ?? dmg.baseValue;
+                            Debug.Log($"[Ability] ⑤ TargetDamage: {ability.internalName} → {target.name} base={dmg.baseValue} final={finalDamage:F1}");
                             var hit = new SDamageInfo(
                                 gameObject, target, finalDamage,
                                 effect.effectTag,
@@ -399,6 +407,7 @@ namespace RedDust.Ability
                                 ability
                             );
                             target.GetComponent<AbilityReactor>()?.Resolve(hit);
+                            */
                         }
 
                         // duration > 0 的效果 — 把自身的 effectTag 挂给目标

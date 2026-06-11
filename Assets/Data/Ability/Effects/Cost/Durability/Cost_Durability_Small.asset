@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 141cf4e8366df5c47949c79fda63fae0, type: 3}
+  m_Name: Cost_Durability_Small
+  m_EditorClassIdentifier: 
+  effectTag: {fileID: 0}
+  description: "\u8010\u4E45\u6D88\u8017\xB7\u5C0F\u3002\u8FD1\u6218\u6BCF\u6B21\u547D\u4E2D\u3002\u6263
+    1 \u8010\u4E45"
+  duration: 0
+  stackable: 0
+  maxStacks: 1
+  applicationBlockedTags: []
+  def: {fileID: 11400000, guid: 893a1adfff790f14eb15423508d8b181, type: 2}
+  amount: 1

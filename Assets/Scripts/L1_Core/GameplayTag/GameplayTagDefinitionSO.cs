@@ -17,6 +17,9 @@ namespace RedDust.Core
         [SerializeField, Tooltip("父级标签 SO。根标签（如 State）为 null")]
         private GameplayTagDefinitionSO parent;
 
+        [SerializeField, Tooltip("标签说明。策划可读的描述文本。")]
+        private string description;
+
         // ── 缓存 ──
         private string cachedFullTag;
 

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 141cf4e8366df5c47949c79fda63fae0, type: 3}
+  m_Name: Cost_Stamina_Small
+  m_EditorClassIdentifier: 
+  effectTag: {fileID: 0}
+  description: "\u4F53\u529B\u6D88\u8017\xB7\u5C0F\u3002\u8F7B\u653B\u51FB/\u7FFB\u6EDA/\u63A8\u8E22\u3002\u6263
+    15 \u4F53\u529B"
+  duration: 0
+  stackable: 0
+  maxStacks: 1
+  applicationBlockedTags: []
+  def: {fileID: 11400000, guid: 9211876a3eb406e428ecd10c77df9fd0, type: 2}
+  amount: 15

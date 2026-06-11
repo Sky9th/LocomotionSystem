@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: Human
   parent: {fileID: 11400000, guid: 66f243f720182d649b27ee06dcd6e4f7, type: 2}
+  description: 

@@ -249,7 +249,7 @@ namespace RedDust.Properties.Editor
     public class PropertyImportWindow : EditorWindow
     {
         private const float Pad = 6f;
-        private string _jsonPath = "Assets/Data/Properties/test_import.json";
+        private string _jsonPath = "Assets/Data/Properties/properties_all.json";
         private int _lastCreated, _lastSkipped;
         private List<string> _lastErrors = new();
 

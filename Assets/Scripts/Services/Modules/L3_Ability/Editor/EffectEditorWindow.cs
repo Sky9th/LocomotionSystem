@@ -384,11 +384,13 @@ namespace RedDust.Ability
         private void DrawDamageFields(DamageEffectSO d)
         {
             EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(d, "baseDamage", 100);
-            var v = EditorGUILayout.FloatField(d.baseDamage);
-            if (Mathf.Abs(v - d.baseDamage) > 0.001f) { d.baseDamage = v; SetDirty(); }
+            EditorUIUtility.LabelWithTooltip(d, "baseValue", 100);
+            var v = EditorGUILayout.FloatField(d.baseValue);
+            if (Mathf.Abs(v - d.baseValue) > 0.001f) { d.baseValue = v; SetDirty(); }
             EditorGUILayout.EndHorizontal();
 
+            // TODO: armorPenetration/shieldPenetration/minDamage/maxDamage 已移除
+            /*
             EditorGUILayout.BeginHorizontal();
             EditorUIUtility.LabelWithTooltip(d, "armorPenetration", 100);
             v = EditorGUILayout.FloatField(d.armorPenetration);
@@ -412,6 +414,7 @@ namespace RedDust.Ability
             v = EditorGUILayout.FloatField(d.maxDamage);
             if (Mathf.Abs(v - d.maxDamage) > 0.001f) { d.maxDamage = v; SetDirty(); }
             EditorGUILayout.EndHorizontal();
+            */
         }
 
         private void DrawImpactFields(ImpactEffectSO i)
