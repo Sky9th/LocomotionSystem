@@ -18,6 +18,7 @@ namespace RedDust.Ability
         public GameplayTagDefinitionSO Tag;     // 对应的 Tag（folder 才有）
         public AbilitySO Ability;               // 对应的 Ability（Ability leaf）
         public EffectSO Effect;                 // 对应的 Effect（Effect leaf）
+        public AbilitySearchSO Search;          // 对应的 Search（Search leaf）
         public AbilityTreeNode Parent;
         public List<AbilityTreeNode> Children = new();
         public int AbilityCount;                // 子树中 Ability 总数

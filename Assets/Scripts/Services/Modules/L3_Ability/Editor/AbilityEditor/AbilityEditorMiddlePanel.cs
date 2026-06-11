@@ -1,5 +1,7 @@
 #if UNITY_EDITOR
 using System;
+using System.Linq;
+using System.Reflection;
 using RedDust.Core;
 using RedDust.Core.Editor;
 using RedDust.Shared.EditorUI;
@@ -24,6 +26,14 @@ namespace RedDust.Ability
     {
         private const float Pad = 6f;
         private static Action _onChanged;
+
+        // ── EditorForm（每 section 独立，避免字段覆盖）──
+        private static EditorForm _identityForm;
+        private static EditorForm _tagForm;
+        private static EditorForm _exclusionForm;
+        private static EditorForm _cooldownForm;
+        private static EditorForm _passiveForm;
+
         public delegate void EditSubAssetHandler(SubAssetSlot slot);
         public delegate void ClearSubAssetHandler(SubAssetSlot slot);
         public delegate void RemoveEffectHandler(int index, bool isTargetEffects);
@@ -36,12 +46,9 @@ namespace RedDust.Ability
             GUILayout.FlexibleSpace();
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            var greyLabel = new GUIStyle(EditorStyles.label)
-                { alignment = TextAnchor.MiddleCenter, fontSize = 13,
-                  normal = { textColor = Color.grey } };
             EditorGUILayout.LabelField(
                 "Select an ability from the left panel,\nor create a new one with ＋ Create New.",
-                greyLabel);
+                EditorUIUtility.GreyPlaceholder);
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
             GUILayout.FlexibleSpace();
@@ -110,29 +117,16 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════════════
         private static void DrawIdentityFields(AbilitySO a)
         {
-            EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(a, "internalName", 90);
-            var v = EditorGUILayout.TextField(a.internalName ?? "");
-            if (v != a.internalName) { a.internalName = v; EditorUtility.SetDirty(a); _onChanged?.Invoke(); }
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(a, "displayName", 90);
-            v = EditorGUILayout.TextField(a.displayName ?? "");
-            if (v != a.displayName) { a.displayName = v; EditorUtility.SetDirty(a); _onChanged?.Invoke(); }
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(a, "icon", 90);
-            var icon = (Sprite)EditorGUILayout.ObjectField(a.icon, typeof(Sprite), false);
-            if (icon != a.icon) { a.icon = icon; EditorUtility.SetDirty(a); _onChanged?.Invoke(); }
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(a, "description", 90);
-            var desc = EditorGUILayout.TextArea(a.description ?? "", GUILayout.Height(48));
-            if (desc != a.description) { a.description = desc; EditorUtility.SetDirty(a); _onChanged?.Invoke(); }
-            EditorGUILayout.EndHorizontal();
+            if (_identityForm?.Target != a)
+            {
+                _identityForm = new EditorForm(a);
+                _identityForm.TextField("internalName")
+                     .TextField("displayName")
+                     .ObjectField<Sprite>("icon")
+                     .TextArea("description");
+                _identityForm.OnAnyChange += () => { EditorUtility.SetDirty(a); _onChanged?.Invoke(); };
+            }
+            _identityForm?.Draw();
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -157,11 +151,9 @@ namespace RedDust.Ability
             }
             else
             {
-                var grey = new GUIStyle(EditorStyles.label)
-                    { normal = { textColor = Color.grey } };
-                EditorGUILayout.LabelField("— (none)", grey, GUILayout.ExpandWidth(true));
+                EditorGUILayout.LabelField("— (none)", EditorUIUtility.GreyPlaceholder, GUILayout.ExpandWidth(true));
 
-                GUI.backgroundColor = new Color(0.4f, 0.7f, 0.4f);
+                GUI.backgroundColor = EditorUIUtility.ColorGreenDark;
                 if (GUILayout.Button("...", EditorStyles.miniButton, GUILayout.Width(30)))
                     onEdit?.Invoke(slot);
                 GUI.backgroundColor = Color.white;
@@ -194,10 +186,18 @@ namespace RedDust.Ability
         {
             if (effects != null)
             {
-                for (var i = 0; i < effects.Length; i++)
+                // 固定排序：Damage → Impact → Execute → Cost，同类型内按 effectTag
+                var sorted = effects
+                    .Select((e, idx) => (effect: e, origIdx: idx))
+                    .OrderBy(x => EffectTypeOrder(x.effect))
+                    .ThenBy(x => x.effect?.effectTag?.FullTag ?? "")
+                    .ToArray();
+
+                for (var si = 0; si < sorted.Length; si++)
                 {
-                    if (i > 0) EditorUIUtility.CardGap(Pad);
-                    var e = effects[i];
+                    if (si > 0) EditorUIUtility.CardGap(Pad);
+                    var e = sorted[si].effect;
+                    var origIdx = sorted[si].origIdx;
 
                     EditorUIUtility.DrawCard(Pad, () =>
                     {
@@ -210,9 +210,9 @@ namespace RedDust.Ability
                             : new GUIStyle(EditorStyles.label) { normal = { textColor = Color.red } };
                         EditorGUILayout.LabelField(name, st, GUILayout.ExpandWidth(true));
 
-                        GUI.backgroundColor = new Color(0.9f, 0.3f, 0.3f);
+                        GUI.backgroundColor = EditorUIUtility.ColorRed;
                         if (GUILayout.Button("✕", EditorStyles.miniButton, GUILayout.Width(20)))
-                            onRemove?.Invoke(i);
+                            onRemove?.Invoke(origIdx);
                         GUI.backgroundColor = Color.white;
                         EditorGUILayout.EndHorizontal();
 
@@ -228,13 +228,11 @@ namespace RedDust.Ability
 
             if (effects == null || effects.Length == 0)
             {
-                var grey = new GUIStyle(EditorStyles.label)
-                    { normal = { textColor = Color.grey } };
-                EditorGUILayout.LabelField("(empty)", grey);
+                EditorGUILayout.LabelField("(empty)", EditorUIUtility.GreyPlaceholder);
             }
 
             EditorUIUtility.CardGap(Pad);
-            GUI.backgroundColor = new Color(0.4f, 0.7f, 0.4f);
+            GUI.backgroundColor = EditorUIUtility.ColorGreenDark;
             if (GUILayout.Button("＋ Add Effect", GUILayout.Height(22)))
                 onEdit?.Invoke(slot);
             GUI.backgroundColor = Color.white;
@@ -245,42 +243,55 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════════════
         private static void DrawTagFields(AbilitySO a)
         {
-            // abilityTag — 基类字段，主动被动通用
-            EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(a, "abilityTag", 90, "Ability");
-            var at = (GameplayTagDefinitionSO)EditorGUILayout.ObjectField(
-                a.abilityTag, typeof(GameplayTagDefinitionSO), false);
-            if (at != a.abilityTag) { a.abilityTag = at; EditorUtility.SetDirty(a); _onChanged?.Invoke(); }
-            if (GUILayout.Button("Tag", EditorStyles.miniButton, GUILayout.Width(35)))
+            // abilityTag / sharedCooldownTag
+            if (_tagForm?.Target != a)
             {
-                var r = GUIUtility.GUIToScreenRect(GUILayoutUtility.GetLastRect());
-                TagPicker.Show(r, allowCreate: true, currentFullTag: a.abilityTag?.FullTag,
-                    onSelected: t => { if (a.abilityTag != t) { a.abilityTag = t; EditorUtility.SetDirty(a); _onChanged?.Invoke(); } });
+                _tagForm = new EditorForm(a);
+                _tagForm.ObjectField<GameplayTagDefinitionSO>("abilityTag", label: "Ability")
+                        .PostInput(() => DrawTagPickerButton(a, "abilityTag"))
+                     .ObjectField<GameplayTagDefinitionSO>("sharedCooldownTag", label: "Shared CD")
+                        .PostInput(() => DrawTagPickerButton(a, "sharedCooldownTag"));
+                _tagForm.OnAnyChange += () => { EditorUtility.SetDirty(a); _onChanged?.Invoke(); };
             }
-            EditorGUILayout.EndHorizontal();
+            _tagForm?.Draw();
 
+            // overrideExclusion — AbilityDefSO 独有字段
             if (a is AbilityDefSO def)
             {
-                EditorGUILayout.BeginHorizontal();
-                EditorUIUtility.LabelWithTooltip(def, "overrideExclusion", 90, "Override Exclusion");
-                var ex = EditorGUILayout.Toggle(def.overrideExclusion);
-                if (ex != def.overrideExclusion) { def.overrideExclusion = ex; EditorUtility.SetDirty(def); _onChanged?.Invoke(); }
-                EditorGUILayout.EndHorizontal();
+                if (_exclusionForm?.Target != def)
+                {
+                    _exclusionForm = new EditorForm(def);
+                    _exclusionForm.Toggle("overrideExclusion", label: "Override Exclusion");
+                    _exclusionForm.OnAnyChange += () => { EditorUtility.SetDirty(def); _onChanged?.Invoke(); };
+                }
+                _exclusionForm?.Draw();
             }
+        }
 
-            // sharedCooldownTag — 基类字段
-            EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(a, "sharedCooldownTag", 90, "Shared CD");
-            var v = (GameplayTagDefinitionSO)EditorGUILayout.ObjectField(
-                a.sharedCooldownTag, typeof(GameplayTagDefinitionSO), false);
-            if (v != a.sharedCooldownTag) { a.sharedCooldownTag = v; EditorUtility.SetDirty(a); _onChanged?.Invoke(); }
-            if (GUILayout.Button("Tag", EditorStyles.miniButton, GUILayout.Width(35)))
+        /// <summary>TagPicker 按钮（PostInput 回调）。修改直接写 SO 字段并触发 form 重建。</summary>
+        private static void DrawTagPickerButton(AbilitySO a, string fieldName)
+        {
+            if (!GUILayout.Button("Tag", EditorStyles.miniButton, GUILayout.Width(35))) return;
+            var field = a.GetType().GetField(fieldName,
+                BindingFlags.Public | BindingFlags.Instance);
+            if (field == null)
             {
-                var r = GUIUtility.GUIToScreenRect(GUILayoutUtility.GetLastRect());
-                TagPicker.Show(r, allowCreate: true, currentFullTag: a.sharedCooldownTag?.FullTag,
-                    onSelected: t => { if (a.sharedCooldownTag != t) { a.sharedCooldownTag = t; EditorUtility.SetDirty(a); _onChanged?.Invoke(); } });
+                Debug.LogWarning($"[MiddlePanel] TagPicker: field '{fieldName}' not found on {a.GetType().Name}");
+                return;
             }
-            EditorGUILayout.EndHorizontal();
+            var rect = GUIUtility.GUIToScreenRect(GUILayoutUtility.GetLastRect());
+            var currentTag = field.GetValue(a) as GameplayTagDefinitionSO;
+            TagPicker.Show(rect, allowCreate: true, currentFullTag: currentTag?.FullTag,
+                onSelected: t =>
+                {
+                    if (currentTag != t)
+                    {
+                        field.SetValue(a, t);
+                        EditorUtility.SetDirty(a);
+                        _onChanged?.Invoke();
+                        _tagForm = null; _passiveForm = null; // force rebuild
+                    }
+                });
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -288,12 +299,13 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════════════
         private static void DrawCooldownFields(AbilitySO a)
         {
-            EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(a, "cooldownDuration", 90, "Duration (s)");
-            var v = EditorGUILayout.FloatField(a.cooldownDuration);
-            if (Mathf.Abs(v - a.cooldownDuration) > 0.001f)
-            { a.cooldownDuration = v; EditorUtility.SetDirty(a); _onChanged?.Invoke(); }
-            EditorGUILayout.EndHorizontal();
+            if (_cooldownForm?.Target != a)
+            {
+                _cooldownForm = new EditorForm(a);
+                _cooldownForm.Float("cooldownDuration", label: "Duration (s)");
+                _cooldownForm.OnAnyChange += () => { EditorUtility.SetDirty(a); _onChanged?.Invoke(); };
+            }
+            _cooldownForm?.Draw();
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -301,38 +313,17 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════════════
         private static void DrawPassiveFields(PassiveAbilitySO p)
         {
-            EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(p, "trigger", 90);
-            var v = (ETriggerEvent)EditorGUILayout.EnumPopup(p.trigger);
-            if (v != p.trigger) { p.trigger = v; EditorUtility.SetDirty(p); _onChanged?.Invoke(); }
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(p, "triggerValue", 90, "Trigger Value");
-            var f = EditorGUILayout.FloatField(p.triggerValue);
-            if (Mathf.Abs(f - p.triggerValue) > 0.001f)
-            { p.triggerValue = f; EditorUtility.SetDirty(p); _onChanged?.Invoke(); }
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(p, "triggerChannel", 90, "Channel");
-            var ch = (EventChannelBase)EditorGUILayout.ObjectField(
-                p.triggerChannel, typeof(EventChannelBase), false);
-            if (ch != p.triggerChannel) { p.triggerChannel = ch; EditorUtility.SetDirty(p); _onChanged?.Invoke(); }
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(p, "targetRequiredTag", 90, "Target Tag");
-            var tag = (GameplayTagDefinitionSO)EditorGUILayout.ObjectField(
-                p.targetRequiredTag, typeof(GameplayTagDefinitionSO), false);
-            if (tag != p.targetRequiredTag) { p.targetRequiredTag = tag; EditorUtility.SetDirty(p); _onChanged?.Invoke(); }
-            if (GUILayout.Button("Tag", EditorStyles.miniButton, GUILayout.Width(35)))
+            if (_passiveForm?.Target != p)
             {
-                var r = GUIUtility.GUIToScreenRect(GUILayoutUtility.GetLastRect());
-                TagPicker.Show(r, allowCreate: true, currentFullTag: p.targetRequiredTag?.FullTag,
-                    onSelected: t => { if (p.targetRequiredTag != t) { p.targetRequiredTag = t; EditorUtility.SetDirty(p); _onChanged?.Invoke(); } });
+                _passiveForm = new EditorForm(p);
+                _passiveForm.Enum<ETriggerEvent>("trigger")
+                     .Float("triggerValue", label: "Trigger Value")
+                     .ObjectField<EventChannelBase>("triggerChannel", label: "Channel")
+                     .ObjectField<GameplayTagDefinitionSO>("targetRequiredTag", label: "Target Tag")
+                        .PostInput(() => DrawTagPickerButton(p, "targetRequiredTag"));
+                _passiveForm.OnAnyChange += () => { EditorUtility.SetDirty(p); _onChanged?.Invoke(); };
             }
-            EditorGUILayout.EndHorizontal();
+            _passiveForm?.Draw();
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -343,9 +334,10 @@ namespace RedDust.Ability
             var links = def.comboLinks;
             if (links != null)
             {
+                int removeAt = -1;
                 for (var i = 0; i < links.Length; i++)
                 {
-                    if (i > 0) GUILayout.Space(4f);
+                    if (i > 0) EditorUIUtility.CardGap(Pad);
                     var l = links[i];
 
                     EditorGUILayout.BeginHorizontal();
@@ -369,19 +361,20 @@ namespace RedDust.Ability
                     if (bp != l.BypassCooldown) { l.BypassCooldown = bp; def.comboLinks[i] = l; EditorUtility.SetDirty(def); _onChanged?.Invoke(); }
                     EditorGUILayout.LabelField("BypassCD", EditorStyles.miniLabel, GUILayout.Width(58));
 
-                    GUI.backgroundColor = new Color(0.9f, 0.3f, 0.3f);
+                    GUI.backgroundColor = EditorUIUtility.ColorRed;
                     if (GUILayout.Button("✕", EditorStyles.miniButton, GUILayout.Width(20)))
-                        RemoveComboLink(def, i);
+                        removeAt = i;
                     GUI.backgroundColor = Color.white;
                     EditorGUILayout.EndHorizontal();
                 }
+
+                if (removeAt >= 0)
+                    RemoveComboLink(def, removeAt);
             }
 
             if (links == null || links.Length == 0)
             {
-                var grey = new GUIStyle(EditorStyles.label)
-                    { normal = { textColor = Color.grey } };
-                EditorGUILayout.LabelField("(no combo links)", grey);
+                EditorGUILayout.LabelField("(no combo links)", EditorUIUtility.GreyPlaceholder);
             }
 
             GUILayout.Space(Pad);
@@ -393,44 +386,27 @@ namespace RedDust.Ability
         // 摘要
         // ═══════════════════════════════════════════════════════════
         private static string GetActivationSummary(AbilityActivationSO a)
-            => a == null ? null : $"{a.activationType} · speed:{a.animationSpeed:F1}";
+            => AbilityEditorUtility.GetActivationSummary(a);
 
         private static string GetSearchSummary(AbilitySearchSO s)
-            => s == null ? null : $"{s.searchType} · range:{s.range:F1} · max:{s.maxTargets}";
+            => AbilityEditorUtility.GetSearchSummary(s);
 
         private static string GetEffectSummary(EffectSO e)
-        {
-            if (e == null) return null;
-            if (e is DamageEffectSO d)
-                return $"Damage · {e.effectTag?.FullTag ?? "—"} · base:{d.baseValue:F0} · dur:{e.duration:F1}s";  // TODO: was baseDamage
-            if (e is ImpactEffectSO i)
-                return $"Impact · {e.effectTag?.FullTag ?? "—"} · stagger:{i.staggerValue:F0}";
-            if (e is ExecuteEffectSO x)
-                return $"Execute · {e.effectTag?.FullTag ?? "—"} · threshold:{x.hpThreshold:P0}";
-            if (e is CostEffectSO c)
-                return $"Cost · {c.def?.name ?? "—"} · amount:{c.amount:F0}";
-            return $"{e.GetType().Name.Replace("EffectSO", "")} · {e.effectTag?.FullTag ?? "—"}";
-        }
+            => AbilityEditorUtility.GetEffectSummary(e, includeDuration: true);
 
         private static string GetNoiseSummary(NoiseEventSO n)
-            => n == null ? null : $"level:{n.level:F0} · decay:{n.decayRadius:F1}m";
+            => AbilityEditorUtility.GetNoiseSummary(n);
+
+        private static int EffectTypeOrder(EffectSO e)
+            => AbilityEditorUtility.GetEffectTypeOrder(e);
 
         private static string GetEffectIcon(EffectSO e)
-        {
-            if (e == null) return "?";
-            if (e is DamageEffectSO) return "Dmg";
-            if (e is ImpactEffectSO) return "Imp";
-            if (e is ExecuteEffectSO) return "Exe";
-            if (e is CostEffectSO) return "Cost";
-            return "*";
-        }
+            => AbilityEditorUtility.GetEffectIcon(e);
 
         private static void AddComboLink(AbilityDefSO def)
         {
             var links = def.comboLinks ?? Array.Empty<SComboLink>();
-            var arr = new SComboLink[links.Length + 1];
-            Array.Copy(links, arr, links.Length);
-            arr[links.Length] = new SComboLink { WindowStart = 0.2f, WindowDuration = 0.3f };
+            var arr = AbilityEditorUtility.Append(links, new SComboLink { WindowStart = 0.2f, WindowDuration = 0.3f });
             def.comboLinks = arr;
             EditorUtility.SetDirty(def); _onChanged?.Invoke();
         }
@@ -439,10 +415,7 @@ namespace RedDust.Ability
         {
             var links = def.comboLinks;
             if (links == null || index < 0 || index >= links.Length) return;
-            var arr = new SComboLink[links.Length - 1];
-            for (int i = 0, j = 0; i < links.Length; i++)
-                if (i != index) arr[j++] = links[i];
-            def.comboLinks = arr;
+            def.comboLinks = AbilityEditorUtility.RemoveAt(links, index);
             EditorUtility.SetDirty(def); _onChanged?.Invoke();
         }
     }

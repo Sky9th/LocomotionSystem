@@ -31,6 +31,10 @@ namespace RedDust.Ability
         private bool _hasChanges;
         private EffectSO _selectedEffect;
         private string _searchText = "";
+
+        // ── EditorForm ──
+        private EditorForm _baseForm;
+        private EditorForm _typeForm;
         private EffectTypeFilter _filter = EffectTypeFilter.All;
         private Vector2 _leftScroll;
         private Vector2 _rightScroll;
@@ -91,13 +95,13 @@ namespace RedDust.Ability
                 if (GUILayout.Button("Export", GUILayout.Width(60), GUILayout.Height(22)))
                     ExportFile();
 
-                GUI.backgroundColor = new Color(0.4f, 0.7f, 0.4f);
+                GUI.backgroundColor = EditorUIUtility.ColorGreenDark;
                 if (GUILayout.Button("+ Create", GUILayout.Width(70), GUILayout.Height(22)))
                     CreateNewEffect();
                 GUI.backgroundColor = Color.white;
 
                 GUI.enabled = _hasChanges;
-                GUI.backgroundColor = _hasChanges ? new Color(0.4f, 0.8f, 0.4f) : Color.white;
+                GUI.backgroundColor = _hasChanges ? EditorUIUtility.ColorGreen : Color.white;
                 if (GUILayout.Button(_hasChanges ? "Save *" : "Saved", GUILayout.Width(80), GUILayout.Height(22)))
                 {
                     AssetDatabase.SaveAssets();
@@ -161,18 +165,11 @@ namespace RedDust.Ability
         {
             EditorUIUtility.DrawCard(Pad, () =>
             {
-                EditorGUILayout.BeginHorizontal();
-                var tabs = new[] { EffectTypeFilter.All, EffectTypeFilter.Damage, EffectTypeFilter.Impact, EffectTypeFilter.Execute, EffectTypeFilter.Cost };
-                var labels = new[] { "All", "Dmg", "Imp", "Exe", "Cost" };
-                for (var i = 0; i < tabs.Length; i++)
-                {
-                    var sel = _filter == tabs[i];
-                    GUI.backgroundColor = sel ? new Color(0.3f, 0.6f, 0.9f) : Color.white;
-                    if (GUILayout.Button(labels[i], EditorStyles.miniButtonMid, GUILayout.Height(20)))
-                    { _filter = tabs[i]; OnFilterChanged(); }
-                    GUI.backgroundColor = Color.white;
-                }
-                EditorGUILayout.EndHorizontal();
+                var newFilter = EditorUIUtility.DrawFilterTabBar(_filter,
+                    new[] { EffectTypeFilter.All, EffectTypeFilter.Damage, EffectTypeFilter.Impact, EffectTypeFilter.Execute, EffectTypeFilter.Cost },
+                    new[] { "All", "Dmg", "Imp", "Exe", "Cost" });
+                if (!EqualityComparer<EffectTypeFilter>.Default.Equals(newFilter, _filter))
+                { _filter = newFilter; OnFilterChanged(); }
             });
         }
 
@@ -180,12 +177,7 @@ namespace RedDust.Ability
         {
             EditorUIUtility.DrawCard(Pad, () =>
             {
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Search", EditorStyles.label, GUILayout.Width(42));
-                var s = EditorGUILayout.TextField(_searchText, GUILayout.ExpandWidth(true));
-                if (!string.IsNullOrEmpty(s) && GUILayout.Button("x", EditorStyles.miniButton, GUILayout.Width(20)))
-                { s = ""; GUI.FocusControl(null); }
-                EditorGUILayout.EndHorizontal();
+                var s = EditorUIUtility.DrawSearchRow(_searchText, labelWidth: 42f);
                 if (s != _searchText) { _searchText = s; }
             });
         }
@@ -200,9 +192,8 @@ namespace RedDust.Ability
                     GUILayout.FlexibleSpace();
                     EditorGUILayout.BeginHorizontal();
                     GUILayout.FlexibleSpace();
-                    var grey = new GUIStyle(EditorStyles.label)
-                        { alignment = TextAnchor.MiddleCenter, fontSize = 13, normal = { textColor = Color.grey } };
-                    EditorGUILayout.LabelField("Select an effect from the left panel.", grey);
+                    EditorGUILayout.LabelField("Select an effect from the left panel.",
+                        EditorUIUtility.GreyPlaceholder);
                     GUILayout.FlexibleSpace();
                     EditorGUILayout.EndHorizontal();
                     GUILayout.FlexibleSpace();
@@ -234,51 +225,57 @@ namespace RedDust.Ability
 
                 var e = _selectedEffect;
 
-                // name
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Name", EditorStyles.label, GUILayout.Width(80));
-                var newName = EditorGUILayout.TextField(e.name);
-                if (newName != e.name && !string.IsNullOrWhiteSpace(newName))
-                    RenameEffect(e, newName);
-                EditorGUILayout.EndHorizontal();
-
-                // effectTag
-                EditorGUILayout.BeginHorizontal();
-                EditorUIUtility.LabelWithTooltip(e, "effectTag", 80, "effectTag");
-                var tag = (GameplayTagDefinitionSO)EditorGUILayout.ObjectField(
-                    e.effectTag, typeof(GameplayTagDefinitionSO), false);
-                if (tag != e.effectTag) { e.effectTag = tag; SetDirty(); }
-                if (GUILayout.Button("Tag", EditorStyles.miniButton, GUILayout.Width(35)))
+                if (_baseForm?.Target != e)
                 {
-                    var r = GUIUtility.GUIToScreenRect(GUILayoutUtility.GetLastRect());
-                    TagPicker.Show(r, allowCreate: true, currentFullTag: e.effectTag?.FullTag,
-                        onSelected: t => { if (e.effectTag != t) { e.effectTag = t; SetDirty(); } });
+                    _baseForm = new EditorForm(e) { DefaultLabelWidth = 80 };
+
+                    // Name → RawField（Object.name 非 SO 字段）
+                    _baseForm.RawField("Name", 80,
+                        getValue: () => e.name,
+                        setValue: v => { e.name = (string)v; },
+                        drawFunc: v => EditorGUILayout.TextField((string)v),
+                        equals: (a, b) => (string)a == (string)b)
+                    .CustomOnChange((_, newVal) =>
+                    {
+                        var n = (string)newVal;
+                        if (string.IsNullOrWhiteSpace(n)) return false;
+                        RenameEffect(e, n);
+                        return true;
+                    });
+
+                    // effectTag → ObjectField + TagPicker 按钮
+                    _baseForm.ObjectField<GameplayTagDefinitionSO>("effectTag")
+                        .PostInput(() =>
+                        {
+                            if (GUILayout.Button("Tag", EditorStyles.miniButton, GUILayout.Width(35)))
+                            {
+                                var rect = GUIUtility.GUIToScreenRect(GUILayoutUtility.GetLastRect());
+                                TagPicker.Show(rect, allowCreate: true,
+                                    currentFullTag: e.effectTag?.FullTag,
+                                    onSelected: t =>
+                                    {
+                                        if (e.effectTag != t)
+                                        {
+                                            e.effectTag = t;
+                                            EditorUtility.SetDirty(e);
+                                            _hasChanges = true;
+                                            _needsRefresh = true;
+                                            _baseForm = null; // force rebuild
+                                        }
+                                    });
+                            }
+                        });
+
+                    // 标准字段
+                    _baseForm.Float("duration")
+                             .Toggle("stackable")
+                             .Int("maxStacks",
+                                 visibleWhen: () => e.stackable,
+                                 onBeforeSet: v => Mathf.Max(1, v));
+
+                    _baseForm.OnAnyChange += MarkDirty;
                 }
-                EditorGUILayout.EndHorizontal();
-
-                // duration
-                EditorGUILayout.BeginHorizontal();
-                EditorUIUtility.LabelWithTooltip(e, "duration", 80);
-                var dur = EditorGUILayout.FloatField(e.duration);
-                if (Mathf.Abs(dur - e.duration) > 0.001f) { e.duration = dur; SetDirty(); }
-                EditorGUILayout.EndHorizontal();
-
-                // stackable
-                EditorGUILayout.BeginHorizontal();
-                EditorUIUtility.LabelWithTooltip(e, "stackable", 80);
-                var st = EditorGUILayout.Toggle(e.stackable);
-                if (st != e.stackable) { e.stackable = st; SetDirty(); }
-                EditorGUILayout.EndHorizontal();
-
-                // maxStacks (only when stackable)
-                if (e.stackable)
-                {
-                    EditorGUILayout.BeginHorizontal();
-                    EditorUIUtility.LabelWithTooltip(e, "maxStacks", 80);
-                    var ms = EditorGUILayout.IntField(e.maxStacks);
-                    if (ms != e.maxStacks) { e.maxStacks = Mathf.Max(1, ms); SetDirty(); }
-                    EditorGUILayout.EndHorizontal();
-                }
+                _baseForm?.Draw();
 
                 // applicationBlockedTags
                 GUILayout.Space(Pad);
@@ -306,7 +303,7 @@ namespace RedDust.Ability
                     Array.Copy(tags, arr, tags.Length);
                     arr[i] = t;
                     e.applicationBlockedTags = arr;
-                    SetDirty();
+                    MarkDirty();
                 }
                 if (GUILayout.Button("Tag", EditorStyles.miniButton, GUILayout.Width(35)))
                 {
@@ -320,11 +317,11 @@ namespace RedDust.Ability
                                 var a = e.applicationBlockedTags;
                                 a[idx] = t;
                                 e.applicationBlockedTags = a;
-                                SetDirty();
+                                MarkDirty();
                             }
                         });
                 }
-                GUI.backgroundColor = new Color(0.9f, 0.3f, 0.3f);
+                GUI.backgroundColor = EditorUIUtility.ColorRed;
                 if (GUILayout.Button("x", EditorStyles.miniButton, GUILayout.Width(20)))
                     removeAt = i;
                 GUI.backgroundColor = Color.white;
@@ -333,20 +330,15 @@ namespace RedDust.Ability
 
             if (removeAt >= 0)
             {
-                var newArr = new GameplayTagDefinitionSO[tags.Length - 1];
-                for (int i = 0, j = 0; i < tags.Length; i++)
-                    if (i != removeAt) newArr[j++] = tags[i];
-                e.applicationBlockedTags = newArr;
-                SetDirty();
+                e.applicationBlockedTags = AbilityEditorUtility.RemoveAt(tags, removeAt);
+                MarkDirty();
             }
 
             GUILayout.Space(2);
             if (GUILayout.Button("+ Add Blocked Tag", GUILayout.Height(20)))
             {
-                var newArr = new GameplayTagDefinitionSO[tags.Length + 1];
-                Array.Copy(tags, newArr, tags.Length);
-                e.applicationBlockedTags = newArr;
-                SetDirty();
+                e.applicationBlockedTags = AbilityEditorUtility.Append(tags, null);
+                MarkDirty();
             }
         }
 
@@ -383,83 +375,49 @@ namespace RedDust.Ability
 
         private void DrawDamageFields(DamageEffectSO d)
         {
-            EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(d, "baseValue", 100);
-            var v = EditorGUILayout.FloatField(d.baseValue);
-            if (Mathf.Abs(v - d.baseValue) > 0.001f) { d.baseValue = v; SetDirty(); }
-            EditorGUILayout.EndHorizontal();
-
-            // TODO: armorPenetration/shieldPenetration/minDamage/maxDamage 已移除
-            /*
-            EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(d, "armorPenetration", 100);
-            v = EditorGUILayout.FloatField(d.armorPenetration);
-            if (Mathf.Abs(v - d.armorPenetration) > 0.001f) { d.armorPenetration = v; SetDirty(); }
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(d, "shieldPenetration", 100);
-            v = EditorGUILayout.Slider(d.shieldPenetration, 0f, 1f);
-            if (Mathf.Abs(v - d.shieldPenetration) > 0.001f) { d.shieldPenetration = v; SetDirty(); }
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(d, "minDamage", 100);
-            v = EditorGUILayout.FloatField(d.minDamage);
-            if (Mathf.Abs(v - d.minDamage) > 0.001f) { d.minDamage = v; SetDirty(); }
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(d, "maxDamage", 100);
-            v = EditorGUILayout.FloatField(d.maxDamage);
-            if (Mathf.Abs(v - d.maxDamage) > 0.001f) { d.maxDamage = v; SetDirty(); }
-            EditorGUILayout.EndHorizontal();
-            */
+            if (_typeForm?.Target != d)
+            {
+                _typeForm = new EditorForm(d) { DefaultLabelWidth = 100 };
+                _typeForm.Float("baseValue");
+                _typeForm.OnAnyChange += MarkDirty;
+            }
+            _typeForm?.Draw();
         }
 
         private void DrawImpactFields(ImpactEffectSO i)
         {
-            EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(i, "staggerValue", 100);
-            var v = EditorGUILayout.FloatField(i.staggerValue);
-            if (Mathf.Abs(v - i.staggerValue) > 0.001f) { i.staggerValue = v; SetDirty(); }
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(i, "knockbackForce", 100);
-            v = EditorGUILayout.FloatField(i.knockbackForce);
-            if (Mathf.Abs(v - i.knockbackForce) > 0.001f) { i.knockbackForce = v; SetDirty(); }
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(i, "knockbackDir", 100, "knockbackDir");
-            var kd = (EKnockbackDirection)EditorGUILayout.EnumPopup(i.knockbackDir);
-            if (kd != i.knockbackDir) { i.knockbackDir = kd; SetDirty(); }
-            EditorGUILayout.EndHorizontal();
+            if (_typeForm?.Target != i)
+            {
+                _typeForm = new EditorForm(i) { DefaultLabelWidth = 100 };
+                _typeForm.Float("staggerValue")
+                         .Float("knockbackForce")
+                         .Enum<EKnockbackDirection>("knockbackDir");
+                _typeForm.OnAnyChange += MarkDirty;
+            }
+            _typeForm?.Draw();
         }
 
         private void DrawExecuteFields(ExecuteEffectSO x)
         {
-            EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(x, "hpThreshold", 100);
-            var v = EditorGUILayout.Slider(x.hpThreshold, 0f, 1f);
-            if (Mathf.Abs(v - x.hpThreshold) > 0.001f) { x.hpThreshold = v; SetDirty(); }
-            EditorGUILayout.EndHorizontal();
+            if (_typeForm?.Target != x)
+            {
+                _typeForm = new EditorForm(x) { DefaultLabelWidth = 100 };
+                _typeForm.Slider("hpThreshold", 0f, 1f);
+                _typeForm.OnAnyChange += MarkDirty;
+            }
+            _typeForm?.Draw();
         }
 
         private void DrawCostFields(CostEffectSO c)
         {
-            EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(c, "def", 100);
-            var def = (PropertyDefSO)EditorGUILayout.ObjectField(c.def, typeof(PropertyDefSO), false);
-            if (def != c.def) { c.def = def; SetDirty(); }
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            EditorUIUtility.LabelWithTooltip(c, "amount", 100);
-            var v = EditorGUILayout.FloatField(c.amount);
-            if (Mathf.Abs(v - c.amount) > 0.001f) { c.amount = v; SetDirty(); }
-            EditorGUILayout.EndHorizontal();
+            if (_typeForm?.Target != c)
+            {
+                _typeForm = new EditorForm(c) { DefaultLabelWidth = 100 };
+                _typeForm.ObjectField<PropertyDefSO>("def")
+                         .Float("amount");
+                _typeForm.OnAnyChange += MarkDirty;
+            }
+            _typeForm?.Draw();
         }
 
         // ═══════════════════════════════════════════════════
@@ -584,28 +542,8 @@ namespace RedDust.Ability
                 parentNode.Children.Add(leaf);
             }
 
-            // sort: folders first alpha, then leaves alpha
-            void SortRecursive(List<AbilityTreeNode> nodes)
-            {
-                nodes.Sort((a, b) =>
-                {
-                    if (a.IsFolder != b.IsFolder) return a.IsFolder ? -1 : 1;
-                    return string.CompareOrdinal(a.DisplayName, b.DisplayName);
-                });
-                foreach (var n in nodes) SortRecursive(n.Children);
-            }
-            SortRecursive(_treeRoots);
-
-            // count
-            int CountRecursive(AbilityTreeNode node)
-            {
-                if (!node.IsFolder) return 1;
-                var total = 0;
-                foreach (var c in node.Children) total += CountRecursive(c);
-                node.AbilityCount = total;
-                return total;
-            }
-            foreach (var root in _treeRoots) CountRecursive(root);
+            AbilityEditorUtility.SortTreeRecursive(_treeRoots);
+            AbilityEditorUtility.ComputeTreeCounts(_treeRoots);
         }
 
         private void AddEffectToFolder(string folderName, int depth, EffectSO effect, AbilityTreeNode parent)
@@ -678,7 +616,7 @@ namespace RedDust.Ability
             _needsRefresh = true;
         }
 
-        private void SetDirty()
+        private void MarkDirty()
         {
             if (_selectedEffect == null) return;
             EditorUtility.SetDirty(_selectedEffect);

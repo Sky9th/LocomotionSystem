@@ -15,7 +15,6 @@ namespace RedDust.Ability
         private const float Pad = 6f;
         private const float FoldoutWidth = 14f;
         private const float FoldoutGap = 6f;
-        private const float DepthWidth = 18f;
 
         public static void DrawTree(
             List<AbilityTreeNode> roots,
@@ -24,7 +23,8 @@ namespace RedDust.Ability
             string searchFilter,
             AbilityTypeFilter typeFilter,
             Action<ScriptableObject> onLeafSelected = null,
-            EffectSO selectedEffect = null)
+            EffectSO selectedEffect = null,
+            AbilitySearchSO selectedSearch = null)
         {
             if (roots == null || roots.Count == 0)
             {
@@ -55,7 +55,7 @@ namespace RedDust.Ability
             {
                 if (i > 0) EditorUIUtility.CardGap(Pad);
                 DrawNodeCard(visibleRoots[i], foldouts, ref selectedAbility,
-                    q, typeFilter, hasSearch, onLeafSelected, selectedEffect);
+                    q, typeFilter, hasSearch, onLeafSelected, selectedEffect, selectedSearch);
             }
         }
 
@@ -67,13 +67,15 @@ namespace RedDust.Ability
             AbilityTypeFilter typeFilter,
             bool hasSearch,
             Action<ScriptableObject> onLeafSelected = null,
-            EffectSO selectedEffect = null)
+            EffectSO selectedEffect = null,
+            AbilitySearchSO selectedSearch = null)
         {
             bool hasChildren = node.IsFolder && node.Children.Count > 0;
             var sel = selectedAbility;
             bool isSelected = !node.IsFolder
                 && ((node.Ability != null && sel == node.Ability)
-                    || (node.Effect != null && selectedEffect == node.Effect));
+                    || (node.Effect != null && selectedEffect == node.Effect)
+                    || (node.Search != null && selectedSearch == node.Search));
             var rowH = EditorGUIUtility.singleLineHeight;
 
             if (!foldouts.ContainsKey(node.FullPath))
@@ -88,54 +90,52 @@ namespace RedDust.Ability
 
             EditorUIUtility.DrawCard(Pad, () =>
             {
-                EditorGUILayout.BeginHorizontal();
-
-                // 折叠区
-                EditorGUILayout.BeginHorizontal(
-                    GUILayout.Width(FoldoutWidth + FoldoutGap));
-                if (hasChildren)
-                {
-                    var foldRect = GUILayoutUtility.GetRect(FoldoutWidth, rowH);
-                    foldouts[node.FullPath] = EditorGUI.Foldout(
-                        foldRect, foldouts[node.FullPath], "", true);
-                }
-                else
-                {
-                    var dashRect = GUILayoutUtility.GetRect(FoldoutWidth, rowH);
-                    var dashStyle = new GUIStyle(EditorStyles.label)
-                        { alignment = TextAnchor.MiddleCenter };
-                    GUI.Label(dashRect, "-", dashStyle);
-                }
-                GUILayout.Space(FoldoutGap);
-                EditorGUILayout.EndHorizontal();
-
-                // 名称
-                EditorGUILayout.BeginVertical(GUILayout.ExpandWidth(true));
-                EditorGUILayout.BeginHorizontal();
-
                 var label = node.IsFolder
                     ? $"{node.DisplayName} ({node.AbilityCount})"
                     : node.DisplayName;
-
                 var isMatch = hasSearch && node.FullPath.ToLowerInvariant().Contains(q);
-                var style = new GUIStyle(EditorStyles.label)
-                    { fontStyle = (isSelected || isMatch) ? FontStyle.Bold : FontStyle.Normal };
 
-                if (node.IsFolder)
-                    GUILayout.Label(label, style, GUILayout.ExpandWidth(true));
-                else if (GUILayout.Button(label, style, GUILayout.ExpandWidth(true)))
+                // 整行一个 Rect，手动绘三角 + 文字
+                var rowRect = GUILayoutUtility.GetRect(
+                    GUIContent.none, EditorStyles.label, GUILayout.ExpandWidth(true), GUILayout.Height(rowH + 2));
+
+                // 点击整行
+                if (GUI.Button(rowRect, GUIContent.none, GUIStyle.none))
                 {
-                    if (onLeafSelected != null)
-                        onLeafSelected(node.Ability ?? (ScriptableObject)node.Effect);
+                    if (node.IsFolder)
+                        foldouts[node.FullPath] = !foldouts[node.FullPath];
                     else
-                        sel = node.Ability;
-                    GUI.FocusControl(null);
+                    {
+                        if (onLeafSelected != null)
+                            onLeafSelected(node.Ability ?? (ScriptableObject)node.Effect ?? node.Search);
+                        else
+                            sel = node.Ability;
+                        GUI.FocusControl(null);
+                    }
                 }
 
-                EditorGUILayout.EndHorizontal();
-                EditorGUILayout.EndVertical();
+                // 三角/横线
+                var iconRect = new Rect(rowRect.x + 2, rowRect.y, FoldoutWidth, rowRect.height);
+                if (hasChildren)
+                {
+                    foldouts[node.FullPath] = EditorGUI.Foldout(
+                        iconRect, foldouts[node.FullPath], "", true);
+                }
+                else
+                {
+                    var dashStyle = new GUIStyle(EditorStyles.label)
+                        { alignment = TextAnchor.MiddleCenter };
+                    GUI.Label(iconRect, "-", dashStyle);
+                }
 
-                EditorGUILayout.EndHorizontal();
+                // 文字
+                var textRect = new Rect(
+                    iconRect.xMax + FoldoutGap, rowRect.y,
+                    rowRect.width - FoldoutWidth - FoldoutGap - 2, rowRect.height);
+                var textStyle = new GUIStyle(EditorStyles.label)
+                    { fontStyle = (isSelected || isMatch) ? FontStyle.Bold : FontStyle.Normal,
+                      alignment = TextAnchor.MiddleLeft };
+                GUI.Label(textRect, label, textStyle);
 
                 // 子节点
                 if (hasChildren && foldouts[node.FullPath])
@@ -155,7 +155,7 @@ namespace RedDust.Ability
                         {
                             if (i > 0) EditorUIUtility.CardGap(Pad);
                             DrawNodeCard(visibleChildren[i], foldouts,
-                                ref sel, q, typeFilter, hasSearch, onLeafSelected, selectedEffect);
+                                ref sel, q, typeFilter, hasSearch, onLeafSelected, selectedEffect, selectedSearch);
                         }
                     }
                 }

@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -62,6 +63,17 @@ namespace RedDust.Shared.EditorUI
             { alignment = TextAnchor.MiddleRight, normal = { textColor = Color.gray } };
         private static readonly Color HeaderSaveColor = new(0.4f, 0.8f, 0.4f);
 
+        // ── 共用颜色常量 ──
+        public static readonly Color ColorGreen = HeaderSaveColor;                  // 0.4, 0.8, 0.4 — 保存/Save
+        public static readonly Color ColorGreenDark = new(0.4f, 0.7f, 0.4f);       // 0.4, 0.7, 0.4 — 创建/Create/Add
+        public static readonly Color ColorBlue = new(0.3f, 0.6f, 0.9f);            // 选中筛选标签
+        public static readonly Color ColorRed = new(0.9f, 0.3f, 0.3f);             // 删除/移除
+
+        // ── 缓存样式 ──
+        private static GUIStyle _greyPlaceholder;
+        public static GUIStyle GreyPlaceholder => _greyPlaceholder ??= new GUIStyle(EditorStyles.label)
+            { alignment = TextAnchor.MiddleCenter, fontSize = 13, normal = { textColor = Color.grey } };
+
         /// <summary>
         /// 标准编辑器 Header 卡片。
         /// [Title] [Subtitle(右对齐, gray)] [FlexibleSpace] [Save*(可选)]
@@ -106,6 +118,59 @@ namespace RedDust.Shared.EditorUI
             EditorGUILayout.LabelField(
                 new GUIContent(label, tooltip),
                 GUILayout.Width(width));
+        }
+
+        /// <summary>
+        /// 带 Tooltip 的 LabelField。直接传入 tooltip 字符串（跳过 SerializedObject 查找）。
+        /// 用于 FormItem 等已缓存 tooltip 的场景。
+        /// </summary>
+        public static void LabelWithTooltip(string label, string tooltip, float width)
+        {
+            EditorGUILayout.LabelField(
+                new GUIContent(label, tooltip),
+                GUILayout.Width(width));
+        }
+
+        /// <summary>
+        /// 标准搜索行：Label("Search", width) + TextField + 清除按钮("x")。
+        /// 仅绘制行内元素，不包裹卡片。返回新文本，调用方负责赋值。
+        /// </summary>
+        public static string DrawSearchRow(string current, float labelWidth = 45f)
+        {
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Search", EditorStyles.label, GUILayout.Width(labelWidth));
+            var s = EditorGUILayout.TextField(current, GUILayout.ExpandWidth(true));
+            if (!string.IsNullOrEmpty(s) && GUILayout.Button("x", EditorStyles.miniButton, GUILayout.Width(20)))
+            {
+                s = "";
+                GUI.FocusControl(null);
+            }
+            EditorGUILayout.EndHorizontal();
+            return s;
+        }
+
+        /// <summary>
+        /// 通用筛选标签栏。水平排列 miniButtonMid，选中项蓝色高亮。
+        /// </summary>
+        public static T DrawFilterTabBar<T>(T current, T[] tabs, string[] labels)
+            where T : Enum
+        {
+            EditorGUILayout.BeginHorizontal();
+            for (var i = 0; i < tabs.Length; i++)
+            {
+                var isSelected = EqualityComparer<T>.Default.Equals(current, tabs[i]);
+                var oldBg = GUI.backgroundColor;
+                GUI.backgroundColor = isSelected ? ColorBlue : Color.white;
+                if (GUILayout.Button(labels[i], EditorStyles.miniButtonMid, GUILayout.Height(20)))
+                {
+                    GUI.backgroundColor = oldBg;
+                    EditorGUILayout.EndHorizontal();
+                    return tabs[i];
+                }
+                GUI.backgroundColor = oldBg;
+            }
+            EditorGUILayout.EndHorizontal();
+            return current;
         }
 
         private static string GetFieldTooltip(ScriptableObject so, string fieldName)

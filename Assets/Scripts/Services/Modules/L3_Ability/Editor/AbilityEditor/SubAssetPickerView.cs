@@ -17,6 +17,7 @@ namespace RedDust.Ability
         private const float Pad = 6f;
         private static readonly Dictionary<string, bool> _effectFoldouts = new();
         private static ScriptableObject _selectedAsset;
+        private static Vector2 _typedListScroll;
 
         public static void DrawPicker(
             AbilityEditorModel model,
@@ -43,16 +44,7 @@ namespace RedDust.Ability
                 GUILayout.Space(Pad);
 
                 // 搜索
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Search", EditorStyles.label, GUILayout.Width(50));
-                s = EditorGUILayout.TextField(s, GUILayout.ExpandWidth(true));
-                if (!string.IsNullOrEmpty(s)
-                    && GUILayout.Button("x", EditorStyles.miniButton, GUILayout.Width(20)))
-                {
-                    s = "";
-                    GUI.FocusControl(null);
-                }
-                EditorGUILayout.EndHorizontal();
+                s = EditorUIUtility.DrawSearchRow(s, labelWidth: 50f);
 
                 GUILayout.Space(Pad);
 
@@ -64,7 +56,9 @@ namespace RedDust.Ability
                 // 底部按钮
                 var hasSelection = _selectedAsset != null;
                 EditorGUILayout.BeginHorizontal();
-                if (GUILayout.Button("+ Create New", GUILayout.Height(22)))
+                // 仅非 Effect 槽位显示 Create
+                if (slot != SubAssetSlot.TargetEffects && slot != SubAssetSlot.SelfEffects
+                    && GUILayout.Button("+ Create New", GUILayout.Height(22)))
                     onCreateNew?.Invoke();
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Cancel", GUILayout.Width(60), GUILayout.Height(22)))
@@ -73,7 +67,7 @@ namespace RedDust.Ability
                     onCancel?.Invoke();
                 }
                 GUI.enabled = hasSelection;
-                GUI.backgroundColor = hasSelection ? new Color(0.4f, 0.8f, 0.4f) : Color.white;
+                GUI.backgroundColor = hasSelection ? EditorUIUtility.ColorGreen : Color.white;
                 if (GUILayout.Button("Select", GUILayout.Width(60), GUILayout.Height(22)))
                 {
                     onSelected?.Invoke(_selectedAsset);
@@ -125,95 +119,68 @@ namespace RedDust.Ability
 
             if (filtered.Count == 0)
             {
-                var grey = new GUIStyle(EditorStyles.label)
-                    { normal = { textColor = Color.grey }, alignment = TextAnchor.MiddleCenter };
                 EditorGUILayout.LabelField(
-                    q != null ? "No matches. Create new?" : "No assets yet. Create new?", grey);
+                    q != null ? "No matches. Create new?" : "No assets yet. Create new?",
+                    EditorUIUtility.GreyPlaceholder);
                 return;
             }
 
-            var scrollPos = Vector2.zero;
-            var scroll = EditorGUILayout.BeginScrollView(
-                scrollPos, GUILayout.ExpandHeight(true));
+            _typedListScroll = EditorGUILayout.BeginScrollView(
+                _typedListScroll, GUILayout.ExpandHeight(true));
             for (var i = 0; i < filtered.Count; i++)
             {
                 var asset = filtered[i];
 
-                EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-                GUILayout.Space(2f);
-
-                EditorGUILayout.BeginHorizontal();
-                GUILayout.Space(Pad);
-
-                EditorGUILayout.BeginVertical();
-
-                var nameStyle = new GUIStyle(EditorStyles.label);
-                if (GUILayout.Button(asset.name, nameStyle, GUILayout.ExpandWidth(true)))
-                    onSelected?.Invoke(asset);
-
-                var summary = getSummary(asset);
-                if (!string.IsNullOrEmpty(summary))
+                EditorUIUtility.DrawCard(Pad, () =>
                 {
-                    var s = new GUIStyle(EditorStyles.miniLabel)
-                        { normal = { textColor = Color.grey } };
-                    EditorGUILayout.LabelField(summary, s);
-                }
+                    var nameStyle = new GUIStyle(EditorStyles.label);
+                    if (GUILayout.Button(asset.name, nameStyle, GUILayout.ExpandWidth(true)))
+                        onSelected?.Invoke(asset);
 
-                EditorGUILayout.EndVertical();
-                GUILayout.Space(Pad);
-                EditorGUILayout.EndHorizontal();
+                    var summary = getSummary(asset);
+                    if (!string.IsNullOrEmpty(summary))
+                    {
+                        var s = new GUIStyle(EditorStyles.miniLabel)
+                            { normal = { textColor = Color.grey } };
+                        EditorGUILayout.LabelField(summary, s);
+                    }
+                });
 
-                GUILayout.Space(2f);
-                EditorGUILayout.EndVertical();
-
-                if (i < filtered.Count - 1) GUILayout.Space(2f);
+                if (i < filtered.Count - 1) EditorUIUtility.CardGap(Pad);
             }
             EditorGUILayout.EndScrollView();
         }
 
+        private static Vector2 _effectScroll = Vector2.zero;
+
         private static void DrawEffectTree(AbilityEditorModel model, string searchText,
             Action<ScriptableObject> onSelected)
         {
-            var nullSO = (AbilitySO)null;
-            AbilityTreeView.DrawTree(model.EffectTreeRoots, _effectFoldouts, ref nullSO,
-                searchText, AbilityTypeFilter.All,
-                onLeafSelected: asset => onSelected(asset),
-                selectedEffect: _selectedAsset as EffectSO);
+            EditorUIUtility.DrawCard(Pad, () =>
+            {
+                _effectScroll = EditorGUILayout.BeginScrollView(_effectScroll,
+                    GUILayout.ExpandHeight(true));
+                var nullSO = (AbilitySO)null;
+                AbilityTreeView.DrawTree(model.EffectTreeRoots, _effectFoldouts, ref nullSO,
+                    searchText, AbilityTypeFilter.All,
+                    onLeafSelected: asset => onSelected(asset),
+                    selectedEffect: _selectedAsset as EffectSO);
+                EditorGUILayout.EndScrollView();
+            });
         }
 
-        // ── 摘要 ──
+        // ── 摘要（委托给 AbilityEditorUtility）──
         private static string GetActivationSummary(ScriptableObject a)
-        {
-            if (a is not AbilityActivationSO act) return null;
-            return $"{act.activationType} · speed:{act.animationSpeed:F1}";
-        }
+            => a is AbilityActivationSO act ? AbilityEditorUtility.GetActivationSummary(act) : null;
 
         private static string GetSearchSummary(ScriptableObject s)
-        {
-            if (s is not AbilitySearchSO search) return null;
-            return $"{search.searchType} · range:{search.range:F1} · max:{search.maxTargets}";
-        }
+            => s is AbilitySearchSO search ? AbilityEditorUtility.GetSearchSummary(search) : null;
 
         private static string GetEffectSummary(ScriptableObject e)
-        {
-            if (e is not EffectSO eff) return null;
-            var type = eff.GetType().Name.Replace("EffectSO", "");
-            if (eff is DamageEffectSO d)
-                return $"Damage · {eff.effectTag?.FullTag ?? "-"} · base:{d.baseValue:F0}";  // TODO: was baseDamage
-            if (eff is ImpactEffectSO i)
-                return $"Impact · {eff.effectTag?.FullTag ?? "-"} · stagger:{i.staggerValue:F0}";
-            if (eff is ExecuteEffectSO x)
-                return $"Execute · {eff.effectTag?.FullTag ?? "-"} · threshold:{x.hpThreshold:P0}";
-            if (eff is CostEffectSO c)
-                return $"Cost · {c.def?.name ?? "-"} · amount:{c.amount:F0}";
-            return $"{type} · {eff.effectTag?.FullTag ?? "-"}";
-        }
+            => e is EffectSO eff ? AbilityEditorUtility.GetEffectSummary(eff, includeDuration: false) : null;
 
         private static string GetNoiseSummary(ScriptableObject n)
-        {
-            if (n is not NoiseEventSO noise) return null;
-            return $"level:{noise.level:F0} · decay:{noise.decayRadius:F1}m";
-        }
+            => n is NoiseEventSO noise ? AbilityEditorUtility.GetNoiseSummary(noise) : null;
     }
 }
 #endif

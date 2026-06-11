@@ -195,22 +195,11 @@ namespace RedDust.Ability
                 parentNode.Children.Add(leafNode);
             }
 
-            // 3. 排序：文件夹先，字母序；叶子在后，字母序
-            void SortRecursive(List<AbilityTreeNode> nodes)
-            {
-                nodes.Sort((a, b) =>
-                {
-                    if (a.IsFolder != b.IsFolder)
-                        return a.IsFolder ? -1 : 1;
-                    return string.CompareOrdinal(a.DisplayName, b.DisplayName);
-                });
-                foreach (var n in nodes)
-                    SortRecursive(n.Children);
-            }
-            SortRecursive(TreeRoots);
+            // 3. 排序 + 计算 count
+            AbilityEditorUtility.SortTreeRecursive(TreeRoots);
 
             // 4. 计算每棵子树的 Ability count
-            ComputeAbilityCount();
+            AbilityEditorUtility.ComputeTreeCounts(TreeRoots);
         }
 
         private void AddToFolder(string folderName, int depth, AbilitySO ability, AbilityTreeNode parent)
@@ -240,19 +229,6 @@ namespace RedDust.Ability
                 Parent = folderNode,
             };
             folderNode.Children.Add(leaf);
-        }
-
-        private void ComputeAbilityCount()
-        {
-            int CountRecursive(AbilityTreeNode node)
-            {
-                if (!node.IsFolder) return 1;
-                var total = 0;
-                foreach (var c in node.Children) total += CountRecursive(c);
-                node.AbilityCount = total;
-                return total;
-            }
-            foreach (var root in TreeRoots) CountRecursive(root);
         }
 
         // ── Effect 树构建（用 effectTag 组织，逻辑同 Ability 树）──
@@ -320,26 +296,8 @@ namespace RedDust.Ability
                 parentNode.Children.Add(leaf);
             }
 
-            void SortRecursive(List<AbilityTreeNode> nodes)
-            {
-                nodes.Sort((a, b) =>
-                {
-                    if (a.IsFolder != b.IsFolder) return a.IsFolder ? -1 : 1;
-                    return string.CompareOrdinal(a.DisplayName, b.DisplayName);
-                });
-                foreach (var n in nodes) SortRecursive(n.Children);
-            }
-            SortRecursive(EffectTreeRoots);
-
-            int CountRecursive(AbilityTreeNode node)
-            {
-                if (!node.IsFolder) return 1;
-                var total = 0;
-                foreach (var c in node.Children) total += CountRecursive(c);
-                node.AbilityCount = total;
-                return total;
-            }
-            foreach (var root in EffectTreeRoots) CountRecursive(root);
+            AbilityEditorUtility.SortTreeRecursive(EffectTreeRoots);
+            AbilityEditorUtility.ComputeTreeCounts(EffectTreeRoots);
         }
 
         private void AddEffectToFolder(string folderName, int depth, EffectSO effect, AbilityTreeNode parent)
