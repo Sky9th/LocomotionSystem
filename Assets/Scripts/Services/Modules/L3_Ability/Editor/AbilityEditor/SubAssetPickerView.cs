@@ -29,7 +29,7 @@ namespace RedDust.Ability
         {
             var s = searchText;
 
-            EditorUIUtility.DrawCard(Pad, () =>
+            EditorCard.Draw(Pad, () =>
             {
                 var title = slot switch
                 {
@@ -56,25 +56,21 @@ namespace RedDust.Ability
                 // 底部按钮
                 var hasSelection = _selectedAsset != null;
                 EditorGUILayout.BeginHorizontal();
-                // 仅非 Effect 槽位显示 Create
                 if (slot != SubAssetSlot.TargetEffects && slot != SubAssetSlot.SelfEffects
-                    && GUILayout.Button("+ Create New", GUILayout.Height(22)))
+                    && EditorButton.Draw("+ Create New"))
                     onCreateNew?.Invoke();
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Cancel", GUILayout.Width(60), GUILayout.Height(22)))
+                if (EditorButton.Draw("Cancel", size: EditorButtonSize.Medium))
                 {
                     _selectedAsset = null;
                     onCancel?.Invoke();
                 }
-                GUI.enabled = hasSelection;
-                GUI.backgroundColor = hasSelection ? EditorUIUtility.ColorGreen : Color.white;
-                if (GUILayout.Button("Select", GUILayout.Width(60), GUILayout.Height(22)))
+                if (EditorButton.Draw("Select", hasSelection ? EditorButtonStyle.Primary : EditorButtonStyle.Default,
+                        EditorButtonSize.Medium, enabled: hasSelection))
                 {
                     onSelected?.Invoke(_selectedAsset);
                     _selectedAsset = null;
                 }
-                GUI.enabled = true;
-                GUI.backgroundColor = Color.white;
                 EditorGUILayout.EndHorizontal();
             });
 
@@ -131,7 +127,7 @@ namespace RedDust.Ability
             {
                 var asset = filtered[i];
 
-                EditorUIUtility.DrawCard(Pad, () =>
+                EditorCard.Draw(Pad, () =>
                 {
                     var nameStyle = new GUIStyle(EditorStyles.label);
                     if (GUILayout.Button(asset.name, nameStyle, GUILayout.ExpandWidth(true)))
@@ -146,7 +142,7 @@ namespace RedDust.Ability
                     }
                 });
 
-                if (i < filtered.Count - 1) EditorUIUtility.CardGap(Pad);
+                if (i < filtered.Count - 1) EditorCard.Gap(Pad);
             }
             EditorGUILayout.EndScrollView();
         }
@@ -156,7 +152,7 @@ namespace RedDust.Ability
         private static void DrawEffectTree(AbilityEditorModel model, string searchText,
             Action<ScriptableObject> onSelected)
         {
-            EditorUIUtility.DrawCard(Pad, () =>
+            EditorCard.Draw(Pad, () =>
             {
                 _effectScroll = EditorGUILayout.BeginScrollView(_effectScroll,
                     GUILayout.ExpandHeight(true));

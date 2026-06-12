@@ -103,13 +103,8 @@ namespace RedDust.Ability
 
         private static void DrawSection(string title, Action drawBody)
         {
-            EditorUIUtility.DrawCard(Pad, () =>
-            {
-                EditorGUILayout.LabelField(title, EditorStyles.boldLabel);
-                GUILayout.Space(Pad);
-                drawBody();
-            });
-            EditorUIUtility.CardGap(Pad);
+            EditorCard.Draw(Pad, title, drawBody);
+            EditorCard.Gap(Pad);
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -117,7 +112,7 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════════════
         private static void DrawIdentityFields(AbilitySO a)
         {
-            if (_identityForm?.Target != a)
+            if (EditorForm.NeedsRebuild(_identityForm, a))
             {
                 _identityForm = new EditorForm(a);
                 _identityForm.TextField("internalName")
@@ -144,19 +139,17 @@ namespace RedDust.Ability
                     GUILayout.ExpandWidth(true));
                 GUILayout.Space(Pad);
 
-                if (GUILayout.Button("✕", EditorStyles.miniButton, GUILayout.Width(20)))
+                if (EditorButton.Draw("✕", EditorButtonStyle.Danger, EditorButtonSize.Small))
                     onClear?.Invoke(slot);
-                if (GUILayout.Button("...", EditorStyles.miniButton, GUILayout.Width(30)))
+                if (EditorButton.Draw("...", width: 30f))
                     onEdit?.Invoke(slot);
             }
             else
             {
                 EditorGUILayout.LabelField("— (none)", EditorUIUtility.GreyPlaceholder, GUILayout.ExpandWidth(true));
 
-                GUI.backgroundColor = EditorUIUtility.ColorGreenDark;
-                if (GUILayout.Button("...", EditorStyles.miniButton, GUILayout.Width(30)))
+                if (EditorButton.Draw("...", EditorButtonStyle.Success, width: 30f))
                     onEdit?.Invoke(slot);
-                GUI.backgroundColor = Color.white;
             }
 
             EditorGUILayout.EndHorizontal();
@@ -195,11 +188,11 @@ namespace RedDust.Ability
 
                 for (var si = 0; si < sorted.Length; si++)
                 {
-                    if (si > 0) EditorUIUtility.CardGap(Pad);
+                    if (si > 0) EditorCard.Gap(Pad);
                     var e = sorted[si].effect;
                     var origIdx = sorted[si].origIdx;
 
-                    EditorUIUtility.DrawCard(Pad, () =>
+                    EditorCard.Draw(Pad, () =>
                     {
                         EditorGUILayout.BeginHorizontal();
                         EditorGUILayout.LabelField(GetEffectIcon(e), EditorStyles.label,
@@ -210,10 +203,8 @@ namespace RedDust.Ability
                             : new GUIStyle(EditorStyles.label) { normal = { textColor = Color.red } };
                         EditorGUILayout.LabelField(name, st, GUILayout.ExpandWidth(true));
 
-                        GUI.backgroundColor = EditorUIUtility.ColorRed;
-                        if (GUILayout.Button("✕", EditorStyles.miniButton, GUILayout.Width(20)))
+                        if (EditorUIUtility.DeleteButton())
                             onRemove?.Invoke(origIdx);
-                        GUI.backgroundColor = Color.white;
                         EditorGUILayout.EndHorizontal();
 
                         if (e != null)
@@ -231,11 +222,9 @@ namespace RedDust.Ability
                 EditorGUILayout.LabelField("(empty)", EditorUIUtility.GreyPlaceholder);
             }
 
-            EditorUIUtility.CardGap(Pad);
-            GUI.backgroundColor = EditorUIUtility.ColorGreenDark;
-            if (GUILayout.Button("＋ Add Effect", GUILayout.Height(22)))
+            EditorCard.Gap(Pad);
+            if (EditorButton.Draw("＋ Add Effect", EditorButtonStyle.Success, EditorButtonSize.Medium))
                 onEdit?.Invoke(slot);
-            GUI.backgroundColor = Color.white;
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -244,7 +233,7 @@ namespace RedDust.Ability
         private static void DrawTagFields(AbilitySO a)
         {
             // abilityTag / sharedCooldownTag
-            if (_tagForm?.Target != a)
+            if (EditorForm.NeedsRebuild(_tagForm, a))
             {
                 _tagForm = new EditorForm(a);
                 _tagForm.ObjectField<GameplayTagDefinitionSO>("abilityTag", label: "Ability")
@@ -258,7 +247,7 @@ namespace RedDust.Ability
             // overrideExclusion — AbilityDefSO 独有字段
             if (a is AbilityDefSO def)
             {
-                if (_exclusionForm?.Target != def)
+                if (EditorForm.NeedsRebuild(_exclusionForm, def))
                 {
                     _exclusionForm = new EditorForm(def);
                     _exclusionForm.Toggle("overrideExclusion", label: "Override Exclusion");
@@ -299,7 +288,7 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════════════
         private static void DrawCooldownFields(AbilitySO a)
         {
-            if (_cooldownForm?.Target != a)
+            if (EditorForm.NeedsRebuild(_cooldownForm, a))
             {
                 _cooldownForm = new EditorForm(a);
                 _cooldownForm.Float("cooldownDuration", label: "Duration (s)");
@@ -313,7 +302,7 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════════════
         private static void DrawPassiveFields(PassiveAbilitySO p)
         {
-            if (_passiveForm?.Target != p)
+            if (EditorForm.NeedsRebuild(_passiveForm, p))
             {
                 _passiveForm = new EditorForm(p);
                 _passiveForm.Enum<ETriggerEvent>("trigger")
@@ -337,7 +326,7 @@ namespace RedDust.Ability
                 int removeAt = -1;
                 for (var i = 0; i < links.Length; i++)
                 {
-                    if (i > 0) EditorUIUtility.CardGap(Pad);
+                    if (i > 0) EditorCard.Gap(Pad);
                     var l = links[i];
 
                     EditorGUILayout.BeginHorizontal();
@@ -361,10 +350,8 @@ namespace RedDust.Ability
                     if (bp != l.BypassCooldown) { l.BypassCooldown = bp; def.comboLinks[i] = l; EditorUtility.SetDirty(def); _onChanged?.Invoke(); }
                     EditorGUILayout.LabelField("BypassCD", EditorStyles.miniLabel, GUILayout.Width(58));
 
-                    GUI.backgroundColor = EditorUIUtility.ColorRed;
-                    if (GUILayout.Button("✕", EditorStyles.miniButton, GUILayout.Width(20)))
+                    if (EditorUIUtility.DeleteButton())
                         removeAt = i;
-                    GUI.backgroundColor = Color.white;
                     EditorGUILayout.EndHorizontal();
                 }
 
@@ -378,7 +365,7 @@ namespace RedDust.Ability
             }
 
             GUILayout.Space(Pad);
-            if (GUILayout.Button("＋ Add Combo Link", GUILayout.Height(22)))
+            if (EditorButton.Draw("＋ Add Combo Link", EditorButtonStyle.Success, EditorButtonSize.Medium))
                 AddComboLink(def);
         }
 

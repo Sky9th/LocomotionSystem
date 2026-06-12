@@ -60,7 +60,7 @@ namespace RedDust.Properties.Editor
             // Render roots as sibling cards
             for (var i = 0; i < visibleRoots.Count; i++)
             {
-                if (i > 0) EditorUIUtility.CardGap(Pad);
+                if (i > 0) EditorCard.Gap(Pad);
                 DrawNodeCard(visibleRoots[i], foldouts, ref selectedTree,
                     q, hasSearch, onSelect, selectedColor, onDelete, onCreateChild);
             }
@@ -93,7 +93,7 @@ namespace RedDust.Properties.Editor
             if (isSelected)
                 GUI.backgroundColor = selectedColor;
 
-            EditorUIUtility.DrawCard(Pad, () =>
+            EditorCard.Draw(Pad, () =>
             {
                 EditorGUILayout.BeginHorizontal();
 
@@ -194,7 +194,7 @@ namespace RedDust.Properties.Editor
                         GUILayout.Space(Pad);
                         for (var i = 0; i < visibleChildren.Count; i++)
                         {
-                            if (i > 0) EditorUIUtility.CardGap(Pad);
+                            if (i > 0) EditorCard.Gap(Pad);
                             DrawNodeCard(visibleChildren[i], foldouts, ref sel,
                                 q, hasSearch, onSelect, selectedColor, onDelete, onCreateChild);
                         }

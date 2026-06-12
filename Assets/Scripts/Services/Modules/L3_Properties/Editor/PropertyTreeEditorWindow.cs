@@ -92,7 +92,7 @@ namespace RedDust.Properties.Editor
         private PropertyDefSO _dragDef;
         private Vector2 _dragStart;
 
-        [MenuItem("RedDust/Property Tree Editor", priority = 41)]
+        [MenuItem("RedDust/Property Tree Editor", priority = 5)]
         private static void Open() => GetWindow<PropertyTreeEditorWindow>("Property Tree");
 
         private void OnEnable()
@@ -129,7 +129,7 @@ namespace RedDust.Properties.Editor
             EditorGUILayout.BeginVertical();
 
             DrawHeader();
-            Shared.EditorUI.EditorUIUtility.CardGap(Pad);
+            Shared.EditorUI.EditorCard.Gap(Pad);
             DrawThreeColumns();
 
             EditorGUILayout.EndVertical();
@@ -158,7 +158,7 @@ namespace RedDust.Properties.Editor
 
             // Toolbar: search + add folder
             DrawCenterToolbar();
-            Shared.EditorUI.EditorUIUtility.CardGap(Pad);
+            Shared.EditorUI.EditorCard.Gap(Pad);
 
             // Tree scroll
             _centerScroll = EditorGUILayout.BeginScrollView(_centerScroll);
@@ -183,7 +183,7 @@ namespace RedDust.Properties.Editor
             {
                 var root = visibleRoots[i];
 
-                if (i > 0) Shared.EditorUI.EditorUIUtility.CardGap(Pad);
+                if (i > 0) Shared.EditorUI.EditorCard.Gap(Pad);
 
                 if (root.NodeId == _dragNodeId && draggingFolder)
                 {
@@ -237,7 +237,7 @@ namespace RedDust.Properties.Editor
             }
 
             // "Add Folder" at bottom of tree
-            Shared.EditorUI.EditorUIUtility.CardGap(Pad);
+            Shared.EditorUI.EditorCard.Gap(Pad);
             if (GUILayout.Button("+ Add Folder", GUILayout.Height(22)))
                 AddFolder("New Folder");
 
@@ -246,7 +246,7 @@ namespace RedDust.Properties.Editor
 
         private void DrawCenterToolbar()
         {
-            Shared.EditorUI.EditorUIUtility.DrawCard(Pad, () =>
+            Shared.EditorUI.EditorCard.Draw(Pad, () =>
             {
                 EditorGUILayout.BeginHorizontal();
 
@@ -275,29 +275,29 @@ namespace RedDust.Properties.Editor
             // Left column
             EditorGUILayout.BeginHorizontal(
                 GUILayout.Width(LeftWidth), GUILayout.ExpandHeight(true));
-            Shared.EditorUI.EditorUIUtility.DrawCard(Pad, () =>
+            Shared.EditorUI.EditorCard.Draw(Pad, () =>
             {
                 DrawLeftContent();
             });
             EditorGUILayout.EndHorizontal();
 
-            Shared.EditorUI.EditorUIUtility.CardGap(Pad);
+            Shared.EditorUI.EditorCard.Gap(Pad);
 
             // Center column
             EditorGUILayout.BeginHorizontal(
                 GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
-            Shared.EditorUI.EditorUIUtility.DrawCard(Pad, () =>
+            Shared.EditorUI.EditorCard.Draw(Pad, () =>
             {
                 DrawCenterContent();
             });
             EditorGUILayout.EndHorizontal();
 
-            Shared.EditorUI.EditorUIUtility.CardGap(Pad);
+            Shared.EditorUI.EditorCard.Gap(Pad);
 
             // Right column
             EditorGUILayout.BeginHorizontal(
                 GUILayout.Width(RightWidth), GUILayout.ExpandHeight(true));
-            Shared.EditorUI.EditorUIUtility.DrawCard(Pad, () =>
+            Shared.EditorUI.EditorCard.Draw(Pad, () =>
             {
                 DrawRightContent();
             });
@@ -313,7 +313,7 @@ namespace RedDust.Properties.Editor
         {
 
             // Toolbar card
-            Shared.EditorUI.EditorUIUtility.DrawCard(Pad, () =>
+            Shared.EditorUI.EditorCard.Draw(Pad, () =>
             {
                 // Search row
                 EditorGUILayout.BeginHorizontal();
@@ -340,7 +340,7 @@ namespace RedDust.Properties.Editor
                 EditorGUILayout.EndHorizontal();
             });
 
-            Shared.EditorUI.EditorUIUtility.CardGap(Pad);
+            Shared.EditorUI.EditorCard.Gap(Pad);
 
             // Tree list
             _leftScroll = EditorGUILayout.BeginScrollView(_leftScroll);
@@ -505,7 +505,7 @@ namespace RedDust.Properties.Editor
                 return;
             }
 
-            Shared.EditorUI.EditorUIUtility.DrawCard(Pad, () =>
+            Shared.EditorUI.EditorCard.Draw(Pad, () =>
             {
                 const float AnchorWidth = 10f;
                 const float FoldoutWidth = 14f;
@@ -616,7 +616,7 @@ namespace RedDust.Properties.Editor
                 bool expanded = _centerFoldouts.TryGetValue(node.NodeId, out var exp) && exp;
                 if (hasLeaves && expanded)
                 {
-                    Shared.EditorUI.EditorUIUtility.CardGap(Pad);
+                    Shared.EditorUI.EditorCard.Gap(Pad);
 
                     for (int i = 0; i < visibleChildren.Count; i++)
                     {
@@ -710,7 +710,7 @@ namespace RedDust.Properties.Editor
             var oldCardBg = GUI.backgroundColor;
             if (!isLocal) GUI.backgroundColor = new Color(0.25f, 0.25f, 0.25f, 0.6f);
 
-            Shared.EditorUI.EditorUIUtility.DrawCard(Pad, () =>
+            Shared.EditorUI.EditorCard.Draw(Pad, () =>
             {
                 var rowH = EditorGUIUtility.singleLineHeight;
                 EditorGUILayout.BeginHorizontal(GUILayout.Height(rowH));
@@ -1102,10 +1102,10 @@ namespace RedDust.Properties.Editor
         {
             // Search
             DrawRightSearch();
-            Shared.EditorUI.EditorUIUtility.CardGap(Pad);
+            Shared.EditorUI.EditorCard.Gap(Pad);
 
             // Add button
-            Shared.EditorUI.EditorUIUtility.DrawCard(Pad, () =>
+            Shared.EditorUI.EditorCard.Draw(Pad, () =>
             {
                 if (GUILayout.Button("+ Add", GUILayout.Height(22)))
                 {
@@ -1116,10 +1116,10 @@ namespace RedDust.Properties.Editor
                     });
                 }
             });
-            Shared.EditorUI.EditorUIUtility.CardGap(Pad);
+            Shared.EditorUI.EditorCard.Gap(Pad);
 
             // Def pool card
-            Shared.EditorUI.EditorUIUtility.DrawCard(Pad, () =>
+            Shared.EditorUI.EditorCard.Draw(Pad, () =>
             {
                 EditorGUILayout.LabelField("Property Pool", EditorStyles.boldLabel);
                 GUILayout.Space(Pad);
@@ -1155,7 +1155,7 @@ namespace RedDust.Properties.Editor
 
         private void DrawRightSearch()
         {
-            Shared.EditorUI.EditorUIUtility.DrawCard(Pad, () =>
+            Shared.EditorUI.EditorCard.Draw(Pad, () =>
             {
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Search", SearchToolbarLabel, GUILayout.Width(45), GUILayout.Height(22));
@@ -1175,7 +1175,7 @@ namespace RedDust.Properties.Editor
             var oldBg = GUI.backgroundColor;
             if (isUsed) GUI.backgroundColor = new Color(0.2f, 0.3f, 0.2f, 0.5f);
 
-            Shared.EditorUI.EditorUIUtility.DrawCard(2, () =>
+            Shared.EditorUI.EditorCard.Draw(2, () =>
             {
                 EditorGUILayout.BeginHorizontal(GUILayout.Height(rowH));
 

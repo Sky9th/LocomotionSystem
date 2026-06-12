@@ -392,8 +392,8 @@ namespace RedDust.Ability
         private int _lastCreated, _lastSkipped;
         private List<string> _lastErrors = new();
 
-        [MenuItem("RedDust/Effect Import-Export", priority = 2)]
-        public static void ShowWindow()
+        [MenuItem("RedDust/Effect Import-Export", priority = 20)]
+        public static void Open()
         {
             var window = GetWindow<EffectImportWindow>("Effect Import-Export");
             window.minSize = new Vector2(520, 420);

@@ -253,7 +253,7 @@ namespace RedDust.Properties.Editor
         private int _lastCreated, _lastSkipped;
         private List<string> _lastErrors = new();
 
-        [MenuItem("RedDust/Property Import-Export", priority = 42)]
+        [MenuItem("RedDust/Property Import-Export", priority = 24)]
         public static void ShowWindow()
         {
             var window = GetWindow<PropertyImportWindow>("Property Importer");

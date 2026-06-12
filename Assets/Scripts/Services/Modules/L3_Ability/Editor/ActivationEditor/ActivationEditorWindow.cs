@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using Animancer;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -54,9 +55,9 @@ namespace RedDust.Ability
             EditorGUILayout.BeginVertical();
 
             DrawHeader();
-            EditorUIUtility.CardGap(Pad);
+            EditorCard.Gap(Pad);
             DrawTwoColumns();
-            EditorUIUtility.CardGap(Pad);
+            EditorCard.Gap(Pad);
             DrawStatusBar();
 
             EditorGUILayout.EndVertical();
@@ -70,7 +71,7 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════
         private void DrawHeader()
         {
-            EditorUIUtility.DrawCard(Pad, () =>
+            EditorCard.Draw(Pad, () =>
             {
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Activation Editor", EditorStyles.largeLabel,
@@ -83,29 +84,25 @@ namespace RedDust.Ability
                 GUILayout.Space(Pad);
 
                 EditorGUILayout.BeginHorizontal();
-                if (GUILayout.Button("Refresh", GUILayout.Height(22)))
+                if (EditorButton.Draw("Refresh", size: EditorButtonSize.Medium))
                     RefreshAll();
                 GUILayout.FlexibleSpace();
 
-                var oldBg = GUI.backgroundColor;
-                GUI.backgroundColor = EditorUIUtility.ColorGreenDark;
-                if (GUILayout.Button("+ Create", GUILayout.Width(70), GUILayout.Height(22)))
-                    CreateNewActivation();
-                GUI.backgroundColor = oldBg;
+                if (EditorButton.Draw("Import/Export", size: EditorButtonSize.Medium))
+                    ActivationImportWindow.Open();
 
-                GUI.enabled = _hasChanges;
-                GUI.backgroundColor = _hasChanges ? EditorUIUtility.ColorGreen : Color.white;
-                if (GUILayout.Button(_hasChanges ? "Save *" : "Saved", GUILayout.Width(80), GUILayout.Height(22)))
+                if (EditorButton.Draw("+ Create", EditorButtonStyle.Success, EditorButtonSize.Medium))
+                    CreateNewActivation();
+
+                if (EditorButton.Draw(_hasChanges ? "Save *" : "Saved", _hasChanges ? EditorButtonStyle.Primary : EditorButtonStyle.Default, EditorButtonSize.Medium, enabled: _hasChanges))
                 {
                     AssetDatabase.SaveAssets();
                     _hasChanges = false;
                 }
-                GUI.enabled = true;
-                GUI.backgroundColor = oldBg;
 
                 if (_selectedActivation != null)
                 {
-                    if (GUILayout.Button("Ping", GUILayout.Height(22)))
+                    if (EditorButton.Draw("Ping", size: EditorButtonSize.Medium))
                         EditorGUIUtility.PingObject(_selectedActivation);
                 }
                 EditorGUILayout.EndHorizontal();
@@ -123,7 +120,7 @@ namespace RedDust.Ability
             DrawLeftColumn();
             EditorGUILayout.EndHorizontal();
 
-            EditorUIUtility.CardGap(Pad);
+            EditorCard.Gap(Pad);
 
             EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
             DrawRightColumn();
@@ -135,22 +132,24 @@ namespace RedDust.Ability
         // ── 左栏 ──
         private void DrawLeftColumn()
         {
-            EditorUIUtility.DrawCard(Pad, () =>
+            EditorCard.Draw(Pad, () =>
             {
                 // 搜索框
-                EditorUIUtility.DrawCard(Pad, () =>
+                EditorCard.DrawLight(Pad, () =>
                 {
                     var s = EditorUIUtility.DrawSearchRow(_searchText, labelWidth: 42f);
                     if (s != _searchText) { _searchText = s; }
                 });
 
-                EditorUIUtility.CardGap(Pad);
+                EditorCard.Gap(Pad);
 
                 _leftScroll = EditorGUILayout.BeginScrollView(_leftScroll);
                 var nullSO = (AbilitySO)null;
                 AbilityTreeView.DrawTree(_treeRoots, _foldouts, ref nullSO,
                     _searchText, AbilityTypeFilter.All,
-                    onLeafSelected: asset => SelectActivation(asset as AbilityActivationSO));
+                    onLeafSelected: asset => SelectActivation(asset as AbilityActivationSO),
+                    selectedActivation: _selectedActivation,
+                    onDeleteLeaf: asset => DeleteActivation(asset as AbilityActivationSO));
                 EditorGUILayout.EndScrollView();
             });
         }
@@ -158,7 +157,7 @@ namespace RedDust.Ability
         // ── 右栏 ──
         private void DrawRightColumn()
         {
-            EditorUIUtility.DrawCard(Pad, () =>
+            EditorCard.Draw(Pad, () =>
             {
                 if (_selectedActivation == null)
                 {
@@ -194,7 +193,19 @@ namespace RedDust.Ability
             if (EditorForm.NeedsRebuild(_form, a))
             {
                 _form = new EditorForm(a) { DefaultLabelWidth = 100 };
-                _form.Enum<EActivationType>("activationType")
+                _form.RawField("Name", 100,
+                        getValue: () => a.name,
+                        setValue: v => { a.name = (string)v; },
+                        drawFunc: v => EditorGUILayout.TextField((string)v),
+                        equals: (x, y) => (string)x == (string)y)
+                    .CustomOnChange((_, newVal) =>
+                    {
+                        var n = (string)newVal;
+                        if (string.IsNullOrWhiteSpace(n)) return false;
+                        RenameActivation(a, n);
+                        return true;
+                    })
+                     .Enum<EActivationType>("activationType")
                      .Float("maxChargeTime")
                      .Toggle("autoReleaseAtFullCharge")
                      .ObjectField<StringAsset>("animationAsset")
@@ -291,7 +302,7 @@ namespace RedDust.Ability
                     FullPath = $"{folderPath}/{activation.name}",
                     Depth = 1,
                     IsFolder = false,
-                    Ability = null,
+                    Activation = activation,
                     Parent = folderNode,
                 };
                 folderNode.Children.Add(leaf);
@@ -311,11 +322,38 @@ namespace RedDust.Ability
             Repaint();
         }
 
+        private void RenameActivation(AbilityActivationSO activation, string newName)
+        {
+            var path = AssetDatabase.GetAssetPath(activation);
+            if (string.IsNullOrEmpty(path)) return;
+            var result = AssetDatabase.RenameAsset(path, newName);
+            if (!string.IsNullOrEmpty(result))
+            {
+                Debug.LogError($"[ActivationEditor] Rename failed: {result}");
+                return;
+            }
+            activation.name = newName;
+            EditorUtility.SetDirty(activation);
+            _hasChanges = true;
+            _needsRefresh = true;
+        }
+
         private void MarkDirty()
         {
             if (_selectedActivation == null) return;
             EditorUtility.SetDirty(_selectedActivation);
             _hasChanges = true;
+        }
+
+        private void DeleteActivation(AbilityActivationSO activation)
+        {
+            if (!AbilityEditorUtility.DeleteAssetWithConfirm(activation, "Activation"))
+                return;
+            if (_selectedActivation == activation)
+                _selectedActivation = null;
+            _needsRefresh = true;
+            _hasChanges = false;
+            Repaint();
         }
 
         private void RefreshAll()

@@ -25,36 +25,6 @@ namespace RedDust.Shared.EditorUI
     /// </summary>
     public static class EditorUIUtility
     {
-        /// <summary>
-        /// 绘制一张标准卡片。四内边距 = pad。
-        /// </summary>
-        public static void DrawCard(float pad, Action drawContent)
-        {
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            GUILayout.Space(pad);
-
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(pad);
-            EditorGUILayout.BeginVertical();
-
-            drawContent();
-
-            EditorGUILayout.EndVertical();
-            GUILayout.Space(pad);
-            EditorGUILayout.EndHorizontal();
-
-            GUILayout.Space(pad);
-            EditorGUILayout.EndVertical();
-        }
-
-        /// <summary>
-        /// 卡片间间距。值应与卡片内边距一致。
-        /// </summary>
-        public static void CardGap(float pad)
-        {
-            GUILayout.Space(pad);
-        }
-
         // Cached styles for DrawHeaderCard — lazy-init for EditorStyles availability
         private static GUIStyle _headerTitleStyle;
         private static GUIStyle HeaderTitleStyle => _headerTitleStyle ??= new GUIStyle(EditorStyles.largeLabel);
@@ -63,16 +33,19 @@ namespace RedDust.Shared.EditorUI
             { alignment = TextAnchor.MiddleRight, normal = { textColor = Color.gray } };
         private static readonly Color HeaderSaveColor = new(0.4f, 0.8f, 0.4f);
 
+        // ── Unity 设计令牌色 ──
+        // highlight-background: #2C5D87 → 选中高亮
         // ── 共用颜色常量 ──
         public static readonly Color ColorGreen = HeaderSaveColor;                  // 0.4, 0.8, 0.4 — 保存/Save
         public static readonly Color ColorGreenDark = new(0.4f, 0.7f, 0.4f);       // 0.4, 0.7, 0.4 — 创建/Create/Add
-        public static readonly Color ColorBlue = new(0.3f, 0.6f, 0.9f);            // 选中筛选标签
-        public static readonly Color ColorRed = new(0.9f, 0.3f, 0.3f);             // 删除/移除
+        public static readonly Color ColorBlue = new(0.298f, 0.494f, 1.0f);        // #4C7EFF — Unity link-text
+        public static readonly Color ColorRed = new(0.827f, 0.133f, 0.133f);       // #D32222 — Unity error-text
+        public static readonly Color ColorButtonText = new(0.933f, 0.933f, 0.933f); // #EEEEEE — Unity button-text
 
         // ── 缓存样式 ──
         private static GUIStyle _greyPlaceholder;
         public static GUIStyle GreyPlaceholder => _greyPlaceholder ??= new GUIStyle(EditorStyles.label)
-            { alignment = TextAnchor.MiddleCenter, fontSize = 13, normal = { textColor = Color.grey } };
+            { alignment = TextAnchor.MiddleCenter, fontSize = 12, normal = { textColor = Color.grey } };
 
         /// <summary>
         /// 标准编辑器 Header 卡片。
@@ -81,12 +54,12 @@ namespace RedDust.Shared.EditorUI
         public static void DrawHeaderCard(float pad, string title, string subtitle,
             bool hasChanges = false, Action onSave = null)
         {
-            DrawCard(pad, () =>
+            EditorCard.Draw(pad, () =>
             {
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField(title, HeaderTitleStyle);
 
-                var subWidth = (subtitle?.Length ?? 10) * 10;
+                var subWidth = HeaderSubStyle.CalcSize(new GUIContent(subtitle ?? "")).x;
                 EditorGUILayout.LabelField(subtitle, HeaderSubStyle, GUILayout.Width(subWidth));
 
                 GUILayout.FlexibleSpace();
@@ -159,19 +132,25 @@ namespace RedDust.Shared.EditorUI
             for (var i = 0; i < tabs.Length; i++)
             {
                 var isSelected = EqualityComparer<T>.Default.Equals(current, tabs[i]);
-                var oldBg = GUI.backgroundColor;
-                GUI.backgroundColor = isSelected ? ColorBlue : Color.white;
-                if (GUILayout.Button(labels[i], EditorStyles.miniButtonMid, GUILayout.Height(20)))
+                if (EditorButton.DrawTab(labels[i], isSelected))
                 {
-                    GUI.backgroundColor = oldBg;
                     EditorGUILayout.EndHorizontal();
                     return tabs[i];
                 }
-                GUI.backgroundColor = oldBg;
             }
             EditorGUILayout.EndHorizontal();
             return current;
         }
+
+        /// <summary>
+        /// 标准删除按钮（GUILayout 版）。红色背景，miniButton，宽20，"x"。
+        /// 返回 true 表示被点击。
+        /// </summary>
+        public static bool DeleteButton()
+            => EditorButton.Draw("x", EditorButtonStyle.Danger);
+
+        public static bool DeleteButton(Rect rect)
+            => EditorButton.Draw(rect, "x", EditorButtonStyle.Danger);
 
         private static string GetFieldTooltip(ScriptableObject so, string fieldName)
         {

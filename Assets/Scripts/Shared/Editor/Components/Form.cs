@@ -20,9 +20,11 @@ namespace RedDust.Shared.EditorUI
     {
         public ScriptableObject Target { get; private set; }
         public float DefaultLabelWidth { get; set; } = 90f;
+        /// <summary>FormItem 之间的垂直间距（类似 Element UI el-form-item margin-bottom）。</summary>
+        public float RowSpacing { get; set; } = 4f;
         public event Action OnAnyChange;
 
-        private readonly List<FormItem> _items = new();
+        private readonly List<EditorFormItem> _items = new();
 
         public EditorForm(ScriptableObject target)
         {
@@ -193,7 +195,7 @@ namespace RedDust.Shared.EditorUI
             if (equals == null)
                 equals = (a, b) => object.Equals(a, b);
 
-            var item = new FormItem
+            var item = new EditorFormItem
             {
                 LabelText = label,
                 Tooltip = tooltip,
@@ -216,8 +218,20 @@ namespace RedDust.Shared.EditorUI
         public void Draw()
         {
             if (Target == null) return;
-            foreach (var item in _items)
-                item.Draw(Target);
+            for (int i = 0; i < _items.Count; i++)
+            {
+                if (i > 0 && RowSpacing > 0)
+                    GUILayout.Space(RowSpacing);
+                _items[i].Draw(Target);
+            }
+        }
+
+        /// <summary>分组分隔线（类似 Element UI el-divider）。</summary>
+        public EditorForm Divider(string title = null)
+        {
+            var item = new EditorFormItem { IsDivider = true, LabelText = title };
+            _items.Add(item);
+            return this;
         }
 
         // ═══════════════════════════════════════════════════
@@ -243,7 +257,7 @@ namespace RedDust.Shared.EditorUI
                 tooltipText = attr?.tooltip;
             }
 
-            var item = new FormItem
+            var item = new EditorFormItem
             {
                 Field = field,
                 LabelText = labelText,
@@ -259,86 +273,6 @@ namespace RedDust.Shared.EditorUI
             _items.Add(item);
         }
 
-        // ═══════════════════════════════════════════════════
-        // FormItem（内部类）
-        // ═══════════════════════════════════════════════════
-
-        internal class FormItem
-        {
-            public FieldInfo Field;
-            public string LabelText;
-            public string Tooltip;
-            public float LabelWidth;
-            public bool IsReadOnly;
-            public string HelpText;
-            public Action PostInputDraw;
-            public Func<bool> VisibleWhen;
-            public Func<object, object> DrawField;
-            public Func<object, object, bool> AreEqual;
-            public Func<object, object> OnBeforeSet;
-            public Func<object, object, bool> CustomOnChange;
-
-            // RawField 用（无 FieldInfo）
-            public Func<object> GetValue;
-            public Action<object> SetValue;
-
-            public event Action OnChanged;
-
-            public void Draw(ScriptableObject target)
-            {
-                if (VisibleWhen?.Invoke() == false) return;
-
-                var oldValue = GetValue != null
-                    ? GetValue()
-                    : Field?.GetValue(target);
-                if (target == null && GetValue == null) return;
-
-                EditorGUILayout.BeginHorizontal();
-
-                var wasEnabled = GUI.enabled;
-                if (IsReadOnly) GUI.enabled = false;
-
-                var guiContent = string.IsNullOrEmpty(Tooltip)
-                    ? new GUIContent(LabelText)
-                    : new GUIContent(LabelText, Tooltip);
-                EditorGUILayout.LabelField(guiContent, GUILayout.Width(LabelWidth));
-
-                var newValue = DrawField(oldValue);
-                PostInputDraw?.Invoke();
-
-                GUI.enabled = wasEnabled;
-                EditorGUILayout.EndHorizontal();
-
-                // HelpText
-                if (!string.IsNullOrEmpty(HelpText))
-                {
-                    var s = new GUIStyle(EditorStyles.miniLabel)
-                        { normal = { textColor = Color.grey } };
-                    EditorGUILayout.LabelField(HelpText, s);
-                }
-
-                if (!AreEqual(oldValue, newValue))
-                {
-                    bool applied = true;
-                    if (CustomOnChange != null)
-                    {
-                        applied = CustomOnChange(oldValue, newValue);
-                    }
-                    else
-                    {
-                        newValue = OnBeforeSet?.Invoke(newValue) ?? newValue;
-                        if (SetValue != null)
-                            SetValue(newValue);
-                        else if (Field != null && target != null)
-                            Field.SetValue(target, newValue);
-                        if (target != null)
-                            EditorUtility.SetDirty(target);
-                    }
-                    if (applied)
-                        OnChanged?.Invoke();
-                }
-            }
-        }
     }
 }
 #endif

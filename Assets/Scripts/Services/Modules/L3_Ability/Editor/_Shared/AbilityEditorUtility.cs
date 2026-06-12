@@ -1,7 +1,9 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
+using System.IO;
 using RedDust.Core;
 using RedDust.Properties;
+using UnityEditor;
 using UnityEngine;
 
 namespace RedDust.Ability
@@ -137,6 +139,69 @@ namespace RedDust.Ability
             SearchTypeFilter.Circle => s.searchType == ESearchType.Circle,
             _ => true,
         };
+
+        // ═══════════════════════════════════════════════════
+        // 资产引用检查
+        // ═══════════════════════════════════════════════════
+
+        /// <summary>
+        /// 查找所有引用了 target 的资产（.asset / .prefab / .unity）。
+        /// 通过 GUID 匹配搜索文件内容。
+        /// </summary>
+        public static List<string> FindReferencers(ScriptableObject target)
+        {
+            var result = new List<string>();
+            if (target == null) return result;
+
+            var targetPath = AssetDatabase.GetAssetPath(target);
+            var targetGuid = AssetDatabase.AssetPathToGUID(targetPath);
+            if (string.IsNullOrEmpty(targetGuid)) return result;
+
+            var searchDirs = new[] { "Assets/Data/", "Assets/Prefabs/", "Assets/Scenes/" };
+            foreach (var dir in searchDirs)
+            {
+                if (!Directory.Exists(dir)) continue;
+                var files = Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories);
+                foreach (var file in files)
+                {
+                    var ext = Path.GetExtension(file).ToLowerInvariant();
+                    if (ext != ".asset" && ext != ".prefab" && ext != ".unity") continue;
+                    if (file == targetPath) continue;
+
+                    var text = File.ReadAllText(file);
+                    if (text.Contains(targetGuid))
+                        result.Add(file);
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 删除资产（带引用检查确认）。返回 true 表示已删除。
+        /// </summary>
+        public static bool DeleteAssetWithConfirm(ScriptableObject asset, string typeLabel)
+        {
+            if (asset == null) return false;
+
+            var refs = FindReferencers(asset);
+            var message = $"Delete '{asset.name}'?";
+            if (refs.Count > 0)
+            {
+                message += $"\n\n⚠ Referenced by {refs.Count} asset(s):";
+                foreach (var r in refs)
+                    message += $"\n  • {Path.GetFileNameWithoutExtension(r)}";
+                message += "\n\nDeleting may break these references.";
+            }
+            message += "\n\nThis cannot be undone.";
+
+            if (!UnityEditor.EditorUtility.DisplayDialog($"Delete {typeLabel}", message, "Delete", "Cancel"))
+                return false;
+
+            var path = AssetDatabase.GetAssetPath(asset);
+            AssetDatabase.DeleteAsset(path);
+            AssetDatabase.SaveAssets();
+            return true;
+        }
     }
 }
 #endif

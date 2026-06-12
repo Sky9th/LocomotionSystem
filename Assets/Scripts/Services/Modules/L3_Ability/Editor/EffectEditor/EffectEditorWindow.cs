@@ -59,9 +59,9 @@ namespace RedDust.Ability
             EditorGUILayout.BeginVertical();
 
             DrawHeader();
-            EditorUIUtility.CardGap(Pad);
+            EditorCard.Gap(Pad);
             DrawTwoColumns();
-            EditorUIUtility.CardGap(Pad);
+            EditorCard.Gap(Pad);
             DrawStatusBar();
 
             EditorGUILayout.EndVertical();
@@ -75,7 +75,7 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════
         private void DrawHeader()
         {
-            EditorUIUtility.DrawCard(Pad, () =>
+            EditorCard.Draw(Pad, () =>
             {
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Effect Editor", EditorStyles.largeLabel,
@@ -88,31 +88,25 @@ namespace RedDust.Ability
                 GUILayout.Space(Pad);
 
                 EditorGUILayout.BeginHorizontal();
-                if (GUILayout.Button("Refresh", GUILayout.Height(22)))
+                if (EditorButton.Draw("Refresh", size: EditorButtonSize.Medium))
                     RefreshAll();
                 GUILayout.FlexibleSpace();
 
-                if (GUILayout.Button("Export", GUILayout.Width(60), GUILayout.Height(22)))
-                    ExportFile();
+                if (EditorButton.Draw("Import/Export", size: EditorButtonSize.Medium))
+                    EffectImportWindow.Open();
 
-                GUI.backgroundColor = EditorUIUtility.ColorGreenDark;
-                if (GUILayout.Button("+ Create", GUILayout.Width(70), GUILayout.Height(22)))
+                if (EditorButton.Draw("+ Create", EditorButtonStyle.Success, EditorButtonSize.Medium))
                     CreateNewEffect();
-                GUI.backgroundColor = Color.white;
 
-                GUI.enabled = _hasChanges;
-                GUI.backgroundColor = _hasChanges ? EditorUIUtility.ColorGreen : Color.white;
-                if (GUILayout.Button(_hasChanges ? "Save *" : "Saved", GUILayout.Width(80), GUILayout.Height(22)))
+                if (EditorButton.Draw(_hasChanges ? "Save *" : "Saved", _hasChanges ? EditorButtonStyle.Primary : EditorButtonStyle.Default, EditorButtonSize.Medium, enabled: _hasChanges))
                 {
                     AssetDatabase.SaveAssets();
                     _hasChanges = false;
                 }
-                GUI.enabled = true;
-                GUI.backgroundColor = Color.white;
 
                 if (_selectedEffect != null)
                 {
-                    if (GUILayout.Button("Ping", GUILayout.Height(22)))
+                    if (EditorButton.Draw("Ping", size: EditorButtonSize.Medium))
                         EditorGUIUtility.PingObject(_selectedEffect);
                 }
                 EditorGUILayout.EndHorizontal();
@@ -131,7 +125,7 @@ namespace RedDust.Ability
             DrawLeftColumn();
             EditorGUILayout.EndHorizontal();
 
-            EditorUIUtility.CardGap(Pad);
+            EditorCard.Gap(Pad);
 
             // 右栏：编辑
             EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
@@ -144,26 +138,27 @@ namespace RedDust.Ability
         // ── 左栏：列表 ──
         private void DrawLeftColumn()
         {
-            EditorUIUtility.DrawCard(Pad, () =>
+            EditorCard.Draw(Pad, () =>
             {
                 DrawFilterCard();
-                EditorUIUtility.CardGap(Pad);
+                EditorCard.GapTight();
                 DrawSearchCard();
-                EditorUIUtility.CardGap(Pad);
+                EditorCard.Gap(Pad);
 
                 _leftScroll = EditorGUILayout.BeginScrollView(_leftScroll);
                 var nullSO = (AbilitySO)null;
                 AbilityTreeView.DrawTree(_treeRoots, _foldouts, ref nullSO,
                     _searchText, AbilityTypeFilter.All,
                     onLeafSelected: asset => SelectEffect(asset as EffectSO),
-                    selectedEffect: _selectedEffect);
+                    selectedEffect: _selectedEffect,
+                    onDeleteLeaf: asset => DeleteEffect(asset as EffectSO));
                 EditorGUILayout.EndScrollView();
             });
         }
 
         private void DrawFilterCard()
         {
-            EditorUIUtility.DrawCard(Pad, () =>
+            EditorCard.DrawLight(Pad, () =>
             {
                 var newFilter = EditorUIUtility.DrawFilterTabBar(_filter,
                     new[] { EffectTypeFilter.All, EffectTypeFilter.Damage, EffectTypeFilter.Impact, EffectTypeFilter.Execute, EffectTypeFilter.Cost },
@@ -175,7 +170,7 @@ namespace RedDust.Ability
 
         private void DrawSearchCard()
         {
-            EditorUIUtility.DrawCard(Pad, () =>
+            EditorCard.DrawLight(Pad, () =>
             {
                 var s = EditorUIUtility.DrawSearchRow(_searchText, labelWidth: 42f);
                 if (s != _searchText) { _searchText = s; }
@@ -185,7 +180,7 @@ namespace RedDust.Ability
         // ── 右栏：编辑 ──
         private void DrawRightColumn()
         {
-            EditorUIUtility.DrawCard(Pad, () =>
+            EditorCard.Draw(Pad, () =>
             {
                 if (_selectedEffect == null)
                 {
@@ -206,7 +201,7 @@ namespace RedDust.Ability
 
                 _rightScroll = EditorGUILayout.BeginScrollView(_rightScroll);
                 DrawBaseFields();
-                EditorUIUtility.CardGap(Pad);
+                EditorCard.Gap(Pad);
                 DrawTypeSpecificFields();
                 EditorGUILayout.EndScrollView();
             });
@@ -218,14 +213,11 @@ namespace RedDust.Ability
 
         private void DrawBaseFields()
         {
-            EditorUIUtility.DrawCard(Pad, () =>
+            EditorCard.Draw(Pad, "Base", () =>
             {
-                EditorGUILayout.LabelField("Base", EditorStyles.boldLabel);
-                GUILayout.Space(Pad);
-
                 var e = _selectedEffect;
 
-                if (_baseForm?.Target != e)
+                if (EditorForm.NeedsRebuild(_baseForm, e))
                 {
                     _baseForm = new EditorForm(e) { DefaultLabelWidth = 80 };
 
@@ -307,24 +299,27 @@ namespace RedDust.Ability
                 }
                 if (GUILayout.Button("Tag", EditorStyles.miniButton, GUILayout.Width(35)))
                 {
-                    var idx = i; // capture
+                    var currentTag = tags[i]; // capture tag reference
                     var r = GUIUtility.GUIToScreenRect(GUILayoutUtility.GetLastRect());
-                    TagPicker.Show(r, allowCreate: true, currentFullTag: tags[i]?.FullTag,
+                    TagPicker.Show(r, allowCreate: true, currentFullTag: currentTag?.FullTag,
                         onSelected: t =>
                         {
-                            if (t != e.applicationBlockedTags[idx])
+                            var arr = e.applicationBlockedTags;
+                            if (arr == null) return;
+                            for (int k = 0; k < arr.Length; k++)
                             {
-                                var a = e.applicationBlockedTags;
-                                a[idx] = t;
-                                e.applicationBlockedTags = a;
-                                MarkDirty();
+                                if (arr[k] == currentTag)
+                                {
+                                    arr[k] = t;
+                                    e.applicationBlockedTags = arr;
+                                    MarkDirty();
+                                    break;
+                                }
                             }
                         });
                 }
-                GUI.backgroundColor = EditorUIUtility.ColorRed;
-                if (GUILayout.Button("x", EditorStyles.miniButton, GUILayout.Width(20)))
+                if (EditorUIUtility.DeleteButton())
                     removeAt = i;
-                GUI.backgroundColor = Color.white;
                 EditorGUILayout.EndHorizontal();
             }
 
@@ -335,7 +330,7 @@ namespace RedDust.Ability
             }
 
             GUILayout.Space(2);
-            if (GUILayout.Button("+ Add Blocked Tag", GUILayout.Height(20)))
+            if (EditorButton.Draw("+ Add Blocked Tag", size: EditorButtonSize.Small))
             {
                 e.applicationBlockedTags = AbilityEditorUtility.Append(tags, null);
                 MarkDirty();
@@ -365,17 +360,12 @@ namespace RedDust.Ability
 
         private static void DrawCardSection(string title, Action draw)
         {
-            EditorUIUtility.DrawCard(Pad, () =>
-            {
-                EditorGUILayout.LabelField(title, EditorStyles.boldLabel);
-                GUILayout.Space(Pad);
-                draw();
-            });
+            EditorCard.Draw(Pad, title, draw);
         }
 
         private void DrawDamageFields(DamageEffectSO d)
         {
-            if (_typeForm?.Target != d)
+            if (EditorForm.NeedsRebuild(_typeForm, d))
             {
                 _typeForm = new EditorForm(d) { DefaultLabelWidth = 100 };
                 _typeForm.Float("baseValue");
@@ -386,7 +376,7 @@ namespace RedDust.Ability
 
         private void DrawImpactFields(ImpactEffectSO i)
         {
-            if (_typeForm?.Target != i)
+            if (EditorForm.NeedsRebuild(_typeForm, i))
             {
                 _typeForm = new EditorForm(i) { DefaultLabelWidth = 100 };
                 _typeForm.Float("staggerValue")
@@ -399,7 +389,7 @@ namespace RedDust.Ability
 
         private void DrawExecuteFields(ExecuteEffectSO x)
         {
-            if (_typeForm?.Target != x)
+            if (EditorForm.NeedsRebuild(_typeForm, x))
             {
                 _typeForm = new EditorForm(x) { DefaultLabelWidth = 100 };
                 _typeForm.Slider("hpThreshold", 0f, 1f);
@@ -410,7 +400,7 @@ namespace RedDust.Ability
 
         private void DrawCostFields(CostEffectSO c)
         {
-            if (_typeForm?.Target != c)
+            if (EditorForm.NeedsRebuild(_typeForm, c))
             {
                 _typeForm = new EditorForm(c) { DefaultLabelWidth = 100 };
                 _typeForm.ObjectField<PropertyDefSO>("def")
@@ -614,6 +604,17 @@ namespace RedDust.Ability
             EditorUtility.SetDirty(effect);
             _hasChanges = true;
             _needsRefresh = true;
+        }
+
+        private void DeleteEffect(EffectSO effect)
+        {
+            if (!AbilityEditorUtility.DeleteAssetWithConfirm(effect, "Effect"))
+                return;
+            if (_selectedEffect == effect)
+                _selectedEffect = null;
+            _needsRefresh = true;
+            _hasChanges = false;
+            Repaint();
         }
 
         private void MarkDirty()

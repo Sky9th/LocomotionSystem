@@ -57,9 +57,9 @@ namespace RedDust.Ability
             EditorGUILayout.BeginVertical();
 
             DrawHeader();
-            EditorUIUtility.CardGap(Pad);
+            EditorCard.Gap(Pad);
             DrawTwoColumns();
-            EditorUIUtility.CardGap(Pad);
+            EditorCard.Gap(Pad);
             DrawStatusBar();
 
             EditorGUILayout.EndVertical();
@@ -73,7 +73,7 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════
         private void DrawHeader()
         {
-            EditorUIUtility.DrawCard(Pad, () =>
+            EditorCard.Draw(Pad, () =>
             {
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Search Editor", EditorStyles.largeLabel,
@@ -86,29 +86,25 @@ namespace RedDust.Ability
                 GUILayout.Space(Pad);
 
                 EditorGUILayout.BeginHorizontal();
-                if (GUILayout.Button("Refresh", GUILayout.Height(22)))
+                if (EditorButton.Draw("Refresh", size: EditorButtonSize.Medium))
                     RefreshAll();
                 GUILayout.FlexibleSpace();
 
-                var oldBg = GUI.backgroundColor;
-                GUI.backgroundColor = EditorUIUtility.ColorGreenDark;
-                if (GUILayout.Button("+ Create", GUILayout.Width(70), GUILayout.Height(22)))
-                    CreateNewSearch();
-                GUI.backgroundColor = oldBg;
+                if (EditorButton.Draw("Import/Export", size: EditorButtonSize.Medium))
+                    SearchImportWindow.Open();
 
-                GUI.enabled = _hasChanges;
-                GUI.backgroundColor = _hasChanges ? EditorUIUtility.ColorGreen : Color.white;
-                if (GUILayout.Button(_hasChanges ? "Save *" : "Saved", GUILayout.Width(80), GUILayout.Height(22)))
+                if (EditorButton.Draw("+ Create", EditorButtonStyle.Success, EditorButtonSize.Medium))
+                    CreateNewSearch();
+
+                if (EditorButton.Draw(_hasChanges ? "Save *" : "Saved", _hasChanges ? EditorButtonStyle.Primary : EditorButtonStyle.Default, EditorButtonSize.Medium, enabled: _hasChanges))
                 {
                     AssetDatabase.SaveAssets();
                     _hasChanges = false;
                 }
-                GUI.enabled = true;
-                GUI.backgroundColor = oldBg;
 
                 if (_selectedSearch != null)
                 {
-                    if (GUILayout.Button("Ping", GUILayout.Height(22)))
+                    if (EditorButton.Draw("Ping", size: EditorButtonSize.Medium))
                         EditorGUIUtility.PingObject(_selectedSearch);
                 }
                 EditorGUILayout.EndHorizontal();
@@ -127,7 +123,7 @@ namespace RedDust.Ability
             DrawLeftColumn();
             EditorGUILayout.EndHorizontal();
 
-            EditorUIUtility.CardGap(Pad);
+            EditorCard.Gap(Pad);
 
             // 右栏：编辑
             EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
@@ -140,10 +136,10 @@ namespace RedDust.Ability
         // ── 左栏 ──
         private void DrawLeftColumn()
         {
-            EditorUIUtility.DrawCard(Pad, () =>
+            EditorCard.Draw(Pad, () =>
             {
                 // 筛选标签
-                EditorUIUtility.DrawCard(Pad, () =>
+                EditorCard.DrawLight(Pad, () =>
                 {
                     var newFilter = EditorUIUtility.DrawFilterTabBar(_filter,
                         new SearchTypeFilter[] { SearchTypeFilter.All, SearchTypeFilter.Cone, SearchTypeFilter.Ray, SearchTypeFilter.Circle },
@@ -152,23 +148,24 @@ namespace RedDust.Ability
                     { _filter = newFilter; OnFilterChanged(); }
                 });
 
-                EditorUIUtility.CardGap(Pad);
+                EditorCard.GapTight();
 
                 // 搜索框
-                EditorUIUtility.DrawCard(Pad, () =>
+                EditorCard.DrawLight(Pad, () =>
                 {
                     var s = EditorUIUtility.DrawSearchRow(_searchText, labelWidth: 42f);
                     if (s != _searchText) { _searchText = s; }
                 });
 
-                EditorUIUtility.CardGap(Pad);
+                EditorCard.Gap(Pad);
 
                 _leftScroll = EditorGUILayout.BeginScrollView(_leftScroll);
                 var nullSO = (AbilitySO)null;
                 AbilityTreeView.DrawTree(_treeRoots, _foldouts, ref nullSO,
                     _searchText, AbilityTypeFilter.All,
                     onLeafSelected: asset => SelectSearch(asset as AbilitySearchSO),
-                    selectedSearch: _selectedSearch);
+                    selectedSearch: _selectedSearch,
+                    onDeleteLeaf: asset => DeleteSearch(asset as AbilitySearchSO));
                 EditorGUILayout.EndScrollView();
             });
         }
@@ -176,7 +173,7 @@ namespace RedDust.Ability
         // ── 右栏 ──
         private void DrawRightColumn()
         {
-            EditorUIUtility.DrawCard(Pad, () =>
+            EditorCard.Draw(Pad, () =>
             {
                 if (_selectedSearch == null)
                 {
@@ -197,7 +194,7 @@ namespace RedDust.Ability
 
                 _rightScroll = EditorGUILayout.BeginScrollView(_rightScroll);
                 DrawBaseFields();
-                EditorUIUtility.CardGap(Pad);
+                EditorCard.Gap(Pad);
                 DrawTypeSpecificFields();
                 EditorGUILayout.EndScrollView();
             });
@@ -209,14 +206,11 @@ namespace RedDust.Ability
 
         private void DrawBaseFields()
         {
-            EditorUIUtility.DrawCard(Pad, () =>
+            EditorCard.Draw(Pad, "Base", () =>
             {
-                EditorGUILayout.LabelField("Base", EditorStyles.boldLabel);
-                GUILayout.Space(Pad);
-
                 var s = _selectedSearch;
 
-                if (_baseForm?.Target != s)
+                if (EditorForm.NeedsRebuild(_baseForm, s))
                 {
                     _baseForm = new EditorForm(s) { DefaultLabelWidth = 80 };
 
@@ -292,17 +286,12 @@ namespace RedDust.Ability
 
         private static void DrawCardSection(string title, Action draw)
         {
-            EditorUIUtility.DrawCard(Pad, () =>
-            {
-                EditorGUILayout.LabelField(title, EditorStyles.boldLabel);
-                GUILayout.Space(Pad);
-                draw();
-            });
+            EditorCard.Draw(Pad, title, draw);
         }
 
         private void DrawConeFields(ConeSearchSO cone)
         {
-            if (_typeForm?.Target != cone)
+            if (EditorForm.NeedsRebuild(_typeForm, cone))
             {
                 _typeForm = new EditorForm(cone) { DefaultLabelWidth = 100 };
                 _typeForm.Slider("angle", 0f, 360f);
@@ -313,7 +302,7 @@ namespace RedDust.Ability
 
         private void DrawRayFields(RaySearchSO ray)
         {
-            if (_typeForm?.Target != ray)
+            if (EditorForm.NeedsRebuild(_typeForm, ray))
             {
                 _typeForm = new EditorForm(ray) { DefaultLabelWidth = 100 };
                 _typeForm.Toggle("requiresLineOfSight");
@@ -449,6 +438,17 @@ namespace RedDust.Ability
             EditorUtility.SetDirty(search);
             _hasChanges = true;
             _needsRefresh = true;
+        }
+
+        private void DeleteSearch(AbilitySearchSO search)
+        {
+            if (!AbilityEditorUtility.DeleteAssetWithConfirm(search, "Search"))
+                return;
+            if (_selectedSearch == search)
+                _selectedSearch = null;
+            _needsRefresh = true;
+            _hasChanges = false;
+            Repaint();
         }
 
         private void MarkDirty()

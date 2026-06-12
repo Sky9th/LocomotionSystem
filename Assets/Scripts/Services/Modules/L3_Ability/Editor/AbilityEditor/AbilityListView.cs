@@ -13,7 +13,7 @@ namespace RedDust.Ability
 
         public static void DrawFilterCard(AbilityTypeFilter current, Action<AbilityTypeFilter> onChanged)
         {
-            EditorUIUtility.DrawCard(Pad, () =>
+            EditorCard.Draw(Pad, () =>
             {
                 var next = EditorUIUtility.DrawFilterTabBar(current,
                     new[] { AbilityTypeFilter.All, AbilityTypeFilter.Active, AbilityTypeFilter.Passive },
@@ -25,7 +25,7 @@ namespace RedDust.Ability
 
         public static void DrawSearchCard(string current, Action<string> onChanged)
         {
-            EditorUIUtility.DrawCard(Pad, () =>
+            EditorCard.Draw(Pad, () =>
             {
                 var s = EditorUIUtility.DrawSearchRow(current, labelWidth: 45f);
                 if (s != current) onChanged(s);
@@ -34,12 +34,11 @@ namespace RedDust.Ability
 
         public static void DrawCreateCard(Action onCreateNew)
         {
-            EditorUIUtility.DrawCard(Pad, () =>
+            EditorCard.Draw(Pad, () =>
             {
-                GUI.backgroundColor = EditorUIUtility.ColorGreen;
-                if (GUILayout.Button("+ Create New", GUILayout.Width(160), GUILayout.Height(24)))
+                if (EditorButton.Draw("+ Create New", EditorButtonStyle.Primary,
+                        EditorButtonSize.Large, 160f))
                     onCreateNew?.Invoke();
-                GUI.backgroundColor = Color.white;
             });
         }
     }

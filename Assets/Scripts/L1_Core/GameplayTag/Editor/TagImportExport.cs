@@ -331,7 +331,7 @@ namespace RedDust.Core
         private int _lastCreated, _lastSkipped;
         private List<string> _lastErrors = new();
 
-        [MenuItem("RedDust/Tag Import-Export", priority = 21)]
+        [MenuItem("RedDust/Tag Import-Export", priority = 23)]
         public static void ShowWindow()
         {
             var window = GetWindow<GameplayTagImportWindow>("Tag Importer");

@@ -30,8 +30,8 @@
 | 包名 | 原价 | 核心理由 | 购买时机 |
 |------|------|---------|---------|
 | **POLYGON - Apocalypse Pack** | $349.99 | 1,800+ prefab，12 品类全覆盖——模块化建筑/武器系统、30 角色、17 载具、671 props。不可替代 | 🟡 等打折（50% off 常见） |
-| **POLYGON - Nature Pack** | $49.99 | 214 环境模型 + 三面映射岩石 shader + 风格化水 shader + 地形纹理。程序化开放世界的地表基础层 | 🟡 等打折 |
-| **POLYGON - Farm Pack** | $49.99 | 173 作物含生长阶段 + 15 农场建筑 + 农具/栅栏/载具。农耕核心机制不可替代（Phase 8） | 🟡 等打折 |
+| **POLYGON - Nature Pack** | $49.99 | 214 环境模型 + 三面映射岩石 shader + 风格化水 shader + 地形纹理。程序化开放世界的地表基础层 | 🟢 现在（$25，50% off） |
+| **POLYGON - Farm Pack** | $49.99 | 173 作物含生长阶段 + 15 农场建筑 + 农具/栅栏/载具。农耕核心机制不可替代（Phase 8） | 🟢 现在（$25，50% off） |
 
 **Tier 1 原价合计: $449.98**（打 5 折 ~$225）
 
@@ -42,14 +42,14 @@
 | **POLYGON - City Zombies Pack** | $49.99 | 50 丧尸变体 + 肢体残片系统 + 血 shader。Apocalypse 仅 4 只丧尸，$1/只敌人变体 | 🟡 等打折 |
 | **POLYGON - Shops Pack** | $199.99 | 1,933 prefab——298 食物(含生/熟/焦状态)、967 商业道具、295 模块化招牌。商业空间的完整 LEGO | 🟢 现在（$60，70% off） |
 | **POLYGON - Military Pack** | $299.99 | 1,500+ prefab——92 件模块化武器系统 + 197 建筑 + 626 props。枪械定制系统的唯一来源 | 🟡 等打折（常规 50% off） |
-| **POLYGON - City Pack** | $19.99 | 331 资产——整洁现代城市建筑模块 + 道路系统。Apocalypse 只有废墟，这是"文明区"建筑语言 | 🟡 等打折 |
-| **POLYGON - Town Pack** | $49.99 | 636 资产——模块化郊区住宅 + 室内家具 + 花园道具。幸存者定居点的建筑基础 | 🟡 等打折 |
-| **POLYGON - Office Pack** | $49.99 | 128 模块化建筑件 + 626 办公道具（PC/打印机/咖啡机/卫生间）。填补 Apocalypse 完全缺失的干净室内 | 🟡 等打折 |
-| **POLYGON - Police Station** | $69.99 | 独占建筑类型——Apocalypse 的 30 栋建筑中无警察局。标志性搜刮 POI | 🟡 等打折 |
+| **POLYGON - City Pack** | $19.99 | 331 资产——整洁现代城市建筑模块 + 道路系统。Apocalypse 只有废墟，这是"文明区"建筑语言 | 🟢 现在（$10，50% off） |
+| **POLYGON - Town Pack** | $49.99 | 636 资产——模块化郊区住宅 + 室内家具 + 花园道具。幸存者定居点的建筑基础 | 🟢 现在（$25，50% off） |
+| **POLYGON - Office Pack** | $49.99 | 128 模块化建筑件 + 626 办公道具（PC/打印机/咖啡机/卫生间）。填补 Apocalypse 完全缺失的干净室内 | 🟢 现在（$15，70% off） |
+| **POLYGON - Police Station** | $69.99 | 独占建筑类型——Apocalypse 的 30 栋建筑中无警察局。标志性搜刮 POI | 🟢 现在（$21，70% off） |
 | **POLYGON - Swamp Marshland - Nature Biome** | $54.99 | 沼泽生物群系——模块化码头 + 骨头/墓碑/effigies + 雾/青蛙粒子。末日氛围天然匹配 | 🟡 等打折 |
 | **POLYGON - Alpine Mountain - Nature Biome** | $54.99 | 雪/山生物群系——程序化地形的高海拔生态层。含 LOD 树木/岩石/地形材质 | 🟡 等打折 |
 | **INTERFACE - Apocalypse HUD** | $99.99 | 163 动画 UI prefab + 658 图标（从 Apocalypse 3D 模型直接渲染，视觉一致性完美） | 🟡 等打折 |
-| **INTERFACE - Modern Menus** | $99.99 | 359 动画 UI prefab——20 完整菜单模板（主菜单/设置/存档/弹窗），含 3D 图标 mesh | 🟡 等打折 |
+| **INTERFACE - Modern Menus** | $99.99 | 359 动画 UI prefab——20 完整菜单模板（主菜单/设置/存档/弹窗），含 3D 图标 mesh | 🟢 现在（$50，50% off） |
 
 **Tier 2 原价合计: $1,049.89**
 

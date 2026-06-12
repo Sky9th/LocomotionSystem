@@ -47,10 +47,10 @@ namespace RedDust.Ability
             EditorGUILayout.BeginVertical();
 
             DrawHeader();
-            EditorUIUtility.CardGap(Pad);
+            EditorCard.Gap(Pad);
 
             DrawThreeColumns();
-            EditorUIUtility.CardGap(Pad);
+            EditorCard.Gap(Pad);
 
             DrawStatusBar();
 
@@ -64,7 +64,7 @@ namespace RedDust.Ability
         // ── Header ──
         private void DrawHeader()
         {
-            EditorUIUtility.DrawCard(Pad, () =>
+            EditorCard.Draw(Pad, () =>
             {
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Ability Editor", EditorStyles.largeLabel,
@@ -78,23 +78,19 @@ namespace RedDust.Ability
                 GUILayout.Space(Pad);
 
                 EditorGUILayout.BeginHorizontal();
-                if (GUILayout.Button("Refresh", GUILayout.Height(22)))
+                if (EditorButton.Draw("Refresh", size: EditorButtonSize.Medium))
                     RefreshAll();
                 GUILayout.FlexibleSpace();
 
-                GUI.enabled = _hasChanges;
-                GUI.backgroundColor = _hasChanges ? new Color(0.4f, 0.8f, 0.4f) : Color.white;
-                if (GUILayout.Button(_hasChanges ? "Save *" : "Saved", GUILayout.Width(80), GUILayout.Height(22)))
+                if (EditorButton.Draw(_hasChanges ? "Save *" : "Saved", _hasChanges ? EditorButtonStyle.Primary : EditorButtonStyle.Default, EditorButtonSize.Medium, enabled: _hasChanges))
                 {
                     AssetDatabase.SaveAssets();
                     _hasChanges = false;
                 }
-                GUI.enabled = true;
-                GUI.backgroundColor = Color.white;
 
                 if (_selectedAbility != null)
                 {
-                    if (GUILayout.Button("Ping Asset", GUILayout.Height(22)))
+                    if (EditorButton.Draw("Ping", size: EditorButtonSize.Medium))
                         EditorGUIUtility.PingObject(_selectedAbility);
                 }
                 EditorGUILayout.EndHorizontal();
@@ -107,10 +103,10 @@ namespace RedDust.Ability
             EditorGUILayout.BeginHorizontal();
 
             DrawLeftColumn();
-            EditorUIUtility.CardGap(Pad);
+            EditorCard.Gap(Pad);
             DrawMiddleColumn();
 
-            EditorUIUtility.CardGap(Pad);
+            EditorCard.Gap(Pad);
             DrawRightColumn();
 
             EditorGUILayout.EndHorizontal();
@@ -121,20 +117,20 @@ namespace RedDust.Ability
         {
             EditorGUILayout.BeginHorizontal(
                 GUILayout.Width(LeftWidth), GUILayout.ExpandHeight(true));
-            EditorUIUtility.DrawCard(Pad, () =>
+            EditorCard.Draw(Pad, () =>
             {
                 // filter
                 AbilityListView.DrawFilterCard(_filter, f => _filter = f);
-                EditorUIUtility.CardGap(Pad);
+                EditorCard.Gap(Pad);
 
                 // search
                 AbilityListView.DrawSearchCard(_searchText, s => _searchText = s);
-                EditorUIUtility.CardGap(Pad);
+                EditorCard.Gap(Pad);
 
                 // create
                 AbilityListView.DrawCreateCard(
                     () => Debug.Log("[AbilityEditor] Create New — Phase 2+"));
-                EditorUIUtility.CardGap(Pad);
+                EditorCard.Gap(Pad);
 
                 // tree
                 _leftScroll = EditorGUILayout.BeginScrollView(_leftScroll);
@@ -150,7 +146,7 @@ namespace RedDust.Ability
         {
             EditorGUILayout.BeginHorizontal(
                 GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
-            EditorUIUtility.DrawCard(Pad, () =>
+            EditorCard.Draw(Pad, () =>
             {
                 var midTitle = _selectedAbility != null
                     ? $"Edit: {_selectedAbility.displayName ?? _selectedAbility.name}"
@@ -165,7 +161,7 @@ namespace RedDust.Ability
                 else
                     AbilityEditorMiddlePanel.DrawEdit(_selectedAbility,
                         onEditSubAsset: slot =>
-                        { _activeSlot = slot; },
+                        { _activeSlot = slot; _rightSearchText = ""; },
                         onClearSubAsset: slot => ClearSubAsset(slot),
                         onRemoveEffect: (index, isTarget) => RemoveEffectFromAbility(index, isTarget),
                         onChanged: () => _hasChanges = true);
@@ -182,7 +178,7 @@ namespace RedDust.Ability
             SubAssetPickerView.DrawPicker(_model, _activeSlot, ref _rightSearchText,
                 onSelected: asset => AssignSubAsset(_activeSlot, asset),
                 onCreateNew: () => Debug.Log("[AbilityEditor] Create sub-asset — Phase 3"),
-                onCancel: () => { _rightSearchText = ""; });
+                onCancel: () => { _rightSearchText = ""; _activeSlot = SubAssetSlot.None; });
             EditorGUILayout.EndHorizontal();
         }
 
@@ -215,6 +211,7 @@ namespace RedDust.Ability
             }
 
             _rightSearchText = "";
+            _activeSlot = SubAssetSlot.None;
             _hasChanges = true;
             _needsRefresh = true;
         }
