@@ -29,6 +29,23 @@ namespace RedDust.Ability
         {
             var s = searchText;
 
+            if (slot == SubAssetSlot.None)
+            {
+                EditorCard.Draw(Pad, () =>
+                {
+                    GUILayout.FlexibleSpace();
+                    EditorGUILayout.BeginHorizontal();
+                    GUILayout.FlexibleSpace();
+                    EditorGUILayout.LabelField("Click a sub-asset slot\nin the middle panel to assign.",
+                        EditorUIUtility.GreyPlaceholder);
+                    GUILayout.FlexibleSpace();
+                    EditorGUILayout.EndHorizontal();
+                    GUILayout.FlexibleSpace();
+                });
+                searchText = s;
+                return;
+            }
+
             EditorCard.Draw(Pad, () =>
             {
                 var title = slot switch
@@ -56,9 +73,13 @@ namespace RedDust.Ability
                 // 底部按钮
                 var hasSelection = _selectedAsset != null;
                 EditorGUILayout.BeginHorizontal();
-                if (slot != SubAssetSlot.TargetEffects && slot != SubAssetSlot.SelfEffects
-                    && EditorButton.Draw("+ Create New"))
-                    onCreateNew?.Invoke();
+                if (slot != SubAssetSlot.TargetEffects && slot != SubAssetSlot.SelfEffects)
+                {
+                    if (EditorButton.Draw("Edit in Editor"))
+                        OpenStandaloneEditor(slot);
+                    if (EditorButton.Draw("+ Create New"))
+                        OpenStandaloneEditor(slot);
+                }
                 GUILayout.FlexibleSpace();
                 if (EditorButton.Draw("Cancel", size: EditorButtonSize.Medium))
                 {
@@ -163,6 +184,23 @@ namespace RedDust.Ability
                     selectedEffect: _selectedAsset as EffectSO);
                 EditorGUILayout.EndScrollView();
             });
+        }
+
+        private static void OpenStandaloneEditor(SubAssetSlot slot)
+        {
+            switch (slot)
+            {
+                case SubAssetSlot.Activation:
+                    ActivationEditorWindow.Open();
+                    break;
+                case SubAssetSlot.Search:
+                    SearchEditorWindow.Open();
+                    break;
+                case SubAssetSlot.Noise:
+                    NoiseEditorWindow.Open();
+                    break;
+                // Effect slots have their own tree picker, no standalone redirect needed
+            }
         }
 
         // ── 摘要（委托给 AbilityEditorUtility）──

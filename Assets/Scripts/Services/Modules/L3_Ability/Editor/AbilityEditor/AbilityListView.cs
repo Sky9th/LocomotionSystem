@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
+using System.IO;
 using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
@@ -32,14 +33,35 @@ namespace RedDust.Ability
             });
         }
 
-        public static void DrawCreateCard(Action onCreateNew)
+        public static void DrawCreateCard(Action<AbilitySO> onCreated)
         {
             EditorCard.Draw(Pad, () =>
             {
                 if (EditorButton.Draw("+ Create New", EditorButtonStyle.Primary,
                         EditorButtonSize.Large, 160f))
-                    onCreateNew?.Invoke();
+                {
+                    var menu = new GenericMenu();
+                    menu.AddItem(new GUIContent("Active Ability"), false,
+                        () => CreateAbility<AbilityDefSO>("Ability_New", "Assets/Data/Ability/Actives", onCreated));
+                    menu.AddItem(new GUIContent("Passive Ability"), false,
+                        () => CreateAbility<PassiveAbilitySO>("Passive_New", "Assets/Data/Ability/Passives", onCreated));
+                    menu.ShowAsContext();
+                }
             });
+        }
+
+        private static void CreateAbility<T>(string prefix, string dir, Action<AbilitySO> onCreated) where T : AbilitySO
+        {
+            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
+            var path = AssetDatabase.GenerateUniqueAssetPath($"{dir}/{prefix}.asset");
+            var instance = ScriptableObject.CreateInstance<T>();
+            instance.name = Path.GetFileNameWithoutExtension(path);
+            AssetDatabase.CreateAsset(instance, path);
+            AssetDatabase.SaveAssets();
+
+            Debug.Log($"[AbilityEditor] Created {path}");
+            onCreated?.Invoke(instance);
         }
     }
 }

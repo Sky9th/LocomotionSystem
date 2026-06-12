@@ -20,8 +20,8 @@ namespace RedDust.Shared.EditorUI
     {
         public ScriptableObject Target { get; private set; }
         public float DefaultLabelWidth { get; set; } = 90f;
-        /// <summary>FormItem 之间的垂直间距（类似 Element UI el-form-item margin-bottom）。</summary>
-        public float RowSpacing { get; set; } = 4f;
+        /// <summary>FormItem 之间的垂直间距。</summary>
+        public float RowSpacing { get; set; } = 6f;
         public event Action OnAnyChange;
 
         private readonly List<EditorFormItem> _items = new();

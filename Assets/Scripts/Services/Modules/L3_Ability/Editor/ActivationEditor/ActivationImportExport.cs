@@ -134,46 +134,55 @@ namespace RedDust.Ability
     public class ActivationImportWindow : EditorWindow
     {
         private string _filePath;
-        private string _preview = "";
-        private string _result = "";
+        private string _previewText;
+        private (int created, int skipped, List<string> errors) _result;
 
         [MenuItem("RedDust/Activation Import-Export", priority = 22)]
-        public static void Open() => GetWindow<ActivationImportWindow>("Activation Import-Export");
+        public static void Open()
+        {
+            var window = GetWindow<ActivationImportWindow>("Activation Import-Export");
+            window.minSize = new Vector2(520, 420);
+            window.Show();
+        }
 
         private void OnGUI()
         {
             EditorImportExport.Draw(
-                "Activation Import-Export",
-                "Assets/Data/Ability/Activations",
-                "json",
-                ref _filePath,
-                ref _preview,
-                ref _result,
-                onImport: () => DoImport(),
-                onExport: () => DoExport()
+                title: "Activation Import-Export",
+                subtitle: "L3_Ability · JSON ↔ .asset",
+                defaultDir: "Assets/Data/Ability/Activations",
+                fileExtension: "json",
+                defaultFileName: "activations_export",
+                filePath: ref _filePath,
+                previewText: ref _previewText,
+                result: ref _result,
+                buildPreview: BuildPreview,
+                onImport: path =>
+                {
+                    var (created, skipped, errors) = ActivationImporter.ImportFromJson(File.ReadAllText(path));
+                    return (created, skipped, errors);
+                },
+                onExport: path => File.WriteAllText(path, ActivationImporter.ExportToJson())
             );
         }
 
-        private void DoImport()
+        private static string BuildPreview(string filePath)
         {
-            if (string.IsNullOrEmpty(_filePath) || !File.Exists(_filePath))
-            { _result = "File not found."; return; }
+            if (!File.Exists(filePath)) return null;
+            ActivationExportFile preview;
+            try { preview = JsonUtility.FromJson<ActivationExportFile>(File.ReadAllText(filePath)); }
+            catch { return null; }
+            if (preview?.activations == null || preview.activations.Length == 0) return null;
 
-            var (created, skipped, errors) = ActivationImporter.ImportFromJson(File.ReadAllText(_filePath));
-            _result = $"Created: {created}, Skipped (updated): {skipped}";
-            if (errors.Count > 0) _result += "\n" + string.Join("\n", errors);
-            _preview = "";
-            Debug.Log($"[ActivationImport] {_result}");
-        }
+            int total = preview.activations.Length;
+            int instant = 0, charged = 0, channel = 0;
+            foreach (var a in preview.activations)
+            {
+                switch (a.activationType) { case "Instant": instant++; break; case "Charged": charged++; break; case "Channel": channel++; break; }
+            }
 
-        private void DoExport()
-        {
-            var path = EditorUtility.SaveFilePanel("Export Activations", "Assets/Data/Ability/Activations", "activations_export", "json");
-            if (string.IsNullOrEmpty(path)) return;
-            var json = ActivationImporter.ExportToJson();
-            File.WriteAllText(path, json);
-            _result = $"Exported to {path}";
-            Debug.Log($"[ActivationImport] {_result}");
+            return $"<b>{total}</b> activations (<color=#33AA33>{instant} Instant</color> · <color=#CC8833>{charged} Charged</color> · <color=#3388CC>{channel} Channel</color>)\n" +
+                   $"v{preview.version} · {preview.description ?? "-"}";
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using RedDust.Shared.EditorUI;
 namespace RedDust.Core.Editor
 {
     /// <summary>
@@ -66,15 +67,13 @@ namespace RedDust.Core.Editor
         public override void OnGUI(Rect rect)
         {
             GUILayout.Space(Pad);
-
             EditorGUILayout.BeginHorizontal();
             GUILayout.Space(Pad);
-
             EditorGUILayout.BeginVertical();
 
             // ── 搜索框 ──
             DrawSearchField();
-            GUILayout.Space(Pad);
+            EditorCard.Gap(Pad);
 
             // ── 搜索结果 ──
             if (!string.IsNullOrEmpty(_searchText))
@@ -82,103 +81,86 @@ namespace RedDust.Core.Editor
                 var matches = _model.Search(_searchText, _rootFilter);
                 if (matches.Count > 0)
                 {
-                    EditorGUILayout.LabelField($"Matches: {matches.Count}", EditorStyles.label);
+                    EditorCard.DrawLight(Pad, () =>
+                    {
+                        EditorGUILayout.LabelField($"Matches: {matches.Count}", EditorStyles.miniBoldLabel);
+                    });
+                    EditorCard.Gap(Pad);
                 }
                 else if (_allowCreate)
                 {
-                    EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-                    GUILayout.Space(Pad);
-                    EditorGUILayout.BeginHorizontal();
-                    GUILayout.Space(Pad);
-                    EditorGUILayout.LabelField($"Create new tag: {_searchText}", EditorStyles.boldLabel);
-                    GUILayout.FlexibleSpace();
-                    GUI.backgroundColor = new Color(0.4f, 0.8f, 0.4f);
-                    if (GUILayout.Button("Create", GUILayout.Width(60), GUILayout.Height(22)))
+                    EditorCard.DrawLight(Pad, () =>
                     {
-                        try
+                        EditorGUILayout.BeginHorizontal();
+                        EditorGUILayout.LabelField($"Create new tag: {_searchText}", EditorStyles.boldLabel);
+                        GUILayout.FlexibleSpace();
+                        if (EditorButton.Draw("Create", EditorButtonStyle.Success, EditorButtonSize.Small, width: 60))
                         {
-                            var newTag = TagCreator.CreateTagChain(_searchText);
-                            _onSelected?.Invoke(newTag);
-                            editorWindow.Close();
-                            return;
+                            try
+                            {
+                                var newTag = TagCreator.CreateTagChain(_searchText);
+                                _onSelected?.Invoke(newTag);
+                                editorWindow.Close();
+                                return;
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.LogError($"[TagPicker] Failed: {ex.Message}");
+                            }
                         }
-                        catch (Exception ex)
-                        {
-                            Debug.LogError($"[TagPicker] Failed: {ex.Message}");
-                        }
-                    }
-                    GUI.backgroundColor = Color.white;
-                    GUILayout.Space(Pad);
-                    EditorGUILayout.EndHorizontal();
-                    GUILayout.Space(Pad);
-                    EditorGUILayout.EndVertical();
+                        EditorGUILayout.EndHorizontal();
+                    });
+                    EditorCard.Gap(Pad);
                 }
-                GUILayout.Space(Pad);
             }
 
             // ── 树（搜索时自动过滤 + 展开匹配路径）──
-            _scroll = EditorGUILayout.BeginScrollView(_scroll);
+            EditorCard.Draw(Pad, () =>
+            {
+                _scroll = EditorGUILayout.BeginScrollView(_scroll);
+                TagTreeView.DrawTree(_model.Roots, _foldouts, ref _selectedFullTag,
+                    searchFilter: _searchText,
+                    rootFilter: _rootFilter);
+                EditorGUILayout.EndScrollView();
+            });
 
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginVertical();
-            TagTreeView.DrawTree(_model.Roots, _foldouts, ref _selectedFullTag,
-                searchFilter: _searchText,
-                rootFilter: _rootFilter);
-            EditorGUILayout.EndVertical();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.EndScrollView();
-
-            GUILayout.Space(Pad);
+            EditorCard.Gap(Pad);
 
             // ── 底部按钮 ──
             DrawFooter();
 
             EditorGUILayout.EndVertical();
-
             GUILayout.Space(Pad);
             EditorGUILayout.EndHorizontal();
-
             GUILayout.Space(Pad);
         }
 
         private void DrawSearchField()
         {
-            EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
-            _searchText = EditorGUILayout.TextField(_searchText, EditorStyles.toolbarSearchField);
-            if (!string.IsNullOrEmpty(_searchText) && GUILayout.Button("✕", EditorStyles.toolbarButton, GUILayout.Width(20)))
-            {
-                _searchText = "";
-                GUI.FocusControl(null);
-            }
-            EditorGUILayout.EndHorizontal();
+            _searchText = EditorUIUtility.DrawSearchRow(_searchText);
         }
 
         private void DrawFooter()
         {
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
-            GUILayout.FlexibleSpace();
-
-            if (GUILayout.Button("Cancel", GUILayout.Width(80)))
+            EditorCard.Draw(Pad, () =>
             {
-                editorWindow.Close();
-            }
+                EditorGUILayout.BeginHorizontal();
+                GUILayout.FlexibleSpace();
 
-            GUI.enabled = !string.IsNullOrEmpty(_selectedFullTag);
-            if (GUILayout.Button("Select", GUILayout.Width(80)))
-            {
-                var node = _model.Find(_selectedFullTag);
-                if (node != null)
-                    _onSelected?.Invoke(node.Asset);
-                editorWindow.Close();
-            }
-            GUI.enabled = true;
+                if (EditorButton.Draw("Cancel", EditorButtonStyle.Default, EditorButtonSize.Medium, width: 80))
+                    editorWindow.Close();
 
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndHorizontal();
+                if (EditorButton.Draw("Select", EditorButtonStyle.Primary, EditorButtonSize.Medium,
+                        width: 80, enabled: !string.IsNullOrEmpty(_selectedFullTag)))
+                {
+                    var node = _model.Find(_selectedFullTag);
+                    if (node != null)
+                        _onSelected?.Invoke(node.Asset);
+                    editorWindow.Close();
+                }
+
+                EditorGUILayout.EndHorizontal();
+            });
         }
 
         private void SelectTag(TagNode node)

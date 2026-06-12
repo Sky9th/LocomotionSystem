@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 141cf4e8366df5c47949c79fda63fae0, type: 3}
   m_Name: Cost_Ammo_Throwable
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 11400000, guid: ab7870c4f5490b24b99a3376e95cb466, type: 2}
+  effectTag: {fileID: 11400000, guid: 460e9e3a4b5aa29428a5ae7c042ee7b9, type: 2}
   description: "\u5F39\u836F\u6D88\u8017\xB7\u6295\u63B7\u7269\u3002\u6263 1 \u4E2A"
   duration: 0
   stackable: 0

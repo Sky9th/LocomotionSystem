@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using RedDust.Core;
 using RedDust.Core.Editor;
 using RedDust.Properties;
@@ -39,6 +40,8 @@ namespace RedDust.Ability
         private Vector2 _leftScroll;
         private Vector2 _rightScroll;
         private readonly Dictionary<string, bool> _foldouts = new();
+        private Rect _effectTagButtonRect;
+        private Rect _blockedTagButtonRect;
 
         [MenuItem("RedDust/Effect Editor", priority = 1)]
         private static void Open()
@@ -241,8 +244,7 @@ namespace RedDust.Ability
                         {
                             if (GUILayout.Button("Tag", EditorStyles.miniButton, GUILayout.Width(35)))
                             {
-                                var rect = GUIUtility.GUIToScreenRect(GUILayoutUtility.GetLastRect());
-                                TagPicker.Show(rect, allowCreate: true,
+                                TagPicker.Show(_effectTagButtonRect, allowCreate: true,
                                     currentFullTag: e.effectTag?.FullTag,
                                     onSelected: t =>
                                     {
@@ -252,10 +254,12 @@ namespace RedDust.Ability
                                             EditorUtility.SetDirty(e);
                                             _hasChanges = true;
                                             _needsRefresh = true;
-                                            _baseForm = null; // force rebuild
+                                            _baseForm = null;
                                         }
                                     });
                             }
+                            if (Event.current.type == EventType.Repaint)
+                                _effectTagButtonRect = GUILayoutUtility.GetLastRect();
                         });
 
                     // 标准字段
@@ -300,8 +304,7 @@ namespace RedDust.Ability
                 if (GUILayout.Button("Tag", EditorStyles.miniButton, GUILayout.Width(35)))
                 {
                     var currentTag = tags[i]; // capture tag reference
-                    var r = GUIUtility.GUIToScreenRect(GUILayoutUtility.GetLastRect());
-                    TagPicker.Show(r, allowCreate: true, currentFullTag: currentTag?.FullTag,
+                    TagPicker.Show(_blockedTagButtonRect, allowCreate: true, currentFullTag: currentTag?.FullTag,
                         onSelected: t =>
                         {
                             var arr = e.applicationBlockedTags;
@@ -318,6 +321,8 @@ namespace RedDust.Ability
                             }
                         });
                 }
+                if (Event.current.type == EventType.Repaint)
+                    _blockedTagButtonRect = GUILayoutUtility.GetLastRect();
                 if (EditorUIUtility.DeleteButton())
                     removeAt = i;
                 EditorGUILayout.EndHorizontal();
@@ -368,7 +373,14 @@ namespace RedDust.Ability
             if (EditorForm.NeedsRebuild(_typeForm, d))
             {
                 _typeForm = new EditorForm(d) { DefaultLabelWidth = 100 };
-                _typeForm.Float("baseValue");
+                _typeForm.Float("baseValue", tooltip: (typeof(DamageEffectSO).GetField("baseValue")
+                        ?.GetCustomAttribute<TooltipAttribute>())?.tooltip)
+                         .Float("modAdd", tooltip: (typeof(DamageEffectSO).GetField("modAdd")
+                        ?.GetCustomAttribute<TooltipAttribute>())?.tooltip)
+                         .Float("modMult", tooltip: (typeof(DamageEffectSO).GetField("modMult")
+                        ?.GetCustomAttribute<TooltipAttribute>())?.tooltip)
+                         .Int("priority", tooltip: (typeof(DamageEffectSO).GetField("priority")
+                        ?.GetCustomAttribute<TooltipAttribute>())?.tooltip);
                 _typeForm.OnAnyChange += MarkDirty;
             }
             _typeForm?.Draw();

@@ -37,31 +37,27 @@ namespace RedDust.Ability
             {
                 EditorGUI.indentLevel++;
                 EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Type", EditorStyles.miniLabel, GUILayout.Width(80));
-                EditorGUILayout.LabelField("Value", EditorStyles.miniLabel, GUILayout.Width(70));
-                EditorGUILayout.LabelField("Tag", EditorStyles.miniLabel, GUILayout.Width(130));
-                EditorGUILayout.LabelField("Penetration", EditorStyles.miniLabel);
-                EditorGUILayout.LabelField("Range", EditorStyles.miniLabel);
+                EditorGUILayout.LabelField("Type", EditorStyles.miniLabel, GUILayout.Width(56));
+                EditorGUILayout.LabelField("Base", EditorStyles.miniLabel, GUILayout.Width(50));
+                EditorGUILayout.LabelField("+Add", EditorStyles.miniLabel, GUILayout.Width(46));
+                EditorGUILayout.LabelField("×Mult", EditorStyles.miniLabel, GUILayout.Width(46));
+                EditorGUILayout.LabelField("Pri", EditorStyles.miniLabel, GUILayout.Width(24));
+                EditorGUILayout.LabelField("Tag", EditorStyles.miniLabel, GUILayout.Width(100));
+                EditorGUILayout.LabelField("Effective", EditorStyles.miniLabel);
                 EditorGUILayout.EndHorizontal();
 
                 foreach (var dmg in damages)
                 {
                     EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField(dmg.duration <= 0 ? "Instant" : $"DoT {dmg.duration}s", GUILayout.Width(80));
-                    EditorGUILayout.LabelField($"{dmg.baseValue:F1} pts", GUILayout.Width(70));
-                    EditorGUILayout.LabelField(dmg.effectTag != null ? dmg.effectTag.FullTag : "—", GUILayout.Width(130));
-
-                    // TODO: armorPenetration/shieldPenetration/minDamage/maxDamage 已移除，替换为 baseValue/modAdd/modMult/priority
-                    /*
-                    var pen = "";
-                    if (dmg.armorPenetration > 0) pen += $"AP:{dmg.armorPenetration:P0}  ";
-                    if (dmg.shieldPenetration > 0) pen += $"SP:{dmg.shieldPenetration:P0}";
-                    if (!string.IsNullOrEmpty(pen)) EditorGUILayout.LabelField(pen);
-
-                    if (dmg.minDamage > 0 || dmg.maxDamage > 0)
-                        EditorGUILayout.LabelField($"Min:{dmg.minDamage:F1}  Max:{(dmg.maxDamage > 0 ? dmg.maxDamage : "—")}");
-                    */
-
+                    EditorGUILayout.LabelField(dmg.duration <= 0 ? "Instant" : $"DoT {dmg.duration}s", GUILayout.Width(56));
+                    EditorGUILayout.LabelField($"{dmg.baseValue:F1}", GUILayout.Width(50));
+                    EditorGUILayout.LabelField(dmg.modAdd != 0 ? $"{dmg.modAdd:+0.#;-0.#}" : "—", GUILayout.Width(46));
+                    EditorGUILayout.LabelField(Mathf.Abs(dmg.modMult - 1f) > 0.001f ? $"{dmg.modMult:F2}" : "—", GUILayout.Width(46));
+                    EditorGUILayout.LabelField($"{dmg.priority}", GUILayout.Width(24));
+                    EditorGUILayout.LabelField(dmg.effectTag != null ? dmg.effectTag.FullTag : "—", GUILayout.Width(100));
+                    var eff = dmg.baseValue + dmg.modAdd;
+                    if (Mathf.Abs(dmg.modMult - 1f) > 0.001f) eff *= dmg.modMult;
+                    EditorGUILayout.LabelField($"{eff:F1}");
                     EditorGUILayout.EndHorizontal();
                 }
                 EditorGUI.indentLevel--;

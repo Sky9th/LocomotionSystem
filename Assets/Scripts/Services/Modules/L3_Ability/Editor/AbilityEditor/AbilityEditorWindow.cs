@@ -128,8 +128,13 @@ namespace RedDust.Ability
                 EditorCard.Gap(Pad);
 
                 // create
-                AbilityListView.DrawCreateCard(
-                    () => Debug.Log("[AbilityEditor] Create New — Phase 2+"));
+                AbilityListView.DrawCreateCard(ability =>
+                {
+                    _selectedAbility = ability;
+                    _needsRefresh = true;
+                    _hasChanges = true;
+                    EditorGUIUtility.PingObject(ability);
+                });
                 EditorCard.Gap(Pad);
 
                 // tree

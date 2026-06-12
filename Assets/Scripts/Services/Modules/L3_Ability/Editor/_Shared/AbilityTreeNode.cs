@@ -20,6 +20,7 @@ namespace RedDust.Ability
         public EffectSO Effect;                 // 对应的 Effect（Effect leaf）
         public AbilitySearchSO Search;          // 对应的 Search（Search leaf）
         public AbilityActivationSO Activation;  // 对应的 Activation（Activation leaf）
+        public NoiseEventSO Noise;              // 对应的 Noise（Noise leaf）
         public AbilityTreeNode Parent;
         public List<AbilityTreeNode> Children = new();
         public int AbilityCount;                // 子树中 Ability 总数

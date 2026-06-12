@@ -137,50 +137,59 @@ namespace RedDust.Ability
         }
     }
 
-    /// <summary>Search Import/Export 窗口。参考 EffectImportWindow。</summary>
+    /// <summary>Search Import/Export 窗口。使用共享 EditorImportExport 组件。</summary>
     public class SearchImportWindow : EditorWindow
     {
         private string _filePath;
-        private string _preview = "";
-        private string _result = "";
+        private string _previewText;
+        private (int created, int skipped, List<string> errors) _result;
 
         [MenuItem("RedDust/Search Import-Export", priority = 21)]
-        public static void Open() => GetWindow<SearchImportWindow>("Search Import-Export");
+        public static void Open()
+        {
+            var window = GetWindow<SearchImportWindow>("Search Import-Export");
+            window.minSize = new Vector2(520, 420);
+            window.Show();
+        }
 
         private void OnGUI()
         {
             EditorImportExport.Draw(
-                "Search Import-Export",
-                "Assets/Data/Ability/Searches",
-                "json",
-                ref _filePath,
-                ref _preview,
-                ref _result,
-                onImport: () => DoImport(),
-                onExport: () => DoExport()
+                title: "Search Import-Export",
+                subtitle: "L3_Ability · JSON ↔ .asset",
+                defaultDir: "Assets/Data/Ability/Searches",
+                fileExtension: "json",
+                defaultFileName: "searches_export",
+                filePath: ref _filePath,
+                previewText: ref _previewText,
+                result: ref _result,
+                buildPreview: BuildPreview,
+                onImport: path =>
+                {
+                    var (created, skipped, errors) = SearchImporter.ImportFromJson(File.ReadAllText(path));
+                    return (created, skipped, errors);
+                },
+                onExport: path => File.WriteAllText(path, SearchImporter.ExportToJson())
             );
         }
 
-        private void DoImport()
+        private static string BuildPreview(string filePath)
         {
-            if (string.IsNullOrEmpty(_filePath) || !File.Exists(_filePath))
-            { _result = "File not found."; return; }
+            if (!File.Exists(filePath)) return null;
+            SearchExportFile preview;
+            try { preview = JsonUtility.FromJson<SearchExportFile>(File.ReadAllText(filePath)); }
+            catch { return null; }
+            if (preview?.searches == null || preview.searches.Length == 0) return null;
 
-            var (created, skipped, errors) = SearchImporter.ImportFromJson(File.ReadAllText(_filePath));
-            _result = $"Created: {created}, Skipped (updated): {skipped}";
-            if (errors.Count > 0) _result += "\n" + string.Join("\n", errors);
-            _preview = "";
-            Debug.Log($"[SearchImport] {_result}");
-        }
+            int total = preview.searches.Length;
+            int cone = 0, ray = 0, circle = 0;
+            foreach (var s in preview.searches)
+            {
+                switch (s.searchType) { case "Cone": cone++; break; case "RayLine": ray++; break; case "Circle": circle++; break; }
+            }
 
-        private void DoExport()
-        {
-            var path = EditorUtility.SaveFilePanel("Export Searches", "Assets/Data/Ability/Searches", "searches_export", "json");
-            if (string.IsNullOrEmpty(path)) return;
-            var json = SearchImporter.ExportToJson();
-            File.WriteAllText(path, json);
-            _result = $"Exported to {path}";
-            Debug.Log($"[SearchImport] {_result}");
+            return $"<b>{total}</b> searches (<color=#33AA33>{cone} Cone</color> · <color=#CC8833>{ray} Ray</color> · <color=#3388CC>{circle} Circle</color>)\n" +
+                   $"v{preview.version} · {preview.description ?? "-"}";
         }
     }
 }

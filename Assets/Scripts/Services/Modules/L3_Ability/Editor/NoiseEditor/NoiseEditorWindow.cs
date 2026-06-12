@@ -1,9 +1,10 @@
 #if UNITY_EDITOR
-using Animancer;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using RedDust.Core;
+using RedDust.Core.Editor;
 using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
@@ -11,23 +12,23 @@ using UnityEngine;
 namespace RedDust.Ability
 {
     /// <summary>
-    /// 独立 Activation 编辑器。浏览、创建、编辑所有 AbilityActivationSO 资产。
-    /// 对标 SearchEditorWindow / EffectEditorWindow 模式。
+    /// 独立 Noise 编辑器。浏览、创建、编辑所有 NoiseEventSO 资产。
+    /// 对标 ActivationEditorWindow 模式。
     /// </summary>
-    public class ActivationEditorWindow : EditorWindow
+    public class NoiseEditorWindow : EditorWindow
     {
         private const float Pad = 6f;
         private const float LeftWidth = 300f;
 
         // ── 内联 Model ──
-        private List<AbilityActivationSO> _allActivations = new();
+        private List<NoiseEventSO> _allNoises = new();
         private List<AbilityTreeNode> _treeRoots = new();
         private readonly Dictionary<string, AbilityTreeNode> _treeNodeIndex = new();
 
         // ── 状态 ──
         private bool _needsRefresh = true;
         private bool _hasChanges;
-        private AbilityActivationSO _selectedActivation;
+        private NoiseEventSO _selectedNoise;
         private string _searchText = "";
         private Vector2 _leftScroll;
         private Vector2 _rightScroll;
@@ -35,10 +36,11 @@ namespace RedDust.Ability
 
         // ── EditorForm ──
         private EditorForm _form;
+        private Rect _noiseTagButtonRect;
 
-        [MenuItem("RedDust/Activation Editor", priority = 3)]
+        [MenuItem("RedDust/Noise Editor", priority = 4)]
         public static void Open()
-            => GetWindow<ActivationEditorWindow>("Activation Editor");
+            => GetWindow<NoiseEditorWindow>("Noise Editor");
 
         private void OnEnable()
         {
@@ -74,7 +76,7 @@ namespace RedDust.Ability
             EditorCard.Draw(Pad, () =>
             {
                 EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Activation Editor", EditorStyles.largeLabel,
+                EditorGUILayout.LabelField("Noise Editor", EditorStyles.largeLabel,
                     GUILayout.ExpandWidth(true));
                 var sub = new GUIStyle(EditorStyles.label)
                     { alignment = TextAnchor.MiddleRight };
@@ -89,10 +91,10 @@ namespace RedDust.Ability
                 GUILayout.FlexibleSpace();
 
                 if (EditorButton.Draw("Import/Export", size: EditorButtonSize.Medium))
-                    ActivationImportWindow.Open();
+                    NoiseImportWindow.Open();
 
                 if (EditorButton.Draw("+ Create", EditorButtonStyle.Success, EditorButtonSize.Medium))
-                    CreateNewActivation();
+                    CreateNewNoise();
 
                 if (EditorButton.Draw(_hasChanges ? "Save *" : "Saved", _hasChanges ? EditorButtonStyle.Primary : EditorButtonStyle.Default, EditorButtonSize.Medium, enabled: _hasChanges))
                 {
@@ -100,10 +102,10 @@ namespace RedDust.Ability
                     _hasChanges = false;
                 }
 
-                if (_selectedActivation != null)
+                if (_selectedNoise != null)
                 {
                     if (EditorButton.Draw("Ping", size: EditorButtonSize.Medium))
-                        EditorGUIUtility.PingObject(_selectedActivation);
+                        EditorGUIUtility.PingObject(_selectedNoise);
                 }
                 EditorGUILayout.EndHorizontal();
             });
@@ -147,9 +149,8 @@ namespace RedDust.Ability
                 var nullSO = (AbilitySO)null;
                 AbilityTreeView.DrawTree(_treeRoots, _foldouts, ref nullSO,
                     _searchText, AbilityTypeFilter.All,
-                    onLeafSelected: asset => SelectActivation(asset as AbilityActivationSO),
-                    selectedActivation: _selectedActivation,
-                    onDeleteLeaf: asset => DeleteActivation(asset as AbilityActivationSO));
+                    onLeafSelected: asset => SelectNoise(asset as NoiseEventSO),
+                    onDeleteLeaf: asset => DeleteNoise(asset as NoiseEventSO));
                 EditorGUILayout.EndScrollView();
             });
         }
@@ -159,12 +160,12 @@ namespace RedDust.Ability
         {
             EditorCard.Draw(Pad, () =>
             {
-                if (_selectedActivation == null)
+                if (_selectedNoise == null)
                 {
                     GUILayout.FlexibleSpace();
                     EditorGUILayout.BeginHorizontal();
                     GUILayout.FlexibleSpace();
-                    EditorGUILayout.LabelField("Select an activation from the left panel.",
+                    EditorGUILayout.LabelField("Select a noise from the left panel.",
                         EditorUIUtility.GreyPlaceholder);
                     GUILayout.FlexibleSpace();
                     EditorGUILayout.EndHorizontal();
@@ -172,7 +173,7 @@ namespace RedDust.Ability
                     return;
                 }
 
-                var title = $"Edit: {_selectedActivation.name}";
+                var title = $"Edit: {_selectedNoise.name}";
                 EditorGUILayout.LabelField(title, EditorStyles.boldLabel);
                 GUILayout.Space(Pad);
 
@@ -188,34 +189,47 @@ namespace RedDust.Ability
 
         private void DrawEditForm()
         {
-            var a = _selectedActivation;
+            var n = _selectedNoise;
 
-            if (EditorForm.NeedsRebuild(_form, a))
+            if (EditorForm.NeedsRebuild(_form, n))
             {
-                _form = new EditorForm(a) { DefaultLabelWidth = 100 };
+                _form = new EditorForm(n) { DefaultLabelWidth = 100 };
                 _form.RawField("Name", 100,
-                        getValue: () => a.name,
-                        setValue: v => { a.name = (string)v; },
+                        getValue: () => n.name,
+                        setValue: v => { n.name = (string)v; },
                         drawFunc: v => EditorGUILayout.TextField((string)v),
                         equals: (x, y) => (string)x == (string)y)
                     .CustomOnChange((_, newVal) =>
                     {
-                        var n = (string)newVal;
-                        if (string.IsNullOrWhiteSpace(n)) return false;
-                        RenameActivation(a, n);
+                        var newName = (string)newVal;
+                        if (string.IsNullOrWhiteSpace(newName)) return false;
+                        RenameNoise(n, newName);
                         return true;
                     })
-                     .Enum<EActivationType>("activationType")
-                     .Float("maxChargeTime")
-                     .Toggle("autoReleaseAtFullCharge")
-                     .ObjectField<StringAsset>("animationAsset")
-                     .Enum<EAbilityAnimationLayer>("animationLayer")
-                     .Slider("animationSpeed", 0.1f, 3f)
-                     .Toggle("rootMotion")
-                     .Float("windupDuration")
-                     .Float("fireWindowDuration")
-                     .Toggle("canCancelWindup")
-                     .Toggle("canCancelRecovery");
+                     .ObjectField<GameplayTagDefinitionSO>("noiseType", label: "Noise Type")
+                        .PostInput(() =>
+                        {
+                            if (GUILayout.Button("Tag", EditorStyles.miniButton, GUILayout.Width(35)))
+                            {
+                                TagPicker.Show(_noiseTagButtonRect, allowCreate: true,
+                                    currentFullTag: n.noiseType?.FullTag,
+                                    onSelected: t =>
+                                    {
+                                        if (n.noiseType != t)
+                                        {
+                                            n.noiseType = t;
+                                            EditorUtility.SetDirty(n);
+                                            _hasChanges = true;
+                                            _needsRefresh = true;
+                                            _form = null;
+                                        }
+                                    });
+                            }
+                            if (Event.current.type == EventType.Repaint)
+                                _noiseTagButtonRect = GUILayoutUtility.GetLastRect();
+                        })
+                     .Float("level")
+                     .Float("decayRadius");
                 _form.OnAnyChange += MarkDirty;
             }
             _form?.Draw();
@@ -229,22 +243,15 @@ namespace RedDust.Ability
             EditorGUILayout.BeginHorizontal();
             GUILayout.Space(Pad);
 
-            int instant = 0, charged = 0, channel = 0;
-            foreach (var a in _allActivations)
-            {
-                if (a.activationType == EActivationType.Instant) instant++;
-                else if (a.activationType == EActivationType.Charged) charged++;
-                else if (a.activationType == EActivationType.Channel) channel++;
-            }
             EditorGUILayout.LabelField(
-                $"{_allActivations.Count} activations · {instant} Instant · {charged} Charged · {channel} Channel",
+                $"{_allNoises.Count} noises",
                 EditorStyles.miniLabel);
 
-            if (_selectedActivation != null)
+            if (_selectedNoise != null)
             {
                 GUILayout.FlexibleSpace();
                 EditorGUILayout.LabelField(
-                    $"{_selectedActivation.name} ({_selectedActivation.activationType})",
+                    $"{_selectedNoise.name} (level:{_selectedNoise.level:F0})",
                     EditorStyles.miniLabel);
             }
 
@@ -257,18 +264,18 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════
         private void RefreshModel()
         {
-            _allActivations.Clear();
+            _allNoises.Clear();
             _treeRoots.Clear();
             _treeNodeIndex.Clear();
 
-            var guids = AssetDatabase.FindAssets("t:AbilityActivationSO");
+            var guids = AssetDatabase.FindAssets("t:NoiseEventSO");
             foreach (var guid in guids)
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
-                var a = AssetDatabase.LoadAssetAtPath<AbilityActivationSO>(path);
-                if (a != null) _allActivations.Add(a);
+                var n = AssetDatabase.LoadAssetAtPath<NoiseEventSO>(path);
+                if (n != null) _allNoises.Add(n);
             }
-            _allActivations.Sort((a, b) => string.CompareOrdinal(a.name, b.name));
+            _allNoises.Sort((a, b) => string.CompareOrdinal(a.name, b.name));
 
             BuildTree();
         }
@@ -278,79 +285,139 @@ namespace RedDust.Ability
             _treeRoots.Clear();
             _treeNodeIndex.Clear();
 
-            foreach (var activation in _allActivations)
+            foreach (var noise in _allNoises)
             {
-                var folderName = activation.activationType.ToString();
-                var folderPath = $"act_{folderName}";
+                var tag = noise.noiseType;
 
-                if (!_treeNodeIndex.TryGetValue(folderPath, out var folderNode))
+                // 按 noiseType 的 parent 链构建文件夹
+                if (tag != null)
                 {
-                    folderNode = new AbilityTreeNode
+                    var tagChain = new List<GameplayTagDefinitionSO>();
+                    var t = tag;
+                    while (t != null)
                     {
-                        DisplayName = folderName,
-                        FullPath = folderPath,
-                        Depth = 0,
-                        IsFolder = true,
-                    };
-                    _treeNodeIndex[folderPath] = folderNode;
-                    _treeRoots.Add(folderNode);
-                }
+                        tagChain.Add(t);
+                        t = t.Parent;
+                    }
+                    tagChain.Reverse();
 
-                var leaf = new AbilityTreeNode
+                    AbilityTreeNode parentNode = null;
+                    var accumPath = "";
+                    for (int i = 0; i < tagChain.Count; i++)
+                    {
+                        var ct = tagChain[i];
+                        accumPath = i == 0 ? ct.LeafName : $"{accumPath}.{ct.LeafName}";
+
+                        if (!_treeNodeIndex.TryGetValue(accumPath, out var folderNode))
+                        {
+                            folderNode = new AbilityTreeNode
+                            {
+                                DisplayName = ct.LeafName,
+                                FullPath = accumPath,
+                                Depth = i + 1,
+                                IsFolder = true,
+                                Tag = ct,
+                                Parent = parentNode,
+                            };
+                            _treeNodeIndex[accumPath] = folderNode;
+
+                            if (parentNode != null)
+                                parentNode.Children.Add(folderNode);
+                            else
+                                _treeRoots.Add(folderNode);
+                        }
+                        parentNode = folderNode;
+                    }
+
+                    var leaf = new AbilityTreeNode
+                    {
+                        DisplayName = noise.name,
+                        FullPath = $"{parentNode.FullPath}/{noise.name}",
+                        Depth = parentNode.Depth + 1,
+                        IsFolder = false,
+                        Noise = noise,
+                        Parent = parentNode,
+                    };
+                    parentNode.Children.Add(leaf);
+                }
+                else
                 {
-                    DisplayName = activation.name,
-                    FullPath = $"{folderPath}/{activation.name}",
-                    Depth = 1,
-                    IsFolder = false,
-                    Activation = activation,
-                    Parent = folderNode,
-                };
-                folderNode.Children.Add(leaf);
+                    // 无 noiseType → Uncategorized
+                    AddToFolder("Uncategorized", 0, noise, null);
+                }
             }
 
             AbilityEditorUtility.SortTreeRecursive(_treeRoots);
             AbilityEditorUtility.ComputeTreeCounts(_treeRoots);
         }
 
+        private void AddToFolder(string folderName, int depth, NoiseEventSO noise, AbilityTreeNode parent)
+        {
+            if (!_treeNodeIndex.TryGetValue(folderName, out var folderNode))
+            {
+                folderNode = new AbilityTreeNode
+                {
+                    DisplayName = folderName,
+                    FullPath = folderName,
+                    Depth = depth,
+                    IsFolder = true,
+                    Parent = parent,
+                };
+                _treeNodeIndex[folderName] = folderNode;
+                _treeRoots.Add(folderNode);
+            }
+
+            var leaf = new AbilityTreeNode
+            {
+                DisplayName = noise.name,
+                FullPath = $"{folderName}/{noise.name}",
+                Depth = depth + 1,
+                IsFolder = false,
+                Noise = noise,
+                Parent = folderNode,
+            };
+            folderNode.Children.Add(leaf);
+        }
+
         // ═══════════════════════════════════════════════════
         // Actions
         // ═══════════════════════════════════════════════════
-        private void SelectActivation(AbilityActivationSO activation)
+        private void SelectNoise(NoiseEventSO noise)
         {
-            if (activation == null) return;
-            _selectedActivation = activation;
+            if (noise == null) return;
+            _selectedNoise = noise;
             Repaint();
         }
 
-        private void RenameActivation(AbilityActivationSO activation, string newName)
+        private void RenameNoise(NoiseEventSO noise, string newName)
         {
-            var path = AssetDatabase.GetAssetPath(activation);
+            var path = AssetDatabase.GetAssetPath(noise);
             if (string.IsNullOrEmpty(path)) return;
             var result = AssetDatabase.RenameAsset(path, newName);
             if (!string.IsNullOrEmpty(result))
             {
-                Debug.LogError($"[ActivationEditor] Rename failed: {result}");
+                Debug.LogError($"[NoiseEditor] Rename failed: {result}");
                 return;
             }
-            activation.name = newName;
-            EditorUtility.SetDirty(activation);
+            noise.name = newName;
+            EditorUtility.SetDirty(noise);
             _hasChanges = true;
             _needsRefresh = true;
         }
 
         private void MarkDirty()
         {
-            if (_selectedActivation == null) return;
-            EditorUtility.SetDirty(_selectedActivation);
+            if (_selectedNoise == null) return;
+            EditorUtility.SetDirty(_selectedNoise);
             _hasChanges = true;
         }
 
-        private void DeleteActivation(AbilityActivationSO activation)
+        private void DeleteNoise(NoiseEventSO noise)
         {
-            if (!AbilityEditorUtility.DeleteAssetWithConfirm(activation, "Activation"))
+            if (!AbilityEditorUtility.DeleteAssetWithConfirm(noise, "Noise"))
                 return;
-            if (_selectedActivation == activation)
-                _selectedActivation = null;
+            if (_selectedNoise == noise)
+                _selectedNoise = null;
             _needsRefresh = true;
             _hasChanges = false;
             Repaint();
@@ -360,29 +427,29 @@ namespace RedDust.Ability
         {
             _needsRefresh = true;
             _foldouts.Clear();
-            _selectedActivation = null;
+            _selectedNoise = null;
             Repaint();
         }
 
         // ═══════════════════════════════════════════════════
         // Create
         // ═══════════════════════════════════════════════════
-        private void CreateNewActivation()
+        private void CreateNewNoise()
         {
-            var dir = "Assets/Data/Ability/Activations";
+            var dir = "Assets/Data/Ability/Noises";
             if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
-            var path = AssetDatabase.GenerateUniqueAssetPath($"{dir}/Activation_New.asset");
-            var instance = ScriptableObject.CreateInstance<AbilityActivationSO>();
+            var path = AssetDatabase.GenerateUniqueAssetPath($"{dir}/Noise_New.asset");
+            var instance = ScriptableObject.CreateInstance<NoiseEventSO>();
             instance.name = Path.GetFileNameWithoutExtension(path);
             AssetDatabase.CreateAsset(instance, path);
             AssetDatabase.SaveAssets();
 
             _needsRefresh = true;
             _hasChanges = true;
-            _selectedActivation = instance;
+            _selectedNoise = instance;
             EditorGUIUtility.PingObject(instance);
-            Debug.Log($"[ActivationEditor] Created {path}");
+            Debug.Log($"[NoiseEditor] Created {path}");
         }
     }
 }

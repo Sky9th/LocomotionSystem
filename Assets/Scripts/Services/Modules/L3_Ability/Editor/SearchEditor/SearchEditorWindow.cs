@@ -39,7 +39,7 @@ namespace RedDust.Ability
         private EditorForm _typeForm;
 
         [MenuItem("RedDust/Search Editor", priority = 2)]
-        private static void Open()
+        public static void Open()
             => GetWindow<SearchEditorWindow>("Search Editor");
 
         private void OnEnable()

@@ -44,7 +44,8 @@ namespace RedDust.Shared.EditorUI
                 : Field?.GetValue(target);
             if (target == null && GetValue == null) return;
 
-            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.BeginHorizontal(
+                GUILayout.Height(EditorGUIUtility.singleLineHeight));
 
             var wasEnabled = GUI.enabled;
             if (IsReadOnly) GUI.enabled = false;
@@ -52,7 +53,8 @@ namespace RedDust.Shared.EditorUI
             var guiContent = string.IsNullOrEmpty(Tooltip)
                 ? new GUIContent(LabelText)
                 : new GUIContent(LabelText, Tooltip);
-            EditorGUILayout.LabelField(guiContent, EditorStyles.label, GUILayout.Width(LabelWidth));
+            EditorGUILayout.LabelField(guiContent, EditorStyles.label,
+                GUILayout.Width(LabelWidth), GUILayout.Height(EditorGUIUtility.singleLineHeight));
 
             var newValue = DrawField(oldValue);
             PostInputDraw?.Invoke();

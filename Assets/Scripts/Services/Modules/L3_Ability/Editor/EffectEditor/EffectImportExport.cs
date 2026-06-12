@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using RedDust.Core;
 using RedDust.Properties;
+using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 
@@ -386,11 +387,9 @@ namespace RedDust.Ability
     // ═══════════════════════════════════════════════════════
     public class EffectImportWindow : EditorWindow
     {
-        private const float Pad = 6f;
-
-        private string _jsonPath = "Assets/Data/Ability/Effects/effects_all.json";
-        private int _lastCreated, _lastSkipped;
-        private List<string> _lastErrors = new();
+        private string _filePath = "Assets/Data/Ability/Effects/effects_all.json";
+        private string _previewText;
+        private (int created, int skipped, List<string> errors) _result;
 
         [MenuItem("RedDust/Effect Import-Export", priority = 20)]
         public static void Open()
@@ -402,222 +401,52 @@ namespace RedDust.Ability
 
         private void OnGUI()
         {
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginVertical();
-
-            DrawHeader();
-            GUILayout.Space(Pad);
-            DrawFilePicker();
-            GUILayout.Space(Pad);
-            DrawPreview();
-            GUILayout.Space(Pad);
-            DrawButtons();
-            GUILayout.Space(Pad);
-            DrawResult();
-
-            EditorGUILayout.EndVertical();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndHorizontal();
-            GUILayout.Space(Pad);
-        }
-
-        private void DrawHeader()
-        {
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.LabelField("Effect Import-Export", EditorStyles.largeLabel);
-            var sub = new GUIStyle(EditorStyles.label)
-                { alignment = TextAnchor.MiddleRight, normal = { textColor = Color.gray } };
-            EditorGUILayout.LabelField("L3_Ability · JSON ↔ .asset", sub, GUILayout.Width(230));
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndVertical();
-        }
-
-        private void DrawFilePicker()
-        {
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginVertical();
-
-            EditorGUILayout.LabelField("JSON File", EditorStyles.boldLabel);
-            GUILayout.Space(4);
-            EditorGUILayout.BeginHorizontal();
-            _jsonPath = EditorGUILayout.TextField(_jsonPath);
-            if (GUILayout.Button("…", GUILayout.Width(28), GUILayout.Height(18)))
-                PickFile();
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.EndVertical();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndVertical();
-        }
-
-        private void DrawPreview()
-        {
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginVertical();
-
-            EditorGUILayout.LabelField("Preview", EditorStyles.boldLabel);
-
-            if (File.Exists(_jsonPath))
-            {
-                EffectImporter.EffectExportFile preview = null;
-                try
+            EditorImportExport.Draw(
+                title: "Effect Import-Export",
+                subtitle: "L3_Ability · JSON ↔ .asset",
+                defaultDir: "Assets/Data/Ability/Effects",
+                fileExtension: "json",
+                defaultFileName: "effects_export",
+                filePath: ref _filePath,
+                previewText: ref _previewText,
+                result: ref _result,
+                buildPreview: BuildPreview,
+                onImport: path =>
                 {
-                    preview = JsonUtility.FromJson<EffectImporter.EffectExportFile>(
-                        File.ReadAllText(_jsonPath));
-                }
-                catch { }
-
-                if (preview?.effects != null && preview.effects.Length > 0)
-                {
-                    int total = preview.effects.Length;
-                    int dmg = 0, imp = 0, exe = 0, cost = 0;
-                    int nw = 0, ex = 0;
-                    foreach (var e in preview.effects)
-                    {
-                        switch (e.effectType)
-                        {
-                            case "Damage": dmg++; break;
-                            case "Impact": imp++; break;
-                            case "Execute": exe++; break;
-                            case "Cost": cost++; break;
-                        }
-                        var dirName = string.IsNullOrWhiteSpace(e.directory) ? "" : e.directory;
-                        var assetDir = string.IsNullOrEmpty(dirName)
-                            ? EffectImporter.EffectsRoot
-                            : Path.Combine(EffectImporter.EffectsRoot, dirName).Replace('\\', '/');
-                        var assetPath = Path.Combine(assetDir, $"{e.name}.asset").Replace('\\', '/');
-                        if (File.Exists(assetPath)) ex++; else nw++;
-                    }
-
-                    GUILayout.Space(4);
-                    EditorGUILayout.LabelField(
-                        $"<b>{total}</b> effects ({dmg} Dmg · {imp} Imp · {exe} Exe · {cost} Cost) · v{preview.version} · {preview.description ?? "-"}",
-                        new GUIStyle(EditorStyles.label) { richText = true });
-
-                    EditorGUILayout.BeginHorizontal();
-                    var green = new GUIStyle(EditorStyles.label) { normal = { textColor = new Color(0.2f, 0.7f, 0.2f) } };
-                    var gray = new GUIStyle(EditorStyles.label) { normal = { textColor = Color.gray } };
-                    EditorGUILayout.LabelField($"New {nw}", green, GUILayout.Width(60));
-                    EditorGUILayout.LabelField($"Existing {ex}", gray);
-                    EditorGUILayout.EndHorizontal();
-                }
-                else
-                {
-                    GUILayout.Space(4);
-                    EditorGUILayout.LabelField("JSON is empty or parse failed.", EditorStyles.miniLabel);
-                }
-            }
-            else
-            {
-                GUILayout.Space(4);
-                EditorGUILayout.LabelField("File not found.", EditorStyles.miniLabel);
-            }
-
-            EditorGUILayout.EndVertical();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndVertical();
+                    var (created, skipped, errors) = EffectImporter.ImportFromFile(path);
+                    return (created, skipped, errors);
+                },
+                onExport: path => EffectImporter.ExportToFile(path)
+            );
         }
 
-        private void DrawButtons()
+        private static string BuildPreview(string filePath)
         {
-            var hasFile = File.Exists(_jsonPath);
-            EditorGUILayout.BeginHorizontal();
-
-            EditorGUI.BeginDisabledGroup(!hasFile);
-            if (GUILayout.Button("Import", GUILayout.Height(32)))
+            if (!File.Exists(filePath)) return null;
+            EffectImporter.EffectExportFile preview;
+            try
             {
-                (_lastCreated, _lastSkipped, _lastErrors) =
-                    EffectImporter.ImportFromFile(_jsonPath);
-                AssetDatabase.Refresh();
+                preview = JsonUtility.FromJson<EffectImporter.EffectExportFile>(
+                    File.ReadAllText(filePath));
             }
-            EditorGUI.EndDisabledGroup();
+            catch { return null; }
+            if (preview?.effects == null || preview.effects.Length == 0) return null;
 
-            if (GUILayout.Button("Export", GUILayout.Height(32)))
+            int total = preview.effects.Length;
+            int dmg = 0, imp = 0, exe = 0, cost = 0;
+            int nw = 0, exist = 0;
+            foreach (var e in preview.effects)
             {
-                var outPath = EditorUtility.SaveFilePanel(
-                    "Export Effects JSON", "Assets/Data/Ability/Effects", "effects_export", "json");
-                if (!string.IsNullOrEmpty(outPath))
-                {
-                    EffectImporter.ExportToFile(outPath);
-                    EditorUtility.DisplayDialog("Export Done", $"Exported to:\n{outPath}", "OK");
-                }
-            }
-            EditorGUILayout.EndHorizontal();
-
-            if (!hasFile)
-            {
-                var warn = new GUIStyle(EditorStyles.miniLabel)
-                    { normal = { textColor = new Color(1f, 0.6f, 0.2f) } };
-                EditorGUILayout.LabelField("  File not found. Select a JSON file.", warn);
-            }
-        }
-
-        private void DrawResult()
-        {
-            if (_lastCreated + _lastSkipped == 0 && _lastErrors.Count == 0) return;
-
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginVertical();
-
-            var hasErrors = _lastErrors.Count > 0;
-            var okStyle = new GUIStyle(EditorStyles.label)
-                { normal = { textColor = new Color(0.2f, 0.7f, 0.2f) } };
-            var errStyle = new GUIStyle(EditorStyles.label)
-                { normal = { textColor = new Color(0.9f, 0.3f, 0.2f) } };
-
-            EditorGUILayout.LabelField(
-                $"Created: {_lastCreated}  ·  Skipped: {_lastSkipped}" +
-                (hasErrors ? $"  |  Errors: {_lastErrors.Count}" : ""),
-                hasErrors ? errStyle : okStyle);
-
-            if (hasErrors)
-            {
-                GUILayout.Space(4);
-                EditorGUILayout.TextArea(string.Join("\n", _lastErrors), EditorStyles.miniLabel, GUILayout.MinHeight(40));
-            }
-            else
-            {
-                GUILayout.Space(4);
-                EditorGUILayout.TextArea("No errors.", EditorStyles.miniLabel, GUILayout.MinHeight(20));
+                switch (e.effectType) { case "Damage": dmg++; break; case "Impact": imp++; break; case "Execute": exe++; break; case "Cost": cost++; break; }
+                var dirName = string.IsNullOrWhiteSpace(e.directory) ? "" : e.directory;
+                var assetDir = string.IsNullOrEmpty(dirName) ? EffectImporter.EffectsRoot : Path.Combine(EffectImporter.EffectsRoot, dirName).Replace('\\', '/');
+                var assetPath = Path.Combine(assetDir, $"{e.name}.asset").Replace('\\', '/');
+                if (File.Exists(assetPath)) exist++; else nw++;
             }
 
-            EditorGUILayout.EndVertical();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndVertical();
-        }
-
-        private void PickFile()
-        {
-            var selected = EditorUtility.OpenFilePanel(
-                "Select Effect JSON", "Assets/Data/Ability/Effects", "json");
-            if (string.IsNullOrEmpty(selected)) return;
-
-            var projectPath = Path.GetDirectoryName(Application.dataPath);
-            _jsonPath = selected.StartsWith(projectPath!)
-                ? selected.Substring(projectPath.Length + 1).Replace('\\', '/')
-                : selected;
+            return $"<b>{total}</b> effects (<color=#33AA33>{dmg} Dmg</color> · <color=#CC8833>{imp} Imp</color> · <color=#CC3333>{exe} Exe</color> · <color=#3388CC>{cost} Cost</color>)\n" +
+                   $"v{preview.version} · {preview.description ?? "-"}\n" +
+                   $"<color=#33BB33>New {nw}</color>  Existing {exist}";
         }
     }
 }

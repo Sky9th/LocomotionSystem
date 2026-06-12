@@ -33,6 +33,7 @@ namespace RedDust.Ability
         private static EditorForm _exclusionForm;
         private static EditorForm _cooldownForm;
         private static EditorForm _passiveForm;
+        private static Rect _abilityTagButtonRect;
 
         public delegate void EditSubAssetHandler(SubAssetSlot slot);
         public delegate void ClearSubAssetHandler(SubAssetSlot slot);
@@ -260,27 +261,30 @@ namespace RedDust.Ability
         /// <summary>TagPicker 按钮（PostInput 回调）。修改直接写 SO 字段并触发 form 重建。</summary>
         private static void DrawTagPickerButton(AbilitySO a, string fieldName)
         {
-            if (!GUILayout.Button("Tag", EditorStyles.miniButton, GUILayout.Width(35))) return;
-            var field = a.GetType().GetField(fieldName,
-                BindingFlags.Public | BindingFlags.Instance);
-            if (field == null)
+            if (GUILayout.Button("Tag", EditorStyles.miniButton, GUILayout.Width(35)))
             {
-                Debug.LogWarning($"[MiddlePanel] TagPicker: field '{fieldName}' not found on {a.GetType().Name}");
-                return;
-            }
-            var rect = GUIUtility.GUIToScreenRect(GUILayoutUtility.GetLastRect());
-            var currentTag = field.GetValue(a) as GameplayTagDefinitionSO;
-            TagPicker.Show(rect, allowCreate: true, currentFullTag: currentTag?.FullTag,
-                onSelected: t =>
+                var field = a.GetType().GetField(fieldName,
+                    BindingFlags.Public | BindingFlags.Instance);
+                if (field == null)
                 {
-                    if (currentTag != t)
+                    Debug.LogWarning($"[MiddlePanel] TagPicker: field '{fieldName}' not found on {a.GetType().Name}");
+                    return;
+                }
+                var currentTag = field.GetValue(a) as GameplayTagDefinitionSO;
+                TagPicker.Show(_abilityTagButtonRect, allowCreate: true, currentFullTag: currentTag?.FullTag,
+                    onSelected: t =>
                     {
-                        field.SetValue(a, t);
-                        EditorUtility.SetDirty(a);
-                        _onChanged?.Invoke();
-                        _tagForm = null; _passiveForm = null; // force rebuild
-                    }
-                });
+                        if (currentTag != t)
+                        {
+                            field.SetValue(a, t);
+                            EditorUtility.SetDirty(a);
+                            _onChanged?.Invoke();
+                            _tagForm = null; _passiveForm = null; // force rebuild
+                        }
+                    });
+            }
+            if (Event.current.type == EventType.Repaint)
+                _abilityTagButtonRect = GUILayoutUtility.GetLastRect();
         }
 
         // ═══════════════════════════════════════════════════════════
