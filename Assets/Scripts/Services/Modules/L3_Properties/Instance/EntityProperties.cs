@@ -22,6 +22,7 @@ namespace RedDust.Properties
         private readonly Dictionary<string, FloatState> _floatStates;
         private readonly Dictionary<string, List<Guard>> _guards;
         private readonly Dictionary<string, List<FloatModifier>> _modifiers;
+        private readonly Dictionary<string, List<FloatAdjunct>> _adjuncts;
 
         public event Action<string, float, float> OnFloatChanged;
         public event Action<string> OnZero;
@@ -70,15 +71,20 @@ namespace RedDust.Properties
             _floatStates = new();
             _guards = new();
             _modifiers = new();
+            _adjuncts = new();
         }
 
         // ============================================================
         // 读
         // ============================================================
 
-        /// <summary>读 Float。有 FloatState 返回 Current，无返回静态值。</summary>
+        /// <summary>读 Float。返回原始 Current（不含 Adjunct 修正）。</summary>
         public float GetFloat(string path) =>
             _floatStates.TryGetValue(path, out var s) ? s.Current : _floats.TryGetValue(path, out var f) ? f : 0f;
+
+        /// <summary>读 Float 有效值。有 FloatState 返回 Effective（Current + Adjunct 修正），无返回静态值。</summary>
+        public float GetEffectiveFloat(string path) =>
+            _floatStates.TryGetValue(path, out var s) ? s.Effective : _floats.TryGetValue(path, out var f) ? f : 0f;
         public int GetInt(string path) => _ints.TryGetValue(path, out var v) ? v : 0;
         public bool GetBool(string path) => _bools.TryGetValue(path, out var v) && v;
         public string GetString(string path) => _strings.TryGetValue(path, out var v) ? v : null;
@@ -223,6 +229,23 @@ namespace RedDust.Properties
         {
             foreach (var list in _modifiers.Values) list.RemoveAll(m => m.Owner == owner);
             foreach (var s in _floatStates.Values) s.RemoveModifiers(owner);
+        }
+
+        /// <summary>注入只读修正。若目标尚无 FloatState，自动懒创建。</summary>
+        public void AddAdjunct(FloatAdjunct a)
+        {
+            if (a == null) return;
+            if (!_adjuncts.TryGetValue(a.TargetPath, out var list)) _adjuncts[a.TargetPath] = list = new();
+            list.Add(a);
+            EnsureFloatState(a.TargetPath);
+            _floatStates[a.TargetPath].AddAdjunct(a);
+        }
+
+        /// <summary>按 Owner 批量移除只读修正。</summary>
+        public void RemoveAdjuncts(object owner)
+        {
+            foreach (var list in _adjuncts.Values) list.RemoveAll(a => a.Owner == owner);
+            foreach (var s in _floatStates.Values) s.RemoveAdjuncts(owner);
         }
 
         /// <summary>如果 path 对应的 FloatState 不存在，创建一个空行为的。</summary>

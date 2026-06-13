@@ -29,6 +29,7 @@ namespace RedDust.Properties
         private readonly List<DeltaCustom> _deltaCustom = new();           // B，自定义间隔
         private readonly List<CustomMod> _customEveryFrame = new();        // C，每帧
         private readonly List<CustomMod> _customScheduled = new();         // C，PerSecond/PerMinute/Custom
+        private readonly List<FloatAdjunct> _adjuncts = new();             // D，只读修正
 
         // 共享计时器
         private float _secondTimer;
@@ -102,6 +103,28 @@ namespace RedDust.Properties
         }
 
         private bool HasScheduledFreq(ModifierFrequency f) { foreach (var c in _customScheduled) if (c.Mod.Frequency == f) return true; return false; }
+
+        // === Adjunct（只读修正）===
+
+        public void AddAdjunct(FloatAdjunct a) => _adjuncts.Add(a);
+
+        public void RemoveAdjuncts(object owner) => _adjuncts.RemoveAll(a => a.Owner == owner);
+
+        /// <summary>
+        /// 有效值 = clamp((Current + ΣValueAdd) × ΠValueMultiply, Min, Max)。
+        /// 不改 Current——修饰只在读取时叠加。
+        /// </summary>
+        public float Effective
+        {
+            get
+            {
+                float addSum = 0f, multProd = 1f;
+                foreach (var a in _adjuncts) { addSum += a.ValueAdd; multProd *= a.ValueMultiply; }
+                return Mathf.Clamp((Current + addSum) * multProd, Min, Max);
+            }
+        }
+
+        public int AdjunctCount => _adjuncts.Count;
 
         public int ModifierCount => _rateMods.Count + _deltaEveryFrame.Count + _deltaPerSecond.Count
             + _deltaPerMinute.Count + _deltaCustom.Count + _customEveryFrame.Count + _customScheduled.Count;
@@ -182,6 +205,10 @@ namespace RedDust.Properties
                 if (dc.Timer >= dc.Mod.CustomInterval) { dc.Timer %= dc.Mod.CustomInterval; if (dc.Mod.Condition?.Invoke() ?? true) Modify(dc.Mod.Delta); }
                 _deltaCustom[i] = dc;
             }
+
+            // 7. Adjunct 过期清理（不改 Current，只读修正层）
+            if (_adjuncts.Count > 0)
+                _adjuncts.RemoveAll(a => a.ExpiryTime > 0f && a.ExpiryTime <= Time.time);
         }
 
         private void TickConsume(float dt)

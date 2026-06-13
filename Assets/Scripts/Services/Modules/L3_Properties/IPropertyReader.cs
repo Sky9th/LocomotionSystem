@@ -4,6 +4,7 @@ namespace RedDust.Properties
     public interface IPropertyReader
     {
         float GetFloat(string path);
+        float GetEffectiveFloat(string path);
         float GetMax(string path);
         bool Has(string path);
     }

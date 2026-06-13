@@ -1,0 +1,58 @@
+{
+  "version": "1.0",
+  "description": "Activation definitions — full export + 4 demo skills",
+  "activations": [
+    {
+      "name": "Activation_Instant_LightMelee",
+      "activationType": "Instant",
+      "maxChargeTime": 0.0,
+      "autoReleaseAtFullCharge": false,
+      "animationLayer": "FullBody",
+      "animationSpeed": 1.1,
+      "rootMotion": false,
+      "windupDuration": 0.1,
+      "fireWindowDuration": 0.15,
+      "canCancelWindup": true,
+      "canCancelRecovery": true
+    },
+    {
+      "name": "Activation_Instant_HeavyMelee",
+      "activationType": "Instant",
+      "maxChargeTime": 0.0,
+      "autoReleaseAtFullCharge": false,
+      "animationLayer": "FullBody",
+      "animationSpeed": 1.0,
+      "rootMotion": false,
+      "windupDuration": 0.4,
+      "fireWindowDuration": 0.2,
+      "canCancelWindup": true,
+      "canCancelRecovery": false
+    },
+    {
+      "name": "Activation_Instant_Firearm",
+      "activationType": "Instant",
+      "maxChargeTime": 0.0,
+      "autoReleaseAtFullCharge": false,
+      "animationLayer": "UpperBody",
+      "animationSpeed": 1.0,
+      "rootMotion": false,
+      "windupDuration": 0.0,
+      "fireWindowDuration": 0.1,
+      "canCancelWindup": false,
+      "canCancelRecovery": true
+    },
+    {
+      "name": "Activation_Channel_SuppressiveFire",
+      "activationType": "Channel",
+      "maxChargeTime": 0.0,
+      "autoReleaseAtFullCharge": false,
+      "animationLayer": "UpperBody",
+      "animationSpeed": 1.0,
+      "rootMotion": false,
+      "windupDuration": 0.0,
+      "fireWindowDuration": 3.0,
+      "canCancelWindup": false,
+      "canCancelRecovery": false
+    }
+  ]
+}

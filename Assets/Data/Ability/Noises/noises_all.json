@@ -1,0 +1,24 @@
+{
+  "version": "1.0",
+  "description": "Noise definitions — full export + 3 demo noise events",
+  "noises": [
+    {
+      "name": "Noise_Lv3_MeleeSwing",
+      "noiseType": "Noise.Combat.MeleeSwing",
+      "level": 3.0,
+      "decayRadius": 15.0
+    },
+    {
+      "name": "Noise_Lv4_MeleeHeavy",
+      "noiseType": "Noise.Combat.MeleeSwing",
+      "level": 4.0,
+      "decayRadius": 30.0
+    },
+    {
+      "name": "Noise_Lv5_Pistol",
+      "noiseType": "Noise.Combat.WeaponFire",
+      "level": 5.0,
+      "decayRadius": 60.0
+    }
+  ]
+}

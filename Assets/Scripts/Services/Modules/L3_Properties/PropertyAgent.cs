@@ -56,6 +56,7 @@ namespace RedDust.Properties
         // ====== 读 ======
 
         public float GetFloat(string path) => _props?.GetFloat(path) ?? 0f;
+        public float GetEffectiveFloat(string path) => _props?.GetEffectiveFloat(path) ?? 0f;
         public int GetInt(string path) => _props?.GetInt(path) ?? 0;
         public bool GetBool(string path) => _props != null && _props.GetBool(path);
         public string GetString(string path) => _props?.GetString(path);
@@ -75,6 +76,11 @@ namespace RedDust.Properties
 
         public void AddModifier(FloatModifier mod) => _props?.AddModifier(mod);
         public void RemoveModifiers(object owner) => _props?.RemoveModifiers(owner);
+
+        // ====== 只读修正 ======
+
+        public void AddAdjunct(FloatAdjunct a) => _props?.AddAdjunct(a);
+        public void RemoveAdjuncts(object owner) => _props?.RemoveAdjuncts(owner);
 
         // ====== Guard 拦截 ======
 

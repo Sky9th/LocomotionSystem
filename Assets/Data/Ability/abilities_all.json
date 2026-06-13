@@ -1,0 +1,66 @@
+{
+  "version": "1.0",
+  "description": "Ability definitions — 4 demo skills",
+  "abilities": [
+    {
+      "abilityType": "Active",
+      "name": "Ability_Blade_LightCut",
+      "internalName": "Blade_LightCut",
+      "displayName": "刀·轻击",
+      "description": "基础横扫。扇形60° 2m，Slash伤害。",
+      "abilityTag": "Ability.Melee.Blade.LightCut",
+      "cooldownDuration": 0.0,
+      "targetEffects": ["Damage_Physical_Slash", "Impact_Light"],
+      "selfEffects": ["Cost_Stamina_Small"],
+      "activation": "Activation_Instant_LightMelee",
+      "search": "Search_Cone_Melee_Blade_Light",
+      "noise": "Noise_Lv3_MeleeSwing",
+      "overrideExclusion": false
+    },
+    {
+      "abilityType": "Active",
+      "name": "Ability_Blade_HeavyChop",
+      "internalName": "Blade_HeavyChop",
+      "displayName": "刀·重劈",
+      "description": "竖劈重击。直线2.5m，Slash 1.5×高伤。",
+      "abilityTag": "Ability.Melee.Blade.HeavyChop",
+      "cooldownDuration": 3.0,
+      "targetEffects": ["Damage_Physical_Slash", "Impact_Light"],
+      "selfEffects": ["Cost_Stamina_Medium"],
+      "activation": "Activation_Instant_HeavyMelee",
+      "search": "Search_Ray_Melee_Blade_Heavy",
+      "noise": "Noise_Lv4_MeleeHeavy",
+      "overrideExclusion": false
+    },
+    {
+      "abilityType": "Active",
+      "name": "Ability_Pistol_NormalFire",
+      "internalName": "Pistol_NormalFire",
+      "displayName": "手枪·普通射击",
+      "description": "基础射击。直线12m，Pierce伤害，噪音Lv5。",
+      "abilityTag": "Ability.Ranged.Pistol.NormalFire",
+      "cooldownDuration": 0.0,
+      "targetEffects": ["Damage_Physical_Pierce"],
+      "selfEffects": ["Cost_Ammo_Pistol"],
+      "activation": "Activation_Instant_Firearm",
+      "search": "Search_Ray_Pistol_Normal",
+      "noise": "Noise_Lv5_Pistol",
+      "overrideExclusion": false
+    },
+    {
+      "abilityType": "Active",
+      "name": "Ability_Pistol_SuppressiveFire",
+      "internalName": "Pistol_SuppressiveFire",
+      "displayName": "手枪·压制射击",
+      "description": "3s连发压制。直线15m，低伤+减速2s。消耗弹药5。",
+      "abilityTag": "Ability.Ranged.Pistol.SuppressiveFire",
+      "cooldownDuration": 10.0,
+      "targetEffects": ["Damage_Physical_Pierce", "Buff_Debuff_Slow_30"],
+      "selfEffects": ["Cost_Ammo_Pistol_Burst"],
+      "activation": "Activation_Channel_SuppressiveFire",
+      "search": "Search_Ray_Pistol_Suppressive",
+      "noise": "Noise_Lv5_Pistol",
+      "overrideExclusion": false
+    }
+  ]
+}

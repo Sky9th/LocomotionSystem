@@ -175,8 +175,13 @@ Ability 系统消费的标签用途：
 | 文档 | 说明 |
 |------|------|
 | [ability-pipeline-design.md](ability-pipeline-design.md) | Ability Pipeline — 八维度技能管道完整设计 |
+| [ability-inventory.md](ability-inventory.md) | Ability Inventory — 154 技能全量树 + 闭环测试集 |
 | [ability-component.md](ability-component.md) | AbilityComponent — 能力执行中枢，API + 调用链 |
+| [ability-editor.md](ability-editor.md) | Ability Editor — 编辑器架构 |
 | [effect-so.md](effect-so.md) | EffectSO — 效果抽象基类 |
 | [damage-effect-so.md](damage-effect-so.md) | DamageEffectSO — 伤害效果契约（装备/Ability 共享） |
+| [ability-search-assets.md](ability-search-assets.md) | **Search 资产树** — 完整 SearchSO JSON 清单 (~45 资产, Cone/Ray/Circle/Line) |
+| [ability-activation-assets.md](ability-activation-assets.md) | **Activation 资产树** — 完整 ActivationSO JSON 清单 (~28 资产, Instant/Charged/Channel/Toggle) |
+| [ability-noise-assets.md](ability-noise-assets.md) | **Noise 资产树** — 完整 NoiseEventSO JSON 清单 (~44 资产) + Noise Tag 依赖树 (17) |
 
 > GameplayTag 基础设施文档位于 [L1-core](../../../L1-core/)：资产树、运行时 struct、容器用法。

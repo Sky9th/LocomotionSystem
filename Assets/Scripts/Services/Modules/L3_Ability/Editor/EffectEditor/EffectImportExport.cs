@@ -24,9 +24,17 @@ namespace RedDust.Ability
         // DTO
         // ═══════════════════════════════════════════════════
         [System.Serializable]
+        public class BuffAdjunctEntry
+        {
+            public string propertyId;       // PropertyDefSO.Id
+            public float valueAdd;
+            public float valueMultiply = 1f;
+        }
+
+        [System.Serializable]
         public class EffectEntry
         {
-            public string effectType;  // "Damage" | "Impact" | "Execute" | "Cost"
+            public string effectType;  // "Damage" | "Impact" | "Execute" | "Cost" | "Buff"
             public string name;        // asset name (without .asset)
             public string description;  // designer-readable text
             public string directory;   // relative to EffectsRoot, e.g. "Damage/Fire"
@@ -53,6 +61,10 @@ namespace RedDust.Ability
             // Cost
             public string defId;
             public float amount;
+
+            // Buff
+            public string[] grantedTags;        // FullTag[]
+            public BuffAdjunctEntry[] adjuncts;
         }
 
         [System.Serializable]
@@ -125,6 +137,16 @@ namespace RedDust.Ability
                         entry.defId = c.def?.Id;
                         entry.amount = c.amount;
                         break;
+                    case BuffEffectSO b:
+                        entry.effectType = "Buff";
+                        entry.grantedTags = b.grantedTags?.Select(t => t?.FullTag).Where(t => t != null).ToArray();
+                        entry.adjuncts = b.adjuncts?.Select(a => new BuffAdjunctEntry
+                        {
+                            propertyId = a.property?.Id,
+                            valueAdd = a.valueAdd,
+                            valueMultiply = a.valueMultiply,
+                        }).ToArray();
+                        break;
                     default:
                         continue; // unknown type, skip
                 }
@@ -183,7 +205,7 @@ namespace RedDust.Ability
 
             // ── Phase 2: Validate ──
             var valid = new List<EffectEntry>();
-            var validTypes = new HashSet<string> { "Damage", "Impact", "Execute", "Cost" };
+            var validTypes = new HashSet<string> { "Damage", "Impact", "Execute", "Cost", "Buff" };
             foreach (var entry in importFile.effects)
             {
                 if (string.IsNullOrWhiteSpace(entry.name))
@@ -275,7 +297,7 @@ namespace RedDust.Ability
                         skipped++;
                         continue;
                     }
-                    ApplyFields(existing, entry, effTag, blockedTags, def);
+                    ApplyFields(existing, entry, effTag, blockedTags, def, tagByFullTag, defById);
                     EditorUtility.SetDirty(existing);
                     skipped++;
                     continue;
@@ -308,12 +330,13 @@ namespace RedDust.Ability
                     "Impact" => ScriptableObject.CreateInstance<ImpactEffectSO>(),
                     "Execute" => ScriptableObject.CreateInstance<ExecuteEffectSO>(),
                     "Cost" => ScriptableObject.CreateInstance<CostEffectSO>(),
+                    "Buff" => ScriptableObject.CreateInstance<BuffEffectSO>(),
                     _ => null,
                 };
                 if (instance == null) { errors.Add($"'{entry.name}': unknown type"); skipped++; continue; }
 
                 instance.name = entry.name;
-                ApplyFields(instance, entry, effTag, blockedTags, def);
+                ApplyFields(instance, entry, effTag, blockedTags, def, tagByFullTag, defById);
                 AssetDatabase.CreateAsset(instance, assetPath);
                 created++;
                 Debug.Log($"[EffectImporter] Created: {assetPath}");
@@ -342,12 +365,15 @@ namespace RedDust.Ability
             ImpactEffectSO => "Impact",
             ExecuteEffectSO => "Execute",
             CostEffectSO => "Cost",
+            BuffEffectSO => "Buff",
             _ => "Unknown",
         };
 
         private static void ApplyFields(EffectSO instance, EffectEntry entry,
             GameplayTagDefinitionSO effTag, GameplayTagDefinitionSO[] blockedTags,
-            PropertyDefSO def)
+            PropertyDefSO def,
+            Dictionary<string, GameplayTagDefinitionSO> tagByFullTag,
+            Dictionary<string, PropertyDefSO> defById)
         {
             instance.effectTag = effTag;
             instance.description = entry.description;
@@ -377,6 +403,20 @@ namespace RedDust.Ability
                 case CostEffectSO c:
                     c.def = def;
                     c.amount = entry.amount;
+                    break;
+                case BuffEffectSO b:
+                    b.grantedTags = entry.grantedTags?.Select(t =>
+                        tagByFullTag.TryGetValue(t, out var tg) ? tg : null)
+                        .Where(t => t != null).ToArray();
+                    if (entry.adjuncts != null)
+                    {
+                        b.adjuncts = entry.adjuncts.Select(a => new SBuffAdjunct
+                        {
+                            property = !string.IsNullOrEmpty(a.propertyId) && defById.TryGetValue(a.propertyId, out var pd) ? pd : null,
+                            valueAdd = a.valueAdd,
+                            valueMultiply = a.valueMultiply,
+                        }).ToArray();
+                    }
                     break;
             }
         }
@@ -433,18 +473,18 @@ namespace RedDust.Ability
             if (preview?.effects == null || preview.effects.Length == 0) return null;
 
             int total = preview.effects.Length;
-            int dmg = 0, imp = 0, exe = 0, cost = 0;
+            int dmg = 0, imp = 0, exe = 0, cost = 0, buff = 0;
             int nw = 0, exist = 0;
             foreach (var e in preview.effects)
             {
-                switch (e.effectType) { case "Damage": dmg++; break; case "Impact": imp++; break; case "Execute": exe++; break; case "Cost": cost++; break; }
+                switch (e.effectType) { case "Damage": dmg++; break; case "Impact": imp++; break; case "Execute": exe++; break; case "Cost": cost++; break; case "Buff": buff++; break; }
                 var dirName = string.IsNullOrWhiteSpace(e.directory) ? "" : e.directory;
                 var assetDir = string.IsNullOrEmpty(dirName) ? EffectImporter.EffectsRoot : Path.Combine(EffectImporter.EffectsRoot, dirName).Replace('\\', '/');
                 var assetPath = Path.Combine(assetDir, $"{e.name}.asset").Replace('\\', '/');
                 if (File.Exists(assetPath)) exist++; else nw++;
             }
 
-            return $"<b>{total}</b> effects (<color=#33AA33>{dmg} Dmg</color> · <color=#CC8833>{imp} Imp</color> · <color=#CC3333>{exe} Exe</color> · <color=#3388CC>{cost} Cost</color>)\n" +
+            return $"<b>{total}</b> effects (<color=#33AA33>{dmg} Dmg</color> · <color=#CC8833>{imp} Imp</color> · <color=#CC3333>{exe} Exe</color> · <color=#3388CC>{cost} Cost</color> · <color=#AA33CC>{buff} Buff</color>)\n" +
                    $"v{preview.version} · {preview.description ?? "-"}\n" +
                    $"<color=#33BB33>New {nw}</color>  Existing {exist}";
         }

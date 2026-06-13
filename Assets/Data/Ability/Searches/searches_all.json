@@ -1,0 +1,42 @@
+{
+  "version": "1.0",
+  "description": "Search definitions — full export + 4 demo skills",
+  "searches": [
+    {
+      "searchType": "Cone",
+      "name": "Search_Cone_Melee_Blade_Light",
+      "range": 2.0,
+      "maxTargets": 3,
+      "targetFilter": "Enemy",
+      "angle": 60.0,
+      "requiresLineOfSight": false
+    },
+    {
+      "searchType": "RayLine",
+      "name": "Search_Ray_Melee_Blade_Heavy",
+      "range": 2.5,
+      "maxTargets": 1,
+      "targetFilter": "Enemy",
+      "angle": 0.0,
+      "requiresLineOfSight": false
+    },
+    {
+      "searchType": "RayLine",
+      "name": "Search_Ray_Pistol_Normal",
+      "range": 12.0,
+      "maxTargets": 1,
+      "targetFilter": "Enemy",
+      "angle": 0.0,
+      "requiresLineOfSight": true
+    },
+    {
+      "searchType": "RayLine",
+      "name": "Search_Ray_Pistol_Suppressive",
+      "range": 15.0,
+      "maxTargets": 0,
+      "targetFilter": "Enemy",
+      "angle": 0.0,
+      "requiresLineOfSight": true
+    }
+  ]
+}

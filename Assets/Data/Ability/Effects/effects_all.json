@@ -58,6 +58,8 @@
     { "effectType": "Cost", "name": "Cost_Durability_Small","directory": "Cost/Durability","effectTag": "Cost.Durability","description": "耐久消耗·小。近战每次命中。扣 1 耐久", "defId": "Durability", "amount": 1 },
     { "effectType": "Cost", "name": "Cost_Durability_Block","directory": "Cost/Durability","effectTag": "Cost.Durability","description": "耐久消耗·格挡。扣 3 耐久", "defId": "Durability", "amount": 3 },
     { "effectType": "Cost", "name": "Cost_Fuel_Small",      "directory": "Cost/Fuel",    "effectTag": "Cost.Fuel",    "description": "燃料消耗。燃烧瓶/爆炸物。扣 1 燃料", "defId": "Fuel", "amount": 1 },
-    { "effectType": "Cost", "name": "Cost_Charge_Small",    "directory": "Cost/Charge",  "effectTag": "Cost.Charge",  "description": "电量消耗。电击陷阱/能量武器。扣 5 电量", "defId": "Charge", "amount": 5 }
+    { "effectType": "Cost", "name": "Cost_Charge_Small",    "directory": "Cost/Charge",  "effectTag": "Cost.Charge",  "description": "电量消耗。电击陷阱/能量武器。扣 5 电量", "defId": "Charge", "amount": 5 },
+    { "effectType": "Cost", "name": "Cost_Ammo_Pistol_Burst", "directory": "Cost/Ammo",    "effectTag": "Cost.Ammo",    "description": "弹药消耗·手枪连发。扣5发", "defId": "Ammo", "amount": 5 },
+    { "effectType": "Buff", "name": "Buff_Debuff_Slow_30", "directory": "Buff", "duration": 2.0, "description": "减速30%持续2s。压制射击附带效果。", "adjuncts": [{"propertyId": "MoveSpeed", "valueAdd": 0.0, "valueMultiply": 0.7}] }
   ]
 }

@@ -51,6 +51,9 @@ namespace RedDust.Ability
         // 冷却 key → abilityTag.FullTag，冷却到期后一并移除
         private readonly Dictionary<string, string> cooldownAbilityTags = new();
 
+        // Buff 授权 Tag 过期管理: (tagFullPath, expiryTime)
+        private readonly List<(string tag, float expiryTime)> _buffTags = new();
+
         private void Awake()
         {
             if (initialPassives == null) return;
@@ -90,6 +93,16 @@ namespace RedDust.Ability
                     cooldownAbilityTags.Remove(key);
                 }
             }
+
+            // Buff 授权 Tag 过期清理
+            if (_buffTags.Count > 0)
+            {
+                _buffTags.RemoveAll(t =>
+                {
+                    if (now >= t.expiryTime) { OwnedTags.RemoveTag(t.tag); return true; }
+                    return false;
+                });
+            }
         }
 
         public void AddCooldown(string tag, float duration)
@@ -102,6 +115,16 @@ namespace RedDust.Ability
         public bool IsOnCooldown(string tag)
         {
             return !string.IsNullOrEmpty(tag) && cooldownEndTimes.TryGetValue(tag, out var end) && Time.time < end;
+        }
+
+        /// <summary>注册 Buff 授权 Tag，到期自动移除。</summary>
+        public void AddBuffTags(GameplayTagDefinitionSO[] tags, float expiryTime)
+        {
+            if (tags == null || expiryTime <= Time.time) return;
+            foreach (var t in tags)
+            {
+                if (t != null) _buffTags.Add((t.FullTag, expiryTime));
+            }
         }
 
         #region Physics Callbacks
@@ -360,6 +383,12 @@ namespace RedDust.Ability
                 {
                     if (effect is CostEffectSO) continue; // ③ 已处理
 
+                    if (effect is BuffEffectSO buff)
+                    {
+                        ApplyBuff(buff, gameObject);
+                        continue;
+                    }
+
                     if (effect is DamageEffectSO dmg)
                     {
                         // TODO: baseDamage 已改为 baseValue，装备系统填充。后续重写。
@@ -410,6 +439,12 @@ namespace RedDust.Ability
                             */
                         }
 
+                        if (effect is BuffEffectSO buff)
+                        {
+                            ApplyBuff(buff, target);
+                            continue;
+                        }
+
                         // duration > 0 的效果 — 把自身的 effectTag 挂给目标
                         if (effect.duration > 0f && effect.effectTag != null)
                         {
@@ -425,6 +460,48 @@ namespace RedDust.Ability
 
             Debug.Log($"[Ability] ✅ Activated: {ability.internalName} | targets={targets.Count} cooldown={ability.cooldownDuration}s");
             return true;
+        }
+
+        /// <summary>
+        /// 对目标施加 BuffEffectSO：创建 FloatAdjunct 注入 Properties + 写入 Tags。
+        /// </summary>
+        private void ApplyBuff(BuffEffectSO buff, GameObject target)
+        {
+            if (buff == null || target == null) return;
+
+            // FloatAdjunct 注入 Properties
+            var agent = target.GetComponent<PropertyAgent>();
+            if (agent != null && buff.adjuncts != null)
+            {
+                float expiry = buff.duration > 0f ? Time.time + buff.duration : -1f;
+                foreach (var adj in buff.adjuncts)
+                {
+                    if (adj.property == null) continue;
+                    agent.AddAdjunct(new FloatAdjunct
+                    {
+                        Owner = this,
+                        TargetPath = adj.property.Id,
+                        ValueAdd = adj.valueAdd,
+                        ValueMultiply = adj.valueMultiply,
+                        ExpiryTime = expiry,
+                    });
+                }
+            }
+
+            // Tags 写入 OwnedTags + 注册过期
+            if (buff.grantedTags != null && buff.grantedTags.Length > 0)
+            {
+                var targetAC = target.GetComponent<AbilityExecutor>();
+                if (targetAC != null)
+                {
+                    foreach (var tag in buff.grantedTags)
+                        targetAC.OwnedTags.AddTag(tag);
+                    if (buff.duration > 0f)
+                        targetAC.AddBuffTags(buff.grantedTags, Time.time + buff.duration);
+                }
+            }
+
+            Debug.Log($"[Ability] ⑤ Buff: {buff.name} → {target.name} adjuncts={buff.adjuncts?.Length ?? 0} tags={buff.grantedTags?.Length ?? 0} duration={buff.duration}s");
         }
 
         #endregion

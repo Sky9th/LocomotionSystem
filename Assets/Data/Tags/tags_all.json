@@ -1176,6 +1176,11 @@
       "name": "Tag_Masterwork",
       "parent": "Ability.Melee.Routines.Sanda",
       "description": "杰作"
+    },
+    {
+      "name": "Tag_SuppressiveFire",
+      "parent": "Ability.Ranged.Pistol",
+      "description": "手枪压制射击"
     }
   ]
 }
