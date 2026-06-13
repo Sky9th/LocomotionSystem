@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 
@@ -242,207 +243,68 @@ namespace RedDust.Properties.Editor
     }
 
     /// <summary>
-    /// Property 导入 Editor 窗口。
-    /// 菜单: RedDust > Property Import-Export
-    /// 模式与 GameplayTagImportWindow 一致。
+    /// Property Import-Export 窗口。使用共享 EditorImportExport 组件。
     /// </summary>
     public class PropertyImportWindow : EditorWindow
     {
-        private const float Pad = 6f;
-        private string _jsonPath = "Assets/Data/Properties/properties_all.json";
-        private int _lastCreated, _lastSkipped;
-        private List<string> _lastErrors = new();
+        private string _filePath = "Assets/Data/Properties/properties_all.json";
+        private string _previewText;
+        private (int created, int skipped, List<string> errors) _result;
 
         [MenuItem("RedDust/Property Import-Export", priority = 24)]
-        public static void ShowWindow()
+        public static void Open()
         {
-            var window = GetWindow<PropertyImportWindow>("Property Importer");
-            window.minSize = new Vector2(480, 280);
+            var window = GetWindow<PropertyImportWindow>("Property Import-Export");
+            window.minSize = new Vector2(520, 420);
             window.Show();
         }
 
         private void OnGUI()
         {
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginVertical();
-
-            DrawHeader();
-            GUILayout.Space(Pad);
-            DrawFilePicker();
-            GUILayout.Space(Pad);
-            DrawPreview();
-            GUILayout.Space(Pad);
-            DrawImportButton();
-            GUILayout.Space(Pad);
-            DrawResult();
-
-            EditorGUILayout.EndVertical();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndHorizontal();
-            GUILayout.Space(Pad);
-        }
-
-        private void DrawHeader()
-        {
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.LabelField("Property Importer", EditorStyles.largeLabel);
-            var subStyle = new GUIStyle(EditorStyles.label) { alignment = TextAnchor.MiddleRight, normal = { textColor = Color.gray } };
-            EditorGUILayout.LabelField("L3_Properties · JSON → .asset", subStyle, GUILayout.Width(240));
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndVertical();
-        }
-
-        private void DrawFilePicker()
-        {
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginVertical();
-            EditorGUILayout.LabelField("JSON File", EditorStyles.boldLabel);
-            GUILayout.Space(4);
-            EditorGUILayout.BeginHorizontal();
-            _jsonPath = EditorGUILayout.TextField(_jsonPath);
-            if (GUILayout.Button("…", GUILayout.Width(28), GUILayout.Height(18))) PickFile();
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.EndVertical();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndVertical();
-        }
-
-        private void DrawPreview()
-        {
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginVertical();
-            EditorGUILayout.LabelField("Preview", EditorStyles.boldLabel);
-
-            if (File.Exists(_jsonPath))
-            {
-                PropertyImporter.PropertyImportFile preview = null;
-                try { preview = JsonUtility.FromJson<PropertyImporter.PropertyImportFile>(File.ReadAllText(_jsonPath)); } catch { }
-
-                if (preview != null)
+            EditorImportExport.Draw(
+                title: "Property Import-Export",
+                subtitle: "L3_Properties · JSON ↔ .asset",
+                defaultDir: "Assets/Data/Properties",
+                fileExtension: "json",
+                defaultFileName: "properties_export",
+                filePath: ref _filePath,
+                previewText: ref _previewText,
+                result: ref _result,
+                buildPreview: BuildPreview,
+                onImport: path =>
                 {
-                    int newDefs = 0, existDefs = 0, newTrees = 0, existTrees = 0;
-
-                    foreach (var d in preview.definitions)
-                    {
-                        var p = $"Assets/Data/Properties/Definitions/{d.id}.asset";
-                        if (AssetDatabase.LoadAssetAtPath<PropertyDefSO>(p) != null) existDefs++; else newDefs++;
-                    }
-                    foreach (var t in preview.trees)
-                    {
-                        var p = $"Assets/Data/Properties/Trees/{t.treeName}.asset";
-                        if (AssetDatabase.LoadAssetAtPath<PropertyTreeSO>(p) != null) existTrees++; else newTrees++;
-                    }
-
-                    GUILayout.Space(4);
-                    EditorGUILayout.LabelField($"<b>{preview.definitions.Count} defs + {preview.trees.Count} trees</b> · v{preview.version} · {preview.description ?? "-"}",
-                        new GUIStyle(EditorStyles.label) { richText = true });
-                    EditorGUILayout.BeginHorizontal();
-                    var g = new GUIStyle(EditorStyles.label) { normal = { textColor = new Color(0.2f, 0.7f, 0.2f) } };
-                    var s = new GUIStyle(EditorStyles.label) { normal = { textColor = Color.gray } };
-                    EditorGUILayout.LabelField($"New defs {newDefs}", g, GUILayout.Width(100));
-                    EditorGUILayout.LabelField($"Exist {existDefs}", s, GUILayout.Width(80));
-                    EditorGUILayout.LabelField($"New trees {newTrees}", g, GUILayout.Width(100));
-                    EditorGUILayout.LabelField($"Exist {existTrees}", s);
-                    EditorGUILayout.EndHorizontal();
-                }
-                else
-                {
-                    GUILayout.Space(4);
-                    EditorGUILayout.LabelField("JSON empty or invalid format", EditorStyles.miniLabel);
-                }
-            }
-            else
-            {
-                GUILayout.Space(4);
-                EditorGUILayout.LabelField("File not found", EditorStyles.miniLabel);
-            }
-
-            EditorGUILayout.EndVertical();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndVertical();
+                    var (created, skipped, errors) = PropertyImporter.ImportFromFile(path);
+                    PropertyDefinitionRegistry.Invalidate();
+                    return (created, skipped, errors);
+                },
+                onExport: path => File.WriteAllText(path, PropertyImporter.ExportToJson())
+            );
         }
 
-        private void DrawImportButton()
+        private static string BuildPreview(string filePath)
         {
-            var hasFile = File.Exists(_jsonPath);
-            EditorGUILayout.BeginHorizontal();
-            EditorGUI.BeginDisabledGroup(!hasFile);
-            if (GUILayout.Button("Import", GUILayout.Height(32)))
+            if (!File.Exists(filePath)) return null;
+            PropertyImporter.PropertyImportFile preview;
+            try { preview = JsonUtility.FromJson<PropertyImporter.PropertyImportFile>(File.ReadAllText(filePath)); }
+            catch { return null; }
+            if (preview == null) return null;
+
+            int newDefs = 0, existDefs = 0, newTrees = 0, existTrees = 0;
+            foreach (var d in preview.definitions)
             {
-                (_lastCreated, _lastSkipped, _lastErrors) = PropertyImporter.ImportFromFile(_jsonPath);
-                PropertyDefinitionRegistry.Invalidate();
-                AssetDatabase.Refresh();
+                var p = $"Assets/Data/Properties/Definitions/{d.id}.asset";
+                if (AssetDatabase.LoadAssetAtPath<PropertyDefSO>(p) != null) existDefs++; else newDefs++;
             }
-            EditorGUI.EndDisabledGroup();
-
-            if (GUILayout.Button("Export", GUILayout.Height(32)))
+            foreach (var t in preview.trees)
             {
-                var outPath = EditorUtility.SaveFilePanel("Export Property JSON", "Assets/Data/Properties", "properties_export", "json");
-                if (!string.IsNullOrEmpty(outPath))
-                {
-                    PropertyImporter.ExportToFile(outPath);
-                    EditorUtility.DisplayDialog("Export Done", $"Exported to:\n{outPath}", "OK");
-                }
-            }
-            EditorGUILayout.EndHorizontal();
-
-            if (!hasFile)
-            {
-                var warnStyle = new GUIStyle(EditorStyles.miniLabel) { normal = { textColor = new Color(1f, 0.6f, 0.2f) } };
-                EditorGUILayout.LabelField("  File not found, select a JSON file", warnStyle);
-            }
-        }
-
-        private void DrawResult()
-        {
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            if (_lastCreated + _lastSkipped == 0 && _lastErrors.Count == 0) { EditorGUILayout.EndVertical(); return; }
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginVertical();
-
-            var okStyle = new GUIStyle(EditorStyles.label) { normal = { textColor = new Color(0.2f, 0.7f, 0.2f) } };
-            var errStyle = new GUIStyle(EditorStyles.label) { normal = { textColor = new Color(0.9f, 0.3f, 0.2f) } };
-            EditorGUILayout.LabelField($"Created {_lastCreated} · Skipped {_lastSkipped}" + (_lastErrors.Count > 0 ? $" · Errors {_lastErrors.Count}" : ""),
-                _lastErrors.Count > 0 ? errStyle : okStyle);
-
-            if (_lastErrors.Count > 0)
-            {
-                GUILayout.Space(4);
-                foreach (var e in _lastErrors) EditorGUILayout.LabelField($"  ⚠ {e}", EditorStyles.miniLabel, GUILayout.ExpandWidth(true));
+                var p = $"Assets/Data/Properties/Trees/{t.treeName}.asset";
+                if (AssetDatabase.LoadAssetAtPath<PropertyTreeSO>(p) != null) existTrees++; else newTrees++;
             }
 
-            EditorGUILayout.EndVertical();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndVertical();
-        }
-
-        private void PickFile()
-        {
-            var selected = EditorUtility.OpenFilePanel("Select Property Import JSON", "Assets/Data/Properties", "json");
-            if (string.IsNullOrEmpty(selected)) return;
-            var projectPath = Path.GetDirectoryName(Application.dataPath);
-            _jsonPath = selected.StartsWith(projectPath!) ? selected[(projectPath.Length + 1)..].Replace('\\', '/') : selected;
+            return $"<b>{preview.definitions.Count} defs + {preview.trees.Count} trees</b>\n" +
+                   $"v{preview.version} · {preview.description ?? "-"}\n" +
+                   $"<color=#66CC66>New defs {newDefs}</color>  <color=#888888>Exist {existDefs}</color>  " +
+                   $"<color=#66CC66>New trees {newTrees}</color>  <color=#888888>Exist {existTrees}</color>";
         }
     }
 }

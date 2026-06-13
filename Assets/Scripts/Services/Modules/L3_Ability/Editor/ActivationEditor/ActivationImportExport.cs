@@ -181,7 +181,7 @@ namespace RedDust.Ability
                 switch (a.activationType) { case "Instant": instant++; break; case "Charged": charged++; break; case "Channel": channel++; break; }
             }
 
-            return $"<b>{total}</b> activations (<color=#33AA33>{instant} Instant</color> · <color=#CC8833>{charged} Charged</color> · <color=#3388CC>{channel} Channel</color>)\n" +
+            return $"<b>{total}</b> activations (<color=#66CC66>{instant} Instant</color> · <color=#66B266>{charged} Charged</color> · <color=#4C7EFF>{channel} Channel</color>)\n" +
                    $"v{preview.version} · {preview.description ?? "-"}";
         }
     }

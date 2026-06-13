@@ -142,7 +142,7 @@ namespace RedDust.Ability
 
                 if (EditorButton.Draw("✕", EditorButtonStyle.Danger, EditorButtonSize.Small))
                     onClear?.Invoke(slot);
-                if (EditorButton.Draw("...", width: 30f))
+                if (EditorButton.Draw("...", size: EditorButtonSize.Small, width: 30f))
                     onEdit?.Invoke(slot);
             }
             else
@@ -224,7 +224,7 @@ namespace RedDust.Ability
             }
 
             EditorCard.Gap(Pad);
-            if (EditorButton.Draw("＋ Add Effect", EditorButtonStyle.Success, EditorButtonSize.Medium))
+            if (EditorButton.Draw("＋ Add Effect", EditorButtonStyle.Success, EditorButtonSize.Small))
                 onEdit?.Invoke(slot);
         }
 
@@ -261,7 +261,7 @@ namespace RedDust.Ability
         /// <summary>TagPicker 按钮（PostInput 回调）。修改直接写 SO 字段并触发 form 重建。</summary>
         private static void DrawTagPickerButton(AbilitySO a, string fieldName)
         {
-            if (GUILayout.Button("Tag", EditorStyles.miniButton, GUILayout.Width(35)))
+            if (EditorButton.Draw("Tag", size: EditorButtonSize.Small, width: 35f))
             {
                 var field = a.GetType().GetField(fieldName,
                     BindingFlags.Public | BindingFlags.Instance);
@@ -369,7 +369,7 @@ namespace RedDust.Ability
             }
 
             GUILayout.Space(Pad);
-            if (EditorButton.Draw("＋ Add Combo Link", EditorButtonStyle.Success, EditorButtonSize.Medium))
+            if (EditorButton.Draw("＋ Add Combo Link", EditorButtonStyle.Success, EditorButtonSize.Small))
                 AddComboLink(def);
         }
 

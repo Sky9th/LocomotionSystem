@@ -242,7 +242,7 @@ namespace RedDust.Ability
                     _baseForm.ObjectField<GameplayTagDefinitionSO>("effectTag")
                         .PostInput(() =>
                         {
-                            if (GUILayout.Button("Tag", EditorStyles.miniButton, GUILayout.Width(35)))
+                            if (EditorButton.Draw("Tag", size: EditorButtonSize.Small, width: 35f))
                             {
                                 TagPicker.Show(_effectTagButtonRect, allowCreate: true,
                                     currentFullTag: e.effectTag?.FullTag,
@@ -301,7 +301,7 @@ namespace RedDust.Ability
                     e.applicationBlockedTags = arr;
                     MarkDirty();
                 }
-                if (GUILayout.Button("Tag", EditorStyles.miniButton, GUILayout.Width(35)))
+                if (EditorButton.Draw("Tag", size: EditorButtonSize.Small, width: 35f))
                 {
                     var currentTag = tags[i]; // capture tag reference
                     TagPicker.Show(_blockedTagButtonRect, allowCreate: true, currentFullTag: currentTag?.FullTag,

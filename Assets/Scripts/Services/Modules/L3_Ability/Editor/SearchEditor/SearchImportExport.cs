@@ -188,7 +188,7 @@ namespace RedDust.Ability
                 switch (s.searchType) { case "Cone": cone++; break; case "RayLine": ray++; break; case "Circle": circle++; break; }
             }
 
-            return $"<b>{total}</b> searches (<color=#33AA33>{cone} Cone</color> · <color=#CC8833>{ray} Ray</color> · <color=#3388CC>{circle} Circle</color>)\n" +
+            return $"<b>{total}</b> searches (<color=#66CC66>{cone} Cone</color> · <color=#66B266>{ray} Ray</color> · <color=#4C7EFF>{circle} Circle</color>)\n" +
                    $"v{preview.version} · {preview.description ?? "-"}";
         }
     }

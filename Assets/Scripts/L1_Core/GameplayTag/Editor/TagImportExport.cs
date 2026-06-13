@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 
@@ -320,230 +321,62 @@ namespace RedDust.Core
     }
 
     /// <summary>
-    /// GameplayTag 导入 Editor 窗口。
-    /// 菜单: RedDust > Import GameplayTags from JSON
+    /// GameplayTag Import-Export 窗口。使用共享 EditorImportExport 组件。
     /// </summary>
     public class GameplayTagImportWindow : EditorWindow
     {
-        private const float Pad = 6f;
-
-        private string _jsonPath = "Assets/Data/Tags/tags_all.json";
-        private int _lastCreated, _lastSkipped;
-        private List<string> _lastErrors = new();
+        private string _filePath = "Assets/Data/Tags/tags_all.json";
+        private string _previewText;
+        private (int created, int skipped, List<string> errors) _result;
 
         [MenuItem("RedDust/Tag Import-Export", priority = 23)]
-        public static void ShowWindow()
+        public static void Open()
         {
-            var window = GetWindow<GameplayTagImportWindow>("Tag Importer");
-            window.minSize = new Vector2(480, 280);
+            var window = GetWindow<GameplayTagImportWindow>("Tag Import-Export");
+            window.minSize = new Vector2(520, 420);
             window.Show();
         }
 
         private void OnGUI()
         {
-            GUILayout.Space(Pad);
-
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginVertical();
-
-            DrawHeader();
-            GUILayout.Space(Pad);
-            DrawFilePicker();
-            GUILayout.Space(Pad);
-            DrawPreview();
-            GUILayout.Space(Pad);
-            DrawImportButton();
-            GUILayout.Space(Pad);
-            DrawResult();
-
-            EditorGUILayout.EndVertical();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndHorizontal();
-
-            GUILayout.Space(Pad);
-        }
-
-        private void DrawHeader()
-        {
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
-
-            EditorGUILayout.LabelField("GameplayTag Importer", EditorStyles.largeLabel);
-            var subStyle = new GUIStyle(EditorStyles.label)
-            {
-                alignment = TextAnchor.MiddleRight,
-                normal = { textColor = Color.gray }
-            };
-            EditorGUILayout.LabelField("L1_Core · GameplayTag · JSON → .asset", subStyle, GUILayout.Width(260));
-
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndVertical();
-        }
-
-        private void DrawFilePicker()
-        {
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginVertical();
-
-            EditorGUILayout.LabelField("JSON 文件", EditorStyles.boldLabel);
-            GUILayout.Space(4);
-
-            EditorGUILayout.BeginHorizontal();
-            _jsonPath = EditorGUILayout.TextField(_jsonPath);
-            if (GUILayout.Button("…", GUILayout.Width(28), GUILayout.Height(18)))
-                PickFile();
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.EndVertical();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndVertical();
-        }
-
-        private void DrawPreview()
-        {
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginVertical();
-
-            EditorGUILayout.LabelField("预览", EditorStyles.boldLabel);
-
-            if (File.Exists(_jsonPath))
-            {
-                GameplayTagImporter.TagImportFile preview = null;
-                try { preview = JsonUtility.FromJson<GameplayTagImporter.TagImportFile>(File.ReadAllText(_jsonPath)); } catch { }
-
-                if (preview?.tags != null && preview.tags.Count > 0)
+            EditorImportExport.Draw(
+                title: "Tag Import-Export",
+                subtitle: "L1_Core · GameplayTag · JSON ↔ .asset",
+                defaultDir: "Assets/Data/Tags",
+                fileExtension: "json",
+                defaultFileName: "tags_export",
+                filePath: ref _filePath,
+                previewText: ref _previewText,
+                result: ref _result,
+                buildPreview: BuildPreview,
+                onImport: path =>
                 {
-                    int newCount = 0, existCount = 0;
-                    foreach (var entry in preview.tags)
-                    {
-                        var d = Path.Combine("Assets/Data/Tags", entry.Directory).Replace('\\', '/');
-                        if (File.Exists(Path.Combine(d, $"{entry.name}.asset").Replace('\\', '/'))) existCount++;
-                        else newCount++;
-                    }
-                    GUILayout.Space(4);
-                    EditorGUILayout.LabelField($"<b>{preview.tags.Count}</b> 条目 · v{preview.version} · {preview.description ?? "-"}",
-                        new GUIStyle(EditorStyles.label) { richText = true });
-                    EditorGUILayout.BeginHorizontal();
-                    var g = new GUIStyle(EditorStyles.label) { normal = { textColor = new Color(0.2f, 0.7f, 0.2f) } };
-                    var s = new GUIStyle(EditorStyles.label) { normal = { textColor = Color.gray } };
-                    EditorGUILayout.LabelField($"新增 {newCount}", g, GUILayout.Width(80));
-                    EditorGUILayout.LabelField($"已存在 {existCount}", s);
-                    EditorGUILayout.EndHorizontal();
-                }
-                else
-                {
-                    GUILayout.Space(4);
-                    EditorGUILayout.LabelField("JSON 为空或格式错误", EditorStyles.miniLabel);
-                }
-            }
-            else
-            {
-                GUILayout.Space(4);
-                EditorGUILayout.LabelField("文件不存在", EditorStyles.miniLabel);
-            }
-
-            EditorGUILayout.EndVertical();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndVertical();
+                    var (created, skipped, errors) = GameplayTagImporter.ImportFromFile(path);
+                    return (created, skipped, errors);
+                },
+                onExport: path => File.WriteAllText(path, GameplayTagImporter.ExportToJson())
+            );
         }
 
-        private void DrawImportButton()
+        private static string BuildPreview(string filePath)
         {
-            var hasFile = File.Exists(_jsonPath);
+            if (!File.Exists(filePath)) return null;
+            GameplayTagImporter.TagImportFile preview;
+            try { preview = JsonUtility.FromJson<GameplayTagImporter.TagImportFile>(File.ReadAllText(filePath)); }
+            catch { return null; }
+            if (preview?.tags == null || preview.tags.Count == 0) return null;
 
-            EditorGUILayout.BeginHorizontal();
-            EditorGUI.BeginDisabledGroup(!hasFile);
-            if (GUILayout.Button("导入", GUILayout.Height(32)))
+            int newCount = 0, existCount = 0;
+            foreach (var entry in preview.tags)
             {
-                (_lastCreated, _lastSkipped, _lastErrors) = GameplayTagImporter.ImportFromFile(_jsonPath);
-                AssetDatabase.Refresh();
-            }
-            EditorGUI.EndDisabledGroup();
-
-            if (GUILayout.Button("导出", GUILayout.Height(32)))
-            {
-                var outPath = EditorUtility.SaveFilePanel("导出 GameplayTag JSON", "Assets/Data/Tags", "tags_export", "json");
-                if (!string.IsNullOrEmpty(outPath))
-                {
-                    GameplayTagImporter.ExportToFile(outPath);
-                    EditorUtility.DisplayDialog("导出完成", $"已导出到:\n{outPath}", "确定");
-                }
-            }
-            EditorGUILayout.EndHorizontal();
-
-            if (!hasFile)
-            {
-                var warnStyle = new GUIStyle(EditorStyles.miniLabel)
-                { normal = { textColor = new Color(1f, 0.6f, 0.2f) } };
-                EditorGUILayout.LabelField("  文件不存在，请选择 JSON 文件", warnStyle);
-            }
-        }
-
-        private void DrawResult()
-        {
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            if (_lastCreated + _lastSkipped == 0 && _lastErrors.Count == 0)
-            {
-                EditorGUILayout.EndVertical();
-                return;
-            }
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.BeginVertical();
-
-            var okStyle = new GUIStyle(EditorStyles.label)
-            { normal = { textColor = new Color(0.2f, 0.7f, 0.2f) } };
-            var errStyle = new GUIStyle(EditorStyles.label)
-            { normal = { textColor = new Color(0.9f, 0.3f, 0.2f) } };
-
-            EditorGUILayout.LabelField(
-                $"创建 {_lastCreated} · 跳过 {_lastSkipped}" +
-                (_lastErrors.Count > 0 ? $" · 错误 {_lastErrors.Count}" : ""),
-                _lastErrors.Count > 0 ? errStyle : okStyle);
-
-            if (_lastErrors.Count > 0)
-            {
-                GUILayout.Space(4);
-                EditorGUILayout.TextArea(string.Join("\n", _lastErrors), EditorStyles.miniLabel, GUILayout.MinHeight(40));
-            }
-            else
-            {
-                GUILayout.Space(4);
-                EditorGUILayout.TextArea("No errors.", EditorStyles.miniLabel, GUILayout.MinHeight(20));
+                var d = Path.Combine("Assets/Data/Tags", entry.Directory).Replace('\\', '/');
+                if (File.Exists(Path.Combine(d, $"{entry.name}.asset").Replace('\\', '/'))) existCount++;
+                else newCount++;
             }
 
-            EditorGUILayout.EndVertical();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndHorizontal();
-            GUILayout.Space(Pad);
-            EditorGUILayout.EndVertical();
-        }
-
-        private void PickFile()
-        {
-            var selected = EditorUtility.OpenFilePanel("选择 Tag 导入 JSON", "Assets/Data/Tags", "json");
-            if (string.IsNullOrEmpty(selected)) return;
-
-            var projectPath = Path.GetDirectoryName(Application.dataPath);
-            _jsonPath = selected.StartsWith(projectPath!)
-                ? selected.Substring(projectPath.Length + 1).Replace('\\', '/')
-                : selected;
+            return $"<b>{preview.tags.Count}</b> entries\n" +
+                   $"v{preview.version} · {preview.description ?? "-"}\n" +
+                   $"<color=#66CC66>New {newCount}</color>  <color=#888888>Exist {existCount}</color>";
         }
     }
 }

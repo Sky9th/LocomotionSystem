@@ -484,9 +484,9 @@ namespace RedDust.Ability
                 if (File.Exists(assetPath)) exist++; else nw++;
             }
 
-            return $"<b>{total}</b> effects (<color=#33AA33>{dmg} Dmg</color> · <color=#CC8833>{imp} Imp</color> · <color=#CC3333>{exe} Exe</color> · <color=#3388CC>{cost} Cost</color> · <color=#AA33CC>{buff} Buff</color>)\n" +
+            return $"<b>{total}</b> effects (<color=#66CC66>{dmg} Dmg</color> · <color=#66B266>{imp} Imp</color> · <color=#D32222>{exe} Exe</color> · <color=#4C7EFF>{cost} Cost</color> · <color=#8844CC>{buff} Buff</color>)\n" +
                    $"v{preview.version} · {preview.description ?? "-"}\n" +
-                   $"<color=#33BB33>New {nw}</color>  Existing {exist}";
+                   $"<color=#66CC66>New {nw}</color>  Existing {exist}";
         }
     }
 }

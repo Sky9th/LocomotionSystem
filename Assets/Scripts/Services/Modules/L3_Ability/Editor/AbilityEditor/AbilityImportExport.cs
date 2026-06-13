@@ -371,7 +371,7 @@ namespace RedDust.Ability
                 switch (a.abilityType) { case "Active": active++; break; case "Passive": passive++; break; }
             }
 
-            return $"<b>{total}</b> abilities (<color=#33AA33>{active} Active</color> · <color=#3388CC>{passive} Passive</color>)\n" +
+            return $"<b>{total}</b> abilities (<color=#66CC66>{active} Active</color> · <color=#4C7EFF>{passive} Passive</color>)\n" +
                    $"v{preview.version} · {preview.description ?? "-"}";
         }
     }

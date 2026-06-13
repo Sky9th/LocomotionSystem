@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,8 +13,6 @@ namespace RedDust.Properties.Editor
     /// </summary>
     public static class PropertyTreeEditorPopups
     {
-        private static readonly Color ColorCreate = new(0.4f, 0.8f, 0.4f);
-
         // ── NewTree ──
 
         public static class NewTreeDialog
@@ -40,12 +39,10 @@ namespace RedDust.Properties.Editor
                     _name = EditorGUILayout.TextField("Name", _name);
                     _parent = (PropertyTreeSO)EditorGUILayout.ObjectField("InheritsFrom", _parent, typeof(PropertyTreeSO), false);
                     EditorGUILayout.BeginHorizontal();
-                    GUI.backgroundColor = ColorCreate;
-                    EditorGUI.BeginDisabledGroup(string.IsNullOrWhiteSpace(_name));
-                    if (GUILayout.Button("Create", GUILayout.Height(24))) { _cb?.Invoke(_name, _parent); Close(); }
-                    EditorGUI.EndDisabledGroup();
-                    GUI.backgroundColor = Color.white;
-                    if (GUILayout.Button("Cancel", GUILayout.Height(24))) Close();
+                    var hasName = !string.IsNullOrWhiteSpace(_name);
+                    if (EditorButton.Draw("Create", EditorButtonStyle.Success, EditorButtonSize.Small, enabled: hasName))
+                    { _cb?.Invoke(_name, _parent); Close(); }
+                    if (EditorButton.Draw("Cancel", size: EditorButtonSize.Small)) Close();
                     EditorGUILayout.EndHorizontal();
                 }
             }
@@ -146,7 +143,7 @@ namespace RedDust.Properties.Editor
                     EditorGUILayout.EndScrollView();
 
                     GUILayout.Space(pad);
-                    if (GUILayout.Button("Close", GUILayout.Height(24))) Close();
+                    if (EditorButton.Draw("Close", size: EditorButtonSize.Small)) Close();
 
                     EditorGUILayout.EndVertical();
                     GUILayout.Space(pad); EditorGUILayout.EndHorizontal();
@@ -309,9 +306,7 @@ namespace RedDust.Properties.Editor
 
                     EditorGUILayout.BeginHorizontal();
                     bool valid = !string.IsNullOrWhiteSpace(_id);
-                    GUI.backgroundColor = ColorCreate;
-                    EditorGUI.BeginDisabledGroup(!valid);
-                    if (GUILayout.Button("Create", GUILayout.Height(24)))
+                    if (EditorButton.Draw("Create", EditorButtonStyle.Success, EditorButtonSize.Small, enabled: valid))
                     {
                         var existing = AssetDatabase.LoadAssetAtPath<PropertyDefSO>($"Assets/Data/Properties/Definitions/{_id}.asset");
                         if (existing != null)
@@ -326,9 +321,7 @@ namespace RedDust.Properties.Editor
                             Close();
                         }
                     }
-                    EditorGUI.EndDisabledGroup();
-                    GUI.backgroundColor = Color.white;
-                    if (GUILayout.Button("Cancel", GUILayout.Height(24))) Close();
+                    if (EditorButton.Draw("Cancel", size: EditorButtonSize.Small)) Close();
                     EditorGUILayout.EndHorizontal();
 
                     EditorGUILayout.EndVertical();

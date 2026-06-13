@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 
@@ -238,7 +239,7 @@ namespace RedDust.Properties.Editor
 
             // "Add Folder" at bottom of tree
             Shared.EditorUI.EditorCard.Gap(Pad);
-            if (GUILayout.Button("+ Add Folder", GUILayout.Height(22)))
+            if (EditorButton.Draw("+ Add Folder", size: EditorButtonSize.Small))
                 AddFolder("New Folder");
 
             EditorGUILayout.EndScrollView();
@@ -250,18 +251,12 @@ namespace RedDust.Properties.Editor
             {
                 EditorGUILayout.BeginHorizontal();
 
-                // Search field
-                EditorGUILayout.LabelField("Search", SearchToolbarLabel, GUILayout.Width(45), GUILayout.Height(22));
-                EditorGUI.BeginChangeCheck();
-                _searchFilter = EditorGUILayout.TextField(_searchFilter, GUILayout.ExpandWidth(true), GUILayout.Height(22));
-                if (EditorGUI.EndChangeCheck()) Repaint();
-                if (!string.IsNullOrEmpty(_searchFilter) && GUILayout.Button("x", EditorStyles.miniButton, GUILayout.Width(20)))
-                { _searchFilter = ""; GUI.FocusControl(null); }
+                // Search field — use shared search row
+                _searchFilter = EditorUIUtility.DrawSearchRow(_searchFilter, 45f);
 
                 GUILayout.FlexibleSpace();
 
-                // Add folder button
-                if (GUILayout.Button("+ Add Folder", GUILayout.Height(22)))
+                if (EditorButton.Draw("+ Add Folder", size: EditorButtonSize.Small))
                     AddFolder("New Folder");
 
                 EditorGUILayout.EndHorizontal();
@@ -321,17 +316,17 @@ namespace RedDust.Properties.Editor
                 EditorGUI.BeginChangeCheck();
                 _leftSearch = EditorGUILayout.TextField(_leftSearch, GUILayout.ExpandWidth(true), GUILayout.Height(22));
                 if (EditorGUI.EndChangeCheck()) RefreshTreeList();
-                if (!string.IsNullOrEmpty(_leftSearch) && GUILayout.Button("x", EditorStyles.miniButton, GUILayout.Width(20)))
+                if (!string.IsNullOrEmpty(_leftSearch) && EditorButton.Draw("x", size: EditorButtonSize.Small, width: 20f))
                 { _leftSearch = ""; RefreshTreeList(); GUI.FocusControl(null); }
                 EditorGUILayout.EndHorizontal();
 
-                GUILayout.Space(Pad);
+                EditorCard.Gap(Pad);
 
                 // Action buttons
                 EditorGUILayout.BeginHorizontal();
-                if (GUILayout.Button("+ New", GUILayout.Height(22)))
+                if (EditorButton.Draw("+ New", size: EditorButtonSize.Small))
                     PropertyTreeEditorPopups.NewTreeDialog.Show((name, parent) => { CreateTree(name, parent); RefreshTreeList(); });
-                if (GUILayout.Button("Refresh", GUILayout.Height(22)))
+                if (EditorButton.Draw("Refresh", size: EditorButtonSize.Small))
                 {
                     PropertyDefinitionRegistry.Invalidate();
                     RefreshTreeList();
@@ -744,11 +739,8 @@ namespace RedDust.Properties.Editor
                 // --- Detail button "?" ---
                 if (node.Def != null)
                 {
-                    var oldInfoBg = GUI.backgroundColor;
-                    GUI.backgroundColor = new Color(0.4f, 0.6f, 0.9f);
-                    if (GUILayout.Button("?", EditorStyles.miniButton, GUILayout.Width(20)))
+                    if (EditorButton.Draw("?", EditorButtonStyle.Primary, EditorButtonSize.Small, 20f))
                         PropertyTreeEditorPopups.DefDetailPopup.Show(node.Def);
-                    GUI.backgroundColor = oldInfoBg;
                 }
                 else GUILayout.Space(20);
 

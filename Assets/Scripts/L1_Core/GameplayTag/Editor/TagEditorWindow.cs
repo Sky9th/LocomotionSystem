@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 
@@ -93,12 +94,10 @@ namespace RedDust.Core.Editor
             EditorGUILayout.BeginHorizontal();
             GUILayout.Space(Pad);
 
-            if (GUILayout.Button("＋ Create Tag", GUILayout.Height(24)))
-            {
+            if (EditorButton.Draw("＋ Create Tag", size: EditorButtonSize.Small))
                 StartCreateRoot();
-            }
 
-            if (GUILayout.Button("🔄 Refresh", GUILayout.Height(24)))
+            if (EditorButton.Draw("🔄 Refresh", size: EditorButtonSize.Small))
             {
                 _needsRefresh = true;
                 _foldouts.Clear();
@@ -107,10 +106,10 @@ namespace RedDust.Core.Editor
 
             GUILayout.FlexibleSpace();
 
-            if (GUILayout.Button("▼ All", GUILayout.Height(24)))
+            if (EditorButton.Draw("▼ All", size: EditorButtonSize.Small))
                 SetAllFoldouts(true);
 
-            if (GUILayout.Button("▲ All", GUILayout.Height(24)))
+            if (EditorButton.Draw("▲ All", size: EditorButtonSize.Small))
                 SetAllFoldouts(false);
 
             GUILayout.Space(Pad);
@@ -144,7 +143,7 @@ namespace RedDust.Core.Editor
             EditorGUILayout.LabelField("Search", EditorStyles.label, GUILayout.Width(45));
             _searchText = EditorGUILayout.TextField(_searchText, GUILayout.ExpandWidth(true));
 
-            if (!string.IsNullOrEmpty(_searchText) && GUILayout.Button("✕", EditorStyles.miniButton, GUILayout.Width(20)))
+            if (!string.IsNullOrEmpty(_searchText) && EditorButton.Draw("✕", size: EditorButtonSize.Small, width: 20f))
             {
                 _searchText = "";
                 GUI.FocusControl(null);
@@ -294,17 +293,11 @@ namespace RedDust.Core.Editor
             GUILayout.Space(Pad);
 
             EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("Ping Asset", GUILayout.Height(24)))
-            {
+            if (EditorButton.Draw("Ping Asset", size: EditorButtonSize.Small))
                 EditorGUIUtility.PingObject(node.Asset);
-            }
 
-            GUI.backgroundColor = new Color(0.9f, 0.3f, 0.3f);
-            if (GUILayout.Button("Delete", GUILayout.Height(24), GUILayout.Width(80)))
-            {
+            if (EditorButton.Draw("Delete", EditorButtonStyle.Danger, width: 80f))
                 DeleteTag(node);
-            }
-            GUI.backgroundColor = Color.white;
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.EndVertical();
@@ -350,9 +343,7 @@ namespace RedDust.Core.Editor
             GUILayout.Space(Pad);
 
             var hasName = !string.IsNullOrEmpty(_createLeafName);
-            GUI.enabled = hasName;
-            GUI.backgroundColor = hasName ? new Color(0.4f, 0.8f, 0.4f) : Color.white;
-            if (GUILayout.Button("Create Tag", GUILayout.Height(24)))
+            if (EditorButton.Draw("Create Tag", EditorButtonStyle.Success, EditorButtonSize.Small, enabled: hasName))
             {
                 var target = isRoot ? _createLeafName : $"{parentFullTag}.{_createLeafName}";
                 try
@@ -369,12 +360,10 @@ namespace RedDust.Core.Editor
                     Debug.LogError($"[TagEditor] Failed to create tag '{target}': {ex.Message}");
                 }
             }
-            GUI.enabled = true;
-            GUI.backgroundColor = Color.white;
 
             GUILayout.Space(Pad);
 
-            if (GUILayout.Button("Cancel", GUILayout.Height(24)))
+            if (EditorButton.Draw("Cancel", size: EditorButtonSize.Small))
             {
                 _isCreating = false;
                 _creatingUnderFullTag = null;

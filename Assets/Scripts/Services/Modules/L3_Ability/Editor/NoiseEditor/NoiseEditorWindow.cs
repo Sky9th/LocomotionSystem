@@ -209,7 +209,7 @@ namespace RedDust.Ability
                      .ObjectField<GameplayTagDefinitionSO>("noiseType", label: "Noise Type")
                         .PostInput(() =>
                         {
-                            if (GUILayout.Button("Tag", EditorStyles.miniButton, GUILayout.Width(35)))
+                            if (EditorButton.Draw("Tag", size: EditorButtonSize.Small, width: 35f))
                             {
                                 TagPicker.Show(_noiseTagButtonRect, allowCreate: true,
                                     currentFullTag: n.noiseType?.FullTag,

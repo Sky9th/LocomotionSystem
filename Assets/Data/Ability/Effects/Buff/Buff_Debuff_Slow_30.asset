@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d10d59d7d7d523140aac47aae123b37e, type: 3}
+  m_Name: Buff_Debuff_Slow_30
+  m_EditorClassIdentifier: 
+  effectTag: {fileID: 0}
+  description: "\u51CF\u901F30%\u6301\u7EED2s\u3002\u538B\u5236\u5C04\u51FB\u9644\u5E26\u6548\u679C\u3002"
+  duration: 2
+  stackable: 0
+  maxStacks: 1
+  applicationBlockedTags: []
+  grantedTags: []
+  adjuncts:
+  - property: {fileID: 11400000, guid: 836572ad6c6e3d64eb2f19eeba2661fa, type: 2}
+    valueAdd: 0
+    valueMultiply: 0.7
