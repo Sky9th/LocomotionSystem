@@ -14,7 +14,6 @@ namespace RedDust.Ability
     /// </summary>
     public static class SubAssetPickerView
     {
-        private const float Pad = 6f;
         private static readonly Dictionary<string, bool> _effectFoldouts = new();
         private static ScriptableObject _selectedAsset;
         private static Vector2 _typedListScroll;
@@ -31,7 +30,7 @@ namespace RedDust.Ability
 
             if (slot == SubAssetSlot.None)
             {
-                EditorCard.Draw(Pad, () =>
+                EditorCard.Draw(EditorTokens.Pad, () =>
                 {
                     GUILayout.FlexibleSpace();
                     EditorGUILayout.BeginHorizontal();
@@ -46,7 +45,7 @@ namespace RedDust.Ability
                 return;
             }
 
-            EditorCard.Draw(Pad, () =>
+            EditorCard.Draw(EditorTokens.Pad, () =>
             {
                 var title = slot switch
                 {
@@ -58,17 +57,17 @@ namespace RedDust.Ability
                     _ => "Select Asset",
                 };
                 EditorGUILayout.LabelField(title, EditorStyles.boldLabel);
-                GUILayout.Space(Pad);
+                GUILayout.Space(EditorTokens.Pad);
 
                 // 搜索
                 s = EditorSearchBar.Draw(s, labelWidth: 50f);
 
-                GUILayout.Space(Pad);
+                GUILayout.Space(EditorTokens.Pad);
 
                 // 列表 — 点击高亮，不直接确认
                 DrawAssetList(model, slot, s, asset => _selectedAsset = asset);
 
-                GUILayout.Space(Pad);
+                GUILayout.Space(EditorTokens.Pad);
 
                 // 底部按钮
                 var hasSelection = _selectedAsset != null;
@@ -86,7 +85,7 @@ namespace RedDust.Ability
                     _selectedAsset = null;
                     onCancel?.Invoke();
                 }
-                if (EditorButton.Draw("Select", hasSelection ? EditorButtonStyle.Primary : EditorButtonStyle.Default,
+                if (EditorButton.Draw("Select", hasSelection ? EditorButtonType.Primary : EditorButtonType.Default,
                         EditorButtonSize.Medium, enabled: hasSelection))
                 {
                     onSelected?.Invoke(_selectedAsset);
@@ -148,7 +147,7 @@ namespace RedDust.Ability
             {
                 var asset = filtered[i];
 
-                EditorCard.Draw(Pad, () =>
+                EditorCard.Draw(EditorTokens.Pad, () =>
                 {
                     var nameStyle = new GUIStyle(EditorStyles.label);
                     if (GUILayout.Button(asset.name, nameStyle, GUILayout.ExpandWidth(true)))
@@ -163,7 +162,7 @@ namespace RedDust.Ability
                     }
                 });
 
-                if (i < filtered.Count - 1) EditorCard.Gap(Pad);
+                if (i < filtered.Count - 1) EditorCard.Gap(EditorTokens.Pad);
             }
             EditorGUILayout.EndScrollView();
         }
@@ -173,7 +172,7 @@ namespace RedDust.Ability
         private static void DrawEffectTree(AbilityEditorModel model, string searchText,
             Action<ScriptableObject> onSelected)
         {
-            EditorCard.Draw(Pad, () =>
+            EditorCard.Draw(EditorTokens.Pad, () =>
             {
                 _effectScroll = EditorGUILayout.BeginScrollView(_effectScroll,
                     GUILayout.ExpandHeight(true));

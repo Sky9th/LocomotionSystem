@@ -16,7 +16,6 @@ namespace RedDust.Ability
     /// </summary>
     public class SearchEditorWindow : EditorWindow
     {
-        private const float Pad = 6f;
         private const float LeftWidth = 300f;
 
         // ── 内联 Model（扫描 SearchSO，按 searchType 构建虚拟文件夹树）──
@@ -47,21 +46,21 @@ namespace RedDust.Ability
         {
             if (_needsRefresh) { RefreshModel(); _needsRefresh = false; }
 
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.BeginVertical();
 
             DrawHeader();
-            EditorCard.Gap(Pad);
+            EditorCard.Gap(EditorTokens.Pad);
             DrawTwoColumns();
-            EditorCard.Gap(Pad);
+            EditorCard.Gap(EditorTokens.Pad);
             DrawStatusBar();
 
             EditorGUILayout.EndVertical();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndHorizontal();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
         }
 
         // ═══════════════════════════════════════════════════
@@ -69,7 +68,7 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════
         private void DrawHeader()
         {
-            EditorCard.Draw(Pad, () =>
+            EditorCard.Draw(EditorTokens.Pad, () =>
             {
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Search Editor", EditorStyles.largeLabel,
@@ -79,7 +78,7 @@ namespace RedDust.Ability
                 EditorGUILayout.LabelField("L3_Ability · Editor", sub, GUILayout.Width(160));
                 EditorGUILayout.EndHorizontal();
 
-                GUILayout.Space(Pad);
+                GUILayout.Space(EditorTokens.Pad);
 
                 EditorGUILayout.BeginHorizontal();
                 if (EditorButton.Draw("Refresh", size: EditorButtonSize.Medium))
@@ -89,10 +88,10 @@ namespace RedDust.Ability
                 if (EditorButton.Draw("Import/Export", size: EditorButtonSize.Medium))
                     SearchImportWindow.Open();
 
-                if (EditorButton.Draw("+ Create", EditorButtonStyle.Success, EditorButtonSize.Medium))
+                if (EditorButton.Draw("+ Create", EditorButtonType.Success, EditorButtonSize.Medium))
                     CreateNewSearch();
 
-                if (EditorButton.Draw(_hasChanges ? "Save *" : "Saved", _hasChanges ? EditorButtonStyle.Primary : EditorButtonStyle.Default, EditorButtonSize.Medium, enabled: _hasChanges))
+                if (EditorButton.Draw(_hasChanges ? "Save *" : "Saved", _hasChanges ? EditorButtonType.Primary : EditorButtonType.Default, EditorButtonSize.Medium, enabled: _hasChanges))
                 {
                     AssetDatabase.SaveAssets();
                     _hasChanges = false;
@@ -119,7 +118,7 @@ namespace RedDust.Ability
             DrawLeftColumn();
             EditorGUILayout.EndHorizontal();
 
-            EditorCard.Gap(Pad);
+            EditorCard.Gap(EditorTokens.Pad);
 
             // 右栏：编辑
             EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
@@ -132,10 +131,10 @@ namespace RedDust.Ability
         // ── 左栏 ──
         private void DrawLeftColumn()
         {
-            EditorCard.Draw(Pad, () =>
+            EditorCard.Draw(EditorTokens.Pad, () =>
             {
                 // 筛选标签
-                EditorCard.DrawLight(Pad, () =>
+                EditorCard.DrawLight(EditorTokens.Pad, () =>
                 {
                     var newFilter = EditorButtonGroup.Draw(_filter,
                         new SearchTypeFilter[] { SearchTypeFilter.All, SearchTypeFilter.Cone, SearchTypeFilter.Ray, SearchTypeFilter.Circle },
@@ -147,13 +146,13 @@ namespace RedDust.Ability
                 EditorCard.GapTight();
 
                 // 搜索框
-                EditorCard.DrawLight(Pad, () =>
+                EditorCard.DrawLight(EditorTokens.Pad, () =>
                 {
                     var s = EditorSearchBar.Draw(_searchText, labelWidth: 42f);
                     if (s != _searchText) { _searchText = s; }
                 });
 
-                EditorCard.Gap(Pad);
+                EditorCard.Gap(EditorTokens.Pad);
 
                 _leftScroll = EditorGUILayout.BeginScrollView(_leftScroll);
                 var nullSO = (AbilitySO)null;
@@ -169,7 +168,7 @@ namespace RedDust.Ability
         // ── 右栏 ──
         private void DrawRightColumn()
         {
-            EditorCard.Draw(Pad, () =>
+            EditorCard.Draw(EditorTokens.Pad, () =>
             {
                 if (_selectedSearch == null)
                 {
@@ -186,11 +185,11 @@ namespace RedDust.Ability
 
                 var title = $"Edit: {_selectedSearch.name}";
                 EditorGUILayout.LabelField(title, EditorStyles.boldLabel);
-                GUILayout.Space(Pad);
+                GUILayout.Space(EditorTokens.Pad);
 
                 _rightScroll = EditorGUILayout.BeginScrollView(_rightScroll);
                 DrawBaseFields();
-                EditorCard.Gap(Pad);
+                EditorCard.Gap(EditorTokens.Pad);
                 DrawTypeSpecificFields();
                 EditorGUILayout.EndScrollView();
             });
@@ -202,7 +201,7 @@ namespace RedDust.Ability
 
         private void DrawBaseFields()
         {
-            EditorCard.Draw(Pad, "Base", () =>
+            EditorCard.Draw(EditorTokens.Pad, "Base", () =>
             {
                 var s = _selectedSearch;
                 EditorForm.Draw(s, form =>
@@ -272,7 +271,7 @@ namespace RedDust.Ability
 
         private static void DrawCardSection(string title, Action draw)
         {
-            EditorCard.Draw(Pad, title, draw);
+            EditorCard.Draw(EditorTokens.Pad, title, draw);
         }
 
         private void DrawConeFields(ConeSearchSO cone)
@@ -301,7 +300,7 @@ namespace RedDust.Ability
         private void DrawStatusBar()
         {
             EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
 
             int cone = 0, ray = 0, circle = 0;
             foreach (var s in _allSearches)
@@ -323,7 +322,7 @@ namespace RedDust.Ability
                     EditorStyles.miniLabel);
             }
 
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndHorizontal();
         }
 

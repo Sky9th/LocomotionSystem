@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
+using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,7 +11,6 @@ namespace RedDust.Core.Editor
     /// </summary>
     public static class TagTreeView
     {
-        private const float Pad = 6f;
         private const float FoldoutWidth = 14f;
         private const float FoldoutGap = 6f;
         private const float DepthWidth = 18f;
@@ -25,11 +25,11 @@ namespace RedDust.Core.Editor
         {
             if (roots == null || roots.Count == 0)
             {
-                GUILayout.Space(Pad);
+                GUILayout.Space(EditorTokens.Pad);
                 var greyLabel = new GUIStyle(EditorStyles.label) { alignment = TextAnchor.MiddleCenter };
                 greyLabel.normal.textColor = Color.grey;
                 EditorGUILayout.LabelField("No tags loaded.", greyLabel);
-                GUILayout.Space(Pad);
+                GUILayout.Space(EditorTokens.Pad);
                 return;
             }
 
@@ -55,7 +55,7 @@ namespace RedDust.Core.Editor
             // 渲染，间距只在可见节点间
             for (var i = 0; i < visibleRoots.Count; i++)
             {
-                if (i > 0) GUILayout.Space(Pad);
+                if (i > 0) GUILayout.Space(EditorTokens.Pad);
                 DrawNodeCard(visibleRoots[i], foldouts, ref selectedFullTag, searchFilter, q, onCreateChild);
             }
         }
@@ -179,28 +179,28 @@ namespace RedDust.Core.Editor
 
                     if (visibleChildren.Count > 0)
                     {
-                        GUILayout.Space(Pad);
+                        GUILayout.Space(EditorTokens.Pad);
                         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-                        GUILayout.Space(Pad);
+                        GUILayout.Space(EditorTokens.Pad);
 
                         EditorGUILayout.BeginHorizontal();
-                        GUILayout.Space(Pad);
+                        GUILayout.Space(EditorTokens.Pad);
                         EditorGUILayout.BeginVertical(GUILayout.ExpandWidth(true));
 
                         for (var i = 0; i < visibleChildren.Count; i++)
                         {
-                            if (i > 0) GUILayout.Space(Pad);
+                            if (i > 0) GUILayout.Space(EditorTokens.Pad);
                             DrawNodeCard(visibleChildren[i], foldouts, ref selectedFullTag, searchFilter, searchQuery, onCreateChild);
                         }
 
                         EditorGUILayout.EndVertical();
-                        GUILayout.Space(Pad);
+                        GUILayout.Space(EditorTokens.Pad);
                         EditorGUILayout.EndHorizontal();
 
-                        GUILayout.Space(Pad);
+                        GUILayout.Space(EditorTokens.Pad);
                         EditorGUILayout.EndVertical();
 
-                        GUILayout.Space(Pad);
+                        GUILayout.Space(EditorTokens.Pad);
                     }
                 }
             }

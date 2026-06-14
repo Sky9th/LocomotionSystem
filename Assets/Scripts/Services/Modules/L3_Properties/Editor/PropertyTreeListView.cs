@@ -13,7 +13,6 @@ namespace RedDust.Properties.Editor
     /// </summary>
     public static class PropertyTreeListView
     {
-        private const float Pad = 6f;
         private const float FoldoutWidth = 14f;
         private const float FoldoutGap = 6f;
 
@@ -60,7 +59,7 @@ namespace RedDust.Properties.Editor
             // Render roots as sibling cards
             for (var i = 0; i < visibleRoots.Count; i++)
             {
-                if (i > 0) EditorCard.Gap(Pad);
+                if (i > 0) EditorCard.Gap(EditorTokens.Pad);
                 DrawNodeCard(visibleRoots[i], foldouts, ref selectedTree,
                     q, hasSearch, onSelect, selectedColor, onDelete, onCreateChild);
             }
@@ -93,7 +92,7 @@ namespace RedDust.Properties.Editor
             if (isSelected)
                 GUI.backgroundColor = selectedColor;
 
-            EditorCard.Draw(Pad, () =>
+            EditorCard.Draw(EditorTokens.Pad, () =>
             {
                 EditorGUILayout.BeginHorizontal();
 
@@ -191,10 +190,10 @@ namespace RedDust.Properties.Editor
 
                     if (visibleChildren.Count > 0)
                     {
-                        GUILayout.Space(Pad);
+                        GUILayout.Space(EditorTokens.Pad);
                         for (var i = 0; i < visibleChildren.Count; i++)
                         {
-                            if (i > 0) EditorCard.Gap(Pad);
+                            if (i > 0) EditorCard.Gap(EditorTokens.Pad);
                             DrawNodeCard(visibleChildren[i], foldouts, ref sel,
                                 q, hasSearch, onSelect, selectedColor, onDelete, onCreateChild);
                         }

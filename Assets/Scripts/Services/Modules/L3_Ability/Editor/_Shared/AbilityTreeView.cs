@@ -12,7 +12,6 @@ namespace RedDust.Ability
     /// </summary>
     public static class AbilityTreeView
     {
-        private const float Pad = 6f;
         private const float FoldoutWidth = 14f;
         private const float FoldoutGap = 6f;
 
@@ -30,11 +29,11 @@ namespace RedDust.Ability
         {
             if (roots == null || roots.Count == 0)
             {
-                GUILayout.Space(Pad);
+                GUILayout.Space(EditorTokens.Pad);
                 var grey = new GUIStyle(EditorStyles.label)
                     { alignment = TextAnchor.MiddleCenter, normal = { textColor = Color.grey } };
                 EditorGUILayout.LabelField("No abilities found.", grey);
-                GUILayout.Space(Pad);
+                GUILayout.Space(EditorTokens.Pad);
                 return;
             }
 
@@ -55,7 +54,7 @@ namespace RedDust.Ability
 
             for (var i = 0; i < visibleRoots.Count; i++)
             {
-                if (i > 0) EditorCard.Gap(Pad);
+                if (i > 0) EditorCard.Gap(EditorTokens.Pad);
                 DrawNodeCard(visibleRoots[i], foldouts, ref selectedAbility,
                     q, typeFilter, hasSearch, onLeafSelected, selectedEffect, selectedSearch, selectedActivation, onDeleteLeaf);
             }
@@ -94,7 +93,7 @@ namespace RedDust.Ability
                     || (node.Search != null && selectedSearch == node.Search)
                     || (node.Activation != null && selectedActivation == node.Activation));
 
-            EditorCard.Draw(Pad, () =>
+            EditorCard.Draw(EditorTokens.Pad, () =>
             {
                 var label = node.IsFolder
                     ? $"{node.DisplayName} ({node.AbilityCount})"
@@ -158,7 +157,7 @@ namespace RedDust.Ability
                 if (btnW > 0f)
                 {
                     var delRect = new Rect(textRect.xMax + 2, rowRect.y, btnW, rowRect.height);
-                    if (EditorButton.Delete(delRect))
+                    if (EditorButton.Draw(delRect, "✕", EditorButtonType.Danger))
                     {
                         var asset = node.Ability ?? (ScriptableObject)node.Effect ?? (ScriptableObject)node.Search ?? (ScriptableObject)node.Activation;
                         onDeleteLeaf(asset);
@@ -178,10 +177,10 @@ namespace RedDust.Ability
 
                     if (visibleChildren.Count > 0)
                     {
-                        GUILayout.Space(Pad);
+                        GUILayout.Space(EditorTokens.Pad);
                         for (var i = 0; i < visibleChildren.Count; i++)
                         {
-                            if (i > 0) EditorCard.Gap(Pad);
+                            if (i > 0) EditorCard.Gap(EditorTokens.Pad);
                             DrawNodeCard(visibleChildren[i], foldouts,
                                 ref sel, q, typeFilter, hasSearch, onLeafSelected, selectedEffect, selectedSearch, selectedActivation, onDeleteLeaf);
                         }

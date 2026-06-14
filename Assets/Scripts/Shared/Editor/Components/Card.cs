@@ -10,9 +10,6 @@ namespace RedDust.Shared.EditorUI
     /// </summary>
     public static class EditorCard
     {
-        // highlight-background-hover: rgba(255,255,255,0.06)
-        private static readonly Color HighlightHover = new(1f, 1f, 1f, 0.06f);
-
         // ═══════════════════════════════════════════════════
         // 标准卡片
         // ═══════════════════════════════════════════════════
@@ -49,7 +46,7 @@ namespace RedDust.Shared.EditorUI
         public static void DrawLight(float pad, Action drawContent)
         {
             var oldColor = GUI.color;
-            GUI.color = new Color(0.137f, 0.137f, 0.137f);
+            GUI.color = EditorTokens.ColorDim;
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             GUI.color = oldColor;
             GUILayout.Space(pad / 2);
@@ -75,14 +72,14 @@ namespace RedDust.Shared.EditorUI
             GUILayout.Space(pad);
 
             var arrow = folded ? "▸" : "▾";
-            var arrowStyle = new GUIStyle(EditorStyles.label)
-                { alignment = TextAnchor.MiddleCenter, fontSize = 12 };
-            if (GUILayout.Button(arrow, arrowStyle, GUILayout.Width(16), GUILayout.Height(18)))
+            var arrowRect = GUILayoutUtility.GetRect(EditorTokens.SizeSm, EditorGUIUtility.singleLineHeight);
+            if (EditorButton.Draw(arrowRect, arrow, EditorButtonType.Default))
                 folded = !folded;
 
-            var titleStyle = new GUIStyle(EditorStyles.boldLabel)
-                { alignment = TextAnchor.MiddleLeft };
-            if (GUILayout.Button(title, titleStyle, GUILayout.ExpandWidth(true), GUILayout.Height(18)))
+            var titleRect = GUILayoutUtility.GetRect(
+                new GUIContent(title), EditorStyles.boldLabel,
+                GUILayout.ExpandWidth(true), GUILayout.Height(EditorGUIUtility.singleLineHeight));
+            if (EditorButton.Draw(titleRect, title, EditorButtonType.Default))
                 folded = !folded;
 
             GUILayout.Space(pad);
@@ -140,7 +137,7 @@ namespace RedDust.Shared.EditorUI
         public static void Gap(float pad) => GUILayout.Space(pad);
 
         /// <summary>紧凑间距 (3px)。关联紧密的同级卡片。</summary>
-        public static void GapTight() => GUILayout.Space(3f);
+        public static void GapTight() => GUILayout.Space(EditorTokens.PadTight);
 
         /// <summary>统一区域标题。boldLabel + 下方间距。</summary>
         private static void Header(string title)
@@ -149,7 +146,7 @@ namespace RedDust.Shared.EditorUI
                 GUILayout.Height(EditorGUIUtility.singleLineHeight));
             EditorGUILayout.LabelField(title, EditorStyles.boldLabel);
             EditorGUILayout.EndHorizontal();
-            GUILayout.Space(4f);
+            GUILayout.Space(EditorTokens.Pad / 2);
         }
 
         // ═══════════════════════════════════════════════════
@@ -178,7 +175,7 @@ namespace RedDust.Shared.EditorUI
         private static GUIStyle HeaderTitleStyle => _headerTitleStyle ??= new GUIStyle(EditorStyles.largeLabel);
         private static GUIStyle _headerSubStyle;
         private static GUIStyle HeaderSubStyle => _headerSubStyle ??= new GUIStyle(EditorStyles.label)
-            { alignment = TextAnchor.MiddleRight, fontSize = 11, normal = { textColor = Color.gray } };
+            { alignment = TextAnchor.MiddleRight, fontSize = EditorTokens.FontSm, normal = { textColor = Color.gray } };
 
         /// <summary>Header 卡片：[Title][Subtitle][Flexible][drawRight Slot]</summary>
         public static void DrawCardHeader(string title, string subtitle,

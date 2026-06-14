@@ -1,10 +1,8 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace RedDust.Shared.EditorUI
 {
@@ -13,10 +11,10 @@ namespace RedDust.Shared.EditorUI
     ///
     /// 用法：
     ///   EditorForm.Draw(target, form => {
-    ///       form.Float("cooldownDuration", "冷却");
-    ///       form.Toggle("stackable");
-    ///       form.BeginGroup(Horizontal);
-    ///       form.Float("a"); form.Float("b");
+    ///       EditorFormItem.Float("cooldownDuration", "冷却");
+    ///       EditorFormItem.Toggle("stackable");
+    ///       form.BeginGroup(FormGroupLayout.Horizontal);
+    ///       EditorFormItem.Float("a"); EditorFormItem.Float("b");
     ///       form.EndGroup();
     ///   });
     /// </summary>
@@ -25,7 +23,7 @@ namespace RedDust.Shared.EditorUI
         internal static EditorForm Current { get; private set; }
 
         public float DefaultLabelWidth { get; set; } = 90f;
-        public float RowSpacing { get; set; } = 6f;
+        public float RowSpacing { get; set; } = EditorTokens.Pad;
         public event Action OnChange;
         public event Action OnSubmit;
         internal void NotifyChanged() => OnChange?.Invoke();
@@ -51,7 +49,7 @@ namespace RedDust.Shared.EditorUI
         // ═══════════════════════════════════════════════════
 
         public static void Draw(object target, Action<EditorForm> build,
-            float defaultLabelWidth = 90f, float rowSpacing = 6f)
+            float defaultLabelWidth = 90f, float rowSpacing = EditorTokens.Pad)
         {
             var prev = Current;
             var form = new EditorForm(target)

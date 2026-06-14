@@ -40,7 +40,7 @@ namespace RedDust.Properties.Editor
                     _parent = (PropertyTreeSO)EditorGUILayout.ObjectField("InheritsFrom", _parent, typeof(PropertyTreeSO), false);
                     EditorGUILayout.BeginHorizontal();
                     var hasName = !string.IsNullOrWhiteSpace(_name);
-                    if (EditorButton.Draw("Create", EditorButtonStyle.Success, EditorButtonSize.Small, enabled: hasName))
+                    if (EditorButton.Draw("Create", EditorButtonType.Success, EditorButtonSize.Small, enabled: hasName))
                     { _cb?.Invoke(_name, _parent); Close(); }
                     if (EditorButton.Draw("Cancel", size: EditorButtonSize.Small)) Close();
                     EditorGUILayout.EndHorizontal();
@@ -306,7 +306,7 @@ namespace RedDust.Properties.Editor
 
                     EditorGUILayout.BeginHorizontal();
                     bool valid = !string.IsNullOrWhiteSpace(_id);
-                    if (EditorButton.Draw("Create", EditorButtonStyle.Success, EditorButtonSize.Small, enabled: valid))
+                    if (EditorButton.Draw("Create", EditorButtonType.Success, EditorButtonSize.Small, enabled: valid))
                     {
                         var existing = AssetDatabase.LoadAssetAtPath<PropertyDefSO>($"Assets/Data/Properties/Definitions/{_id}.asset");
                         if (existing != null)

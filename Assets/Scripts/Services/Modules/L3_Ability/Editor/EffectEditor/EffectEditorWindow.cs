@@ -19,7 +19,6 @@ namespace RedDust.Ability
     /// </summary>
     public class EffectEditorWindow : EditorWindow
     {
-        private const float Pad = 6f;
         private const float LeftWidth = 300f;
 
         // ── 简易 Model（内联，扫描 EffectSO + 构建 effectTag 树）──
@@ -55,21 +54,21 @@ namespace RedDust.Ability
         {
             if (_needsRefresh) { RefreshModel(); _needsRefresh = false; }
 
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.BeginVertical();
 
             DrawHeader();
-            EditorCard.Gap(Pad);
+            EditorCard.Gap(EditorTokens.Pad);
             DrawTwoColumns();
-            EditorCard.Gap(Pad);
+            EditorCard.Gap(EditorTokens.Pad);
             DrawStatusBar();
 
             EditorGUILayout.EndVertical();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndHorizontal();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
         }
 
         // ═══════════════════════════════════════════════════
@@ -77,7 +76,7 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════
         private void DrawHeader()
         {
-            EditorCard.Draw(Pad, () =>
+            EditorCard.Draw(EditorTokens.Pad, () =>
             {
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Effect Editor", EditorStyles.largeLabel,
@@ -87,7 +86,7 @@ namespace RedDust.Ability
                 EditorGUILayout.LabelField("L3_Ability · Editor", sub, GUILayout.Width(160));
                 EditorGUILayout.EndHorizontal();
 
-                GUILayout.Space(Pad);
+                GUILayout.Space(EditorTokens.Pad);
 
                 EditorGUILayout.BeginHorizontal();
                 if (EditorButton.Draw("Refresh", size: EditorButtonSize.Medium))
@@ -97,10 +96,10 @@ namespace RedDust.Ability
                 if (EditorButton.Draw("Import/Export", size: EditorButtonSize.Medium))
                     EffectImportWindow.Open();
 
-                if (EditorButton.Draw("+ Create", EditorButtonStyle.Success, EditorButtonSize.Medium))
+                if (EditorButton.Draw("+ Create", EditorButtonType.Success, EditorButtonSize.Medium))
                     CreateNewEffect();
 
-                if (EditorButton.Draw(_hasChanges ? "Save *" : "Saved", _hasChanges ? EditorButtonStyle.Primary : EditorButtonStyle.Default, EditorButtonSize.Medium, enabled: _hasChanges))
+                if (EditorButton.Draw(_hasChanges ? "Save *" : "Saved", _hasChanges ? EditorButtonType.Primary : EditorButtonType.Default, EditorButtonSize.Medium, enabled: _hasChanges))
                 {
                     AssetDatabase.SaveAssets();
                     _hasChanges = false;
@@ -127,7 +126,7 @@ namespace RedDust.Ability
             DrawLeftColumn();
             EditorGUILayout.EndHorizontal();
 
-            EditorCard.Gap(Pad);
+            EditorCard.Gap(EditorTokens.Pad);
 
             // 右栏：编辑
             EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
@@ -140,12 +139,12 @@ namespace RedDust.Ability
         // ── 左栏：列表 ──
         private void DrawLeftColumn()
         {
-            EditorCard.Draw(Pad, () =>
+            EditorCard.Draw(EditorTokens.Pad, () =>
             {
                 DrawFilterCard();
                 EditorCard.GapTight();
                 DrawSearchCard();
-                EditorCard.Gap(Pad);
+                EditorCard.Gap(EditorTokens.Pad);
 
                 _leftScroll = EditorGUILayout.BeginScrollView(_leftScroll);
                 var nullSO = (AbilitySO)null;
@@ -160,7 +159,7 @@ namespace RedDust.Ability
 
         private void DrawFilterCard()
         {
-            EditorCard.DrawLight(Pad, () =>
+            EditorCard.DrawLight(EditorTokens.Pad, () =>
             {
                 var newFilter = EditorButtonGroup.Draw(_filter,
                     new[] { EffectTypeFilter.All, EffectTypeFilter.Damage, EffectTypeFilter.Impact, EffectTypeFilter.Execute, EffectTypeFilter.Cost, EffectTypeFilter.Buff },
@@ -172,7 +171,7 @@ namespace RedDust.Ability
 
         private void DrawSearchCard()
         {
-            EditorCard.DrawLight(Pad, () =>
+            EditorCard.DrawLight(EditorTokens.Pad, () =>
             {
                 var s = EditorSearchBar.Draw(_searchText, labelWidth: 42f);
                 if (s != _searchText) { _searchText = s; }
@@ -182,7 +181,7 @@ namespace RedDust.Ability
         // ── 右栏：编辑 ──
         private void DrawRightColumn()
         {
-            EditorCard.Draw(Pad, () =>
+            EditorCard.Draw(EditorTokens.Pad, () =>
             {
                 if (_selectedEffect == null)
                 {
@@ -199,11 +198,11 @@ namespace RedDust.Ability
 
                 var title = $"Edit: {_selectedEffect.name}";
                 EditorGUILayout.LabelField(title, EditorStyles.boldLabel);
-                GUILayout.Space(Pad);
+                GUILayout.Space(EditorTokens.Pad);
 
                 _rightScroll = EditorGUILayout.BeginScrollView(_rightScroll);
                 DrawBaseFields();
-                EditorCard.Gap(Pad);
+                EditorCard.Gap(EditorTokens.Pad);
                 DrawTypeSpecificFields();
                 EditorGUILayout.EndScrollView();
             });
@@ -215,7 +214,7 @@ namespace RedDust.Ability
 
         private void DrawBaseFields()
         {
-            EditorCard.Draw(Pad, "Base", () =>
+            EditorCard.Draw(EditorTokens.Pad, "Base", () =>
             {
                 var e = _selectedEffect;
 
@@ -245,7 +244,7 @@ namespace RedDust.Ability
                 });
 
                 // applicationBlockedTags
-                GUILayout.Space(Pad);
+                GUILayout.Space(EditorTokens.Pad);
                 DrawBlockedTags(e);
             });
         }
@@ -339,7 +338,7 @@ namespace RedDust.Ability
 
         private static void DrawCardSection(string title, Action draw)
         {
-            EditorCard.Draw(Pad, title, draw);
+            EditorCard.Draw(EditorTokens.Pad, title, draw);
         }
 
         private void DrawDamageFields(DamageEffectSO d)
@@ -459,7 +458,7 @@ namespace RedDust.Ability
         private void DrawStatusBar()
         {
             EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
 
             int dmg = 0, imp = 0, exe = 0, cost = 0, buf = 0;
             foreach (var e in _allEffects)
@@ -482,7 +481,7 @@ namespace RedDust.Ability
                     EditorStyles.miniLabel);
             }
 
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndHorizontal();
         }
 

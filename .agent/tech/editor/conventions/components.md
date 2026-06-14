@@ -15,7 +15,7 @@
 | 原则 | 说明 |
 |------|------|
 | **组件纯静态、不持仓** | `FormItemGroup.Draw(Horizontal, () => ...)` 不存 FormItem；`EditorForm` 不存字段实例。回调里现画现走 |
-| **组件只提供 Slot，不管 Slot 内容** | `DrawWithHeader` 右侧是 `drawRight` 回调；`ObjectFieldWithTagPicker` 弹窗是 `onTagSelected` 回调。组件定布局框架，调用方定内容 |
+| **组件只提供 Slot，不管 Slot 内容** | `DrawCardHeader` 右侧是 `drawRight` 回调；`ObjectFieldWithTagPicker` 弹窗是 `onTagSelected` 回调。组件定布局框架，调用方定内容 |
 | **Slot vs 变体：内容可预知用变体** | 内容不可预知 → `Action drawSlot`；内容可预知（按钮、Picker）→ 命名变体 `TextFieldWithClear`、`ObjectFieldWithTagPicker` |
 | **组合组件只编排子组件** | 上层组件只做布局编排，渲染全委托子组件。声明式列举内部依赖（如 `SearchBar = Label + Input.TextFieldWithClear`），不裸调 `GUILayout` |
 | **组件不跨层调用** | `EditorFormItem` 不直接 `SetDirty`，走 `f.NotifyFieldChanged`；`EditorInput` 不画 Label；`EditorButton` 不托管弹窗逻辑 |
@@ -31,7 +31,7 @@
 4. **间距必须推导** — 所有 gap 从 `Pad` 令牌计算（`Pad / 2`、`Pad * 2`），禁止硬编码 `3f`/`4f` 等魔术数字
 5. **风格令牌与 Helper 分离** — 设计令牌（`Pad`/`Font`/`Color`/`Padding`）放 `EditorTokens`，纯数据；Helper（`GreyPlaceholder`等）放 `EditorUIUtility`。两者不混装
 6. **GUI.Button 优于 GUILayout.Button** — 禁止裸 `GUILayout.Button`；禁止裸 `EditorStyles.helpBox`
-6. **回调写内容** — 所有组件通过 `Action` 回调接收内容，对标 `EditorCard.Draw(pad, () => { ... })`
+7. **回调写内容** — 所有组件通过 `Action` 回调接收内容，对标 `EditorCard.Draw(pad, () => { ... })`
 
 ---
 
@@ -76,7 +76,7 @@ EditorCard.Draw(float pad, Action drawContent, bool selected);
 EditorCard.Draw(float pad, string title, Action drawBody);
 
 // Header 卡片：[Title][Subtitle][Flexible][drawRight Slot]
-EditorCard.DrawWithHeader(string title, string subtitle, Action drawRight = null);
+EditorCard.DrawCardHeader(string title, string subtitle, Action drawRight = null);
 
 // 轻量卡片
 EditorCard.DrawLight(float pad, Action drawContent);
@@ -97,7 +97,7 @@ EditorCard.GapTight();  // 3px
 ```csharp
 // Header
 EditorCard.Draw(Pad, () =>
-    EditorCard.DrawWithHeader("Ability Editor", "L3_Ability · Editor",
+    EditorCard.DrawCardHeader("Ability Editor", "L3_Ability · Editor",
         drawRight: () =>
         {
             EditorButton.Primary("Save *", enabled: _hasChanges);
@@ -138,11 +138,11 @@ EditorButton.Draw(rect, text, type, tooltip?);
 | EditorButtonType | 颜色 |
 |-----------------|------|
 | `Default` | 系统默认 |
-| `Primary` | 绿 #4C8C4C |
+| `Primary` | 蓝 #4C7EFF |
 | `Success` | 深绿 |
 | `Warning` | 橙 |
 | `Danger` | 红 #D32222 |
-| `Info` | 灰 |
+| `Info` | 灰蓝 #A8B2BF |
 
 | EditorButtonSize | 说明 |
 |-----------------|------|
@@ -207,6 +207,13 @@ EditorInput.TagButton(ref tagBtnRect);  // Tag 按钮，自动捕获 Rect
 // ObjectField + TagPicker 组合
 var next = EditorInput.ObjectFieldWithTagPicker(val, ref rect,
     onTagSelected: t => { ... });
+
+// 其他 Input
+string s = EditorInput.TextField(oldValue, width: 120);
+string c = EditorInput.TextFieldWithClear(oldValue);
+float  f = EditorInput.Slider(0.5f, 0f, 1f);
+var    e = EditorInput.EnumPopup(myEnum);
+var    o = EditorInput.ObjectField(obj, typeof(ScriptableObject), false);
 ```
 
 ---
@@ -330,8 +337,11 @@ EditorDivider.Draw("Advanced Options");
 |------|------|
 | 布局 | `Pad`(6f) / `PadTight`(3f) |
 | 字号 | `FontSm`(11) / `FontBase`(12) / `FontLg`(14) |
+| 控件尺寸 | `SizeSm`(16f) / `SizeMd`(20f) / `SizeLg`(26f) |
 | 内边距 | `PaddingSmall` / `PaddingMedium` / `PaddingLarge` |
 | 颜色 | `ColorGreen` / `ColorGreenDark` / `ColorBlue` / `ColorRed` / `ColorButtonText` / `ColorSelected` |
+| 语义色 | `ColorPrimary`(蓝 #4C7EFF) / `ColorSuccess`(绿 #67C23A) / `ColorWarning`(橙 #E6A23C) / `ColorDanger`(红 #D32222) / `ColorInfo`(灰蓝 #A8B2BF) |
+| 辅助色 | `ColorDivider`(分隔线) / `ColorDim`(卡片淡化) / `ColorResultOk`(结果绿) / `ColorResultErr`(结果红) |
 
 ---
 

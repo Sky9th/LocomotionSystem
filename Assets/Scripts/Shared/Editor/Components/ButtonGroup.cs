@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEngine;
 
 namespace RedDust.Shared.EditorUI
 {
@@ -25,8 +24,7 @@ namespace RedDust.Shared.EditorUI
             for (var i = 0; i < values.Length; i++)
             {
                 var isSelected = EqualityComparer<T>.Default.Equals(current, values[i]);
-                var style = isSelected ? EditorButtonStyle.Primary : EditorButtonStyle.Default;
-                if (EditorButton.Draw(labels[i], style, size))
+                if (EditorButton.Draw(labels[i], isSelected ? EditorButtonType.Primary : EditorButtonType.Default, size))
                     result = values[i];
             }
             EditorGUILayout.EndHorizontal();
@@ -43,8 +41,7 @@ namespace RedDust.Shared.EditorUI
             var result = selectedIndex;
             for (var i = 0; i < labels.Length; i++)
             {
-                var style = i == selectedIndex ? EditorButtonStyle.Primary : EditorButtonStyle.Default;
-                if (EditorButton.Draw(labels[i], style, size))
+                if (EditorButton.Draw(labels[i], i == selectedIndex ? EditorButtonType.Primary : EditorButtonType.Default, size))
                     result = i;
             }
             EditorGUILayout.EndHorizontal();

@@ -13,7 +13,6 @@ namespace RedDust.Core.Editor
     /// </summary>
     public class TagPicker : PopupWindowContent
     {
-        private const float Pad = 6f;
 
         // -- 参数 --
         private readonly string _rootFilter;
@@ -66,14 +65,14 @@ namespace RedDust.Core.Editor
 
         public override void OnGUI(Rect rect)
         {
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.BeginVertical();
 
             // ── 搜索框 ──
             DrawSearchField();
-            EditorCard.Gap(Pad);
+            EditorCard.Gap(EditorTokens.Pad);
 
             // ── 搜索结果 ──
             if (!string.IsNullOrEmpty(_searchText))
@@ -81,20 +80,20 @@ namespace RedDust.Core.Editor
                 var matches = _model.Search(_searchText, _rootFilter);
                 if (matches.Count > 0)
                 {
-                    EditorCard.DrawLight(Pad, () =>
+                    EditorCard.DrawLight(EditorTokens.Pad, () =>
                     {
                         EditorGUILayout.LabelField($"Matches: {matches.Count}", EditorStyles.miniBoldLabel);
                     });
-                    EditorCard.Gap(Pad);
+                    EditorCard.Gap(EditorTokens.Pad);
                 }
                 else if (_allowCreate)
                 {
-                    EditorCard.DrawLight(Pad, () =>
+                    EditorCard.DrawLight(EditorTokens.Pad, () =>
                     {
                         EditorGUILayout.BeginHorizontal();
                         EditorGUILayout.LabelField($"Create new tag: {_searchText}", EditorStyles.boldLabel);
                         GUILayout.FlexibleSpace();
-                        if (EditorButton.Draw("Create", EditorButtonStyle.Success, EditorButtonSize.Small, width: 60))
+                        if (EditorButton.Draw("Create", EditorButtonType.Success, EditorButtonSize.Small, width: 60))
                         {
                             try
                             {
@@ -110,12 +109,12 @@ namespace RedDust.Core.Editor
                         }
                         EditorGUILayout.EndHorizontal();
                     });
-                    EditorCard.Gap(Pad);
+                    EditorCard.Gap(EditorTokens.Pad);
                 }
             }
 
             // ── 树（搜索时自动过滤 + 展开匹配路径）──
-            EditorCard.Draw(Pad, () =>
+            EditorCard.Draw(EditorTokens.Pad, () =>
             {
                 _scroll = EditorGUILayout.BeginScrollView(_scroll);
                 TagTreeView.DrawTree(_model.Roots, _foldouts, ref _selectedFullTag,
@@ -124,15 +123,15 @@ namespace RedDust.Core.Editor
                 EditorGUILayout.EndScrollView();
             });
 
-            EditorCard.Gap(Pad);
+            EditorCard.Gap(EditorTokens.Pad);
 
             // ── 底部按钮 ──
             DrawFooter();
 
             EditorGUILayout.EndVertical();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndHorizontal();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
         }
 
         private void DrawSearchField()
@@ -142,15 +141,15 @@ namespace RedDust.Core.Editor
 
         private void DrawFooter()
         {
-            EditorCard.Draw(Pad, () =>
+            EditorCard.Draw(EditorTokens.Pad, () =>
             {
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.FlexibleSpace();
 
-                if (EditorButton.Draw("Cancel", EditorButtonStyle.Default, EditorButtonSize.Medium, width: 80))
+                if (EditorButton.Draw("Cancel", EditorButtonType.Default, EditorButtonSize.Medium, width: 80))
                     editorWindow.Close();
 
-                if (EditorButton.Draw("Select", EditorButtonStyle.Primary, EditorButtonSize.Medium,
+                if (EditorButton.Draw("Select", EditorButtonType.Primary, EditorButtonSize.Medium,
                         width: 80, enabled: !string.IsNullOrEmpty(_selectedFullTag)))
                 {
                     var node = _model.Find(_selectedFullTag);

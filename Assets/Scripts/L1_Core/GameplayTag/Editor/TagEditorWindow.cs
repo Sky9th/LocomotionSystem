@@ -10,7 +10,6 @@ namespace RedDust.Core.Editor
 {
     public class TagEditorWindow : EditorWindow
     {
-        private const float Pad = 6f;
         private const float InspectorWidth = 300f;
 
         // -- 数据 --
@@ -45,44 +44,44 @@ namespace RedDust.Core.Editor
                 _needsRefresh = false;
             }
 
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
 
             EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.BeginVertical();
 
             DrawHeader();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             DrawToolbar();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             DrawSearchBar();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             DrawMainContent();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             DrawStatusBar();
 
             EditorGUILayout.EndVertical();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndHorizontal();
 
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
         }
 
         // ── Header ──
         private void DrawHeader()
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
 
             EditorGUILayout.LabelField("Tag Editor", EditorStyles.largeLabel, GUILayout.ExpandWidth(true));
             var rightStyle = new GUIStyle(EditorStyles.label) { alignment = TextAnchor.MiddleRight };
             EditorGUILayout.LabelField("L1_Core · GameplayTag", rightStyle, GUILayout.Width(180));
 
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndHorizontal();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndVertical();
         }
 
@@ -90,9 +89,9 @@ namespace RedDust.Core.Editor
         private void DrawToolbar()
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
 
             if (EditorButton.Draw("＋ Create Tag", size: EditorButtonSize.Small))
                 StartCreateRoot();
@@ -112,9 +111,9 @@ namespace RedDust.Core.Editor
             if (EditorButton.Draw("▲ All", size: EditorButtonSize.Small))
                 SetAllFoldouts(false);
 
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndHorizontal();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndVertical();
         }
 
@@ -136,9 +135,9 @@ namespace RedDust.Core.Editor
         private void DrawSearchBar()
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
 
             EditorGUILayout.LabelField("Search", EditorStyles.label, GUILayout.Width(45));
             _searchText = EditorGUILayout.TextField(_searchText, GUILayout.ExpandWidth(true));
@@ -149,9 +148,9 @@ namespace RedDust.Core.Editor
                 GUI.FocusControl(null);
             }
 
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndHorizontal();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndVertical();
         }
 
@@ -160,7 +159,7 @@ namespace RedDust.Core.Editor
         {
             EditorGUILayout.BeginHorizontal();
             DrawTreePanel();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             DrawInspectorPanel();
             EditorGUILayout.EndHorizontal();
         }
@@ -168,13 +167,13 @@ namespace RedDust.Core.Editor
         private void DrawTreePanel()
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.ExpandWidth(true));
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
 
             EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.LabelField("Tag Tree", EditorStyles.boldLabel);
             GUILayout.FlexibleSpace();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndHorizontal();
 
             GUILayout.Space(2f);
@@ -182,34 +181,34 @@ namespace RedDust.Core.Editor
             _treeScroll = EditorGUILayout.BeginScrollView(_treeScroll);
 
             EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.BeginVertical();
             TagTreeView.DrawTree(_model.Roots, _foldouts, ref _selectedFullTag, _searchText, onCreateChild: StartCreateChild);
             EditorGUILayout.EndVertical();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.EndScrollView();
 
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndVertical();
         }
 
         private void DrawInspectorPanel()
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(InspectorWidth));
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
 
             EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             var panelTitle = _isCreating ? "Create Tag"
                 : (string.IsNullOrEmpty(_selectedFullTag) ? "Properties" : "Tag Details");
             EditorGUILayout.LabelField(panelTitle, EditorStyles.boldLabel);
             GUILayout.FlexibleSpace();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndHorizontal();
 
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
 
             _inspectorScroll = EditorGUILayout.BeginScrollView(_inspectorScroll);
 
@@ -232,7 +231,7 @@ namespace RedDust.Core.Editor
 
             EditorGUILayout.EndScrollView();
 
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndVertical();
         }
 
@@ -240,9 +239,9 @@ namespace RedDust.Core.Editor
         private void DrawEmptyInspector()
         {
             EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.LabelField("Select a tag or click ＋ to create", EditorStyles.label);
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndHorizontal();
         }
 
@@ -250,11 +249,11 @@ namespace RedDust.Core.Editor
         private void DrawTagDetails(TagNode node)
         {
             EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.BeginVertical();
 
             EditorGUILayout.LabelField("Tag Details", EditorStyles.boldLabel);
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Leaf", EditorStyles.label, GUILayout.Width(60));
@@ -290,18 +289,18 @@ namespace RedDust.Core.Editor
                 EditorGUILayout.EndHorizontal();
             }
 
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
 
             EditorGUILayout.BeginHorizontal();
             if (EditorButton.Draw("Ping Asset", size: EditorButtonSize.Small))
                 EditorGUIUtility.PingObject(node.Asset);
 
-            if (EditorButton.Draw("Delete", EditorButtonStyle.Danger, width: 80f))
+            if (EditorButton.Draw("Delete", EditorButtonType.Danger, width: 80f))
                 DeleteTag(node);
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.EndVertical();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndHorizontal();
         }
 
@@ -314,12 +313,12 @@ namespace RedDust.Core.Editor
                 fullTag = isRoot ? _createLeafName : $"{parentFullTag}.{_createLeafName}";
 
             EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.BeginVertical();
 
             var title = isRoot ? "Create Root Tag" : $"Create Child of '{parentFullTag}'";
             EditorGUILayout.LabelField(title, EditorStyles.boldLabel);
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Leaf Name", GUILayout.Width(70));
@@ -340,10 +339,10 @@ namespace RedDust.Core.Editor
                 EditorGUILayout.LabelField($"FullTag: {projected}", EditorStyles.label);
             }
 
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
 
             var hasName = !string.IsNullOrEmpty(_createLeafName);
-            if (EditorButton.Draw("Create Tag", EditorButtonStyle.Success, EditorButtonSize.Small, enabled: hasName))
+            if (EditorButton.Draw("Create Tag", EditorButtonType.Success, EditorButtonSize.Small, enabled: hasName))
             {
                 var target = isRoot ? _createLeafName : $"{parentFullTag}.{_createLeafName}";
                 try
@@ -361,7 +360,7 @@ namespace RedDust.Core.Editor
                 }
             }
 
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
 
             if (EditorButton.Draw("Cancel", size: EditorButtonSize.Small))
             {
@@ -371,7 +370,7 @@ namespace RedDust.Core.Editor
             }
 
             EditorGUILayout.EndVertical();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndHorizontal();
         }
 
@@ -468,7 +467,7 @@ namespace RedDust.Core.Editor
         private void DrawStatusBar()
         {
             EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
 
             EditorGUILayout.LabelField($"{_model.TotalCount} tags", EditorStyles.label);
 
@@ -478,7 +477,7 @@ namespace RedDust.Core.Editor
                 EditorGUILayout.LabelField(_selectedFullTag, EditorStyles.label);
             }
 
-            GUILayout.Space(Pad);
+            GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndHorizontal();
         }
     }

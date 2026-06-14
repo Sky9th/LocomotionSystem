@@ -14,13 +14,13 @@ namespace RedDust.Shared.EditorUI
             var rect = GUILayoutUtility.GetRect(GUIContent.none, EditorStyles.label,
                 GUILayout.ExpandWidth(true), GUILayout.Height(1f));
             rect.y += 7f;
-            EditorGUI.DrawRect(rect, new Color(0.137f, 0.137f, 0.137f, 0.3f));
+            EditorGUI.DrawRect(rect, EditorTokens.ColorDivider);
             if (!string.IsNullOrEmpty(title))
             {
-                var labelRect = new Rect(rect.x, rect.y - 2f, rect.width, 18f);
+                var labelRect = new Rect(rect.x, rect.y - 2f, rect.width, EditorGUIUtility.singleLineHeight);
                 GUI.Label(labelRect, title, EditorStyles.miniLabel);
             }
-            GUILayout.Space(8f);
+            GUILayout.Space(EditorTokens.Pad);
         }
     }
 }

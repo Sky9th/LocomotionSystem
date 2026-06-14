@@ -1,6 +1,4 @@
 #if UNITY_EDITOR
-using System;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -28,7 +26,7 @@ namespace RedDust.Shared.EditorUI
         // ── 缓存样式 ──
         private static GUIStyle _greyPlaceholder;
         public static GUIStyle GreyPlaceholder => _greyPlaceholder ??= new GUIStyle(EditorStyles.label)
-            { alignment = TextAnchor.MiddleCenter, fontSize = 12, normal = { textColor = Color.grey } };
+            { alignment = TextAnchor.MiddleCenter, fontSize = EditorTokens.FontBase, normal = { textColor = Color.grey } };
 
     }
 }

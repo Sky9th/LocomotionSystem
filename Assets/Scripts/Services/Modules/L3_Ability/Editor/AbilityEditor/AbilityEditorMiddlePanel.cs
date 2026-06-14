@@ -14,17 +14,16 @@ namespace RedDust.Ability
     /// 中间栏渲染器。
     ///
     ///   Section 卡片模式（对齐 TagEditorWindow helpBox 卡片）:
-    ///     BeginVertical(helpBox) → Space(Pad) → title → Space(Pad) → body → Space(Pad) → EndVertical
+    ///     BeginVertical(helpBox) → Space(EditorTokens.Pad) → title → Space(EditorTokens.Pad) → body → Space(EditorTokens.Pad) → EndVertical
     ///
     ///   Body 内容模式（对齐 TagEditorWindow.DrawTagDetails）:
-    ///     BeginHorizontal → Space(Pad) → BeginVertical → [fields] → EndVertical → Space(Pad) → EndHorizontal
+    ///     BeginHorizontal → Space(EditorTokens.Pad) → BeginVertical → [fields] → EndVertical → Space(EditorTokens.Pad) → EndHorizontal
     ///
     ///   Field rows:  plain BeginHorizontal, 字段间无多余间距
-    ///   Groups 间:   Space(Pad)
+    ///   Groups 间:   Space(EditorTokens.Pad)
     /// </summary>
     public static class AbilityEditorMiddlePanel
     {
-        private const float Pad = 6f;
         private static Action _onChanged;
 
         private static Rect _abilityTagButtonRect;
@@ -98,8 +97,8 @@ namespace RedDust.Ability
 
         private static void DrawSection(string title, Action drawBody)
         {
-            EditorCard.Draw(Pad, title, drawBody);
-            EditorCard.Gap(Pad);
+            EditorCard.Draw(EditorTokens.Pad, title, drawBody);
+            EditorCard.Gap(EditorTokens.Pad);
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -130,9 +129,9 @@ namespace RedDust.Ability
             {
                 EditorGUILayout.LabelField(asset.name, EditorStyles.label,
                     GUILayout.ExpandWidth(true));
-                GUILayout.Space(Pad);
+                GUILayout.Space(EditorTokens.Pad);
 
-                if (EditorButton.Draw("✕", EditorButtonStyle.Danger, EditorButtonSize.Small))
+                if (EditorButton.Draw("✕", EditorButtonType.Danger, EditorButtonSize.Small))
                     onClear?.Invoke(slot);
                 if (EditorButton.Draw("...", size: EditorButtonSize.Small, width: 30f))
                     onEdit?.Invoke(slot);
@@ -141,7 +140,7 @@ namespace RedDust.Ability
             {
                 EditorGUILayout.LabelField("— (none)", EditorUIUtility.GreyPlaceholder, GUILayout.ExpandWidth(true));
 
-                if (EditorButton.Draw("...", EditorButtonStyle.Success, width: 30f))
+                if (EditorButton.Draw("...", EditorButtonType.Success, width: 30f))
                     onEdit?.Invoke(slot);
             }
 
@@ -181,11 +180,11 @@ namespace RedDust.Ability
 
                 for (var si = 0; si < sorted.Length; si++)
                 {
-                    if (si > 0) EditorCard.Gap(Pad);
+                    if (si > 0) EditorCard.Gap(EditorTokens.Pad);
                     var e = sorted[si].effect;
                     var origIdx = sorted[si].origIdx;
 
-                    EditorCard.Draw(Pad, () =>
+                    EditorCard.Draw(EditorTokens.Pad, () =>
                     {
                         EditorGUILayout.BeginHorizontal();
                         EditorGUILayout.LabelField(GetEffectIcon(e), EditorStyles.label,
@@ -215,8 +214,8 @@ namespace RedDust.Ability
                 EditorGUILayout.LabelField("(empty)", EditorUIUtility.GreyPlaceholder);
             }
 
-            EditorCard.Gap(Pad);
-            if (EditorButton.Draw("＋ Add Effect", EditorButtonStyle.Success, EditorButtonSize.Small))
+            EditorCard.Gap(EditorTokens.Pad);
+            if (EditorButton.Draw("＋ Add Effect", EditorButtonType.Success, EditorButtonSize.Small))
                 onEdit?.Invoke(slot);
         }
 
@@ -314,7 +313,7 @@ namespace RedDust.Ability
                 int removeAt = -1;
                 for (var i = 0; i < links.Length; i++)
                 {
-                    if (i > 0) EditorCard.Gap(Pad);
+                    if (i > 0) EditorCard.Gap(EditorTokens.Pad);
                     var l = links[i];
 
                     EditorGUILayout.BeginHorizontal();
@@ -352,8 +351,8 @@ namespace RedDust.Ability
                 EditorGUILayout.LabelField("(no combo links)", EditorUIUtility.GreyPlaceholder);
             }
 
-            GUILayout.Space(Pad);
-            if (EditorButton.Draw("＋ Add Combo Link", EditorButtonStyle.Success, EditorButtonSize.Small))
+            GUILayout.Space(EditorTokens.Pad);
+            if (EditorButton.Draw("＋ Add Combo Link", EditorButtonType.Success, EditorButtonSize.Small))
                 AddComboLink(def);
         }
 

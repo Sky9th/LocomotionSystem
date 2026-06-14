@@ -177,7 +177,7 @@ namespace RedDust.Shared.EditorUI
                 f.NotifyChanged();
             }
 
-            GUILayout.Space(2);
+            GUILayout.Space(EditorTokens.Pad / 3);
             if (EditorButton.Default("+ Add", EditorButtonSize.Small))
             {
                 var newArr = arr == null

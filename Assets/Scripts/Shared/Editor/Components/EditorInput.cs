@@ -1,6 +1,5 @@
 #if UNITY_EDITOR
 using System;
-using System.Reflection;
 using RedDust.Core;
 using RedDust.Core.Editor;
 using UnityEditor;
@@ -45,7 +44,7 @@ namespace RedDust.Shared.EditorUI
         public static string TextFieldWithClear(string value, float? width = null)
         {
             var result = EditorGUILayout.TextField(value ?? "", WithWidth(width));
-            if (EditorButton.Danger("✕", EditorButtonSize.Small, width: 20, enabled: !string.IsNullOrEmpty(result)))
+            if (EditorButton.Danger("✕", EditorButtonSize.Small, width: EditorTokens.SizeMd, enabled: !string.IsNullOrEmpty(result)))
             {
                 result = "";
                 GUI.FocusControl(null);

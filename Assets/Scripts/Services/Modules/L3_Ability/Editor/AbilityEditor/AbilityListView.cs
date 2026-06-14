@@ -10,11 +10,10 @@ namespace RedDust.Ability
 {
     public static class AbilityListView
     {
-        private const float Pad = 6f;
 
         public static void DrawFilterCard(AbilityTypeFilter current, Action<AbilityTypeFilter> onChanged)
         {
-            EditorCard.Draw(Pad, () =>
+            EditorCard.Draw(EditorTokens.Pad, () =>
             {
                 var next = EditorButtonGroup.Draw(current,
                     new[] { AbilityTypeFilter.All, AbilityTypeFilter.Active, AbilityTypeFilter.Passive },
@@ -26,7 +25,7 @@ namespace RedDust.Ability
 
         public static void DrawSearchCard(string current, Action<string> onChanged)
         {
-            EditorCard.Draw(Pad, () =>
+            EditorCard.Draw(EditorTokens.Pad, () =>
             {
                 var s = EditorSearchBar.Draw(current, labelWidth: 45f);
                 if (s != current) onChanged(s);
@@ -35,9 +34,9 @@ namespace RedDust.Ability
 
         public static void DrawCreateCard(Action<AbilitySO> onCreated)
         {
-            EditorCard.Draw(Pad, () =>
+            EditorCard.Draw(EditorTokens.Pad, () =>
             {
-                if (EditorButton.Draw("+ Create New", EditorButtonStyle.Primary,
+                if (EditorButton.Draw("+ Create New", EditorButtonType.Primary,
                         EditorButtonSize.Large, 160f))
                 {
                     var menu = new GenericMenu();
