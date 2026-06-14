@@ -33,9 +33,9 @@
 │  │  │ [2a-2] Search Row    │  │  │ Name, effectTag, duration,    │ │ │ │
 │  │  │  [🔍__________]      │  │  │ stackable, maxStacks          │ │ │ │
 │  │  │                      │  │  │ ── [2b-1a] Blocked Tags ──── │ │ │ │
-│  │  │ [2a-3] Ability Tree  │  │  │ applicationBlockedTags[N]    │ │ │ │
+│  │  │ [2a-3] Ability Tree  │  │  │ Blocked Tags [N]    │ │ │ │
 │  │  │  📁 root1            │  │  │ [tag][Tag btn][×] per row    │ │ │ │
-│  │  │    📄 Effect_A       │  │  │ [+ Add Blocked Tag]          │ │ │ │
+│  │  │    📄 Effect_A       │  │  │ [+ Add]          │ │ │ │
 │  │  │    📄 Effect_B ◀─────│──│──│─ (selected → right)          │ │ │ │
 │  │  │  📁 Uncategorized    │  │  └──────────────────────────────┘ │ │ │
 │  │  │    📄 Effect_C       │  │                                   │ │ │
@@ -85,7 +85,7 @@ OnGUI
 │           ├── DrawBaseFields()        [2b-1] Base Section
 │           │   └── EditorCard.Draw("Base")
 │           │       ├── EditorForm _baseForm (Name, effectTag, duration, stackable, maxStacks)
-│           │       └── DrawBlockedTags()  [2b-1a] Blocked Tags Sub-section
+│           │       └── EditorFormItem.ArrayField()  [2b-1a] Blocked Tags Sub-section
 │           │
 │           └── DrawTypeSpecificFields() [2b-2] Type Section
 │               └── EditorCard.Draw("Damage"|"Impact"|"Execute"|"Cost")
@@ -145,12 +145,12 @@ OnGUI
 
 | 部件名 | 控件 | 说明 |
 |--------|------|------|
-| `blocked-tags-header` | `EditorStyles.miniBoldLabel` | "applicationBlockedTags [N]" |
+| `blocked-tags-header` | `EditorStyles.miniBoldLabel` | "Blocked Tags [N]" |
 | `blocked-tag-row` | `BeginHorizontal` | 单行 = ObjectField + Tag btn + Delete btn |
 | `blocked-tag-object` | `EditorGUILayout.ObjectField` | 可拖入 GameplayTagDefinitionSO |
 | `blocked-tag-picker-btn` | `EditorButton.Draw("Tag")` | 弹出 TagPicker 选择替换 |
 | `blocked-tag-delete-btn` | `EditorUIUtility.DeleteButton()` | × 按钮，标记 `removeAt = i` |
-| `add-blocked-tag-btn` | `EditorButton.Draw("+ Add Blocked Tag")` | 追加 null 项到数组末尾 |
+| `add-blocked-tag-btn` | `EditorButton.Draw("+ Add")` | 追加 null 项到数组末尾 |
 
 #### [2b-2] Type Section
 

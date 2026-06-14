@@ -220,10 +220,9 @@ namespace RedDust.Ability
 
                 EditorForm.Draw(e, form =>
                 {
-                    form.DefaultLabelWidth = 80;
-
+    
                     // Name → RawField
-                    EditorFormItem.RawField("Name", 80,
+                    EditorFormItem.RawField("Name", null,
                         getValue: () => e.name,
                         setValue: v => { e.name = (string)v; },
                         drawFunc: v => EditorGUILayout.TextField((string)v),
@@ -241,76 +240,45 @@ namespace RedDust.Ability
                         onBeforeSet: v => Mathf.Max(1, v));
 
                     form.OnChange += MarkDirty;
-                });
 
-                // applicationBlockedTags
-                GUILayout.Space(EditorTokens.Pad);
-                DrawBlockedTags(e);
+                    // Blocked Tags — tags that prevent this effect from applying
+                    EditorFormItem.ArrayField<GameplayTagDefinitionSO>(
+                        "Blocked Tags",
+                        getValue: () => e.applicationBlockedTags,
+                        setValue: v => e.applicationBlockedTags = v,
+                        drawRow: (i, tag) =>
+                        {
+                            var arr = e.applicationBlockedTags;
+                            var newTag = (GameplayTagDefinitionSO)EditorGUILayout.ObjectField(
+                                tag, typeof(GameplayTagDefinitionSO), false);
+                            if (newTag != tag)
+                            {
+                                arr[i] = newTag;
+                                MarkDirty();
+                            }
+                            if (EditorButton.Default("Tag", EditorButtonSize.Small, width: 35))
+                            {
+                                var cap = tag;
+                                TagPicker.Show(_blockedTagButtonRect, allowCreate: true,
+                                    currentFullTag: cap?.FullTag,
+                                    onSelected: t =>
+                                    {
+                                        var a = e.applicationBlockedTags;
+                                        if (a == null) return;
+                                        for (int k = 0; k < a.Length; k++)
+                                            if (a[k] == cap) { a[k] = t; MarkDirty(); break; }
+                                    });
+                            }
+                            if (Event.current.type == EventType.Repaint)
+                                _blockedTagButtonRect = GUILayoutUtility.GetLastRect();
+                        },
+                        createDefault: () => null,
+                        onChanged: (_, _) => MarkDirty(),
+                        tooltip: "目标身上存在这些标签时，阻止此效果施加");
+                });
             });
         }
 
-        private void DrawBlockedTags(EffectSO e)
-        {
-            EditorGUILayout.LabelField(
-                $"applicationBlockedTags [{(e.applicationBlockedTags != null ? e.applicationBlockedTags.Length : 0)}]",
-                EditorStyles.miniBoldLabel);
-
-            var tags = e.applicationBlockedTags ?? Array.Empty<GameplayTagDefinitionSO>();
-            int removeAt = -1;
-
-            for (var i = 0; i < tags.Length; i++)
-            {
-                EditorGUILayout.BeginHorizontal();
-                var t = (GameplayTagDefinitionSO)EditorGUILayout.ObjectField(
-                    tags[i], typeof(GameplayTagDefinitionSO), false);
-                if (t != tags[i])
-                {
-                    var arr = new GameplayTagDefinitionSO[tags.Length];
-                    Array.Copy(tags, arr, tags.Length);
-                    arr[i] = t;
-                    e.applicationBlockedTags = arr;
-                    MarkDirty();
-                }
-                if (EditorButton.Default("Tag", EditorButtonSize.Small, width: 35))
-                {
-                    var currentTag = tags[i]; // capture tag reference
-                    TagPicker.Show(_blockedTagButtonRect, allowCreate: true, currentFullTag: currentTag?.FullTag,
-                        onSelected: t =>
-                        {
-                            var arr = e.applicationBlockedTags;
-                            if (arr == null) return;
-                            for (int k = 0; k < arr.Length; k++)
-                            {
-                                if (arr[k] == currentTag)
-                                {
-                                    arr[k] = t;
-                                    e.applicationBlockedTags = arr;
-                                    MarkDirty();
-                                    break;
-                                }
-                            }
-                        });
-                }
-                if (Event.current.type == EventType.Repaint)
-                    _blockedTagButtonRect = GUILayoutUtility.GetLastRect();
-                if (EditorButton.Delete())
-                    removeAt = i;
-                EditorGUILayout.EndHorizontal();
-            }
-
-            if (removeAt >= 0)
-            {
-                e.applicationBlockedTags = AbilityEditorUtility.RemoveAt(tags, removeAt);
-                MarkDirty();
-            }
-
-            GUILayout.Space(2);
-            if (EditorButton.Default("+ Add Blocked Tag", EditorButtonSize.Small))
-            {
-                e.applicationBlockedTags = AbilityEditorUtility.Append(tags, null);
-                MarkDirty();
-            }
-        }
 
         private void DrawTypeSpecificFields()
         {
@@ -345,7 +313,6 @@ namespace RedDust.Ability
         {
             EditorForm.Draw(d, form =>
             {
-                form.DefaultLabelWidth = 100;
                 EditorFormItem.Float("baseValue");
                 EditorFormItem.Float("modAdd");
                 EditorFormItem.Float("modMult");
@@ -358,7 +325,6 @@ namespace RedDust.Ability
         {
             EditorForm.Draw(i, form =>
             {
-                form.DefaultLabelWidth = 100;
                 EditorFormItem.Float("staggerValue");
                 EditorFormItem.Float("knockbackForce");
                 EditorFormItem.Enum<EKnockbackDirection>("knockbackDir");
@@ -370,7 +336,6 @@ namespace RedDust.Ability
         {
             EditorForm.Draw(x, form =>
             {
-                form.DefaultLabelWidth = 100;
                 EditorFormItem.Slider("hpThreshold", 0f, 1f);
                 form.OnChange += MarkDirty;
             });
@@ -380,7 +345,6 @@ namespace RedDust.Ability
         {
             EditorForm.Draw(c, form =>
             {
-                form.DefaultLabelWidth = 100;
                 EditorFormItem.ObjectField<PropertyDefSO>("def");
                 EditorFormItem.Float("amount");
                 form.OnChange += MarkDirty;
@@ -391,10 +355,9 @@ namespace RedDust.Ability
         {
             EditorForm.Draw(b, form =>
             {
-                form.DefaultLabelWidth = 80;
 
                 EditorFormItem.ArrayField<GameplayTagDefinitionSO>(
-                    "grantedTags",
+                    "Granted Tags",
                     getValue: () => b.grantedTags,
                     setValue: v => b.grantedTags = v,
                     drawRow: (i, t) =>
@@ -414,10 +377,11 @@ namespace RedDust.Ability
                         if (Event.current.type == EventType.Repaint)
                             _grantedTagButtonRect = GUILayoutUtility.GetLastRect();
                     },
-                    createDefault: () => null);
+                    createDefault: () => null,
+                    tooltip: "Buff 激活期间授予目标的标签");
 
                 EditorFormItem.ArrayField<SBuffAdjunct>(
-                    "adjuncts",
+                    "Float Adjuncts",
                     getValue: () => b.adjuncts,
                     setValue: v => b.adjuncts = v,
                     drawRow: (i, a) =>
@@ -426,7 +390,6 @@ namespace RedDust.Ability
                         Action flush = () => { b.adjuncts[i] = adj; MarkDirty(); };
                         EditorForm.Draw(null, row =>
                         {
-                            row.DefaultLabelWidth = 45;
                             row.BeginGroup(FormGroupLayout.Horizontal);
                             EditorFormItem.RawField("Property", 55,
                                 getValue: () => adj.property,
@@ -446,7 +409,8 @@ namespace RedDust.Ability
                             row.EndGroup();
                         });
                     },
-                    createDefault: () => new SBuffAdjunct { valueMultiply = 1f });
+                    createDefault: () => new SBuffAdjunct { valueMultiply = 1f },
+                    tooltip: "Buff 激活期间对属性值进行加减/乘算的浮点修正");
 
                 form.OnChange += MarkDirty;
             });

@@ -183,8 +183,12 @@ string next = EditorSearchBar.Draw(_searchText, labelWidth: 45f);
 **文件**: `EditorLabel.cs`
 
 ```csharp
-EditorLabel.Draw("Name", width: 80, tooltip: "效果的显示名称");
+EditorLabel.Draw("Name", 80, tooltip: "效果的显示名称");
 ```
+
+### 默认样式
+
+`EditorLabel.DefaultStyle` — 基于 `EditorStyles.label`，左右 padding/margin 清零，上下保留原值。`Draw` 的 `style` 参数不传时默认使用此样式。
 
 ---
 
@@ -276,9 +280,28 @@ EditorForm.Draw(target, form =>
 
 **文件**: `FormItem.cs`
 
-拼装 `EditorLabel` + `EditorInput` + 变更检测。所有字段即时绘制。
+### 架构
+
+**唯一渲染入口** `Draw(label, drawSlot)` — Label 左（固定宽 + wordWrap）+ 右边距 + Slot 右。
+Float/Int/Toggle/ObjectField/Enum/TextField/Slider/RawField/ObjectFieldWithTag/ArrayField 全部走 `Draw`。
+
+```
+Draw:
+  BeginRow()              ← spacing + _itemIndex++
+  BeginHorizontal
+    BeginVertical(w)      ← 左布局（固定宽度容器）
+      EditorLabel.Draw    ← Label 占左布局整行
+    EndVertical
+    Space(Pad)            ← 右边距
+    slot()                ← 右布局（输入控件）
+  EndHorizontal
+  if (!inGroup) Divider   ← 垂直布局画分隔线
+```
+
+### API
 
 ```csharp
+// 反射字段
 EditorFormItem.Float("duration", label: "Duration", visibleWhen: () => ...);
 EditorFormItem.Int("maxStacks", onBeforeSet: v => Mathf.Max(1, v));
 EditorFormItem.Toggle("stackable");
@@ -286,9 +309,16 @@ EditorFormItem.Enum<T>("type");
 EditorFormItem.TextField("name");
 EditorFormItem.ObjectField<T>("effectTag");
 EditorFormItem.Slider("hpThreshold", 0f, 1f);
+
+// 自定义内容
 EditorFormItem.RawField(label, labelWidth, getValue, setValue, drawFunc, equals);
-EditorFormItem.ArrayField<T>(label, getValue, setValue, drawRow, createDefault);
+
+// ObjectField + TagPicker（ref → local 桥接）
 EditorFormItem.ObjectFieldWithTag<T>(fieldName, ref tagBtnRect);
+
+// 多行数组（Label "[N]" 在左列，数组行在右列）
+EditorFormItem.ArrayField<T>(label, getValue, setValue, drawRow, createDefault,
+    onChanged: ..., tooltip: ...);
 ```
 
 变更检测后走 `f.NotifyFieldChanged(field, newVal)`——不直接调 `EditorUtility.SetDirty`。

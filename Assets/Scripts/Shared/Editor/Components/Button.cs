@@ -45,6 +45,8 @@ namespace RedDust.Shared.EditorUI
 			{
 				fontSize = GetFontSize(size),
 				padding = GetPadding(size),
+				margin = new RectOffset(0, 0, EditorStyles.miniButton.margin.top, EditorStyles.miniButton.margin.bottom),
+				overflow = new RectOffset(0, 0, EditorStyles.miniButton.overflow.top, EditorStyles.miniButton.overflow.bottom),
 			};
 
 			_styleCache[key] = style;
