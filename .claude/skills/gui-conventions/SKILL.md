@@ -1,7 +1,7 @@
 ---
-name: ui-conventions
-description: RedDust UI 系统的开发约定，制作新面板/组件/Overlay 时必须遵循。
-when_to_use: 编写 UI 代码、创建 Prefab、新增面板、修改主题时遵守
+name: gui-conventions
+description: RedDust 游戏 UI (UGUI) 开发约定——Canvas/Prefab/Screen/Overlay/主题。制作新面板、组件时必须遵循。
+when_to_use: 编写游戏 UI 代码、创建 Prefab、新增面板、修改主题时遵守
 ---
 
 ## 架构

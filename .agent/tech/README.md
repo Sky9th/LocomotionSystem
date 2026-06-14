@@ -142,6 +142,18 @@ tech/
 │       └── L3-pathfinding/             # L3: 寻路系统
 │           └── README.md
 │
+├── editor/                              # 编辑器扩展（不限层级，仅 Editor）
+│   ├── README.md
+│   ├── conventions/                     # EUI 设计体系
+│   │   ├── README.md
+│   │   ├── components.md
+│   │   └── design-tokens.md
+│   └── tools/                           # 编辑器工具（源码目录镜像）
+│       ├── Shared/
+│       ├── L1_Core/
+│       ├── L3_Ability/
+│       └── L3_Properties/
+│
 └── shared/                              # 占位容器: 全局 Helper (不限层级)
     ├── README.md
     ├── data-assets.md
@@ -150,10 +162,6 @@ tech/
     │   ├── log-manager.md, log-channel.md, log-level.md
     │   ├── appender/                   # ILogAppender, ConsoleAppender
     │   └── compat/                     # Logger
-    ├── editor/
-    │   ├── README.md
-    │   ├── editor-core-loader.md, game-context-editor.md
-    │   └── prototype/                  # SyntyPrototypeBrowser, SyntyPrototypeMenu
     └── utility/
         ├── README.md
         └── gizmo-debug-utility.md

@@ -1,6 +1,6 @@
 # Editor UI Design Tokens · RedDust 项目 Editor 视觉标准
 
-> 基底取自 Unity Editor Professional (Dark) 主题，颜色搭配/尺寸层级/间距比例参考 Element Plus。适用于所有 RedDust Editor 窗口的 USS 样式与视觉设计。与 [editor-ui-patterns.md](editor-ui-patterns.md) 互补——patterns 管 IMGUI 布局规范，tokens 管 UI Toolkit 视觉令牌。
+> 基底取自 Unity Editor Professional (Dark) 主题，颜色搭配/尺寸层级/间距比例参考 Element Plus。适用于所有 RedDust Editor 窗口的 USS 样式与视觉设计。与 [components.md](components.md) 互补——components 管 IMGUI 组件与布局，design-tokens 管 UI Toolkit 视觉令牌。
 
 ---
 

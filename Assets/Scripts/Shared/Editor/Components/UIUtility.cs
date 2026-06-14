@@ -106,40 +106,20 @@ namespace RedDust.Shared.EditorUI
 
         /// <summary>
         /// 标准搜索行：Label("Search", width) + TextField + 清除按钮("x")。
-        /// 仅绘制行内元素，不包裹卡片。返回新文本，调用方负责赋值。
+        /// 搜索行，委托给 EditorSearchBar 组件。
         /// </summary>
         public static string DrawSearchRow(string current, float labelWidth = 45f)
         {
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Search", EditorStyles.label, GUILayout.Width(labelWidth));
-            var s = EditorGUILayout.TextField(current, GUILayout.ExpandWidth(true));
-            if (!string.IsNullOrEmpty(s) && GUILayout.Button("x", EditorStyles.miniButton, GUILayout.Width(20)))
-            {
-                s = "";
-                GUI.FocusControl(null);
-            }
-            EditorGUILayout.EndHorizontal();
-            return s;
+            return EditorSearchBar.Draw(current, labelWidth);
         }
 
         /// <summary>
-        /// 通用筛选标签栏。水平排列 miniButtonMid，选中项蓝色高亮。
+        /// 通用筛选标签栏，委托给 EditorButtonGroup 单选模式。
         /// </summary>
         public static T DrawFilterTabBar<T>(T current, T[] tabs, string[] labels)
-            where T : Enum
+            where T : struct, Enum
         {
-            EditorGUILayout.BeginHorizontal();
-            for (var i = 0; i < tabs.Length; i++)
-            {
-                var isSelected = EqualityComparer<T>.Default.Equals(current, tabs[i]);
-                if (EditorButton.DrawTab(labels[i], isSelected))
-                {
-                    EditorGUILayout.EndHorizontal();
-                    return tabs[i];
-                }
-            }
-            EditorGUILayout.EndHorizontal();
-            return current;
+            return EditorButtonGroup.Draw(current, tabs, labels);
         }
 
         /// <summary>

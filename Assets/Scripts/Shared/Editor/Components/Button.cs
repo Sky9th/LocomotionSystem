@@ -68,19 +68,6 @@ namespace RedDust.Shared.EditorUI
             return clicked;
         }
 
-        /// <summary>筛选标签。</summary>
-        public static bool DrawTab(string text, bool isSelected)
-        {
-            var oldBg = GUI.backgroundColor;
-            var oldContent = GUI.contentColor;
-            GUI.backgroundColor = isSelected ? EditorUIUtility.ColorBlue : Color.white;
-            if (isSelected) GUI.contentColor = EditorUIUtility.ColorButtonText;
-            var clicked = GUILayout.Button(text, EditorStyles.miniButtonMid);
-            GUI.contentColor = oldContent;
-            GUI.backgroundColor = oldBg;
-            return clicked;
-        }
-
         /// <summary>手动 Rect。</summary>
         public static bool Draw(Rect rect, string text,
             EditorButtonStyle style = EditorButtonStyle.Default)
