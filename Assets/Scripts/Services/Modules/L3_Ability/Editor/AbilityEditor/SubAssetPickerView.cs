@@ -61,7 +61,7 @@ namespace RedDust.Ability
                 GUILayout.Space(Pad);
 
                 // 搜索
-                s = EditorUIUtility.DrawSearchRow(s, labelWidth: 50f);
+                s = EditorSearchBar.Draw(s, labelWidth: 50f);
 
                 GUILayout.Space(Pad);
 

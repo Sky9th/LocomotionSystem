@@ -27,12 +27,6 @@ namespace RedDust.Ability
         private const float Pad = 6f;
         private static Action _onChanged;
 
-        // ── EditorForm（每 section 独立，避免字段覆盖）──
-        private static EditorForm _identityForm;
-        private static EditorForm _tagForm;
-        private static EditorForm _exclusionForm;
-        private static EditorForm _cooldownForm;
-        private static EditorForm _passiveForm;
         private static Rect _abilityTagButtonRect;
 
         public delegate void EditSubAssetHandler(SubAssetSlot slot);
@@ -113,16 +107,14 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════════════
         private static void DrawIdentityFields(AbilitySO a)
         {
-            if (EditorForm.NeedsRebuild(_identityForm, a))
+            EditorForm.Draw(a, form =>
             {
-                _identityForm = new EditorForm(a);
-                _identityForm.TextField("internalName")
-                     .TextField("displayName")
-                     .ObjectField<Sprite>("icon")
-                     .TextArea("description");
-                _identityForm.OnAnyChange += () => { EditorUtility.SetDirty(a); _onChanged?.Invoke(); };
-            }
-            _identityForm?.Draw();
+                EditorFormItem.TextField("internalName");
+                EditorFormItem.TextField("displayName");
+                EditorFormItem.ObjectField<Sprite>("icon");
+                EditorFormItem.TextField("description");
+                form.OnChange += () => { EditorUtility.SetDirty(a); _onChanged?.Invoke(); };
+            });
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -204,7 +196,7 @@ namespace RedDust.Ability
                             : new GUIStyle(EditorStyles.label) { normal = { textColor = Color.red } };
                         EditorGUILayout.LabelField(name, st, GUILayout.ExpandWidth(true));
 
-                        if (EditorUIUtility.DeleteButton())
+                        if (EditorButton.Delete())
                             onRemove?.Invoke(origIdx);
                         EditorGUILayout.EndHorizontal();
 
@@ -234,27 +226,23 @@ namespace RedDust.Ability
         private static void DrawTagFields(AbilitySO a)
         {
             // abilityTag / sharedCooldownTag
-            if (EditorForm.NeedsRebuild(_tagForm, a))
+            EditorForm.Draw(a, form =>
             {
-                _tagForm = new EditorForm(a);
-                _tagForm.ObjectField<GameplayTagDefinitionSO>("abilityTag", label: "Ability")
-                        .PostInput(() => DrawTagPickerButton(a, "abilityTag"))
-                     .ObjectField<GameplayTagDefinitionSO>("sharedCooldownTag", label: "Shared CD")
-                        .PostInput(() => DrawTagPickerButton(a, "sharedCooldownTag"));
-                _tagForm.OnAnyChange += () => { EditorUtility.SetDirty(a); _onChanged?.Invoke(); };
-            }
-            _tagForm?.Draw();
+                EditorFormItem.ObjectField<GameplayTagDefinitionSO>("abilityTag", label: "Ability");
+                DrawTagPickerButton(a, "abilityTag");
+                EditorFormItem.ObjectField<GameplayTagDefinitionSO>("sharedCooldownTag", label: "Shared CD");
+                DrawTagPickerButton(a, "sharedCooldownTag");
+                form.OnChange += () => { EditorUtility.SetDirty(a); _onChanged?.Invoke(); };
+            });
 
             // overrideExclusion — AbilityDefSO 独有字段
             if (a is AbilityDefSO def)
             {
-                if (EditorForm.NeedsRebuild(_exclusionForm, def))
+                EditorForm.Draw(def, form =>
                 {
-                    _exclusionForm = new EditorForm(def);
-                    _exclusionForm.Toggle("overrideExclusion", label: "Override Exclusion");
-                    _exclusionForm.OnAnyChange += () => { EditorUtility.SetDirty(def); _onChanged?.Invoke(); };
-                }
-                _exclusionForm?.Draw();
+                    EditorFormItem.Toggle("overrideExclusion", label: "Override Exclusion");
+                    form.OnChange += () => { EditorUtility.SetDirty(def); _onChanged?.Invoke(); };
+                });
             }
         }
 
@@ -279,7 +267,7 @@ namespace RedDust.Ability
                             field.SetValue(a, t);
                             EditorUtility.SetDirty(a);
                             _onChanged?.Invoke();
-                            _tagForm = null; _passiveForm = null; // force rebuild
+                            // force rebuild handled by EditorForm.Draw
                         }
                     });
             }
@@ -292,13 +280,11 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════════════
         private static void DrawCooldownFields(AbilitySO a)
         {
-            if (EditorForm.NeedsRebuild(_cooldownForm, a))
+            EditorForm.Draw(a, form =>
             {
-                _cooldownForm = new EditorForm(a);
-                _cooldownForm.Float("cooldownDuration", label: "Duration (s)");
-                _cooldownForm.OnAnyChange += () => { EditorUtility.SetDirty(a); _onChanged?.Invoke(); };
-            }
-            _cooldownForm?.Draw();
+                EditorFormItem.Float("cooldownDuration", label: "Duration (s)");
+                form.OnChange += () => { EditorUtility.SetDirty(a); _onChanged?.Invoke(); };
+            });
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -306,17 +292,15 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════════════
         private static void DrawPassiveFields(PassiveAbilitySO p)
         {
-            if (EditorForm.NeedsRebuild(_passiveForm, p))
+            EditorForm.Draw(p, form =>
             {
-                _passiveForm = new EditorForm(p);
-                _passiveForm.Enum<ETriggerEvent>("trigger")
-                     .Float("triggerValue", label: "Trigger Value")
-                     .ObjectField<EventChannelBase>("triggerChannel", label: "Channel")
-                     .ObjectField<GameplayTagDefinitionSO>("targetRequiredTag", label: "Target Tag")
-                        .PostInput(() => DrawTagPickerButton(p, "targetRequiredTag"));
-                _passiveForm.OnAnyChange += () => { EditorUtility.SetDirty(p); _onChanged?.Invoke(); };
-            }
-            _passiveForm?.Draw();
+                EditorFormItem.Enum<ETriggerEvent>("trigger");
+                EditorFormItem.Float("triggerValue", label: "Trigger Value");
+                EditorFormItem.ObjectField<EventChannelBase>("triggerChannel", label: "Channel");
+                EditorFormItem.ObjectField<GameplayTagDefinitionSO>("targetRequiredTag", label: "Target Tag");
+                DrawTagPickerButton(p, "targetRequiredTag");
+                form.OnChange += () => { EditorUtility.SetDirty(p); _onChanged?.Invoke(); };
+            });
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -354,7 +338,7 @@ namespace RedDust.Ability
                     if (bp != l.BypassCooldown) { l.BypassCooldown = bp; def.comboLinks[i] = l; EditorUtility.SetDirty(def); _onChanged?.Invoke(); }
                     EditorGUILayout.LabelField("BypassCD", EditorStyles.miniLabel, GUILayout.Width(58));
 
-                    if (EditorUIUtility.DeleteButton())
+                    if (EditorButton.Delete())
                         removeAt = i;
                     EditorGUILayout.EndHorizontal();
                 }

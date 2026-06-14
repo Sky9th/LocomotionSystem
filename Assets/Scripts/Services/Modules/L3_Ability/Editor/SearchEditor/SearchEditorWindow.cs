@@ -34,10 +34,6 @@ namespace RedDust.Ability
         private Vector2 _rightScroll;
         private readonly Dictionary<string, bool> _foldouts = new();
 
-        // ── EditorForm ──
-        private EditorForm _baseForm;
-        private EditorForm _typeForm;
-
         [MenuItem("RedDust/Search Editor", priority = 2)]
         public static void Open()
             => GetWindow<SearchEditorWindow>("Search Editor");
@@ -141,7 +137,7 @@ namespace RedDust.Ability
                 // 筛选标签
                 EditorCard.DrawLight(Pad, () =>
                 {
-                    var newFilter = EditorUIUtility.DrawFilterTabBar(_filter,
+                    var newFilter = EditorButtonGroup.Draw(_filter,
                         new SearchTypeFilter[] { SearchTypeFilter.All, SearchTypeFilter.Cone, SearchTypeFilter.Ray, SearchTypeFilter.Circle },
                         new[] { "All", "Cone", "Ray", "Circle" });
                     if (!EqualityComparer<SearchTypeFilter>.Default.Equals(newFilter, _filter))
@@ -153,7 +149,7 @@ namespace RedDust.Ability
                 // 搜索框
                 EditorCard.DrawLight(Pad, () =>
                 {
-                    var s = EditorUIUtility.DrawSearchRow(_searchText, labelWidth: 42f);
+                    var s = EditorSearchBar.Draw(_searchText, labelWidth: 42f);
                     if (s != _searchText) { _searchText = s; }
                 });
 
@@ -209,43 +205,33 @@ namespace RedDust.Ability
             EditorCard.Draw(Pad, "Base", () =>
             {
                 var s = _selectedSearch;
-
-                if (EditorForm.NeedsRebuild(_baseForm, s))
+                EditorForm.Draw(s, form =>
                 {
-                    _baseForm = new EditorForm(s) { DefaultLabelWidth = 80 };
-
-                    // Name → RawField（Object.name 非 SO 字段，回调走 RenameAsset）
-                    _baseForm.RawField("Name", 80,
+                    form.DefaultLabelWidth = 80;
+                    EditorFormItem.RawField("Name", 80,
                         getValue: () => s.name,
-                        setValue: v => { s.name = (string)v; },
+                        setValue: v =>
+                        {
+                            var n = (string)v;
+                            if (string.IsNullOrWhiteSpace(n)) return;
+                            s.name = n;
+                            RenameSearch(s, n);
+                        },
                         drawFunc: v => EditorGUILayout.TextField((string)v),
-                        equals: (a, b) => (string)a == (string)b)
-                    .CustomOnChange((_, newVal) =>
-                    {
-                        var n = (string)newVal;
-                        if (string.IsNullOrWhiteSpace(n)) return false;
-                        RenameSearch(s, n);
-                        return true;
-                    });
-
-                    // searchType → 只读
-                    _baseForm.Enum<ESearchType>("searchType").ReadOnly();
-
-                    // 可编辑字段
-                    _baseForm.Float("range")
-                             .RawField("targetMask", 80,
-                                 getValue: () => s.targetMask.value,
-                                 setValue: v => s.targetMask = (int)v,
-                                 drawFunc: v => DrawLayerMaskField((int)v).value,
-                                 equals: (a, b) => (int)a == (int)b,
-                                 tooltip: (typeof(AbilitySearchSO).GetField("targetMask")
-                                     ?.GetCustomAttribute<TooltipAttribute>())?.tooltip)
-                             .Int("maxTargets")
-                             .Enum<ETargetFilter>("targetFilter");
-
-                    _baseForm.OnAnyChange += MarkDirty;
-                }
-                _baseForm?.Draw();
+                        equals: (a, b) => (string)a == (string)b);
+                    EditorFormItem.Enum<ESearchType>("searchType");
+                    EditorFormItem.Float("range");
+                    EditorFormItem.RawField("targetMask", 80,
+                        getValue: () => s.targetMask.value,
+                        setValue: v => s.targetMask = (int)v,
+                        drawFunc: v => DrawLayerMaskField((int)v).value,
+                        equals: (a, b) => (int)a == (int)b,
+                        tooltip: (typeof(AbilitySearchSO).GetField("targetMask")
+                            ?.GetCustomAttribute<TooltipAttribute>())?.tooltip);
+                    EditorFormItem.Int("maxTargets");
+                    EditorFormItem.Enum<ETargetFilter>("targetFilter");
+                    form.OnChange += MarkDirty;
+                });
             });
         }
 
@@ -291,24 +277,22 @@ namespace RedDust.Ability
 
         private void DrawConeFields(ConeSearchSO cone)
         {
-            if (EditorForm.NeedsRebuild(_typeForm, cone))
+            EditorForm.Draw(cone, form =>
             {
-                _typeForm = new EditorForm(cone) { DefaultLabelWidth = 100 };
-                _typeForm.Slider("angle", 0f, 360f);
-                _typeForm.OnAnyChange += MarkDirty;
-            }
-            _typeForm?.Draw();
+                form.DefaultLabelWidth = 100;
+                EditorFormItem.Slider("angle", 0f, 360f);
+                form.OnChange += MarkDirty;
+            });
         }
 
         private void DrawRayFields(RaySearchSO ray)
         {
-            if (EditorForm.NeedsRebuild(_typeForm, ray))
+            EditorForm.Draw(ray, form =>
             {
-                _typeForm = new EditorForm(ray) { DefaultLabelWidth = 100 };
-                _typeForm.Toggle("requiresLineOfSight");
-                _typeForm.OnAnyChange += MarkDirty;
-            }
-            _typeForm?.Draw();
+                form.DefaultLabelWidth = 100;
+                EditorFormItem.Toggle("requiresLineOfSight");
+                form.OnChange += MarkDirty;
+            });
         }
 
         // ═══════════════════════════════════════════════════

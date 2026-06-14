@@ -10,9 +10,6 @@ namespace RedDust.Shared.EditorUI
     /// </summary>
     public static class EditorCard
     {
-        // ── 设计令牌色 ──
-        // highlight-background: #2C5D87
-        private static readonly Color HighlightBg = new(0.173f, 0.365f, 0.529f);
         // highlight-background-hover: rgba(255,255,255,0.06)
         private static readonly Color HighlightHover = new(1f, 1f, 1f, 0.06f);
 
@@ -29,7 +26,7 @@ namespace RedDust.Shared.EditorUI
         public static void Draw(float pad, Action drawContent, bool selected)
         {
             var oldBg = GUI.backgroundColor;
-            if (selected) GUI.backgroundColor = HighlightBg;
+            if (selected) GUI.backgroundColor = EditorTokens.ColorSelected;
             Impl(pad, drawContent);
             GUI.backgroundColor = oldBg;
         }
@@ -112,7 +109,7 @@ namespace RedDust.Shared.EditorUI
             bool selected = false, Action onClick = null)
         {
             var oldBg = GUI.backgroundColor;
-            if (selected) GUI.backgroundColor = HighlightBg;
+            if (selected) GUI.backgroundColor = EditorTokens.ColorSelected;
 
             var rect = EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             GUI.backgroundColor = oldBg;
@@ -148,7 +145,10 @@ namespace RedDust.Shared.EditorUI
         /// <summary>统一区域标题。boldLabel + 下方间距。</summary>
         private static void Header(string title)
         {
+            EditorGUILayout.BeginHorizontal(
+                GUILayout.Height(EditorGUIUtility.singleLineHeight));
             EditorGUILayout.LabelField(title, EditorStyles.boldLabel);
+            EditorGUILayout.EndHorizontal();
             GUILayout.Space(4f);
         }
 
@@ -169,6 +169,28 @@ namespace RedDust.Shared.EditorUI
             EditorGUILayout.EndHorizontal();
             GUILayout.Space(pad);
             EditorGUILayout.EndVertical();
+        }
+        // ═══════════════════════════════════════════════════
+        // Header
+        // ═══════════════════════════════════════════════════
+
+        private static GUIStyle _headerTitleStyle;
+        private static GUIStyle HeaderTitleStyle => _headerTitleStyle ??= new GUIStyle(EditorStyles.largeLabel);
+        private static GUIStyle _headerSubStyle;
+        private static GUIStyle HeaderSubStyle => _headerSubStyle ??= new GUIStyle(EditorStyles.label)
+            { alignment = TextAnchor.MiddleRight, fontSize = 11, normal = { textColor = Color.gray } };
+
+        /// <summary>Header 卡片：[Title][Subtitle][Flexible][drawRight Slot]</summary>
+        public static void DrawCardHeader(string title, string subtitle,
+            Action drawRight = null)
+        {
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField(title, HeaderTitleStyle);
+            var subWidth = HeaderSubStyle.CalcSize(new GUIContent(subtitle ?? "")).x;
+            EditorGUILayout.LabelField(subtitle, HeaderSubStyle, GUILayout.Width(subWidth));
+            GUILayout.FlexibleSpace();
+            drawRight?.Invoke();
+            EditorGUILayout.EndHorizontal();
         }
     }
 }

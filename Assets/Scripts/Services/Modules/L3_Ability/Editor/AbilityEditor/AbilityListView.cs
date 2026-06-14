@@ -16,7 +16,7 @@ namespace RedDust.Ability
         {
             EditorCard.Draw(Pad, () =>
             {
-                var next = EditorUIUtility.DrawFilterTabBar(current,
+                var next = EditorButtonGroup.Draw(current,
                     new[] { AbilityTypeFilter.All, AbilityTypeFilter.Active, AbilityTypeFilter.Passive },
                     new[] { "All", "Active", "Passive" });
                 if (!EqualityComparer<AbilityTypeFilter>.Default.Equals(next, current))
@@ -28,7 +28,7 @@ namespace RedDust.Ability
         {
             EditorCard.Draw(Pad, () =>
             {
-                var s = EditorUIUtility.DrawSearchRow(current, labelWidth: 45f);
+                var s = EditorSearchBar.Draw(current, labelWidth: 45f);
                 if (s != current) onChanged(s);
             });
         }
@@ -50,7 +50,7 @@ namespace RedDust.Ability
             });
         }
 
-        private static void CreateAbility<T>(string prefix, string dir, Action<AbilitySO> onCreated) where T : AbilitySO
+        public static void CreateAbility<T>(string prefix, string dir, Action<AbilitySO> onCreated) where T : AbilitySO
         {
             if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 

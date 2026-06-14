@@ -2,28 +2,58 @@
 
 > `Shared/Editor/Components/` · namespace `RedDust.Shared.EditorUI`
 >
-> 所有 Editor Window 和 Inspector 共用的标准 IMGUI 组件。基于 Unity `EditorGUILayout` 封装，对标 Element UI，提供一致的外观和交互。
-
-## 核心原则
-
-1. **卡片即容器** — 所有逻辑区块用 `EditorCard.Draw(pad, ...)` 包裹，禁止裸 `EditorStyles.helpBox`
-2. **按钮走组件** — 所有按钮走 `EditorButton.Draw`，禁止裸 `GUILayout.Button`
-3. **间距统一推导** — 全部间距从 `pad=6` 出发，不出现魔术数字
-4. **宽高外置** — 卡片本身不控制宽高（100% 宽），由外层 `BeginHorizontal(options)` 控制
+> 所有 Editor Window 和 Inspector 共用的标准 IMGUI 组件。基于 Unity `EditorGUILayout` 封装，对标 Element UI。
 
 ---
 
+## 设计理念
+
+**组件 = 布局 Slot，回调 = 内容。组件之间零耦合。**
+
+每个组件只提供一个"洞"（`Action drawSlot` / `Action<T> onSelected` / `event Action OnChange`），调用方往洞里填内容。组件不知道、不持有、不关心洞里放的什么。
+
+| 原则 | 说明 |
+|------|------|
+| **组件纯静态、不持仓** | `FormItemGroup.Draw(Horizontal, () => ...)` 不存 FormItem；`EditorForm` 不存字段实例。回调里现画现走 |
+| **组件只提供 Slot，不管 Slot 内容** | `DrawWithHeader` 右侧是 `drawRight` 回调；`ObjectFieldWithTagPicker` 弹窗是 `onTagSelected` 回调。组件定布局框架，调用方定内容 |
+| **Slot vs 变体：内容可预知用变体** | 内容不可预知 → `Action drawSlot`；内容可预知（按钮、Picker）→ 命名变体 `TextFieldWithClear`、`ObjectFieldWithTagPicker` |
+| **组合组件只编排子组件** | 上层组件只做布局编排，渲染全委托子组件。声明式列举内部依赖（如 `SearchBar = Label + Input.TextFieldWithClear`），不裸调 `GUILayout` |
+| **组件不跨层调用** | `EditorFormItem` 不直接 `SetDirty`，走 `f.NotifyFieldChanged`；`EditorInput` 不画 Label；`EditorButton` 不托管弹窗逻辑 |
+| **禁止薄委托** | `EditorUIUtility` 不放 `DrawSearchRow` 等空壳——调用方直接调底层组件 |
+
+---
+
+## 代码规范
+
+1. **卡片即容器** — 所有逻辑区块用 `EditorCard.Draw(pad, ...)` 包裹
+2. **按钮走组件** — 所有按钮走 `EditorButton.Primary()`/`Danger()` 等入口
+3. **间距令牌集中** — IMGUI 布局令牌在 `EditorTokens.Pad` / `PadTight`（详见 [design-tokens.md §5.0](design-tokens.md)），组件引用令牌，禁止各自 `const float Pad = 6f`
+4. **间距必须推导** — 所有 gap 从 `Pad` 令牌计算（`Pad / 2`、`Pad * 2`），禁止硬编码 `3f`/`4f` 等魔术数字
+5. **风格令牌与 Helper 分离** — 设计令牌（`Pad`/`Font`/`Color`/`Padding`）放 `EditorTokens`，纯数据；Helper（`GreyPlaceholder`等）放 `EditorUIUtility`。两者不混装
+6. **GUI.Button 优于 GUILayout.Button** — 禁止裸 `GUILayout.Button`；禁止裸 `EditorStyles.helpBox`
+6. **回调写内容** — 所有组件通过 `Action` 回调接收内容，对标 `EditorCard.Draw(pad, () => { ... })`
+
+---
+
+> 设计令牌（颜色/字体/间距/圆角）见 [design-tokens.md](design-tokens.md)。IMGUI 布局令牌（`Pad`/`PadTight`）定义在 `EditorTokens`。
+
 ## 组件总览
 
-| 组件 | 类型 | 用途 | 对标 |
-|------|------|------|------|
-| `EditorCard` | static | 卡片容器 — 圆角边框 + 内边距 | `el-card` |
-| `EditorButton` | static | 按钮 — 大小 + 颜色风格 | `el-button` |
-| `EditorButtonGroup` | static | 按钮组 — 多按钮水平排列，单选高亮 | `el-button-group` |
-| `EditorSearchBar` | static | 搜索栏 — Label + TextField + 清除按钮 | `el-input` search |
-| `EditorUIUtility` | static | 布局工具 — Header / 搜索 / 筛选委托 / 删除按钮 | — |
-| `EditorForm` | class | 声明式表单 — 绑定 SO，自动 SetDirty | `el-form` |
-| `EditorImportExport` | static | 导入/导出面板 — 文件选择 + 预览 + 按钮 + 结果 | — |
+| 组件 | 角色 | 说明 |
+|------|------|------|
+| `EditorCard` | 布局容器 | 卡片 + 标题 + 折叠 + 列表项 + Header |
+| `EditorForm` | 表单布局 | BeginGroup/EndGroup、OnChange/OnSubmit、统一 SetDirty |
+| `EditorFormItem` | 字段渲染 | 拼装 EditorLabel + EditorInput + 变更检测 |
+| `EditorLabel` | Label | 纯标签文字 |
+| `EditorInput` | Input + 侧边按钮 | ObjectField/FloatField/... + TagButton 等 |
+| `EditorButton` | 按钮 | 类型入口 Primary()/Danger()/... + Delete() |
+| `EditorButtonGroup` | 按钮组 | 多按钮水平排列，单选高亮 |
+| `FormItemGroup` | 布局包装 | `Draw(Horizontal, () => {...})` 水平/垂直排列 |
+| `EditorSearchBar` | 搜索栏 | Label + TextField + 清除按钮 |
+| `EditorDivider` | 分隔线 | 细线 + 可选标题 |
+| `EditorImportExport` | 导入/导出 | 文件选择 + 预览 + 按钮 + 结果 |
+| `EditorTokens` | 设计令牌 | 布局/字号/内边距/颜色常量 |
+| `EditorUIUtility` | Helper | GreyPlaceholder 等工具样式 |
 
 ---
 
@@ -45,48 +75,34 @@ EditorCard.Draw(float pad, Action drawContent, bool selected);
 // 带标题
 EditorCard.Draw(float pad, string title, Action drawBody);
 
-// 轻量卡片（半内边距，淡化边框）— 嵌套时使用
+// Header 卡片：[Title][Subtitle][Flexible][drawRight Slot]
+EditorCard.DrawWithHeader(string title, string subtitle, Action drawRight = null);
+
+// 轻量卡片
 EditorCard.DrawLight(float pad, Action drawContent);
 
-// 折叠卡片（▸/▾箭头 + 可展开内容）
+// 折叠卡片
 EditorCard.DrawFoldout(float pad, string title, ref bool folded, Action drawContent);
 
-// 列表项（扁平内边距 + 选中高亮 + 点击回调）
+// 列表项
 EditorCard.DrawItem(float pad, Action drawContent, bool selected = false, Action onClick = null);
 
 // 间距
-EditorCard.Gap(float pad);       // 标准间距
-EditorCard.GapTight();           // 紧凑间距 (3px)
+EditorCard.Gap(float pad);
+EditorCard.GapTight();  // 3px
 ```
 
 ### 使用范例
 
 ```csharp
-EditorCard.Draw(6f, "技能设置", () =>
-{
-    EditorGUILayout.LabelField("cooldownDuration", EditorStyles.label);
-});
-
-EditorCard.DrawFoldout(6f, "高级选项", ref _folded, () =>
-{
-    EditorCard.DrawLight(4f, () => { /* 嵌套内容 */ });
-});
-```
-
-### 卡片内部结构
-
-```
-BeginVertical(helpBox)
-  Space(pad)              ← 上内边距
-  BeginHorizontal
-    Space(pad)            ← 左内边距
-    BeginVertical
-      [content]
-    EndVertical
-    Space(pad)            ← 右内边距
-  EndHorizontal
-  Space(pad)              ← 下内边距
-EndVertical
+// Header
+EditorCard.Draw(Pad, () =>
+    EditorCard.DrawWithHeader("Ability Editor", "L3_Ability · Editor",
+        drawRight: () =>
+        {
+            EditorButton.Primary("Save *", enabled: _hasChanges);
+            EditorButton.Default("Refresh");
+        }));
 ```
 
 ---
@@ -95,47 +111,44 @@ EndVertical
 
 **文件**: `Button.cs`
 
-### 风格枚举
-
-| 枚举 | 颜色 | 用途 |
-|------|------|------|
-| `Default` | 默认灰 | 普通按钮、清除按钮 |
-| `Primary` | 绿色 | 保存、选中态 |
-| `Success` | 深绿 | 创建、导入 |
-| `Danger` | 红色 | 删除、破坏性操作 |
-
-### 尺寸枚举
-
-| 枚举 | padding | fontSize | 说明 |
-|------|---------|----------|------|
-| `Auto` | — | 默认 | 自适应（GUILayout 默认） |
-| `Small` | 7×15 | 12 | miniButton |
-| `Medium` | 10×16 | 12 | 自定义 style |
-| `Large` | 14×22 | 13 | 自定义 style |
-
-### API
+### 类型入口（高频）
 
 ```csharp
-// 标准按钮
-bool clicked = EditorButton.Draw("Import",
-    EditorButtonStyle.Success,
-    EditorButtonSize.Large,
-    120f);                         // 可选固定宽度
+EditorButton.Default("Refresh", size: Medium);
+EditorButton.Primary("Save *", size: Medium, enabled: _hasChanges);
+EditorButton.Success("+ Create", size: Medium);
+EditorButton.Danger("✕", size: Small, width: 20);
+EditorButton.Warning("Warn", size: Small);
+EditorButton.Info("Info", size: Small);
 
-// 手动 Rect 版本
-bool clicked = EditorButton.Draw(rect, "x", EditorButtonStyle.Danger);
+// 删除
+EditorButton.Delete();         // ✕ Danger Small w:20
+EditorButton.Delete(rect);     // Rect 版
 ```
 
-### 典型用法
+### 通用入口（低频）
 
-| 用途 | API |
-|------|-----|
-| 主操作（Save） | `EditorButton.Draw("Save *", Primary, Medium)` |
-| 创建 | `EditorButton.Draw("+ Create", Success, Medium)` |
-| 导入 | `EditorButton.Draw("Import", Success, Large, 120f)` |
-| 导出 | `EditorButton.Draw("Export", Primary, Large, 120f)` |
-| 删除 | `EditorButton.Draw("x", Danger, Small, 20)` — 见 `EditorUIUtility.DeleteButton()` |
-| 清除 | `EditorButton.Draw("x", Default, Small, 20)` — SearchBar 内 |
+```csharp
+EditorButton.Draw(text, type, size, width?, height?, tooltip?, enabled);
+EditorButton.Draw(rect, text, type, tooltip?);
+```
+
+### 类型 & 尺寸
+
+| EditorButtonType | 颜色 |
+|-----------------|------|
+| `Default` | 系统默认 |
+| `Primary` | 绿 #4C8C4C |
+| `Success` | 深绿 |
+| `Warning` | 橙 |
+| `Danger` | 红 #D32222 |
+| `Info` | 灰 |
+
+| EditorButtonSize | 说明 |
+|-----------------|------|
+| `Small` | miniButton |
+| `Medium` | 默认 |
+| `Large` | 大按钮 |
 
 ---
 
@@ -143,24 +156,13 @@ bool clicked = EditorButton.Draw(rect, "x", EditorButtonStyle.Danger);
 
 **文件**: `ButtonGroup.cs`
 
-多个按钮横向排列，仅一个高亮选中（Primary 风格）。对标 `el-button-group`。
-
-### API
-
 ```csharp
 // Enum 模式
-T next = EditorButtonGroup.Draw(
-    T current, T[] values, string[] labels,
-    EditorButtonSize size = EditorButtonSize.Small);
+var next = EditorButtonGroup.Draw(current, values, labels, size);
 
 // 索引模式
-int idx = EditorButtonGroup.Draw(
-    string[] labels, int selectedIndex = -1,
-    EditorButtonSize size = EditorButtonSize.Small);
+int idx = EditorButtonGroup.Draw(labels, selectedIndex, size);
 ```
-
-- 点击返回新值/索引，未点击返回原值
-- 选中 → `Primary`，未选中 → `Default`
 
 ---
 
@@ -168,309 +170,211 @@ int idx = EditorButtonGroup.Draw(
 
 **文件**: `SearchBar.cs`
 
-结构: `[Label(w:固定)] [TextField(flex)] [× ClearBtn(w:20)]`。对标 `el-input` search。
-
-### API
+结构: `[Label] [TextField(flex)] [✕ ClearBtn]`
 
 ```csharp
 string next = EditorSearchBar.Draw(_searchText, labelWidth: 45f);
 ```
 
-- 有文字 → 清除按钮可点击（`Default` 风格）
-- 空文字 → 清除按钮 `GUI.enabled = false`
-- 布局参照 `EditorFormItem`：`BeginHorizontal` + `singleLineHeight`
+---
+
+## 5. EditorLabel — Label
+
+**文件**: `EditorLabel.cs`
+
+```csharp
+EditorLabel.Draw("Name", width: 80, tooltip: "效果的显示名称");
+```
 
 ---
 
-## 5. EditorUIUtility — 布局工具
+## 6. EditorInput — Input + 侧边按钮
 
-**文件**: `UIUtility.cs`
+**文件**: `EditorInput.cs`
 
-`DrawFilterTabBar` 和 `DrawSearchRow` 已委托给 `EditorButtonGroup` / `EditorSearchBar`，此处为便捷入口。
+纯输入控件，不画 Label。内置可选侧边按钮。
+
+```csharp
+// 基础 Input
+float v = EditorInput.FloatField(oldValue, width: 60);
+int   n = EditorInput.IntField(oldValue);
+bool  b = EditorInput.Toggle(oldValue);
+var   t = EditorInput.ObjectField<T>(oldValue);
+
+// 侧边按钮
+EditorInput.TagButton(ref tagBtnRect);  // Tag 按钮，自动捕获 Rect
+
+// ObjectField + TagPicker 组合
+var next = EditorInput.ObjectFieldWithTagPicker(val, ref rect,
+    onTagSelected: t => { ... });
+```
+
+---
+
+## 7. EditorForm — 表单布局
+
+**文件**: `Form.cs`
+
+回调模式——每帧创建 + 绘制，对标 EditorCard。
 
 ### API
 
 ```csharp
-// Header
-EditorUIUtility.DrawHeaderCard(6f, "Ability Editor", "L3_Ability",
-    hasChanges: true, onSave: () => Save());
+EditorForm.Draw(target, form =>
+{
+    form.DefaultLabelWidth = 80;
 
-// Tooltip Label
-EditorUIUtility.LabelWithTooltip(so, "cooldownDuration", 90f);
+    // 字段 — 通过 EditorFormItem
+    EditorFormItem.Float("duration");
+    EditorFormItem.Toggle("stackable");
+    EditorFormItem.ObjectField<T>("effectTag");
 
-// 搜索行 → EditorSearchBar.Draw
-string search = EditorUIUtility.DrawSearchRow(_searchText, labelWidth: 45f);
+    // 手动字段
+    EditorFormItem.RawField("Name", 80, getValue, setValue, drawFunc, equals);
 
-// 筛选标签栏 → EditorButtonGroup.Draw
-EAbilityType type = EditorUIUtility.DrawFilterTabBar(_type, tabs, labels);
+    // 数组字段
+    EditorFormItem.ArrayField<T>("adjuncts", getValue, setValue, drawRow, createDefault);
 
-// 删除按钮 → EditorButton.Draw("x", Danger)
-bool del = EditorUIUtility.DeleteButton();
+    // 水平分组
+    form.BeginGroup(FormGroupLayout.Horizontal);
+    EditorFormItem.Float("a");
+    EditorFormItem.Float("b");
+    form.EndGroup();
+
+    // ObjectField + TagPicker
+    EditorFormItem.ObjectFieldWithTag<T>("effectTag", ref _tagBtnRect);
+
+    // 事件
+    form.OnChange += () => _dirty = true;
+    form.OnSubmit += () => Save();
+});
 ```
 
-### 颜色常量
+### 事件 & 方法
 
-| 常量 | 值 | 用途 |
-|------|-----|------|
-| `ColorGreen` | (0.4, 0.8, 0.4) | 保存按钮 |
-| `ColorGreenDark` | (0.4, 0.7, 0.4) | 创建/导入按钮 |
-| `ColorBlue` | #4C7EFF | 选中高亮 |
-| `ColorRed` | #D32222 | 错误 / 删除 |
-| `ColorButtonText` | #EEEEEE | 有色按钮上的白字 |
-
-### 预置样式
-
-```csharp
-EditorUIUtility.GreyPlaceholder  // 灰色居中空状态文字
-```
-
----
-
-## 6. EditorForm — 声明式表单
-
-**文件**: `Form.cs` + `FormItem.cs`（internal）
-
-绑定 `ScriptableObject`，fluent API 定义字段，`Draw()` 自动渲染 Label + Input + SetDirty。
-
-### 构建 API
-
-```csharp
-var form = new EditorForm(targetSO);
-
-form
-    .Float("cooldownDuration", "冷却时间", labelWidth: 90f)
-    .Toggle("overrideExclusion", "无视互斥")
-    .Enum<EActivationType>("activationType", "激活方式")
-    .TextField("internalName", "内部名")
-    .TextArea("description", "描述")
-    .ObjectField<AbilityActivationSO>("activation", "激活方式")
-    .Slider("animationSpeed", 0.1f, 3f, "动画速度")
-    .ReadOnly()
-    .HelpText("超过 1.0 为加速")
-    .Divider("高级选项")
-    .CustomOnChange((old, @new) => { /* 自定义变更处理 */ return true; });
-```
-
-### 字段类型
-
-| 方法 | Unity 控件 | 值类型 |
-|------|-----------|--------|
-| `.Float()` | `EditorGUILayout.FloatField` | float |
-| `.Int()` | `EditorGUILayout.IntField` | int |
-| `.Slider()` | `EditorGUILayout.Slider` | float |
-| `.Toggle()` | `EditorGUILayout.Toggle` | bool |
-| `.Enum<T>()` | `EditorGUILayout.EnumPopup` | enum |
-| `.TextField()` | `EditorGUILayout.TextField` | string |
-| `.TextArea()` | `EditorGUILayout.TextArea` | string (多行) |
-| `.ObjectField<T>()` | `EditorGUILayout.ObjectField` | UnityEngine.Object |
-| `.RawField()` | 自定义 | 任意 |
-
-### 修饰方法
-
-| 方法 | 作用 |
+| 成员 | 说明 |
 |------|------|
-| `.ReadOnly()` | 禁用输入 |
-| `.HelpText(text)` | 输入下方灰色说明 |
-| `.PostInput(drawExtra)` | 输入后追加自定义控件 |
-| `.CustomDraw(drawFunc)` | 完全替换输入控件 |
-| `.CustomOnChange(onChange)` | 替换变更处理（需返回 bool） |
-| `.CustomEquals(equals)` | 替换等值比较 |
-| `.Divider(title)` | 分组分隔线 |
+| `OnChange` | 任一字段变更 |
+| `OnSubmit` | `Submit()` 时触发 |
+| `Submit()` | 手动提交 |
+| `NotifyFieldChanged(field, val)` | Form 统一写字段 + SetDirty + 发 OnChange |
 
-### 生命周期
+### 布局上下文
 
-```csharp
-if (EditorForm.NeedsRebuild(_form, _selectedSO))
-    _form = BuildForm(_selectedSO);
-_form?.Draw();
-```
-
-| 属性 | 默认值 | 说明 |
-|------|--------|------|
-| `DefaultLabelWidth` | 90f | Label 列宽度 |
-| `RowSpacing` | 6f | 行间距 |
-| `OnAnyChange` | null | 任一字段变更事件 |
+通过 `EditorForm.Current`（线程静态）传递。`EditorFormItem` 和 `EditorInput` 通过它拿 `DefaultLabelWidth`、`RowSpacing` 等。
 
 ---
 
-## 7. EditorImportExport — 导入/导出面板
+## 8. EditorFormItem — 字段渲染
+
+**文件**: `FormItem.cs`
+
+拼装 `EditorLabel` + `EditorInput` + 变更检测。所有字段即时绘制。
+
+```csharp
+EditorFormItem.Float("duration", label: "Duration", visibleWhen: () => ...);
+EditorFormItem.Int("maxStacks", onBeforeSet: v => Mathf.Max(1, v));
+EditorFormItem.Toggle("stackable");
+EditorFormItem.Enum<T>("type");
+EditorFormItem.TextField("name");
+EditorFormItem.ObjectField<T>("effectTag");
+EditorFormItem.Slider("hpThreshold", 0f, 1f);
+EditorFormItem.RawField(label, labelWidth, getValue, setValue, drawFunc, equals);
+EditorFormItem.ArrayField<T>(label, getValue, setValue, drawRow, createDefault);
+EditorFormItem.ObjectFieldWithTag<T>(fieldName, ref tagBtnRect);
+```
+
+变更检测后走 `f.NotifyFieldChanged(field, newVal)`——不直接调 `EditorUtility.SetDirty`。
+
+---
+
+## 9. FormItemGroup — 布局包装
+
+**文件**: `FormItemGroup.cs`
+
+```csharp
+FormItemGroup.Draw(FormGroupLayout.Horizontal, () =>
+{
+    item1.Draw(null);
+    item2.Draw(null);
+});
+```
+
+---
+
+## 10. EditorDivider — 分隔线
+
+**文件**: `EditorDivider.cs`
+
+```csharp
+EditorDivider.Draw("Advanced Options");
+```
+
+---
+
+## 11. EditorImportExport — 导入/导出
 
 **文件**: `ImportExport.cs`
 
-所有 `*ImportExport` 窗口的共享骨架。
-
-### API
-
-```csharp
-EditorImportExport.Draw(
-    title: "Ability Import-Export",
-    subtitle: "L3_Ability · JSON ↔ .asset",
-    defaultDir: "Assets/Data/Ability",
-    fileExtension: "json",
-    defaultFileName: "abilities_export",
-    filePath: ref _filePath,
-    previewText: ref _previewText,
-    result: ref _result,
-    buildPreview: path => BuildPreview(path),
-    onImport: path => { /* ... */ },
-    onExport: path => { /* ... */ }
-);
-```
-
-### 窗口模板
-
-```csharp
-public class MyImportWindow : EditorWindow
-{
-    private string _filePath;
-    private string _previewText;
-    private (int created, int skipped, List<string> errors) _result;
-
-    [MenuItem("RedDust/My Import-Export", priority = 99)]
-    public static void Open()
-    {
-        var window = GetWindow<MyImportWindow>("My Import-Export");
-        window.minSize = new Vector2(520, 420);
-        window.Show();
-    }
-
-    private void OnGUI()
-    {
-        EditorImportExport.Draw(
-            title: "My Import-Export",
-            /* ... */
-        );
-    }
-}
-```
+所有 `*ImportExport` 窗口的共享骨架，保持不变。
 
 ---
 
-## 布局约定
+## 12. EditorTokens — 设计令牌
 
-| 约定 | 值 | 说明 |
-|------|-----|------|
-| 默认内边距 `pad` | 6f | 卡片内边距 = 卡片间隙 = 窗口边缘间距 |
-| 卡片间距 | `EditorCard.Gap(6f)` | 同级卡片间 |
-| 紧凑间距 | `EditorCard.GapTight()` | 关联紧密元素间 (3px) |
-| 默认 Label 宽度 | 90f | `EditorForm.DefaultLabelWidth` |
-| 折叠三角宽度 | 14px | 叶节点保留占位对齐 |
-| 树节点缩进 | 18px/层 | `Space(depth * 18)`，在文字层缩进 |
-| 删除按钮 | `EditorUIUtility.DeleteButton()` | 红色 "x" |
-| 空状态文本 | `EditorUIUtility.GreyPlaceholder` | 灰色居中 |
-| 导入/导出窗口 | 520×420 | 最小尺寸 |
+**文件**: `EditorTokens.cs`
 
----
+所有组件共用的布局、字号、内边距、颜色常量。纯数据，不掺杂逻辑。
 
-## 布局模式
-
-### 模式 A：多栏布局
-
-```
-BeginHorizontal                  ← 栏容器
-  BeginHorizontal(Width, ExpandHeight)  ← 栏 1
-    EditorCard.Draw(pad, () => { ... })
-  EndHorizontal
-  Space(pad)                     ← 栏间隙
-  BeginHorizontal(ExpandWidth, ExpandHeight)  ← 栏 2
-    EditorCard.Draw(pad, () => { ... })
-  EndHorizontal
-EndHorizontal
-```
-
-- 每栏 = `BeginHorizontal(尺寸选项)` → `EditorCard.Draw` → `EndHorizontal`
-- 固定宽用 `Width(...)`，自适应用 `ExpandWidth(true)`
-
-### 模式 B：子卡片列表
-
-```
-EditorCard.Draw(pad, () =>
-{
-    EditorCard.Draw(pad, () => { ... });
-    EditorCard.Gap(pad);
-    EditorCard.Draw(pad, () => { ... });
-    EditorCard.Gap(pad);
-    EditorCard.Draw(pad, () => { ... });
-});
-```
-
-每个子区块独立 `EditorCard.Draw`，间隙 `EditorCard.Gap(pad)`。嵌套不影响外层内边距。
-
-### 模式 C：折叠树节点
-
-```
-EditorCard.Draw(pad, () =>
-{
-    BeginHorizontal;
-      BeginHorizontal(Width(20));  ← 折叠三角区 (14+6)
-        foldRect(14) / dash
-        Space(6)
-      EndHorizontal;
-      BeginVertical(ExpandWidth);
-        Space(depth * 18);         ← 文字缩进，非卡片嵌套
-        名称 label/button
-        [子节点 — 模式 B]
-      EndVertical;
-    EndHorizontal;
-});
-```
-
-树节点独立卡片递归嵌套。缩进在文字层（`Space(depth * 18)`），不靠卡片层级。
-
-### 窗口级间距
-
-```
-Window edge
-│ Space(pad)     ← 上
-│ ┌─ BeginHorizontal ────────────────┐
-│ │ Space(pad)   ← 左                │
-│ │ content (BeginVertical)          │
-│ │ Space(pad)   ← 右                │
-│ └──────────────────────────────────┘
-│ Space(pad)     ← 下
-Window edge
-```
+| 类别 | 令牌 |
+|------|------|
+| 布局 | `Pad`(6f) / `PadTight`(3f) |
+| 字号 | `FontSm`(11) / `FontBase`(12) / `FontLg`(14) |
+| 内边距 | `PaddingSmall` / `PaddingMedium` / `PaddingLarge` |
+| 颜色 | `ColorGreen` / `ColorGreenDark` / `ColorBlue` / `ColorRed` / `ColorButtonText` / `ColorSelected` |
 
 ---
 
-## 常见陷阱
+## 13. EditorUIUtility — Helper
 
-1. **禁止裸 `GUILayout.Button`** → 走 `EditorButton.Draw`
-2. **禁止裸 `EditorStyles.helpBox`** → 走 `EditorCard.Draw`
-3. **禁止魔术数字** → `Space(2)`, `Space(4)` 等一律用 `pad` 或 `EditorCard.Gap`
-4. **禁止 emoji** → Unity IMGUI 默认字体不渲染
-5. **卡片嵌套合法** → 内层 `EditorCard.Draw` 不影响外层内边距
-6. **`Foldout` 不支持 `GUILayoutOption`** → 用 `GetRect` + `EditorGUI.Foldout` 固定宽度
-7. **`ref` 参数不能进 lambda** → 先捕获到本地变量，lambda 结束后回写
-8. **命名空间避免 `*.Editor`** → 与 `UnityEditor.Editor` 冲突，用 `*.EditorUI`
+**文件**: `UIUtility.cs`
+
+| 成员 | 说明 |
+|------|------|
+| `GreyPlaceholder` | 灰色居中空状态 GUIStyle |
 
 ---
 
 ## 依赖关系
 
 ```
-EditorImportExport
-    ├── EditorCard (Draw, DrawLight, Gap, GapTight)
-    ├── EditorButton (Draw)
-    └── EditorUIUtility (GreyPlaceholder)
-
-EditorUIUtility
-    ├── EditorCard (Draw)
-    ├── EditorButton (Draw)
-    ├── EditorButtonGroup (Draw)   ← DrawFilterTabBar 委托
-    └── EditorSearchBar (Draw)     ← DrawSearchRow 委托
-
-EditorButtonGroup
-    └── EditorButton (Draw)
-
-EditorSearchBar
-    └── EditorButton (Draw)
+EditorCard
+    └── EditorTokens (ColorSelected)
 
 EditorForm
-    └── EditorFormItem (internal)
+    ├── EditorLabel
+    ├── EditorInput
+    └── EditorFormItem
+          ├── EditorLabel
+          └── EditorInput
 
 EditorFormItem
-    └── (standalone)
+    ├── EditorLabel
+    ├── EditorInput
+    └── EditorForm.Current (context)
+
+EditorButton → EditorTokens (Font/Padding/Color)
+EditorButtonGroup → EditorButton
+EditorSearchBar
+    ├── EditorLabel
+    ├── EditorInput (TextFieldWithClear)
+    └── EditorTokens (PadTight)
+EditorDivider → (standalone)
+FormItemGroup → (standalone)
+EditorImportExport → EditorCard + EditorButton
+
+EditorTokens → (纯数据，无依赖)
+EditorUIUtility → (纯 Helper，无依赖)
 ```
 
-所有组件都在 `#if UNITY_EDITOR` 下，不进入运行时构建。
+所有组件 `#if UNITY_EDITOR`，不进入运行时构建。

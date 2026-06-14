@@ -33,9 +33,6 @@ namespace RedDust.Ability
         private Vector2 _rightScroll;
         private readonly Dictionary<string, bool> _foldouts = new();
 
-        // ── EditorForm ──
-        private EditorForm _form;
-
         [MenuItem("RedDust/Activation Editor", priority = 3)]
         public static void Open()
             => GetWindow<ActivationEditorWindow>("Activation Editor");
@@ -137,7 +134,7 @@ namespace RedDust.Ability
                 // 搜索框
                 EditorCard.DrawLight(Pad, () =>
                 {
-                    var s = EditorUIUtility.DrawSearchRow(_searchText, labelWidth: 42f);
+                    var s = EditorSearchBar.Draw(_searchText, labelWidth: 42f);
                     if (s != _searchText) { _searchText = s; }
                 });
 
@@ -190,35 +187,32 @@ namespace RedDust.Ability
         {
             var a = _selectedActivation;
 
-            if (EditorForm.NeedsRebuild(_form, a))
+            EditorForm.Draw(a, form =>
             {
-                _form = new EditorForm(a) { DefaultLabelWidth = 100 };
-                _form.RawField("Name", 100,
-                        getValue: () => a.name,
-                        setValue: v => { a.name = (string)v; },
-                        drawFunc: v => EditorGUILayout.TextField((string)v),
-                        equals: (x, y) => (string)x == (string)y)
-                    .CustomOnChange((_, newVal) =>
+                form.DefaultLabelWidth = 100;
+                EditorFormItem.RawField("Name", 100,
+                    getValue: () => a.name,
+                    setValue: v =>
                     {
-                        var n = (string)newVal;
-                        if (string.IsNullOrWhiteSpace(n)) return false;
+                        var n = (string)v;
+                        if (string.IsNullOrWhiteSpace(n)) return;
                         RenameActivation(a, n);
-                        return true;
-                    })
-                     .Enum<EActivationType>("activationType")
-                     .Float("maxChargeTime")
-                     .Toggle("autoReleaseAtFullCharge")
-                     .ObjectField<StringAsset>("animationAsset")
-                     .Enum<EAbilityAnimationLayer>("animationLayer")
-                     .Slider("animationSpeed", 0.1f, 3f)
-                     .Toggle("rootMotion")
-                     .Float("windupDuration")
-                     .Float("fireWindowDuration")
-                     .Toggle("canCancelWindup")
-                     .Toggle("canCancelRecovery");
-                _form.OnAnyChange += MarkDirty;
-            }
-            _form?.Draw();
+                    },
+                    drawFunc: v => EditorGUILayout.TextField((string)v),
+                    equals: (x, y) => (string)x == (string)y);
+                EditorFormItem.Enum<EActivationType>("activationType");
+                EditorFormItem.Float("maxChargeTime");
+                EditorFormItem.Toggle("autoReleaseAtFullCharge");
+                EditorFormItem.ObjectField<StringAsset>("animationAsset");
+                EditorFormItem.Enum<EAbilityAnimationLayer>("animationLayer");
+                EditorFormItem.Slider("animationSpeed", 0.1f, 3f);
+                EditorFormItem.Toggle("rootMotion");
+                EditorFormItem.Float("windupDuration");
+                EditorFormItem.Float("fireWindowDuration");
+                EditorFormItem.Toggle("canCancelWindup");
+                EditorFormItem.Toggle("canCancelRecovery");
+                form.OnChange += MarkDirty;
+            });
         }
 
         // ═══════════════════════════════════════════════════

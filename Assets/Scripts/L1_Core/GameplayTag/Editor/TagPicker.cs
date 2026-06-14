@@ -137,7 +137,7 @@ namespace RedDust.Core.Editor
 
         private void DrawSearchField()
         {
-            _searchText = EditorUIUtility.DrawSearchRow(_searchText);
+            _searchText = EditorSearchBar.Draw(_searchText);
         }
 
         private void DrawFooter()

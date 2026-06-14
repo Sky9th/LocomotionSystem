@@ -155,11 +155,10 @@ namespace RedDust.Ability
                       alignment = TextAnchor.MiddleLeft };
                 GUI.Label(textRect, label, textStyle);
 
-                // 删除按钮（仅叶子 + 有回调时显示）
                 if (btnW > 0f)
                 {
                     var delRect = new Rect(textRect.xMax + 2, rowRect.y, btnW, rowRect.height);
-                    if (EditorUIUtility.DeleteButton(delRect))
+                    if (EditorButton.Delete(delRect))
                     {
                         var asset = node.Ability ?? (ScriptableObject)node.Effect ?? (ScriptableObject)node.Search ?? (ScriptableObject)node.Activation;
                         onDeleteLeaf(asset);

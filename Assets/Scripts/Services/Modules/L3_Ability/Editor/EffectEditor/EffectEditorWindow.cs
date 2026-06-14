@@ -33,15 +33,14 @@ namespace RedDust.Ability
         private EffectSO _selectedEffect;
         private string _searchText = "";
 
-        // ── EditorForm ──
-        private EditorForm _baseForm;
-        private EditorForm _typeForm;
+        // ── 状态 ──
         private EffectTypeFilter _filter = EffectTypeFilter.All;
         private Vector2 _leftScroll;
         private Vector2 _rightScroll;
         private readonly Dictionary<string, bool> _foldouts = new();
         private Rect _effectTagButtonRect;
         private Rect _blockedTagButtonRect;
+        private Rect _grantedTagButtonRect;
 
         [MenuItem("RedDust/Effect Editor", priority = 1)]
         private static void Open()
@@ -163,9 +162,9 @@ namespace RedDust.Ability
         {
             EditorCard.DrawLight(Pad, () =>
             {
-                var newFilter = EditorUIUtility.DrawFilterTabBar(_filter,
-                    new[] { EffectTypeFilter.All, EffectTypeFilter.Damage, EffectTypeFilter.Impact, EffectTypeFilter.Execute, EffectTypeFilter.Cost },
-                    new[] { "All", "Dmg", "Imp", "Exe", "Cost" });
+                var newFilter = EditorButtonGroup.Draw(_filter,
+                    new[] { EffectTypeFilter.All, EffectTypeFilter.Damage, EffectTypeFilter.Impact, EffectTypeFilter.Execute, EffectTypeFilter.Cost, EffectTypeFilter.Buff },
+                    new[] { "All", "Dmg", "Imp", "Exe", "Cost", "Buf" });
                 if (!EqualityComparer<EffectTypeFilter>.Default.Equals(newFilter, _filter))
                 { _filter = newFilter; OnFilterChanged(); }
             });
@@ -175,7 +174,7 @@ namespace RedDust.Ability
         {
             EditorCard.DrawLight(Pad, () =>
             {
-                var s = EditorUIUtility.DrawSearchRow(_searchText, labelWidth: 42f);
+                var s = EditorSearchBar.Draw(_searchText, labelWidth: 42f);
                 if (s != _searchText) { _searchText = s; }
             });
         }
@@ -220,58 +219,30 @@ namespace RedDust.Ability
             {
                 var e = _selectedEffect;
 
-                if (EditorForm.NeedsRebuild(_baseForm, e))
+                EditorForm.Draw(e, form =>
                 {
-                    _baseForm = new EditorForm(e) { DefaultLabelWidth = 80 };
+                    form.DefaultLabelWidth = 80;
 
-                    // Name → RawField（Object.name 非 SO 字段）
-                    _baseForm.RawField("Name", 80,
+                    // Name → RawField
+                    EditorFormItem.RawField("Name", 80,
                         getValue: () => e.name,
                         setValue: v => { e.name = (string)v; },
                         drawFunc: v => EditorGUILayout.TextField((string)v),
-                        equals: (a, b) => (string)a == (string)b)
-                    .CustomOnChange((_, newVal) =>
-                    {
-                        var n = (string)newVal;
-                        if (string.IsNullOrWhiteSpace(n)) return false;
-                        RenameEffect(e, n);
-                        return true;
-                    });
+                        equals: (a, b) => (string)a == (string)b);
 
-                    // effectTag → ObjectField + TagPicker 按钮
-                    _baseForm.ObjectField<GameplayTagDefinitionSO>("effectTag")
-                        .PostInput(() =>
-                        {
-                            if (EditorButton.Draw("Tag", size: EditorButtonSize.Small, width: 35f))
-                            {
-                                TagPicker.Show(_effectTagButtonRect, allowCreate: true,
-                                    currentFullTag: e.effectTag?.FullTag,
-                                    onSelected: t =>
-                                    {
-                                        if (e.effectTag != t)
-                                        {
-                                            e.effectTag = t;
-                                            EditorUtility.SetDirty(e);
-                                            _hasChanges = true;
-                                            _needsRefresh = true;
-                                            _baseForm = null;
-                                        }
-                                    });
-                            }
-                            if (Event.current.type == EventType.Repaint)
-                                _effectTagButtonRect = GUILayoutUtility.GetLastRect();
-                        });
+                    // effectTag → ObjectField + TagPicker
+                    EditorFormItem.ObjectFieldWithTag<GameplayTagDefinitionSO>("effectTag",
+                        ref _effectTagButtonRect);
 
                     // 标准字段
-                    _baseForm.Float("duration")
-                             .Toggle("stackable")
-                             .Int("maxStacks",
-                                 visibleWhen: () => e.stackable,
-                                 onBeforeSet: v => Mathf.Max(1, v));
+                    EditorFormItem.Float("duration");
+                    EditorFormItem.Toggle("stackable");
+                    EditorFormItem.Int("maxStacks",
+                        visibleWhen: () => e.stackable,
+                        onBeforeSet: v => Mathf.Max(1, v));
 
-                    _baseForm.OnAnyChange += MarkDirty;
-                }
-                _baseForm?.Draw();
+                    form.OnChange += MarkDirty;
+                });
 
                 // applicationBlockedTags
                 GUILayout.Space(Pad);
@@ -301,7 +272,7 @@ namespace RedDust.Ability
                     e.applicationBlockedTags = arr;
                     MarkDirty();
                 }
-                if (EditorButton.Draw("Tag", size: EditorButtonSize.Small, width: 35f))
+                if (EditorButton.Default("Tag", EditorButtonSize.Small, width: 35))
                 {
                     var currentTag = tags[i]; // capture tag reference
                     TagPicker.Show(_blockedTagButtonRect, allowCreate: true, currentFullTag: currentTag?.FullTag,
@@ -323,7 +294,7 @@ namespace RedDust.Ability
                 }
                 if (Event.current.type == EventType.Repaint)
                     _blockedTagButtonRect = GUILayoutUtility.GetLastRect();
-                if (EditorUIUtility.DeleteButton())
+                if (EditorButton.Delete())
                     removeAt = i;
                 EditorGUILayout.EndHorizontal();
             }
@@ -335,7 +306,7 @@ namespace RedDust.Ability
             }
 
             GUILayout.Space(2);
-            if (EditorButton.Draw("+ Add Blocked Tag", size: EditorButtonSize.Small))
+            if (EditorButton.Default("+ Add Blocked Tag", EditorButtonSize.Small))
             {
                 e.applicationBlockedTags = AbilityEditorUtility.Append(tags, null);
                 MarkDirty();
@@ -360,6 +331,9 @@ namespace RedDust.Ability
                 case CostEffectSO c:
                     DrawCardSection("Cost", () => DrawCostFields(c));
                     break;
+                case BuffEffectSO b:
+                    DrawCardSection("Buff", () => DrawBuffFields(b));
+                    break;
             }
         }
 
@@ -370,56 +344,113 @@ namespace RedDust.Ability
 
         private void DrawDamageFields(DamageEffectSO d)
         {
-            if (EditorForm.NeedsRebuild(_typeForm, d))
+            EditorForm.Draw(d, form =>
             {
-                _typeForm = new EditorForm(d) { DefaultLabelWidth = 100 };
-                _typeForm.Float("baseValue", tooltip: (typeof(DamageEffectSO).GetField("baseValue")
-                        ?.GetCustomAttribute<TooltipAttribute>())?.tooltip)
-                         .Float("modAdd", tooltip: (typeof(DamageEffectSO).GetField("modAdd")
-                        ?.GetCustomAttribute<TooltipAttribute>())?.tooltip)
-                         .Float("modMult", tooltip: (typeof(DamageEffectSO).GetField("modMult")
-                        ?.GetCustomAttribute<TooltipAttribute>())?.tooltip)
-                         .Int("priority", tooltip: (typeof(DamageEffectSO).GetField("priority")
-                        ?.GetCustomAttribute<TooltipAttribute>())?.tooltip);
-                _typeForm.OnAnyChange += MarkDirty;
-            }
-            _typeForm?.Draw();
+                form.DefaultLabelWidth = 100;
+                EditorFormItem.Float("baseValue");
+                EditorFormItem.Float("modAdd");
+                EditorFormItem.Float("modMult");
+                EditorFormItem.Int("priority");
+                form.OnChange += MarkDirty;
+            });
         }
 
         private void DrawImpactFields(ImpactEffectSO i)
         {
-            if (EditorForm.NeedsRebuild(_typeForm, i))
+            EditorForm.Draw(i, form =>
             {
-                _typeForm = new EditorForm(i) { DefaultLabelWidth = 100 };
-                _typeForm.Float("staggerValue")
-                         .Float("knockbackForce")
-                         .Enum<EKnockbackDirection>("knockbackDir");
-                _typeForm.OnAnyChange += MarkDirty;
-            }
-            _typeForm?.Draw();
+                form.DefaultLabelWidth = 100;
+                EditorFormItem.Float("staggerValue");
+                EditorFormItem.Float("knockbackForce");
+                EditorFormItem.Enum<EKnockbackDirection>("knockbackDir");
+                form.OnChange += MarkDirty;
+            });
         }
 
         private void DrawExecuteFields(ExecuteEffectSO x)
         {
-            if (EditorForm.NeedsRebuild(_typeForm, x))
+            EditorForm.Draw(x, form =>
             {
-                _typeForm = new EditorForm(x) { DefaultLabelWidth = 100 };
-                _typeForm.Slider("hpThreshold", 0f, 1f);
-                _typeForm.OnAnyChange += MarkDirty;
-            }
-            _typeForm?.Draw();
+                form.DefaultLabelWidth = 100;
+                EditorFormItem.Slider("hpThreshold", 0f, 1f);
+                form.OnChange += MarkDirty;
+            });
         }
 
         private void DrawCostFields(CostEffectSO c)
         {
-            if (EditorForm.NeedsRebuild(_typeForm, c))
+            EditorForm.Draw(c, form =>
             {
-                _typeForm = new EditorForm(c) { DefaultLabelWidth = 100 };
-                _typeForm.ObjectField<PropertyDefSO>("def")
-                         .Float("amount");
-                _typeForm.OnAnyChange += MarkDirty;
-            }
-            _typeForm?.Draw();
+                form.DefaultLabelWidth = 100;
+                EditorFormItem.ObjectField<PropertyDefSO>("def");
+                EditorFormItem.Float("amount");
+                form.OnChange += MarkDirty;
+            });
+        }
+
+        private void DrawBuffFields(BuffEffectSO b)
+        {
+            EditorForm.Draw(b, form =>
+            {
+                form.DefaultLabelWidth = 80;
+
+                EditorFormItem.ArrayField<GameplayTagDefinitionSO>(
+                    "grantedTags",
+                    getValue: () => b.grantedTags,
+                    setValue: v => b.grantedTags = v,
+                    drawRow: (i, t) =>
+                    {
+                        var tag = (GameplayTagDefinitionSO)EditorGUILayout.ObjectField(
+                            t, typeof(GameplayTagDefinitionSO), false);
+                        if (tag != t) { b.grantedTags[i] = tag; MarkDirty(); }
+                        if (EditorButton.Default("Tag", EditorButtonSize.Small, width: 35))
+                        {
+                            var cap = t;
+                            TagPicker.Show(_grantedTagButtonRect, allowCreate: true, currentFullTag: cap?.FullTag,
+                                onSelected: tg =>
+                                {
+                                    b.grantedTags[i] = tg; MarkDirty();
+                                });
+                        }
+                        if (Event.current.type == EventType.Repaint)
+                            _grantedTagButtonRect = GUILayoutUtility.GetLastRect();
+                    },
+                    createDefault: () => null);
+
+                EditorFormItem.ArrayField<SBuffAdjunct>(
+                    "adjuncts",
+                    getValue: () => b.adjuncts,
+                    setValue: v => b.adjuncts = v,
+                    drawRow: (i, a) =>
+                    {
+                        var adj = a;
+                        Action flush = () => { b.adjuncts[i] = adj; MarkDirty(); };
+                        EditorForm.Draw(null, row =>
+                        {
+                            row.DefaultLabelWidth = 45;
+                            row.BeginGroup(FormGroupLayout.Horizontal);
+                            EditorFormItem.RawField("Property", 55,
+                                getValue: () => adj.property,
+                                setValue: v => { adj.property = (PropertyDefSO)v; flush(); },
+                                drawFunc: v => EditorGUILayout.ObjectField((PropertyDefSO)v, typeof(PropertyDefSO), false, GUILayout.Width(100)),
+                                equals: (x, y) => object.ReferenceEquals(x, y));
+                            EditorFormItem.RawField("Add", 25,
+                                getValue: () => adj.valueAdd,
+                                setValue: v => { adj.valueAdd = (float)v; flush(); },
+                                drawFunc: v => EditorGUILayout.FloatField((float)v, GUILayout.Width(50)),
+                                equals: (x, y) => Mathf.Abs((float)x - (float)y) <= 0.001f);
+                            EditorFormItem.RawField("Mult", 28,
+                                getValue: () => adj.valueMultiply,
+                                setValue: v => { adj.valueMultiply = (float)v; flush(); },
+                                drawFunc: v => EditorGUILayout.FloatField((float)v, GUILayout.Width(50)),
+                                equals: (x, y) => Mathf.Abs((float)x - (float)y) <= 0.001f);
+                            row.EndGroup();
+                        });
+                    },
+                    createDefault: () => new SBuffAdjunct { valueMultiply = 1f });
+
+                form.OnChange += MarkDirty;
+            });
         }
 
         // ═══════════════════════════════════════════════════
@@ -430,16 +461,17 @@ namespace RedDust.Ability
             EditorGUILayout.BeginHorizontal();
             GUILayout.Space(Pad);
 
-            int dmg = 0, imp = 0, exe = 0, cost = 0;
+            int dmg = 0, imp = 0, exe = 0, cost = 0, buf = 0;
             foreach (var e in _allEffects)
             {
                 if (e is DamageEffectSO) dmg++;
                 else if (e is ImpactEffectSO) imp++;
                 else if (e is ExecuteEffectSO) exe++;
                 else if (e is CostEffectSO) cost++;
+                else if (e is BuffEffectSO) buf++;
             }
             EditorGUILayout.LabelField(
-                $"{_allEffects.Count} effects · {dmg} Dmg · {imp} Imp · {exe} Exe · {cost} Cost",
+                $"{_allEffects.Count} effects · {dmg} Dmg · {imp} Imp · {exe} Exe · {cost} Cost · {buf} Buf",
                 EditorStyles.miniLabel);
 
             if (_selectedEffect != null)
@@ -582,6 +614,7 @@ namespace RedDust.Ability
             EffectTypeFilter.Impact => e is ImpactEffectSO,
             EffectTypeFilter.Execute => e is ExecuteEffectSO,
             EffectTypeFilter.Cost => e is CostEffectSO,
+            EffectTypeFilter.Buff => e is BuffEffectSO,
             _ => true,
         };
 
@@ -666,6 +699,7 @@ namespace RedDust.Ability
             menu.AddItem(new GUIContent("Impact"), false, () => CreateEffect<ImpactEffectSO>("ImpactEffect_", "Impact"));
             menu.AddItem(new GUIContent("Execute"), false, () => CreateEffect<ExecuteEffectSO>("ExecuteEffect_", "Execute"));
             menu.AddItem(new GUIContent("Cost"), false, () => CreateEffect<CostEffectSO>("CostEffect_", "Cost"));
+            menu.AddItem(new GUIContent("Buff"), false, () => CreateEffect<BuffEffectSO>("BuffEffect_", "Buff"));
             menu.ShowAsContext();
         }
 
@@ -698,6 +732,7 @@ namespace RedDust.Ability
         Impact,
         Execute,
         Cost,
+        Buff,
     }
 }
 #endif

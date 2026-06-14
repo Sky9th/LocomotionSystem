@@ -35,7 +35,6 @@ namespace RedDust.Ability
         private readonly Dictionary<string, bool> _foldouts = new();
 
         // ── EditorForm ──
-        private EditorForm _form;
         private Rect _noiseTagButtonRect;
 
         [MenuItem("RedDust/Noise Editor", priority = 4)]
@@ -139,7 +138,7 @@ namespace RedDust.Ability
                 // 搜索框
                 EditorCard.DrawLight(Pad, () =>
                 {
-                    var s = EditorUIUtility.DrawSearchRow(_searchText, labelWidth: 42f);
+                    var s = EditorSearchBar.Draw(_searchText, labelWidth: 42f);
                     if (s != _searchText) { _searchText = s; }
                 });
 
@@ -191,48 +190,41 @@ namespace RedDust.Ability
         {
             var n = _selectedNoise;
 
-            if (EditorForm.NeedsRebuild(_form, n))
+            EditorForm.Draw(n, form =>
             {
-                _form = new EditorForm(n) { DefaultLabelWidth = 100 };
-                _form.RawField("Name", 100,
-                        getValue: () => n.name,
-                        setValue: v => { n.name = (string)v; },
-                        drawFunc: v => EditorGUILayout.TextField((string)v),
-                        equals: (x, y) => (string)x == (string)y)
-                    .CustomOnChange((_, newVal) =>
+                form.DefaultLabelWidth = 100;
+                EditorFormItem.RawField("Name", 100,
+                    getValue: () => n.name,
+                    setValue: v =>
                     {
-                        var newName = (string)newVal;
-                        if (string.IsNullOrWhiteSpace(newName)) return false;
+                        var newName = (string)v;
+                        if (string.IsNullOrWhiteSpace(newName)) return;
                         RenameNoise(n, newName);
-                        return true;
-                    })
-                     .ObjectField<GameplayTagDefinitionSO>("noiseType", label: "Noise Type")
-                        .PostInput(() =>
+                    },
+                    drawFunc: v => EditorGUILayout.TextField((string)v),
+                    equals: (x, y) => (string)x == (string)y);
+                EditorFormItem.ObjectField<GameplayTagDefinitionSO>("noiseType", label: "Noise Type");
+                if (EditorButton.Draw("Tag", size: EditorButtonSize.Small, width: 35f))
+                {
+                    TagPicker.Show(_noiseTagButtonRect, allowCreate: true,
+                        currentFullTag: n.noiseType?.FullTag,
+                        onSelected: t =>
                         {
-                            if (EditorButton.Draw("Tag", size: EditorButtonSize.Small, width: 35f))
+                            if (n.noiseType != t)
                             {
-                                TagPicker.Show(_noiseTagButtonRect, allowCreate: true,
-                                    currentFullTag: n.noiseType?.FullTag,
-                                    onSelected: t =>
-                                    {
-                                        if (n.noiseType != t)
-                                        {
-                                            n.noiseType = t;
-                                            EditorUtility.SetDirty(n);
-                                            _hasChanges = true;
-                                            _needsRefresh = true;
-                                            _form = null;
-                                        }
-                                    });
+                                n.noiseType = t;
+                                EditorUtility.SetDirty(n);
+                                _hasChanges = true;
+                                _needsRefresh = true;
                             }
-                            if (Event.current.type == EventType.Repaint)
-                                _noiseTagButtonRect = GUILayoutUtility.GetLastRect();
-                        })
-                     .Float("level")
-                     .Float("decayRadius");
-                _form.OnAnyChange += MarkDirty;
-            }
-            _form?.Draw();
+                        });
+                }
+                if (Event.current.type == EventType.Repaint)
+                    _noiseTagButtonRect = GUILayoutUtility.GetLastRect();
+                EditorFormItem.Float("level");
+                EditorFormItem.Float("decayRadius");
+                form.OnChange += MarkDirty;
+            });
         }
 
         // ═══════════════════════════════════════════════════

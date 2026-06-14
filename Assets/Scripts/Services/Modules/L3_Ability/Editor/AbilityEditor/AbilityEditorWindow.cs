@@ -82,6 +82,16 @@ namespace RedDust.Ability
                     RefreshAll();
                 GUILayout.FlexibleSpace();
 
+                if (EditorButton.Draw("+ Create New", EditorButtonStyle.Primary, EditorButtonSize.Medium))
+                {
+                    var menu = new GenericMenu();
+                    menu.AddItem(new GUIContent("Active Ability"), false,
+                        () => AbilityListView.CreateAbility<AbilityDefSO>("Ability_New", "Assets/Data/Ability/Actives", a => { _selectedAbility = a; _needsRefresh = true; _hasChanges = true; EditorGUIUtility.PingObject(a); }));
+                    menu.AddItem(new GUIContent("Passive Ability"), false,
+                        () => AbilityListView.CreateAbility<PassiveAbilitySO>("Passive_New", "Assets/Data/Ability/Passives", a => { _selectedAbility = a; _needsRefresh = true; _hasChanges = true; EditorGUIUtility.PingObject(a); }));
+                    menu.ShowAsContext();
+                }
+
                 if (EditorButton.Draw(_hasChanges ? "Save *" : "Saved", _hasChanges ? EditorButtonStyle.Primary : EditorButtonStyle.Default, EditorButtonSize.Medium, enabled: _hasChanges))
                 {
                     AssetDatabase.SaveAssets();
@@ -125,16 +135,6 @@ namespace RedDust.Ability
 
                 // search
                 AbilityListView.DrawSearchCard(_searchText, s => _searchText = s);
-                EditorCard.Gap(Pad);
-
-                // create
-                AbilityListView.DrawCreateCard(ability =>
-                {
-                    _selectedAbility = ability;
-                    _needsRefresh = true;
-                    _hasChanges = true;
-                    EditorGUIUtility.PingObject(ability);
-                });
                 EditorCard.Gap(Pad);
 
                 // tree

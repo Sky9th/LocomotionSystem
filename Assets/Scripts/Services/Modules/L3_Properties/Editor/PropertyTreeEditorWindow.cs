@@ -142,9 +142,14 @@ namespace RedDust.Properties.Editor
         // ---- header ----
         private void DrawHeader()
         {
-            Shared.EditorUI.EditorUIUtility.DrawHeaderCard(
-                Pad, "Property Tree Editor", "L3_Properties · Editor",
-                _hasChanges, Save);
+            Shared.EditorUI.EditorCard.Draw(Pad, () =>
+                Shared.EditorUI.EditorCard.DrawCardHeader("Property Tree Editor", "L3_Properties · Editor",
+                    drawRight: () =>
+                    {
+                        if (EditorButton.Primary(_hasChanges ? "Save *" : "Save",
+                                EditorButtonSize.Medium, enabled: _hasChanges))
+                            Save();
+                    }));
         }
 
         private void DrawCenterContent()
@@ -252,7 +257,7 @@ namespace RedDust.Properties.Editor
                 EditorGUILayout.BeginHorizontal();
 
                 // Search field — use shared search row
-                _searchFilter = EditorUIUtility.DrawSearchRow(_searchFilter, 45f);
+                _searchFilter = EditorSearchBar.Draw(_searchFilter, 45f);
 
                 GUILayout.FlexibleSpace();
 
