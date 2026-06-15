@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 
@@ -14,8 +15,8 @@ namespace RedDust.Core.Editor
     public class TagTreeModel
     {
         public Dictionary<string, GameplayTagDefinitionSO> AllTags = new();
-        public Dictionary<string, TagNode> NodeIndex = new();
-        public List<TagNode> Roots = new();
+        public Dictionary<string, EditorTreeNode> NodeIndex = new();
+        public List<EditorTreeNode> Roots = new();
         public bool HasCycle { get; private set; }
         public int TotalCount => NodeIndex.Count;
 
@@ -42,12 +43,13 @@ namespace RedDust.Core.Editor
             // 先建所有节点
             foreach (var tag in tagList)
             {
-                var node = new TagNode
+                var node = new EditorTreeNode
                 {
-                    LeafName = tag.LeafName,
-                    FullTag = tag.FullTag,
+                    DisplayName = tag.LeafName,
+                    FullPath = tag.FullTag,
                     Depth = tag.Depth,
-                    Asset = tag
+                    IsFolder = false,
+                    UserData = tag,
                 };
                 NodeIndex[tag.FullTag] = node;
             }
@@ -61,6 +63,7 @@ namespace RedDust.Core.Editor
                     var parentNode = NodeIndex[parentTag.FullTag];
                     node.Parent = parentNode;
                     parentNode.Children.Add(node);
+                    parentNode.IsFolder = true;
                 }
             }
 
@@ -76,7 +79,7 @@ namespace RedDust.Core.Editor
             }
 
             // 排序
-            Roots.Sort((a, b) => string.CompareOrdinal(a.LeafName, b.LeafName));
+            Roots.Sort((a, b) => string.CompareOrdinal(a.DisplayName, b.DisplayName));
             SortChildrenRecursive(Roots);
         }
 
@@ -96,40 +99,40 @@ namespace RedDust.Core.Editor
             return false;
         }
 
-        private static void SortChildrenRecursive(List<TagNode> nodes)
+        private static void SortChildrenRecursive(List<EditorTreeNode> nodes)
         {
             foreach (var n in nodes)
             {
-                n.Children.Sort((a, b) => string.CompareOrdinal(a.LeafName, b.LeafName));
+                n.Children.Sort((a, b) => string.CompareOrdinal(a.DisplayName, b.DisplayName));
                 SortChildrenRecursive(n.Children);
             }
         }
 
         // ── 查找 ──
-        public TagNode Find(string fullTag)
+        public EditorTreeNode Find(string fullTag)
         {
             NodeIndex.TryGetValue(fullTag ?? "", out var node);
             return node;
         }
 
         // ── 搜索 ──
-        public List<TagNode> Search(string query, string rootFilter = null)
+        public List<EditorTreeNode> Search(string query, string rootFilter = null)
         {
-            var results = new List<TagNode>();
+            var results = new List<EditorTreeNode>();
             if (string.IsNullOrEmpty(query)) return results;
 
             var q = query.ToLowerInvariant();
 
             foreach (var kv in NodeIndex)
             {
-                if (!kv.Value.FullTag.ToLowerInvariant().Contains(q)
-                    && !kv.Value.LeafName.ToLowerInvariant().Contains(q))
+                if (!kv.Value.FullPath.ToLowerInvariant().Contains(q)
+                    && !kv.Value.DisplayName.ToLowerInvariant().Contains(q))
                     continue;
 
                 if (!string.IsNullOrEmpty(rootFilter))
                 {
                     var filter = rootFilter.TrimEnd('.');
-                    if (!kv.Value.FullTag.StartsWith(filter, StringComparison.OrdinalIgnoreCase))
+                    if (!kv.Value.FullPath.StartsWith(filter, StringComparison.OrdinalIgnoreCase))
                         continue;
                 }
 
@@ -138,10 +141,10 @@ namespace RedDust.Core.Editor
 
             results.Sort((a, b) =>
             {
-                int Score(TagNode n)
+                int Score(EditorTreeNode n)
                 {
-                    var ft = n.FullTag.ToLowerInvariant();
-                    var ln = n.LeafName.ToLowerInvariant();
+                    var ft = n.FullPath.ToLowerInvariant();
+                    var ln = n.DisplayName.ToLowerInvariant();
                     if (ft == q) return 0;
                     if (ft.StartsWith(q)) return 1;
                     if (ln.StartsWith(q)) return 2;

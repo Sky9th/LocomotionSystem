@@ -19,8 +19,7 @@ namespace RedDust.Core.Editor
         // -- 视图 --
         private string _searchText = "";
         private string _selectedFullTag;
-        private readonly Dictionary<string, bool> _foldouts = new();
-        private Vector2 _treeScroll;
+        private EditorTreeView _treeView;
         private Vector2 _inspectorScroll;
 
         // -- 创建表单 --
@@ -33,17 +32,12 @@ namespace RedDust.Core.Editor
         private void OnEnable()
         {
             _model = new TagTreeModel();
+            _treeView = new EditorTreeView();
             _needsRefresh = true;
         }
 
         private void OnGUI()
         {
-            if (_needsRefresh)
-            {
-                _model.Refresh();
-                _needsRefresh = false;
-            }
-
             GUILayout.Space(EditorTokens.Pad);
 
             EditorGUILayout.BeginHorizontal();
@@ -99,36 +93,24 @@ namespace RedDust.Core.Editor
             if (EditorButton.Draw("🔄 Refresh", size: EditorButtonSize.Small))
             {
                 _needsRefresh = true;
-                _foldouts.Clear();
                 _selectedFullTag = null;
             }
 
             GUILayout.FlexibleSpace();
 
-            if (EditorButton.Draw("▼ All", size: EditorButtonSize.Small))
-                SetAllFoldouts(true);
+            if (_treeView != null)
+            {
+                if (EditorButton.Draw("▼ All", size: EditorButtonSize.Small))
+                    _treeView.ExpandAll();
 
-            if (EditorButton.Draw("▲ All", size: EditorButtonSize.Small))
-                SetAllFoldouts(false);
+                if (EditorButton.Draw("▲ All", size: EditorButtonSize.Small))
+                    _treeView.CollapseAll();
+            }
 
             GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndHorizontal();
             GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndVertical();
-        }
-
-        private void SetAllFoldouts(bool expanded)
-        {
-            void Walk(List<TagNode> nodes)
-            {
-                foreach (var n in nodes)
-                {
-                    if (n.Children.Count > 0)
-                        _foldouts[n.FullTag] = expanded;
-                    Walk(n.Children);
-                }
-            }
-            Walk(_model.Roots);
         }
 
         // ── Search ──
@@ -166,31 +148,23 @@ namespace RedDust.Core.Editor
 
         private void DrawTreePanel()
         {
+            if (_needsRefresh)
+            {
+                _model.Refresh();
+                _treeView.SetData(_model.Roots, onSelect: node =>
+                {
+                    _selectedFullTag = node?.FullPath;
+                    _isCreating = false;
+                    Repaint();
+                });
+                _needsRefresh = false;
+            }
+            _treeView.searchString = _searchText;
+
             EditorGUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.ExpandWidth(true));
-            GUILayout.Space(EditorTokens.Pad);
-
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(EditorTokens.Pad);
-            EditorGUILayout.LabelField("Tag Tree", EditorStyles.boldLabel);
-            GUILayout.FlexibleSpace();
-            GUILayout.Space(EditorTokens.Pad);
-            EditorGUILayout.EndHorizontal();
-
-            GUILayout.Space(2f);
-
-            _treeScroll = EditorGUILayout.BeginScrollView(_treeScroll);
-
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(EditorTokens.Pad);
-            EditorGUILayout.BeginVertical();
-            TagTreeView.DrawTree(_model.Roots, _foldouts, ref _selectedFullTag, _searchText, onCreateChild: StartCreateChild);
-            EditorGUILayout.EndVertical();
-            GUILayout.Space(EditorTokens.Pad);
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.EndScrollView();
-
-            GUILayout.Space(EditorTokens.Pad);
+            var rect = EditorGUILayout.GetControlRect(
+                GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+            _treeView.OnGUI(rect);
             EditorGUILayout.EndVertical();
         }
 
@@ -246,7 +220,7 @@ namespace RedDust.Core.Editor
         }
 
         // ── 已有标签详情 ──
-        private void DrawTagDetails(TagNode node)
+        private void DrawTagDetails(EditorTreeNode node)
         {
             EditorGUILayout.BeginHorizontal();
             GUILayout.Space(EditorTokens.Pad);
@@ -257,12 +231,12 @@ namespace RedDust.Core.Editor
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Leaf", EditorStyles.label, GUILayout.Width(60));
-            EditorGUILayout.LabelField(node.LeafName, EditorStyles.label);
+            EditorGUILayout.LabelField(node.DisplayName, EditorStyles.label);
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("FullTag", EditorStyles.label, GUILayout.Width(60));
-            EditorGUILayout.LabelField(node.FullTag, EditorStyles.label);
+            EditorGUILayout.LabelField(node.FullPath, EditorStyles.label);
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
@@ -272,7 +246,7 @@ namespace RedDust.Core.Editor
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Parent", EditorStyles.label, GUILayout.Width(60));
-            EditorGUILayout.LabelField(node.Parent?.FullTag ?? "(root)", EditorStyles.label);
+            EditorGUILayout.LabelField(node.Parent?.FullPath ?? "(root)", EditorStyles.label);
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
@@ -280,7 +254,7 @@ namespace RedDust.Core.Editor
             EditorGUILayout.LabelField(node.Children.Count.ToString(), EditorStyles.label);
             EditorGUILayout.EndHorizontal();
 
-            var path = AssetDatabase.GetAssetPath(node.Asset);
+            var path = AssetDatabase.GetAssetPath(node.UserData as GameplayTagDefinitionSO);
             if (!string.IsNullOrEmpty(path))
             {
                 EditorGUILayout.BeginHorizontal();
@@ -293,7 +267,7 @@ namespace RedDust.Core.Editor
 
             EditorGUILayout.BeginHorizontal();
             if (EditorButton.Draw("Ping Asset", size: EditorButtonSize.Small))
-                EditorGUIUtility.PingObject(node.Asset);
+                EditorGUIUtility.PingObject(node.UserData as GameplayTagDefinitionSO);
 
             if (EditorButton.Draw("Delete", EditorButtonType.Danger, width: 80f))
                 DeleteTag(node);
@@ -386,27 +360,27 @@ namespace RedDust.Core.Editor
             _createLeafName = "";
         }
 
-        private void StartCreateChild(TagNode parent)
+        private void StartCreateChild(EditorTreeNode parent)
         {
             _isCreating = true;
-            _creatingUnderFullTag = parent.FullTag;
+            _creatingUnderFullTag = parent.FullPath;
             _selectedFullTag = null;
             _createLeafName = "";
         }
 
         // ── 删除 ──
-        private void DeleteTag(TagNode node)
+        private void DeleteTag(EditorTreeNode node)
         {
-            if (node == null || node.Asset == null) return;
+            if (node == null || node.UserData as GameplayTagDefinitionSO == null) return;
 
-            var tagPath = AssetDatabase.GetAssetPath(node.Asset);
+            var tagPath = AssetDatabase.GetAssetPath(node.UserData as GameplayTagDefinitionSO);
 
             // 1. 检查外部引用
             var referencers = FindReferencers(tagPath);
             if (referencers.Count > 0)
             {
                 EditorUtility.DisplayDialog("Cannot Delete",
-                    $"'{node.FullTag}' is referenced by {referencers.Count} other asset(s):\n\n{string.Join("\n", referencers)}\n\nRemove those references first.",
+                    $"'{node.FullPath}' is referenced by {referencers.Count} other asset(s):\n\n{string.Join("\n", referencers)}\n\nRemove those references first.",
                     "OK");
                 return;
             }
@@ -417,8 +391,8 @@ namespace RedDust.Core.Editor
 
             // 3. 确认
             var msg = descendants.Count > 0
-                ? $"Delete '{node.FullTag}'?\n\nThis tag has {descendants.Count} child tag(s):\n{string.Join("\n", descendants.ConvertAll(t => $"  - {t.FullTag}"))}\n\nThese will also be deleted."
-                : $"Delete '{node.FullTag}'?\n\nNo child tags. No external references.";
+                ? $"Delete '{node.FullPath}'?\n\nThis tag has {descendants.Count} child tag(s):\n{string.Join("\n", descendants.ConvertAll(t => $"  - {t.FullTag}"))}\n\nThese will also be deleted."
+                : $"Delete '{node.FullPath}'?\n\nNo child tags. No external references.";
 
             if (!EditorUtility.DisplayDialog("Delete Tag", msg, "Delete", "Cancel"))
                 return;
@@ -454,11 +428,11 @@ namespace RedDust.Core.Editor
             return refs;
         }
 
-        private void CollectDescendants(TagNode node, List<GameplayTagDefinitionSO> result)
+        private void CollectDescendants(EditorTreeNode node, List<GameplayTagDefinitionSO> result)
         {
             foreach (var child in node.Children)
             {
-                if (child.Asset != null) result.Add(child.Asset);
+                if (child.UserData as GameplayTagDefinitionSO != null) result.Add(child.UserData as GameplayTagDefinitionSO);
                 CollectDescendants(child, result);
             }
         }

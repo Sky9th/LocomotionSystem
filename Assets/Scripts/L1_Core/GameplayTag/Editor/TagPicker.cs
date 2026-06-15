@@ -1,6 +1,5 @@
 #if UNITY_EDITOR
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -26,8 +25,7 @@ namespace RedDust.Core.Editor
         // -- 状态 --
         private string _searchText = "";
         private string _selectedFullTag;
-        private readonly Dictionary<string, bool> _foldouts = new();
-        private Vector2 _scroll;
+        private EditorTreeView _treeView;
 
         // ── 静态入口 ──
         public static void Show(
@@ -56,8 +54,26 @@ namespace RedDust.Core.Editor
             _model = new TagTreeModel();
             _model.Refresh();
 
+            var roots = _model.Roots;
+            if (!string.IsNullOrEmpty(_rootFilter))
+            {
+                var filter = _rootFilter.TrimEnd('.');
+                roots = roots.Where(r => r.DisplayName == filter).ToList();
+            }
+
+            _treeView = new EditorTreeView();
+            _treeView.SetData(roots, onSelect: node =>
+            {
+                var tag = node?.UserData as GameplayTagDefinitionSO;
+                if (tag != null)
+                {
+                    _onSelected?.Invoke(tag);
+                    editorWindow.Close();
+                }
+            });
+
             if (!string.IsNullOrEmpty(_currentFullTag))
-                ExpandAncestors(_currentFullTag);
+                _treeView.ExpandAll();
         }
 
         public override Vector2 GetWindowSize()
@@ -113,15 +129,18 @@ namespace RedDust.Core.Editor
                 }
             }
 
-            // ── 树（搜索时自动过滤 + 展开匹配路径）──
-            EditorCard.Draw(() =>
+            // ── 树 ──
+            if (_treeView != null)
             {
-                _scroll = EditorGUILayout.BeginScrollView(_scroll);
-                TagTreeView.DrawTree(_model.Roots, _foldouts, ref _selectedFullTag,
-                    searchFilter: _searchText,
-                    rootFilter: _rootFilter);
-                EditorGUILayout.EndScrollView();
-            });
+                _treeView.searchString = _searchText;
+                EditorCard.Draw(() =>
+                {
+                    var rect = EditorGUILayout.GetControlRect(
+                        GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true),
+                        GUILayout.MinHeight(200));
+                    _treeView.OnGUI(rect);
+                });
+            }
 
             EditorCard.Gap(EditorTokens.Pad);
 
@@ -154,7 +173,7 @@ namespace RedDust.Core.Editor
                 {
                     var node = _model.Find(_selectedFullTag);
                     if (node != null)
-                        _onSelected?.Invoke(node.Asset);
+                        _onSelected?.Invoke(node.UserData as GameplayTagDefinitionSO);
                     editorWindow.Close();
                 }
 
@@ -162,24 +181,6 @@ namespace RedDust.Core.Editor
             });
         }
 
-        private void SelectTag(TagNode node)
-        {
-            if (node == null) return;
-            _onSelected?.Invoke(node.Asset);
-            editorWindow.Close();
-        }
-
-        // ── 辅助 ──
-        private void ExpandAncestors(string fullTag)
-        {
-            var parts = fullTag.Split('.');
-            var accumulated = "";
-            for (int i = 0; i < parts.Length; i++)
-            {
-                accumulated = i == 0 ? parts[i] : $"{accumulated}.{parts[i]}";
-                _foldouts[accumulated] = true;
-            }
-        }
     }
 }
 #endif
