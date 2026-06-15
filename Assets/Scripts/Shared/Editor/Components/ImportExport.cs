@@ -29,12 +29,17 @@ namespace RedDust.Shared.EditorUI
             var fp = filePath;
             var pv = previewText;
 
-            EditorCard.DrawCardHeader(title, subtitle);
+            EditorGUILayout.BeginHorizontal();
+            EditorLabel.Draw(title, style: EditorTokens.HeaderTitleStyle);
+            var subWidth = EditorTokens.BreadcrumbStyle.CalcSize(new GUIContent(subtitle ?? "")).x;
+            EditorLabel.Draw(subtitle, subWidth, style: EditorTokens.BreadcrumbStyle);
+            GUILayout.FlexibleSpace();
+            EditorGUILayout.EndHorizontal();
 
             EditorCard.Gap(EditorTokens.Pad);
 
             // 文件选择
-            EditorCard.Draw(EditorTokens.Pad, "JSON File", () =>
+            EditorCard.Draw("JSON File", () =>
             {
                 EditorGUILayout.BeginHorizontal();
                 fp = EditorGUILayout.TextField(fp ?? "");
@@ -57,7 +62,7 @@ namespace RedDust.Shared.EditorUI
             // 预览
             if (buildPreview != null)
             {
-                EditorCard.DrawLight(EditorTokens.Pad, () =>
+                EditorCard.Draw(() =>
                 {
                     EditorGUILayout.LabelField("Preview", EditorStyles.boldLabel);
 
@@ -78,8 +83,7 @@ namespace RedDust.Shared.EditorUI
                         {
                             EditorCard.GapTight();
                             var content = new GUIContent(pv);
-                            var style = new GUIStyle(EditorStyles.label)
-                                { richText = true, wordWrap = true };
+                            var style = EditorTokens.RichLabelStyle;
                             var height = style.CalcHeight(content,
                                 EditorGUIUtility.currentViewWidth - EditorTokens.Pad * 10);
                             EditorGUILayout.LabelField(content, style,
@@ -144,7 +148,7 @@ namespace RedDust.Shared.EditorUI
             if (!hasFile)
             {
                 EditorCard.GapTight();
-                EditorCard.DrawLight(EditorTokens.Pad, () =>
+                EditorCard.Draw(() =>
                 {
                     EditorGUILayout.LabelField("File not found. Select a JSON file to import.",
                         EditorUIUtility.GreyPlaceholder);
@@ -160,11 +164,11 @@ namespace RedDust.Shared.EditorUI
 
             var hasErrors = errors != null && errors.Count > 0;
 
-            EditorCard.Draw(EditorTokens.Pad, "Result", () =>
+            EditorCard.Draw("Result", () =>
             {
-                var okStyle = new GUIStyle(EditorStyles.label)
+                var okStyle = new GUIStyle(EditorTokens.SuccessLabelStyle)
                     { normal = { textColor = EditorTokens.ColorResultOk } };
-                var errStyle = new GUIStyle(EditorStyles.label)
+                var errStyle = new GUIStyle(EditorTokens.ErrorLabelStyle)
                     { normal = { textColor = EditorTokens.ColorResultErr } };
 
                 EditorGUILayout.LabelField(

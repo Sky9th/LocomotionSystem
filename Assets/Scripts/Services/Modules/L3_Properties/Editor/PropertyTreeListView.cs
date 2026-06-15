@@ -92,7 +92,7 @@ namespace RedDust.Properties.Editor
             if (isSelected)
                 GUI.backgroundColor = selectedColor;
 
-            EditorCard.Draw(EditorTokens.Pad, () =>
+            EditorCard.Draw(() =>
             {
                 EditorGUILayout.BeginHorizontal();
 

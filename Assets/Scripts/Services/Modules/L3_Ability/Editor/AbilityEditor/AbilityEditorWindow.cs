@@ -63,14 +63,12 @@ namespace RedDust.Ability
         // ── Header ──
         private void DrawHeader()
         {
-            EditorCard.Draw(EditorTokens.Pad, () =>
+            EditorCard.Draw(() =>
             {
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Ability Editor", EditorStyles.largeLabel,
                     GUILayout.ExpandWidth(true));
-                var rightStyle = new GUIStyle(EditorStyles.label)
-                    { alignment = TextAnchor.MiddleRight };
-                EditorGUILayout.LabelField("L3_Ability · Editor", rightStyle,
+                EditorGUILayout.LabelField("L3_Ability · Editor", EditorTokens.BreadcrumbStyle,
                     GUILayout.Width(160));
                 EditorGUILayout.EndHorizontal();
 
@@ -126,7 +124,7 @@ namespace RedDust.Ability
         {
             EditorGUILayout.BeginHorizontal(
                 GUILayout.Width(LeftWidth), GUILayout.ExpandHeight(true));
-            EditorCard.Draw(EditorTokens.Pad, () =>
+            EditorCard.Draw(() =>
             {
                 // filter
                 AbilityListView.DrawFilterCard(_filter, f => _filter = f);
@@ -138,8 +136,9 @@ namespace RedDust.Ability
 
                 // tree
                 _leftScroll = EditorGUILayout.BeginScrollView(_leftScroll);
-                AbilityTreeView.DrawTree(_model.TreeRoots, _foldouts, ref _selectedAbility,
-                    _searchText, _filter);
+                AbilityTreeView.DrawTree(_model.TreeRoots, _foldouts, _selectedAbility,
+                    _searchText, _filter,
+                    onLeafSelected: asset => _selectedAbility = asset as AbilitySO);
                 EditorGUILayout.EndScrollView();
             });
             EditorGUILayout.EndHorizontal();
@@ -150,7 +149,7 @@ namespace RedDust.Ability
         {
             EditorGUILayout.BeginHorizontal(
                 GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
-            EditorCard.Draw(EditorTokens.Pad, () =>
+            EditorCard.Draw(() =>
             {
                 var midTitle = _selectedAbility != null
                     ? $"Edit: {_selectedAbility.displayName ?? _selectedAbility.name}"

@@ -150,6 +150,9 @@ tech/
 │   │   └── design-tokens.md
 │   └── tools/                           # 编辑器工具（源码目录镜像）
 │       ├── Shared/
+│       │   ├── EditorCoreLoader.md
+│       │   ├── GameContextEditor.md
+│       │   └── EditorTree.md
 │       ├── L1_Core/
 │       ├── L3_Ability/
 │       └── L3_Properties/

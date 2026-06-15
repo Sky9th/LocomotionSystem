@@ -80,7 +80,7 @@ namespace RedDust.Core.Editor
                 var matches = _model.Search(_searchText, _rootFilter);
                 if (matches.Count > 0)
                 {
-                    EditorCard.DrawLight(EditorTokens.Pad, () =>
+                    EditorCard.Draw(() =>
                     {
                         EditorGUILayout.LabelField($"Matches: {matches.Count}", EditorStyles.miniBoldLabel);
                     });
@@ -88,7 +88,7 @@ namespace RedDust.Core.Editor
                 }
                 else if (_allowCreate)
                 {
-                    EditorCard.DrawLight(EditorTokens.Pad, () =>
+                    EditorCard.Draw(() =>
                     {
                         EditorGUILayout.BeginHorizontal();
                         EditorGUILayout.LabelField($"Create new tag: {_searchText}", EditorStyles.boldLabel);
@@ -114,7 +114,7 @@ namespace RedDust.Core.Editor
             }
 
             // ── 树（搜索时自动过滤 + 展开匹配路径）──
-            EditorCard.Draw(EditorTokens.Pad, () =>
+            EditorCard.Draw(() =>
             {
                 _scroll = EditorGUILayout.BeginScrollView(_scroll);
                 TagTreeView.DrawTree(_model.Roots, _foldouts, ref _selectedFullTag,
@@ -141,7 +141,7 @@ namespace RedDust.Core.Editor
 
         private void DrawFooter()
         {
-            EditorCard.Draw(EditorTokens.Pad, () =>
+            EditorCard.Draw(() =>
             {
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.FlexibleSpace();

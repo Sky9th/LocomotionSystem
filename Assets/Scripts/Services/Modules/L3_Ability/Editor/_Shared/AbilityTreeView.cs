@@ -18,21 +18,16 @@ namespace RedDust.Ability
         public static void DrawTree(
             List<AbilityTreeNode> roots,
             Dictionary<string, bool> foldouts,
-            ref AbilitySO selectedAbility,
+            ScriptableObject selectedAsset,
             string searchFilter,
             AbilityTypeFilter typeFilter,
             Action<ScriptableObject> onLeafSelected = null,
-            EffectSO selectedEffect = null,
-            AbilitySearchSO selectedSearch = null,
-            AbilityActivationSO selectedActivation = null,
             Action<ScriptableObject> onDeleteLeaf = null)
         {
             if (roots == null || roots.Count == 0)
             {
                 GUILayout.Space(EditorTokens.Pad);
-                var grey = new GUIStyle(EditorStyles.label)
-                    { alignment = TextAnchor.MiddleCenter, normal = { textColor = Color.grey } };
-                EditorGUILayout.LabelField("No abilities found.", grey);
+                EditorGUILayout.LabelField("No abilities found.", EditorTokens.EmptyStateStyle);
                 GUILayout.Space(EditorTokens.Pad);
                 return;
             }
@@ -55,26 +50,22 @@ namespace RedDust.Ability
             for (var i = 0; i < visibleRoots.Count; i++)
             {
                 if (i > 0) EditorCard.Gap(EditorTokens.Pad);
-                DrawNodeCard(visibleRoots[i], foldouts, ref selectedAbility,
-                    q, typeFilter, hasSearch, onLeafSelected, selectedEffect, selectedSearch, selectedActivation, onDeleteLeaf);
+                DrawNodeCard(visibleRoots[i], foldouts, selectedAsset,
+                    q, typeFilter, hasSearch, onLeafSelected, onDeleteLeaf);
             }
         }
 
         private static void DrawNodeCard(
             AbilityTreeNode node,
             Dictionary<string, bool> foldouts,
-            ref AbilitySO selectedAbility,
+            ScriptableObject selectedAsset,
             string q,
             AbilityTypeFilter typeFilter,
             bool hasSearch,
-            Action<ScriptableObject> onLeafSelected = null,
-            EffectSO selectedEffect = null,
-            AbilitySearchSO selectedSearch = null,
-            AbilityActivationSO selectedActivation = null,
-            Action<ScriptableObject> onDeleteLeaf = null)
+            Action<ScriptableObject> onLeafSelected,
+            Action<ScriptableObject> onDeleteLeaf)
         {
             bool hasChildren = node.IsFolder && node.Children.Count > 0;
-            var sel = selectedAbility;
             var rowH = EditorGUIUtility.singleLineHeight;
 
             if (!foldouts.ContainsKey(node.FullPath))
@@ -87,46 +78,35 @@ namespace RedDust.Ability
                     return;
             }
 
-            var isSelected = !node.IsFolder
-                && ((node.Ability != null && sel == node.Ability)
-                    || (node.Effect != null && selectedEffect == node.Effect)
-                    || (node.Search != null && selectedSearch == node.Search)
-                    || (node.Activation != null && selectedActivation == node.Activation));
+            var isSelected = !node.IsFolder && node.Asset != null && selectedAsset == node.Asset;
 
-            EditorCard.Draw(EditorTokens.Pad, () =>
+            EditorCard.Draw(() =>
             {
                 var label = node.IsFolder
-                    ? $"{node.DisplayName} ({node.AbilityCount})"
+                    ? $"{node.DisplayName} ({node.LeafCount})"
                     : node.DisplayName;
                 var isMatch = hasSearch && node.FullPath.ToLowerInvariant().Contains(q);
 
-                // 删除按钮宽度（先算好，后面要用）
                 var btnW = (!node.IsFolder && onDeleteLeaf != null) ? 20f : 0f;
 
-                // 整行 Rect，给删除按钮留空间
                 var rowRect = GUILayoutUtility.GetRect(
                     GUIContent.none, EditorStyles.label, GUILayout.ExpandWidth(true), GUILayout.Height(rowH + 2));
 
-                // 不可见点击区域（排除删除按钮区域，避免拦截点击）
                 var clickRect = rowRect;
                 if (btnW > 0f) clickRect.width -= btnW + 2;
                 if (GUI.Button(clickRect, GUIContent.none, GUIStyle.none))
                 {
                     if (Event.current.button == 1 && !node.IsFolder && onDeleteLeaf != null)
                     {
-                        var asset = node.Ability ?? (ScriptableObject)node.Effect ?? (ScriptableObject)node.Search ?? (ScriptableObject)node.Activation;
                         var menu = new GenericMenu();
-                        menu.AddItem(new GUIContent("Delete"), false, () => onDeleteLeaf(asset));
+                        menu.AddItem(new GUIContent("Delete"), false, () => onDeleteLeaf(node.Asset));
                         menu.ShowAsContext();
                     }
                     else if (node.IsFolder)
                         foldouts[node.FullPath] = !foldouts[node.FullPath];
                     else
                     {
-                        if (onLeafSelected != null)
-                            onLeafSelected(node.Ability ?? (ScriptableObject)node.Effect ?? (ScriptableObject)node.Search ?? (ScriptableObject)node.Activation);
-                        else
-                            sel = node.Ability;
+                        onLeafSelected?.Invoke(node.Asset);
                         GUI.FocusControl(null);
                     }
                 }
@@ -140,8 +120,8 @@ namespace RedDust.Ability
                 }
                 else
                 {
-                    var dashStyle = new GUIStyle(EditorStyles.label)
-                        { alignment = TextAnchor.MiddleCenter };
+                    var dashStyle = new GUIStyle()
+                        { alignment = TextAnchor.MiddleCenter, fontSize = EditorTokens.FontBase };
                     GUI.Label(iconRect, "-", dashStyle);
                 }
 
@@ -149,19 +129,16 @@ namespace RedDust.Ability
                 var textRect = new Rect(
                     iconRect.xMax + FoldoutGap, rowRect.y,
                     rowRect.width - FoldoutWidth - FoldoutGap - 2 - btnW - 2, rowRect.height);
-                var textStyle = new GUIStyle(EditorStyles.label)
+                var textStyle = new GUIStyle()
                     { fontStyle = (isSelected || isMatch) ? FontStyle.Bold : FontStyle.Normal,
-                      alignment = TextAnchor.MiddleLeft };
+                      alignment = TextAnchor.MiddleLeft, fontSize = EditorTokens.FontBase };
                 GUI.Label(textRect, label, textStyle);
 
                 if (btnW > 0f)
                 {
                     var delRect = new Rect(textRect.xMax + 2, rowRect.y, btnW, rowRect.height);
                     if (EditorButton.Draw(delRect, "✕", EditorButtonType.Danger))
-                    {
-                        var asset = node.Ability ?? (ScriptableObject)node.Effect ?? (ScriptableObject)node.Search ?? (ScriptableObject)node.Activation;
-                        onDeleteLeaf(asset);
-                    }
+                        onDeleteLeaf(node.Asset);
                 }
 
                 // 子节点
@@ -181,14 +158,12 @@ namespace RedDust.Ability
                         for (var i = 0; i < visibleChildren.Count; i++)
                         {
                             if (i > 0) EditorCard.Gap(EditorTokens.Pad);
-                            DrawNodeCard(visibleChildren[i], foldouts,
-                                ref sel, q, typeFilter, hasSearch, onLeafSelected, selectedEffect, selectedSearch, selectedActivation, onDeleteLeaf);
+                            DrawNodeCard(visibleChildren[i], foldouts, selectedAsset,
+                                q, typeFilter, hasSearch, onLeafSelected, onDeleteLeaf);
                         }
                     }
                 }
-            }, isSelected);
-
-            selectedAbility = sel;
+            });
         }
 
         private static bool NodeOrDescendantsMatch(AbilityTreeNode node, string q,
@@ -233,8 +208,8 @@ namespace RedDust.Ability
                     if (FilterAllows(c, filter)) return true;
                 return false;
             }
-            if (filter == AbilityTypeFilter.Active) return node.Ability is AbilityDefSO;
-            if (filter == AbilityTypeFilter.Passive) return node.Ability is PassiveAbilitySO;
+            if (filter == AbilityTypeFilter.Active) return node.Asset is AbilityDefSO;
+            if (filter == AbilityTypeFilter.Passive) return node.Asset is PassiveAbilitySO;
             return true;
         }
     }

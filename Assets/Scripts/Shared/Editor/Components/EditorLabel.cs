@@ -15,12 +15,17 @@ namespace RedDust.Shared.EditorUI
 
         private static GUIStyle CreateDefaultStyle()
         {
-            var s = new GUIStyle(EditorStyles.label);
-            s.padding = new RectOffset(0, 0, s.padding.top + 3, s.padding.bottom + 3);
-            s.margin = new RectOffset(1, 0, s.margin.top, s.margin.bottom);
-            return s;
+            return new GUIStyle()
+            {
+                fontSize = EditorTokens.FontBase,
+                alignment = TextAnchor.MiddleLeft,
+                normal = { textColor = EditorTokens.EditorTextColor },
+                padding = new RectOffset(3, 3, 3, 3),
+                margin = new RectOffset(1, 0, 0, 0),
+            };
         }
 
+        /// <summary>固定宽度标签。</summary>
         public static void Draw(string text, float width,
             string tooltip = null, float trailingGap = 0f,
             GUIStyle style = null)
@@ -32,6 +37,17 @@ namespace RedDust.Shared.EditorUI
                 style ?? DefaultStyle,
                 GUILayout.Width(width));
             if (trailingGap > 0f) GUILayout.Space(trailingGap);
+        }
+
+        /// <summary>自适应宽度标签（使用可用空间）。</summary>
+        public static void Draw(string text, string tooltip = null, GUIStyle style = null)
+        {
+            var guiContent = string.IsNullOrEmpty(tooltip)
+                ? new GUIContent(text)
+                : new GUIContent(text, tooltip);
+            EditorGUILayout.LabelField(guiContent,
+                style ?? DefaultStyle,
+                GUILayout.ExpandWidth(true));
         }
     }
 }

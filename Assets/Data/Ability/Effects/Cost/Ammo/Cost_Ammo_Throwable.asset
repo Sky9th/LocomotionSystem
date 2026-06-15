@@ -17,6 +17,9 @@ MonoBehaviour:
   duration: 0
   stackable: 0
   maxStacks: 1
-  applicationBlockedTags: []
+  applicationBlockedTags:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   def: {fileID: 11400000, guid: 4e065d730c76d6542bbea10d75627336, type: 2}
   amount: 1

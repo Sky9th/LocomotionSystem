@@ -71,13 +71,12 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════
         private void DrawHeader()
         {
-            EditorCard.Draw(EditorTokens.Pad, () =>
+            EditorCard.Draw(() =>
             {
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Noise Editor", EditorStyles.largeLabel,
                     GUILayout.ExpandWidth(true));
-                var sub = new GUIStyle(EditorStyles.label)
-                    { alignment = TextAnchor.MiddleRight };
+                var sub = EditorTokens.BreadcrumbStyle;
                 EditorGUILayout.LabelField("L3_Ability · Editor", sub, GUILayout.Width(160));
                 EditorGUILayout.EndHorizontal();
 
@@ -132,10 +131,10 @@ namespace RedDust.Ability
         // ── 左栏 ──
         private void DrawLeftColumn()
         {
-            EditorCard.Draw(EditorTokens.Pad, () =>
+            EditorCard.Draw(() =>
             {
                 // 搜索框
-                EditorCard.DrawLight(EditorTokens.Pad, () =>
+                EditorCard.Draw(() =>
                 {
                     var s = EditorSearchBar.Draw(_searchText, labelWidth: 42f);
                     if (s != _searchText) { _searchText = s; }
@@ -144,8 +143,7 @@ namespace RedDust.Ability
                 EditorCard.Gap(EditorTokens.Pad);
 
                 _leftScroll = EditorGUILayout.BeginScrollView(_leftScroll);
-                var nullSO = (AbilitySO)null;
-                AbilityTreeView.DrawTree(_treeRoots, _foldouts, ref nullSO,
+                AbilityTreeView.DrawTree(_treeRoots, _foldouts, _selectedNoise,
                     _searchText, AbilityTypeFilter.All,
                     onLeafSelected: asset => SelectNoise(asset as NoiseEventSO),
                     onDeleteLeaf: asset => DeleteNoise(asset as NoiseEventSO));
@@ -156,9 +154,9 @@ namespace RedDust.Ability
         // ── 右栏 ──
         private void DrawRightColumn()
         {
-            EditorCard.Draw(EditorTokens.Pad, () =>
+            if (_selectedNoise == null)
             {
-                if (_selectedNoise == null)
+                EditorCard.Draw(() =>
                 {
                     GUILayout.FlexibleSpace();
                     EditorGUILayout.BeginHorizontal();
@@ -168,13 +166,12 @@ namespace RedDust.Ability
                     GUILayout.FlexibleSpace();
                     EditorGUILayout.EndHorizontal();
                     GUILayout.FlexibleSpace();
-                    return;
-                }
+                });
+                return;
+            }
 
-                var title = $"Edit: {_selectedNoise.name}";
-                EditorGUILayout.LabelField(title, EditorStyles.boldLabel);
-                GUILayout.Space(EditorTokens.Pad);
-
+            EditorCard.Draw($"Edit: {_selectedNoise.name}", () =>
+            {
                 _rightScroll = EditorGUILayout.BeginScrollView(_rightScroll);
                 DrawEditForm();
                 EditorGUILayout.EndScrollView();
@@ -189,40 +186,30 @@ namespace RedDust.Ability
         {
             var n = _selectedNoise;
 
-            EditorForm.Draw(n, form =>
+            EditorCard.Draw("Noise", () =>
             {
-                form.DefaultLabelWidth = 100;
-                EditorFormItem.RawField("Name", 100,
-                    getValue: () => n.name,
-                    setValue: v =>
-                    {
-                        var newName = (string)v;
-                        if (string.IsNullOrWhiteSpace(newName)) return;
-                        RenameNoise(n, newName);
-                    },
-                    drawFunc: v => EditorGUILayout.TextField((string)v),
-                    equals: (x, y) => (string)x == (string)y);
-                EditorFormItem.ObjectField<GameplayTagDefinitionSO>("noiseType", label: "Noise Type");
-                if (EditorButton.Draw("Tag", size: EditorButtonSize.Small, width: 35f))
+                EditorForm.Draw(n, form =>
                 {
-                    TagPicker.Show(_noiseTagButtonRect, allowCreate: true,
-                        currentFullTag: n.noiseType?.FullTag,
-                        onSelected: t =>
+                    EditorFormItem.RawField("Name", labelWidth: null,
+                        getValue: () => n.name,
+                        setValue: v =>
                         {
-                            if (n.noiseType != t)
-                            {
-                                n.noiseType = t;
-                                EditorUtility.SetDirty(n);
-                                _hasChanges = true;
-                                _needsRefresh = true;
-                            }
-                        });
-                }
-                if (Event.current.type == EventType.Repaint)
-                    _noiseTagButtonRect = GUILayoutUtility.GetLastRect();
-                EditorFormItem.Float("level");
-                EditorFormItem.Float("decayRadius");
-                form.OnChange += MarkDirty;
+                            var newName = (string)v;
+                            if (string.IsNullOrWhiteSpace(newName)) return;
+                            RenameNoise(n, newName);
+                        },
+                        drawFunc: v => EditorGUILayout.TextField((string)v),
+                        equals: (x, y) => (string)x == (string)y);
+                    EditorFormItem.ObjectFieldWithTag<GameplayTagDefinitionSO>(
+                        "noiseType", ref _noiseTagButtonRect, label: "Noise Type");
+                    EditorFormItem.Float("level");
+                    EditorFormItem.Float("decayRadius");
+                    form.OnChange += () =>
+                    {
+                        MarkDirty();
+                        _needsRefresh = true;  // noiseType 变更需重建标签树
+                    };
+                });
             });
         }
 

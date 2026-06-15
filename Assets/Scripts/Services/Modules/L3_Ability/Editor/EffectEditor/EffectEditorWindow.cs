@@ -19,24 +19,23 @@ namespace RedDust.Ability
     /// </summary>
     public class EffectEditorWindow : EditorWindow
     {
-        private const float LeftWidth = 300f;
+        private const float LeftWidth = 450f;
 
-        // ── 简易 Model（内联，扫描 EffectSO + 构建 effectTag 树）──
+        // ── Model ──
         private List<EffectSO> _allEffects = new();
-        private List<AbilityTreeNode> _treeRoots = new();
-        private readonly Dictionary<string, AbilityTreeNode> _treeNodeIndex = new();
+        private List<EditorTreeNode> _treeRoots = new();
 
-        // ── 状态 ──
-        private bool _needsRefresh = true;
-        private bool _hasChanges;
-        private EffectSO _selectedEffect;
+        // ── TreeView ──
+        private EditorTreeView _treeView;
+
+        // ── Filter ──
+        private EffectTypeFilter _filter = EffectTypeFilter.All;
         private string _searchText = "";
 
         // ── 状态 ──
-        private EffectTypeFilter _filter = EffectTypeFilter.All;
-        private Vector2 _leftScroll;
+        private bool _hasChanges;
+        private EffectSO _selectedEffect;
         private Vector2 _rightScroll;
-        private readonly Dictionary<string, bool> _foldouts = new();
         private Rect _effectTagButtonRect;
         private Rect _blockedTagButtonRect;
         private Rect _grantedTagButtonRect;
@@ -47,12 +46,11 @@ namespace RedDust.Ability
 
         private void OnEnable()
         {
-            _needsRefresh = true;
+            RefreshModel();
         }
 
         private void OnGUI()
         {
-            if (_needsRefresh) { RefreshModel(); _needsRefresh = false; }
 
             GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.BeginHorizontal();
@@ -76,13 +74,12 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════
         private void DrawHeader()
         {
-            EditorCard.Draw(EditorTokens.Pad, () =>
+            EditorCard.Draw(() =>
             {
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Effect Editor", EditorStyles.largeLabel,
                     GUILayout.ExpandWidth(true));
-                var sub = new GUIStyle(EditorStyles.label)
-                    { alignment = TextAnchor.MiddleRight };
+                var sub = EditorTokens.BreadcrumbStyle;
                 EditorGUILayout.LabelField("L3_Ability · Editor", sub, GUILayout.Width(160));
                 EditorGUILayout.EndHorizontal();
 
@@ -90,7 +87,10 @@ namespace RedDust.Ability
 
                 EditorGUILayout.BeginHorizontal();
                 if (EditorButton.Draw("Refresh", size: EditorButtonSize.Medium))
-                    RefreshAll();
+                {
+                    RefreshModel();
+                    RebuildTree();
+                }
                 GUILayout.FlexibleSpace();
 
                 if (EditorButton.Draw("Import/Export", size: EditorButtonSize.Medium))
@@ -121,7 +121,7 @@ namespace RedDust.Ability
         {
             EditorGUILayout.BeginHorizontal();
 
-            // 左栏：树
+            // 左栏：树形列表
             EditorGUILayout.BeginHorizontal(GUILayout.Width(LeftWidth), GUILayout.ExpandHeight(true));
             DrawLeftColumn();
             EditorGUILayout.EndHorizontal();
@@ -136,54 +136,74 @@ namespace RedDust.Ability
             EditorGUILayout.EndHorizontal();
         }
 
-        // ── 左栏：列表 ──
+        // ── 左栏：树形列表 ──
         private void DrawLeftColumn()
         {
-            EditorCard.Draw(EditorTokens.Pad, () =>
+            EditorCard.Draw(() =>
             {
                 DrawFilterCard();
                 EditorCard.GapTight();
                 DrawSearchCard();
                 EditorCard.Gap(EditorTokens.Pad);
 
-                _leftScroll = EditorGUILayout.BeginScrollView(_leftScroll);
-                var nullSO = (AbilitySO)null;
-                AbilityTreeView.DrawTree(_treeRoots, _foldouts, ref nullSO,
-                    _searchText, AbilityTypeFilter.All,
-                    onLeafSelected: asset => SelectEffect(asset as EffectSO),
-                    selectedEffect: _selectedEffect,
-                    onDeleteLeaf: asset => DeleteEffect(asset as EffectSO));
-                EditorGUILayout.EndScrollView();
+                if (_treeView == null)
+                {
+                    _treeView = new EditorTreeView();
+                    _treeView.SetData(
+                        _treeRoots.Count > 0 ? _treeRoots : EditorTree.CreateDemoData(),
+                        onSelect: node => SelectEffect(node.UserData as EffectSO),
+                        onDelete: node => DeleteEffect(node.UserData as EffectSO));
+                }
+
+                var rect = EditorGUILayout.GetControlRect(
+                    GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+                _treeView.OnGUI(rect);
             });
         }
 
         private void DrawFilterCard()
         {
-            EditorCard.DrawLight(EditorTokens.Pad, () =>
+            EditorCard.Draw(() =>
             {
                 var newFilter = EditorButtonGroup.Draw(_filter,
                     new[] { EffectTypeFilter.All, EffectTypeFilter.Damage, EffectTypeFilter.Impact, EffectTypeFilter.Execute, EffectTypeFilter.Cost, EffectTypeFilter.Buff },
                     new[] { "All", "Dmg", "Imp", "Exe", "Cost", "Buf" });
                 if (!EqualityComparer<EffectTypeFilter>.Default.Equals(newFilter, _filter))
-                { _filter = newFilter; OnFilterChanged(); }
+                {
+                    _filter = newFilter;
+                    RebuildTree();
+                }
             });
         }
 
         private void DrawSearchCard()
         {
-            EditorCard.DrawLight(EditorTokens.Pad, () =>
+            EditorCard.Draw(() =>
             {
                 var s = EditorSearchBar.Draw(_searchText, labelWidth: 42f);
-                if (s != _searchText) { _searchText = s; }
+                if (s != _searchText)
+                {
+                    _searchText = s;
+                    RebuildTree();
+                }
             });
+        }
+
+        private void RebuildTree()
+        {
+            BuildTree();
+            _treeView?.SetData(
+                _treeRoots,
+                onSelect: node => SelectEffect(node.UserData as EffectSO),
+                onDelete: node => DeleteEffect(node.UserData as EffectSO));
         }
 
         // ── 右栏：编辑 ──
         private void DrawRightColumn()
         {
-            EditorCard.Draw(EditorTokens.Pad, () =>
+            if (_selectedEffect == null)
             {
-                if (_selectedEffect == null)
+                EditorCard.Draw(() =>
                 {
                     GUILayout.FlexibleSpace();
                     EditorGUILayout.BeginHorizontal();
@@ -193,13 +213,12 @@ namespace RedDust.Ability
                     GUILayout.FlexibleSpace();
                     EditorGUILayout.EndHorizontal();
                     GUILayout.FlexibleSpace();
-                    return;
-                }
+                });
+                return;
+            }
 
-                var title = $"Edit: {_selectedEffect.name}";
-                EditorGUILayout.LabelField(title, EditorStyles.boldLabel);
-                GUILayout.Space(EditorTokens.Pad);
-
+            EditorCard.Draw($"Edit: {_selectedEffect.name}", () =>
+            {
                 _rightScroll = EditorGUILayout.BeginScrollView(_rightScroll);
                 DrawBaseFields();
                 EditorCard.Gap(EditorTokens.Pad);
@@ -214,7 +233,7 @@ namespace RedDust.Ability
 
         private void DrawBaseFields()
         {
-            EditorCard.Draw(EditorTokens.Pad, "Base", () =>
+            EditorCard.Draw("Base", () =>
             {
                 var e = _selectedEffect;
 
@@ -306,7 +325,7 @@ namespace RedDust.Ability
 
         private static void DrawCardSection(string title, Action draw)
         {
-            EditorCard.Draw(EditorTokens.Pad, title, draw);
+            EditorCard.Draw(title, draw);
         }
 
         private void DrawDamageFields(DamageEffectSO d)
@@ -455,10 +474,7 @@ namespace RedDust.Ability
         private void RefreshModel()
         {
             _allEffects.Clear();
-            _treeRoots.Clear();
-            _treeNodeIndex.Clear();
 
-            // 扫描所有 EffectSO
             var guids = AssetDatabase.FindAssets("t:EffectSO");
             foreach (var guid in guids)
             {
@@ -471,6 +487,8 @@ namespace RedDust.Ability
             BuildTree();
         }
 
+        private readonly Dictionary<string, EditorTreeNode> _treeNodeIndex = new();
+
         private void BuildTree()
         {
             _treeRoots.Clear();
@@ -478,7 +496,13 @@ namespace RedDust.Ability
 
             var filtered = _filter == EffectTypeFilter.All
                 ? _allEffects
-                : _allEffects.Where(e => EffectMatchesFilter(e, _filter)).ToList();
+                : _allEffects.Where(e => EffectMatchesFilter(e, _filter));
+
+            if (!string.IsNullOrEmpty(_searchText))
+            {
+                var q = _searchText.ToLowerInvariant();
+                filtered = filtered.Where(e => e.name.ToLowerInvariant().Contains(q));
+            }
 
             foreach (var effect in filtered)
             {
@@ -489,7 +513,6 @@ namespace RedDust.Ability
                     continue;
                 }
 
-                // walk tag parent chain
                 var tagChain = new List<GameplayTagDefinitionSO>();
                 var t = tag;
                 while (t != null)
@@ -497,9 +520,9 @@ namespace RedDust.Ability
                     tagChain.Add(t);
                     t = t.Parent;
                 }
-                tagChain.Reverse(); // root → leaf
+                tagChain.Reverse();
 
-                AbilityTreeNode parentNode = null;
+                EditorTreeNode parentNode = null;
                 var accumPath = "";
                 for (int i = 0; i < tagChain.Count; i++)
                 {
@@ -508,13 +531,13 @@ namespace RedDust.Ability
 
                     if (!_treeNodeIndex.TryGetValue(accumPath, out var folderNode))
                     {
-                        folderNode = new AbilityTreeNode
+                        folderNode = new EditorTreeNode
                         {
                             DisplayName = ct.LeafName,
                             FullPath = accumPath,
                             Depth = i + 1,
                             IsFolder = true,
-                            Tag = ct,
+                            UserData = ct,
                             Parent = parentNode,
                         };
                         _treeNodeIndex[accumPath] = folderNode;
@@ -527,27 +550,27 @@ namespace RedDust.Ability
                     parentNode = folderNode;
                 }
 
-                var leaf = new AbilityTreeNode
+                var leaf = new EditorTreeNode
                 {
                     DisplayName = effect.name,
                     FullPath = $"{parentNode.FullPath}/{effect.name}",
                     Depth = parentNode.Depth + 1,
                     IsFolder = false,
-                    Effect = effect,
+                    UserData = effect,
                     Parent = parentNode,
                 };
                 parentNode.Children.Add(leaf);
             }
 
-            AbilityEditorUtility.SortTreeRecursive(_treeRoots);
-            AbilityEditorUtility.ComputeTreeCounts(_treeRoots);
+            EditorTree.SortTreeRecursive(_treeRoots);
+            EditorTree.ComputeTreeCounts(_treeRoots);
         }
 
-        private void AddEffectToFolder(string folderName, int depth, EffectSO effect, AbilityTreeNode parent)
+        private void AddEffectToFolder(string folderName, int depth, EffectSO effect, EditorTreeNode parent)
         {
             if (!_treeNodeIndex.TryGetValue(folderName, out var folderNode))
             {
-                folderNode = new AbilityTreeNode
+                folderNode = new EditorTreeNode
                 {
                     DisplayName = folderName,
                     FullPath = folderName,
@@ -559,13 +582,13 @@ namespace RedDust.Ability
                 _treeRoots.Add(folderNode);
             }
 
-            var leaf = new AbilityTreeNode
+            var leaf = new EditorTreeNode
             {
                 DisplayName = effect.name,
                 FullPath = $"{folderName}/{effect.name}",
                 Depth = depth + 1,
                 IsFolder = false,
-                Effect = effect,
+                UserData = effect,
                 Parent = folderNode,
             };
             folderNode.Children.Add(leaf);
@@ -591,13 +614,6 @@ namespace RedDust.Ability
             Repaint();
         }
 
-        private void OnFilterChanged()
-        {
-            BuildTree();
-            _foldouts.Clear();
-            Repaint();
-        }
-
         private void RenameEffect(EffectSO effect, string newName)
         {
             var path = AssetDatabase.GetAssetPath(effect);
@@ -611,7 +627,8 @@ namespace RedDust.Ability
             effect.name = newName;
             EditorUtility.SetDirty(effect);
             _hasChanges = true;
-            _needsRefresh = true;
+            RefreshModel();
+            RebuildTree();
         }
 
         private void DeleteEffect(EffectSO effect)
@@ -620,8 +637,8 @@ namespace RedDust.Ability
                 return;
             if (_selectedEffect == effect)
                 _selectedEffect = null;
-            _needsRefresh = true;
-            _hasChanges = false;
+            RefreshModel();
+            RebuildTree();
             Repaint();
         }
 
@@ -632,13 +649,6 @@ namespace RedDust.Ability
             _hasChanges = true;
         }
 
-        private void RefreshAll()
-        {
-            _needsRefresh = true;
-            _foldouts.Clear();
-            _selectedEffect = null;
-            Repaint();
-        }
 
         // ═══════════════════════════════════════════════════
         // Import / Export
@@ -677,8 +687,8 @@ namespace RedDust.Ability
             AssetDatabase.CreateAsset(instance, path);
             AssetDatabase.SaveAssets();
 
-            _needsRefresh = true;
-            _hasChanges = true;
+            RefreshModel();
+            RebuildTree();
             _selectedEffect = instance;
             EditorGUIUtility.PingObject(instance);
             Debug.Log($"[EffectEditor] Created {path}");

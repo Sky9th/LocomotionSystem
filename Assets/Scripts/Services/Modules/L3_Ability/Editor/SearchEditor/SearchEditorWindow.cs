@@ -68,13 +68,12 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════
         private void DrawHeader()
         {
-            EditorCard.Draw(EditorTokens.Pad, () =>
+            EditorCard.Draw(() =>
             {
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Search Editor", EditorStyles.largeLabel,
                     GUILayout.ExpandWidth(true));
-                var sub = new GUIStyle(EditorStyles.label)
-                    { alignment = TextAnchor.MiddleRight };
+                var sub = EditorTokens.BreadcrumbStyle;
                 EditorGUILayout.LabelField("L3_Ability · Editor", sub, GUILayout.Width(160));
                 EditorGUILayout.EndHorizontal();
 
@@ -131,10 +130,10 @@ namespace RedDust.Ability
         // ── 左栏 ──
         private void DrawLeftColumn()
         {
-            EditorCard.Draw(EditorTokens.Pad, () =>
+            EditorCard.Draw(() =>
             {
                 // 筛选标签
-                EditorCard.DrawLight(EditorTokens.Pad, () =>
+                EditorCard.Draw(() =>
                 {
                     var newFilter = EditorButtonGroup.Draw(_filter,
                         new SearchTypeFilter[] { SearchTypeFilter.All, SearchTypeFilter.Cone, SearchTypeFilter.Ray, SearchTypeFilter.Circle },
@@ -146,7 +145,7 @@ namespace RedDust.Ability
                 EditorCard.GapTight();
 
                 // 搜索框
-                EditorCard.DrawLight(EditorTokens.Pad, () =>
+                EditorCard.Draw(() =>
                 {
                     var s = EditorSearchBar.Draw(_searchText, labelWidth: 42f);
                     if (s != _searchText) { _searchText = s; }
@@ -155,11 +154,9 @@ namespace RedDust.Ability
                 EditorCard.Gap(EditorTokens.Pad);
 
                 _leftScroll = EditorGUILayout.BeginScrollView(_leftScroll);
-                var nullSO = (AbilitySO)null;
-                AbilityTreeView.DrawTree(_treeRoots, _foldouts, ref nullSO,
+                AbilityTreeView.DrawTree(_treeRoots, _foldouts, _selectedSearch,
                     _searchText, AbilityTypeFilter.All,
                     onLeafSelected: asset => SelectSearch(asset as AbilitySearchSO),
-                    selectedSearch: _selectedSearch,
                     onDeleteLeaf: asset => DeleteSearch(asset as AbilitySearchSO));
                 EditorGUILayout.EndScrollView();
             });
@@ -168,9 +165,9 @@ namespace RedDust.Ability
         // ── 右栏 ──
         private void DrawRightColumn()
         {
-            EditorCard.Draw(EditorTokens.Pad, () =>
+            if (_selectedSearch == null)
             {
-                if (_selectedSearch == null)
+                EditorCard.Draw(() =>
                 {
                     GUILayout.FlexibleSpace();
                     EditorGUILayout.BeginHorizontal();
@@ -180,13 +177,12 @@ namespace RedDust.Ability
                     GUILayout.FlexibleSpace();
                     EditorGUILayout.EndHorizontal();
                     GUILayout.FlexibleSpace();
-                    return;
-                }
+                });
+                return;
+            }
 
-                var title = $"Edit: {_selectedSearch.name}";
-                EditorGUILayout.LabelField(title, EditorStyles.boldLabel);
-                GUILayout.Space(EditorTokens.Pad);
-
+            EditorCard.Draw($"Edit: {_selectedSearch.name}", () =>
+            {
                 _rightScroll = EditorGUILayout.BeginScrollView(_rightScroll);
                 DrawBaseFields();
                 EditorCard.Gap(EditorTokens.Pad);
@@ -201,13 +197,12 @@ namespace RedDust.Ability
 
         private void DrawBaseFields()
         {
-            EditorCard.Draw(EditorTokens.Pad, "Base", () =>
+            EditorCard.Draw("Base", () =>
             {
                 var s = _selectedSearch;
                 EditorForm.Draw(s, form =>
                 {
-                    form.DefaultLabelWidth = 80;
-                    EditorFormItem.RawField("Name", 80,
+                    EditorFormItem.RawField("Name", labelWidth: null,
                         getValue: () => s.name,
                         setValue: v =>
                         {
@@ -218,17 +213,17 @@ namespace RedDust.Ability
                         },
                         drawFunc: v => EditorGUILayout.TextField((string)v),
                         equals: (a, b) => (string)a == (string)b);
-                    EditorFormItem.Enum<ESearchType>("searchType");
+                    EditorFormItem.Enum<ESearchType>("searchType", label: "Type");
                     EditorFormItem.Float("range");
-                    EditorFormItem.RawField("targetMask", 80,
+                    EditorFormItem.RawField("Target Mask", labelWidth: null,
                         getValue: () => s.targetMask.value,
                         setValue: v => s.targetMask = (int)v,
                         drawFunc: v => DrawLayerMaskField((int)v).value,
                         equals: (a, b) => (int)a == (int)b,
                         tooltip: (typeof(AbilitySearchSO).GetField("targetMask")
                             ?.GetCustomAttribute<TooltipAttribute>())?.tooltip);
-                    EditorFormItem.Int("maxTargets");
-                    EditorFormItem.Enum<ETargetFilter>("targetFilter");
+                    EditorFormItem.Int("maxTargets", label: "Max Targets");
+                    EditorFormItem.Enum<ETargetFilter>("targetFilter", label: "Filter");
                     form.OnChange += MarkDirty;
                 });
             });
@@ -271,14 +266,13 @@ namespace RedDust.Ability
 
         private static void DrawCardSection(string title, Action draw)
         {
-            EditorCard.Draw(EditorTokens.Pad, title, draw);
+            EditorCard.Draw(title, draw);
         }
 
         private void DrawConeFields(ConeSearchSO cone)
         {
             EditorForm.Draw(cone, form =>
             {
-                form.DefaultLabelWidth = 100;
                 EditorFormItem.Slider("angle", 0f, 360f);
                 form.OnChange += MarkDirty;
             });
@@ -288,8 +282,7 @@ namespace RedDust.Ability
         {
             EditorForm.Draw(ray, form =>
             {
-                form.DefaultLabelWidth = 100;
-                EditorFormItem.Toggle("requiresLineOfSight");
+                EditorFormItem.Toggle("requiresLineOfSight", label: "Line of Sight");
                 form.OnChange += MarkDirty;
             });
         }

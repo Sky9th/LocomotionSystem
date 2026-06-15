@@ -30,7 +30,7 @@ namespace RedDust.Ability
 
             if (slot == SubAssetSlot.None)
             {
-                EditorCard.Draw(EditorTokens.Pad, () =>
+                EditorCard.Draw(() =>
                 {
                     GUILayout.FlexibleSpace();
                     EditorGUILayout.BeginHorizontal();
@@ -45,7 +45,7 @@ namespace RedDust.Ability
                 return;
             }
 
-            EditorCard.Draw(EditorTokens.Pad, () =>
+            EditorCard.Draw(() =>
             {
                 var title = slot switch
                 {
@@ -147,18 +147,15 @@ namespace RedDust.Ability
             {
                 var asset = filtered[i];
 
-                EditorCard.Draw(EditorTokens.Pad, () =>
+                EditorCard.Draw(() =>
                 {
-                    var nameStyle = new GUIStyle(EditorStyles.label);
-                    if (GUILayout.Button(asset.name, nameStyle, GUILayout.ExpandWidth(true)))
+                    if (GUILayout.Button(asset.name, GUILayout.ExpandWidth(true)))
                         onSelected?.Invoke(asset);
 
                     var summary = getSummary(asset);
                     if (!string.IsNullOrEmpty(summary))
                     {
-                        var s = new GUIStyle(EditorStyles.miniLabel)
-                            { normal = { textColor = Color.grey } };
-                        EditorGUILayout.LabelField(summary, s);
+                        EditorGUILayout.LabelField(summary, EditorTokens.DimLabelStyle);
                     }
                 });
 
@@ -172,15 +169,13 @@ namespace RedDust.Ability
         private static void DrawEffectTree(AbilityEditorModel model, string searchText,
             Action<ScriptableObject> onSelected)
         {
-            EditorCard.Draw(EditorTokens.Pad, () =>
+            EditorCard.Draw(() =>
             {
                 _effectScroll = EditorGUILayout.BeginScrollView(_effectScroll,
                     GUILayout.ExpandHeight(true));
-                var nullSO = (AbilitySO)null;
-                AbilityTreeView.DrawTree(model.EffectTreeRoots, _effectFoldouts, ref nullSO,
+                AbilityTreeView.DrawTree(model.EffectTreeRoots, _effectFoldouts, _selectedAsset,
                     searchText, AbilityTypeFilter.All,
-                    onLeafSelected: asset => onSelected(asset),
-                    selectedEffect: _selectedAsset as EffectSO);
+                    onLeafSelected: asset => onSelected(asset));
                 EditorGUILayout.EndScrollView();
             });
         }

@@ -41,7 +41,7 @@
 
 | 组件 | 角色 | 说明 |
 |------|------|------|
-| `EditorCard` | 布局容器 | 卡片 + 标题 + 折叠 + 列表项 + Header |
+| `EditorCard` | 布局容器 | 纯容器 + 带标题 + 间距 |
 | `EditorForm` | 表单布局 | BeginGroup/EndGroup、OnChange/OnSubmit、统一 SetDirty |
 | `EditorFormItem` | 字段渲染 | 拼装 EditorLabel + EditorInput + 变更检测 |
 | `EditorLabel` | Label | 纯标签文字 |
@@ -66,31 +66,18 @@
 ### API
 
 ```csharp
-// 空白卡片
-EditorCard.Draw(float pad, Action drawContent);
+// 纯容器卡片（样式全内置，继承 EditorStyles.helpBox）
+EditorCard.Draw(Action drawContent);
 
-// 带选中高亮（#2C5D87 蓝色背景）
-EditorCard.Draw(float pad, Action drawContent, bool selected);
-
-// 带标题
-EditorCard.Draw(float pad, string title, Action drawBody);
-
-// Header 卡片：[Title][Subtitle][Flexible][drawRight Slot]
-EditorCard.DrawCardHeader(string title, string subtitle, Action drawRight = null);
-
-// 轻量卡片
-EditorCard.DrawLight(float pad, Action drawContent);
-
-// 折叠卡片
-EditorCard.DrawFoldout(float pad, string title, ref bool folded, Action drawContent);
-
-// 列表项
-EditorCard.DrawItem(float pad, Action drawContent, bool selected = false, Action onClick = null);
+// 带标题卡片
+EditorCard.Draw(string title, Action drawBody);
 
 // 间距
-EditorCard.Gap(float pad);
+EditorCard.Gap(float px);
 EditorCard.GapTight();  // 3px
 ```
+
+> `DrawLight` / `DrawFoldout` / `DrawItem` / `DrawCardHeader` 已移除（v0.14.3）。Card 只是容器，选中/折叠/列表项应由上层组合实现。
 
 ### 使用范例
 

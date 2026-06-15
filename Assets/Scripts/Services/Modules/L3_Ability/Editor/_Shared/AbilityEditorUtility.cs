@@ -28,7 +28,7 @@ namespace RedDust.Ability
             foreach (var n in nodes) SortTreeRecursive(n.Children);
         }
 
-        /// <summary>递归计算各文件夹的 AbilityCount。返回根节点总数。</summary>
+        /// <summary>递归计算各文件夹的 LeafCount。返回根节点总数。</summary>
         public static int ComputeTreeCounts(List<AbilityTreeNode> roots)
         {
             int CountRecursive(AbilityTreeNode node)
@@ -36,7 +36,7 @@ namespace RedDust.Ability
                 if (!node.IsFolder) return 1;
                 var total = 0;
                 foreach (var c in node.Children) total += CountRecursive(c);
-                node.AbilityCount = total;
+                node.LeafCount = total;
                 return total;
             }
             var grandTotal = 0;

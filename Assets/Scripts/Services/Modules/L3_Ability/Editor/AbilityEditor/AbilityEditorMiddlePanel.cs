@@ -97,7 +97,7 @@ namespace RedDust.Ability
 
         private static void DrawSection(string title, Action drawBody)
         {
-            EditorCard.Draw(EditorTokens.Pad, title, drawBody);
+            EditorCard.Draw(title, drawBody);
             EditorCard.Gap(EditorTokens.Pad);
         }
 
@@ -149,15 +149,14 @@ namespace RedDust.Ability
             if (asset != null && !string.IsNullOrEmpty(summary))
             {
                 GUILayout.Space(2f);
-                var s = new GUIStyle(EditorStyles.miniLabel)
-                    { normal = { textColor = Color.grey } };
+                var s = EditorTokens.DimLabelStyle;
                 EditorGUILayout.LabelField(summary, s);
             }
 
             if (asset != null)
             {
-                var s = new GUIStyle(EditorStyles.miniLabel)
-                    { normal = { textColor = new Color(0.5f, 0.5f, 0.5f) } };
+                var s = new GUIStyle()
+                    { fontSize = EditorTokens.FontSm, normal = { textColor = new Color(0.5f, 0.5f, 0.5f) } };
                 EditorGUILayout.LabelField(asset.GetType().Name, s);
             }
         }
@@ -184,7 +183,7 @@ namespace RedDust.Ability
                     var e = sorted[si].effect;
                     var origIdx = sorted[si].origIdx;
 
-                    EditorCard.Draw(EditorTokens.Pad, () =>
+                    EditorCard.Draw(() =>
                     {
                         EditorGUILayout.BeginHorizontal();
                         EditorGUILayout.LabelField(GetEffectIcon(e), EditorStyles.label,
@@ -192,7 +191,7 @@ namespace RedDust.Ability
 
                         var name = e != null ? e.name : "(missing)";
                         var st = e != null ? EditorStyles.label
-                            : new GUIStyle(EditorStyles.label) { normal = { textColor = Color.red } };
+                            : EditorTokens.ErrorLabelStyle;
                         EditorGUILayout.LabelField(name, st, GUILayout.ExpandWidth(true));
 
                         if (EditorButton.Delete())
@@ -201,9 +200,7 @@ namespace RedDust.Ability
 
                         if (e != null)
                         {
-                            var ss = new GUIStyle(EditorStyles.miniLabel)
-                                { normal = { textColor = Color.grey } };
-                            EditorGUILayout.LabelField(GetEffectSummary(e), ss);
+                            EditorGUILayout.LabelField(GetEffectSummary(e), EditorTokens.DimLabelStyle);
                         }
                     });
                 }

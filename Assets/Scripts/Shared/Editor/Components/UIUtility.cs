@@ -24,9 +24,7 @@ namespace RedDust.Shared.EditorUI
     public static class EditorUIUtility
     {
         // ── 缓存样式 ──
-        private static GUIStyle _greyPlaceholder;
-        public static GUIStyle GreyPlaceholder => _greyPlaceholder ??= new GUIStyle(EditorStyles.label)
-            { alignment = TextAnchor.MiddleCenter, fontSize = EditorTokens.FontBase, normal = { textColor = Color.grey } };
+        public static GUIStyle GreyPlaceholder => EditorTokens.EmptyStateStyle;
 
     }
 }
