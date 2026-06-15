@@ -83,7 +83,10 @@ MonoBehaviour:
   skillSlot2: {fileID: 11400000, guid: 2151cf2d96121414e89ba5f6df9d2e22, type: 2}
   characterAudioConfig: {fileID: 11400000, guid: d1bb8260fedfef848a12a32d3f139759,
     type: 2}
-  modelPrefab: {fileID: 0}
+  modelPrefab: {fileID: 3281711121664832725, guid: 25456907a0d81ef47adfd71d2ef427a9,
+    type: 3}
+  animancerTransitions: {fileID: 11400000, guid: 227ad177433ec3a4b960e9ec4c417dd4,
+    type: 2}
   animationAliasProfile: {fileID: 11400000, guid: f85ef9e02053e3542b741c132b6f8f5c,
     type: 2}
   forwardRootMotion: 1

@@ -11,6 +11,8 @@ using RedDust.Ability;
 using RedDust.Character.Audio;
 using RedDust.Character.Combat;
 using RedDust.Properties;
+using Animancer;
+using Animancer.TransitionLibraries;
 
 namespace RedDust.Character
 {
@@ -47,6 +49,7 @@ namespace RedDust.Character
 
         [Header("Model")]
         [SerializeField] private GameObject modelPrefab;
+        [SerializeField] private TransitionLibraryAsset animancerTransitions;
 
         [Header("Animation")]
         [SerializeField] private AnimationClipSetSO animationAliasProfile;
@@ -101,28 +104,64 @@ namespace RedDust.Character
 
         private void Awake()
         {
-            // 运行时实例化 Model → AnimationBrain.Awake() 在此触发，从 CharacterActor 读取配置
-            if (modelPrefab != null)
-            {
-                var model = Instantiate(modelPrefab, transform);
-                model.name = "Model";
-                modelRoot = model.transform;
-            }
-            if (modelRoot == null) modelRoot = transform;
+            SetupModel();
+            ResolveComponents();
+            SetupAnimation();
+            SetupModules();
+        }
 
+        private void SetupModel()
+        {
+            if (modelPrefab == null)
+            {
+                if (modelRoot == null) modelRoot = transform;
+                return;
+            }
+
+            // 立即删除旧的硬编码 Model 子节点（Destroy 延迟执行会导致新旧 AnimationBrain 并存）
+            for (int i = transform.childCount - 1; i >= 0; i--)
+            {
+                var child = transform.GetChild(i);
+                if (child.name == "Model" || child.GetComponent<Animator>() != null)
+                    DestroyImmediate(child.gameObject);
+            }
+
+            var model = Instantiate(modelPrefab, transform);
+            model.name = "Model";
+
+            var animancer = model.GetComponent<NamedAnimancerComponent>();
+            if (animancer == null)
+                animancer = model.AddComponent<NamedAnimancerComponent>();
+            if (animancerTransitions != null)
+                animancer.Transitions = animancerTransitions;
+
+            if (model.GetComponent<AnimationBrain>() == null)
+                model.AddComponent<AnimationBrain>();
+
+            modelRoot = model.transform;
+        }
+
+        private void ResolveComponents()
+        {
             characterAnimation = GetComponentInChildren<AnimationBrain>();
-            characterRig = new CharacterRig(transform, modelRoot);
-            characterAnimation?.SetRig(characterRig);
             eventHub = GetComponent<EventHub>();
             pathfindingAgent = GetComponent<PathfindingAgent>();
-
-            director = new PlayerDirector(eventHub, modelRoot, this);
-
-            characterKinematic = new CharacterKinematic(transform, modelRoot, characterRig);
-            locomotionSimulator = new GroundLocomotion();
             Props = agent = GetComponent<PropertyAgent>();
             ability = GetComponent<AbilityExecutor>();
             reactor = GetComponent<AbilityReactor>();
+        }
+
+        private void SetupAnimation()
+        {
+            characterRig = new CharacterRig(transform, modelRoot);
+            characterAnimation?.SetRig(characterRig);
+        }
+
+        private void SetupModules()
+        {
+            director = new PlayerDirector(eventHub, modelRoot, this);
+            characterKinematic = new CharacterKinematic(transform, modelRoot, characterRig);
+            locomotionSimulator = new GroundLocomotion();
             combat = new CharacterCombat(ability, reactor, agent, eventHub);
         }
 
