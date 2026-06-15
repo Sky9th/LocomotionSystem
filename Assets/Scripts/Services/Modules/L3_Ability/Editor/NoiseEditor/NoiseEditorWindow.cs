@@ -21,17 +21,17 @@ namespace RedDust.Ability
 
         // ── 内联 Model ──
         private List<NoiseEventSO> _allNoises = new();
-        private List<AbilityTreeNode> _treeRoots = new();
-        private readonly Dictionary<string, AbilityTreeNode> _treeNodeIndex = new();
+        private List<EditorTreeNode> _treeRoots = new();
+
+        // ── TreeView ──
+        private EditorTreeView _treeView;
 
         // ── 状态 ──
         private bool _needsRefresh = true;
         private bool _hasChanges;
         private NoiseEventSO _selectedNoise;
         private string _searchText = "";
-        private Vector2 _leftScroll;
         private Vector2 _rightScroll;
-        private readonly Dictionary<string, bool> _foldouts = new();
 
         // ── EditorForm ──
         private Rect _noiseTagButtonRect;
@@ -42,13 +42,12 @@ namespace RedDust.Ability
 
         private void OnEnable()
         {
+            _treeView = new EditorTreeView();
             _needsRefresh = true;
         }
 
         private void OnGUI()
         {
-            if (_needsRefresh) { RefreshModel(); _needsRefresh = false; }
-
             GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.BeginHorizontal();
             GUILayout.Space(EditorTokens.Pad);
@@ -131,9 +130,20 @@ namespace RedDust.Ability
         // ── 左栏 ──
         private void DrawLeftColumn()
         {
+            if (_needsRefresh)
+            {
+                RefreshModel();
+                _treeView.SetData(_treeRoots, onSelect: node =>
+                {
+                    SelectNoise(node.UserData as NoiseEventSO);
+                },
+                onDelete: node => DeleteNoise(node.UserData as NoiseEventSO));
+                _needsRefresh = false;
+            }
+            _treeView.searchString = _searchText;
+
             EditorCard.Draw(() =>
             {
-                // 搜索框
                 EditorCard.Draw(() =>
                 {
                     var s = EditorSearchBar.Draw(_searchText, labelWidth: 42f);
@@ -142,12 +152,9 @@ namespace RedDust.Ability
 
                 EditorCard.Gap(EditorTokens.Pad);
 
-                _leftScroll = EditorGUILayout.BeginScrollView(_leftScroll);
-                AbilityTreeView.DrawTree(_treeRoots, _foldouts, _selectedNoise,
-                    _searchText, AbilityTypeFilter.All,
-                    onLeafSelected: asset => SelectNoise(asset as NoiseEventSO),
-                    onDeleteLeaf: asset => DeleteNoise(asset as NoiseEventSO));
-                EditorGUILayout.EndScrollView();
+                var rect = EditorGUILayout.GetControlRect(
+                    GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+                _treeView.OnGUI(rect);
             });
         }
 
@@ -243,8 +250,6 @@ namespace RedDust.Ability
         private void RefreshModel()
         {
             _allNoises.Clear();
-            _treeRoots.Clear();
-            _treeNodeIndex.Clear();
 
             var guids = AssetDatabase.FindAssets("t:NoiseEventSO");
             foreach (var guid in guids)
@@ -261,13 +266,12 @@ namespace RedDust.Ability
         private void BuildTree()
         {
             _treeRoots.Clear();
-            _treeNodeIndex.Clear();
+            var nodeIndex = new Dictionary<string, EditorTreeNode>();
 
             foreach (var noise in _allNoises)
             {
                 var tag = noise.noiseType;
 
-                // 按 noiseType 的 parent 链构建文件夹
                 if (tag != null)
                 {
                     var tagChain = new List<GameplayTagDefinitionSO>();
@@ -279,25 +283,25 @@ namespace RedDust.Ability
                     }
                     tagChain.Reverse();
 
-                    AbilityTreeNode parentNode = null;
+                    EditorTreeNode parentNode = null;
                     var accumPath = "";
                     for (int i = 0; i < tagChain.Count; i++)
                     {
                         var ct = tagChain[i];
                         accumPath = i == 0 ? ct.LeafName : $"{accumPath}.{ct.LeafName}";
 
-                        if (!_treeNodeIndex.TryGetValue(accumPath, out var folderNode))
+                        if (!nodeIndex.TryGetValue(accumPath, out var folderNode))
                         {
-                            folderNode = new AbilityTreeNode
+                            folderNode = new EditorTreeNode
                             {
                                 DisplayName = ct.LeafName,
                                 FullPath = accumPath,
                                 Depth = i + 1,
                                 IsFolder = true,
-                                Tag = ct,
+                                UserData = ct,
                                 Parent = parentNode,
                             };
-                            _treeNodeIndex[accumPath] = folderNode;
+                            nodeIndex[accumPath] = folderNode;
 
                             if (parentNode != null)
                                 parentNode.Children.Add(folderNode);
@@ -307,33 +311,33 @@ namespace RedDust.Ability
                         parentNode = folderNode;
                     }
 
-                    var leaf = new AbilityTreeNode
+                    var leaf = new EditorTreeNode
                     {
                         DisplayName = noise.name,
                         FullPath = $"{parentNode.FullPath}/{noise.name}",
                         Depth = parentNode.Depth + 1,
                         IsFolder = false,
-                        Noise = noise,
+                        UserData = noise,
                         Parent = parentNode,
                     };
                     parentNode.Children.Add(leaf);
                 }
                 else
                 {
-                    // 无 noiseType → Uncategorized
-                    AddToFolder("Uncategorized", 0, noise, null);
+                    AddToFolder("Uncategorized", 0, noise, null, nodeIndex);
                 }
             }
 
-            AbilityEditorUtility.SortTreeRecursive(_treeRoots);
-            AbilityEditorUtility.ComputeTreeCounts(_treeRoots);
+            EditorTree.SortTreeRecursive(_treeRoots);
+            EditorTree.ComputeTreeCounts(_treeRoots);
         }
 
-        private void AddToFolder(string folderName, int depth, NoiseEventSO noise, AbilityTreeNode parent)
+        private void AddToFolder(string folderName, int depth, NoiseEventSO noise, EditorTreeNode parent,
+            Dictionary<string, EditorTreeNode> nodeIndex)
         {
-            if (!_treeNodeIndex.TryGetValue(folderName, out var folderNode))
+            if (!nodeIndex.TryGetValue(folderName, out var folderNode))
             {
-                folderNode = new AbilityTreeNode
+                folderNode = new EditorTreeNode
                 {
                     DisplayName = folderName,
                     FullPath = folderName,
@@ -341,17 +345,17 @@ namespace RedDust.Ability
                     IsFolder = true,
                     Parent = parent,
                 };
-                _treeNodeIndex[folderName] = folderNode;
+                nodeIndex[folderName] = folderNode;
                 _treeRoots.Add(folderNode);
             }
 
-            var leaf = new AbilityTreeNode
+            var leaf = new EditorTreeNode
             {
                 DisplayName = noise.name,
                 FullPath = $"{folderName}/{noise.name}",
                 Depth = depth + 1,
                 IsFolder = false,
-                Noise = noise,
+                UserData = noise,
                 Parent = folderNode,
             };
             folderNode.Children.Add(leaf);
@@ -404,7 +408,6 @@ namespace RedDust.Ability
         private void RefreshAll()
         {
             _needsRefresh = true;
-            _foldouts.Clear();
             _selectedNoise = null;
             Repaint();
         }
