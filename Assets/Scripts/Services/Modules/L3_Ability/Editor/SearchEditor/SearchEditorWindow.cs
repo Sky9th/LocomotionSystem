@@ -18,10 +18,12 @@ namespace RedDust.Ability
     {
         private const float LeftWidth = 300f;
 
-        // ── 内联 Model（扫描 SearchSO，按 searchType 构建虚拟文件夹树）──
+        // ── 内联 Model ──
         private List<AbilitySearchSO> _allSearches = new();
-        private List<AbilityTreeNode> _treeRoots = new();
-        private readonly Dictionary<string, AbilityTreeNode> _treeNodeIndex = new();
+        private List<EditorTreeNode> _treeRoots = new();
+
+        // ── TreeView ──
+        private EditorTreeView _treeView;
 
         // ── 状态 ──
         private bool _needsRefresh = true;
@@ -29,9 +31,7 @@ namespace RedDust.Ability
         private AbilitySearchSO _selectedSearch;
         private string _searchText = "";
         private SearchTypeFilter _filter = SearchTypeFilter.All;
-        private Vector2 _leftScroll;
         private Vector2 _rightScroll;
-        private readonly Dictionary<string, bool> _foldouts = new();
 
         [MenuItem("RedDust/Search Editor", priority = 2)]
         public static void Open()
@@ -39,12 +39,12 @@ namespace RedDust.Ability
 
         private void OnEnable()
         {
+            _treeView = new EditorTreeView();
             _needsRefresh = true;
         }
 
         private void OnGUI()
         {
-            if (_needsRefresh) { RefreshModel(); _needsRefresh = false; }
 
             GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.BeginHorizontal();
@@ -130,9 +130,20 @@ namespace RedDust.Ability
         // ── 左栏 ──
         private void DrawLeftColumn()
         {
+            if (_needsRefresh)
+            {
+                RefreshModel();
+                _treeView.SetData(_treeRoots, onSelect: node =>
+                {
+                    SelectSearch(node.UserData as AbilitySearchSO);
+                },
+                onDelete: node => DeleteSearch(node.UserData as AbilitySearchSO));
+                _needsRefresh = false;
+            }
+            _treeView.searchString = _searchText;
+
             EditorCard.Draw(() =>
             {
-                // 筛选标签
                 EditorCard.Draw(() =>
                 {
                     var newFilter = EditorButtonGroup.Draw(_filter,
@@ -144,7 +155,6 @@ namespace RedDust.Ability
 
                 EditorCard.GapTight();
 
-                // 搜索框
                 EditorCard.Draw(() =>
                 {
                     var s = EditorSearchBar.Draw(_searchText, labelWidth: 42f);
@@ -153,12 +163,9 @@ namespace RedDust.Ability
 
                 EditorCard.Gap(EditorTokens.Pad);
 
-                _leftScroll = EditorGUILayout.BeginScrollView(_leftScroll);
-                AbilityTreeView.DrawTree(_treeRoots, _foldouts, _selectedSearch,
-                    _searchText, AbilityTypeFilter.All,
-                    onLeafSelected: asset => SelectSearch(asset as AbilitySearchSO),
-                    onDeleteLeaf: asset => DeleteSearch(asset as AbilitySearchSO));
-                EditorGUILayout.EndScrollView();
+                var rect = EditorGUILayout.GetControlRect(
+                    GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+                _treeView.OnGUI(rect);
             });
         }
 
@@ -325,8 +332,6 @@ namespace RedDust.Ability
         private void RefreshModel()
         {
             _allSearches.Clear();
-            _treeRoots.Clear();
-            _treeNodeIndex.Clear();
 
             var guids = AssetDatabase.FindAssets("t:AbilitySearchSO");
             foreach (var guid in guids)
@@ -343,7 +348,7 @@ namespace RedDust.Ability
         private void BuildTree()
         {
             _treeRoots.Clear();
-            _treeNodeIndex.Clear();
+            var nodeIndex = new Dictionary<string, EditorTreeNode>();
 
             var filtered = _filter == SearchTypeFilter.All
                 ? _allSearches
@@ -354,33 +359,33 @@ namespace RedDust.Ability
                 var folderName = AbilityEditorUtility.GetSearchTypeDisplayName(search.searchType);
                 var folderPath = $"search_{folderName}";
 
-                if (!_treeNodeIndex.TryGetValue(folderPath, out var folderNode))
+                if (!nodeIndex.TryGetValue(folderPath, out var folderNode))
                 {
-                    folderNode = new AbilityTreeNode
+                    folderNode = new EditorTreeNode
                     {
                         DisplayName = folderName,
                         FullPath = folderPath,
                         Depth = 0,
                         IsFolder = true,
                     };
-                    _treeNodeIndex[folderPath] = folderNode;
+                    nodeIndex[folderPath] = folderNode;
                     _treeRoots.Add(folderNode);
                 }
 
-                var leaf = new AbilityTreeNode
+                var leaf = new EditorTreeNode
                 {
                     DisplayName = search.name,
                     FullPath = $"{folderPath}/{search.name}",
                     Depth = 1,
                     IsFolder = false,
-                    Search = search,
+                    UserData = search,
                     Parent = folderNode,
                 };
                 folderNode.Children.Add(leaf);
             }
 
-            AbilityEditorUtility.SortTreeRecursive(_treeRoots);
-            AbilityEditorUtility.ComputeTreeCounts(_treeRoots);
+            EditorTree.SortTreeRecursive(_treeRoots);
+            EditorTree.ComputeTreeCounts(_treeRoots);
         }
 
         // ═══════════════════════════════════════════════════
@@ -395,8 +400,8 @@ namespace RedDust.Ability
 
         private void OnFilterChanged()
         {
+            _needsRefresh = true;
             BuildTree();
-            _foldouts.Clear();
             Repaint();
         }
 
@@ -437,7 +442,6 @@ namespace RedDust.Ability
         private void RefreshAll()
         {
             _needsRefresh = true;
-            _foldouts.Clear();
             _selectedSearch = null;
             Repaint();
         }

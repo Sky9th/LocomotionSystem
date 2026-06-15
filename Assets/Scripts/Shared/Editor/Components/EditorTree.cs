@@ -36,11 +36,13 @@ namespace RedDust.Shared.EditorUI
             var root = new TreeViewItem(0, -1, "root");
             var nextId = 1;
 
-            if (_roots != null)
+            if (_roots != null && _roots.Count > 0)
             {
                 foreach (var node in _roots)
                     root.AddChild(BuildNode(node, ref nextId));
             }
+
+            root.children ??= new List<TreeViewItem>();
 
             SetupDepthsFromParentsAndChildren(root);
             return root;

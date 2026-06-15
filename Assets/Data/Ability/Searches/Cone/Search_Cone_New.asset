@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5afef93adee0e7d45b038f262cce1722, type: 3}
-  m_Name: Search_Cone_Melee_Blade_Light
+  m_Name: Search_Cone_New
   m_EditorClassIdentifier: 
   searchType: 0
   range: 0
