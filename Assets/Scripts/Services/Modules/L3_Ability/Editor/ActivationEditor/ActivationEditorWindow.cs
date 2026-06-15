@@ -20,17 +20,17 @@ namespace RedDust.Ability
 
         // ── 内联 Model ──
         private List<AbilityActivationSO> _allActivations = new();
-        private List<AbilityTreeNode> _treeRoots = new();
-        private readonly Dictionary<string, AbilityTreeNode> _treeNodeIndex = new();
+        private List<EditorTreeNode> _treeRoots = new();
+
+        // ── TreeView ──
+        private EditorTreeView _treeView;
 
         // ── 状态 ──
         private bool _needsRefresh = true;
         private bool _hasChanges;
         private AbilityActivationSO _selectedActivation;
         private string _searchText = "";
-        private Vector2 _leftScroll;
         private Vector2 _rightScroll;
-        private readonly Dictionary<string, bool> _foldouts = new();
 
         [MenuItem("RedDust/Activation Editor", priority = 3)]
         public static void Open()
@@ -38,13 +38,12 @@ namespace RedDust.Ability
 
         private void OnEnable()
         {
+            _treeView = new EditorTreeView();
             _needsRefresh = true;
         }
 
         private void OnGUI()
         {
-            if (_needsRefresh) { RefreshModel(); _needsRefresh = false; }
-
             GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.BeginHorizontal();
             GUILayout.Space(EditorTokens.Pad);
@@ -127,9 +126,20 @@ namespace RedDust.Ability
         // ── 左栏 ──
         private void DrawLeftColumn()
         {
+            if (_needsRefresh)
+            {
+                RefreshModel();
+                _treeView.SetData(_treeRoots, onSelect: node =>
+                {
+                    SelectActivation(node.UserData as AbilityActivationSO);
+                },
+                onDelete: node => DeleteActivation(node.UserData as AbilityActivationSO));
+                _needsRefresh = false;
+            }
+            _treeView.searchString = _searchText;
+
             EditorCard.Draw(() =>
             {
-                // 搜索框
                 EditorCard.Draw(() =>
                 {
                     var s = EditorSearchBar.Draw(_searchText, labelWidth: 42f);
@@ -138,12 +148,9 @@ namespace RedDust.Ability
 
                 EditorCard.Gap(EditorTokens.Pad);
 
-                _leftScroll = EditorGUILayout.BeginScrollView(_leftScroll);
-                AbilityTreeView.DrawTree(_treeRoots, _foldouts, _selectedActivation,
-                    _searchText, AbilityTypeFilter.All,
-                    onLeafSelected: asset => SelectActivation(asset as AbilityActivationSO),
-                    onDeleteLeaf: asset => DeleteActivation(asset as AbilityActivationSO));
-                EditorGUILayout.EndScrollView();
+                var rect = EditorGUILayout.GetControlRect(
+                    GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+                _treeView.OnGUI(rect);
             });
         }
 
@@ -247,8 +254,6 @@ namespace RedDust.Ability
         private void RefreshModel()
         {
             _allActivations.Clear();
-            _treeRoots.Clear();
-            _treeNodeIndex.Clear();
 
             var guids = AssetDatabase.FindAssets("t:AbilityActivationSO");
             foreach (var guid in guids)
@@ -265,40 +270,40 @@ namespace RedDust.Ability
         private void BuildTree()
         {
             _treeRoots.Clear();
-            _treeNodeIndex.Clear();
+            var folderIndex = new Dictionary<string, EditorTreeNode>();
 
             foreach (var activation in _allActivations)
             {
                 var folderName = activation.activationType.ToString();
                 var folderPath = $"act_{folderName}";
 
-                if (!_treeNodeIndex.TryGetValue(folderPath, out var folderNode))
+                if (!folderIndex.TryGetValue(folderPath, out var folderNode))
                 {
-                    folderNode = new AbilityTreeNode
+                    folderNode = new EditorTreeNode
                     {
                         DisplayName = folderName,
                         FullPath = folderPath,
                         Depth = 0,
                         IsFolder = true,
                     };
-                    _treeNodeIndex[folderPath] = folderNode;
+                    folderIndex[folderPath] = folderNode;
                     _treeRoots.Add(folderNode);
                 }
 
-                var leaf = new AbilityTreeNode
+                var leaf = new EditorTreeNode
                 {
                     DisplayName = activation.name,
                     FullPath = $"{folderPath}/{activation.name}",
                     Depth = 1,
                     IsFolder = false,
-                    Activation = activation,
+                    UserData = activation,
                     Parent = folderNode,
                 };
                 folderNode.Children.Add(leaf);
             }
 
-            AbilityEditorUtility.SortTreeRecursive(_treeRoots);
-            AbilityEditorUtility.ComputeTreeCounts(_treeRoots);
+            EditorTree.SortTreeRecursive(_treeRoots);
+            EditorTree.ComputeTreeCounts(_treeRoots);
         }
 
         // ═══════════════════════════════════════════════════
@@ -348,7 +353,6 @@ namespace RedDust.Ability
         private void RefreshAll()
         {
             _needsRefresh = true;
-            _foldouts.Clear();
             _selectedActivation = null;
             Repaint();
         }
