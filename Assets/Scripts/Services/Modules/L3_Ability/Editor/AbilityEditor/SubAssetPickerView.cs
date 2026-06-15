@@ -35,8 +35,8 @@ namespace RedDust.Ability
                     GUILayout.FlexibleSpace();
                     EditorGUILayout.BeginHorizontal();
                     GUILayout.FlexibleSpace();
-                    EditorGUILayout.LabelField("Click a sub-asset slot\nin the middle panel to assign.",
-                        EditorUIUtility.GreyPlaceholder);
+                    EditorLabel.Draw("Click a sub-asset slot\nin the middle panel to assign.",
+                        style: EditorUIUtility.GreyPlaceholder);
                     GUILayout.FlexibleSpace();
                     EditorGUILayout.EndHorizontal();
                     GUILayout.FlexibleSpace();
@@ -56,18 +56,18 @@ namespace RedDust.Ability
                     SubAssetSlot.Noise => "Select Noise",
                     _ => "Select Asset",
                 };
-                EditorGUILayout.LabelField(title, EditorStyles.boldLabel);
-                GUILayout.Space(EditorTokens.Pad);
+                EditorLabel.Draw(title, style: EditorStyles.boldLabel);
+                EditorCard.Gap(EditorTokens.Pad);
 
                 // 搜索
                 s = EditorSearchBar.Draw(s, labelWidth: 50f);
 
-                GUILayout.Space(EditorTokens.Pad);
+                EditorCard.Gap(EditorTokens.Pad);
 
                 // 列表 — 点击高亮，不直接确认
                 DrawAssetList(model, slot, s, asset => _selectedAsset = asset);
 
-                GUILayout.Space(EditorTokens.Pad);
+                EditorCard.Gap(EditorTokens.Pad);
 
                 // 底部按钮
                 var hasSelection = _selectedAsset != null;
@@ -135,9 +135,9 @@ namespace RedDust.Ability
 
             if (filtered.Count == 0)
             {
-                EditorGUILayout.LabelField(
+                EditorLabel.Draw(
                     q != null ? "No matches. Create new?" : "No assets yet. Create new?",
-                    EditorUIUtility.GreyPlaceholder);
+                    style: EditorUIUtility.GreyPlaceholder);
                 return;
             }
 
@@ -155,7 +155,7 @@ namespace RedDust.Ability
                     var summary = getSummary(asset);
                     if (!string.IsNullOrEmpty(summary))
                     {
-                        EditorGUILayout.LabelField(summary, EditorTokens.DimLabelStyle);
+                        EditorLabel.Draw(summary, style: EditorTokens.DimLabelStyle);
                     }
                 });
 

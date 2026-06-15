@@ -38,10 +38,10 @@ namespace RedDust.Ability
         private void OnGUI()
         {
 
-            GUILayout.Space(EditorTokens.Pad);
+            EditorCard.Gap(EditorTokens.Pad);
 
             EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(EditorTokens.Pad);
+            EditorCard.Gap(EditorTokens.Pad);
             EditorGUILayout.BeginVertical();
 
             DrawHeader();
@@ -53,10 +53,10 @@ namespace RedDust.Ability
             DrawStatusBar();
 
             EditorGUILayout.EndVertical();
-            GUILayout.Space(EditorTokens.Pad);
+            EditorCard.Gap(EditorTokens.Pad);
             EditorGUILayout.EndHorizontal();
 
-            GUILayout.Space(EditorTokens.Pad);
+            EditorCard.Gap(EditorTokens.Pad);
         }
 
         // ── Header ──
@@ -65,13 +65,11 @@ namespace RedDust.Ability
             EditorCard.Draw(() =>
             {
                 EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Ability Editor", EditorStyles.largeLabel,
-                    GUILayout.ExpandWidth(true));
-                EditorGUILayout.LabelField("L3_Ability · Editor", EditorTokens.BreadcrumbStyle,
-                    GUILayout.Width(160));
+                EditorLabel.Draw("Ability Editor", style: EditorStyles.largeLabel);
+                EditorLabel.Draw("L3_Ability · Editor", 160f, style: EditorTokens.BreadcrumbStyle);
                 EditorGUILayout.EndHorizontal();
 
-                GUILayout.Space(EditorTokens.Pad);
+                EditorCard.Gap(EditorTokens.Pad);
 
                 EditorGUILayout.BeginHorizontal();
                 if (EditorButton.Draw("Refresh", size: EditorButtonSize.Medium))
@@ -159,9 +157,9 @@ namespace RedDust.Ability
                 var midTitle = _selectedAbility != null
                     ? $"Edit: {_selectedAbility.displayName ?? _selectedAbility.name}"
                     : "Properties";
-                EditorGUILayout.LabelField(midTitle, EditorStyles.boldLabel);
+                EditorLabel.Draw(midTitle, style: EditorStyles.boldLabel);
 
-                GUILayout.Space(EditorTokens.Pad);
+                EditorCard.Gap(EditorTokens.Pad);
 
                 _middleScroll = EditorGUILayout.BeginScrollView(_middleScroll);
                 if (_selectedAbility == null)
@@ -274,21 +272,20 @@ namespace RedDust.Ability
         private void DrawStatusBar()
         {
             EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(EditorTokens.Pad);
+            EditorCard.Gap(EditorTokens.Pad);
 
-            EditorGUILayout.LabelField(
+            EditorLabel.Draw(
                 $"{_model.TotalCount} abilities · {_model.AllDefs.Count} active · {_model.AllPassives.Count} passive",
-                EditorStyles.miniLabel);
+                style: EditorStyles.miniLabel);
 
             if (_selectedAbility != null)
             {
                 GUILayout.FlexibleSpace();
                 var t = _selectedAbility is AbilityDefSO ? "Active" : "Passive";
-                EditorGUILayout.LabelField(
-                    $"{_selectedAbility.name} ({t})", EditorStyles.miniLabel);
+                EditorLabel.Draw($"{_selectedAbility.name} ({t})", style: EditorStyles.miniLabel);
             }
 
-            GUILayout.Space(EditorTokens.Pad);
+            EditorCard.Gap(EditorTokens.Pad);
             EditorGUILayout.EndHorizontal();
         }
 

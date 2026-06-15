@@ -40,9 +40,8 @@ namespace RedDust.Ability
             GUILayout.FlexibleSpace();
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            EditorGUILayout.LabelField(
-                "Select an ability from the left panel,\nor create a new one with ＋ Create New.",
-                EditorUIUtility.GreyPlaceholder);
+            EditorLabel.Draw("Select an ability from the left panel,\nor create a new one with ＋ Create New.",
+                style: EditorUIUtility.GreyPlaceholder);
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
             GUILayout.FlexibleSpace();
@@ -127,18 +126,17 @@ namespace RedDust.Ability
 
             if (asset != null)
             {
-                EditorGUILayout.LabelField(asset.name, EditorStyles.label,
-                    GUILayout.ExpandWidth(true));
-                GUILayout.Space(EditorTokens.Pad);
+                EditorLabel.Draw(asset.name);
+                EditorCard.Gap(EditorTokens.Pad);
 
-                if (EditorButton.Draw("✕", EditorButtonType.Danger, EditorButtonSize.Small))
+                if (EditorButton.Draw("✕", EditorButtonType.Danger, EditorButtonSize.Small, width: 24f))
                     onClear?.Invoke(slot);
                 if (EditorButton.Draw("...", size: EditorButtonSize.Small, width: 30f))
                     onEdit?.Invoke(slot);
             }
             else
             {
-                EditorGUILayout.LabelField("— (none)", EditorUIUtility.GreyPlaceholder, GUILayout.ExpandWidth(true));
+                EditorLabel.Draw("— (none)", style: EditorUIUtility.GreyPlaceholder);
 
                 if (EditorButton.Draw("...", EditorButtonType.Success, width: 30f))
                     onEdit?.Invoke(slot);
@@ -148,16 +146,13 @@ namespace RedDust.Ability
 
             if (asset != null && !string.IsNullOrEmpty(summary))
             {
-                GUILayout.Space(2f);
-                var s = EditorTokens.DimLabelStyle;
-                EditorGUILayout.LabelField(summary, s);
+                EditorCard.Gap(2f);
+                EditorLabel.Draw(summary, style: EditorTokens.DimLabelStyle);
             }
 
             if (asset != null)
             {
-                var s = new GUIStyle()
-                    { fontSize = EditorTokens.FontSm, normal = { textColor = new Color(0.5f, 0.5f, 0.5f) } };
-                EditorGUILayout.LabelField(asset.GetType().Name, s);
+                EditorLabel.Draw(asset.GetType().Name, style: EditorTokens.DimLabelStyle);
             }
         }
 
@@ -186,13 +181,12 @@ namespace RedDust.Ability
                     EditorCard.Draw(() =>
                     {
                         EditorGUILayout.BeginHorizontal();
-                        EditorGUILayout.LabelField(GetEffectIcon(e), EditorStyles.label,
-                            GUILayout.Width(36));
+                        EditorLabel.Draw(GetEffectIcon(e), 36f);
 
                         var name = e != null ? e.name : "(missing)";
-                        var st = e != null ? EditorStyles.label
+                        var st = e != null ? EditorLabel.DefaultStyle
                             : EditorTokens.ErrorLabelStyle;
-                        EditorGUILayout.LabelField(name, st, GUILayout.ExpandWidth(true));
+                        EditorLabel.Draw(name, style: st);
 
                         if (EditorButton.Delete())
                             onRemove?.Invoke(origIdx);
@@ -200,7 +194,7 @@ namespace RedDust.Ability
 
                         if (e != null)
                         {
-                            EditorGUILayout.LabelField(GetEffectSummary(e), EditorTokens.DimLabelStyle);
+                            EditorLabel.Draw(GetEffectSummary(e), style: EditorTokens.DimLabelStyle);
                         }
                     });
                 }
@@ -208,7 +202,7 @@ namespace RedDust.Ability
 
             if (effects == null || effects.Length == 0)
             {
-                EditorGUILayout.LabelField("(empty)", EditorUIUtility.GreyPlaceholder);
+                EditorLabel.Draw("(empty)", style: EditorUIUtility.GreyPlaceholder);
             }
 
             EditorCard.Gap(EditorTokens.Pad);
@@ -221,17 +215,15 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════════════
         private static void DrawTagFields(AbilitySO a)
         {
-            // abilityTag / sharedCooldownTag
             EditorForm.Draw(a, form =>
             {
-                EditorFormItem.ObjectField<GameplayTagDefinitionSO>("abilityTag", label: "Ability");
-                DrawTagPickerButton(a, "abilityTag");
-                EditorFormItem.ObjectField<GameplayTagDefinitionSO>("sharedCooldownTag", label: "Shared CD");
-                DrawTagPickerButton(a, "sharedCooldownTag");
+                EditorFormItem.ObjectFieldWithTag<GameplayTagDefinitionSO>("abilityTag",
+                    ref _abilityTagButtonRect, label: "Ability");
+                EditorFormItem.ObjectFieldWithTag<GameplayTagDefinitionSO>("sharedCooldownTag",
+                    ref _abilityTagButtonRect, label: "Shared CD");
                 form.OnChange += () => { EditorUtility.SetDirty(a); _onChanged?.Invoke(); };
             });
 
-            // overrideExclusion — AbilityDefSO 独有字段
             if (a is AbilityDefSO def)
             {
                 EditorForm.Draw(def, form =>
@@ -240,35 +232,6 @@ namespace RedDust.Ability
                     form.OnChange += () => { EditorUtility.SetDirty(def); _onChanged?.Invoke(); };
                 });
             }
-        }
-
-        /// <summary>TagPicker 按钮（PostInput 回调）。修改直接写 SO 字段并触发 form 重建。</summary>
-        private static void DrawTagPickerButton(AbilitySO a, string fieldName)
-        {
-            if (EditorButton.Draw("Tag", size: EditorButtonSize.Small, width: 35f))
-            {
-                var field = a.GetType().GetField(fieldName,
-                    BindingFlags.Public | BindingFlags.Instance);
-                if (field == null)
-                {
-                    Debug.LogWarning($"[MiddlePanel] TagPicker: field '{fieldName}' not found on {a.GetType().Name}");
-                    return;
-                }
-                var currentTag = field.GetValue(a) as GameplayTagDefinitionSO;
-                TagPicker.Show(_abilityTagButtonRect, allowCreate: true, currentFullTag: currentTag?.FullTag,
-                    onSelected: t =>
-                    {
-                        if (currentTag != t)
-                        {
-                            field.SetValue(a, t);
-                            EditorUtility.SetDirty(a);
-                            _onChanged?.Invoke();
-                            // force rebuild handled by EditorForm.Draw
-                        }
-                    });
-            }
-            if (Event.current.type == EventType.Repaint)
-                _abilityTagButtonRect = GUILayoutUtility.GetLastRect();
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -293,8 +256,8 @@ namespace RedDust.Ability
                 EditorFormItem.Enum<ETriggerEvent>("trigger");
                 EditorFormItem.Float("triggerValue", label: "Trigger Value");
                 EditorFormItem.ObjectField<EventChannelBase>("triggerChannel", label: "Channel");
-                EditorFormItem.ObjectField<GameplayTagDefinitionSO>("targetRequiredTag", label: "Target Tag");
-                DrawTagPickerButton(p, "targetRequiredTag");
+                EditorFormItem.ObjectFieldWithTag<GameplayTagDefinitionSO>("targetRequiredTag",
+                    ref _abilityTagButtonRect, label: "Target Tag");
                 form.OnChange += () => { EditorUtility.SetDirty(p); _onChanged?.Invoke(); };
             });
         }
@@ -314,25 +277,25 @@ namespace RedDust.Ability
                     var l = links[i];
 
                     EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("→", EditorStyles.label, GUILayout.Width(14));
+                    EditorLabel.Draw("→", 14f);
 
                     var next = (AbilityDefSO)EditorGUILayout.ObjectField(
                         l.NextSkill, typeof(AbilityDefSO), false, GUILayout.Width(140));
                     if (next != l.NextSkill) { l.NextSkill = next; def.comboLinks[i] = l; EditorUtility.SetDirty(def); _onChanged?.Invoke(); }
 
-                    EditorGUILayout.LabelField("Start", GUILayout.Width(35));
+                    EditorLabel.Draw("Start", 35f);
                     var ns = EditorGUILayout.FloatField(l.WindowStart, GUILayout.Width(40));
                     if (Mathf.Abs(ns - l.WindowStart) > 0.001f)
                     { l.WindowStart = ns; def.comboLinks[i] = l; EditorUtility.SetDirty(def); _onChanged?.Invoke(); }
 
-                    EditorGUILayout.LabelField("Dur", GUILayout.Width(25));
+                    EditorLabel.Draw("Dur", 25f);
                     var nd = EditorGUILayout.FloatField(l.WindowDuration, GUILayout.Width(40));
                     if (Mathf.Abs(nd - l.WindowDuration) > 0.001f)
                     { l.WindowDuration = nd; def.comboLinks[i] = l; EditorUtility.SetDirty(def); _onChanged?.Invoke(); }
 
                     var bp = EditorGUILayout.Toggle(l.BypassCooldown, GUILayout.Width(16));
                     if (bp != l.BypassCooldown) { l.BypassCooldown = bp; def.comboLinks[i] = l; EditorUtility.SetDirty(def); _onChanged?.Invoke(); }
-                    EditorGUILayout.LabelField("BypassCD", EditorStyles.miniLabel, GUILayout.Width(58));
+                    EditorLabel.Draw("BypassCD", 58f, style: EditorStyles.miniLabel);
 
                     if (EditorButton.Delete())
                         removeAt = i;
@@ -345,10 +308,10 @@ namespace RedDust.Ability
 
             if (links == null || links.Length == 0)
             {
-                EditorGUILayout.LabelField("(no combo links)", EditorUIUtility.GreyPlaceholder);
+                EditorLabel.Draw("(no combo links)", style: EditorUIUtility.GreyPlaceholder);
             }
 
-            GUILayout.Space(EditorTokens.Pad);
+            EditorCard.Gap(EditorTokens.Pad);
             if (EditorButton.Draw("＋ Add Combo Link", EditorButtonType.Success, EditorButtonSize.Small))
                 AddComboLink(def);
         }

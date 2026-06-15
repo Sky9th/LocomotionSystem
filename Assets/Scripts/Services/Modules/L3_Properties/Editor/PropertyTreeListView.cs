@@ -9,7 +9,7 @@ namespace RedDust.Properties.Editor
 {
     /// <summary>
     /// PropertyTree list renderer. Each node is a DrawCard, children nested
-    /// inside the parent card. Mirrors AbilityTreeView.
+    /// inside the parent card. 独立自绘（二级结构，不迁移到 EditorTreeView）。
     /// </summary>
     public static class PropertyTreeListView
     {
