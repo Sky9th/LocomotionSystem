@@ -38,17 +38,17 @@ namespace RedDust.Character.Director
         {
 
             // Movement
-            eventHub.Get<SprintInputEventSO>().Register(OnSprint);
-            eventHub.Get<CrouchInputEventSO>().Register(OnCrouch);
-            eventHub.Get<ProneInputEventSO>().Register(OnProne);
-            eventHub.Get<StandInputEventSO>().Register(OnStand);
+            eventHub.Get<SprintInputEventSO>()?.Register(OnSprint);
+            eventHub.Get<CrouchInputEventSO>()?.Register(OnCrouch);
+            eventHub.Get<ProneInputEventSO>()?.Register(OnProne);
+            eventHub.Get<StandInputEventSO>()?.Register(OnStand);
 
             //Intereaction
-            eventHub.Get<SecondaryInteractEventSO>().Register(OnSecondary);
+            eventHub.Get<SecondaryInteractEventSO>()?.Register(OnSecondary);
 
             //Combat
-            eventHub.Get<FirstSkillInputEventSO>().Register(OnFirstActivatedSkill);
-            eventHub.Get<SecondSkillInputEventSO>().Register(OnSecondActivatedSkill);
+            eventHub.Get<FirstSkillInputEventSO>()?.Register(OnFirstActivatedSkill);
+            eventHub.Get<SecondSkillInputEventSO>()?.Register(OnSecondActivatedSkill);
 
             // TEMP
             if (GameContext.Instance != null &&

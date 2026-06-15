@@ -177,12 +177,9 @@ namespace RedDust.Ability
             });
             _effectTreeView.searchString = searchText;
 
-            EditorCard.Draw(() =>
-            {
-                var rect = EditorGUILayout.GetControlRect(
-                    GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
-                _effectTreeView.OnGUI(rect);
-            });
+            var rect = EditorGUILayout.GetControlRect(
+                GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+            _effectTreeView.OnGUI(rect);
         }
 
         private static void OpenStandaloneEditor(SubAssetSlot slot)

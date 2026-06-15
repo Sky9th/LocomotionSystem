@@ -24,24 +24,8 @@ namespace RedDust.Character.Animation
         [SerializeField] private NamedAnimancerComponent animancer;
         [SerializeField] private Animator animator;
 
-        [Header("Animation Config")]
-        [SerializeField] private AnimationClipSetSO aliasProfile;
-        [SerializeField] private LocomotionAnimationConfigSO animationProfile;
-
-        [Header("Locomotion")]
-        [SerializeField] private Locomotion.LocomotionProfileSO locomotionProfile;
-
-        [Header("Root Motion")]
-        [SerializeField] private bool forwardRootMotion = true;
-        [SerializeField] private bool applyRootMotionRotation = false;
-        [SerializeField] private bool autoMatchAnimationSpeed = true;
-
-        [Header("Masks")]
-        [SerializeField] private AvatarMask upperBodyMask;
-        [SerializeField] private AvatarMask additiveMask;
-        [SerializeField] private AvatarMask facialMask;
-        [SerializeField] private AvatarMask headMask;
-        [SerializeField] private AvatarMask footMask;
+        // All other animation config moved to CharacterActor.
+        // AnimationBrain reads config from CharacterActor at runtime.
 
         // ── Animation Layers ──
         private AnimancerLayer fullBodyLayer;
@@ -71,8 +55,13 @@ namespace RedDust.Character.Animation
 
         // ── Lifecycle ──
 
+        private CharacterActor _actor;
+
         private void Awake()
         {
+            _actor = GetComponentInParent<CharacterActor>();
+            if (_actor == null) return;
+
             if (animancer == null) animancer = GetComponentInChildren<NamedAnimancerComponent>();
             if (animator == null) animator = GetComponentInChildren<Animator>();
             if (animancer == null) return;
@@ -82,32 +71,27 @@ namespace RedDust.Character.Animation
             fullBodyLayer = animancer.Layers[FullBody];
             fullBodyArbiter = new DriverArbiter(fullBodyLayer);
 
-            BindLayer(UpperBody, upperBodyMask);
-            BindLayer(Additive, additiveMask);
-            BindLayer(Facial, facialMask);
-            headLookLayer = BindLayer(HeadLook, headMask);
-            footstepLayer = BindLayer(Footstep, footMask);
+            BindLayer(UpperBody, _actor.UpperBodyMask);
+            BindLayer(Additive, _actor.AdditiveMask);
+            BindLayer(Facial, _actor.FacialMask);
+            headLookLayer = BindLayer(HeadLook, _actor.HeadMask);
+            footstepLayer = BindLayer(Footstep, _actor.FootMask);
 
-            if (locomotionProfile == null)
-            {
-                var actor = GetComponentInParent<CharacterActor>();
-                if (actor != null) locomotionProfile = actor.LocomotionProfile;
-            }
-
+            var aliasProfile = _actor.AnimationAliasProfile;
             if (headLookLayer != null && aliasProfile != null && aliasProfile.lookMixer != null)
                 headLookMixer = headLookLayer.TryPlay(aliasProfile.lookMixer) as Vector2MixerState;
         }
 
         private void OnAnimatorMove()
         {
-            if (!forwardRootMotion || animator == null || characterRig == null) return;
+            if (!_actor.ForwardRootMotion || animator == null || characterRig == null) return;
 
             if (characterRig.SuppressGroundLock)
                 characterRig.ApplyPosition(animator.deltaPosition);
             else
                 characterRig.ApplyPositionPlanar(animator.deltaPosition);
 
-            if (applyRootMotionRotation)
+            if (_actor.ApplyRootMotionRotation)
                 characterRig.ApplyRotation(animator.deltaRotation);
         }
 
@@ -138,7 +122,8 @@ namespace RedDust.Character.Animation
             }
 
             Vector2 target = ctx.Kinematic.LookDirection;
-            float speed = animationProfile != null ? animationProfile.headLookSmoothingSpeed : 12f;
+            var animProfile = _actor.LocomotionAnimationProfile;
+            float speed = animProfile != null ? animProfile.headLookSmoothingSpeed : 12f;
             float step = speed * Time.deltaTime;
 
             headLookSmoothedYaw = Mathf.MoveTowards(headLookSmoothedYaw, target.x, step);
@@ -162,7 +147,7 @@ namespace RedDust.Character.Animation
 
         private void ApplySpeedMultiplier(in CharacterFrameContext ctx)
         {
-            if (!autoMatchAnimationSpeed || fullBodyLayer?.CurrentState == null) return;
+            if (!_actor.AutoMatchAnimationSpeed || fullBodyLayer?.CurrentState == null) return;
 
             var gait = ctx.Discrete.Gait;
             var state = (object)fullBodyLayer.CurrentState;

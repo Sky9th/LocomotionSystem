@@ -8,7 +8,9 @@ namespace RedDust.Character.Audio
     public sealed class CharacterAudio : MonoBehaviour
     {
         [SerializeField] private AudioSource footSource;
-        [SerializeField] private CharacterAudioConfigSO config;
+
+        private CharacterAudioConfigSO Config =>
+            GetComponentInParent<CharacterActor>()?.CharacterAudioConfig;
 
         private void Start()
         {
@@ -19,6 +21,7 @@ namespace RedDust.Character.Audio
 
         private void OnFootstep()
         {
+            var config = Config;
             if (config == null || config.footsteps == null) return;
             if (footSource == null) return;
 

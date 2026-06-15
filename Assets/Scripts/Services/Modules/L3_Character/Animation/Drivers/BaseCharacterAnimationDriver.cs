@@ -18,7 +18,7 @@ namespace RedDust.Character.Animation.Drivers
 
         protected virtual void OnEnable()
         {
-            brain = GetComponentInParent<AnimationBrain>();
+            brain = GetComponentInChildren<AnimationBrain>();
             brain?.RegisterDriver(this);
         }
 

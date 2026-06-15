@@ -59,8 +59,7 @@ namespace RedDust.Ability
 
     public static class AbilityImporter
     {
-        internal const string ActivesDir = "Assets/Data/Ability/Actives";
-        internal const string PassivesDir = "Assets/Data/Ability/Passives";
+        internal const string AbilitiesDir = "Assets/Data/Ability/Abilities";
 
         public static string ExportToJson()
         {
@@ -179,10 +178,12 @@ namespace RedDust.Ability
                 if (!isActive && !isPassive)
                 { errors.Add($"'{entry.name}': unknown abilityType '{type}'"); skipped++; continue; }
 
-                var dir = isActive ? ActivesDir : PassivesDir;
-                var assetPath = Path.Combine(dir, $"{entry.name}.asset").Replace('\\', '/');
+                // Route by abilityTag: "Ability.Melee.Blade.LightCut" → Actives/Melee/
+                var subDir = isActive ? ResolveActiveDir(entry.abilityTag) : "Passives";
+                var assetPath = Path.Combine(AbilitiesDir, subDir, $"{entry.name}.asset").Replace('\\', '/');
 
-                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                var assetDir = Path.GetDirectoryName(assetPath);
+                if (!Directory.Exists(assetDir)) Directory.CreateDirectory(assetDir);
 
                 // Check existing
                 var existing = AssetDatabase.LoadAssetAtPath<AbilitySO>(assetPath);
@@ -237,6 +238,22 @@ namespace RedDust.Ability
                     dict[asset.name] = asset;
             }
             return dict;
+        }
+
+        /// <summary>
+        /// 从 abilityTag 提取分类目录。去掉头（Ability）和尾（叶标签），
+        /// 中间段映射为目录。如 "Ability.Melee.Blade.LightCut" → "Actives/Melee/Blade"。
+        /// 不足三段时回退到 "Actives"。
+        /// </summary>
+        private static string ResolveActiveDir(string abilityTag)
+        {
+            if (string.IsNullOrWhiteSpace(abilityTag)) return "Actives";
+            var parts = abilityTag.Split('.');
+            if (parts.Length < 3) return "Actives";
+            var middle = new string[parts.Length - 2];
+            for (int i = 1; i < parts.Length - 1; i++)
+                middle[i - 1] = parts[i];
+            return $"Actives/{string.Join("/", middle)}";
         }
 
         private static void ApplyFields(AbilitySO a, AbilityEntry entry,

@@ -7,16 +7,21 @@ namespace RedDust.Character.Animation.Drivers
 {
     public sealed class TraversalDriver : BaseCharacterAnimationDriver
     {
-        [SerializeField] private AnimationClipSetSO aliasProfile;
-
         private Collider obstacleCollider;
         private Vector3 topPoint;
+        private AnimationClipSetSO _aliasProfile;
 
         public override int ChannelMask => 1 << 0; // FullBody
 
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            _aliasProfile = GetComponent<CharacterActor>()?.AnimationAliasProfile;
+        }
+
         public override void Evaluate(in CharacterFrameContext ctx, float dt)
         {
-            if (aliasProfile == null) return;
+            if (_aliasProfile == null) return;
 
             if (!ctx.Intent.JumpRequested) return;
 
@@ -27,7 +32,7 @@ namespace RedDust.Character.Animation.Drivers
             var obstacle = ctx.Kinematic.ForwardObstacleDetection;
             if (!obstacle.CanClimb) return;
 
-            var alias = ResolveClimbAlias(obstacle.ObstacleHeight);
+            var alias = ResolveClimbAlias(_aliasProfile, obstacle.ObstacleHeight);
             if (alias == null) return;
 
             brain?.SubmitRequest(this, new AnimationRequest
@@ -73,7 +78,7 @@ namespace RedDust.Character.Animation.Drivers
 
         public override void OnResumed() { }
 
-        private StringAsset ResolveClimbAlias(float obstacleHeight)
+        private static StringAsset ResolveClimbAlias(AnimationClipSetSO aliasProfile, float obstacleHeight)
         {
             if (obstacleHeight <= 0.6f) return aliasProfile.ClimbUpHalfMeter;
             if (obstacleHeight <= 1.1f) return aliasProfile.ClimbUp1meter;

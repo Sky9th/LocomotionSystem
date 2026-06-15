@@ -15,9 +15,11 @@ GameObject:
   - component: {fileID: 4110265966624315599}
   - component: {fileID: -2784309485338590956}
   - component: {fileID: 624086542894485764}
+  - component: {fileID: 8713532685476557867}
+  - component: {fileID: 6106249612974220352}
+  - component: {fileID: 7275533382615058559}
   - component: {fileID: 5085968444530936421}
   - component: {fileID: 3610630312856158315}
-  - component: {fileID: 7275533382615058559}
   - component: {fileID: 2855815212552599960}
   - component: {fileID: 386188878043265307}
   - component: {fileID: 803302436353983027}
@@ -77,8 +79,21 @@ MonoBehaviour:
   characterProfile: {fileID: 11400000, guid: 19080c489b2a47c4f85047f53e6224f6, type: 2}
   locomotionAnimationProfile: {fileID: 11400000, guid: 8c24cbd0466513245b7b38493fcf3aeb,
     type: 2}
-  skillSlot1: {fileID: 11400000, guid: ef8318ed27b3de8488a40daf2011fd93, type: 2}
-  skillSlot2: {fileID: 0}
+  skillSlot1: {fileID: 11400000, guid: a3dae7e43902d784798ca34b0b71ef24, type: 2}
+  skillSlot2: {fileID: 11400000, guid: 2151cf2d96121414e89ba5f6df9d2e22, type: 2}
+  characterAudioConfig: {fileID: 11400000, guid: d1bb8260fedfef848a12a32d3f139759,
+    type: 2}
+  modelPrefab: {fileID: 0}
+  animationAliasProfile: {fileID: 11400000, guid: f85ef9e02053e3542b741c132b6f8f5c,
+    type: 2}
+  forwardRootMotion: 1
+  applyRootMotionRotation: 0
+  autoMatchAnimationSpeed: 1
+  upperBodyMask: {fileID: 0}
+  additiveMask: {fileID: 0}
+  facialMask: {fileID: 0}
+  headMask: {fileID: 31900000, guid: 91a8c24c60bd42e4d9b539ff6d537342, type: 2}
+  footMask: {fileID: 31900000, guid: f651dcec4c7c1f24896fff756d009351, type: 2}
   modelRoot: {fileID: 7880520753254052221}
   drawDebugGizmos: 1
   debugArrowLength: 2
@@ -142,6 +157,43 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _def: {fileID: 11400000, guid: b2fde4bcaa690e2488a110dbbaf3ad2b, type: 2}
+--- !u!114 &8713532685476557867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8667043660662020576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ad8ce702429dcc479a1183287959468, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6106249612974220352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8667043660662020576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1c2d3d3341284e418e0778d64fe04de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7275533382615058559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8667043660662020576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad47c03117f688e4f8bbe972db7f7d91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  footSource: {fileID: 2855815212552599960}
 --- !u!54 &5085968444530936421
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -192,20 +244,6 @@ CapsuleCollider:
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
---- !u!114 &7275533382615058559
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8667043660662020576}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad47c03117f688e4f8bbe972db7f7d91, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  footSource: {fileID: 2855815212552599960}
-  config: {fileID: 11400000, guid: d1bb8260fedfef848a12a32d3f139759, type: 2}
 --- !u!82 &2855815212552599960
 AudioSource:
   m_ObjectHideFlags: 0
@@ -803,15 +841,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: bfa42ba6d484e4e448024c9acf736ce9,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8124664188583930696}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: bfa42ba6d484e4e448024c9acf736ce9,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8695948931337691276}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: bfa42ba6d484e4e448024c9acf736ce9,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2783184157824111690}
+      addedObject: {fileID: 5769283370268813750}
   m_SourcePrefab: {fileID: 100100000, guid: bfa42ba6d484e4e448024c9acf736ce9, type: 3}
 --- !u!95 &4304622158265510663 stripped
 Animator:
@@ -843,7 +873,7 @@ MonoBehaviour:
   _PlayAutomatically: 1
   _Animations:
   - {fileID: 1827226128182048838, guid: a4b8f2deec6a99945987cfc59b1b4e54, type: 3}
---- !u!114 &8124664188583930696
+--- !u!114 &5769283370268813750
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -857,45 +887,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animancer: {fileID: 2514341874839075585}
   animator: {fileID: 4304622158265510663}
-  aliasProfile: {fileID: 11400000, guid: f85ef9e02053e3542b741c132b6f8f5c, type: 2}
-  animationProfile: {fileID: 11400000, guid: 8c24cbd0466513245b7b38493fcf3aeb, type: 2}
-  locomotionProfile: {fileID: 0}
-  forwardRootMotion: 1
-  applyRootMotionRotation: 0
-  autoMatchAnimationSpeed: 1
-  upperBodyMask: {fileID: 0}
-  additiveMask: {fileID: 0}
-  facialMask: {fileID: 0}
-  headMask: {fileID: 31900000, guid: 91a8c24c60bd42e4d9b539ff6d537342, type: 2}
-  footMask: {fileID: 31900000, guid: f651dcec4c7c1f24896fff756d009351, type: 2}
---- !u!114 &8695948931337691276
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7356325924075039687}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ad8ce702429dcc479a1183287959468, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  aliasProfile: {fileID: 11400000, guid: f85ef9e02053e3542b741c132b6f8f5c, type: 2}
-  animationProfile: {fileID: 11400000, guid: 8c24cbd0466513245b7b38493fcf3aeb, type: 2}
-  locomotionProfile: {fileID: 11400000, guid: 2658baef4b1928c4ca79d1e7b70ab09a, type: 2}
---- !u!114 &2783184157824111690
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7356325924075039687}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1c2d3d3341284e418e0778d64fe04de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  aliasProfile: {fileID: 11400000, guid: f85ef9e02053e3542b741c132b6f8f5c, type: 2}
 --- !u!4 &7880520753254052221 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: bfa42ba6d484e4e448024c9acf736ce9,

@@ -42,11 +42,15 @@ namespace RedDust.Core
         public T Get<T>() where T : EventChannelBase
             => lookup.TryGetValue(typeof(T), out var ch) ? ch as T : null;
 
-        /// <summary>注册事件监听者。模块初始化时调用。只能新增不重复。</summary>
+        /// <summary>注册事件监听者。若组件已启用则立即 BindEvents，覆盖 OnEnable 先于注册的时序。</summary>
         public void RegisterListener(IEventListener listener)
         {
             if (!listeners.Contains(listener))
+            {
                 listeners.Add(listener);
+                if (isActiveAndEnabled)
+                    listener.BindEvents();
+            }
         }
     }
 }

@@ -40,7 +40,7 @@ public T Get<T>() where T : EventChannelBase
 ```csharp
 public void RegisterListener(IEventListener listener)
 ```
-- **用途**: 注册事件监听者。模块初始化时调用，只能新增不重复
+- **用途**: 注册事件监听者。若 EventHub 已激活则立即调用 `BindEvents()`，兼容 `Awake` 时序不确定导致的 `OnEnable` 错失问题
 - **参数**: `listener` — 实现 IEventListener 的对象
 - **调用者**: PlayerDirector 构造时等
 
@@ -49,12 +49,13 @@ public void RegisterListener(IEventListener listener)
 - **Awake**: 构建 `Dictionary<Type, EventChannelBase>` lookup
 - **OnEnable**: 遍历已注册的 IEventListener，调用 `BindEvents()`
 - **OnDisable**: 遍历已注册的 IEventListener，调用 `UnbindEvents()`
+- **RegisterListener**: 加入 listeners 列表；若 `isActiveAndEnabled` 则立即 `BindEvents()` — 防御 `Awake` 顺序不可控导致的注册晚于 `OnEnable` 问题
 - 事件通道资产通过 `[SerializeField]` 在 Inspector 中赋值
 
 ## 使用规则
 
 - `Get<T>()` 需要 `T` 是 `channels` 数组中某个元素的具体类型——用资产的 `.GetType()` 做 Key
-- `RegisterListener()` 需在 `Awake` 中调用——在 `OnEnable` 触发绑定之前
+- `RegisterListener()` 可在 `Awake` 或之后的任何时间调用——内部已处理时序
 
 ## 未来规划
 

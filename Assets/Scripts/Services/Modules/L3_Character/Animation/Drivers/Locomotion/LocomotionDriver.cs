@@ -8,10 +8,6 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
 {
     public sealed class LocomotionDriver : BaseCharacterAnimationDriver
     {
-        [SerializeField] private AnimationClipSetSO aliasProfile;
-        [SerializeField] private LocomotionAnimationConfigSO animationProfile;
-        [SerializeField] private LocomotionProfileSO locomotionProfile;
-
         private BaseLayer baseLayer;
 
         public override int ChannelMask => 1 << 0;
@@ -19,7 +15,13 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         protected override void OnEnable()
         {
             base.OnEnable();
-            baseLayer = new BaseLayer(brain?.FullBodyLayer, aliasProfile, animationProfile, locomotionProfile, brain?.CharacterRig);
+            var actor = GetComponent<CharacterActor>();
+            baseLayer = new BaseLayer(
+                brain?.FullBodyLayer,
+                actor?.AnimationAliasProfile,
+                actor?.LocomotionAnimationProfile,
+                actor?.LocomotionProfile,
+                brain?.CharacterRig);
         }
 
         public override void Evaluate(in CharacterFrameContext ctx, float dt) { }

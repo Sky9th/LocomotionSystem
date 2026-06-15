@@ -125,6 +125,7 @@ namespace RedDust.Ability
                 _treeView.SetData(_model.TreeRoots, onSelect: node =>
                 {
                     _selectedAbility = node.UserData as AbilitySO;
+                    Repaint();
                 });
                 _needsRefresh = false;
             }
