@@ -14,37 +14,6 @@ namespace RedDust.Ability
     public static class AbilityEditorUtility
     {
         // ═══════════════════════════════════════════════════
-        // 树操作（替换 EffectEditorWindow / AbilityEditorModel 中的本地函数）
-        // ═══════════════════════════════════════════════════
-
-        /// <summary>递归排序树：文件夹优先，再按 DisplayName 字母序。</summary>
-        public static void SortTreeRecursive(List<AbilityTreeNode> nodes)
-        {
-            nodes.Sort((a, b) =>
-            {
-                if (a.IsFolder != b.IsFolder) return a.IsFolder ? -1 : 1;
-                return string.CompareOrdinal(a.DisplayName, b.DisplayName);
-            });
-            foreach (var n in nodes) SortTreeRecursive(n.Children);
-        }
-
-        /// <summary>递归计算各文件夹的 LeafCount。返回根节点总数。</summary>
-        public static int ComputeTreeCounts(List<AbilityTreeNode> roots)
-        {
-            int CountRecursive(AbilityTreeNode node)
-            {
-                if (!node.IsFolder) return 1;
-                var total = 0;
-                foreach (var c in node.Children) total += CountRecursive(c);
-                node.LeafCount = total;
-                return total;
-            }
-            var grandTotal = 0;
-            foreach (var root in roots) grandTotal += CountRecursive(root);
-            return grandTotal;
-        }
-
-        // ═══════════════════════════════════════════════════
         // 数组操作
         // ═══════════════════════════════════════════════════
 
