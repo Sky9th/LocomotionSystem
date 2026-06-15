@@ -19,11 +19,10 @@ namespace RedDust.Ability
         private string _searchText = "";
         private AbilityTypeFilter _filter = AbilityTypeFilter.All;
         private AbilitySO _selectedAbility;
-        private Vector2 _leftScroll;
+        private EditorTreeView _treeView;
         private Vector2 _middleScroll;
         private SubAssetSlot _activeSlot;
         private string _rightSearchText = "";
-        private readonly Dictionary<string, bool> _foldouts = new();
 
         [MenuItem("RedDust/Ability Editor", priority = 0)]
         private static void Open()
@@ -32,12 +31,12 @@ namespace RedDust.Ability
         private void OnEnable()
         {
             _model = new AbilityEditorModel();
+            _treeView = new EditorTreeView();
             _needsRefresh = true;
         }
 
         private void OnGUI()
         {
-            if (_needsRefresh) { _model.Refresh(); _needsRefresh = false; }
 
             GUILayout.Space(EditorTokens.Pad);
 
@@ -122,24 +121,30 @@ namespace RedDust.Ability
         // ── 左栏：Ability 列表 ──
         private void DrawLeftColumn()
         {
+            if (_needsRefresh)
+            {
+                _model.Refresh();
+                _treeView.SetData(_model.TreeRoots, onSelect: node =>
+                {
+                    _selectedAbility = node.UserData as AbilitySO;
+                });
+                _needsRefresh = false;
+            }
+            _treeView.searchString = _searchText;
+
             EditorGUILayout.BeginHorizontal(
                 GUILayout.Width(LeftWidth), GUILayout.ExpandHeight(true));
             EditorCard.Draw(() =>
             {
-                // filter
                 AbilityListView.DrawFilterCard(_filter, f => _filter = f);
                 EditorCard.Gap(EditorTokens.Pad);
 
-                // search
                 AbilityListView.DrawSearchCard(_searchText, s => _searchText = s);
                 EditorCard.Gap(EditorTokens.Pad);
 
-                // tree
-                _leftScroll = EditorGUILayout.BeginScrollView(_leftScroll);
-                AbilityTreeView.DrawTree(_model.TreeRoots, _foldouts, _selectedAbility,
-                    _searchText, _filter,
-                    onLeafSelected: asset => _selectedAbility = asset as AbilitySO);
-                EditorGUILayout.EndScrollView();
+                var rect = EditorGUILayout.GetControlRect(
+                    GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+                _treeView.OnGUI(rect);
             });
             EditorGUILayout.EndHorizontal();
         }
@@ -290,7 +295,6 @@ namespace RedDust.Ability
         private void RefreshAll()
         {
             _needsRefresh = true;
-            _foldouts.Clear();
             Repaint();
         }
     }

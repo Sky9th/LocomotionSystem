@@ -14,9 +14,9 @@ namespace RedDust.Ability
     /// </summary>
     public static class SubAssetPickerView
     {
-        private static readonly Dictionary<string, bool> _effectFoldouts = new();
         private static ScriptableObject _selectedAsset;
         private static Vector2 _typedListScroll;
+        private static EditorTreeView _effectTreeView;
 
         public static void DrawPicker(
             AbilityEditorModel model,
@@ -164,19 +164,24 @@ namespace RedDust.Ability
             EditorGUILayout.EndScrollView();
         }
 
-        private static Vector2 _effectScroll = Vector2.zero;
-
         private static void DrawEffectTree(AbilityEditorModel model, string searchText,
             Action<ScriptableObject> onSelected)
         {
+            if (_effectTreeView == null)
+                _effectTreeView = new EditorTreeView();
+
+            _effectTreeView.SetData(model.EffectTreeRoots, onSelect: node =>
+            {
+                var asset = node.UserData as ScriptableObject;
+                if (asset != null) onSelected(asset);
+            });
+            _effectTreeView.searchString = searchText;
+
             EditorCard.Draw(() =>
             {
-                _effectScroll = EditorGUILayout.BeginScrollView(_effectScroll,
-                    GUILayout.ExpandHeight(true));
-                AbilityTreeView.DrawTree(model.EffectTreeRoots, _effectFoldouts, _selectedAsset,
-                    searchText, AbilityTypeFilter.All,
-                    onLeafSelected: asset => onSelected(asset));
-                EditorGUILayout.EndScrollView();
+                var rect = EditorGUILayout.GetControlRect(
+                    GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+                _effectTreeView.OnGUI(rect);
             });
         }
 

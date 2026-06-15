@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RedDust.Core;
+using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 
@@ -29,9 +30,8 @@ namespace RedDust.Ability
         public Dictionary<string, AbilitySO> AbilityIndex = new();
 
         // ── 树 ──
-        public List<AbilityTreeNode> TreeRoots = new();
-        public List<AbilityTreeNode> EffectTreeRoots = new();
-        public Dictionary<string, AbilityTreeNode> TreeNodeIndex = new();
+        public List<EditorTreeNode> TreeRoots = new();
+        public List<EditorTreeNode> EffectTreeRoots = new();
 
         // ── 统计 ──
         public int TotalCount => AbilityIndex.Count;
@@ -48,8 +48,6 @@ namespace RedDust.Ability
             AllEffects.Clear();
             AllNoises.Clear();
             AbilityIndex.Clear();
-            TreeRoots.Clear();
-            TreeNodeIndex.Clear();
 
             // 主资产
             var defGuids = AssetDatabase.FindAssets("t:AbilityDefSO");
@@ -125,23 +123,19 @@ namespace RedDust.Ability
         private void BuildTree()
         {
             TreeRoots.Clear();
-            TreeNodeIndex.Clear();
+            var nodeIndex = new Dictionary<string, EditorTreeNode>();
 
-            // 1. 收集所有技能，按 filter 分类
             var all = AllAbilities;
 
-            // 2. 为每个有 abilityTag 的技能创建路径
             foreach (var ability in all)
             {
                 var aTag = ability.abilityTag;
                 if (aTag == null)
                 {
-                    // 无 abilityTag → 放 Uncategorized
-                    AddToFolder("Uncategorized", 0, ability, null);
+                    AddToFolder("Uncategorized", 0, ability, null, nodeIndex);
                     continue;
                 }
 
-                // 按 tag parent 链构建文件夹路径
                 var tagChain = new List<GameplayTagDefinitionSO>();
                 var t = aTag;
                 while (t != null)
@@ -149,28 +143,27 @@ namespace RedDust.Ability
                     tagChain.Add(t);
                     t = t.Parent;
                 }
-                tagChain.Reverse(); // 从根到叶
+                tagChain.Reverse();
 
-                // 确保每层文件夹存在
-                AbilityTreeNode parentNode = null;
+                EditorTreeNode parentNode = null;
                 var accumulatedPath = "";
                 for (int i = 0; i < tagChain.Count; i++)
                 {
                     var tag = tagChain[i];
                     accumulatedPath = i == 0 ? tag.LeafName : $"{accumulatedPath}.{tag.LeafName}";
 
-                    if (!TreeNodeIndex.TryGetValue(accumulatedPath, out var folderNode))
+                    if (!nodeIndex.TryGetValue(accumulatedPath, out var folderNode))
                     {
-                        folderNode = new AbilityTreeNode
+                        folderNode = new EditorTreeNode
                         {
                             DisplayName = tag.LeafName,
                             FullPath = accumulatedPath,
                             Depth = i + 1,
                             IsFolder = true,
-                            Tag = tag,
+                            UserData = tag,
                             Parent = parentNode,
                         };
-                        TreeNodeIndex[accumulatedPath] = folderNode;
+                        nodeIndex[accumulatedPath] = folderNode;
 
                         if (parentNode != null)
                             parentNode.Children.Add(folderNode);
@@ -181,32 +174,29 @@ namespace RedDust.Ability
                     parentNode = folderNode;
                 }
 
-                // 将技能作为叶子添加到最深文件夹
-                var leafNode = new AbilityTreeNode
+                var leafNode = new EditorTreeNode
                 {
                     DisplayName = !string.IsNullOrEmpty(ability.displayName)
                         ? ability.displayName : ability.name,
                     FullPath = $"{parentNode.FullPath}/{ability.name}",
                     Depth = parentNode.Depth + 1,
                     IsFolder = false,
-                    Ability = ability,
+                    UserData = ability,
                     Parent = parentNode,
                 };
                 parentNode.Children.Add(leafNode);
             }
 
-            // 3. 排序 + 计算 count
-            AbilityEditorUtility.SortTreeRecursive(TreeRoots);
-
-            // 4. 计算每棵子树的 Ability count
-            AbilityEditorUtility.ComputeTreeCounts(TreeRoots);
+            EditorTree.SortTreeRecursive(TreeRoots);
+            EditorTree.ComputeTreeCounts(TreeRoots);
         }
 
-        private void AddToFolder(string folderName, int depth, AbilitySO ability, AbilityTreeNode parent)
+        private void AddToFolder(string folderName, int depth, AbilitySO ability, EditorTreeNode parent,
+            Dictionary<string, EditorTreeNode> nodeIndex)
         {
-            if (!TreeNodeIndex.TryGetValue(folderName, out var folderNode))
+            if (!nodeIndex.TryGetValue(folderName, out var folderNode))
             {
-                folderNode = new AbilityTreeNode
+                folderNode = new EditorTreeNode
                 {
                     DisplayName = folderName,
                     FullPath = folderName,
@@ -214,18 +204,18 @@ namespace RedDust.Ability
                     IsFolder = true,
                     Parent = parent,
                 };
-                TreeNodeIndex[folderName] = folderNode;
+                nodeIndex[folderName] = folderNode;
                 TreeRoots.Add(folderNode);
             }
 
-            var leaf = new AbilityTreeNode
+            var leaf = new EditorTreeNode
             {
                 DisplayName = !string.IsNullOrEmpty(ability.displayName)
                     ? ability.displayName : ability.name,
                 FullPath = $"{folderName}/{ability.name}",
                 Depth = depth + 1,
                 IsFolder = false,
-                Ability = ability,
+                UserData = ability,
                 Parent = folderNode,
             };
             folderNode.Children.Add(leaf);
@@ -235,13 +225,14 @@ namespace RedDust.Ability
         private void BuildEffectTree()
         {
             EffectTreeRoots.Clear();
+            var nodeIndex = new Dictionary<string, EditorTreeNode>();
 
             foreach (var effect in AllEffects)
             {
                 var tag = effect.effectTag;
                 if (tag == null)
                 {
-                    AddEffectToFolder("Uncategorized", 0, effect, null);
+                    AddEffectToFolder("Uncategorized", 0, effect, null, nodeIndex);
                     continue;
                 }
 
@@ -254,7 +245,7 @@ namespace RedDust.Ability
                 }
                 tagChain.Reverse();
 
-                AbilityTreeNode parentNode = null;
+                EditorTreeNode parentNode = null;
                 var accumulatedPath = "";
                 for (int i = 0; i < tagChain.Count; i++)
                 {
@@ -262,18 +253,18 @@ namespace RedDust.Ability
                     accumulatedPath = i == 0 ? ct.LeafName : $"{accumulatedPath}.{ct.LeafName}";
 
                     var key = $"eff_{accumulatedPath}";
-                    if (!TreeNodeIndex.TryGetValue(key, out var folderNode))
+                    if (!nodeIndex.TryGetValue(key, out var folderNode))
                     {
-                        folderNode = new AbilityTreeNode
+                        folderNode = new EditorTreeNode
                         {
                             DisplayName = ct.LeafName,
                             FullPath = accumulatedPath,
                             Depth = i + 1,
                             IsFolder = true,
-                            Tag = ct,
+                            UserData = ct,
                             Parent = parentNode,
                         };
-                        TreeNodeIndex[key] = folderNode;
+                        nodeIndex[key] = folderNode;
 
                         if (parentNode != null)
                             parentNode.Children.Add(folderNode);
@@ -284,28 +275,29 @@ namespace RedDust.Ability
                     parentNode = folderNode;
                 }
 
-                var leaf = new AbilityTreeNode
+                var leaf = new EditorTreeNode
                 {
                     DisplayName = effect.name,
                     FullPath = $"{parentNode.FullPath}/{effect.name}",
                     Depth = parentNode.Depth + 1,
                     IsFolder = false,
-                    Effect = effect,
+                    UserData = effect,
                     Parent = parentNode,
                 };
                 parentNode.Children.Add(leaf);
             }
 
-            AbilityEditorUtility.SortTreeRecursive(EffectTreeRoots);
-            AbilityEditorUtility.ComputeTreeCounts(EffectTreeRoots);
+            EditorTree.SortTreeRecursive(EffectTreeRoots);
+            EditorTree.ComputeTreeCounts(EffectTreeRoots);
         }
 
-        private void AddEffectToFolder(string folderName, int depth, EffectSO effect, AbilityTreeNode parent)
+        private void AddEffectToFolder(string folderName, int depth, EffectSO effect, EditorTreeNode parent,
+            Dictionary<string, EditorTreeNode> nodeIndex)
         {
             var key = $"eff_{folderName}";
-            if (!TreeNodeIndex.TryGetValue(key, out var folderNode))
+            if (!nodeIndex.TryGetValue(key, out var folderNode))
             {
-                folderNode = new AbilityTreeNode
+                folderNode = new EditorTreeNode
                 {
                     DisplayName = folderName,
                     FullPath = folderName,
@@ -313,17 +305,17 @@ namespace RedDust.Ability
                     IsFolder = true,
                     Parent = parent,
                 };
-                TreeNodeIndex[key] = folderNode;
+                nodeIndex[key] = folderNode;
                 EffectTreeRoots.Add(folderNode);
             }
 
-            var leaf = new AbilityTreeNode
+            var leaf = new EditorTreeNode
             {
                 DisplayName = effect.name,
                 FullPath = $"{folderName}/{effect.name}",
                 Depth = depth + 1,
                 IsFolder = false,
-                Effect = effect,
+                UserData = effect,
                 Parent = folderNode,
             };
             folderNode.Children.Add(leaf);
