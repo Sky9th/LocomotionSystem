@@ -56,8 +56,8 @@ ModuleBehaviour.Start()
 
 | 规划 | 状态 | 依赖 | 来源 |
 |------|------|------|------|
-| BaseService 继承 ModuleBehaviour | 待做 | — | 统一 L1→L2 树形链路 |
-| GameService 继承 ModuleBehaviour | 待做 | — | L1 根节点统一管理 |
+| ~~BaseService 继承 ModuleBehaviour~~ | ~~v0.16.0 已删除 — Service 直接继承 ModuleComponent~~ | — | 统一 L1→L2 树形链路 |
+| ~~GameService 继承 ModuleBehaviour~~ | ~~v0.16.0 已完成~~ | — | L1 根节点统一管理 |
 | C# 父模块 Pattern 封装 | 观察中 | Module 添加内置 Registry | 如果 C# 父子模式频繁出现 |
 
 ## 子文档索引

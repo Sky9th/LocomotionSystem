@@ -7,7 +7,7 @@ namespace RedDust.GameCamera
 {
     [DefaultExecutionOrder(-400)]
     [DisallowMultipleComponent]
-    public class CameraService : BaseService, IGameplaySessionHandler
+    public class CameraService : ModuleComponent, IGameplaySessionHandler
     {
         [Header("Cinemachine Wiring")]
         [SerializeField] private CinemachineBrain cameraBrain;
@@ -19,6 +19,8 @@ namespace RedDust.GameCamera
 
         [SerializeField] private GameObject anchorPrefab;
 
+        private EventDispatcherService _dispatcher; // TODO: 替换为 EventHub — EventDispatcher 即将废弃
+        private LogChannel _log;
         private Transform cameraPivot;
         private bool isFollowingPlayer;
 
@@ -30,43 +32,45 @@ namespace RedDust.GameCamera
             TickCameraPivot();
         }
 
-        protected override void OnSubscriptionsActivated()
+        public override void OnAssemble()
         {
-            base.OnSubscriptionsActivated();
+            _log = LogManager.GetChannel(GetType().Name);
 
-            if (Dispatcher != null)
-            {
-                Dispatcher.Subscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
-            }
-        }
-
-        private void OnDestroy()
-        {
-            if (Dispatcher != null)
-            {
-                Dispatcher.Unsubscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
-            }
-        }
-
-        protected override bool OnRegister(GameContext context)
-        {
             ValidateConfiguration();
 
             if (!EnsureCinemachineBrain())
             {
-                return false;
+                _log.Error("CinemachineBrain not found — CameraService assembly failed.");
+                return;
             }
 
             EnsureDefaultVirtualCamera();
             CreateCameraPivot();
             InitializeDefaultRig();
-
-            context.RegisterService(this);
-            return true;
         }
 
-        protected override void OnServicesReady()
+        public override void OnWire()
         {
+            GameContext.Instance.RegisterService(this);
+            GameContext.Instance.TryResolveService(out _dispatcher);
+            if (_dispatcher != null)
+                _dispatcher.Subscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
+
+            GameService.Instance?.NotifyServiceWired();
+        }
+
+        private void PublishSnapshot<TSnapshot>(TSnapshot snapshot) where TSnapshot : struct
+        {
+            GameContext.Instance.UpdateSnapshot(snapshot);
+            _dispatcher.Publish(snapshot);
+        }
+
+        private void OnDestroy()
+        {
+            if (_dispatcher != null)
+            {
+                _dispatcher.Unsubscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
+            }
         }
 
         public void OnGameplaySessionEnd()
@@ -189,7 +193,7 @@ namespace RedDust.GameCamera
         private void TickCameraPivot()
         {
             if (cameraPivot == null) return;
-            if (GameContext == null || !GameContext.TryGetSnapshot(out SPlayer player)) return;
+            if (GameContext.Instance == null || !GameContext.Instance.TryGetSnapshot(out SPlayer player)) return;
 
             Vector3 pivotPos = player.Character.Position;
             cameraPivot.position = pivotPos;
@@ -225,7 +229,7 @@ namespace RedDust.GameCamera
             anchorPos = cameraPivot.position;
             anchorRot = cameraPivot.rotation;
 
-            PublishState(new SCameraSnapshot(
+            PublishSnapshot(new SCameraSnapshot(
                 camPos, camRot, anchorPos, anchorRot,
                 Vector2.zero, mouseGround.WorldPosition, mouseGround.IsValid));
         }

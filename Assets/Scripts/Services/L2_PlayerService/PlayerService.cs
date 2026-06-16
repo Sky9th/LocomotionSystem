@@ -5,37 +5,40 @@ using UnityEngine;
 namespace RedDust.Player
 {
     [DisallowMultipleComponent]
-    public class PlayerService : BaseService, IGameplaySessionHandler
+    public class PlayerService : ModuleComponent, IGameplaySessionHandler
     {
         [SerializeField] private GameObject playerPrefab;
         [SerializeField] private GameObject playerStartAnchor;
 
+        private EventDispatcherService _dispatcher; // TODO: 替换为 EventHub — EventDispatcher 即将废弃
         private GameObject playerInstance;
 
         public Transform CurrentPlayerTransform =>
             playerInstance != null ? playerInstance.transform : null;
 
-        protected override bool OnRegister(GameContext context)
+        public override void OnAssemble()
         {
-            context.RegisterService(this);
-            return true;
         }
 
         private void Update()
         {
             if (playerInstance == null) return;
-            GameContext?.UpdateSnapshot(SPlayer.FromTransform(playerInstance.transform, isLocalPlayer: true));
+            GameContext.Instance?.UpdateSnapshot(SPlayer.FromTransform(playerInstance.transform, isLocalPlayer: true));
         }
 
-        protected override void OnSubscriptionsActivated()
+        public override void OnWire()
         {
-            Dispatcher.Subscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
+            GameContext.Instance.RegisterService(this);
+            GameContext.Instance.TryResolveService(out _dispatcher);
+            _dispatcher.Subscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
+
+            GameService.Instance?.NotifyServiceWired();
         }
 
         private void OnDestroy()
         {
-            if (Dispatcher != null)
-                Dispatcher.Unsubscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
+            if (_dispatcher != null)
+                _dispatcher.Unsubscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
         }
 
         private void HandleSceneLoadComplete(SSceneLoadComplete evt, MetaStruct meta)
@@ -61,11 +64,9 @@ namespace RedDust.Player
                 playerInstance.transform.SetPositionAndRotation(playerStartAnchor.transform.position, playerStartAnchor.transform.rotation);
 
             var playerSnapshot = SPlayer.FromTransform(playerInstance.transform, isLocalPlayer: true);
-            GameContext?.UpdateSnapshot(playerSnapshot);
-            Dispatcher?.Publish(new SPlayerSpawnedEvent(playerInstance.transform, isLocalPlayer: true));
+            GameContext.Instance.UpdateSnapshot(playerSnapshot);
+            _dispatcher.Publish(new SPlayerSpawnedEvent(playerInstance.transform, isLocalPlayer: true));
         }
-
-        protected override void OnServicesReady() { }
 
         public void OnGameplaySessionEnd()
         {

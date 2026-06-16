@@ -10,7 +10,7 @@ using UnityEngine;
 namespace RedDust.UI
 {
 
-    public class UIService : BaseService, IGameplaySessionHandler
+    public class UIService : ModuleComponent, IGameplaySessionHandler
     {
         [Header("Config")]
         [SerializeField] private UIPanelConfigSO panelConfig;
@@ -19,6 +19,7 @@ namespace RedDust.UI
         [SerializeField] private Transform modalContainer;
         [SerializeField] private CanvasGroup loadingCanvasGroup;
 
+        private EventDispatcherService _dispatcher; // TODO: 替换为 EventHub — EventDispatcher 即将废弃
         private readonly Dictionary<UIScreenId, PanelState> screenStates = new();
         private readonly Dictionary<UIOverlayId, PanelState> overlayStates = new();
         private UIScreen currentScreen;
@@ -30,37 +31,35 @@ namespace RedDust.UI
 
         public bool IsInputBlocked { get; private set; }
 
-        protected override bool OnRegister(GameContext context)
+        public override void OnAssemble()
         {
-            context.RegisterService(this);
             if (panelConfig != null) panelConfig.BuildLookup();
-            return true;
         }
 
-        protected override void OnSubscriptionsActivated()
+        public override void OnWire()
         {
-            if (Dispatcher == null) return;
-            Dispatcher.Subscribe<SGameState>(HandleGameState);
-            Dispatcher.Subscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
-            Dispatcher.Subscribe<SSceneLoadStart>(HandleSceneLoadStart);
-            Dispatcher.Subscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
-        }
+            GameContext.Instance.RegisterService(this);
+            GameContext.Instance.TryResolveService(out _dispatcher);
+            if (_dispatcher == null) return;
+            _dispatcher.Subscribe<SGameState>(HandleGameState);
+            _dispatcher.Subscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
+            _dispatcher.Subscribe<SSceneLoadStart>(HandleSceneLoadStart);
+            _dispatcher.Subscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
 
-        protected override void OnServicesReady()
-        {
-            if (GameContext == null || !GameContext.TryGetSnapshot(out SGameState state))
-                return;
+            // Merged OnServicesReady — read initial game state if available
+            if (GameContext.Instance != null && GameContext.Instance.TryGetSnapshot(out SGameState state))
+                HandleGameState(state);
 
-            HandleGameState(state);
+            GameService.Instance?.NotifyServiceWired();
         }
 
         private void OnDestroy()
         {
-            if (Dispatcher == null) return;
-            Dispatcher.Unsubscribe<SGameState>(HandleGameState);
-            Dispatcher.Unsubscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
-            Dispatcher.Unsubscribe<SSceneLoadStart>(HandleSceneLoadStart);
-            Dispatcher.Unsubscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
+            if (_dispatcher == null) return;
+            _dispatcher.Unsubscribe<SGameState>(HandleGameState);
+            _dispatcher.Unsubscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
+            _dispatcher.Unsubscribe<SSceneLoadStart>(HandleSceneLoadStart);
+            _dispatcher.Unsubscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
         }
 
         // ---- Public API ----
@@ -170,7 +169,7 @@ namespace RedDust.UI
         public bool TryGetSnapshot<T>(out T snapshot) where T : struct
         {
             snapshot = default;
-            return GameContext != null && GameContext.TryGetSnapshot(out snapshot);
+            return GameContext.Instance != null && GameContext.Instance.TryGetSnapshot(out snapshot);
         }
 
         public bool TryGetPlayerProps(out IPropertyReader props)
@@ -201,7 +200,7 @@ namespace RedDust.UI
                         screenStates.Remove(currentScreenId);
                         currentScreen = null;
                         hasCurrentScreen = false;
-                        Dispatcher.Publish(new SUnloadSceneRequest(null));
+                        _dispatcher.Publish(new SUnloadSceneRequest(null));
                     });
                     return;
                 }
@@ -211,12 +210,12 @@ namespace RedDust.UI
                 hasCurrentScreen = false;
             }
 
-            Dispatcher.Publish(new SUnloadSceneRequest(null));
+            _dispatcher.Publish(new SUnloadSceneRequest(null));
         }
 
         public void RequestResume()
         {
-            Dispatcher.Publish(new SGameStateRequest(EGameState.Playing));
+            _dispatcher.Publish(new SGameStateRequest(EGameState.Playing));
         }
 
         public void RequestQuit()
@@ -243,7 +242,7 @@ namespace RedDust.UI
                         screenStates.Remove(currentScreenId);
                         currentScreen = null;
                         hasCurrentScreen = false;
-                        Dispatcher.Publish(new SLoadSceneRequest(sceneName));
+                        _dispatcher.Publish(new SLoadSceneRequest(sceneName));
                     });
                     return;
                 }
@@ -253,7 +252,7 @@ namespace RedDust.UI
                 hasCurrentScreen = false;
             }
 
-            Dispatcher.Publish(new SLoadSceneRequest(sceneName));
+            _dispatcher.Publish(new SLoadSceneRequest(sceneName));
         }
 
         private void HandleSceneLoadStart(SSceneLoadStart _, MetaStruct __)
@@ -266,7 +265,7 @@ namespace RedDust.UI
             loadingCanvasGroup.alpha = 0f;
 
             if (pendingTargetState != EGameState.Initializing)
-                Dispatcher.Publish(new SGameStateRequest(pendingTargetState));
+                _dispatcher.Publish(new SGameStateRequest(pendingTargetState));
 
             IsInputBlocked = false;
         }

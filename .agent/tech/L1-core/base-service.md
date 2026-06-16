@@ -1,4 +1,22 @@
-# BaseService · Service 基类
+# BaseService · Service 基类（已删除）
+
+> **v0.16.0 已删除。** Service 现在直接继承 `ModuleComponent`，通过 `OnAssemble` / `OnWire` 自管理。
+
+## 迁移说明
+
+旧 BaseService 提供的功能已拆分到每个 Service 自身：
+
+| 旧 BaseService 成员 | 迁移方式 |
+|---------------------|---------|
+| `Register(context)` / `OnRegister` | `OnWire()` 中 `GameContext.Instance.RegisterService(this)` |
+| `AttachDispatcher` / `OnDispatcherAttached` | `OnWire()` 中 `GameContext.Instance.TryResolveService(out _dispatcher)` |
+| `ActivateSubscriptions` / `OnSubscriptionsActivated` | `OnWire()` 中 `_dispatcher.Subscribe<...>(...)` |
+| `NotifyInitialized` / `OnServicesReady` | `OnWire()` 末尾 |
+| `PublishState<T>(snapshot)` | 私有 `PublishSnapshot<T>()` helper 或内联 |
+| `TryResolveService<T>()` / `RequireService<T>()` | `GameContext.Instance.TryResolveService<T>()` |
+| `Log` / `GameContext` / `Dispatcher` | 私有字段自管理 |
+
+## 原始文档（v0.15.x 及之前）
 
 > `Core/BaseService.cs` — 所有 Service 的抽象基类，提供 4 阶段初始化 + 内置工具方法
 

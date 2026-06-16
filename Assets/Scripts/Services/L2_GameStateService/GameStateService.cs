@@ -1,6 +1,7 @@
 using RedDust.Core;
 using RedDust.GameInput;
 using UnityEngine;
+using RedDust.Shared;
 
 namespace RedDust.GameState
 {
@@ -10,7 +11,7 @@ namespace RedDust.GameState
 	/// keep GameContext snapshots in sync.
 	/// </summary>
 	[DisallowMultipleComponent]
-	public class GameStateService : BaseService
+	public class GameStateService : ModuleComponent
 	{
 		[Header("State Options")]
 		[SerializeField] private EGameState initialState = EGameState.MainMenu;
@@ -18,6 +19,8 @@ namespace RedDust.GameState
 		private bool hasInitialized;
 		[SerializeField] private EGameState currentState;
 		[SerializeField] private EGameState previousState;
+		private EventDispatcherService _dispatcher; // TODO: 替换为 EventHub — EventDispatcher 即将废弃
+		private LogChannel _log;
 
 		public EGameState CurrentState => currentState;
 		public EGameState PreviousState => previousState;
@@ -27,9 +30,9 @@ namespace RedDust.GameState
 		{
 		}
 
-		protected override bool OnRegister(GameContext context)
+		public override void OnAssemble()
 		{
-			context.RegisterService(this);
+			_log = LogManager.GetChannel(GetType().Name);
 
 			var state = initialState;
 #if UNITY_EDITOR
@@ -40,25 +43,28 @@ namespace RedDust.GameState
 			previousState = state;
 			currentState = state;
 
-			var snapshot = new SGameState(currentState, previousState);
-			PublishState(snapshot);
 
 			if (logTransitions)
 			{
 				Debug.Log($"[GameState] Bootstrap at {currentState}.", this);
 			}
 
-			return true;
 		}
 
-		protected override void OnServicesReady()
+		public override void OnWire()
 		{
-		}
-
-		protected override void OnDispatcherAttached()
-		{
+            GameContext.Instance.RegisterService(this);
+			GameContext.Instance.TryResolveService(out _dispatcher);
 			hasInitialized = true;
 			ApplyState(currentState, force: true);
+
+			if (_dispatcher != null)
+			{
+				_dispatcher.Subscribe<SGameStateRequest>(HandleStateRequest);
+				_dispatcher.Subscribe<SIActionUIEscape>(HandleEscapeIntent);
+
+            GameService.Instance?.NotifyServiceWired();
+			}
 		}
 
 		public bool RequestState(EGameState nextState)
@@ -90,33 +96,21 @@ namespace RedDust.GameState
 			ApplyCursorMode(currentState);
 
 			var snapshot = new SGameState(currentState, previousState);
-			Log.Info($"Transition: {previousState} -> {currentState}");
-			PublishState(snapshot);
+			_log.Info($"Transition: {previousState} -> {currentState}");
+			_dispatcher?.Publish(snapshot);
 
 			if (logTransitions)
-			{
 				Debug.Log($"[GameState] {previousState} -> {currentState}", this);
-			}
 
 			return true;
 		}
 
-		protected override void OnSubscriptionsActivated()
-		{
-			base.OnSubscriptionsActivated();
-			if (Dispatcher != null)
-			{
-				Dispatcher.Subscribe<SGameStateRequest>(HandleStateRequest);
-				Dispatcher.Subscribe<SIActionUIEscape>(HandleEscapeIntent);
-			}
-		}
-
 		private void OnDestroy()
 		{
-			if (Dispatcher != null)
+			if (_dispatcher != null)
 			{
-				Dispatcher.Unsubscribe<SGameStateRequest>(HandleStateRequest);
-				Dispatcher.Unsubscribe<SIActionUIEscape>(HandleEscapeIntent);
+				_dispatcher.Unsubscribe<SGameStateRequest>(HandleStateRequest);
+				_dispatcher.Unsubscribe<SIActionUIEscape>(HandleEscapeIntent);
 			}
 		}
 

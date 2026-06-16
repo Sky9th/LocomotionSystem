@@ -1,38 +1,38 @@
 using Pathfinding;
 using RedDust.Core;
+using RedDust.Shared;
 using UnityEngine;
 
 namespace RedDust.Pathfinding
 {
-    public class PathfindingService : BaseService, IGameplaySessionHandler
+    public class PathfindingService : ModuleComponent, IGameplaySessionHandler
     {
         private AstarPath graph;
+        private LogChannel _log;
+        private EventDispatcherService _dispatcher; // TODO: 替换为 EventHub — EventDispatcher 即将废弃
 
-        // ── BaseService ──
-
-        protected override bool OnRegister(GameContext context)
+        public override void OnAssemble()
         {
-            context.RegisterService(this);
+            _log = LogManager.GetChannel(GetType().Name);
 
             graph = GetComponent<AstarPath>();
             if (graph == null)
             {
-                Log.Error("AstarPath component missing — attach it to the same GameObject as PathfindingService.");
-                return false;
+                _log.Error("AstarPath component missing — attach it to the same GameObject as PathfindingService.");
+                return;
             }
 
-            Log.Info("Registered.");
-            return true;
+            _log.Info("Assembled.");
         }
 
-        protected override void OnServicesReady()
+        public override void OnWire()
         {
+            GameContext.Instance.RegisterService(this);
+            GameContext.Instance.TryResolveService(out _dispatcher);
             Scan();
+
+            GameService.Instance?.NotifyServiceWired();
         }
-
-        protected override void OnSubscriptionsActivated() { }
-
-        protected override void OnDispatcherAttached() { }
 
         private void OnDestroy()
         {
@@ -47,7 +47,7 @@ namespace RedDust.Pathfinding
             {
                 graph.FlushGraphUpdates();
             }
-            Log.Debug("Session ended — graph updates flushed.");
+            _log.Debug("Session ended — graph updates flushed.");
         }
 
         // ── Public API ──

@@ -70,7 +70,8 @@ namespace RedDust.Character.Animation
 
         private void OnAnimatorMove()
         {
-            var rig = buildCtx?.Rig;
+            if (buildCtx == null) return;
+            var rig = buildCtx.Rig;
             if (!buildCtx.ForwardRootMotion || animator == null || rig == null) return;
 
             if (rig.SuppressGroundLock)

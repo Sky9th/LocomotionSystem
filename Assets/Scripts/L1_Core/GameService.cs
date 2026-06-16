@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using RedDust.GameState;
 using RedDust.GameScene;
 using RedDust.Shared;
@@ -7,25 +6,30 @@ using UnityEngine;
 namespace RedDust.Core
 {
     /// <summary>
-    /// Boots core subsystems (EventDispatcher, InputManager, CameraService, LocomotionManager) and exposes global access points.
+    /// L1 root. Inherits ModuleBehaviour — child L2 services are auto-discovered and
+    /// follow the unified IInitializable lifecycle (OnAssemble → OnWire).
     /// </summary>
     [DefaultExecutionOrder(-500)]
     [DisallowMultipleComponent]
-    public class GameService : MonoBehaviour
+    public class GameService : ModuleBehaviour
     {
         public static GameService Instance { get; private set; }
 
-        [SerializeField] private GameContext gameContext;
-        [SerializeField] private EventDispatcherService eventDispatcher;
+        private GameContext _gameContext;
+        private EventDispatcherService _dispatcher; // TODO: 替换为 EventHub — EventDispatcher 即将废弃
+        private bool _sessionWasActive;
+        private LogChannel _log;
+        private int _wiredCount;
 
-        [SerializeField]
-        private readonly List<BaseService> registeredServices = new();
-        private bool isBootstrapped;
-        private bool sessionWasActive;
+        /// <summary>Called by child services at the end of their OnWire.</summary>
+        public void NotifyServiceWired()
+        {
+            _wiredCount++;
+        }
 
-        private LogChannel Log;
+        // ── Unity lifecycle ──
 
-        private void Awake()
+        private new void Awake()
         {
             if (Instance != null && Instance != this)
             {
@@ -36,169 +40,95 @@ namespace RedDust.Core
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            // UI time is independent of gameplay timeScale.
-            // All DOTween tweens default to unscaled deltaTime.
             DG.Tweening.DOTween.defaultTimeScaleIndependent = true;
 
-            Log = LogManager.GetChannel(nameof(GameService));
-            Log.Info("Bootstrap sequence starting.");
+            _log = LogManager.GetChannel(nameof(GameService));
+            _log.Info("Bootstrap sequence starting (Module tree).");
 
-            Bootstrap();
+            // ModuleBehaviour.Awake discovers all IInitializable children,
+            // then calls OnAssemble → Registry.OnAssembleAll.
+            base.Awake();
         }
 
         private void OnDestroy()
         {
-            if (eventDispatcher != null)
-                eventDispatcher.Unsubscribe<SGameState>(HandleSessionStateChange);
+            if (_dispatcher != null)
+                _dispatcher.Unsubscribe<SGameState>(HandleSessionStateChange);
 
             if (Instance == this)
-            {
                 Instance = null;
-            }
         }
 
-        private void Bootstrap()
+        // ── IInitializable (Module tree) ──
+
+        public override void OnAssemble()
         {
-            if (isBootstrapped)
+            // Actively instantiate GameContext so it is ready before any child module.
+            var go = new GameObject("GameContext");
+            go.transform.SetParent(transform);
+            _gameContext = go.AddComponent<GameContext>();
+            _gameContext.Initialize();
+
+            _log.Info("GameContext instantiated and initialized.");
+        }
+
+        public override void OnWire()
+        {
+            // Register EventDispatcher first so it can be resolved by child services.
+            var ed = GetComponentInChildren<EventDispatcherService>();
+            if (ed != null)
             {
-                Log.Debug("Bootstrap called but already bootstrapped. Skipping.");
-                return;
+                _gameContext.RegisterService(ed);
+                _dispatcher = ed;
+                _dispatcher.Subscribe<SGameState>(HandleSessionStateChange);
+                _log.Info("EventDispatcher registered; SGameState subscription active for Teardown priority.");
             }
 
-            gameContext = GetComponentInChildren<GameContext>();
-            if (gameContext == null)
-            {
-                Debug.LogError("GameManager is missing a GameContext reference.", this);
-                Log.Error("Missing GameContext reference.");
-                return;
-            }
+            // Wire all child services first so their subscriptions are active.
+            _wiredCount = 0;
+            base.OnWire();
 
-            Log.Info("Step 1: Initializing GameContext.");
-            gameContext.Initialize();
-            registeredServices.Clear();
-
-            Log.Info("Step 2: Discovering and registering services.");
-
-            eventDispatcher = GetComponentInChildren<EventDispatcherService>();
-            if (!RegisterService(eventDispatcher, "EventDispatcher"))
-            {
-                Debug.LogError("GameManager requires a valid EventDispatcher before continuing.", this);
-                Log.Error("EventDispatcher registration failed.");
-                return;
-            }
-
-            registeredServices.Add(eventDispatcher);
-            eventDispatcher.Subscribe<SGameState>(HandleSessionStateChange);
-
-            var registered = new List<string>();
-            var failed = new List<string>();
-
-            var discoveredServices = GetComponentsInChildren<BaseService>(includeInactive: true);
-            foreach (var service in discoveredServices)
-            {
-                if (service == null || service == eventDispatcher) continue;
-
-                if (RegisterService(service, service.GetType().Name))
-                {
-                    registeredServices.Add(service);
-                    registered.Add(service.GetType().Name);
-                }
-                else
-                {
-                    failed.Add(service.GetType().Name);
-                }
-            }
-
-            Log.Info($"Services registered: [{string.Join(", ", registered)}] ({registered.Count} total)");
-            if (failed.Count > 0)
-                Log.Warning($"Services failed: [{string.Join(", ", failed)}]");
-
-            Log.Info($"Step 3: Attaching dispatcher, activating subscriptions, notifying {registeredServices.Count} services.");
-            AttachDispatcherToServices();
-            ActivateServiceSubscriptions();
-            InitializeServices();
-
-            Log.Info("Bootstrap completed.");
-            isBootstrapped = true;
-
+            // Now that all services are wired, safe to publish scene load.
 #if UNITY_EDITOR
             var activeScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
             if (activeScene.name != "Core")
-                eventDispatcher.Publish(new SLoadSceneRequest(activeScene.name));
+                _dispatcher?.Publish(new SLoadSceneRequest(activeScene.name));
 #endif
+
+            int expected = Registry.Count;
+            if (_wiredCount == expected)
+                _log.Info($"All {_wiredCount} services wired successfully.");
+            else
+                _log.Error($"Service wiring mismatch: {_wiredCount}/{expected} reported.");
         }
 
-        private bool RegisterService(BaseService service, string label)
-        {
-            if (service == null)
-            {
-                Log.Warning($"RegisterService skipped: '{label}' is null.");
-                return false;
-            }
-
-            service.Register(gameContext);
-            return service.IsRegistered;
-        }
-
-        private void AttachDispatcherToServices()
-        {
-            if (eventDispatcher == null || !eventDispatcher.IsRegistered)
-            {
-                Debug.LogError("Cannot attach dispatcher references before EventDispatcher finishes registering.", this);
-                Log.Error("EventDispatcher not ready for AttachDispatcher.");
-                return;
-            }
-
-            foreach (var service in registeredServices)
-            {
-                if (service != null)
-                    service.AttachDispatcher(eventDispatcher);
-            }
-        }
-
-        private void ActivateServiceSubscriptions()
-        {
-            foreach (var service in registeredServices)
-            {
-                if (service != null)
-                    service.ActivateSubscriptions();
-            }
-        }
-
-        private void InitializeServices()
-        {
-            foreach (var service in registeredServices)
-            {
-                if (service != null)
-                    service.NotifyInitialized();
-            }
-        }
+        // ── Session teardown ──
 
         private void HandleSessionStateChange(SGameState state, MetaStruct meta)
         {
             if (state.CurrentState == EGameState.Playing)
             {
-                sessionWasActive = true;
+                _sessionWasActive = true;
                 return;
             }
 
-            if (state.CurrentState == EGameState.MainMenu && sessionWasActive)
+            if (state.CurrentState == EGameState.MainMenu && _sessionWasActive)
             {
-                sessionWasActive = false;
+                _sessionWasActive = false;
                 TeardownSession();
             }
         }
 
         private void TeardownSession()
         {
-            foreach (var service in registeredServices)
+            var handlers = GetComponentsInChildren<IGameplaySessionHandler>(includeInactive: true);
+            foreach (var handler in handlers)
             {
-                if (service is IGameplaySessionHandler handler)
+                if (handler != null)
                     handler.OnGameplaySessionEnd();
             }
 
-            gameContext.ClearSnapshots();
+            _gameContext.ClearSnapshots();
         }
-
     }
 }

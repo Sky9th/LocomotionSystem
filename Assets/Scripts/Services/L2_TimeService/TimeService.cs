@@ -5,28 +5,31 @@ using UnityEngine;
 
 namespace RedDust.GameTime
 {
-    public class TimeService : BaseService
+    public class TimeService : ModuleComponent
     {
         [SerializeField, Min(0.1f)] private float minScale = 0.2f;
         [SerializeField, Min(0.1f)] private float maxScale = 1f;
 
+        private EventDispatcherService _dispatcher; // TODO: 替换为 EventHub — EventDispatcher 即将废弃
         private float defaultScale = 1f;
         private bool isSceneLoading;
         private bool isGamePaused;
 
-        protected override bool OnRegister(GameContext context)
+        public override void OnAssemble()
         {
-            context.RegisterService(this);
             defaultScale = Mathf.Max(Time.timeScale, minScale);
-            return true;
         }
 
-        protected override void OnSubscriptionsActivated()
+        public override void OnWire()
         {
-            Dispatcher.Subscribe<SIActionWorldSpeed>(HandleTimeScaleRequested);
-            Dispatcher.Subscribe<SSceneLoadStart>(HandleSceneLoadStart);
-            Dispatcher.Subscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
-            Dispatcher.Subscribe<SGameState>(HandleGameStateChanged);
+            GameContext.Instance.RegisterService(this);
+            GameContext.Instance.TryResolveService(out _dispatcher);
+            _dispatcher.Subscribe<SIActionWorldSpeed>(HandleTimeScaleRequested);
+            _dispatcher.Subscribe<SSceneLoadStart>(HandleSceneLoadStart);
+            _dispatcher.Subscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
+            _dispatcher.Subscribe<SGameState>(HandleGameStateChanged);
+
+            GameService.Instance?.NotifyServiceWired();
         }
 
         private void HandleSceneLoadStart(SSceneLoadStart _, MetaStruct __)
@@ -66,12 +69,12 @@ namespace RedDust.GameTime
 
         private void OnDestroy()
         {
-            if (Dispatcher != null)
+            if (_dispatcher != null)
             {
-                Dispatcher.Unsubscribe<SIActionWorldSpeed>(HandleTimeScaleRequested);
-                Dispatcher.Unsubscribe<SSceneLoadStart>(HandleSceneLoadStart);
-                Dispatcher.Unsubscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
-                Dispatcher.Unsubscribe<SGameState>(HandleGameStateChanged);
+                _dispatcher.Unsubscribe<SIActionWorldSpeed>(HandleTimeScaleRequested);
+                _dispatcher.Unsubscribe<SSceneLoadStart>(HandleSceneLoadStart);
+                _dispatcher.Unsubscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
+                _dispatcher.Unsubscribe<SGameState>(HandleGameStateChanged);
             }
             RestoreDefaultScale();
         }
@@ -81,9 +84,5 @@ namespace RedDust.GameTime
             if (Application.isPlaying)
                 Time.timeScale = defaultScale;
         }
-
-        protected override void OnServicesReady() { }
-
-        protected override void OnDispatcherAttached() { }
     }
 }

@@ -6,6 +6,8 @@ namespace RedDust.Core
     {
         readonly List<IInitializable> _modules = new();
 
+        public int Count => _modules.Count;
+
         internal void Register(IInitializable module)
         {
             if (!_modules.Contains(module))

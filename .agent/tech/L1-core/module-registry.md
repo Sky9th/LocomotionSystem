@@ -27,6 +27,15 @@
 
 ## 公开方法
 
+### Count
+
+```csharp
+public int Count => _modules.Count;
+```
+
+- **用途**: 已注册子模块数量。GameService.OnWire 中对比 `_wiredCount` 验证全部 Service 加载完成。
+- **调用者**: `GameService.OnWire()`
+
 ### Register(IInitializable)
 
 ```csharp

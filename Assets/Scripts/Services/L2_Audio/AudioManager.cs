@@ -15,7 +15,7 @@ namespace RedDust.Audio
         Alert
     }
 
-    public class AudioManager : BaseService
+    public class AudioManager : ModuleComponent
     {
         private readonly Dictionary<AudioChannelType, float> channelVolumes = new()
         {
@@ -28,15 +28,14 @@ namespace RedDust.Audio
             { AudioChannelType.Alert, 1f },
         };
 
-        public float MasterVolume => channelVolumes[AudioChannelType.Master];
-
-        protected override bool OnRegister(GameContext context)
+        public override void OnWire()
         {
-            context.RegisterService(this);
-            return true;
+            GameContext.Instance.RegisterService(this);
+
+            GameService.Instance?.NotifyServiceWired();
         }
 
-        protected override void OnServicesReady() { }
+        public float MasterVolume => channelVolumes[AudioChannelType.Master];
 
         public void SetChannelVolume(AudioChannelType channel, float volume)
         {

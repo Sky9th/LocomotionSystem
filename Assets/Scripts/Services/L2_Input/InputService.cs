@@ -9,42 +9,42 @@ namespace RedDust.GameInput
     /// 输入服务。管理 InputEvent 资产的生命周期：初始化、启停、状态权限。
     /// </summary>
     [DisallowMultipleComponent]
-    public class InputService : BaseService
+    public class InputService : ModuleComponent
     {
         [SerializeField] private EventChannelBase[] inputEvents = Array.Empty<EventChannelBase>();
 
+        private EventDispatcherService _dispatcher; // TODO: 替换为 EventHub — EventDispatcher 即将废弃
+        private bool _assembled;
         private bool inputEventsConfigured;
         private EGameState currentGameState = EGameState.Initializing;
         private bool hasGameStateSnapshot;
 
         // ── Lifecycle ──
 
-        protected override bool OnRegister(GameContext context)
+        public override void OnAssemble()
         {
-            context.RegisterService(this);
             inputEventsConfigured = false;
-            return true;
+            InitializeInputEvents();
+            _assembled = true;
         }
 
-        protected override void OnDispatcherAttached()
+        public override void OnWire()
         {
-            base.OnDispatcherAttached();
-            InitializeInputEvents();
-
+            GameContext.Instance.RegisterService(this);
+            GameContext.Instance.TryResolveService(out _dispatcher);
             if (isActiveAndEnabled)
                 EnableInputEvents();
 
             SyncInitialGameState();
-        }
 
-        protected override void OnSubscriptionsActivated()
-        {
-            Dispatcher.Subscribe<SGameState>(HandleGameStateChanged);
+            _dispatcher.Subscribe<SGameState>(HandleGameStateChanged);
+
+            GameService.Instance?.NotifyServiceWired();
         }
 
         private void OnEnable()
         {
-            if (IsRegistered)
+            if (_assembled)
                 EnableInputEvents();
         }
 
@@ -55,7 +55,7 @@ namespace RedDust.GameInput
 
         private void OnDestroy()
         {
-            Dispatcher?.Unsubscribe<SGameState>(HandleGameStateChanged);
+            _dispatcher?.Unsubscribe<SGameState>(HandleGameStateChanged);
             DisposeInputEvents();
         }
 
@@ -116,7 +116,7 @@ namespace RedDust.GameInput
 
         private void SyncInitialGameState()
         {
-            if (GameContext != null && GameContext.TryGetSnapshot(out SGameState snapshot))
+            if (GameContext.Instance != null && GameContext.Instance.TryGetSnapshot(out SGameState snapshot))
                 ApplyGameState(snapshot.CurrentState, force: true);
             else
                 ApplyGameState(EGameState.Initializing, force: true);
@@ -138,7 +138,7 @@ namespace RedDust.GameInput
         {
             if (!inputEventsConfigured) return;
 
-            bool canEnable = IsRegistered && isActiveAndEnabled;
+            bool canEnable = _assembled && isActiveAndEnabled;
             foreach (var obj in inputEvents)
             {
                 if (obj is not IInputEvent evt) continue;
@@ -151,6 +151,5 @@ namespace RedDust.GameInput
             }
         }
 
-        protected override void OnServicesReady() { }
     }
 }

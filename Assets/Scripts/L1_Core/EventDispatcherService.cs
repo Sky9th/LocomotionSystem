@@ -7,16 +7,18 @@ namespace RedDust.Core
     /// <summary>
     /// Lightweight event bus used to decouple gameplay systems.
     /// </summary>
+    [System.Obsolete("替换为 EventHub — EventDispatcher 即将废弃")]
     [DisallowMultipleComponent]
-    public class EventDispatcherService : BaseService
+    public class EventDispatcherService : ModuleComponent
     {
         private readonly Dictionary<Type, List<Delegate>> listeners = new();
         [SerializeField] private List<string> inspectorListeners = new();
 
-        protected override bool OnRegister(GameContext context)
+        public override void OnWire()
         {
-            context.RegisterService(this);
-            return true;
+            GameContext.Instance.RegisterService(this);
+
+            GameService.Instance?.NotifyServiceWired();
         }
 
         public void Subscribe<TPayload>(Action<TPayload, MetaStruct> handler)
@@ -92,9 +94,6 @@ namespace RedDust.Core
             inspectorListeners.Clear();
         }
 
-        protected override void OnServicesReady()
-        {
-        }
 
         private void RefreshInspectorListeners()
         {
