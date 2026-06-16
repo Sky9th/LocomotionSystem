@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 4705462229509208632}
   - component: {fileID: 8721387818594905132}
   - component: {fileID: 8772549948613042888}
+  - component: {fileID: 440157751663121635}
+  - component: {fileID: 3696057176992036611}
   - component: {fileID: -2784309485338590956}
   - component: {fileID: 5085968444530936421}
   - component: {fileID: 3610630312856158315}
@@ -57,7 +59,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initialTags:
   - {fileID: 11400000, guid: 79f39f36937038f45af4ea7bd5d35912, type: 2}
-  - {fileID: 11400000, guid: 5fea941d358cf034082b6053e2367fdd, type: 2}
 --- !u!114 &8721387818594905132
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,9 +75,23 @@ MonoBehaviour:
   characterProfile: {fileID: 11400000, guid: 19080c489b2a47c4f85047f53e6224f6, type: 2}
   locomotionAnimationProfile: {fileID: 11400000, guid: 8c24cbd0466513245b7b38493fcf3aeb,
     type: 2}
-  characterDef: {fileID: 0}
   skillSlot1: {fileID: 0}
   skillSlot2: {fileID: 0}
+  characterAudioConfig: {fileID: 0}
+  modelPrefab: {fileID: 4709665469500830442, guid: 9a349918838ad6044b726d05ec52f15f,
+    type: 3}
+  animancerTransitions: {fileID: 11400000, guid: 227ad177433ec3a4b960e9ec4c417dd4,
+    type: 2}
+  animationAliasProfile: {fileID: 11400000, guid: f85ef9e02053e3542b741c132b6f8f5c,
+    type: 2}
+  forwardRootMotion: 1
+  applyRootMotionRotation: 0
+  autoMatchAnimationSpeed: 1
+  upperBodyMask: {fileID: 0}
+  additiveMask: {fileID: 0}
+  facialMask: {fileID: 0}
+  headMask: {fileID: 31900000, guid: 91a8c24c60bd42e4d9b539ff6d537342, type: 2}
+  footMask: {fileID: 31900000, guid: f651dcec4c7c1f24896fff756d009351, type: 2}
   modelRoot: {fileID: 7880520753254052221}
   drawDebugGizmos: 1
   debugArrowLength: 2
@@ -94,6 +109,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   channels:
   - {fileID: 11400000, guid: e9174a438bfeb664daebe77fe8ff89f8, type: 2}
+--- !u!114 &440157751663121635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8667043660662020576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1c2d3d3341284e418e0778d64fe04de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3696057176992036611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8667043660662020576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ad8ce702429dcc479a1183287959468, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &-2784309485338590956
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -724,17 +763,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animancer: {fileID: 2514341874839075585}
   animator: {fileID: 4304622158265510663}
-  aliasProfile: {fileID: 11400000, guid: f85ef9e02053e3542b741c132b6f8f5c, type: 2}
-  animationProfile: {fileID: 11400000, guid: 8c24cbd0466513245b7b38493fcf3aeb, type: 2}
-  locomotionProfile: {fileID: 0}
-  forwardRootMotion: 1
-  applyRootMotionRotation: 0
-  autoMatchAnimationSpeed: 1
-  upperBodyMask: {fileID: 0}
-  additiveMask: {fileID: 0}
-  facialMask: {fileID: 0}
-  headMask: {fileID: 31900000, guid: 91a8c24c60bd42e4d9b539ff6d537342, type: 2}
-  footMask: {fileID: 31900000, guid: f651dcec4c7c1f24896fff756d009351, type: 2}
 --- !u!114 &8695948931337691276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -747,9 +775,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ad8ce702429dcc479a1183287959468, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aliasProfile: {fileID: 11400000, guid: f85ef9e02053e3542b741c132b6f8f5c, type: 2}
-  animationProfile: {fileID: 11400000, guid: 8c24cbd0466513245b7b38493fcf3aeb, type: 2}
-  locomotionProfile: {fileID: 11400000, guid: 2658baef4b1928c4ca79d1e7b70ab09a, type: 2}
 --- !u!114 &2783184157824111690
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -762,7 +787,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1c2d3d3341284e418e0778d64fe04de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aliasProfile: {fileID: 11400000, guid: f85ef9e02053e3542b741c132b6f8f5c, type: 2}
 --- !u!4 &7880520753254052221 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: bfa42ba6d484e4e448024c9acf736ce9,

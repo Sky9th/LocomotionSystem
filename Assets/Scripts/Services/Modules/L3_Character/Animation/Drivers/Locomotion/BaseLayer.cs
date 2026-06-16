@@ -10,6 +10,7 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
     internal sealed class BaseLayer
     {
         private readonly StateMachine<BaseStateKey, LocomotionLayerFsmState<BaseLayer>> fsm;
+        private readonly CharacterBuildContext _buildContext;
         private CharacterFrameContext ctx;
         private float deltaTime;
         private StringAsset lastPlayedAlias;
@@ -18,7 +19,7 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         internal AnimationClipSetSO Alias { get; }
         internal LocomotionAnimationConfigSO AnimProfile { get; }
         internal LocomotionProfileSO LocoProfile { get; }
-        internal CharacterRig Rig { get; }
+        internal CharacterRig Rig => _buildContext?.Rig;  // 实时读取，Model 替换自动更新
         internal CharacterFrameContext Ctx => ctx;
         internal float DeltaTime => deltaTime;
         internal AnimancerLayer Layer { get; }
@@ -30,13 +31,13 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         private AnimancerState injectedMixer;
 
         internal BaseLayer(AnimancerLayer layer, AnimationClipSetSO alias, LocomotionAnimationConfigSO animProfile,
-            LocomotionProfileSO locoProfile, CharacterRig rig)
+            LocomotionProfileSO locoProfile, CharacterBuildContext buildContext)
         {
+            _buildContext = buildContext;
             Layer = layer;
             Alias = alias;
             AnimProfile = animProfile;
             LocoProfile = locoProfile;
-            Rig = rig;
             fsm = new StateMachine<BaseStateKey, LocomotionLayerFsmState<BaseLayer>>();
             fsm.Dictionary[BaseStateKey.Idle] = new BaseIdleState(this);
             fsm.Dictionary[BaseStateKey.Moving] = new BaseMovingState(this);
@@ -54,6 +55,8 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
             this.ctx = ctx;
             deltaTime = dt;
             if (fsm.CurrentState == null) fsm.ForceSetState(BaseStateKey.Idle);
+            if (Rig == null)
+                Debug.LogError($"[BaseLayer] Rig null during Update — buildContext not set.");
             fsm.CurrentState?.Tick();
         }
 

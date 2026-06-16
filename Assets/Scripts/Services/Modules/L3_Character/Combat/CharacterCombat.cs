@@ -8,44 +8,41 @@ namespace RedDust.Character.Combat
     /// <summary>
     /// 战斗中枢。桥接 Ability 管道与 Character 属性系统。
     /// </summary>
-    public class CharacterCombat
+    internal sealed class CharacterCombat : Module
     {
-        private readonly AbilityExecutor ability;
-        private readonly AbilityReactor reactor;
-        private readonly PropertyAgent agent;
-        private readonly EventHub eventHub;
+        private readonly CharacterBuildContext ctx;
 
-        public CharacterCombat(AbilityExecutor ability, AbilityReactor reactor, PropertyAgent agent, EventHub eventHub)
+        internal CharacterCombat(CharacterBuildContext ctx, ModuleRegistry registry) : base(registry)
         {
-            this.ability = ability;
-            this.reactor = reactor;
-            this.agent = agent;
-            this.eventHub = eventHub;
-
-            WireCallbacks();
+            this.ctx = ctx;
         }
 
-        public void SubscribeEvents()
+        public override void OnAssemble()
         {
-            eventHub?.Get<HitEventSO>()?.Register(OnHitEvent);
+            if (ctx.Ability != null)
+            {
+                ctx.Ability.EffectCallback = OnEffectModify;
+                ctx.Ability.PeekStatCallback = OnPeekStat;
+                ctx.Ability.ModifyStatCallback = OnModifyStat;
+            }
+
+            if (ctx.Reactor != null)
+            {
+                ctx.Reactor.ResolutionCallback = OnResolveDamage;
+                ctx.Reactor.ApplyDamageCallback = OnApplyDamage;
+                ctx.Reactor.ReactionCallback = OnReaction;
+                ctx.Reactor.OnDamagedCallback = OnDamaged;
+            }
         }
 
-        private void WireCallbacks()
+        public override void OnWire()
         {
-            if (ability != null)
-            {
-                ability.EffectCallback = OnEffectModify;
-                ability.PeekStatCallback = OnPeekStat;
-                ability.ModifyStatCallback = OnModifyStat;
-            }
+            ctx.EventHub?.Get<HitEventSO>()?.Register(OnHitEvent);
+        }
 
-            if (reactor != null)
-            {
-                reactor.ResolutionCallback = OnResolveDamage;
-                reactor.ApplyDamageCallback = OnApplyDamage;
-                reactor.ReactionCallback = OnReaction;
-                reactor.OnDamagedCallback = OnDamaged;
-            }
+        public void UnsubscribeEvents()
+        {
+            ctx.EventHub?.Get<HitEventSO>()?.Unregister(OnHitEvent);
         }
 
         private void OnHitEvent(SDamageInfo hit) { }
@@ -54,12 +51,12 @@ namespace RedDust.Character.Combat
 
         private float OnPeekStat(PropertyDefSO def)
         {
-            return agent.GetFloat(def.Id);
+            return ctx.Agent.GetFloat(def.Id);
         }
 
         private void OnModifyStat(PropertyDefSO def, float delta)
         {
-            agent.Modify(def.Id, delta);
+            ctx.Agent.Modify(def.Id, delta);
         }
 
         private float OnEffectModify(EffectSO effect, GameObject target, float baseDamage)
@@ -74,7 +71,7 @@ namespace RedDust.Character.Combat
             float amount = hit.Amount;
             float incoming = amount;
 
-            var endurance = agent.GetFloat("Attributes/Endurance");
+            var endurance = ctx.Agent.GetFloat("Attributes/Endurance");
             if (endurance > 0f)
                 amount *= 1f - endurance * 0.05f;
 
@@ -90,9 +87,9 @@ namespace RedDust.Character.Combat
         /// <summary>伤害落地。直接写入 HP。</summary>
         private void OnApplyDamage(SDamageInfo hit, float finalAmount)
         {
-            var before = agent.GetFloat("Vitals/HP");
-            agent.Modify("Vitals/HP", -finalAmount);
-            Debug.Log($"[Combat] {hit.Target.name} HP: {before:F1} -{finalAmount:F1} → {agent.GetFloat("Vitals/HP"):F1}");
+            var before = ctx.Agent.GetFloat("Vitals/HP");
+            ctx.Agent.Modify("Vitals/HP", -finalAmount);
+            Debug.Log($"[Combat] {hit.Target.name} HP: {before:F1} -{finalAmount:F1} → {ctx.Agent.GetFloat("Vitals/HP"):F1}");
         }
 
         private void OnReaction(SDamageInfo hit, float finalAmount) { }

@@ -1,6 +1,8 @@
 using UnityEngine;
 using Animancer;
+using RedDust.Core;
 using RedDust.Character.Animation.Drivers;
+using RedDust.Character.Animation.Drivers.Locomotion;
 using RedDust.Character.Animation;
 using RedDust.Character;
 
@@ -8,7 +10,7 @@ namespace RedDust.Character.Animation
 {
     [DefaultExecutionOrder(-10)]
     [DisallowMultipleComponent]
-    public sealed class AnimationBrain : MonoBehaviour
+    public sealed class AnimationBrain : ModuleBehaviour
     {
         // ── Constants ──
         public const int TotalLayerCount = 6;
@@ -30,11 +32,10 @@ namespace RedDust.Character.Animation
         // ── Animation Layers ──
         private AnimancerLayer fullBodyLayer;
         private AnimancerLayer headLookLayer;
-        private AnimancerLayer footstepLayer;
 
         // ── Core State ──
         private DriverArbiter fullBodyArbiter;
-        private CharacterRig characterRig;
+        // Rig 通过 _actor.CharacterRig → ctx.Rig 实时读取，不缓存
 
         // ── Root Motion Speed Matching ──
         public float SpeedMultiplier { get; private set; } = 1f;
@@ -47,8 +48,11 @@ namespace RedDust.Character.Animation
         private float headLookSmoothedYaw;
         private float headLookSmoothedPitch;
 
+        // ── Events ──
+        public event System.Action OnFootstep;
+
         // ── Public Accessors ──
-        internal CharacterRig CharacterRig => characterRig;
+        internal CharacterRig CharacterRig => _actor != null ? _actor.CharacterRig : null;
         public NamedAnimancerComponent Animancer => animancer;
         public AnimancerLayer FullBodyLayer => fullBodyLayer;
         public AnimancerLayer HeadLookLayer => headLookLayer;
@@ -57,10 +61,18 @@ namespace RedDust.Character.Animation
 
         private CharacterActor _actor;
 
-        private void Awake()
+        protected override void Awake()
         {
             _actor = GetComponentInParent<CharacterActor>();
+            base.Awake();  // Registry + OnAssemble（图层初始化 + 添加 Drivers）+ OnAssembleAll
+        }
+
+        public override void OnAssemble()
+        {
             if (_actor == null) return;
+
+            // Rig 不在此处捕获——CharacterActor.OnAssemble 中通过 ctx.Rig 注入。
+            // AnimationBrain 通过 _actor.CharacterRig 实时读取。
 
             if (animancer == null) animancer = GetComponentInChildren<NamedAnimancerComponent>();
             if (animator == null) animator = GetComponentInChildren<Animator>();
@@ -75,32 +87,42 @@ namespace RedDust.Character.Animation
             BindLayer(Additive, _actor.AdditiveMask);
             BindLayer(Facial, _actor.FacialMask);
             headLookLayer = BindLayer(HeadLook, _actor.HeadMask);
-            footstepLayer = BindLayer(Footstep, _actor.FootMask);
+            BindLayer(Footstep, _actor.FootMask);
 
             var aliasProfile = _actor.AnimationAliasProfile;
             if (headLookLayer != null && aliasProfile != null && aliasProfile.lookMixer != null)
                 headLookMixer = headLookLayer.TryPlay(aliasProfile.lookMixer) as Vector2MixerState;
+
+            // Drivers 是 AnimationBrain 的子模块，通过代码挂载随 Model 生灭
+            gameObject.AddComponent<LocomotionDriver>();
+            gameObject.AddComponent<TraversalDriver>();
         }
 
         private void OnAnimatorMove()
         {
-            if (!_actor.ForwardRootMotion || animator == null || characterRig == null) return;
+            var rig = CharacterRig;
+            if (!_actor.ForwardRootMotion || animator == null || rig == null) return;
 
-            if (characterRig.SuppressGroundLock)
-                characterRig.ApplyPosition(animator.deltaPosition);
+            if (rig.SuppressGroundLock)
+                rig.ApplyPosition(animator.deltaPosition);
             else
-                characterRig.ApplyPositionPlanar(animator.deltaPosition);
+                rig.ApplyPositionPlanar(animator.deltaPosition);
 
             if (_actor.ApplyRootMotionRotation)
-                characterRig.ApplyRotation(animator.deltaRotation);
+                rig.ApplyRotation(animator.deltaRotation);
+        }
+
+        public override void OnWire()
+        {
+            base.OnWire();  // LocomotionDriver.OnWire 创建 BaseLayer
+            // TODO: 桥接 BaseLayer.FootstepCallback → AnimationBrain.OnFootstep 事件
+            // 当前是临时方案——未来 BaseLayer 应通过 EventHub 发布，去掉这层桥接。
+            var locoDriver = GetComponent<LocomotionDriver>();
+            if (locoDriver?.BaseLayer != null)
+                locoDriver.BaseLayer.FootstepCallback = () => OnFootstep?.Invoke();
         }
 
         // ── Core API ──
-
-        internal void SetRig(CharacterRig rig)
-        {
-            characterRig = rig;
-        }
 
         internal void Apply(in CharacterFrameContext ctx)
         {

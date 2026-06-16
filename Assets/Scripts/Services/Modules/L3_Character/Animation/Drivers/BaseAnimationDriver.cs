@@ -1,10 +1,11 @@
 using UnityEngine;
+using RedDust.Core;
 using RedDust.Character.Animation;
 using RedDust.Character;
 
 namespace RedDust.Character.Animation.Drivers
 {
-    public abstract class BaseCharacterAnimationDriver : MonoBehaviour, ICharacterAnimationDriver
+    public abstract class BaseAnimationDriver : ModuleComponent, ICharacterAnimationDriver
     {
         protected AnimationBrain brain;
 

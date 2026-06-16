@@ -32,6 +32,12 @@ tech/
 │   ├── README.md
 │   ├── game-context.md                 # GameContext — Service Registry + Snapshot Store
 │   ├── game-service.md                 # GameService — Bootstrap 五步启动
+│   │   ├── iinitializable.md               # IInitializable — 递归树初始化协议
+│   ├── module-system.md                # Module 系统 — 树形生命周期统一链路
+│   ├── module-registry.md              # ModuleRegistry — 模块收集器
+│   ├── module.md                       # Module — C# 子模块基类
+│   ├── module-behaviour.md             # ModuleBehaviour — MB 父模块基类
+│   ├── module-component.md             # ModuleComponent — MB 子模块基类
 │   ├── base-service.md                 # BaseService — 四阶段生命周期
 │   ├── structs.md                      # MetaStruct + Core Context Structs
 │   ├── gameplay-tag.md                 # GameplayTag 完整资产树 — 9 根 190 资产

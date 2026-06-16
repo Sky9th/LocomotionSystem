@@ -1,23 +1,20 @@
 using System;
 using UnityEngine;
 using RedDust.Character;
+using RedDust.Core;
 
 namespace RedDust.Character.Kinematic
 {
-    internal sealed class CharacterKinematic
+    internal sealed class CharacterKinematic : Module
     {
-        private readonly Transform actorTransform;
-        private readonly Transform modelRoot;
-        private readonly CharacterRig characterRig;
+        private readonly CharacterBuildContext ctx;
 
         private SGroundContact previousRawGroundContact;
         private SGroundContact previousGroundContact;
 
-        internal CharacterKinematic(Transform actorTransform, Transform modelRoot, CharacterRig characterRig)
+        internal CharacterKinematic(CharacterBuildContext ctx, ModuleRegistry registry) : base(registry)
         {
-            this.actorTransform = actorTransform;
-            this.modelRoot = modelRoot;
-            this.characterRig = characterRig;
+            this.ctx = ctx;
         }
 
         internal void Reset()
@@ -31,12 +28,13 @@ namespace RedDust.Character.Kinematic
         {
             if (profile == null) throw new ArgumentNullException(nameof(profile));
 
-            var position = actorTransform.position;
-            var bodyForward = actorTransform.forward;
+            var rig = ctx.Rig;
+            var position = ctx.Root.position;
+            var bodyForward = ctx.Root.forward;
 
-            var lookDirection = CharacterHeadLook.Evaluate(aimDirection, modelRoot, actorTransform, profile);
+            var lookDirection = CharacterHeadLook.Evaluate(aimDirection, ctx.ModelRoot, ctx.Root, profile);
 
-            var groundContact = EvaluateGroundContactAndApplyConstraints(profile, deltaTime, ref position);
+            var groundContact = EvaluateGroundContactAndApplyConstraints(profile, deltaTime, ref position, rig);
             CharacterObstacleDetection.TryDetectForwardObstacle(
                 position, locomotionHeading,
                 profile.obstacleProbeVerticalOffset, profile.obstacleProbeDistance,
@@ -47,26 +45,26 @@ namespace RedDust.Character.Kinematic
         }
 
         private SGroundContact EvaluateGroundContactAndApplyConstraints(
-            KinematicProfileSO profile, float deltaTime, ref Vector3 position)
+            KinematicProfileSO profile, float deltaTime, ref Vector3 position, CharacterRig rig)
         {
             var contact = EvaluateStableGroundContact(profile, position, deltaTime);
 
-            if (characterRig.SuppressGroundLock)
+            if (rig.SuppressGroundLock)
             {
-                position = actorTransform.position;
+                position = ctx.Root.position;
                 return contact.WithIsGrounded(true);
             }
 
-            characterRig.FreezePositionY(profile.enableGroundLocking && contact.IsGrounded);
+            rig.FreezePositionY(profile.enableGroundLocking && contact.IsGrounded);
 
             if (contact.IsGrounded && profile.enableGroundLocking && contact.DistanceToGround < profile.groundLockMaxDistance)
             {
                 var newY = contact.ContactPoint.y + profile.groundLockVerticalOffset;
-                characterRig.SetGroundedY(newY);
-                characterRig.ZeroVelocity();
+                rig.SetGroundedY(newY);
+                rig.ZeroVelocity();
                 position.y = newY;
             }
-            else position = actorTransform.position;
+            else position = ctx.Root.position;
 
             return contact;
         }

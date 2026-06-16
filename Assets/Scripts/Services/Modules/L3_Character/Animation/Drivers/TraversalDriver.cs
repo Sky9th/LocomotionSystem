@@ -5,7 +5,7 @@ using RedDust.Character;
 
 namespace RedDust.Character.Animation.Drivers
 {
-    public sealed class TraversalDriver : BaseCharacterAnimationDriver
+    public sealed class TraversalDriver : BaseAnimationDriver
     {
         private Collider obstacleCollider;
         private Vector3 topPoint;

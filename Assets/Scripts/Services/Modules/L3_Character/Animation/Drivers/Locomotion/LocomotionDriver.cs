@@ -6,7 +6,7 @@ using RedDust.Character.Locomotion;
 
 namespace RedDust.Character.Animation.Drivers.Locomotion
 {
-    public sealed class LocomotionDriver : BaseCharacterAnimationDriver
+    public sealed class LocomotionDriver : BaseAnimationDriver
     {
         private BaseLayer baseLayer;
 
@@ -15,13 +15,26 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         protected override void OnEnable()
         {
             base.OnEnable();
+            // BaseLayer 创建推迟到 OnAssemble——此时 ctx 尚未创建
+        }
+
+        public override void OnAssemble()
+        {
+            base.OnAssemble();
+            // BaseLayer 创建推迟到 OnWire——AnimationBrain.OnAssemble 需先完成图层初始化
+        }
+
+        public override void OnWire()
+        {
+            base.OnWire();
+            brain = GetComponentInChildren<AnimationBrain>();
             var actor = GetComponent<CharacterActor>();
             baseLayer = new BaseLayer(
                 brain?.FullBodyLayer,
                 actor?.AnimationAliasProfile,
                 actor?.LocomotionAnimationProfile,
                 actor?.LocomotionProfile,
-                brain?.CharacterRig);
+                actor?.Context);
         }
 
         public override void Evaluate(in CharacterFrameContext ctx, float dt) { }

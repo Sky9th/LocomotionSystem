@@ -1,0 +1,50 @@
+using RedDust.Ability;
+using RedDust.Core;
+using RedDust.Character.Pathfinding;
+using RedDust.Properties;
+using UnityEngine;
+
+namespace RedDust.Character
+{
+    /// <summary>
+    /// Character 子模块统一依赖上下文。
+    /// class 而非 struct —— ModelRoot/Rig 会在 Model 替换时原地更新，
+    /// 所有持有引用的模块自动读到最新值。
+    /// </summary>
+    internal class CharacterBuildContext
+    {
+        // ── 同 GameObject 组件（静态，构造期确定，永不变） ──
+        public Transform Root { get; }
+        public EventHub EventHub { get; }
+        public PropertyAgent Agent { get; }
+        public AbilityExecutor Ability { get; }
+        public AbilityReactor Reactor { get; }
+        public PathfindingAgent Pathfinding { get; }
+
+        // ── 动态引用（Model 替换时原地更新） ──
+        public Transform ModelRoot { get; internal set; }
+        public CharacterRig Rig { get; internal set; }
+
+        // ── 临时配置（TODO: 技能树/装备系统完成后由 AbilitySlotManager 替代） ──
+        public AbilityDefSO SkillSlot1 { get; }
+        public AbilityDefSO SkillSlot2 { get; }
+
+        internal CharacterBuildContext(
+            Transform root, EventHub eventHub, PropertyAgent agent,
+            AbilityExecutor ability, AbilityReactor reactor, PathfindingAgent pathfinding,
+            Transform modelRoot, CharacterRig rig,
+            AbilityDefSO skillSlot1, AbilityDefSO skillSlot2)
+        {
+            Root = root;
+            EventHub = eventHub;
+            Agent = agent;
+            Ability = ability;
+            Reactor = reactor;
+            Pathfinding = pathfinding;
+            ModelRoot = modelRoot;
+            Rig = rig;
+            SkillSlot1 = skillSlot1;
+            SkillSlot2 = skillSlot2;
+        }
+    }
+}

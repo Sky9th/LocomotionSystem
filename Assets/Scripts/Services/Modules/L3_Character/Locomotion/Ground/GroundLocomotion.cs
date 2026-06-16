@@ -1,12 +1,15 @@
 using RedDust.Character;
 using RedDust.Character.Director;
+using RedDust.Core;
 
 namespace RedDust.Character.Locomotion
 {
-    internal sealed class GroundLocomotion : ILocomotionSimulator
+    internal sealed class GroundLocomotion : Module, ILocomotionSimulator
     {
         private readonly Motor motor = new();
         private readonly Stance stance = new();
+
+        internal GroundLocomotion(ModuleRegistry registry) : base(registry) { }
 
         public void Simulate(ref CharacterFrameContext ctx, in SCharacterIntent intent, LocomotionProfileSO profile, float dt)
         {

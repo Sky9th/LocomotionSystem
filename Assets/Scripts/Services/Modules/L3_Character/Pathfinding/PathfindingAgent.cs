@@ -1,12 +1,13 @@
 using Pathfinding;
 using UnityEngine;
+using RedDust.Core;
 using RedDust.Character.Locomotion;
 
 namespace RedDust.Character.Pathfinding
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Seeker), typeof(AIPath))]
-    public sealed class PathfindingAgent : MonoBehaviour
+    public sealed class PathfindingAgent : ModuleComponent
     {
         private Seeker seeker;
         private AIPath ai;
@@ -28,10 +29,11 @@ namespace RedDust.Character.Pathfinding
 
         public Vector3 DesiredVelocity => ai != null ? ai.desiredVelocity : Vector3.zero;
 
-        // ── Mono ──
+        // ── Lifecycle ──
 
-        private void Awake()
+        public override void OnAssemble()
         {
+            base.OnAssemble();
             seeker = GetComponent<Seeker>();
             ai = GetComponent<AIPath>();
 
@@ -40,8 +42,9 @@ namespace RedDust.Character.Pathfinding
             ai.slowWhenNotFacingTarget = false;
         }
 
-        private void Start()
+        public override void OnWire()
         {
+            base.OnWire();
             Teleport(transform.position);
         }
 

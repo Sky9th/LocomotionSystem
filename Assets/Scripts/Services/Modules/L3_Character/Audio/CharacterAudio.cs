@@ -1,25 +1,26 @@
 using UnityEngine;
 using RedDust.Audio;
-using RedDust.Character.Animation.Drivers;
-using RedDust.Character.Animation.Drivers.Locomotion;
+using RedDust.Core;
+using RedDust.Character.Animation;
 
 namespace RedDust.Character.Audio
 {
-    public sealed class CharacterAudio : MonoBehaviour
+    public sealed class CharacterAudio : ModuleComponent
     {
         [SerializeField] private AudioSource footSource;
 
         private CharacterAudioConfigSO Config =>
             GetComponentInParent<CharacterActor>()?.CharacterAudioConfig;
 
-        private void Start()
+        public override void OnWire()
         {
-            var locoDriver = GetComponentInChildren<LocomotionDriver>();
-            if (locoDriver != null)
-                locoDriver.BaseLayer.FootstepCallback = OnFootstep;
+            base.OnWire();
+            var brain = GetComponentInChildren<AnimationBrain>();
+            if (brain != null)
+                brain.OnFootstep += HandleFootstep;
         }
 
-        private void OnFootstep()
+        private void HandleFootstep()
         {
             var config = Config;
             if (config == null || config.footsteps == null) return;
