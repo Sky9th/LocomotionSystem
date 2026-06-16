@@ -20,12 +20,20 @@ namespace RedDust.Character.Animation.Drivers
         protected virtual void OnEnable()
         {
             brain = GetComponentInChildren<AnimationBrain>();
+            // Awake 阶段 fullBodyArbiter 尚未创建，OnEnable 注册可能无效——OnWire 补注册。
             brain?.RegisterDriver(this);
         }
 
         protected virtual void OnDisable()
         {
             brain?.UnregisterDriver(this);
+        }
+
+        public override void OnWire()
+        {
+            base.OnWire();
+            brain = GetComponentInChildren<AnimationBrain>();
+            brain?.RegisterDriver(this);
         }
     }
 }

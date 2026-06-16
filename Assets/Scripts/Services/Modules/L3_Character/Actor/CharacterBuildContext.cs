@@ -1,5 +1,8 @@
 using RedDust.Ability;
 using RedDust.Core;
+using RedDust.Character.Animation;
+using RedDust.Character.Audio;
+using RedDust.Character.Locomotion;
 using RedDust.Character.Pathfinding;
 using RedDust.Properties;
 using UnityEngine;
@@ -25,6 +28,20 @@ namespace RedDust.Character
         public Transform ModelRoot { get; internal set; }
         public CharacterRig Rig { get; internal set; }
 
+        // ── Animation / Audio config（构造期确定） ──
+        public AnimationClipSetSO AnimationAlias { get; }
+        public LocomotionAnimationConfigSO LocomotionAnimConfig { get; }
+        public LocomotionProfileSO LocomotionProfile { get; }
+        public CharacterAudioConfigSO AudioConfig { get; }
+        public AvatarMask UpperBodyMask { get; }
+        public AvatarMask AdditiveMask { get; }
+        public AvatarMask FacialMask { get; }
+        public AvatarMask HeadMask { get; }
+        public AvatarMask FootMask { get; }
+        public bool ForwardRootMotion { get; }
+        public bool ApplyRootMotionRotation { get; }
+        public bool AutoMatchAnimationSpeed { get; }
+
         // ── 临时配置（TODO: 技能树/装备系统完成后由 AbilitySlotManager 替代） ──
         public AbilityDefSO SkillSlot1 { get; }
         public AbilityDefSO SkillSlot2 { get; }
@@ -33,6 +50,13 @@ namespace RedDust.Character
             Transform root, EventHub eventHub, PropertyAgent agent,
             AbilityExecutor ability, AbilityReactor reactor, PathfindingAgent pathfinding,
             Transform modelRoot, CharacterRig rig,
+            AnimationClipSetSO animationAlias,
+            LocomotionAnimationConfigSO locomotionAnimConfig,
+            LocomotionProfileSO locomotionProfile,
+            CharacterAudioConfigSO audioConfig,
+            AvatarMask upperBodyMask, AvatarMask additiveMask,
+            AvatarMask facialMask, AvatarMask headMask, AvatarMask footMask,
+            bool forwardRootMotion, bool applyRootMotionRotation, bool autoMatchAnimationSpeed,
             AbilityDefSO skillSlot1, AbilityDefSO skillSlot2)
         {
             Root = root;
@@ -43,6 +67,18 @@ namespace RedDust.Character
             Pathfinding = pathfinding;
             ModelRoot = modelRoot;
             Rig = rig;
+            AnimationAlias = animationAlias;
+            LocomotionAnimConfig = locomotionAnimConfig;
+            LocomotionProfile = locomotionProfile;
+            AudioConfig = audioConfig;
+            UpperBodyMask = upperBodyMask;
+            AdditiveMask = additiveMask;
+            FacialMask = facialMask;
+            HeadMask = headMask;
+            FootMask = footMask;
+            ForwardRootMotion = forwardRootMotion;
+            ApplyRootMotionRotation = applyRootMotionRotation;
+            AutoMatchAnimationSpeed = autoMatchAnimationSpeed;
             SkillSlot1 = skillSlot1;
             SkillSlot2 = skillSlot2;
         }

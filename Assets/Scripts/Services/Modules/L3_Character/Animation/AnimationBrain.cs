@@ -34,8 +34,8 @@ namespace RedDust.Character.Animation
         private AnimancerLayer headLookLayer;
 
         // ── Core State ──
+        private CharacterBuildContext buildCtx;
         private DriverArbiter fullBodyArbiter;
-        // Rig 通过 _actor.CharacterRig → ctx.Rig 实时读取，不缓存
 
         // ── Root Motion Speed Matching ──
         public float SpeedMultiplier { get; private set; } = 1f;
@@ -52,68 +52,60 @@ namespace RedDust.Character.Animation
         public event System.Action OnFootstep;
 
         // ── Public Accessors ──
-        internal CharacterRig CharacterRig => _actor != null ? _actor.CharacterRig : null;
+        internal CharacterRig CharacterRig => buildCtx?.Rig;
+        internal CharacterBuildContext BuildContext => buildCtx;
         public NamedAnimancerComponent Animancer => animancer;
         public AnimancerLayer FullBodyLayer => fullBodyLayer;
         public AnimancerLayer HeadLookLayer => headLookLayer;
 
-        // ── Lifecycle ──
-
-        private CharacterActor _actor;
-
         protected override void Awake()
         {
-            _actor = GetComponentInParent<CharacterActor>();
-            base.Awake();  // Registry + OnAssemble（图层初始化 + 添加 Drivers）+ OnAssembleAll
-        }
-
-        public override void OnAssemble()
-        {
-            if (_actor == null) return;
-
-            // Rig 不在此处捕获——CharacterActor.OnAssemble 中通过 ctx.Rig 注入。
-            // AnimationBrain 通过 _actor.CharacterRig 实时读取。
-
-            if (animancer == null) animancer = GetComponentInChildren<NamedAnimancerComponent>();
-            if (animator == null) animator = GetComponentInChildren<Animator>();
-            if (animancer == null) return;
-
-            animancer.Layers.SetMinCount(TotalLayerCount);
-
-            fullBodyLayer = animancer.Layers[FullBody];
-            fullBodyArbiter = new DriverArbiter(fullBodyLayer);
-
-            BindLayer(UpperBody, _actor.UpperBodyMask);
-            BindLayer(Additive, _actor.AdditiveMask);
-            BindLayer(Facial, _actor.FacialMask);
-            headLookLayer = BindLayer(HeadLook, _actor.HeadMask);
-            BindLayer(Footstep, _actor.FootMask);
-
-            var aliasProfile = _actor.AnimationAliasProfile;
-            if (headLookLayer != null && aliasProfile != null && aliasProfile.lookMixer != null)
-                headLookMixer = headLookLayer.TryPlay(aliasProfile.lookMixer) as Vector2MixerState;
-
-            // Drivers 是 AnimationBrain 的子模块，通过代码挂载随 Model 生灭
+            // 装配 Drivers。ModuleComponent.Awake 自注册到 Registry。
             gameObject.AddComponent<LocomotionDriver>();
             gameObject.AddComponent<TraversalDriver>();
+            
+            base.Awake();  // Registry + OnAssemble + OnAssembleAll
+
         }
 
         private void OnAnimatorMove()
         {
-            var rig = CharacterRig;
-            if (!_actor.ForwardRootMotion || animator == null || rig == null) return;
+            var rig = buildCtx?.Rig;
+            if (!buildCtx.ForwardRootMotion || animator == null || rig == null) return;
 
             if (rig.SuppressGroundLock)
                 rig.ApplyPosition(animator.deltaPosition);
             else
                 rig.ApplyPositionPlanar(animator.deltaPosition);
 
-            if (_actor.ApplyRootMotionRotation)
+            if (buildCtx.ApplyRootMotionRotation)
                 rig.ApplyRotation(animator.deltaRotation);
         }
 
         public override void OnWire()
         {
+            buildCtx = GetComponentInParent<CharacterActor>()?.Context;
+
+            // ── 图层初始化（依赖 buildCtx，在 OnWire 阶段父 OnAssemble 已就位） ──
+            if (animancer == null) animancer = GetComponentInChildren<NamedAnimancerComponent>();
+            if (animator == null) animator = GetComponentInChildren<Animator>();
+            if (animancer != null)
+            {
+                animancer.Layers.SetMinCount(TotalLayerCount);
+
+                fullBodyLayer = animancer.Layers[FullBody];
+                fullBodyArbiter = new DriverArbiter(fullBodyLayer);
+
+                BindLayer(UpperBody, buildCtx.UpperBodyMask);
+                BindLayer(Additive, buildCtx.AdditiveMask);
+                BindLayer(Facial, buildCtx.FacialMask);
+                headLookLayer = BindLayer(HeadLook, buildCtx.HeadMask);
+                BindLayer(Footstep, buildCtx.FootMask);
+
+                if (headLookLayer != null && buildCtx.AnimationAlias?.lookMixer != null)
+                    headLookMixer = headLookLayer.TryPlay(buildCtx.AnimationAlias.lookMixer) as Vector2MixerState;
+            }
+
             base.OnWire();  // LocomotionDriver.OnWire 创建 BaseLayer
             // TODO: 桥接 BaseLayer.FootstepCallback → AnimationBrain.OnFootstep 事件
             // 当前是临时方案——未来 BaseLayer 应通过 EventHub 发布，去掉这层桥接。
@@ -144,8 +136,7 @@ namespace RedDust.Character.Animation
             }
 
             Vector2 target = ctx.Kinematic.LookDirection;
-            var animProfile = _actor.LocomotionAnimationProfile;
-            float speed = animProfile != null ? animProfile.headLookSmoothingSpeed : 12f;
+            float speed = buildCtx.LocomotionAnimConfig != null ? buildCtx.LocomotionAnimConfig.headLookSmoothingSpeed : 12f;
             float step = speed * Time.deltaTime;
 
             headLookSmoothedYaw = Mathf.MoveTowards(headLookSmoothedYaw, target.x, step);
@@ -169,7 +160,7 @@ namespace RedDust.Character.Animation
 
         private void ApplySpeedMultiplier(in CharacterFrameContext ctx)
         {
-            if (!_actor.AutoMatchAnimationSpeed || fullBodyLayer?.CurrentState == null) return;
+            if (!buildCtx.AutoMatchAnimationSpeed || fullBodyLayer?.CurrentState == null) return;
 
             var gait = ctx.Discrete.Gait;
             var state = (object)fullBodyLayer.CurrentState;

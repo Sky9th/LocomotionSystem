@@ -9,13 +9,19 @@ namespace RedDust.Core
     {
         private bool _registered;
 
+        /// <summary>
+        /// 动态添加的组件在 Awake 中自注册到父 ModuleBehaviour 的 Registry。
+        /// Unity 保证 Awake 深度优先，父 Registry 已就位。
+        /// </summary>
+        protected virtual void Awake()
+        {
+            if (_registered) return;
+            GetComponentInParent<ModuleBehaviour>()?.Registry?.Register(this);
+            _registered = true;
+        }
+
         public virtual void OnAssemble()
         {
-            if (!_registered)
-            {
-                GetComponentInParent<ModuleBehaviour>()?.Registry?.Register(this);
-                _registered = true;
-            }
         }
 
         public virtual void OnWire() { }

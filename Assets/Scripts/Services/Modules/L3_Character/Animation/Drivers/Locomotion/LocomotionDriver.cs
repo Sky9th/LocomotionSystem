@@ -28,13 +28,13 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         {
             base.OnWire();
             brain = GetComponentInChildren<AnimationBrain>();
-            var actor = GetComponent<CharacterActor>();
+            var buildCtx = brain?.BuildContext;
             baseLayer = new BaseLayer(
                 brain?.FullBodyLayer,
-                actor?.AnimationAliasProfile,
-                actor?.LocomotionAnimationProfile,
-                actor?.LocomotionProfile,
-                actor?.Context);
+                buildCtx?.AnimationAlias,
+                buildCtx?.LocomotionAnimConfig,
+                buildCtx?.LocomotionProfile,
+                buildCtx);
         }
 
         public override void Evaluate(in CharacterFrameContext ctx, float dt) { }

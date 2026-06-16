@@ -1,4 +1,5 @@
 using RedDust.Core;
+using RedDust.Character;
 using RedDust.Character.Director;
 
 namespace RedDust.Character.Director
@@ -9,7 +10,13 @@ namespace RedDust.Character.Director
     /// </summary>
     internal sealed class NpcDirector : Module, ICharacterDirector
     {
-        internal NpcDirector(ModuleRegistry registry) : base(registry) { }
+        private readonly CharacterBuildContext ctx;
+
+        internal NpcDirector(CharacterBuildContext ctx, ModuleRegistry registry) : base(registry)
+        {
+            this.ctx = ctx;
+        }
+
         public SCharacterIntent Evaluate() => SCharacterIntent.None;
     }
 }

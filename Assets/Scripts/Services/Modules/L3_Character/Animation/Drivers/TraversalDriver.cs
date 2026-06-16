@@ -9,19 +9,13 @@ namespace RedDust.Character.Animation.Drivers
     {
         private Collider obstacleCollider;
         private Vector3 topPoint;
-        private AnimationClipSetSO _aliasProfile;
 
         public override int ChannelMask => 1 << 0; // FullBody
 
-        protected override void OnEnable()
-        {
-            base.OnEnable();
-            _aliasProfile = GetComponent<CharacterActor>()?.AnimationAliasProfile;
-        }
-
         public override void Evaluate(in CharacterFrameContext ctx, float dt)
         {
-            if (_aliasProfile == null) return;
+            var aliasProfile = brain?.BuildContext?.AnimationAlias;
+            if (aliasProfile == null) return;
 
             if (!ctx.Intent.JumpRequested) return;
 
@@ -32,7 +26,7 @@ namespace RedDust.Character.Animation.Drivers
             var obstacle = ctx.Kinematic.ForwardObstacleDetection;
             if (!obstacle.CanClimb) return;
 
-            var alias = ResolveClimbAlias(_aliasProfile, obstacle.ObstacleHeight);
+            var alias = ResolveClimbAlias(aliasProfile, obstacle.ObstacleHeight);
             if (alias == null) return;
 
             brain?.SubmitRequest(this, new AnimationRequest

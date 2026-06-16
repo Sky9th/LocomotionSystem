@@ -8,14 +8,15 @@ namespace RedDust.Character.Audio
     public sealed class CharacterAudio : ModuleComponent
     {
         [SerializeField] private AudioSource footSource;
+        private AnimationBrain brain;
 
         private CharacterAudioConfigSO Config =>
-            GetComponentInParent<CharacterActor>()?.CharacterAudioConfig;
+            brain?.BuildContext?.AudioConfig;
 
         public override void OnWire()
         {
             base.OnWire();
-            var brain = GetComponentInChildren<AnimationBrain>();
+            brain = GetComponentInChildren<AnimationBrain>();
             if (brain != null)
                 brain.OnFootstep += HandleFootstep;
         }

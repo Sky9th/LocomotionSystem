@@ -155,11 +155,20 @@ namespace RedDust.Character
                 root: transform, eventHub: eventHub, agent: agent,
                 ability: ability, reactor: reactor, pathfinding: pathfindingAgent,
                 modelRoot: modelRoot, rig: characterRig,
+                animationAlias: animationAliasProfile,
+                locomotionAnimConfig: locomotionAnimationProfile,
+                locomotionProfile: characterProfile?.locomotion,
+                audioConfig: characterAudioConfig,
+                upperBodyMask: upperBodyMask, additiveMask: additiveMask,
+                facialMask: facialMask, headMask: headMask, footMask: footMask,
+                forwardRootMotion: forwardRootMotion,
+                applyRootMotionRotation: applyRootMotionRotation,
+                autoMatchAnimationSpeed: autoMatchAnimationSpeed,
                 skillSlot1: skillSlot1, skillSlot2: skillSlot2
             );
 
             if (isPlayer) director = new PlayerDirector(ctx, Registry);
-            else          director = new NpcDirector(Registry);
+            else          director = new NpcDirector(ctx, Registry);
             characterKinematic = new CharacterKinematic(ctx, Registry);
             locomotionSimulator = new GroundLocomotion(Registry);
             combat = new CharacterCombat(ctx, Registry);
