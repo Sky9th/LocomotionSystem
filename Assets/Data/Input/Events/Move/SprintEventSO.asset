@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e57bb61786b354147a80ce784d12f015, type: 3}
   m_Name: SprintEventSO
   m_EditorClassIdentifier: 
-  inputAction: {fileID: -5535836970285688143, guid: a7f8d78e4def66b45b53cbfc404ab4b4,
+  inputAction: {fileID: -7471211009204490832, guid: 1f23a80f490ee6b46bd4db1b0c98d550,
     type: 3}

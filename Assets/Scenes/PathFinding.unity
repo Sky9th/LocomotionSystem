@@ -3850,6 +3850,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC
       objectReference: {fileID: 0}
+    - target: {fileID: 8667043660662020576, guid: 506c4f73f1825ed4f97f06cdf259ac78,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8721387818594905132, guid: 506c4f73f1825ed4f97f06cdf259ac78,
         type: 3}
       propertyPath: footMask
@@ -3871,7 +3876,7 @@ PrefabInstance:
         type: 3}
       propertyPath: modelPrefab
       value: 
-      objectReference: {fileID: 4709665469500830442, guid: 9a349918838ad6044b726d05ec52f15f,
+      objectReference: {fileID: 1187010538823314, guid: b87cb604b959698428935c5d56bd97c0,
         type: 3}
     - target: {fileID: 8721387818594905132, guid: 506c4f73f1825ed4f97f06cdf259ac78,
         type: 3}

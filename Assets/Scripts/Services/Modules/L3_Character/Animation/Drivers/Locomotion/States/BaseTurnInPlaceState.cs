@@ -25,8 +25,6 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
             if (Owner.TrySetState(BaseStateKey.AirLoop)) return;
             Owner.ApplyTurnStepRotation();
             if (selectedAlias != null) Owner.PlayIfChanged(selectedAlias);
-            // [Deprecated] IdleToMoving 已废弃 — 起步转身由代码即时旋转处理
-            // if (Owner.TrySetState(BaseStateKey.IdleToMoving)) return;
             if (Owner.TrySetState(BaseStateKey.Moving)) return;
             if (Owner.TrySetState(BaseStateKey.Idle)) return;
         }

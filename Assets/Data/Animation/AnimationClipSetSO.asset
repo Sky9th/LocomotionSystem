@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d773a40f44b054c499f696bebcd40971, type: 3}
-  m_Name: AnimationAliasProfile
+  m_Name: AnimationClipSetSO
   m_EditorClassIdentifier: 
   idleL: {fileID: 11400000, guid: e080e4a005dcb7c47b71b7217c1e44b2, type: 2}
   idleR: {fileID: 11400000, guid: d3bd29706dbf5c249a2161d1dc6210b4, type: 2}

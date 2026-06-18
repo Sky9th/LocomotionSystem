@@ -10,15 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a3ea173c31cac124e88f4178ae99bf99, type: 3}
-  m_Name: LocomotionProfile
+  m_Name: LocomotionProfileSO
   m_EditorClassIdentifier: 
-  walkSpeed: 1.8
-  runSpeed: 3
-  sprintSpeed: 5
-  crawlSpeed: 1
+  standWalk: 2
+  standRun: 5
+  standSprint: 8
+  standCrawl: 1
+  crouchWalk: 1.2
+  crouchRun: 3
+  crouchSprint: 0
+  crouchCrawl: 0.8
+  proneWalk: 0.5
+  proneRun: 0
+  proneSprint: 0
+  proneCrawl: 0.3
   acceleration: 8
-  canSprint: 1
-  canCrouch: 1
-  canProne: 1
-  turnEnterAngle: 65
-  turnCompletionAngle: 5

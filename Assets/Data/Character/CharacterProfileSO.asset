@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3c45309ef6c76164cadd212f9d83c392, type: 3}
-  m_Name: CharacterProfile
+  m_Name: CharacterProfileSO
   m_EditorClassIdentifier: 
   locomotion: {fileID: 11400000, guid: 2658baef4b1928c4ca79d1e7b70ab09a, type: 2}
   kinematic: {fileID: 11400000, guid: 89ce12d2cb248ec458661f6b415a3d32, type: 2}

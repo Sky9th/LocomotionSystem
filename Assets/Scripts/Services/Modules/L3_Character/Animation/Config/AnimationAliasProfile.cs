@@ -44,7 +44,7 @@ namespace RedDust.Character.Animation
         public StringAsset LandMedium;
         public StringAsset LandHard;
         public StringAsset LandFromWall;
-        public StringAsset AirLoop;
+        public StringAsset AirLight;
 
         [Header("Parameters")]
         public StringAsset HeadLookX;

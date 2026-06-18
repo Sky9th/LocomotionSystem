@@ -8,12 +8,9 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
 
         public override bool CanEnterState
             => Owner.Ctx.Discrete.Phase == ELocomotionPhase.GroundedMoving;
-        // [Deprecated] 移除 !IsTurning 条件 — TurnInMoving 已废弃，移动中转身由 ApplyTurnStepRotation 处理
 
         public override void Tick()
         {
-            // [Deprecated] TurnInMoving 已废弃 — 移动中转身由 ApplyTurnStepRotation 即时旋转
-            // if (Owner.TrySetState(BaseStateKey.TurnInMoving)) return;
             if (Owner.TrySetState(BaseStateKey.Idle)) return;
             if (Owner.TrySetState(BaseStateKey.AirLoop)) return;
 

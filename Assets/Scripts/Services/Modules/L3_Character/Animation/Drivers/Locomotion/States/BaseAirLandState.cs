@@ -24,6 +24,8 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
 
         public override bool CanExitState => true;
 
+        // TODO: 寻路攀爬系统补齐后，每个 Mixer 按 Gait 参数混合: 0=Idle, 1=Walk, 2=Run/Sprint
+        //       Gait 取自 BaseLayer.AirborneGait（AirLoop 进入时捕获），当前默认 0
         public override void OnEnterState()
         {
             float fallDist = Owner.MaxFallDistance;
@@ -32,8 +34,6 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
             StringAsset alias;
             if (fallDist <= profile.landLightMaxFallDistance)
                 alias = Owner.Alias.LandLight;
-            else if (fallDist <= profile.landMediumMaxFallDistance)
-                alias = Owner.Alias.LandMedium;
             else
                 alias = Owner.Alias.LandHard;
 
@@ -49,7 +49,6 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
 
             if (Owner.TrySetState(BaseStateKey.Idle)) return;
             if (Owner.TrySetState(BaseStateKey.Moving)) return;
-            if (Owner.TrySetState(BaseStateKey.IdleToMoving)) return;
             if (Owner.TrySetState(BaseStateKey.TurnInPlace)) return;
             Owner.ForceSetState(BaseStateKey.Idle);
         }

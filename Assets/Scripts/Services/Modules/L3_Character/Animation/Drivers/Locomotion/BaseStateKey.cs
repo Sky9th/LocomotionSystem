@@ -5,8 +5,6 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         Idle,
         Moving,
         TurnInPlace,
-        IdleToMoving,
-        TurnInMoving,
         AirLoop,
         AirLand
     }

@@ -15,8 +15,6 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         public override void Tick()
         {
             if (Owner.TrySetState(BaseStateKey.TurnInPlace)) return;
-            // [Deprecated] IdleToMoving 已废弃 — 起步转身由代码即时旋转处理
-            // if (Owner.TrySetState(BaseStateKey.IdleToMoving)) return;
             if (Owner.TrySetState(BaseStateKey.Moving)) return;
             if (Owner.TrySetState(BaseStateKey.AirLoop)) return;
             Owner.PlayIfChanged(Owner.Alias.idleL);

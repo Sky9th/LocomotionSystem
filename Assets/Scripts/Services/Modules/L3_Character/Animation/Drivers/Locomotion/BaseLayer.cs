@@ -42,10 +42,6 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
             fsm.Dictionary[BaseStateKey.Idle] = new BaseIdleState(this);
             fsm.Dictionary[BaseStateKey.Moving] = new BaseMovingState(this);
             fsm.Dictionary[BaseStateKey.TurnInPlace] = new BaseTurnInPlaceState(this);
-            // [Deprecated] IdleToMoving — 起步转身改为代码即时旋转 (LOL 风格)
-            fsm.Dictionary[BaseStateKey.IdleToMoving] = new BaseIdleToMovingState(this);
-            // [Deprecated] TurnInMoving — 移动中转身改为代码即时旋转 (LOL 风格)
-            fsm.Dictionary[BaseStateKey.TurnInMoving] = new BaseTurnInMovingState(this);
             fsm.Dictionary[BaseStateKey.AirLoop] = new BaseAirLoopState(this);
             fsm.Dictionary[BaseStateKey.AirLand] = new BaseAirLandState(this);
         }

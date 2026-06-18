@@ -110,15 +110,6 @@ namespace RedDust.Character
                 return;
             }
 
-            // 清理设计期残留的硬编码 Model 子节点。DestroyImmediate 安全——Awake 内首帧前。
-            // TODO: Prefab 无硬编码 Model 后移除此清理。
-            for (int i = transform.childCount - 1; i >= 0; i--)
-            {
-                var child = transform.GetChild(i);
-                if (child.name == "Model" || child.GetComponent<AnimationBrain>() != null)
-                    DestroyImmediate(child.gameObject);
-            }
-
             var model = Instantiate(modelPrefab, transform);
             model.name = "Model";
 

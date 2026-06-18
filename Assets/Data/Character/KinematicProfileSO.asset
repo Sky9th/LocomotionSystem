@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 76133c0f5a8f9e647bd3e53a3e671bd3, type: 3}
-  m_Name: KinematicProfile
+  m_Name: KinematicProfileSO
   m_EditorClassIdentifier: 
   maxGroundSlopeAngle: 55
   groundLayerMask:
