@@ -103,8 +103,9 @@ namespace RedDust.Character.Animation
                 headLookLayer = BindLayer(HeadLook, buildCtx.HeadMask);
                 BindLayer(Footstep, buildCtx.FootMask);
 
-                if (headLookLayer != null && buildCtx.AnimationAlias?.lookMixer != null)
-                    headLookMixer = headLookLayer.TryPlay(buildCtx.AnimationAlias.lookMixer) as Vector2MixerState;
+                // TODO: migrated lookMixer to LocomotionAnimationConfigSO
+                // if (headLookLayer != null && buildCtx.AnimationAlias?.lookMixer != null)
+                //     headLookMixer = headLookLayer.TryPlay(buildCtx.AnimationAlias.lookMixer) as Vector2MixerState;
             }
 
             base.OnWire();  // LocomotionDriver.OnWire 创建 BaseLayer

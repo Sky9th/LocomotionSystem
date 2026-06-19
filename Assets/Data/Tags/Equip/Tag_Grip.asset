@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e09ce01e94152649b8d1386fddcf687, type: 3}
+  m_Name: Tag_Grip
+  m_EditorClassIdentifier: 
+  leafName: Grip
+  parent: {fileID: 11400000, guid: adbe99c97003ee04b9b7935bd4d8fca2, type: 2}
+  description: "\u63E1\u6301\u59FF\u6001\u6807\u7B7E\u6839"

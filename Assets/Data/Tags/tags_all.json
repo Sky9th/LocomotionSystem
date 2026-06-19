@@ -1181,6 +1181,41 @@
       "name": "Tag_SuppressiveFire",
       "parent": "Ability.Ranged.Pistol",
       "description": "手枪压制射击"
+    },
+    {
+      "name": "Tag_Equip",
+      "parent": null,
+      "description": "装备标签根"
+    },
+    {
+      "name": "Tag_Grip",
+      "parent": "Equip",
+      "description": "握持姿态标签根"
+    },
+    {
+      "name": "Tag_Unarmed",
+      "parent": "Equip.Grip",
+      "description": "徒手/无武器握持"
+    },
+    {
+      "name": "Tag_OneHanded",
+      "parent": "Equip.Grip",
+      "description": "单手武器握持"
+    },
+    {
+      "name": "Tag_TwoHanded",
+      "parent": "Equip.Grip",
+      "description": "双手武器握持"
+    },
+    {
+      "name": "Tag_Shield",
+      "parent": "Equip.Grip",
+      "description": "盾牌握持"
+    },
+    {
+      "name": "Tag_DualWield",
+      "parent": "Equip.Grip",
+      "description": "双持武器握持"
     }
   ]
 }

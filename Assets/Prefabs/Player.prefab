@@ -73,8 +73,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayer: 1
-  characterProfile: {fileID: 11400000, guid: 19080c489b2a47c4f85047f53e6224f6, type: 2}
-  locomotionAnimationProfile: {fileID: 11400000, guid: 8c24cbd0466513245b7b38493fcf3aeb,
+  characterPhysicsProfile: {fileID: 11400000, guid: d23c4599050ea9d419499a84d1e017e3,
+    type: 2}
+  characterAnimationProfile: {fileID: 11400000, guid: e215df4713aa441448d8fe70857a7f32,
     type: 2}
   skillSlot1: {fileID: 11400000, guid: a3dae7e43902d784798ca34b0b71ef24, type: 2}
   skillSlot2: {fileID: 11400000, guid: 2151cf2d96121414e89ba5f6df9d2e22, type: 2}
@@ -83,8 +84,6 @@ MonoBehaviour:
   modelPrefab: {fileID: 1904041790429094, guid: 027cd57972e60824ca74f44e0d80ea9a,
     type: 3}
   animancerTransitions: {fileID: 11400000, guid: 227ad177433ec3a4b960e9ec4c417dd4,
-    type: 2}
-  animationAliasProfile: {fileID: 11400000, guid: f85ef9e02053e3542b741c132b6f8f5c,
     type: 2}
   forwardRootMotion: 1
   applyRootMotionRotation: 0
@@ -156,7 +155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ac4441024cd53e4ba1ca66b7052fe24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _def: {fileID: 11400000, guid: b2fde4bcaa690e2488a110dbbaf3ad2b, type: 2}
+  _def: {fileID: 0}
 --- !u!114 &7275533382615058559
 MonoBehaviour:
   m_ObjectHideFlags: 0

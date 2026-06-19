@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3ea173c31cac124e88f4178ae99bf99, type: 3}
+  m_Script: {fileID: 11500000, guid: 71669093c36e04043a52efd13741e5cc, type: 3}
   m_Name: LocomotionProfileSO
   m_EditorClassIdentifier: 
   standWalk: 2

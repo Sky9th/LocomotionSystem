@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76133c0f5a8f9e647bd3e53a3e671bd3, type: 3}
+  m_Script: {fileID: 11500000, guid: 4723362683396294b9e162850475d50d, type: 3}
   m_Name: KinematicProfileSO
   m_EditorClassIdentifier: 
   maxGroundSlopeAngle: 55

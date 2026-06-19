@@ -29,8 +29,14 @@ namespace RedDust.Character
         public CharacterRig Rig { get; internal set; }
 
         // ── Animation / Audio config（构造期确定） ──
-        public AnimationClipSetSO AnimationAlias { get; }
-        public LocomotionAnimationConfigSO LocomotionAnimConfig { get; }
+        public CharacterAnimationProfileSO AnimationProfile { get; }
+        public LocomotionAnimationConfigSO LocomotionAnimConfig => AnimationProfile?.locomotionConfig;
+        public AnimationModeConfigSO[] ModeProfiles => AnimationProfile?.modeProfiles;
+        public LocomotionAnimationSetSO DefaultLocomotionSet => AnimationProfile?.defaultLocomotionSet;
+        public GripAnimationTableSO GripTable => AnimationProfile?.gripTable;
+        public TraversalAnimationSetSO TraversalSet => AnimationProfile?.traversalSet;
+
+        // TODO(Properties): 引入 Properties 后 locomotion / kinematic 是否仍需存疑
         public LocomotionProfileSO LocomotionProfile { get; }
         public CharacterAudioConfigSO AudioConfig { get; }
         public AvatarMask UpperBodyMask { get; }
@@ -50,8 +56,7 @@ namespace RedDust.Character
             Transform root, EventHub eventHub, PropertyAgent agent,
             AbilityExecutor ability, AbilityReactor reactor, PathfindingAgent pathfinding,
             Transform modelRoot, CharacterRig rig,
-            AnimationClipSetSO animationAlias,
-            LocomotionAnimationConfigSO locomotionAnimConfig,
+            CharacterAnimationProfileSO animationProfile,
             LocomotionProfileSO locomotionProfile,
             CharacterAudioConfigSO audioConfig,
             AvatarMask upperBodyMask, AvatarMask additiveMask,
@@ -67,8 +72,7 @@ namespace RedDust.Character
             Pathfinding = pathfinding;
             ModelRoot = modelRoot;
             Rig = rig;
-            AnimationAlias = animationAlias;
-            LocomotionAnimConfig = locomotionAnimConfig;
+            AnimationProfile = animationProfile;
             LocomotionProfile = locomotionProfile;
             AudioConfig = audioConfig;
             UpperBodyMask = upperBodyMask;

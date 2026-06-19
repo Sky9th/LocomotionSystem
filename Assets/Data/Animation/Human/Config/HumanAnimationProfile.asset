@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a301d1db9e245b4692497ca6ccef8d0, type: 3}
+  m_Name: HumanAnimationProfile
+  m_EditorClassIdentifier: 
+  locomotionConfig: {fileID: 11400000, guid: 8c24cbd0466513245b7b38493fcf3aeb, type: 2}
+  modeProfiles:
+  - {fileID: 11400000, guid: 5dd3e2043d49c5e4f8826a1c0f1d8f3a, type: 2}
+  - {fileID: 11400000, guid: e604fc05f2c36fd4a8fb1fb15e5ddc23, type: 2}
+  - {fileID: 11400000, guid: 99e4602b3721e8f42b76816b888158b5, type: 2}
+  defaultLocomotionSet: {fileID: 11400000, guid: 4d4b49bbcdcfaa64ba94977bed203a8a,
+    type: 2}
+  gripTable: {fileID: 11400000, guid: 3fce45f210c817b4a95cae46fb2e3ae4, type: 2}
+  traversalSet: {fileID: 11400000, guid: c1c14cfba0b7a6c47b70c038995426cb, type: 2}

@@ -16,7 +16,8 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         private StringAsset lastPlayedAlias;
         private AnimancerState currentAnimState;
 
-        internal AnimationClipSetSO Alias { get; }
+        // TODO: migrated to LocomotionAnimationSetSO
+        internal LocomotionAnimationSetSO Alias => null;  // temp stub
         internal LocomotionAnimationConfigSO AnimProfile { get; }
         internal LocomotionProfileSO LocoProfile { get; }
         internal CharacterRig Rig => _buildContext?.Rig;  // 实时读取，Model 替换自动更新
@@ -30,12 +31,12 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         internal System.Action FootstepCallback;
         private AnimancerState injectedMixer;
 
-        internal BaseLayer(AnimancerLayer layer, AnimationClipSetSO alias, LocomotionAnimationConfigSO animProfile,
+        internal BaseLayer(AnimancerLayer layer, LocomotionAnimationSetSO alias, LocomotionAnimationConfigSO animProfile,
             LocomotionProfileSO locoProfile, CharacterBuildContext buildContext)
         {
             _buildContext = buildContext;
             Layer = layer;
-            Alias = alias;
+            // Alias = alias;  // TODO: migrated
             AnimProfile = animProfile;
             LocoProfile = locoProfile;
             fsm = new StateMachine<BaseStateKey, LocomotionLayerFsmState<BaseLayer>>();

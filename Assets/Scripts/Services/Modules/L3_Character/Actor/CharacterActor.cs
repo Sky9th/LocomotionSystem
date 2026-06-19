@@ -27,10 +27,10 @@ namespace RedDust.Character
         [SerializeField] private bool isPlayer;
 
         [Header("Config")]
-        [SerializeField] private CharacterProfileSO characterProfile;
+        [SerializeField] private CharacterPhysicsProfileSO characterPhysicsProfile;
 
-        [Header("Locomotion")]
-        [SerializeField] private LocomotionAnimationConfigSO locomotionAnimationProfile;
+        [Header("Animation")]
+        [SerializeField] private CharacterAnimationProfileSO characterAnimationProfile;
 
         // TODO: 临时方案 — 技能树/装备系统完成后替换为技能槽位子系统
         [Header("Ability Slots (Temp)")]
@@ -45,7 +45,6 @@ namespace RedDust.Character
         [SerializeField] private TransitionLibraryAsset animancerTransitions;
 
         [Header("Animation")]
-        [SerializeField] private AnimationClipSetSO animationAliasProfile;
         [SerializeField] private bool forwardRootMotion = true;
         [SerializeField] private bool applyRootMotionRotation;
         [SerializeField] private bool autoMatchAnimationSpeed = true;
@@ -61,10 +60,8 @@ namespace RedDust.Character
         [SerializeField] private Transform modelRoot;
 
         public bool IsPlayer => isPlayer;
-        internal LocomotionAnimationConfigSO LocomotionAnimationProfile => locomotionAnimationProfile;
-
-        // Animation config — consumed by AnimationBrain
-        internal AnimationClipSetSO AnimationAliasProfile => animationAliasProfile;
+        internal CharacterAnimationProfileSO CharacterAnimationProfile => characterAnimationProfile;
+        internal LocomotionAnimationConfigSO LocomotionAnimationProfile => characterAnimationProfile?.locomotionConfig;
         internal bool ForwardRootMotion => forwardRootMotion;
         internal bool ApplyRootMotionRotation => applyRootMotionRotation;
         internal bool AutoMatchAnimationSpeed => autoMatchAnimationSpeed;
@@ -79,7 +76,7 @@ namespace RedDust.Character
         internal SCharacterKinematic LastKinematic { get; private set; }
         internal SCharacterMotor LastMotor { get; private set; }
         internal SCharacterDiscrete LastDiscrete { get; private set; }
-        internal LocomotionProfileSO LocomotionProfile => characterProfile?.locomotion;
+        internal LocomotionProfileSO LocomotionProfile => characterPhysicsProfile?.locomotion;
 
         private CharacterBuildContext ctx;
         internal CharacterBuildContext Context => ctx;
@@ -142,13 +139,13 @@ namespace RedDust.Character
         {
             characterRig = new CharacterRig(transform, modelRoot);
 
+            // TODO(Properties): characterPhysicsProfile?.locomotion / ?.kinematic 引入 Properties 后是否仍需存疑
             ctx = new CharacterBuildContext(
                 root: transform, eventHub: eventHub, agent: agent,
                 ability: ability, reactor: reactor, pathfinding: pathfindingAgent,
                 modelRoot: modelRoot, rig: characterRig,
-                animationAlias: animationAliasProfile,
-                locomotionAnimConfig: locomotionAnimationProfile,
-                locomotionProfile: characterProfile?.locomotion,
+                animationProfile: characterAnimationProfile,
+                locomotionProfile: characterPhysicsProfile?.locomotion,
                 audioConfig: characterAudioConfig,
                 upperBodyMask: upperBodyMask, additiveMask: additiveMask,
                 facialMask: facialMask, headMask: headMask, footMask: footMask,
@@ -207,13 +204,14 @@ namespace RedDust.Character
 
             var intent = director.Evaluate();
             ctx.Intent = intent;
-            ctx.LocomotionProfile = characterProfile?.locomotion;
-            ctx.LocomotionAnimationProfile = locomotionAnimationProfile;
-            ctx.KinematicProfile = characterProfile?.kinematic;
-            ctx.Kinematic = characterKinematic.Evaluate(characterProfile?.kinematic, intent.LocomotionHeading,
+            // TODO(Properties): characterPhysicsProfile?.locomotion / ?.kinematic 引入 Properties 后是否仍需存疑
+            ctx.LocomotionProfile = characterPhysicsProfile?.locomotion;
+            ctx.LocomotionAnimationProfile = characterAnimationProfile?.locomotionConfig;
+            ctx.KinematicProfile = characterPhysicsProfile?.kinematic;
+            ctx.Kinematic = characterKinematic.Evaluate(characterPhysicsProfile?.kinematic, intent.LocomotionHeading,
                 intent.AimDirection, deltaTime);
 
-            locomotionSimulator.Simulate(ref ctx, intent, characterProfile?.locomotion, deltaTime);
+            locomotionSimulator.Simulate(ref ctx, intent, characterPhysicsProfile?.locomotion, deltaTime);
 
             LastKinematic = ctx.Kinematic;
             LastMotor = ctx.Motor;

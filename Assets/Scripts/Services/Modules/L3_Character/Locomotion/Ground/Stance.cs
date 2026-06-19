@@ -46,24 +46,10 @@ namespace RedDust.Character.Locomotion
         {
             if (profile == null || animProfile == null) return 1f;
 
-            float animNativeSpeed = -1f;
-            var modeProfiles = animProfile.modeProfiles;
-            if (modeProfiles != null)
-            {
-                for (int i = 0; i < modeProfiles.Length; i++)
-                {
-                    var m = modeProfiles[i];
-                    if (m != null && m.Posture == posture && m.Gait == gait)
-                    {
-                        animNativeSpeed = m.AnimNativeSpeed;
-                        break;
-                    }
-                }
-            }
-
-            return animNativeSpeed > 0f
-                ? profile.GetSpeed(posture, gait) / animNativeSpeed
-                : 1f;
+            // TODO: migrated animNativeSpeed to LocomotionAnimationSetSO
+            // float animNativeSpeed = ...;
+            // return animNativeSpeed > 0f ? profile.GetSpeed(posture, gait) / animNativeSpeed : 1f;
+            return 1f;
         }
 
         private static ELocomotionPhase EvaluatePhase(in SCharacterKinematic kin, in SCharacterMotor motor)
