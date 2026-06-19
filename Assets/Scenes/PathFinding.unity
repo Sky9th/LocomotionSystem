@@ -3880,12 +3880,6 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 8721387818594905132, guid: 506c4f73f1825ed4f97f06cdf259ac78,
         type: 3}
-      propertyPath: animancerTransitions
-      value: 
-      objectReference: {fileID: 11400000, guid: 227ad177433ec3a4b960e9ec4c417dd4,
-        type: 2}
-    - target: {fileID: 8721387818594905132, guid: 506c4f73f1825ed4f97f06cdf259ac78,
-        type: 3}
       propertyPath: animationAliasProfile
       value: 
       objectReference: {fileID: 11400000, guid: f85ef9e02053e3542b741c132b6f8f5c,

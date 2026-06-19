@@ -1,158 +1,122 @@
-# 短期开发计划 — 战斗闭环
+# 短期开发计划
 
-> 日期: 2026-06-02
-> 范围: Phase 4 战斗基础架构 + 敌人 AI
-> 原则: 每步有可玩增量，聚焦战斗闭环，其余系统延后
-> 架构: [L4_Combat README](../tech/L2-services/L2-modules/L3-character/L4-combat/README.md)
-
----
-
-## 前置工程: 俯视角切换 + A* 寻路
-
-> 当前 Locomotion 按第三人称开发（相机在身后、移动相对于相机朝向、HeadLook 3D）。
-> 最终游戏是俯视角，寻路使用 Aron Granberg 的 A\* Pathfinding Project（Asset Store）。
-> 不在算法层造轮子，只做集成适配。
-
-### 0.1 俯视角切换 ✅
-
-| 子项 | 说明 | 实现 |
-|------|------|------|
-| Camera | 第三人称跟随 → 俯视角透视俯拍 | Cinemachine Transposer(WorldSpace) + HardLookAt，代码只设 pivot.position/rotation |
-| 鼠标→世界 | Y=0 平面求交 | CameraService.ComputeMouseGroundPosition → Plane.Raycast |
-| 移动输入 | WASD 固定屏幕方向 | Motor.ConvertToWorld → Vector3(local.x, 0f, local.y) |
-| 角色朝向 | 鼠标地面位置 | CharacterActor Update 中 (mouseWorldPos - position).XZ.normalized |
-| LocomotionHeading | 来源改为 mouseWorldPos | CharacterKinematic.Evaluate 参数 viewForward → heading |
-| HeadLook | 保留退化模式 | Phase 4 接入感知系统，当前看 actorTransform.forward |
-| TurnInPlace 判定 | 删除 lookStability | Stance.EvaluateTurning 直接用 TurnAngle |
-| 光标 | Playing 状态 Confined + visible | GameStateService |
-| 数据结构 | SCameraContext → SCameraSnapshot | 加 MouseGroundPosition/IsMouseGroundValid |
-| 输入模块 | CharacterInputModule → CharacterEventReceiver | Camera 与 Input Actions 分离 |
-
-**附带架构改动**:
-- BaseService.PublishState<T>() — GameContext + Dispatcher 统一写入
-- Component 禁止直接 GameContext.Instance.UpdateSnapshot()
-- CameraService 通过 GameContext.TryGetSnapshot<SPlayer>() 读玩家位置
-- SCharacterSnapshot + SLocomotionState 删除，Animation 管线使用 CharacterFrameContext
-
-### 0.2 A\* Pathfinding Project 集成 ✅
-
-| 子项 | 说明 | 实现 |
-|------|------|------|
-| 适配脚本 | `PathfindingAgent` — 持有 `Seeker`（查询）+ `AIPath`（移动），统一代理入口 | ✅ |
-| 路径查询 | `Seeker.StartPath()` 异步算路 | ✅ |
-| 移动驱动 | AIPath `desiredVelocity` → `SCharacterIntent.ExternalMovementVelocity` → Motor override 分支 | ✅ |
-| 移动集成 | 走现有动画/root motion 管道，AIPath velocity 直接透传 | ✅ |
-| Click-to-Move | 右键 → `agent.SetDestination(mousePos)`，heading 使用 `desiredVelocity.normalized` | ✅ |
-
-**延后（到对应 Phase）**:
-- GridGraph bake + 障碍标记（Phase 4 战斗/AI 时逐步完善）
-- 动态障碍更新（Phase 6 建造时做）
-- Flow Field / 多 Agent 优化（Phase 10 尸潮时做）
+> 更新: 2026-06-19
+> 分支: `feature/ability-pipeline`
+> 原则: 每步有可玩增量，先完成基础设施再铺玩法
+> 前置: Character 模块重构 ✅ · Properties 系统 ✅ · Animation 重构 ✅ · Ability 数据资产 ✅
 
 ---
 
-## Phase 4: 战斗基础架构 + 敌人 AI
+## 近期完成（2026-06 上半月）
 
-> 设计: [L4_Combat README](../tech/L2-services/L2-modules/L3-character/L4-combat/README.md) / `injury-system.md` / `noise-system.md`
-
-两个子阶段。4.1 建战斗系统骨架，4.2 建敌人 AI（含噪声感知消费端）。
-
-### 4.1 近战基础架构
-
-> 架构设计: [L4_Combat README](../tech/L2-services/L2-modules/L3-character/L4-combat/README.md)
-
-三层架构，Q/E/R/F 四槽技能栏，GameplayTag 门控+冷却。
-
-**闭环链路**：按键 → CombatComponent.TryActivate()（门控/消耗/冷却）→ CombatDriver.SubmitRequest → AnimationBrain 播放动画 → 阶段机 Windup→Fire→Recovery → CombatPipeline 扇形命中检测 → stats.DamageRule 扣血 → SHitEvent + SNoiseEvent 发布。
-
-| 子项 | 说明 | 依赖 |
-|------|------|------|
-| GameplayTag + GameplayTagContainer | 层级标签，门控/冷却/状态标记统一管道 | — |
-| ECombatSearchType + SkillPhase + SkillAnimationLayer 枚举 | Cone/RayLine/Circle；六阶段；FullBody/UpperBody | — |
-| SkillDefSO + WeaponSkillSetSO | SO 配置层：searchType/searchRange/searchAngle/maxTargets/requiresLoS/噪音等级 | GameplayTag |
-| 战斗数据结构 | DamageInfo、SHitEvent、SSkillEvent、SNoiseEvent struct | — |
-| CombatPipeline | static：SearchCandidates(Cone+RayLine)+FilterByLoS+RollHit(跳过)+CalculateDamage(简化) | SkillDefSO |
-| ActiveGameplayEffect + SkillBar + SkillSlot | 冷却 Effect 池化 + 四槽冷却管理 | GameplayTag |
-| CombatComponent | 纯类中枢：Tick/TryActivate/门控/冷却/ApplyDamage/HasTag | SkillBar, CombatPipeline |
-| CombatDriver | 继承 BaseCharacterAnimationDriver，阶段机，Resistance=15 | CombatComponent |
-| SCharacterIntent 扩展 | +ActiveSkillSlot / SkillConfirm / SkillCancel | — |
-| PlayerInput + PlayerDirector 扩展 | +4 skill button (Q/E/R/F)，透传至 Intent | SCharacterIntent |
-| CharacterActor 集成 | 构造 CombatComponent，Tick 插入 Stats→Animation 之间 | CombatComponent |
-| 动画配置 | AnimationAliasProfile +combat alias 字段（横斩+手枪射击） | CombatDriver |
-| 场景验证 | 两技能全链路：Q 横斩(Cone) + R 手枪(RayLine) | 上述全部 |
-
-**纳入 4.1 的预留接口**（一次定义，行为先简化）：SkillPhase 完整六阶段枚举、ECombatSearchType 完整三类型、CombatPipeline 四阶段方法签名（SearchCandidates/FilterByLoS/RollHit/CalculateDamage）、SkillConfirm/Cancel 字段、AnimationLayer 枚举、ActiveGameplayEffect 过期回调、OnInterrupted 清理逻辑、ComboWindow 相关字段。
-
-**不纳入 4.1**（依赖 Phase 5 或后续系统的内容移到长期计划）：Circle 搜索类型（旋风斩/战吼）、完整投骰管道 RollHit/CalculateDamage、连招系统、远程武器 SkillConfirm/Cancel（瞄准）、Buff/Debuff、多武器切换、熟练度、HitReactDriver、投射物系统。
-
-### 4.2 敌人 AI 基础
-
-> 复用 4.1 的 CombatComponent（纯类，不绑 Player）和 SNoiseEvent。SNoiseEvent 发布端已在 4.1 完成，本节做感知消费端。
-
-| 子项 | 说明 |
+| 事项 | 说明 |
 |------|------|
-| 丧尸生成 | 网格可行走节点随机选点 Spawn，基础属性（HP/伤害/移速） |
-| 行为 FSM | Idle → Alerted → Chase → Attack → Dead |
-| 空闲 | 随机选可行走节点作为巡逻目标 |
-| 听觉感知 | 订阅 4.1 的 SNoiseEvent → `distance <= radius[level]` → Alerted → agent.SetDestination(声源) |
-| 视觉感知 | 2D 地面扇形（前方角度 + 距离）→ 看到玩家 → 直接 Chase |
-| 攻击 | 靠近玩家 → CombatComponent.TryActivate() → 伤害判定 |
-| 死亡 | HP 归零 → 死亡动画 → 移除 + 基础掉落 |
-
-**不纳入 4.2**：噪音连锁反应/障碍物衰减/昼夜倍率/环境噪音（→ Phase 12+ 噪音扩展）、视觉感知光线影响/尸群协调/特殊感染者（→ Phase 12+ 敌人扩展）、丧尸化过程（→ Phase 12+ 伤病扩展）。
+| Properties 系统全量落地 | 8 类型 / ~185 PropertyDef / 30 Trees / Editor 完整 |
+| Properties 接管角色物理 | `CharacterPhysique` + `GroundSystemConfigSO` 替代 3 个旧 SO |
+| Module 系统 + ctx 全链路 | BaseService 删除，Service 直接继承 ModuleComponent |
+| Animation 重构 | LinearMixer + In-line Transition + 废弃 State 清理 |
+| Ability 数据资产 | Search / Activation / Effect / Noise / Passive 全量 SO + Editor |
+| Tag 系统 | 199 全量 GameplayTag + EditorTreeView 迁移 |
+| CharacterCombat 骨架 | 回调绑定 + 伤害管线骨架 |
+| 武器模型 | PolygonApocalypse 武器模型 + 材质导入 |
 
 ---
-**当前 2 个子阶段的关系**：
+
+## S1 — Properties 深度接入 [~1天]
+
+> 背景: 物理属性已进 Properties，但速度系数层仍是占位。
+> `Stance.motionSpeedScale = 1f` 硬编码，姿势/负重/敏捷不参与速度计算。
+> 参照 6/19 Properties 接管物理（3 SO 删除 + 12 消费者 + 9 属性定义，1天），本次范围更小。
+
+| # | 任务 | 涉及 |
+|---|------|------|
+| S1.1 | Properties 定义补充 — `Movement/SpeedCrouch`, `Movement/SpeedCrawl`, `Attributes/Agility` | `properties_all.json` |
+| S1.2 | `Stance` — `motionSpeedScale` 接入 `Physique`，条件守卫恢复 | `Stance.cs` |
+| S1.3 | `GroundLocomotion` — posture-aware speed: `animNativeSpeed × posture系数 × 负重惩罚` | `GroundLocomotion.cs` |
+| S1.4 | `CharacterPhysique` — 追加 Agility / SpeedCoefficient 字段 | `CharacterPhysique.cs` |
+| S1.5 | `BaseMovingState` — 动画速度接入姿势系数 | `BaseMovingState.cs` |
+
+**可验证增量**: 负重变化影响移速，冲刺/匍匐速度差异化。
+
+---
+
+## S2 — Ability Pipeline 运行时 [~5天]
+
+> 背景: [ability-pipeline-design.md](../tech/L2-services/L2-modules/L3-ability/ability-pipeline-design.md) 八维度管道设计完成，数据资产完备。当前仅 `AbilityExecutor` + `AbilityReactor` + `CharacterCombat` 有骨架代码。
+> 三大核心组件待落地，最接近的历史参照是 6/16-17 Module 系统 + ctx 全链路（新建 4 类型 + 迁移 CharacterActor + 删除 BaseService，2天）。AbilityComponent 复杂度相当，外加 HitReactionComponent 和 AbilityDriver 各为一个独立组件。
+
+**架构**: AbilityComponent（发送中枢 → ②③④⑤）→ HitReactionComponent（接收中枢 → ⑥⑦⑧）
+
+| # | 任务 | 说明 | 耗时 |
+|---|------|------|------|
+| S2.1 | **`AbilityComponent`** + `IConditionModifier` + ⑧ 广播 | `TryActivate()` + 被动触发 + 冷却/OwnedTags + 门控回调 + 事件发布 | ~2天 |
+| S2.2 | **`HitReactionComponent`** | `Resolve(SResolvedHit[])` + `ReceiveRawDamage()`。三阶段：Avoidance → Mitigation → Absorption | ~1.5天 |
+| S2.3 | **`AbilityDriver`** | ③ 释放动画 — 继承 `BaseCharacterAnimationDriver`，消费 `AbilityActivationSO` Windup→Fire→Recovery | ~1天 |
+| S2.4 | **CharacterActor 集成 + 闭环测试** | 双向绑定 + 替换临时槽位 + Q 键全链路验证 | ~0.5天 |
+
+**可验证增量**: 按 Q → AbilityComponent.TryActivate → 门控 → AbilityDriver 播放横斩动画 → 搜索命中 → HitReactionComponent 结算扣血 → 事件广播。
+
+---
+
+## S3 — Combat 管线补完 [~1天]
+
+> `CharacterCombat.cs` 已有骨架，三个核心判定待实现。单文件补逻辑，参照 6/11 Cost 标签体系（1天）。
+
+| # | 任务 | 涉及 |
+|---|------|------|
+| S3.1 | 施展方属性修正 — 力量/穿透 (`IEffectModifier`) | `CharacterCombat.OnEffectModify` |
+| S3.2 | 回避判定 — 闪避率 + 短路 | `CharacterCombat.OnResolveDamage` |
+| S3.3 | 吸收结算 — 护盾伤害吸收 | `CharacterCombat.OnResolveDamage` |
+| S3.4 | 字符串路径 → Properties 路径常量 | `CharacterCombat.cs` |
+
+---
+
+## S4 — 动画系统补完 [~3天]
+
+> S4.2 替代旧方案：当前头部朝向通过 `Vector2MixerState` 混合动画 Pose 实现（`AnimationBrain.headLookMixer`），
+> 改为安装 Unity Animation Rigging 包，用 `MultiAimConstraint` + `RigBuilder` 直接驱动头骨 IK 朝向目标点。
+> 旧 `headLookMixer` / `headLookSmoothingSpeed` / `LookMixer` TODO 全部移除。
+> S4.2 是新包接入 + 新建组件，参照 6/13 FloatAdjunct+BuffEffectSO（新建底座，1天），IK 需额外适配时间。
+
+| # | 任务 | 说明 | 耗时 |
+|---|------|------|------|
+| S4.1 | Footstep 事件桥接 | `BaseLayer.FootstepCallback → AnimationBrain.OnFootstep` | ~0.5天 |
+| S4.2 | **Head Look IK** — 代码驱动头部转向，替代动画 `Vector2MixerState` | 安装 Animation Rigging 包 + 新建 `HeadLookIK` + 移除旧 headLookMixer | ~1.5天 |
+| S4.3 | Crawl 动画 mixer | `BaseMovingState` + `LocomotionAnimationSetSO` + `crawlMixer` | ~0.5天 |
+| S4.4 | AirLand 分级落地 | Gait 参数混合 `landLight/landHard` LinearMixer | ~0.5天 |
+| S4.5 | Traversal 动画迁移 | `TraversalDriver` → `TraversalAnimationSetSO` | ~0.5天 |
+
+---
+
+## 优先级依赖
 
 ```
-4.1 战斗基础架构
-  ├── Q/R 按键 → SkillDefSO → CombatComponent.TryActivate()
-  ├── CombatDriver 阶段机(Windup→Fire→Recovery) → 动画播放
-  ├── CombatPipeline.SearchCandidates(Cone Q / RayLine R) + FilterByLoS(R)
-  ├── 命中 → stats.DamageRule → HP -
-  └── GameEvent<SHitEvent>.Raise() + GameEvent<SNoiseEvent>.Raise()
-          │                          │
-          └──────────┬───────────────┘
-                     ▼
-4.2 敌人 AI ──── SNoiseEvent 听觉感知 + SHitEvent 受击反馈
-  ├── 行为 FSM: Idle → Alerted → Chase → Attack → Dead
-  ├── CombatComponent.TryActivate() 复用 4.1 的命中判定管线
-  └── 死亡 → HasTag("State.Dead") → 掉落
+S1 (~1天)                    S4 (~3天 — 可并行)
+        │                          │
+        └──────┬───────────────────┘
+               ▼
+        S2 (~5天)
+               │
+               ▼
+        S3 (~1天)
+               │
+               ▼
+         长期 Phase 5 (资源系统)
 ```
 
-**可玩增量**: 俯视角地图 → 丧尸在附近闲逛 → 你跑过去发出声音 → 丧尸警觉追来 → 你用 Q 横斩 / R 手枪攻击 → 它掉血死亡 → 掉落物品。
+**总计约 10 天（2 周）。** 基于 [施工历史](../plans/long-term.md#施工历史用于工期校准) 校准。
 
-**不纳入短期计划**（已移入长期计划）:
-- 复杂远程 RangedDriver（瞄准 Active 阶段/SkillConfirm）、Circle 搜索类型、投射物系统 — Phase 5 / Phase 12+
-- 连招系统、HitReactDriver、完整投骰管道 RollHit/CalculateDamage — Phase 4.1b / Phase 12+
-- Buff/Debuff、多武器切换、熟练度 — Phase 5 资源/物品系统
-- 噪音连锁反应/障碍物衰减/昼夜倍率 — Phase 12+ 噪音扩展
-- 视觉感知光线影响/尸群协调/特殊感染者/丧尸化过程 — Phase 12+ 敌人/伤病扩展
+S1 + S4 可并行推进，先 S1 再 S4 串行也不影响总工期。
+S2 是当前分支 `feature/ability-pipeline` 的核心目标。
+S1 优先于 S2 — AbilityComponent 需要读 Properties（资源门控、属性修正）。
 
 ---
 
-## 已完成（Phase 1 ~ 4 前置）
+## 不纳入短期计划
 
-| Phase | 内容 | 状态 |
-|-------|------|------|
-| 1 | LocomotionSystem | ✅ |
-| 1.5 | 音效系统骨架 | ✅ |
-| 2 | 通用数值系统 | ✅ |
-| 2.5 | Character Stats 管理 | ✅ |
-| 3 | HUD UI + MainMenu | ✅ |
-| 3.5 | PauseMenu + Loading | ✅ |
-| 3.6 | Service 架构加固 | ✅ |
-| 3.7 | 数据流架构重构 (PublishState + Component 解耦) | ✅ |
-| 4 前置 | 俯视角切换 | ✅ |
-| 4 前置 | A\* Pathfinding 集成 | ✅ |
-
----
-
-## 已移出短期计划
-
-以下从旧短期计划移入 [长期计划](long-term.md)：
-
-- Phase 5（资源系统 + 负重 + 存档）
-- Phase 6（建造基础）
-- Phase 7（时间与日夜）
-- Phase 8+（农业/烹饪、NPC、尸潮、科技树、全生态联通）
+以下已移入 [长期计划](long-term.md)：
+- 资源系统 / 背包 / 负重（Phase 5）
+- 建造基础（Phase 6）
+- 时间日夜（Phase 7）
+- 农业烹饪 / NPC / 尸潮 / 科技树（Phase 8-11）
+- 扩展打磨 — 连招 / 投射物 / 噪音连锁 / 特殊感染者 / 丧尸化（Phase 12+）

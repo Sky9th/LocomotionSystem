@@ -84,8 +84,7 @@ MonoBehaviour:
     type: 2}
   modelPrefab: {fileID: 1904041790429094, guid: 027cd57972e60824ca74f44e0d80ea9a,
     type: 3}
-  animancerTransitions: {fileID: 11400000, guid: 227ad177433ec3a4b960e9ec4c417dd4,
-    type: 2}
+  animancerTransitions: {fileID: 0}
   forwardRootMotion: 1
   applyRootMotionRotation: 0
   autoMatchAnimationSpeed: 1

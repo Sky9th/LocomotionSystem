@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using RedDust.Core;
 using UnityEngine;
 using RedDust.Character.Animation;
-using RedDust.Character.Animation.Drivers.Locomotion;
-using RedDust.Character;
 using RedDust.Character.Director;
 using RedDust.Character.Kinematic;
 using RedDust.Character.Pathfinding;
@@ -27,7 +25,7 @@ namespace RedDust.Character
         [SerializeField] private bool isPlayer;
 
         [Header("Config")]
-        [SerializeField] private Kinematic.GroundSystemConfigSO groundSystemConfig;
+        [SerializeField] private GroundSystemConfigSO groundSystemConfig;
 
         [Header("Animation")]
         [SerializeField] private CharacterAnimationProfileSO characterAnimationProfile;

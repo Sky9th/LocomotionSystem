@@ -1,7 +1,7 @@
 # 长期开发计划
 
-> 更新: 2026-06-02
-> 来源: `.agent/design/` GDD + 子系统设计文档 + [L4_Combat README](../tech/L2-services/L2-modules/L3-character/L4-combat/README.md)
+> 更新: 2026-06-19
+> 来源: `.agent/design/` GDD + 子系统设计文档
 > 原则: 每步有可玩增量，每个子系统先跑通基本闭环 → 全生态联通 → 数值统一规划
 >      **设计文档不设具体数值，所有数值在系统骨架完成后从上至下统一规划**
 
@@ -10,35 +10,65 @@
 ## 当前进度
 
 ```
-短期计划 (Phase 4):  战斗闭环 — 架构设计完成，4.1 施工中
-  前置: 俯视角切换 ✅  A* 寻路集成 ✅
-  目标: 4.1 战斗基础架构(Cone+RayLine 双搜索类型) → 4.2 敌人 AI(含噪声感知)
+短期:  Ability Pipeline 运行时 (feature/ability-pipeline 分支)
+  前置: Character 模块重构 ✅  Properties 系统 ✅  Animation 重构 ✅
+  目标: AbilityComponent + HitReactionComponent + AbilityDriver 落地
 
 已完成:
-  角色运动 ✅    音效骨架 ✅    数值系统（Stats 树形架构 + 修改器管道）✅
-  Stats 管理 ✅  HUD UI ✅     UI/Gameplay 时间线分离 ✅
-  会话层显式化 ✅  Service 架构 ✅
-  俯视角切换 ✅   A* 寻路集成 ✅  SO Event Channel 架构 ✅
+  角色运动 ✅    音效骨架 ✅    数值系统（Properties 替代旧 Stats SO）✅
+  PropertyAgent + Modifier 管道 ✅  HUD UI ✅
+  Module 系统 + 树形生命周期 ✅  ctx 全链路 ✅
+  俯视角切换 ✅   A* 寻路集成 ✅  SO Event Channel ✅
+  Ability 数据资产 ✅ (Search/Activation/Effect/Noise/Passive 全量)
+  GameplayTag 199 标签 ✅  CharacterCombat 骨架 ✅
+  Animation LinearMixer 统一 + In-line Transition ✅
 
 设计完成:
   GDD ✅  伤病系统 ✅  噪音系统 ✅  负重/背包 ✅  死亡/存档 ✅
-  L4_Combat 战斗技能架构 ✅ (2026-06-01)
+  Ability Pipeline 八维度管道 ✅ (2026-06-06)
+  Properties 全量属性体系 ✅ (~185 PropertyDef / 30 Trees)
+  Equipment 装备系统 ✅ (GearDefSO + GearInstance)
 ```
+
+---
+
+## 施工历史（用于工期校准）
+
+基于 `git log --date=short` 的实际日历日，非预估。
+
+| 日期 | 事项 | commit 数 | 耗时 |
+|------|------|-----------|------|
+| 6/11 | Cost 标签体系 + Effect 标签接入 | 1 | 1天 |
+| 6/12 | EditorForm + SearchEditor + ActivationEditor + 目录重组 | 3 | 1天 |
+| 6/13 | Editor UI 组件化 + Ability 编辑器补全 + FloatAdjunct + BuffEffectSO | 3 | 1天 |
+| 6/14 | EUI 组件架构重构（Slot/回调 + 令牌体系 + 四轮标准化） | 4 | 1天 |
+| 6/15 | EditorTreeView 组件 + 5 个 Editor 迁移 + Card API 简化 + 删除废弃树 | 11 | 1天 |
+| 6/15 | Character 配置集中到 CharacterActor + Model 运行时装配 | 2 | 同天 |
+| 6/16-17 | Module 系统 + 树形生命周期 + ctx 全链路 + Service 标准化 | 3 | 2天 |
+| 6/18-19 | Animation 重构（废弃 State 清理 + SO 重构 + FSM In-line Transition） | 3 | 2天 |
+| 6/19 | PolygonApocalypse 武器导入 + Properties 接管角色物理 | 2 | 1天 |
+
+**节奏特征**:
+- 跨模块架构重构（Module 系统、Animation 重构）≈ **2 天**，约 3 个 commit
+- Editor 工具整批迁移/重构（EditorTreeView、EUI 组件体系）≈ **1-2 天**，4-11 个 commit
+- 单一模块深度改动（Properties 接管物理、Cost 标签）≈ **1 天**，1-2 个 commit
+- 新建组件 + 消费者迁移（类似 AbilityComponent / AbilityDriver）在历史中没有直接对照，但 Module 系统（新建 4 类型 + 迁移 CharacterActor）是 2 天
 
 ---
 
 ## 视角与坐标系约定
 
-游戏为**俯视角**（类似《僵尸毁灭工程》），所有空间计算在 **XZ 地面平面** 上进行：
+游戏为**俯视角**（类似《僵尸毁灭工程》），所有空间计算在 **XZ 地面平面** 上进行。
 
 | 系统 | 坐标系 |
 |------|--------|
-| 移动输入 | WASD 相对俯视屏幕方向 |
-| 角色朝向 | 鼠标光标地面投影位置 |
-| 战斗瞄准 | 鼠标点击地面位置 → 攻击方向 |
+| 移动 | 右键点击地面 → A* Pathfinding 寻路，AIPath 驱动位移 |
+| 角色朝向 | 寻路中 = `desiredVelocity.normalized`（移动方向）；静止 = 保持当前朝向 |
+| 瞄准方向 | 鼠标光标 → 地面 Y=0 投影 → ModelRoot 到鼠标的 XZ 方向 |
+| 技能释放 | Q/E 键 → 以角色前方（`ModelRoot.forward`）为攻击方向 |
 | 敌人感知 | 2D 地面扇形（视觉）+ 圆形半径（听觉） |
 | 寻路 | A\* Pathfinding Project（XZ 平面 GridGraph） |
-| 噪音传播 | 球形半径（3D，但视野判定在 XZ） |
+| 噪音传播 | 球形半径（3D，视野判定在 XZ） |
 
 ---
 
@@ -68,35 +98,37 @@ RedDust
 
 每个子系统分两阶段：**基本闭环**（能玩通的最小版本）→ **扩展**（丰富性与打磨）。
 
-### Phase 4: 战斗基础 + 敌人 AI 基础 + 噪音骨架 ← 当前
+### Phase 4: Ability Pipeline + 敌人 AI + 噪音骨架 ← 当前
 
-> 架构设计: [L4_Combat README](../tech/L2-services/L2-modules/L3-character/L4-combat/README.md)
+> 管道设计: [ability-pipeline-design.md](../tech/L2-services/L2-modules/L3-ability/ability-pipeline-design.md)
 > 施工计划: [short-term.md](short-term.md)
 
-**4.1 近战基础架构**：GameplayTag + SkillDefSO/WeaponSkillSetSO(配置层) → CombatComponent/SkillBar(管理层) → CombatDriver/CombatPipeline(执行层)。Q/E/R/F 四槽，阶段机 Windup→Fire→Recovery。CombatPipeline 物理搜索两类型：Cone 扇形（横斩 Q）+ RayLine 射线（手枪 R）。闭环：按键→动画→搜索候选→命中→DamageRule→SHitEvent/SNoiseEvent 发布。
+**4.1 Ability Pipeline 运行时**：AbilityComponent（发送中枢 → ②③④⑤ 门控/释放/搜索/效果）+ HitReactionComponent（接收中枢 → ⑥⑦ 结算/反应）+ AbilityDriver（③ 阶段机 Windup→Fire→Recovery）+ ⑧ 事件广播。闭环：按键→AbilityComponent.TryActivate→门控检查→AbilityDriver 播放动画→搜索命中→HitReactionComponent 结算扣血→HitEvent 广播。
 
-**4.2 敌人 AI 基础**：复用 CombatComponent（纯类），行为 FSM，听觉感知（消费 4.1 的 SNoiseEvent）+ 视觉感知。含噪声感知消费端。
+**4.2 敌人 AI 基础**：复用 AbilityComponent + HitReactionComponent（纯类，不绑 Player），行为 FSM，听觉感知（消费 SNoiseEvent）+ 视觉感知。
 
-**移入 Phase 5 的战斗扩展**（依赖资源/物品系统）：复杂远程 RangedDriver（Active 瞄准+SkillConfirm）、Buff/Debuff、多武器切换、熟练度、Circle 搜索类型技能。
+**移入 Phase 5 的能力扩展**（依赖资源/装备系统）：连招系统 ComboWindow、Buff/Debuff（BuffEffectSO 已定义）、多武器切换、熟练度、Circle 搜索落地。
 
 ---
 
-### Phase 5: 资源系统 + 负重 + 存档 + 战斗物品化
+### Phase 5: 资源系统 + 装备落地 + 存档
 
-> 设计文档: `inventory-weight.md` / `death-mechanics.md`
+> 设计文档: `inventory-weight.md` / `death-mechanics.md` / `equipment-system.md`
+> Properties 已替代旧 Stats SO，装备属性直接进 PropertyTree。
 
 | 子系统 | 基本闭环 |
 |--------|----------|
-| 物品数据 | ItemDefSO（ID/名称/图标/类型/重量/堆叠上限） |
+| 物品数据 | ItemDefSO（ID/名称/图标/类型/重量/堆叠上限），引用 PropertyTree |
 | 拾取交互 | 地面物品→点击拾取→进背包 |
 | 背包 UI | 物品列表 + 当前负重/负重上限 + 负重等级标签 |
 | 消耗品 | 食物回饥饿、水回口渴、绷带回 HP、止痛药降疼痛 |
-| 负重 | 每物品有重量 → 总负重 vs 负重上限 → 轻/中/重/超载四级 → 软上限惩罚 |
-| 存档 | 暂停菜单手动存档 + 据点自动存档 → 3 手动槽 + 1 自动槽 → 死亡画面读档 |
-| **战斗物品化** | 武器 = ItemDefSO + WeaponSkillSetSO 引用；弹药/消耗品；多武器切换（背包选择） |
-| **战斗扩展** | Buff/Debuff 系统（ActiveEffect → StatModifier）；远程武器 RangedDriver；熟练度成长 |
+| 负重 | 每物品有重量 → 总负重 vs 负重上限 → 轻/中/重/超载四级 |
+| 存档 | 暂停菜单手动存档 + 据点自动存档 → 3 手动槽 + 1 自动槽 |
+| **GearInstance 工厂** | `GearDefSO` Properties 迁移 → `GearInstance` 运行时个体 |
+| **装备槽位** | `EquipmentComponent` + `AbilitySlotManager`（替换 Actor 临时槽位）|
+| **战斗扩展** | Buff/Debuff（BuffEffectSO 已定义）、多武器切换、熟练度 |
 
-**可玩增量**: 地上有东西→捡→负重增加→超载走不动→取舍→吃食物回饥饿→回家存档。捡到新武器→装备→技能槽替换→用不同技能打丧尸。
+**可玩增量**: 地上有东西→捡→负重增加→取舍。捡到新武器→装备→技能槽替换。吃食物回饥饿→存档回家。
 
 **不做的**: 六大类完整分类、仓库系统、工具耐久/维修、大背包/军用背包。
 
@@ -215,18 +247,21 @@ RedDust
 ## 依赖关系
 
 ```
-Phase 4 (战斗+AI) ← 短期计划当前
+Phase 4 (Ability Pipeline + 敌人 AI) ← 短期计划当前
     │
-    ├──→ Phase 5 (资源) ──→ Phase 6 (建造) ──→ Phase 8 (农业+烹饪)
-    │         │                    │                    │
-    │         └──→ Phase 9 (NPC) ──┴───────────────────┤
-    │                            │                       │
-    └──→ Phase 7 (时间/日夜) ────┴──→ Phase 10 (尸潮) ──┤
+    ├──→ Phase 5 (资源 + 装备 + 存档)
+    │         │
+    │         ├──→ Phase 6 (建造) ──→ Phase 8 (农业+烹饪)
+    │         │         │                    │
+    │         └──→ Phase 9 (NPC) ────────────┤
+    │                                          │
+    └──→ Phase 7 (时间/日夜) ──→ Phase 10 (尸潮) ──┤
                                                          │
                                           Phase 11 (科技树)
 ```
 
 - Phase 4-7 可并行度较高
+- Phase 5 依赖 Phase 4（装备系统接 Ability 管道 ⑤ 伤害载荷）
 - Phase 8 依赖 Phase 5（资源）+ Phase 6（建造篝火）
 - Phase 9 依赖 Phase 5（资源/工具）+ Phase 6（床位）+ Phase 8（食物）
 - Phase 10 依赖 Phase 4 + Phase 6（防御建筑）+ Phase 9（NPC）
@@ -236,10 +271,10 @@ Phase 4 (战斗+AI) ← 短期计划当前
 
 ## 时间预估
 
-| 阶段 | 内容 | 预估 |
+| 阶段 | 内容 | 状态 |
 |------|------|------|
-| Phase 4 | 战斗 + 敌人 AI + 噪音（含俯视角+寻路） | 当前 |
-| Phase 5 | 资源系统 | 后续 |
+| Phase 4 | Ability Pipeline + 敌人 AI + 噪音 | 施工中 |
+| Phase 5 | 资源系统 + 装备落地 + 存档 | 下一站 |
 | Phase 6-7 | 建造 + 时间日夜 | 后续 |
 | Phase 8-9 | 农业烹饪 + NPC | 后续 |
 | Phase 10-11 | 尸潮 + 科技树 | 后续 |
