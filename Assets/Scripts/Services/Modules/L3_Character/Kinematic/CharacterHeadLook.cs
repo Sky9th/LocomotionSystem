@@ -17,7 +17,7 @@ namespace RedDust.Character.Kinematic
         }
 
         internal static Vector2 Evaluate(Vector3 viewForward, Transform modelRoot, Transform rootTransform,
-            KinematicProfileSO profile)
+            float maxHeadYaw, float maxHeadPitch)
         {
             var targetRotation = viewForward.sqrMagnitude > Mathf.Epsilon
                 ? Quaternion.LookRotation(viewForward)
@@ -30,8 +30,8 @@ namespace RedDust.Character.Kinematic
             float yaw = NormalizeAngle180(euler.y);
             float pitch = -NormalizeAngle180(euler.x);
 
-            float maxYaw = profile != null ? Mathf.Max(1e-3f, profile.maxHeadYawDegrees) : 1e-3f;
-            float maxPitch = profile != null ? Mathf.Max(1e-3f, profile.maxHeadPitchDegrees) : 1e-3f;
+            float maxYaw = Mathf.Max(1e-3f, maxHeadYaw);
+            float maxPitch = Mathf.Max(1e-3f, maxHeadPitch);
 
             float normYaw = Mathf.Clamp(yaw / maxYaw, -1f, 1f);
             float normPitch = Mathf.Clamp(pitch / maxPitch, -1f, 1f);

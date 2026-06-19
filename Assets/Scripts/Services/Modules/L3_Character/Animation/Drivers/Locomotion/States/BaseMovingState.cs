@@ -20,11 +20,13 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
                 EMovementGait.Walk => Owner.AnimSet?.walkMixer,
                 EMovementGait.Run  => Owner.AnimSet?.runMixer,
                 EMovementGait.Sprint => Owner.AnimSet?.sprint,
+                // TODO: Crawl mixer — 需在 LocomotionAnimationSetSO 中添加 crawlMixer 字段
                 _ => null
             };
             Owner.PlayIfChanged(transition ?? Owner.AnimSet?.walkMixer);
 
-            float desiredGaitSpeed = Owner.LocoProfile != null ? Owner.LocoProfile.GetSpeed(Owner.Ctx.Discrete.Posture, Owner.Ctx.Discrete.Gait) : 0f;
+            // TODO: posture-aware speed — 当前仅按 gait 查 animNativeSpeed，姿势系数由 Properties 叠加
+            float desiredGaitSpeed = Owner.AnimSet != null ? Owner.AnimSet.GetNativeSpeed(Owner.Ctx.Discrete.Gait) : 0f;
             if (Owner.Layer.CurrentState is Vector2MixerState mixer && desiredGaitSpeed > 0f)
             {
                 var parameter = Owner.Ctx.Motor.ActualLocalVelocity / desiredGaitSpeed;

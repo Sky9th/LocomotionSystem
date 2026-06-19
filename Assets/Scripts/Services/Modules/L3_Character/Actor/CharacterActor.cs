@@ -27,7 +27,7 @@ namespace RedDust.Character
         [SerializeField] private bool isPlayer;
 
         [Header("Config")]
-        [SerializeField] private CharacterPhysicsProfileSO characterPhysicsProfile;
+        [SerializeField] private Kinematic.GroundSystemConfigSO groundSystemConfig;
 
         [Header("Animation")]
         [SerializeField] private CharacterAnimationProfileSO characterAnimationProfile;
@@ -64,8 +64,7 @@ namespace RedDust.Character
 
         // ── Config SO ──
         internal CharacterAnimationProfileSO CharacterAnimationProfile => characterAnimationProfile;
-        internal LocomotionAnimationConfigSO LocomotionAnimationProfile => characterAnimationProfile?.locomotionConfig;
-        internal LocomotionProfileSO LocomotionProfile => characterPhysicsProfile?.locomotion;
+        internal CharacterPhysique Physique { get; private set; }
         internal CharacterAudioConfigSO CharacterAudioConfig => characterAudioConfig;
 
         // ── Animation ──
@@ -148,13 +147,15 @@ namespace RedDust.Character
         {
             characterRig = new CharacterRig(transform, modelRoot);
 
+            Physique = CharacterPhysique.FromAgent(agent);
+
             buildCtx = new CharacterBuildContext(
                 root: transform, eventHub: eventHub, agent: agent,
                 ability: ability, reactor: reactor, pathfinding: pathfindingAgent,
                 modelRoot: modelRoot, rig: characterRig,
                 animationProfile: characterAnimationProfile,
-                locomotionProfile: characterPhysicsProfile?.locomotion,
-                kinematicProfile: characterPhysicsProfile?.kinematic,
+                groundSystemConfig: groundSystemConfig,
+                physique: Physique,
                 audioConfig: characterAudioConfig,
                 upperBodyMask: upperBodyMask, additiveMask: additiveMask,
                 facialMask: facialMask, headMask: headMask, footMask: footMask,

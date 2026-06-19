@@ -2,7 +2,6 @@ using UnityEngine;
 using Animancer;
 using RedDust.Character.Animation;
 using RedDust.Character;
-using RedDust.Character.Locomotion;
 
 namespace RedDust.Character.Animation.Drivers.Locomotion
 {
@@ -33,7 +32,6 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
                 brain?.FullBodyLayer,
                 buildCtx?.DefaultLocomotionSet,  // TODO: GripTable.Resolve(tags) 替换
                 buildCtx?.LocomotionAnimConfig,
-                buildCtx?.LocomotionProfile,
                 buildCtx);
         }
 

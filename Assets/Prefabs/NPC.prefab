@@ -73,6 +73,7 @@ MonoBehaviour:
   isPlayer: 0
   characterPhysicsProfile: {fileID: 11400000, guid: d23c4599050ea9d419499a84d1e017e3,
     type: 2}
+  groundSystemConfig: {fileID: 11400000, guid: 6f5d74115b0df28438f735b18d13da47, type: 2}
   characterAnimationProfile: {fileID: 11400000, guid: e215df4713aa441448d8fe70857a7f32,
     type: 2}
   skillSlot1: {fileID: 0}

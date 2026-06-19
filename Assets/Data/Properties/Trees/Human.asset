@@ -87,10 +87,27 @@ MonoBehaviour:
     {\n            \"NodeId\": \"Movement\",\n            \"ParentId\": \"\",\n           
     \"DefId\": \"\"\n        },\n        {\n            \"NodeId\": \"CarryWeight\",\n           
     \"ParentId\": \"Movement\",\n            \"DefId\": \"CarryWeight\"\n       
-    },\n        {\n            \"NodeId\": \"Resistance\",\n            \"ParentId\":
-    \"\",\n            \"DefId\": \"\"\n        },\n        {\n            \"NodeId\":
-    \"BleedResist\",\n            \"ParentId\": \"Resistance\",\n            \"DefId\":
-    \"BleedResist\"\n        },\n        {\n            \"NodeId\": \"InfectionResist\",\n           
+    },\n        {\n            \"NodeId\": \"Acceleration\",\n            \"ParentId\":
+    \"Movement\",\n            \"DefId\": \"Acceleration\"\n        },\n        {\n           
+    \"NodeId\": \"MaxSlopeAngle\",\n            \"ParentId\": \"Movement\",\n           
+    \"DefId\": \"MaxSlopeAngle\"\n        },\n        {\n            \"NodeId\":
+    \"Body\",\n            \"ParentId\": \"\",\n            \"DefId\": \"\"\n       
+    },\n        {\n            \"NodeId\": \"Height\",\n            \"ParentId\":
+    \"Body\",\n            \"DefId\": \"Height\"\n        },\n        {\n           
+    \"NodeId\": \"ObstacleProbeVertical\",\n            \"ParentId\": \"Body\",\n           
+    \"DefId\": \"ObstacleProbeVertical\"\n        },\n        {\n            \"NodeId\":
+    \"ObstacleProbeDistance\",\n            \"ParentId\": \"Body\",\n           
+    \"DefId\": \"ObstacleProbeDistance\"\n        },\n        {\n            \"NodeId\":
+    \"ObstacleMinClimb\",\n            \"ParentId\": \"Body\",\n            \"DefId\":
+    \"ObstacleMinClimb\"\n        },\n        {\n            \"NodeId\": \"ObstacleMaxClimb\",\n           
+    \"ParentId\": \"Body\",\n            \"DefId\": \"ObstacleMaxClimb\"\n       
+    },\n        {\n            \"NodeId\": \"MaxHeadYaw\",\n            \"ParentId\":
+    \"Body\",\n            \"DefId\": \"MaxHeadYaw\"\n        },\n        {\n           
+    \"NodeId\": \"MaxHeadPitch\",\n            \"ParentId\": \"Body\",\n           
+    \"DefId\": \"MaxHeadPitch\"\n        },\n        {\n            \"NodeId\": \"Resistance\",\n           
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
+    \"NodeId\": \"BleedResist\",\n            \"ParentId\": \"Resistance\",\n           
+    \"DefId\": \"BleedResist\"\n        },\n        {\n            \"NodeId\": \"InfectionResist\",\n           
     \"ParentId\": \"Resistance\",\n            \"DefId\": \"InfectionResist\"\n       
     },\n        {\n            \"NodeId\": \"BluntResist\",\n            \"ParentId\":
     \"Resistance\",\n            \"DefId\": \"BluntResist\"\n        },\n       

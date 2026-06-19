@@ -2,7 +2,6 @@ using Animancer;
 using Animancer.FSM;
 using UnityEngine;
 using RedDust.Character;
-using RedDust.Character.Locomotion;
 using RedDust.Character.Animation;
 
 namespace RedDust.Character.Animation.Drivers.Locomotion
@@ -18,7 +17,6 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
 
         internal LocomotionAnimationSetSO AnimSet { get; private set; }
         internal LocomotionAnimationConfigSO AnimProfile { get; }
-        internal LocomotionProfileSO LocoProfile { get; }
         internal CharacterRig Rig => _buildContext?.Rig;  // 实时读取，Model 替换自动更新
         internal CharacterFrameContext Ctx => ctx;
         internal float DeltaTime => deltaTime;
@@ -31,13 +29,12 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         private AnimancerState injectedMixer;
 
         internal BaseLayer(AnimancerLayer layer, LocomotionAnimationSetSO animSet, LocomotionAnimationConfigSO animProfile,
-            LocomotionProfileSO locoProfile, CharacterBuildContext buildContext)
+            CharacterBuildContext buildContext)
         {
             _buildContext = buildContext;
             Layer = layer;
             AnimSet = animSet;
             AnimProfile = animProfile;
-            LocoProfile = locoProfile;
             fsm = new StateMachine<BaseStateKey, LocomotionLayerFsmState<BaseLayer>>();
             fsm.Dictionary[BaseStateKey.Idle] = new BaseIdleState(this);
             fsm.Dictionary[BaseStateKey.Moving] = new BaseMovingState(this);

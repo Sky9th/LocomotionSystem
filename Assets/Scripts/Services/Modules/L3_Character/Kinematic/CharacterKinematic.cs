@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using RedDust.Character;
 using RedDust.Core;
@@ -26,29 +25,30 @@ namespace RedDust.Character.Kinematic
         internal SCharacterKinematic Evaluate(Vector3 locomotionHeading,
             Vector3 aimDirection, float deltaTime)
         {
-            var profile = ctx.KinematicProfile;
-            if (profile == null) throw new InvalidOperationException("CharacterBuildContext.KinematicProfile is null");
+            var physique = ctx.Physique;
+            var groundSystem = ctx.GroundSystemConfig;
 
             var rig = ctx.Rig;
             var position = ctx.Root.position;
             var bodyForward = ctx.Root.forward;
 
-            var lookDirection = CharacterHeadLook.Evaluate(aimDirection, ctx.ModelRoot, ctx.Root, profile);
+            var lookDirection = CharacterHeadLook.Evaluate(aimDirection, ctx.ModelRoot, ctx.Root,
+                physique.MaxHeadYaw, physique.MaxHeadPitch);
 
-            var groundContact = EvaluateGroundContactAndApplyConstraints(profile, deltaTime, ref position, rig);
+            var groundContact = EvaluateGroundContactAndApplyConstraints(physique.MaxSlopeAngle, groundSystem, deltaTime, ref position, rig);
             CharacterObstacleDetection.TryDetectForwardObstacle(
                 position, locomotionHeading,
-                profile.obstacleProbeVerticalOffset, profile.obstacleProbeDistance,
-                profile.obstacleLayerMask, profile.obstacleMinClimbHeight, profile.obstacleMaxClimbHeight,
-                profile.maxGroundSlopeAngle, out var obstacle);
+                physique.ObstacleProbeVertical, physique.ObstacleProbeDistance,
+                groundSystem.obstacleLayerMask, physique.ObstacleMinClimb, physique.ObstacleMaxClimb,
+                physique.MaxSlopeAngle, out var obstacle);
 
             return new SCharacterKinematic(position, bodyForward, locomotionHeading, lookDirection, groundContact, obstacle);
         }
 
         private SGroundContact EvaluateGroundContactAndApplyConstraints(
-            KinematicProfileSO profile, float deltaTime, ref Vector3 position, CharacterRig rig)
+            float maxSlopeAngle, GroundSystemConfigSO groundSystem, float deltaTime, ref Vector3 position, CharacterRig rig)
         {
-            var contact = EvaluateStableGroundContact(profile, position, deltaTime);
+            var contact = EvaluateStableGroundContact(maxSlopeAngle, groundSystem, position, deltaTime);
 
             if (rig.SuppressGroundLock)
             {
@@ -56,11 +56,11 @@ namespace RedDust.Character.Kinematic
                 return contact.WithIsGrounded(true);
             }
 
-            rig.FreezePositionY(profile.enableGroundLocking && contact.IsGrounded);
+            rig.FreezePositionY(groundSystem.enableGroundLocking && contact.IsGrounded);
 
-            if (contact.IsGrounded && profile.enableGroundLocking && contact.DistanceToGround < profile.groundLockMaxDistance)
+            if (contact.IsGrounded && groundSystem.enableGroundLocking && contact.DistanceToGround < groundSystem.groundLockMaxDistance)
             {
-                var newY = contact.ContactPoint.y + profile.groundLockVerticalOffset;
+                var newY = contact.ContactPoint.y + groundSystem.groundLockVerticalOffset;
                 rig.SetGroundedY(newY);
                 rig.ZeroVelocity();
                 position.y = newY;
@@ -70,14 +70,15 @@ namespace RedDust.Character.Kinematic
             return contact;
         }
 
-        private SGroundContact EvaluateStableGroundContact(KinematicProfileSO profile, Vector3 position, float deltaTime)
+        private SGroundContact EvaluateStableGroundContact(
+            float maxSlopeAngle, GroundSystemConfigSO groundSystem, Vector3 position, float deltaTime)
         {
             var contact = CharacterGroundDetection.EvaluateGroundContact(
-                position, profile.groundProbeHeight, profile.groundProbeRadius,
-                profile.groundLayerMask, profile.maxGroundSlopeAngle);
+                position, groundSystem.probeHeight, groundSystem.probeRadius,
+                groundSystem.groundLayerMask, maxSlopeAngle);
 
             contact = Accumulate(contact, previousRawGroundContact, deltaTime);
-            contact = Stabilize(contact, previousGroundContact, profile.groundReacquireDebounceDuration, deltaTime);
+            contact = Stabilize(contact, previousGroundContact, groundSystem.groundReacquireDebounceDuration, deltaTime);
 
             previousRawGroundContact = contact;
             previousGroundContact = contact;

@@ -1407,6 +1407,87 @@
             "min": 0.0, "max": 24.0, "defaultFloat": 8.0,
             "minInt": 0, "maxInt": 100, "defaultInt": 0,
             "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Acceleration",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "移动加速度 (m/s²)。影响角色从静止达到目标速度的速率。Human基础属性。",
+            "min": 1.0, "max": 20.0, "defaultFloat": 5.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "MaxSlopeAngle",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "最大可行走坡度角 (度)。超过此角度的斜面无法行走。人=55°, 蜘蛛=90°。Human基础属性。",
+            "min": 0.0, "max": 89.0, "defaultFloat": 55.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Height",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "角色身高 (米)。影响障碍物翻越上限、视线高度。成年男性=1.8m。Human体型属性。",
+            "min": 0.5, "max": 5.0, "defaultFloat": 1.8,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "ObstacleProbeVertical",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "障碍物探测垂直偏移 (米)。从脚底向上的射线起点，约胸腔高度。Human体型属性。",
+            "min": 0.0, "max": 2.0, "defaultFloat": 0.15,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "ObstacleProbeDistance",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "障碍物探测距离 (米)。前方障碍判定射线长度，约臂长。Human体型属性。",
+            "min": 0.0, "max": 3.0, "defaultFloat": 0.75,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "ObstacleMinClimb",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "最小翻越高度 (米)。低于此高度可跨过，约小腿长。Human体型属性。",
+            "min": 0.0, "max": 1.0, "defaultFloat": 0.3,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "ObstacleMaxClimb",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "最大翻越高度 (米)。高于此高度无法攀爬。默认同身高1.8m。Human体型属性。",
+            "min": 0.1, "max": 5.0, "defaultFloat": 1.8,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "MaxHeadYaw",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "头部最大水平转动角 (度)。人=±75°, 猫头鹰=±180°。Human生理属性。",
+            "min": 0.0, "max": 180.0, "defaultFloat": 75.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "MaxHeadPitch",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "头部最大垂直转动角 (度)。人=±75°。Human生理属性。",
+            "min": 0.0, "max": 90.0, "defaultFloat": 75.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
         }
     ],
     "trees": [
@@ -1471,6 +1552,16 @@
                 { "nodeId": "Boredom", "parentId": "Needs", "defId": "Boredom" },
                 { "nodeId": "Movement", "parentId": "", "defId": "" },
                 { "nodeId": "CarryWeight", "parentId": "Movement", "defId": "CarryWeight" },
+                { "nodeId": "Acceleration", "parentId": "Movement", "defId": "Acceleration" },
+                { "nodeId": "MaxSlopeAngle", "parentId": "Movement", "defId": "MaxSlopeAngle" },
+                { "nodeId": "Body", "parentId": "", "defId": "" },
+                { "nodeId": "Height", "parentId": "Body", "defId": "Height" },
+                { "nodeId": "ObstacleProbeVertical", "parentId": "Body", "defId": "ObstacleProbeVertical" },
+                { "nodeId": "ObstacleProbeDistance", "parentId": "Body", "defId": "ObstacleProbeDistance" },
+                { "nodeId": "ObstacleMinClimb", "parentId": "Body", "defId": "ObstacleMinClimb" },
+                { "nodeId": "ObstacleMaxClimb", "parentId": "Body", "defId": "ObstacleMaxClimb" },
+                { "nodeId": "MaxHeadYaw", "parentId": "Body", "defId": "MaxHeadYaw" },
+                { "nodeId": "MaxHeadPitch", "parentId": "Body", "defId": "MaxHeadPitch" },
                 { "nodeId": "Resistance", "parentId": "", "defId": "" },
                 { "nodeId": "BleedResist", "parentId": "Resistance", "defId": "BleedResist" },
                 { "nodeId": "InfectionResist", "parentId": "Resistance", "defId": "InfectionResist" },

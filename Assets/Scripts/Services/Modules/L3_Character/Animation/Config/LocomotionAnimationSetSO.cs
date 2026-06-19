@@ -1,5 +1,6 @@
 using Animancer;
 using UnityEngine;
+using RedDust.Character;
 
 namespace RedDust.Character.Animation
 {
@@ -27,6 +28,18 @@ namespace RedDust.Character.Animation
         [Min(0.01f)] public float runAnimNativeSpeed = 5f;
         [Tooltip("Sprint 动画在 Speed=1.0 时的实际位移速度 (m/s)")]
         [Min(0.01f)] public float sprintAnimNativeSpeed = 7f;
+        [Tooltip("Crawl 动画在 Speed=1.0 时的实际位移速度 (m/s)")]
+        [Min(0.01f)] public float crawlAnimNativeSpeed = 1f;
+
+        /// <summary>返回该动画集在指定步态下的基础速度 (m/s)。0 表示不支持此步态。</summary>
+        public float GetNativeSpeed(EMovementGait gait) => gait switch
+        {
+            EMovementGait.Walk => walkAnimNativeSpeed,
+            EMovementGait.Run => runAnimNativeSpeed,
+            EMovementGait.Sprint => sprintAnimNativeSpeed,
+            EMovementGait.Crawl => crawlAnimNativeSpeed,
+            _ => 0f,
+        };
 
         [Header("Turn")]
         public ClipTransition turnInPlace90L;

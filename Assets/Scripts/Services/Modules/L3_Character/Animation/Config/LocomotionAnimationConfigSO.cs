@@ -67,6 +67,6 @@ namespace RedDust.Character.Animation
 
         // Note: modeProfiles & GetTurnSpeed are animation-only tuning for
         // model rotation speed. All core locomotion thresholds now live in
-        // LocomotionProfileSO.
+        // CharacterPhysique (ex Properties).
     }
 }

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e56e5e7ec7eb8fa4d8f875b0e63eee81, type: 3}
+  m_Name: ObstacleMaxClimb
+  m_EditorClassIdentifier: 
+  Id: ObstacleMaxClimb
+  Description: "\u6700\u5927\u7FFB\u8D8A\u9AD8\u5EA6 (\u7C73)\u3002\u9AD8\u4E8E\u6B64\u9AD8\u5EA6\u65E0\u6CD5\u6500\u722C\u3002\u9ED8\u8BA4\u540C\u8EAB\u9AD81.8m\u3002Human\u4F53\u578B\u5C5E\u6027\u3002"
+  Type: 0
+  IsDeprecated: 0
+  Min: 0.1
+  Max: 5
+  DefaultFloat: 1.8
+  MinInt: 0
+  MaxInt: 100
+  DefaultInt: 0
+  DefaultBool: 0
+  DefaultString: 
+  DefaultAssetGUID: 
+  AssetTypeConstraint: 

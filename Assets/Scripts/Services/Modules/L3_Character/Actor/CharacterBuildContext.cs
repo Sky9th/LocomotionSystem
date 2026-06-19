@@ -3,7 +3,6 @@ using RedDust.Core;
 using RedDust.Character.Animation;
 using RedDust.Character.Audio;
 using RedDust.Character.Kinematic;
-using RedDust.Character.Locomotion;
 using RedDust.Character.Pathfinding;
 using RedDust.Properties;
 using UnityEngine;
@@ -37,9 +36,12 @@ namespace RedDust.Character
         public GripAnimationTableSO GripTable => AnimationProfile?.gripTable;
         public TraversalAnimationSetSO TraversalSet => AnimationProfile?.traversalSet;
 
-        // TODO(Properties): 引入 Properties 后 locomotion / kinematic 是否仍需存疑
-        public LocomotionProfileSO LocomotionProfile { get; }
-        public KinematicProfileSO KinematicProfile { get; }
+        // ── 系统级物理配置（世界定义，所有角色共享） ──
+        public GroundSystemConfigSO GroundSystemConfig { get; }
+
+        // TODO: Properties 接入更多属性后（负重、移速修正等）在此追加字段。
+        // 角色物理属性缓存——从 PropertyAgent 读取一次，hot path 零开销 struct 字段访问。
+        public CharacterPhysique Physique { get; }
         public CharacterAudioConfigSO AudioConfig { get; }
         public AvatarMask UpperBodyMask { get; }
         public AvatarMask AdditiveMask { get; }
@@ -59,8 +61,8 @@ namespace RedDust.Character
             AbilityExecutor ability, AbilityReactor reactor, PathfindingAgent pathfinding,
             Transform modelRoot, CharacterRig rig,
             CharacterAnimationProfileSO animationProfile,
-            LocomotionProfileSO locomotionProfile,
-            KinematicProfileSO kinematicProfile,
+            GroundSystemConfigSO groundSystemConfig,
+            CharacterPhysique physique,
             CharacterAudioConfigSO audioConfig,
             AvatarMask upperBodyMask, AvatarMask additiveMask,
             AvatarMask facialMask, AvatarMask headMask, AvatarMask footMask,
@@ -76,8 +78,8 @@ namespace RedDust.Character
             ModelRoot = modelRoot;
             Rig = rig;
             AnimationProfile = animationProfile;
-            LocomotionProfile = locomotionProfile;
-            KinematicProfile = kinematicProfile;
+            GroundSystemConfig = groundSystemConfig;
+            Physique = physique;
             AudioConfig = audioConfig;
             UpperBodyMask = upperBodyMask;
             AdditiveMask = additiveMask;

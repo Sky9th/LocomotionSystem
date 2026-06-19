@@ -8,48 +8,39 @@ namespace RedDust.Character.Locomotion
 {
     internal sealed class Stance
     {
+        /// <summary>转向判定进入角（度）。绝对值超过此角度进入转向状态。</summary>
+        private const float TurnEnterAngle = 65f;
+
+        /// <summary>转向完成角（度）。绝对值低于此角度退出转向状态。</summary>
+        private const float TurnCompletionAngle = 5f;
+
         private bool isTurning;
 
-        // MotionSpeedScale 缓存 —— 仅在 gait/posture 变化时重算
+        // TODO: 姿势/步态缓存 —— 后续 posture-aware speed 接入 Properties 后，
+        // motionSpeedScale 仅在 gait/posture 变化时重算，避免每帧查 PropertyAgent。
         private float cachedMotionSpeedScale = 1f;
         private EMovementGait cachedGait;
         private EPosture cachedPosture;
 
         internal SCharacterDiscrete Evaluate(
             in SCharacterMotor motor, in SCharacterKinematic kin,
-            in SCharacterIntent intent, LocomotionProfileSO profile,
-            KinematicProfileSO kProfile, LocomotionAnimationConfigSO animProfile, float dt)
+            in SCharacterIntent intent, LocomotionAnimationSetSO animSet, float dt)
         {
             var phase = EvaluatePhase(in kin, in motor);
             var gait = intent.DesiredGait;
             var posture = intent.DesiredPosture;
-            var turning = EvaluateTurning(in motor, in kin, kProfile, dt, phase);
+            var turning = EvaluateTurning(in motor, in kin, dt, phase);
 
-            if (gait != cachedGait || posture != cachedPosture)
-            {
-                cachedGait = gait;
-                cachedPosture = posture;
-                cachedMotionSpeedScale = ComputeBaseSpeedScale(gait, posture, profile, animProfile);
-            }
+            var nativeSpeed = animSet != null ? animSet.GetNativeSpeed(gait) : 0f;
+            var motionSpeedScale = 1f; // TODO: Properties 敏捷/负重/姿势/地形修正
 
-            var motionSpeedScale = cachedMotionSpeedScale; // TODO: terrain / buff 叠加修正
-            var effectiveMaxSpeed = profile.GetSpeed(posture, gait) * motionSpeedScale;
+            // TODO: 恢复条件守卫 —— gait/posture 变化时重算 motionSpeedScale
+            cachedGait = gait;
+            cachedPosture = posture;
+            cachedMotionSpeedScale = motionSpeedScale;
+
+            var effectiveMaxSpeed = nativeSpeed * motionSpeedScale;
             return new SCharacterDiscrete(phase, posture, gait, turning, motionSpeedScale, effectiveMaxSpeed);
-        }
-
-        /// <summary>
-        /// gaitSpeed / animNativeSpeed。仅在 gait 或 posture 变化时调用。
-        /// </summary>
-        private static float ComputeBaseSpeedScale(
-            EMovementGait gait, EPosture posture,
-            LocomotionProfileSO profile, LocomotionAnimationConfigSO animProfile)
-        {
-            if (profile == null || animProfile == null) return 1f;
-
-            // TODO: migrated animNativeSpeed to LocomotionAnimationSetSO
-            // float animNativeSpeed = ...;
-            // return animNativeSpeed > 0f ? profile.GetSpeed(posture, gait) / animNativeSpeed : 1f;
-            return 1f;
         }
 
         private static ELocomotionPhase EvaluatePhase(in SCharacterKinematic kin, in SCharacterMotor motor)
@@ -61,14 +52,14 @@ namespace RedDust.Character.Locomotion
         }
 
         private bool EvaluateTurning(in SCharacterMotor motor, in SCharacterKinematic kin,
-            KinematicProfileSO kProfile, float dt, ELocomotionPhase phase)
+            float dt, ELocomotionPhase phase)
         {
             if (phase != ELocomotionPhase.GroundedIdle && phase != ELocomotionPhase.GroundedMoving)
             { isTurning = false; return false; }
 
             var absAngle = Mathf.Abs(motor.TurnAngle);
-            var wantsTurn = absAngle >= kProfile.turnEnterAngle;
-            var turnDone = absAngle <= kProfile.turnCompletionAngle;
+            var wantsTurn = absAngle >= TurnEnterAngle;
+            var turnDone = absAngle <= TurnCompletionAngle;
 
             if (!isTurning && wantsTurn) isTurning = true;
             else if (isTurning && turnDone) isTurning = false;
