@@ -5,9 +5,6 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
 {
     internal sealed class BaseTurnInPlaceState : LocomotionLayerFsmState<BaseLayer>
     {
-        // TODO: migrated to ITransition
-        // private StringAsset selectedAlias;
-
         public BaseTurnInPlaceState(BaseLayer owner) : base(owner) { }
 
         public override bool CanEnterState
@@ -16,16 +13,16 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
 
         public override void OnEnterState()
         {
-            // selectedAlias = Owner.Ctx.Motor.TurnAngle > 0f
-            //     ? Owner.Alias.turnInPlace90R : Owner.Alias.turnInPlace90L;
-            // Owner.Play(selectedAlias);
+            var turnAngle = Owner.Ctx.Motor.TurnAngle;
+            var transition = turnAngle > 0f
+                ? Owner.AnimSet?.turnInPlace90R : Owner.AnimSet?.turnInPlace90L;
+            Owner.Play(transition);
         }
 
         public override void Tick()
         {
             if (Owner.TrySetState(BaseStateKey.AirLoop)) return;
             Owner.ApplyTurnStepRotation();
-            // if (selectedAlias != null) Owner.PlayIfChanged(selectedAlias);
             if (Owner.TrySetState(BaseStateKey.Moving)) return;
             if (Owner.TrySetState(BaseStateKey.Idle)) return;
         }

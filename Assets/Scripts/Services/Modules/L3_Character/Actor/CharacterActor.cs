@@ -59,27 +59,36 @@ namespace RedDust.Character
         [Header("Hierarchy")]
         [SerializeField] private Transform modelRoot;
 
+        // ── Identity ──
         public bool IsPlayer => isPlayer;
+
+        // ── Config SO ──
         internal CharacterAnimationProfileSO CharacterAnimationProfile => characterAnimationProfile;
         internal LocomotionAnimationConfigSO LocomotionAnimationProfile => characterAnimationProfile?.locomotionConfig;
+        internal LocomotionProfileSO LocomotionProfile => characterPhysicsProfile?.locomotion;
+        internal CharacterAudioConfigSO CharacterAudioConfig => characterAudioConfig;
+
+        // ── Animation ──
         internal bool ForwardRootMotion => forwardRootMotion;
         internal bool ApplyRootMotionRotation => applyRootMotionRotation;
         internal bool AutoMatchAnimationSpeed => autoMatchAnimationSpeed;
+
+        // ── Masks ──
         internal AvatarMask UpperBodyMask => upperBodyMask;
         internal AvatarMask AdditiveMask => additiveMask;
         internal AvatarMask FacialMask => facialMask;
         internal AvatarMask HeadMask => headMask;
         internal AvatarMask FootMask => footMask;
-        internal CharacterAudioConfigSO CharacterAudioConfig => characterAudioConfig;
+
+        // ── Runtime ──
+        internal CharacterBuildContext BuildContext => buildCtx;
         internal CharacterRig CharacterRig => characterRig;
         public IPropertyReader Props { get; private set; }
         internal SCharacterKinematic LastKinematic { get; private set; }
         internal SCharacterMotor LastMotor { get; private set; }
         internal SCharacterDiscrete LastDiscrete { get; private set; }
-        internal LocomotionProfileSO LocomotionProfile => characterPhysicsProfile?.locomotion;
 
-        private CharacterBuildContext ctx;
-        internal CharacterBuildContext Context => ctx;
+        private CharacterBuildContext buildCtx;
         private ICharacterDirector director;
         private PathfindingAgent pathfindingAgent;
         private CharacterRig characterRig;
@@ -139,13 +148,13 @@ namespace RedDust.Character
         {
             characterRig = new CharacterRig(transform, modelRoot);
 
-            // TODO(Properties): characterPhysicsProfile?.locomotion / ?.kinematic 引入 Properties 后是否仍需存疑
-            ctx = new CharacterBuildContext(
+            buildCtx = new CharacterBuildContext(
                 root: transform, eventHub: eventHub, agent: agent,
                 ability: ability, reactor: reactor, pathfinding: pathfindingAgent,
                 modelRoot: modelRoot, rig: characterRig,
                 animationProfile: characterAnimationProfile,
                 locomotionProfile: characterPhysicsProfile?.locomotion,
+                kinematicProfile: characterPhysicsProfile?.kinematic,
                 audioConfig: characterAudioConfig,
                 upperBodyMask: upperBodyMask, additiveMask: additiveMask,
                 facialMask: facialMask, headMask: headMask, footMask: footMask,
@@ -155,11 +164,11 @@ namespace RedDust.Character
                 skillSlot1: skillSlot1, skillSlot2: skillSlot2
             );
 
-            if (isPlayer) director = new PlayerDirector(ctx, Registry);
-            else          director = new NpcDirector(ctx, Registry);
-            characterKinematic = new CharacterKinematic(ctx, Registry);
+            if (isPlayer) director = new PlayerDirector(buildCtx, Registry);
+            else          director = new NpcDirector(buildCtx, Registry);
+            characterKinematic = new CharacterKinematic(buildCtx, Registry);
             locomotionSimulator = new GroundLocomotion(Registry);
-            combat = new CharacterCombat(ctx, Registry);
+            combat = new CharacterCombat(buildCtx, Registry);
         }
 
         public override void OnWire()
@@ -200,25 +209,29 @@ namespace RedDust.Character
             float deltaTime = Time.deltaTime;
             if (deltaTime <= Mathf.Epsilon) return;
 
-            var ctx = new CharacterFrameContext();
+            var frameCtx = new CharacterFrameContext();
 
-            var intent = director.Evaluate();
-            ctx.Intent = intent;
-            // TODO(Properties): characterPhysicsProfile?.locomotion / ?.kinematic 引入 Properties 后是否仍需存疑
-            ctx.LocomotionProfile = characterPhysicsProfile?.locomotion;
-            ctx.LocomotionAnimationProfile = characterAnimationProfile?.locomotionConfig;
-            ctx.KinematicProfile = characterPhysicsProfile?.kinematic;
-            ctx.Kinematic = characterKinematic.Evaluate(characterPhysicsProfile?.kinematic, intent.LocomotionHeading,
-                intent.AimDirection, deltaTime);
+            try
+            {
+                var intent = director.Evaluate();
+                frameCtx.Intent = intent;
+                frameCtx.Kinematic = characterKinematic.Evaluate(intent.LocomotionHeading,
+                    intent.AimDirection, deltaTime);
 
-            locomotionSimulator.Simulate(ref ctx, intent, characterPhysicsProfile?.locomotion, deltaTime);
+                locomotionSimulator.Simulate(ref frameCtx, intent, buildCtx, deltaTime);
 
-            LastKinematic = ctx.Kinematic;
-            LastMotor = ctx.Motor;
-            LastDiscrete = ctx.Discrete;
-            
-            characterAnimation?.Apply(in ctx);
-            pathfindingAgent?.SyncLocomotion(in ctx.Discrete);
+                LastKinematic = frameCtx.Kinematic;
+                LastMotor = frameCtx.Motor;
+                LastDiscrete = frameCtx.Discrete;
+
+                characterAnimation?.Apply(in frameCtx);
+                pathfindingAgent?.SyncLocomotion(in frameCtx.Discrete);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"[CharacterActor] {name} — 配置缺失或运行时异常，跳过帧:\n{e.GetType().Name}: {e.Message}", this);
+                enabled = false;
+            }
         }
     }
 }

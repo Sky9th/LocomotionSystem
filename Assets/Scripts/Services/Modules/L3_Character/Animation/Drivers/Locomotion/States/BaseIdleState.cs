@@ -10,15 +10,14 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
             => Owner.Ctx.Discrete.Phase == ELocomotionPhase.GroundedIdle
             && !Owner.Ctx.Discrete.IsTurning;
 
-        // TODO: migrated to ITransition
-        public override void OnEnterState() { /* Owner.Play(Owner.Alias.idleL); */ }
+        public override void OnEnterState() => Owner.Play(Owner.AnimSet?.idleL);
 
         public override void Tick()
         {
             if (Owner.TrySetState(BaseStateKey.TurnInPlace)) return;
             if (Owner.TrySetState(BaseStateKey.Moving)) return;
             if (Owner.TrySetState(BaseStateKey.AirLoop)) return;
-            // Owner.PlayIfChanged(Owner.Alias.idleL);
+            Owner.PlayIfChanged(Owner.AnimSet?.idleL);
         }
     }
 }

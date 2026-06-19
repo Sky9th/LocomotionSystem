@@ -24,16 +24,13 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
 
         public override bool CanExitState => true;
 
-        // TODO: migrated to ITransition
-        // TODO: 寻路攀爬系统补齐后，每个 Mixer 按 Gait 参数混合: 0=Idle, 1=Walk, 2=Run/Sprint
-        //       Gait 取自 BaseLayer.AirborneGait（AirLoop 进入时捕获），当前默认 0
+        // TODO: 按 Gait 参数混合 landLight/landHard LinearMixer（0=Idle, 1=Walk, 2=Run/Sprint）
         public override void OnEnterState()
         {
-            // float fallDist = Owner.MaxFallDistance;
-            // var profile = Owner.AnimProfile;
-            // StringAsset alias = fallDist <= profile.landLightMaxFallDistance
-            //     ? Owner.Alias.landLight : Owner.Alias.landHard;
-            // Owner.Play(alias);
+            var fallDist = Owner.MaxFallDistance;
+            var transition = fallDist <= Owner.AnimProfile.landLightMaxFallDistance
+                ? Owner.AnimSet?.landLight : Owner.AnimSet?.landHard;
+            Owner.Play(transition);
             Owner.Rig?.SetSuppressGroundLock(true);
         }
 

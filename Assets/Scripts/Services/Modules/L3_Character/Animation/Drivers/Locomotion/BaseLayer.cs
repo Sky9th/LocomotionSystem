@@ -13,11 +13,10 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         private readonly CharacterBuildContext _buildContext;
         private CharacterFrameContext ctx;
         private float deltaTime;
-        private StringAsset lastPlayedAlias;
+        private ITransition lastPlayedTransition;
         private AnimancerState currentAnimState;
 
-        // TODO: migrated to LocomotionAnimationSetSO
-        internal LocomotionAnimationSetSO Alias => null;  // temp stub
+        internal LocomotionAnimationSetSO AnimSet { get; private set; }
         internal LocomotionAnimationConfigSO AnimProfile { get; }
         internal LocomotionProfileSO LocoProfile { get; }
         internal CharacterRig Rig => _buildContext?.Rig;  // 实时读取，Model 替换自动更新
@@ -31,12 +30,12 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         internal System.Action FootstepCallback;
         private AnimancerState injectedMixer;
 
-        internal BaseLayer(AnimancerLayer layer, LocomotionAnimationSetSO alias, LocomotionAnimationConfigSO animProfile,
+        internal BaseLayer(AnimancerLayer layer, LocomotionAnimationSetSO animSet, LocomotionAnimationConfigSO animProfile,
             LocomotionProfileSO locoProfile, CharacterBuildContext buildContext)
         {
             _buildContext = buildContext;
             Layer = layer;
-            // Alias = alias;  // TODO: migrated
+            AnimSet = animSet;
             AnimProfile = animProfile;
             LocoProfile = locoProfile;
             fsm = new StateMachine<BaseStateKey, LocomotionLayerFsmState<BaseLayer>>();
@@ -71,13 +70,6 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
             return !System.Collections.Generic.EqualityComparer<BaseStateKey>.Default.Equals(prev, fsm.CurrentKey);
         }
 
-        internal void PlayFromStart(StringAsset alias)
-        {
-            if (alias == null) return;
-            Play(alias);
-            if (currentAnimState != null) currentAnimState.NormalizedTime = 0f;
-        }
-
         internal bool HasCompleted()
             => currentAnimState != null && currentAnimState.NormalizedTime >= 0.99f;
 
@@ -100,21 +92,23 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
 
         internal void InvalidateAnimationCache()
         {
-            lastPlayedAlias = null;
+            lastPlayedTransition = null;
         }
 
-        internal void Play(StringAsset alias)
+        internal void Play(ITransition transition)
         {
-            if (alias == null) return;
-            currentAnimState = Layer.TryPlay(alias);
-            lastPlayedAlias = alias;
+            if (transition == null) return;
+            lastPlayedTransition = transition;
+            currentAnimState = Layer.Play(transition);
             InjectFootstepEvents();
         }
 
-        internal void PlayIfChanged(StringAsset alias)
+        internal void PlayIfChanged(ITransition transition)
         {
-            if (alias == null || alias == lastPlayedAlias) return;
-            Play(alias);
+            if (transition == null || ReferenceEquals(transition, lastPlayedTransition)) return;
+            lastPlayedTransition = transition;
+            currentAnimState = Layer.Play(transition);
+            InjectFootstepEvents();
         }
 
         private void InjectFootstepEvents()

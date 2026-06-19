@@ -11,10 +11,14 @@ namespace RedDust.Character.Locomotion
 
         internal GroundLocomotion(ModuleRegistry registry) : base(registry) { }
 
-        public void Simulate(ref CharacterFrameContext ctx, in SCharacterIntent intent, LocomotionProfileSO profile, float dt)
+        public void Simulate(ref CharacterFrameContext frameCtx, in SCharacterIntent intent,
+            CharacterBuildContext buildCtx, float dt)
         {
-            ctx.Motor = motor.Evaluate(in ctx.Kinematic, in intent, profile, dt);
-            ctx.Discrete = stance.Evaluate(in ctx.Motor, in ctx.Kinematic, in intent, profile, ctx.KinematicProfile, ctx.LocomotionAnimationProfile, dt);
+            var profile = buildCtx.LocomotionProfile;
+            var kProfile = buildCtx.KinematicProfile;
+            var animProfile = buildCtx.LocomotionAnimConfig;
+            frameCtx.Motor = motor.Evaluate(in frameCtx.Kinematic, in intent, profile, dt);
+            frameCtx.Discrete = stance.Evaluate(in frameCtx.Motor, in frameCtx.Kinematic, in intent, profile, kProfile, animProfile, dt);
         }
     }
 }

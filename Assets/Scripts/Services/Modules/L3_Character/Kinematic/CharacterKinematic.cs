@@ -23,10 +23,11 @@ namespace RedDust.Character.Kinematic
             previousGroundContact = SGroundContact.None;
         }
 
-        internal SCharacterKinematic Evaluate(KinematicProfileSO profile, Vector3 locomotionHeading,
+        internal SCharacterKinematic Evaluate(Vector3 locomotionHeading,
             Vector3 aimDirection, float deltaTime)
         {
-            if (profile == null) throw new ArgumentNullException(nameof(profile));
+            var profile = ctx.KinematicProfile;
+            if (profile == null) throw new InvalidOperationException("CharacterBuildContext.KinematicProfile is null");
 
             var rig = ctx.Rig;
             var position = ctx.Root.position;

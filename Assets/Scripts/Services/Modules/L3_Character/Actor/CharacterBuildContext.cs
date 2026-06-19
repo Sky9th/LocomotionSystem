@@ -2,6 +2,7 @@ using RedDust.Ability;
 using RedDust.Core;
 using RedDust.Character.Animation;
 using RedDust.Character.Audio;
+using RedDust.Character.Kinematic;
 using RedDust.Character.Locomotion;
 using RedDust.Character.Pathfinding;
 using RedDust.Properties;
@@ -38,6 +39,7 @@ namespace RedDust.Character
 
         // TODO(Properties): 引入 Properties 后 locomotion / kinematic 是否仍需存疑
         public LocomotionProfileSO LocomotionProfile { get; }
+        public KinematicProfileSO KinematicProfile { get; }
         public CharacterAudioConfigSO AudioConfig { get; }
         public AvatarMask UpperBodyMask { get; }
         public AvatarMask AdditiveMask { get; }
@@ -58,6 +60,7 @@ namespace RedDust.Character
             Transform modelRoot, CharacterRig rig,
             CharacterAnimationProfileSO animationProfile,
             LocomotionProfileSO locomotionProfile,
+            KinematicProfileSO kinematicProfile,
             CharacterAudioConfigSO audioConfig,
             AvatarMask upperBodyMask, AvatarMask additiveMask,
             AvatarMask facialMask, AvatarMask headMask, AvatarMask footMask,
@@ -74,6 +77,7 @@ namespace RedDust.Character
             Rig = rig;
             AnimationProfile = animationProfile;
             LocomotionProfile = locomotionProfile;
+            KinematicProfile = kinematicProfile;
             AudioConfig = audioConfig;
             UpperBodyMask = upperBodyMask;
             AdditiveMask = additiveMask;

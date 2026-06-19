@@ -29,10 +29,9 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
             base.OnWire();
             brain = GetComponentInChildren<AnimationBrain>();
             var buildCtx = brain?.BuildContext;
-            // TODO: migrated to LocomotionAnimationSetSO
             baseLayer = new BaseLayer(
                 brain?.FullBodyLayer,
-                null,  // TODO: grip-resolved LocomotionAnimationSetSO
+                buildCtx?.DefaultLocomotionSet,  // TODO: GripTable.Resolve(tags) 替换
                 buildCtx?.LocomotionAnimConfig,
                 buildCtx?.LocomotionProfile,
                 buildCtx);

@@ -85,7 +85,7 @@ namespace RedDust.Character.Animation
 
         public override void OnWire()
         {
-            buildCtx = GetComponentInParent<CharacterActor>()?.Context;
+            buildCtx = GetComponentInParent<CharacterActor>()?.BuildContext;
 
             // ── 图层初始化（依赖 buildCtx，在 OnWire 阶段父 OnAssemble 已就位） ──
             if (animancer == null) animancer = GetComponentInChildren<NamedAnimancerComponent>();

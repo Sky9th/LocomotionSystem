@@ -1,4 +1,5 @@
 using Animancer;
+using RedDust.Character;
 
 namespace RedDust.Character.Animation.Drivers.Locomotion
 {
@@ -9,15 +10,19 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         public override bool CanEnterState
             => Owner.Ctx.Discrete.Phase == ELocomotionPhase.GroundedMoving;
 
-        // TODO: migrated to ITransition
         public override void Tick()
         {
             if (Owner.TrySetState(BaseStateKey.Idle)) return;
             if (Owner.TrySetState(BaseStateKey.AirLoop)) return;
 
-            // var gait = Owner.Ctx.Discrete.Gait;
-            // var alias = gait switch { ... };
-            // Owner.PlayIfChanged(alias);
+            ITransition transition = Owner.Ctx.Discrete.Gait switch
+            {
+                EMovementGait.Walk => Owner.AnimSet?.walkMixer,
+                EMovementGait.Run  => Owner.AnimSet?.runMixer,
+                EMovementGait.Sprint => Owner.AnimSet?.sprint,
+                _ => null
+            };
+            Owner.PlayIfChanged(transition ?? Owner.AnimSet?.walkMixer);
 
             float desiredGaitSpeed = Owner.LocoProfile != null ? Owner.LocoProfile.GetSpeed(Owner.Ctx.Discrete.Posture, Owner.Ctx.Discrete.Gait) : 0f;
             if (Owner.Layer.CurrentState is Vector2MixerState mixer && desiredGaitSpeed > 0f)
