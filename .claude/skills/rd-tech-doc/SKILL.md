@@ -1,175 +1,261 @@
 ---
 name: rd-tech-doc
-description: 编写/更新 tech 技术文档，遵循 L1→L5 架构层级。
-when_to_use: 新增模块后归档技术文档、更新已有模块文档、或用户说"写文档""归档 tech"时
+description: 编写/更新 tech 技术文档，遵循 L1→L5 架构层级。包含新鲜度检查和死类检测。
+when_to_use: 新增模块后归档技术文档、更新已有模块文档、用户说"写文档""归档 tech"时、代码重构后需要更新技术文档时
 ---
 
-## 架构层级
+## Purpose & Audience
 
-数据流方向：**L1→L2→L3→L4→L5，逐级传递，逐级返回。严禁跨级调用。**
+Tech docs answer: **"How does this code work?"**
+
+- **Primary audience**: Programmers — need to understand call chains, APIs, architecture to modify/extend/debug code
+- **Secondary audience**: Technical design review — need to verify implementation matches architectural principles
+
+Tech docs live in `.agent/tech/` and are organized by the L1→L5 architecture layer system.
+
+---
+
+## Pre-Write Checks (MANDATORY)
+
+Before writing or updating ANY tech doc, run these checks. **Refuse to write unverified content.**
+
+### Check 1: Freshness — Code File Existence
+
+For every `.cs` file referenced in the doc (filename or call-chain diagrams), verify:
+- The file exists in `Assets/Scripts/`
+- The class name referenced matches the actual class name in the file
+
+**How**: `Glob` for the `.cs` path, then `Grep` for `class ClassName`.
+
+**If a file is MISSING**: Mark the doc stale at the top:
+```markdown
+> [!WARNING] FRESHNESS FAILED (YYYY-MM-DD)
+> Files referenced below no longer exist:
+> - `Assets/Scripts/.../DeletedClass.cs` — class deleted or renamed
+> This doc requires update before it can be trusted.
+```
+
+Do NOT delete the doc — mark it so someone can update it later.
+
+### Check 2: Deleted Class Detection
+
+Scan the doc for PascalCase identifiers that look like class names. For each, search `Assets/Scripts/` for `class ClassName`. If NOT found, flag as deleted.
+
+**Known deleted classes (as of 2026-06-20)**:
+
+| Deleted Class | Replaced By |
+|---------------|-------------|
+| `AnimationAliasProfile` | `LocomotionAnimationSetSO` (direct clip references) |
+| `LocomotionAnimationProfile` | `LocomotionAnimationConfigSO` (renamed) |
+| `LocomotionProfile` | `GroundSystemConfigSO` (system params) + `CharacterPhysique` (character params) |
+| `CharacterProfile` | `CharacterAnimationProfileSO` + specialized configs |
+| `CharacterStats` | `PropertyAgent` / `FloatState` / `FloatModifier` |
+| `CharacterPhysicsProfileSO` | `GroundSystemConfigSO` + Properties |
+| `LocomotionProfileSO` | Properties `CharacterPhysique` |
+| `KinematicProfileSO` | Properties `CharacterPhysique` |
+| `BaseService` | `ModuleComponent` (direct inheritance) |
+| `AbilityComponent` | `AbilityExecutor` + `AbilityReactor` |
+
+### Check 3: Signature Verification
+
+For every method signature quoted in the doc (lines matching `public|private|protected|internal.*\(`):
+- Verify the signature in the actual `.cs` file matches
+- If parameters, return type, or method name differ → flag as stale
+
+### Check 4: Layer/Count Accuracy
+
+For docs claiming a module has N layers/states/components:
+- Count the actual number in code
+- If mismatched → flag as stale
+
+**Known stale examples**: `animation-brain.md` says 6 layers, code has 7 (Arm layer added). `base-layer.md` says 7 FSM states, code has 5.
+
+### Check 5: Code-to-Doc Coverage
+
+Before writing a NEW doc for a module:
+- List all `.cs` files in the code directory
+- Check which already have tech docs
+- Report uncovered files
+- Cover ALL public classes in the module
+
+### Last Verified Stamp
+
+Every tech doc MUST include this line immediately after the title:
+
+```markdown
+> **Last Verified**: YYYY-MM-DD | **Verification**: All referenced files exist, signatures match code
+```
+
+Or if stale:
+```markdown
+> **Last Verified**: YYYY-MM-DD | **Verification**: STALE — N referenced classes deleted, M signatures mismatched
+```
+
+When updating an existing doc, re-run all checks and update the stamp.
+
+---
+
+## Architecture Layers
+
+Data flow direction: **L1 → L2 → L3 → L4 → L5. Layer-by-layer propagation and return. Cross-layer calls FORBIDDEN.**
 
 ```
-L0  Unity Engine        不文档化
+L0  Unity Engine        Not documented
 
-L1  GameManager         根节点 — 持有所有 L2
-    │
-L2  Service             服务层
-    │  基础 Service     单文件，无内部子模块
-    │  复合 Service     包含 L3 直属模块 (L3-actions, L3-core 等)
-    │  L2-modules/      虚拟 L2 — 放置独立模块 (不隶属任何单一 Service)
-    │
-L3  Module              模块层 — 分两类:
-    │  直属模块          隶属于某个 L2 Service (L3-actions 隶属于 L2-input)
-    │  独立模块          被多个 Service 共用 (L3-character, L3-stats)
-    │
-L4  Component           组件层 — L3 内部的职责组件
-    │  L4-actor, L4-kinematic, L4-animation ...
-    │
-L5  Behavior            行为层 — 极少数，代表真正的行为分解
-    │  仅 L5-states (FSM 状态) 和 L5-rules (策略规则)
+L1  GameManager         Root — owns all L2 Services
 
-shared/                 全局 Helper — 不限层级，不参与 L 体系
+L2  Service             Service layer
+    ├─ Base Service     Single file, no internal sub-modules
+    ├─ Composite Service Contains L3 sub-modules
+    └─ L2-modules/      Virtual L2 — independent modules (not owned by any single Service)
+
+L3  Module              Module layer — two types:
+    ├─ Affiliated Module   Belongs to an L2 Service
+    └─ Independent Module  Shared by multiple Services
+
+L4  Component           Component layer — responsibility components within L3
+
+L5  Behavior            Behavior layer — VERY RARE, true behavioral decomposition
+    └─ Only L5-states (FSM states) and L5-rules (strategy rules)
+
+shared/                 Global Helpers — no layer restriction
 ```
 
-## 重要区分：架构层级 vs 代码组织
+## Important Distinction: Architecture Layer vs Code Organization
 
-| 类型 | 标识 | 示例 | 含义 |
-|------|------|------|------|
-| 架构层级 | L 前缀 | L4-animation, L5-states | 职责分解，代表独立的架构单元 |
-| 代码组织 | 无 L 前缀 | config/, structs/, player/, button/ | 同类文件分组，便于查找 |
+| Type | Prefix | Example | Meaning |
+|------|--------|---------|---------|
+| Architecture Layer | L-prefix | L4-animation, L5-states | Responsibility decomposition, independent architectural units |
+| Code Organization | No L-prefix | config/, structs/, player/, button/ | Grouping similar files for discoverability |
 
-**L5 极少**。当前项目仅有 `L5-states` 和 `L5-rules` 两处真正 L5。不要为了凑层级把代码组织目录标为 L5。
+**L5 is extremely rare**. Currently ONLY `L5-states` and `L5-rules` are true L5. Do NOT label code organization directories as L5.
 
-## 目录结构
+## Directory Structure
 
 ```
 tech/
-├── README.md                    # 根总领 — 层级全景 + 代码索引
-├── L1-core/                     # GameManager 根
-├── L2-services/                 # Service + Module 层
-│   ├── (基础 Service — 单 .md)
-│   ├── L2-input/                # 复合 Service
-│   │   ├── input-service.md     # L2
-│   │   ├── L3-actions/          # L3 直属
-│   │   │   └── player/          # 代码组织
-│   │   │       └── button/      # 代码组织
-│   │   └── L3-structs/          # L3 直属
-│   │       └── control/         # 代码组织
-│   │           └── button/      # 代码组织
-│   ├── L2-ui/                   # 复合 Service
-│   │   ├── L3-core/             # L3 直属
-│   │   ├── L3-components/       # L3 直属
-│   │   └── ...
-│   ├── L2-audio/                # 复合 Service
-│   │   ├── L3-data/             # L3 直属
-│   │   └── L3-structs/          # L3 直属
-│   └── L2-modules/              # 虚拟 L2 — 独立模块容器
-│       ├── L3-character/        # L3 独立
-│       │   ├── L4-actor/        # L4 组件
-│       │   ├── L4-animation/
-│       │   │   ├── config/      # 代码组织
-│       │   │   ├── drivers/     # 代码组织
-│       │   │   │   └── locomotion/
-│       │   │   │       └── L5-states/  # ✅ 真 L5
-│       │   │   └── requests/    # 代码组织
-│       │   ├── L4-stats/
-│       │   │   └── L5-rules/    # ✅ 真 L5
-│       │   └── ...
-│       ├── L3-stats/            # L3 独立
-│       └── L3-pathfinding/      # L3 独立
-└── shared/                      # 全局 Helper — 无 L 前缀
+├── README.md                    # Root index — complete layer map + file inventory
+├── L1-core/                     # GameManager root
+├── L2-services/                 # Service + Module layer
+│   ├── (Base Service — single .md)
+│   ├── L2-input/                # Composite Service
+│   ├── L2-ui/                   # Composite Service
+│   ├── L2-audio/                # Composite Service
+│   └── L2-modules/              # Virtual L2 — independent module container
+│       ├── L3-character/        # L3 independent
+│       ├── L3-ability/          # L3 independent
+│       ├── L3-properties/       # L3 independent
+│       ├── L3-equipment/        # L3 independent
+│       └── L3-pathfinding/      # L3 independent
+├── editor/                      # Editor extensions (cross-layer)
+├── conventions/                 # Naming & style conventions
+└── shared/                      # Global Helpers — no L-prefix
     ├── logging/
-    ├── editor/
     └── utility/
 ```
 
-## 编写流程
+## Writing Process
 
 ```
-1. 读代码          搞清楚调用链和每个方法的职责
-2. 确定层级         判断模块归属: L1/L2/L3/L4/L5/shared
-3. 写子模块文档     每个 .cs 一个 .md, 深度到函数级别
-4. 写模块总领       调用链 + 耦合 + 设计决策 + 未来规划 + 子文档索引
-5. 更新根总领       确保文件树和注释与代码一致
-6. 格式检查         对照格式检查清单验证
+1. Read Code          Understand the call chain and each method's responsibility
+2. Verify Freshness   Run ALL 5 Pre-Write Checks (file existence, deleted classes, signatures, counts, coverage)
+3. Determine Layer    Assign module to L1/L2/L3/L4/L5/shared
+4. Write Sub-Module Docs  One .md per .cs file, depth to function level
+5. Write Module Overview  Call chain + coupling + design decisions + future plans + sub-doc index
+6. Update Root Index      Ensure file tree and annotations match code
+7. Stamp Verification     Add/update Last Verified stamp
+8. Format Check           Validate against format checklist
 ```
 
-> 旧 `tech/modules/` 已归档，不纳入日常查询。
+> The old `archive/tech-v1/` and `archive/tech-v2/` directories are archived. All new tech docs go to `tech/`.
 
-## 根总领 `tech/README.md`
+## Root Index `tech/README.md`
 
-完整代码树，按 L1→L2→L3→L4→L5 层级组织。每个 `.cs` 文件一行职责注释。
+Complete code tree organized by L1→L5 layers. One line per `.cs` file with a responsibility annotation.
 
-**更新时机**：新增/删除/重命名 `.cs` 文件时同步更新。
+**Update trigger**: Any add/delete/rename of `.cs` files.
 
-## 模块总领模板
+## Module Overview Template
 
-**不要重复根总领的目录树**。必选 5 节 + 可选节：
+**Do NOT repeat the root index directory tree.** 6 required sections:
 
-| 节 | 必须 | 内容 |
-|----|------|------|
-| 层级定位 | ✅ | 说明本模块属于 L1/L2/L3/L4/L5 哪一层，为什么 |
-| 调用链 | ✅ | ASCII 图，展示内部调用流和与外部模块交互 |
-| 耦合模块 | ✅ | 表格：本模块、依赖/消费方、关系 |
-| 设计决策 | ✅ | 表格：关键决策、原因 |
-| 未来规划 | ✅ | 表格：规划、状态、依赖、来源 |
-| 子文档索引 | ✅ | 表格链接到每个子模块的详细文档 |
-| 分层 | 可选 | 模块内有生命周期分层时添加 |
-| 销毁时序 | 可选 | 有复杂清理/销毁顺序时添加 |
+| Section | Required | Content |
+|---------|----------|---------|
+| Last Verified | ✅ | Verification stamp with date and result |
+| Layer Position | ✅ | Which layer (L1-L5) and why |
+| Call Chain | ✅ | ASCII diagram: internal call flow + external module interactions |
+| Coupled Modules | ✅ | Table: module, dependency/consumer, relationship |
+| Design Decisions | ✅ | Table: key decision, reason |
+| Future Plans | ✅ | Table: plan, status, dependency, source |
+| Sub-Document Index | ✅ | Table with links to each sub-module's detailed doc |
 
-## 子模块文档模板
+Optional: Layering (when module has internal lifecycle layers), Destroy Sequence.
 
-深度到函数级别。每个 `.cs` 一个 `.md`。文件路径放首行引用。
+## Sub-Module Document Template
 
-**必选 8 节**（标"可选"的按实际情况）：
+Depth to function level. One `.md` per `.cs` file. File path as first line reference.
 
-| 节 | 必须 | 内容 |
-|----|------|------|
-| 调用链 | ✅ | 被谁调 / 调谁 |
-| 耦合模块 | ✅ | 表格：方向、模块、关系 |
-| 公开属性 | ✅ | 每个属性的类型 + 用途（纯 struct 可省略） |
-| 方法 | ✅ | 签名 + 用途 + 参数 + 调用者 + 备注 |
-| 内部机制 | 可选 | Unity 生命周期 (MonoBehaviour 时必须) |
-| 使用规则 | 可选 | 约束和禁止事项 (有约束时必须) |
-| 未来规划 | ✅ | 扩展方向 + 代码 TODO |
+**8 required sections** (marked "Optional" as applicable):
 
-**方法格式**:
+| Section | Required | Content |
+|---------|----------|---------|
+| Last Verified | ✅ | Verification stamp |
+| Call Chain | ✅ | Called by whom / Calls whom |
+| Coupled Modules | ✅ | Table: direction, module, relationship |
+| Public Properties | ✅ | Type + purpose for each property |
+| Methods | ✅ | Signature + purpose + params + callers + notes |
+| Internal Mechanics | Optional | Unity lifecycle (MonoBehaviour → required) |
+| Usage Rules | Optional | Constraints and prohibitions (constraints exist → required) |
+| Future Plans | ✅ | Extension directions + code TODOs |
+
+**Method format**:
 ```markdown
 ### MethodName()
 \`\`\`csharp
 public ReturnType MethodName(ParamType param)
 \`\`\`
-- **用途**: 一句话
-- **参数**: `param` — 说明
-- **返回**: 说明（void 可省略）
-- **调用者**: 谁在什么时机调它
-- **备注**: 注意事项（可选）
+- **Purpose**: One sentence
+- **Params**: `param` — description
+- **Returns**: Description (omit for void)
+- **Callers**: Who calls it and when
+- **Notes**: Cautions (optional)
 ```
 
-**领域特有可选节**：数据分层、关键设计点、配置参数、调试、已知问题等，按需添加。
+## File Naming
 
-## 文件命名
+- **Doc filenames**: kebab-case, meaningful. e.g., `character-actor.md` (NOT `characteractor.md`)
+- **Directory names**: L-prefix + kebab-case for layers. e.g., `L4-actor/`, `L5-states/`
+- **Code organization directories**: No L-prefix, short names. e.g., `config/`, `structs/`, `player/`
 
-- **文档文件名**: kebab-case，有含义。如 `character-actor.md`，不用驼峰 `characteractor.md`
-- **目录名**: L 前缀 + kebab-case。如 `L4-actor/`, `L5-states/`
-- **代码组织目录**: 无 L 前缀，短名。如 `config/`, `structs/`, `player/`
+## Format Checklist
 
-## 格式检查清单
+- [ ] Sub-module doc: Call Chain, Coupled Modules, Public Properties, Methods, Future Plans — all 5 present
+- [ ] MonoBehaviour classes have Internal Mechanics section
+- [ ] Classes with constraints have Usage Rules section
+- [ ] Section names consistent: 内部机制 ≠ 内部方法, 使用规则 ≠ 通信规则
+- [ ] Module overview does NOT repeat root index file tree or sub-module method details
+- [ ] Future Plans entries each have "Status" and "Source"
+- [ ] Filenames kebab-case, directory names L-prefixed
+- [ ] Code organization and architecture layers NOT confused
+- [ ] Root index file tree matches code
+- [ ] Last Verified stamp present and dated today
 
-- [ ] 子模块文档：调用链、耦合模块、公开属性、方法、未来规划 5 节齐全
-- [ ] MonoBehaviour 类有内部机制节
-- [ ] 有约束的类有使用规则节
-- [ ] 节名统一：内部机制≠内部方法，使用规则≠通信规则
-- [ ] 模块总领不重复根总领文件树，不重复子模块方法细节
-- [ ] 未来规划每条有"状态"和"来源"
-- [ ] 文件名 kebab-case，目录名 L 前缀
-- [ ] 代码组织和架构层级不混淆（config/structs 不加 L 前缀）
-- [ ] 根总领文件树与代码一致
+## Staleness Self-Check (Run on EVERY write/update)
 
-## 原则
+- [ ] All `.cs` files referenced in the doc exist on disk
+- [ ] All class names referenced in the doc exist in the codebase
+- [ ] Layer header names match actual code paths
+- [ ] Method signatures in doc match actual method signatures in code
+- [ ] Constructor parameter counts match actual constructors
+- [ ] Count claims (N layers, M states) match actual code
+- [ ] Last Verified stamp present and dated today
+- [ ] If any check FAILED, doc is marked STALE with specific failures listed
 
-- **分割文件**：一个子模块一个文件
-- **按需加载**：总领 → 模块总领 → 子模块，逐层定位
-- **不重复**：子模块写过的，总领不重复；总领写过的树，根总领不重复
-- **代码为准**：文档与代码不一致时，以代码为准并更新文档
-- **L 前缀审慎**：只给真正的架构层级加 L 前缀，代码组织目录不加
+## Principles
+
+- **Split files**: One sub-module per file
+- **Lazy loading**: Root Index → Module Overview → Sub-Module, navigate layer by layer
+- **No duplication**: Sub-module content not in overview; overview content not in root index
+- **Code is truth**: When doc and code disagree, code wins AND doc must be updated
+- **L-prefix conservatively**: Only true architectural layers get L-prefix
+- **Freshness mandatory**: No doc written without pre-write checks; no existing doc updated without re-verification

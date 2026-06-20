@@ -101,10 +101,7 @@ v0.4.1
    - 根据改动量决定升级级别（patch/minor/major）
    - 创建 `.agent/versions/vX.X.X.md` 写版本 changelog
    - 更新 `.agent/VERSION.md`
-3. **归档文档**（版本文件已写入，一并提交）：
-   - `sessions/YYYY-MM-DD-主题.md` — 会话记录
-   - `tech/` — 有新增/修改模块时更新技术文档
-   - `design/` — 有设计决策时更新
+3. **调用 rd-doc** — 归档文档（session / tech / design 三层，rd-doc 自行编排）
 4. **生成提交信息并展示**，body 每行 `- ` 开头，≤80 字符。**用 `AskUserQuestion` 弹出确认按钮**：
    - question: "确认提交？"
    - header: "Commit"
@@ -117,7 +114,6 @@ v0.4.1
 - 当前版号见 `.agent/VERSION.md`
 - 版本文件在 `.agent/versions/vX.X.X.md`，每个版本一个文件
 - **版号必须先升级再提交，commit message 中提及新版号**
-- 规则见 `rd-doc` 版本控制章节
 
 ### 版号规则
 
