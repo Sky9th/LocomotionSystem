@@ -1,6 +1,8 @@
 # LocomotionDriver · 移动动画驱动
 
 > `Character/Animation/Drivers/LocomotionDriver.cs` — BaseCharacterAnimationDriver，连续移动动画 FSM 驱动
+>
+> **Last Verified**: 2026-06-20 | **Verification**: All referenced files exist, signatures match code
 
 ## 调用链
 
@@ -21,10 +23,11 @@
 |------|------|------|
 | 继承 | BaseCharacterAnimationDriver | 基类 |
 | 依赖 | BaseLayer | 7 状态 FSM |
-| 依赖 | AnimationAliasProfile | 动画别名 SO |
-| 依赖 | LocomotionAnimationProfile | 动画参数 SO |
-| 依赖 | LocomotionProfile | 移动参数 SO |
-| 依赖 | AnimationBrain | 通过基类获取 FullBodyLayer/Rig |
+| 依赖 | CharacterBuildContext | 通过 AnimationBrain.BuildContext 读取 ResolvedLocoAnimSet + BodyForm |
+| 依赖 | BaseLayer | 5 状态 FSM |
+| 依赖 | LocomotionAnimationSetSO | 当前动画集（从 BuildContext 读，不再自行解析） |
+| 依赖 | LocomotionAnimationConfigSO | 动画阈值配置 |
+| 依赖 | AnimationBrain | 通过基类获取 FullBodyLayer/ArmLayer |
 
 ## 公开属性
 
@@ -35,19 +38,20 @@ internal BaseLayer BaseLayer => baseLayer;    // 暴露给 CharacterAudio 注册
 
 ## 方法
 
-### OnEnable()
+### OnWire()
 ```csharp
-protected override void OnEnable()
+public override void OnWire()
 ```
-- **用途**: 基类注册 + 创建 BaseLayer FSM
-- **调用者**: Unity 生命周期
+- **用途**: 从 AnimationBrain 获取 BuildContext，创建 BaseLayer，缓存 defaultAnimSet
+- **调用者**: CharacterActor.OnWire() 递归
 
 ### Evaluate()
 ```csharp
 public override void Evaluate(in CharacterFrameContext ctx, float dt)
 ```
-- **用途**: 评估条件 — LocomotionDriver 为连续驱动，Evaluate 为空实现
-- **备注**: Continuous Driver 不需要条件评估，直接在 Drive 中驱 FSM
+- **用途**: 检测 BuildContext.ResolvedLocoAnimSet 是否变化，变化时 swap BaseLayer.AnimSet
+- **细节**: 从 BuildContext 读 animSet（不再调 GripTable.Resolve）。HasFullLocomotion → 全量 swap + Arm 层 fade out；否则 BaseLayer 保持 defaultSet + Arm 层叠武器 idle
+- **调用者**: DriverArbiter（每帧）
 
 ### Drive()
 ```csharp

@@ -214,12 +214,16 @@ namespace RedDust.Character
                 frameCtx.Kinematic = characterKinematic.Evaluate(intent.LocomotionHeading,
                     intent.AimDirection, deltaTime);
 
-                // grip 解析 — director 可能已修改 OwnedTags，在此之后解析
-                // TODO: 事件驱动后 grip 变化时一次性计算，存 buildCtx 缓存。
+                // TODO(临时): 每帧轮询解析。正常流程应为事件驱动——
+                //   Grip 变化：装备系统 → GripSwitchEvent → BuildContext.ResolvedLocoAnimSet
+                //   BodyForm 变化：Director 响应玩家/AI 操作 → BuildContext.BodyForm
+                //   此处不应是数据源头，只是过渡期的每帧同步点。
                 var ownedTags = buildCtx.Ability?.OwnedTags;
-                var animSet = buildCtx.GripTable?.Resolve(ownedTags) ?? buildCtx.DefaultLocomotionSet;
+                buildCtx.BodyForm = intent.DesiredBodyForm;
+                buildCtx.ResolvedLocoAnimSet = buildCtx.GripTable?.Resolve(ownedTags, buildCtx.BodyForm)
+                    ?? buildCtx.DefaultLocomotionSet;
 
-                locomotionSimulator.Simulate(ref frameCtx, intent, buildCtx, animSet, deltaTime);
+                locomotionSimulator.Simulate(ref frameCtx, intent, buildCtx, deltaTime);
 
                 LastKinematic = frameCtx.Kinematic;
                 LastMotor = frameCtx.Motor;

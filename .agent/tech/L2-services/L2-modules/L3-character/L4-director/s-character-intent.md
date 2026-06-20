@@ -1,6 +1,8 @@
 # SCharacterIntent · 角色意图结构体
 
 > `Character/Director/SCharacterIntent.cs` — readonly struct，角色每帧的期望行为
+>
+> **Last Verified**: 2026-06-20 | **Verification**: All referenced files exist, signatures match code
 
 ## 调用链
 
@@ -25,13 +27,16 @@ public readonly Vector3 AimDirection;
 // ── Locomotion ──
 public readonly EMovementGait DesiredGait;
 public readonly EPosture DesiredPosture;
+public readonly EBodyForm DesiredBodyForm;          // v0.20.2 — 战备形态 Relax/Combat
 
 // ── Actions ──
 public readonly bool JumpRequested;
+public readonly bool FirstSkillRequested;           // v0.20.x — 技能槽位1
+public readonly bool SecondSkillRequested;          // v0.20.x — 技能槽位2
 
 // ── Override ──
-public readonly bool OverrideMovementVelocity;         // true=使用 ExternalMovementVelocity
-public readonly Vector3 ExternalMovementVelocity;      // world-space 外部速度 (AIPath desiredVelocity)
+public readonly bool OverrideMovementVelocity;
+public readonly Vector3 ExternalMovementVelocity;
 
 public bool HasMovement => DesiredGait != EMovementGait.Idle;
 public static SCharacterIntent None { get; }

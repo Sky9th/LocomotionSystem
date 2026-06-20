@@ -11,6 +11,7 @@ namespace RedDust.Character.Director
 
         private EMovementGait currentGait = EMovementGait.Idle;
         private EPosture currentPosture = EPosture.Standing;
+        private EBodyForm currentBodyForm = EBodyForm.Relax;
 
         internal PlayerDirector(CharacterBuildContext ctx, ModuleRegistry registry) : base(registry)
         {
@@ -28,6 +29,7 @@ namespace RedDust.Character.Director
         public SCharacterIntent Evaluate()
         {
             ProcessDebugGripSwitch();
+            ProcessDebugCombatToggle();
             ProcessClickToMove();
 
             // TODO: 临时方案 — 直接读 Actor 槽位。技能树/装备系统完成后由 AbilitySlotManager 替代。
@@ -68,6 +70,7 @@ namespace RedDust.Character.Director
                 ComputeAim(),
                 ResolveGait(),
                 ResolvePosture(),
+                ResolveBodyForm(),
                 false,
                 input.FirstSkillRequested,
                 input.SencondSkillRequested,
@@ -179,6 +182,26 @@ namespace RedDust.Character.Director
                 currentPosture = EPosture.Crouching;
 
             return currentPosture;
+        }
+
+        // TODO(debug): 临时 BodyForm 切换，仅用于测试。
+        private void ProcessDebugCombatToggle()
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                currentBodyForm = EBodyForm.Combat;
+                Debug.Log("[PlayerDirector] BodyForm → Combat");
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha5))
+            {
+                currentBodyForm = EBodyForm.Relax;
+                Debug.Log("[PlayerDirector] BodyForm → Relax");
+            }
+        }
+
+        private EBodyForm ResolveBodyForm()
+        {
+            return currentBodyForm;
         }
     }
 }

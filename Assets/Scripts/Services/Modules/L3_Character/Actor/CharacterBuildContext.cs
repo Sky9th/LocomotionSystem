@@ -34,6 +34,16 @@ namespace RedDust.Character
         public AnimationModeConfigSO[] ModeProfiles => AnimationProfile?.modeProfiles;
         public LocomotionAnimationSetSO DefaultLocomotionSet => AnimationProfile?.defaultLocomotionSet;
         public GripAnimationTableSO GripTable => AnimationProfile?.gripTable;
+
+        /// <summary>
+        /// 当前帧选中的 Locomotion 动画集。由 CharacterActor 在 Update 中一次性解析，
+        /// LocomotionSimulator 和 LocomotionDriver 只读不写。
+        /// </summary>
+        public LocomotionAnimationSetSO ResolvedLocoAnimSet { get; set; }
+
+        /// <summary>当前战备形态。CharacterActor 从 Director 意图中同步。</summary>
+        public EBodyForm BodyForm { get; set; } = EBodyForm.Relax;
+
         public TraversalAnimationSetSO TraversalSet => AnimationProfile?.traversalSet;
 
         // ── 系统级物理配置（世界定义，所有角色共享） ──

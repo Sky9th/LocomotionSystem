@@ -3,7 +3,7 @@ using Animancer;
 using RedDust.Character.Animation;
 using RedDust.Character;
 
-namespace RedDust.Character.Animation.Drivers
+namespace RedDust.Character.Animation.Drivers.Traversal
 {
     public sealed class TraversalDriver : BaseAnimationDriver
     {

@@ -39,12 +39,15 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         public override void Evaluate(in CharacterFrameContext ctx, float dt)
         {
             var buildCtx = brain?.BuildContext;
-            // TODO: 每帧 Resolve 仅为测试。事件驱动后 grip 变化时一次性计算，存到 buildCtx 缓存。
-            var animSet = buildCtx?.GripTable?.Resolve(buildCtx?.Ability?.OwnedTags) ?? defaultAnimSet;
+            // 动画集由 CharacterActor 统一解析存入 BuildContext，此处只读
+            var animSet = buildCtx?.ResolvedLocoAnimSet ?? defaultAnimSet;
 
-            // grip 未变化，跳过
+            // 未变化，跳过
             if (animSet == lastAnimSet) return;
             lastAnimSet = animSet;
+
+            var bodyForm = buildCtx?.BodyForm ?? EBodyForm.Relax;
+            Debug.Log($"[LocomotionDriver] AnimSet → {animSet.name} (BodyForm={bodyForm})");
 
             if (animSet.HasFullLocomotion)
             {

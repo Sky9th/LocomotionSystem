@@ -377,7 +377,61 @@ Equip/
 
 ---
 
-### 9. Actor — 物种 + 身份 + 阵营 + 职业
+### 9. Body — 角色身体物理配置
+
+> 消费方：Animation（FSM + 动画集选择）、AI（行为决策）、UI（状态图标）、Audio（脚步类型）、Combat（格挡判定）
+>
+> **设计原则：Tag 是枚举的派生产物，不是独立数据源。** Posture / Locomotion / Form 的真相源是 `SCharacterDiscrete` 枚举（`EPosture` / `EMovementGait` / `EBodyForm`）。Tag 由 `CharacterActor.RefreshBodyTags()` 每帧从枚举单向派生，外部系统只读 Tag、不写 Tag。互斥由全量刷新天然保证——每次全清 Body.* 标签后重建，不可能同时存在两个 Posture。
+
+```
+Body/
+├── Tag_Body.asset                   leafName="Body"             parent=null
+│
+├── Form/                            ← 战备形态 — 身体放松还是进入战备
+│   ├── Tag_Form.asset               leafName="Form"             parent=Tag_Body
+│   ├── Tag_Relax.asset              leafName="Relax"            parent=Tag_Form
+│   └── Tag_Combat.asset             leafName="Combat"           parent=Tag_Form
+│
+├── Posture/                         ← 高度姿态 — 站立 / 蹲伏 / 匍匐
+│   ├── Tag_Posture.asset            leafName="Posture"          parent=Tag_Body
+│   ├── Tag_Standing.asset           leafName="Standing"         parent=Tag_Posture
+│   ├── Tag_Crouching.asset          leafName="Crouching"        parent=Tag_Posture
+│   └── Tag_Prone.asset              leafName="Prone"            parent=Tag_Posture
+│
+├── Locomotion/                      ← 移动步态 — 静止 / 走 / 跑 / 冲刺
+│   ├── Tag_Locomotion.asset         leafName="Locomotion"       parent=Tag_Body
+│   ├── Tag_Idle.asset               leafName="Idle"             parent=Tag_Locomotion
+│   ├── Tag_Walk.asset               leafName="Walk"             parent=Tag_Locomotion
+│   ├── Tag_Run.asset                 leafName="Run"              parent=Tag_Locomotion
+│   └── Tag_Sprint.asset             leafName="Sprint"           parent=Tag_Locomotion
+│
+├── Vital/                           ← 预留：生命状态（Alive / Downed / Dead）
+└── Part/                            ← 预留：命中部位（Head / Chest / Legs / ...）
+```
+
+**13 资产（Form 3 + Posture 4 + Locomotion 5 + Body 根）**，FullTag 示例：`Body.Form.Combat`, `Body.Posture.Crouching`, `Body.Locomotion.Sprint`
+
+#### 与 Body 无关的概念（不进入此树）
+
+| 概念 | 归属 | 原因 |
+|------|------|------|
+| 移动介质（空中/游泳/攀爬） | `ELocomotionPhase` 枚举 或未来的 `Movement.*` | 环境的物理结果，不是身体配置 |
+| 行为动作（攻击/闪避/交互） | `State.*` | 角色在做什么，不是身体是什么状态 |
+| 武器握持（单手/双手/双持） | `Equip.Grip.*` | 装备系统，不是身体 |
+| Buff/Debuff（减速/残废/倒地） | `Effect.*` | 效果修饰符，可能约束 Body 但不属于 Body |
+
+#### 与其他 Tag 树的关系
+
+| 位置 A | 位置 B | 关系 |
+|--------|--------|------|
+| `Body.Form.Combat` | `State.Combat.Attacking` | 正交共存——战备姿态 ≠ 正在攻击。可以 Body.Form.Combat + State.Idle（持枪待命） |
+| `Body.Posture.Crouching` | `State.Movement.Crouching`（规划中） | **冗余**——`State.Movement.Crouching` 应在 State 树中删除，统一用 `Body.Posture.Crouching` |
+| `Body.Form.Combat` | `Equip.Grip.1H_Sidearm` | 正交共存——Form 决定"怎么握"，Grip 决定"握什么" |
+| `Body.Locomotion.Sprint` | `Effect.Debuff.Slow` | Effect 约束 Body——Slow 阻止 Sprint 可用 |
+
+---
+
+### 10. Actor — 物种 + 身份 + 阵营 + 职业
 
 > 消费方：目标过滤（targetRequiredTag）、AI 决策、阵营声望
 
@@ -441,19 +495,21 @@ Actor/
 | Noise | `Noise/` | 17 | Phase 2 | Combat/ + World/ + Alert/ |
 | Impact | `Impact/` | 2 | Phase 2 | 击退/硬直效果路由 |
 | Stat | `Stat/` | 27 | Phase 1 | Vital/ + Attribute/ + Secondary/ + Derived/ + Pool/ |
+| Body | `Body/` | 13 | Phase 1 | Form/ + Posture/ + Locomotion/，枚举派生 Tag |
 | Equip | `Equip/` | 23 | Phase 5+ | Slot/ + Type/ |
 | Actor | `Actor/` | 26 | Phase 4.1 | Species/ + Identity/ + Faction/ + Role/ |
-| **合计** | | **199** | | |
+| **合计** | | **212** | | |
 
 > Phase 1（陷阱验证只需 ~25 个）：State(9) + Skill.Combat(7) + Skill(Trap+Cooldown) + Damage.Physical(5) + Damage.Biological.Bleed + Stat.Vital(6)
 >
-> Phase 2 补齐：剩余 State + 全部 Damage/Effect/Noise/Impact/Stat
+> Phase 2 补齐：剩余 State + 全部 Damage/Effect/Noise/Impact/Stat + Body.Form.Posture.Locomotion (13)
 
 ## 设计原则
 
 | 原则 | 说明 |
 |------|------|
 | **State 是唯一互斥域** | TagMutualExclusionSO 只设 `[State]`。Effect/Buff/Debuff 不互斥——角色可以同时中毒+减速+燃烧 |
+| **Body Tag 是枚举派生** | Body.* 标签由 `CharacterActor.RefreshBodyTags()` 从 `SCharacterDiscrete` 枚举单向派生。外部只读不写。全量刷新天然保证互斥，不使用 TagMutualExclusionSO |
 | **冷却必须精确匹配** | `HasTagExact` 而非 `HasTag`。`Skill.Cooldown` 不能前缀匹配到 `Skill.Cooldown.Fireball` |
 | **目录 = 层级可视化** | 目录结构直接反映标签树，Project 窗口中一眼看出父子关系 |
 | **叶标签 = 1 个资产** | 不预建冷却叶标签（运行时动态生成），不建空目录 |
@@ -480,7 +536,11 @@ TagMutualExclusionSO (全局单例)
 | `Effect.Mark` | `Effect.Status.Marked` | 前者是**主动技能效果**（施加标记），后者是**被动状态标记**（已被标记） |
 | `Effect.Condition.Diseased` | `Damage.Biological.Disease` | 前者是**生存状态**（角色生病了），后者是**伤害类型**（疾病伤害） |
 
-> **规则**：`State.*` = 角色此刻在做什么（互斥）；`Effect.*` = 角色身上挂着的 Buff/Debuff/状态；`Damage.*` = 伤害来源的类型分类。
+> **规则**：`State.*` = 角色此刻在做什么（互斥）；`Body.*` = 角色身体是什么物理配置（枚举派生，外部只读）；`Effect.*` = 角色身上挂着的 Buff/Debuff/状态；`Damage.*` = 伤害来源的类型分类。
+>
+> **补充**：`Body.Posture.Crouching` 与 `State.Movement.Crouching` 是冗余概念——蹲伏应统一走 Body。State.Movement.* 标签应在 State 树落地时剔除，仅保留瞬态动作（Swimming / Mounted 等环境强制覆盖）。
+>
+> **再补充**：`Body.Form.Combat` 与 `State.Combat.*` 不互斥——前者描述身体战备姿态（持久），后者描述瞬态动作。角色可以在 Body.Form.Combat 姿态下 State.Idle（持枪待命），也可以在 Body.Form.Relax 姿态下 State.Combat.Attacking（被偷袭仓促应战）。
 
 ## 目录组织规则
 

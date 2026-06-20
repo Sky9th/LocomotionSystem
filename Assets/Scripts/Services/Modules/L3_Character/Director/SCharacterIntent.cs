@@ -12,6 +12,7 @@ namespace RedDust.Character.Director
         // ── Locomotion ──
         public readonly EMovementGait DesiredGait;
         public readonly EPosture DesiredPosture;
+        public readonly EBodyForm DesiredBodyForm;
 
         // ── Actions ──
         public readonly bool JumpRequested;
@@ -29,7 +30,8 @@ namespace RedDust.Character.Director
             Vector3 aimDirection,
             EMovementGait desiredGait,
             EPosture desiredPosture,
-            bool jumpRequested,
+            EBodyForm desiredBodyForm = EBodyForm.Relax,
+            bool jumpRequested = false,
             bool firstSkillRequested = false,
             bool secondSkillRequested = false,
             Vector3 externalMovementVelocity = default,
@@ -43,6 +45,7 @@ namespace RedDust.Character.Director
                 : Vector3.forward;
             DesiredGait = desiredGait;
             DesiredPosture = desiredPosture;
+            DesiredBodyForm = desiredBodyForm;
             JumpRequested = jumpRequested;
             FirstSkillRequested = firstSkillRequested;
             SecondSkillRequested = secondSkillRequested;
@@ -52,6 +55,7 @@ namespace RedDust.Character.Director
 
         public static SCharacterIntent None => new(
             Vector3.forward, Vector3.forward,
-            EMovementGait.Idle, EPosture.Standing, false, false, false);
+            EMovementGait.Idle, EPosture.Standing, EBodyForm.Relax,
+            false, false, false);
     }
 }

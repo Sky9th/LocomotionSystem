@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e09ce01e94152649b8d1386fddcf687, type: 3}
+  m_Name: Tag_Prone
+  m_EditorClassIdentifier: 
+  leafName: Prone
+  parent: {fileID: 11400000, guid: 98a473c285b399b44bcf170a6940ef07, type: 2}
+  description: "\u530D\u5310\u2014\u2014\u8EAB\u4F53\u5E73\u8D34\u5730\u9762\uFF0C\u6700\u4F4E\u8EAB\u9AD8"

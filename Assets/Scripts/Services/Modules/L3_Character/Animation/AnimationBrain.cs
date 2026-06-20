@@ -3,6 +3,7 @@ using Animancer;
 using RedDust.Core;
 using RedDust.Character.Animation.Drivers;
 using RedDust.Character.Animation.Drivers.Locomotion;
+using RedDust.Character.Animation.Drivers.Traversal;
 using RedDust.Character.Animation;
 using RedDust.Character;
 

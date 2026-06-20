@@ -1226,6 +1226,71 @@
       "name": "Tag_1H_Blade",
       "parent": "Equip.Grip",
       "description": "单手持近战（刀/匕首）握持"
+    },
+    {
+      "name": "Tag_Body",
+      "parent": null,
+      "description": "角色身体物理配置根——枚举派生，外部只读"
+    },
+    {
+      "name": "Tag_Form",
+      "parent": "Body",
+      "description": "战备形态根"
+    },
+    {
+      "name": "Tag_Relax",
+      "parent": "Body.Form",
+      "description": "放松——武器自然放置，移动随意"
+    },
+    {
+      "name": "Tag_Combat",
+      "parent": "Body.Form",
+      "description": "战备——武器就位/拳架摆好，移动戒备"
+    },
+    {
+      "name": "Tag_Posture",
+      "parent": "Body",
+      "description": "高度姿态根"
+    },
+    {
+      "name": "Tag_Standing",
+      "parent": "Body.Posture",
+      "description": "站立——全身直立，全高"
+    },
+    {
+      "name": "Tag_Crouching",
+      "parent": "Body.Posture",
+      "description": "蹲伏——屈膝半蹲，降低约40%身高"
+    },
+    {
+      "name": "Tag_Prone",
+      "parent": "Body.Posture",
+      "description": "匍匐——身体平贴地面，最低身高"
+    },
+    {
+      "name": "Tag_Locomotion",
+      "parent": "Body",
+      "description": "移动步态根"
+    },
+    {
+      "name": "Tag_Idle",
+      "parent": "Body.Locomotion",
+      "description": "静止——原地站立，有微动"
+    },
+    {
+      "name": "Tag_Walk",
+      "parent": "Body.Locomotion",
+      "description": "行走——慢速移动，脚步轻微"
+    },
+    {
+      "name": "Tag_Run",
+      "parent": "Body.Locomotion",
+      "description": "奔跑——中速移动，脚步中等"
+    },
+    {
+      "name": "Tag_Sprint",
+      "parent": "Body.Locomotion",
+      "description": "冲刺——全速移动，脚步大，消耗体力"
     }
   ]
 }

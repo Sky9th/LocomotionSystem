@@ -108,6 +108,11 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
             InjectFootstepEvents();
         }
 
+        // TODO: InjectFootstepEvents 写法有多个隐患——
+        //   1. 硬编码 0.12f/0.62f 魔法数字，脚步时间应来自 AnimProfile 或动画事件配置
+        //   2. injectedMixer 只防重复不防陈旧：动画集切换后旧 mixer 引用仍保留，事件可能已失效
+        //   3. events.Add 只增不删，无清理机制；长时运行可能积累事件
+        //   4. child.Events(this, out) 把 BaseLayer 当 key 的设计耦合了 Animancer 扩展细节，可读性差
         private void InjectFootstepEvents()
         {
             if (currentAnimState == null || currentAnimState == injectedMixer) return;
