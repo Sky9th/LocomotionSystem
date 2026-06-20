@@ -1,4 +1,3 @@
-using System;
 using RedDust.Core;
 using RedDust.GameInput;
 using UnityEngine;
@@ -22,6 +21,15 @@ namespace RedDust.Character.Director
         internal bool FirstSkillRequested { get; set; }
         internal bool SencondSkillRequested { get; set; }
 
+        // ── 事件通道 ──
+        private ButtonInputEventSO crouchEvent;
+        private ButtonInputEventSO sprintEvent;
+        private ButtonInputEventSO proneEvent;
+        private ButtonInputEventSO standEvent;
+        private ButtonInputEventSO secondaryInteractEvent;
+        private ButtonInputEventSO firstSkillEvent;
+        private ButtonInputEventSO secondSkillEvent;
+
         // ── TEMP ──
         private EventDispatcherService dispatcher;
         private Vector3 mouseGroundPosition;
@@ -36,38 +44,37 @@ namespace RedDust.Character.Director
 
         public void BindEvents()
         {
+            crouchEvent = eventHub.Get<ButtonInputEventSO>("Crouch");
+            sprintEvent = eventHub.Get<ButtonInputEventSO>("Sprint");
+            proneEvent = eventHub.Get<ButtonInputEventSO>("Prone");
+            standEvent = eventHub.Get<ButtonInputEventSO>("Stand");
+            secondaryInteractEvent = eventHub.Get<ButtonInputEventSO>("SecondaryInteract");
+            firstSkillEvent = eventHub.Get<ButtonInputEventSO>("Skill 1");
+            secondSkillEvent = eventHub.Get<ButtonInputEventSO>("Skill 2");
 
-            // Movement
-            eventHub.Get<SprintInputEventSO>()?.Register(OnSprint);
-            eventHub.Get<CrouchInputEventSO>()?.Register(OnCrouch);
-            eventHub.Get<ProneInputEventSO>()?.Register(OnProne);
-            eventHub.Get<StandInputEventSO>()?.Register(OnStand);
+            crouchEvent.OnRaised += OnCrouch;
+            sprintEvent.OnRaised += OnSprint;
+            proneEvent.OnRaised += OnProne;
+            standEvent.OnRaised += OnStand;
+            secondaryInteractEvent.OnRaised += OnSecondary;
+            firstSkillEvent.OnRaised += OnFirstActivatedSkill;
+            secondSkillEvent.OnRaised += OnSecondActivatedSkill;
 
-            //Intereaction
-            eventHub.Get<SecondaryInteractEventSO>()?.Register(OnSecondary);
-
-            //Combat
-            eventHub.Get<FirstSkillInputEventSO>()?.Register(OnFirstActivatedSkill);
-            eventHub.Get<SecondSkillInputEventSO>()?.Register(OnSecondActivatedSkill);
-
-            // TEMP
+            // TODO: migrate to EventHub
             if (GameContext.Instance != null &&
                 GameContext.Instance.TryResolveService(out dispatcher))
-            {
                 dispatcher.Subscribe<SCameraSnapshot>(OnCameraSnapshot);
-            }
         }
 
         public void UnbindEvents()
         {
-            eventHub.Get<SecondaryInteractEventSO>()?.Unregister(OnSecondary);
-            eventHub.Get<SprintInputEventSO>()?.Unregister(OnSprint);
-            eventHub.Get<CrouchInputEventSO>()?.Unregister(OnCrouch);
-            eventHub.Get<ProneInputEventSO>()?.Unregister(OnProne);
-            eventHub.Get<StandInputEventSO>()?.Unregister(OnStand);
-
-            eventHub.Get<FirstSkillInputEventSO>()?.Unregister(OnFirstActivatedSkill);
-            eventHub.Get<SecondSkillInputEventSO>()?.Unregister(OnSecondActivatedSkill);
+            crouchEvent.OnRaised -= OnCrouch;
+            sprintEvent.OnRaised -= OnSprint;
+            proneEvent.OnRaised -= OnProne;
+            standEvent.OnRaised -= OnStand;
+            secondaryInteractEvent.OnRaised -= OnSecondary;
+            firstSkillEvent.OnRaised -= OnFirstActivatedSkill;
+            secondSkillEvent.OnRaised -= OnSecondActivatedSkill;
 
             dispatcher?.Unsubscribe<SCameraSnapshot>(OnCameraSnapshot);
             dispatcher = null;
@@ -75,14 +82,14 @@ namespace RedDust.Character.Director
 
         // ── Handlers ──
 
-        private void OnSecondary(bool p) { if (p) SecondaryRequested = true; }
-        private void OnSprint(bool p) { if (p) SprintRequested = true; }
-        private void OnCrouch(bool p) { if (p) CrouchRequested = true; }
-        private void OnProne(bool p) { if (p) ProneRequested = true; }
-        private void OnStand(bool p) { if (p) StandRequested = true; }
-        private void OnFirstActivatedSkill(bool p) { if (p) FirstSkillRequested = true; }
-        private void OnSecondActivatedSkill(bool p) { if (p) SencondSkillRequested = true; }
-        
+        private void OnCrouch() => CrouchRequested = crouchEvent.IsRequested;
+        private void OnSprint() => SprintRequested = sprintEvent.IsRequested;
+        private void OnProne() => ProneRequested = proneEvent.IsRequested;
+        private void OnStand() => StandRequested = standEvent.IsRequested;
+        private void OnSecondary() => SecondaryRequested = secondaryInteractEvent.IsRequested;
+        private void OnFirstActivatedSkill() => FirstSkillRequested = firstSkillEvent.IsRequested;
+        private void OnSecondActivatedSkill() => SencondSkillRequested = secondSkillEvent.IsRequested;
+
         // TEMP
         private void OnCameraSnapshot(SCameraSnapshot snapshot, MetaStruct _)
         {

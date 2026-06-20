@@ -19,6 +19,7 @@ namespace RedDust.GameState
 		private bool hasInitialized;
 		[SerializeField] private EGameState currentState;
 		[SerializeField] private EGameState previousState;
+		[SerializeField] private ButtonInputEventSO escapeEvent;
 		private EventDispatcherService _dispatcher; // TODO: 替换为 EventHub — EventDispatcher 即将废弃
 		private LogChannel _log;
 
@@ -61,10 +62,12 @@ namespace RedDust.GameState
 			if (_dispatcher != null)
 			{
 				_dispatcher.Subscribe<SGameStateRequest>(HandleStateRequest);
-				_dispatcher.Subscribe<SIActionUIEscape>(HandleEscapeIntent);
+			}
+
+			if (escapeEvent != null) escapeEvent.OnRaised += OnEscape;
+		else Debug.LogWarning($"[GameState] escapeEvent not assigned — Esc key will not toggle Pause.", this);
 
             GameService.Instance?.NotifyServiceWired();
-			}
 		}
 
 		public bool RequestState(EGameState nextState)
@@ -107,10 +110,10 @@ namespace RedDust.GameState
 
 		private void OnDestroy()
 		{
+		if (escapeEvent != null) escapeEvent.OnRaised -= OnEscape;
 			if (_dispatcher != null)
 			{
 				_dispatcher.Unsubscribe<SGameStateRequest>(HandleStateRequest);
-				_dispatcher.Unsubscribe<SIActionUIEscape>(HandleEscapeIntent);
 			}
 		}
 
@@ -119,12 +122,10 @@ namespace RedDust.GameState
 			RequestState(evt.TargetState);
 		}
 
-		private void HandleEscapeIntent(SIActionUIEscape payload, MetaStruct meta)
+		private void OnEscape()
 		{
-			if (!payload.IsPressed)
-			{
+			if (!escapeEvent.IsRequested)
 				return;
-			}
 
 			switch (currentState)
 			{

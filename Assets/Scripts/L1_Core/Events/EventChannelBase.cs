@@ -10,10 +10,16 @@ namespace RedDust.Core
     public abstract class EventChannelBase : ScriptableObject
     {
         /// <summary>当前注册的 listener 数量（仅运行时）</summary>
-        public abstract int ListenerCount { get; }
+        public virtual int ListenerCount => OnRaised?.GetInvocationList().Length ?? 0;
 
         /// <summary>清空所有已注册的 listener</summary>
-        public abstract void ClearAllListeners();
+        public virtual void ClearAllListeners() => OnRaised = null;
+
+        /// <summary>通道触发时通知订阅者。</summary>
+        public event Action OnRaised;
+
+        /// <summary>触发 OnRaised。子类在 Raise 时调用。</summary>
+        protected void InvokeOnRaised() => OnRaised?.Invoke();
 
 #if UNITY_EDITOR
         /// <summary>

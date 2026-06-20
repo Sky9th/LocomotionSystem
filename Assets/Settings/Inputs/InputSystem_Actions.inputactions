@@ -1165,7 +1165,7 @@
             "id": "647341ca-4bbc-467a-8738-b80fe774fc77",
             "actions": [
                 {
-                    "name": "1stSkill",
+                    "name": "Skill1st",
                     "type": "Button",
                     "id": "91dc2b98-1768-4d33-b83a-93cc0bc6b2de",
                     "expectedControlType": "",
@@ -1174,12 +1174,30 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "2ndSkill",
+                    "name": "Skill2nd",
                     "type": "Button",
                     "id": "86c57a68-e6fd-4f2f-8d95-86c521c29a10",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Equip1st",
+                    "type": "Button",
+                    "id": "4109e86c-bb8d-4fc8-87a1-70cd49b664c1",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Equip2nd",
+                    "type": "Button",
+                    "id": "c942c57d-2b0b-4874-a804-b0b060b13210",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
                     "initialStateCheck": false
                 }
             ],
@@ -1191,7 +1209,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "1stSkill",
+                    "action": "Skill1st",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1202,7 +1220,29 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "2ndSkill",
+                    "action": "Skill2nd",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1417f679-8cf3-47ad-8f19-2338e33a6bca",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Equip1st",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "208101aa-95af-476e-a792-29f5e5ae9368",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Equip2nd",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

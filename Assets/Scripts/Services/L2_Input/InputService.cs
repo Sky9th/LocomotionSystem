@@ -1,4 +1,3 @@
-using System;
 using RedDust.Core;
 using RedDust.GameState;
 using UnityEngine;
@@ -6,148 +5,63 @@ using UnityEngine;
 namespace RedDust.GameInput
 {
     /// <summary>
-    /// 输入服务。管理 InputEvent 资产的生命周期：初始化、启停、状态权限。
+    /// 输入服务。绑定 InputAction、管理 EventSO 生命周期、响应 GameState 门控。
     /// </summary>
     [DisallowMultipleComponent]
     public class InputService : ModuleComponent
     {
-        [SerializeField] private EventChannelBase[] inputEvents = Array.Empty<EventChannelBase>();
-
-        private EventDispatcherService _dispatcher; // TODO: 替换为 EventHub — EventDispatcher 即将废弃
-        private bool _assembled;
-        private bool inputEventsConfigured;
-        private EGameState currentGameState = EGameState.Initializing;
-        private bool hasGameStateSnapshot;
+        [SerializeField] private InputEventBase[] inputEvents = System.Array.Empty<InputEventBase>();
 
         // ── Lifecycle ──
 
         public override void OnAssemble()
         {
-            inputEventsConfigured = false;
-            InitializeInputEvents();
-            _assembled = true;
+            foreach (var evt in inputEvents)
+                evt.InitializeEvent();
         }
 
         public override void OnWire()
         {
             GameContext.Instance.RegisterService(this);
-            GameContext.Instance.TryResolveService(out _dispatcher);
-            if (isActiveAndEnabled)
-                EnableInputEvents();
-
-            SyncInitialGameState();
-
-            _dispatcher.Subscribe<SGameState>(HandleGameStateChanged);
-
             GameService.Instance?.NotifyServiceWired();
         }
 
         private void OnEnable()
         {
-            if (_assembled)
-                EnableInputEvents();
+            foreach (var evt in inputEvents)
+                evt.EnableEvent();
         }
 
         private void OnDisable()
         {
-            DisableInputEvents();
+            foreach (var evt in inputEvents)
+                evt.DisableEvent();
         }
 
         private void OnDestroy()
         {
-            _dispatcher?.Unsubscribe<SGameState>(HandleGameStateChanged);
-            DisposeInputEvents();
+            foreach (var evt in inputEvents)
+                evt.DisposeEvent();
         }
 
-        // ── InputEvent 管理 ──
-
-        private void InitializeInputEvents()
+        private void LateUpdate()
         {
-            if (inputEventsConfigured) return;
-
-            foreach (var obj in inputEvents)
-            {
-                if (obj is IInputEvent evt)
-                    evt.InitializeEvent();
-            }
-
-            inputEventsConfigured = true;
-        }
-
-        private void EnableInputEvents()
-        {
-            if (!inputEventsConfigured) return;
-
-            foreach (var obj in inputEvents)
-            {
-                if (obj is IInputEvent evt)
-                    evt.EnableEvent();
-            }
-        }
-
-        private void DisableInputEvents()
-        {
-            if (!inputEventsConfigured) return;
-
-            foreach (var obj in inputEvents)
-            {
-                if (obj is IInputEvent evt)
-                    evt.DisableEvent();
-            }
-        }
-
-        private void DisposeInputEvents()
-        {
-            if (!inputEventsConfigured) return;
-
-            foreach (var obj in inputEvents)
-            {
-                if (obj is IInputEvent evt)
-                    evt.DisposeEvent();
-            }
+            for (int i = 0; i < inputEvents.Length; i++)
+                inputEvents[i].ClearFrameSignals();
         }
 
         // ── Game State ──
 
-        private void HandleGameStateChanged(SGameState snapshot, MetaStruct meta)
+        // TODO: GameState 门控暂未实装 — 需由 GameStateService 在状态切换时调用
+        public void ApplyGameState(EGameState state)
         {
-            ApplyGameState(snapshot.CurrentState);
-        }
-
-        private void SyncInitialGameState()
-        {
-            if (GameContext.Instance != null && GameContext.Instance.TryGetSnapshot(out SGameState snapshot))
-                ApplyGameState(snapshot.CurrentState, force: true);
-            else
-                ApplyGameState(EGameState.Initializing, force: true);
-        }
-
-        private void ApplyGameState(EGameState nextState, bool force = false)
-        {
-            if (!force && hasGameStateSnapshot && nextState == currentGameState)
-                return;
-
-            currentGameState = nextState;
-            hasGameStateSnapshot = true;
-
-            if (inputEventsConfigured)
-                EnforceStatePermissions();
-        }
-
-        private void EnforceStatePermissions()
-        {
-            if (!inputEventsConfigured) return;
-
-            bool canEnable = _assembled && isActiveAndEnabled;
-            foreach (var obj in inputEvents)
+            bool canEnable = isActiveAndEnabled;
+            foreach (var evt in inputEvents)
             {
-                if (obj is not IInputEvent evt) continue;
-
-                bool supportsState = hasGameStateSnapshot ? evt.SupportsState(currentGameState) : true;
-                if (!supportsState || !canEnable)
-                    evt.DisableEvent();
-                else
+                if (evt.SupportsState(state) && canEnable)
                     evt.EnableEvent();
+                else
+                    evt.DisableEvent();
             }
         }
 

@@ -15,6 +15,7 @@ namespace RedDust.Core
         [SerializeField] private EventChannelBase[] channels = Array.Empty<EventChannelBase>();
 
         private readonly Dictionary<Type, EventChannelBase> lookup = new();
+        private readonly Dictionary<string, EventChannelBase> nameLookup = new();
         private readonly List<IEventListener> listeners = new();
 
         private void Awake()
@@ -22,25 +23,20 @@ namespace RedDust.Core
             foreach (var ch in channels)
             {
                 if (ch != null)
+                {
                     lookup[ch.GetType()] = ch;
+                    nameLookup[ch.name] = ch;
+                }
             }
-        }
-
-        private void OnEnable()
-        {
-            foreach (var l in listeners)
-                l.BindEvents();
-        }
-
-        private void OnDisable()
-        {
-            foreach (var l in listeners)
-                l.UnbindEvents();
         }
 
         /// <summary>按类型获取事件通道。未注册时返回 null。</summary>
         public T Get<T>() where T : EventChannelBase
             => lookup.TryGetValue(typeof(T), out var ch) ? ch as T : null;
+
+        /// <summary>按资产名获取事件通道。支持同类型多实例。</summary>
+        public T Get<T>(string assetName) where T : EventChannelBase
+            => nameLookup.TryGetValue(assetName, out var ch) ? ch as T : null;
 
         /// <summary>注册事件监听者。若组件已启用则立即 BindEvents，覆盖 OnEnable 先于注册的时序。</summary>
         public void RegisterListener(IEventListener listener)
