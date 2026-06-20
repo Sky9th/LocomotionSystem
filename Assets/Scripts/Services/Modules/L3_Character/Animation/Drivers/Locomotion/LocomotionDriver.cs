@@ -8,19 +8,19 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
     public sealed class LocomotionDriver : BaseAnimationDriver
     {
         private BaseLayer baseLayer;
+        private LocomotionAnimationSetSO defaultAnimSet;
+        private LocomotionAnimationSetSO lastAnimSet;
 
         public override int ChannelMask => 1 << 0;
 
         protected override void OnEnable()
         {
             base.OnEnable();
-            // BaseLayer 创建推迟到 OnAssemble——此时 ctx 尚未创建
         }
 
         public override void OnAssemble()
         {
             base.OnAssemble();
-            // BaseLayer 创建推迟到 OnWire——AnimationBrain.OnAssemble 需先完成图层初始化
         }
 
         public override void OnWire()
@@ -28,14 +28,42 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
             base.OnWire();
             brain = GetComponentInChildren<AnimationBrain>();
             var buildCtx = brain?.BuildContext;
+            defaultAnimSet = buildCtx?.DefaultLocomotionSet;
             baseLayer = new BaseLayer(
                 brain?.FullBodyLayer,
-                buildCtx?.DefaultLocomotionSet,  // TODO: GripTable.Resolve(tags) 替换
+                defaultAnimSet,
                 buildCtx?.LocomotionAnimConfig,
                 buildCtx);
         }
 
-        public override void Evaluate(in CharacterFrameContext ctx, float dt) { }
+        public override void Evaluate(in CharacterFrameContext ctx, float dt)
+        {
+            var buildCtx = brain?.BuildContext;
+            // TODO: 每帧 Resolve 仅为测试。事件驱动后 grip 变化时一次性计算，存到 buildCtx 缓存。
+            var animSet = buildCtx?.GripTable?.Resolve(buildCtx?.Ability?.OwnedTags) ?? defaultAnimSet;
+
+            // grip 未变化，跳过
+            if (animSet == lastAnimSet) return;
+            lastAnimSet = animSet;
+
+            if (animSet.HasFullLocomotion)
+            {
+                // Full grip: swap BaseLayer，淡出 Arm 层
+                baseLayer.AnimSet = animSet;
+                brain?.ArmLayer?.StartFade(0, 0.25f);
+            }
+            else
+            {
+                // Partial grip: BaseLayer 保持 Unarmed，Arm 层叠武器 idle
+                baseLayer.AnimSet = defaultAnimSet;
+                var idle = animSet?.idleL;
+                if (idle != null)
+                    brain?.ArmLayer?.Play(idle);
+                else
+                    brain?.ArmLayer?.StartFade(0, 0.25f);
+            }
+        }
+
         public override void OnStarted() { }
         public override void OnCompleted() { }
 

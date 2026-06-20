@@ -40,8 +40,6 @@ namespace RedDust.Character
 
         [Header("Model")]
         [SerializeField] private GameObject modelPrefab;
-        [SerializeField] private TransitionLibraryAsset animancerTransitions;
-
         [Header("Animation")]
         [SerializeField] private bool forwardRootMotion = true;
         [SerializeField] private bool applyRootMotionRotation;
@@ -49,6 +47,7 @@ namespace RedDust.Character
 
         [Header("Animation Masks")]
         [SerializeField] private AvatarMask upperBodyMask;
+        [SerializeField] private AvatarMask armMask;
         [SerializeField] private AvatarMask additiveMask;
         [SerializeField] private AvatarMask facialMask;
         [SerializeField] private AvatarMask headMask;
@@ -72,6 +71,7 @@ namespace RedDust.Character
 
         // ── Masks ──
         internal AvatarMask UpperBodyMask => upperBodyMask;
+        internal AvatarMask ArmMask => armMask;
         internal AvatarMask AdditiveMask => additiveMask;
         internal AvatarMask FacialMask => facialMask;
         internal AvatarMask HeadMask => headMask;
@@ -119,9 +119,6 @@ namespace RedDust.Character
             var animancer = model.GetComponent<NamedAnimancerComponent>();
             if (animancer == null)
                 animancer = model.AddComponent<NamedAnimancerComponent>();
-            if (animancerTransitions != null)
-                animancer.Transitions = animancerTransitions;
-
             if (model.GetComponent<AnimationBrain>() == null)
             {
                 Debug.LogWarning($"[CharacterActor] modelPrefab '{modelPrefab.name}' missing AnimationBrain. Adding at runtime.", this);
@@ -155,7 +152,7 @@ namespace RedDust.Character
                 groundSystemConfig: groundSystemConfig,
                 physique: Physique,
                 audioConfig: characterAudioConfig,
-                upperBodyMask: upperBodyMask, additiveMask: additiveMask,
+                upperBodyMask: upperBodyMask, armMask: armMask, additiveMask: additiveMask,
                 facialMask: facialMask, headMask: headMask, footMask: footMask,
                 forwardRootMotion: forwardRootMotion,
                 applyRootMotionRotation: applyRootMotionRotation,
@@ -217,7 +214,12 @@ namespace RedDust.Character
                 frameCtx.Kinematic = characterKinematic.Evaluate(intent.LocomotionHeading,
                     intent.AimDirection, deltaTime);
 
-                locomotionSimulator.Simulate(ref frameCtx, intent, buildCtx, deltaTime);
+                // grip 解析 — director 可能已修改 OwnedTags，在此之后解析
+                // TODO: 事件驱动后 grip 变化时一次性计算，存 buildCtx 缓存。
+                var ownedTags = buildCtx.Ability?.OwnedTags;
+                var animSet = buildCtx.GripTable?.Resolve(ownedTags) ?? buildCtx.DefaultLocomotionSet;
+
+                locomotionSimulator.Simulate(ref frameCtx, intent, buildCtx, animSet, deltaTime);
 
                 LastKinematic = frameCtx.Kinematic;
                 LastMotor = frameCtx.Motor;
@@ -228,7 +230,7 @@ namespace RedDust.Character
             }
             catch (System.Exception e)
             {
-                Debug.LogError($"[CharacterActor] {name} — 配置缺失或运行时异常，跳过帧:\n{e.GetType().Name}: {e.Message}", this);
+                Debug.LogError($"[CharacterActor] {name} — 配置缺失或运行时异常，跳过帧:\n{e}", this);
                 enabled = false;
             }
         }

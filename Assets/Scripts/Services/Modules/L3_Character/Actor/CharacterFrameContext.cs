@@ -12,6 +12,5 @@ namespace RedDust.Character
         public SCharacterKinematic Kinematic;
         public SCharacterMotor Motor;
         public SCharacterDiscrete Discrete;
-
     }
 }

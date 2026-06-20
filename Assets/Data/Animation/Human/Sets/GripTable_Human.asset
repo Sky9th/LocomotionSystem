@@ -16,3 +16,7 @@ MonoBehaviour:
   entries:
   - gripTag: {fileID: 11400000, guid: d1b99ad09a70d8b4cb60f11e5d099167, type: 2}
     animationSet: {fileID: 11400000, guid: 4d4b49bbcdcfaa64ba94977bed203a8a, type: 2}
+  - gripTag: {fileID: 11400000, guid: 4db2aca5a5eb91f4287224f4005671c8, type: 2}
+    animationSet: {fileID: 11400000, guid: 123d48505e53f0f418bc3ce7d74b3b5b, type: 2}
+  - gripTag: {fileID: 11400000, guid: 228db8510b10a454c87b61f481041e87, type: 2}
+    animationSet: {fileID: 11400000, guid: 2130e6ed712e48e4fa96ac2335207847, type: 2}

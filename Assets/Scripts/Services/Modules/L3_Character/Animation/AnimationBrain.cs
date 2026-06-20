@@ -13,13 +13,14 @@ namespace RedDust.Character.Animation
     public sealed class AnimationBrain : ModuleBehaviour
     {
         // ── Constants ──
-        public const int TotalLayerCount = 6;
+        public const int TotalLayerCount = 7;
         public const int FullBody = 0;
         public const int UpperBody = 1;
-        public const int Additive = 2;
-        public const int Facial = 3;
-        public const int HeadLook = 4;
-        public const int Footstep = 5;
+        public const int Arm = 2;
+        public const int Additive = 3;
+        public const int Facial = 4;
+        public const int HeadLook = 5;
+        public const int Footstep = 6;
 
         // ── Serialized ──
         [Header("Dependencies")]
@@ -31,6 +32,8 @@ namespace RedDust.Character.Animation
 
         // ── Animation Layers ──
         private AnimancerLayer fullBodyLayer;
+        private AnimancerLayer upperBodyLayer;
+        private AnimancerLayer armLayer;
         private AnimancerLayer headLookLayer;
 
         // ── Core State ──
@@ -56,6 +59,8 @@ namespace RedDust.Character.Animation
         internal CharacterBuildContext BuildContext => buildCtx;
         public NamedAnimancerComponent Animancer => animancer;
         public AnimancerLayer FullBodyLayer => fullBodyLayer;
+        public AnimancerLayer UpperBodyLayer => upperBodyLayer;
+        public AnimancerLayer ArmLayer => armLayer;
         public AnimancerLayer HeadLookLayer => headLookLayer;
 
         protected override void Awake()
@@ -97,7 +102,8 @@ namespace RedDust.Character.Animation
                 fullBodyLayer = animancer.Layers[FullBody];
                 fullBodyArbiter = new DriverArbiter(fullBodyLayer);
 
-                BindLayer(UpperBody, buildCtx.UpperBodyMask);
+                upperBodyLayer = BindLayer(UpperBody, buildCtx.UpperBodyMask);
+                armLayer = BindLayer(Arm, buildCtx.ArmMask);
                 BindLayer(Additive, buildCtx.AdditiveMask);
                 BindLayer(Facial, buildCtx.FacialMask);
                 headLookLayer = BindLayer(HeadLook, buildCtx.HeadMask);

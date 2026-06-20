@@ -12,9 +12,60 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce9e3531fab6c264294ee724030b6006, type: 3}
   m_Name: TraversalSet_Human
   m_EditorClassIdentifier: 
-  climbUpHalfMeter: {fileID: 11400000, guid: 76b8536ae91de044c95cdba975ad97fb, type: 2}
-  climbUp1meter: {fileID: 11400000, guid: 815417521fd13164db793b16b3720cf0, type: 2}
-  climbUp2meter: {fileID: 11400000, guid: ac13d17d7aae7b34a961324f37505e59, type: 2}
-  climbDown1meter: {fileID: 0}
-  climbDown2meter: {fileID: 0}
-  landFromWall: {fileID: 0}
+  climbUpHalfMeter:
+    _FadeDuration: 0.25
+    _Speed: 1
+    _Events:
+      _NormalizedTimes: []
+      _Callbacks: []
+      _Names: []
+    _Clip: {fileID: 7400000, guid: 61f51aa432263ea4bbc5edd30a78a64c, type: 3}
+    _NormalizedStartTime: NaN
+  climbUp1meter:
+    _FadeDuration: 0.25
+    _Speed: 1
+    _Events:
+      _NormalizedTimes: []
+      _Callbacks: []
+      _Names: []
+    _Clip: {fileID: 7400000, guid: b0e4351f2cf7fed4baa2e50d6f15848c, type: 3}
+    _NormalizedStartTime: NaN
+  climbUp2meter:
+    _FadeDuration: 0.25
+    _Speed: 1
+    _Events:
+      _NormalizedTimes: []
+      _Callbacks: []
+      _Names: []
+    _Clip: {fileID: 7400000, guid: 33ca24368a558b946a9fffb7598090bd, type: 3}
+    _NormalizedStartTime: NaN
+  climbDown1meter:
+    _FadeDuration: 0.25
+    _Speed: 1
+    _Events:
+      _NormalizedTimes: []
+      _Callbacks: []
+      _Names: []
+    _Clip: {fileID: 0}
+    _NormalizedStartTime: NaN
+  climbDown2meter:
+    _FadeDuration: 0.25
+    _Speed: 1
+    _Events:
+      _NormalizedTimes: []
+      _Callbacks: []
+      _Names: []
+    _Clip: {fileID: 0}
+    _NormalizedStartTime: NaN
+  landFromWall:
+    _FadeDuration: 0.25
+    _Speed: 1
+    _Events:
+      _NormalizedTimes: []
+      _Callbacks: []
+      _Names: []
+    _Clip: {fileID: 0}
+    _NormalizedStartTime: NaN
+  references:
+    version: 2
+    RefIds: []

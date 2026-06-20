@@ -3853,7 +3853,7 @@ PrefabInstance:
     - target: {fileID: 8667043660662020576, guid: 506c4f73f1825ed4f97f06cdf259ac78,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8721387818594905132, guid: 506c4f73f1825ed4f97f06cdf259ac78,
         type: 3}
@@ -3878,6 +3878,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1187010538823314, guid: b87cb604b959698428935c5d56bd97c0,
         type: 3}
+    - target: {fileID: 8721387818594905132, guid: 506c4f73f1825ed4f97f06cdf259ac78,
+        type: 3}
+      propertyPath: upperBodyMask
+      value: 
+      objectReference: {fileID: 31900000, guid: 3bfa1e8417f6abe45b8f2735bb106bc8,
+        type: 2}
     - target: {fileID: 8721387818594905132, guid: 506c4f73f1825ed4f97f06cdf259ac78,
         type: 3}
       propertyPath: animationAliasProfile

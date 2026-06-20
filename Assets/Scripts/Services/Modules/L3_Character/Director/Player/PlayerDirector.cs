@@ -23,8 +23,11 @@ namespace RedDust.Character.Director
             ctx.EventHub.RegisterListener(input);
         }
 
+        private int debugGripIndex = 0;
+
         public SCharacterIntent Evaluate()
         {
+            ProcessDebugGripSwitch();
             ProcessClickToMove();
 
             // TODO: 临时方案 — 直接读 Actor 槽位。技能树/装备系统完成后由 AbilitySlotManager 替代。
@@ -76,6 +79,37 @@ namespace RedDust.Character.Director
             input.ClearFrameSignals();
 
             return intent;
+        }
+
+        // TODO(debug): 临时 grip 切换，仅用于测试。之后改为 EventHub 事件驱动：
+        //   PlayerDirector 发布 GripSwitchEvent → CharacterActor 订阅 → 更新 OwnedTags
+        private void ProcessDebugGripSwitch()
+        {
+            var table = ctx.GripTable;
+            if (table == null || table.entries == null || table.entries.Length == 0) return;
+            var ownedTags = ctx.Ability?.OwnedTags;
+            if (ownedTags == null) return;
+
+            int newIndex = -1;
+            if (Input.GetKeyDown(KeyCode.Alpha1)) newIndex = 0;
+            else if (Input.GetKeyDown(KeyCode.Alpha2) && table.entries.Length > 1) newIndex = 1;
+            else if (Input.GetKeyDown(KeyCode.Alpha3) && table.entries.Length > 2) newIndex = 2;
+
+            if (newIndex < 0 || newIndex == debugGripIndex) return;
+
+            // 清除旧 grip tag
+            for (int i = 0; i < table.entries.Length; i++)
+                if (table.entries[i].gripTag != null)
+                    ownedTags.RemoveTag(table.entries[i].gripTag.FullTag);
+
+            // 添加新 grip tag
+            var entry = table.entries[newIndex];
+            if (entry.gripTag != null)
+            {
+                ownedTags.AddTag(entry.gripTag.FullTag);
+                debugGripIndex = newIndex;
+                Debug.Log($"[PlayerDirector] Grip switched to: {entry.gripTag.FullTag}");
+            }
         }
 
         private void ProcessClickToMove()

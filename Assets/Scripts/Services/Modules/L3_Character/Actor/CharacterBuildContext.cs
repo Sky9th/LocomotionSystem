@@ -44,6 +44,7 @@ namespace RedDust.Character
         public CharacterPhysique Physique { get; }
         public CharacterAudioConfigSO AudioConfig { get; }
         public AvatarMask UpperBodyMask { get; }
+        public AvatarMask ArmMask { get; }
         public AvatarMask AdditiveMask { get; }
         public AvatarMask FacialMask { get; }
         public AvatarMask HeadMask { get; }
@@ -64,7 +65,7 @@ namespace RedDust.Character
             GroundSystemConfigSO groundSystemConfig,
             CharacterPhysique physique,
             CharacterAudioConfigSO audioConfig,
-            AvatarMask upperBodyMask, AvatarMask additiveMask,
+            AvatarMask upperBodyMask, AvatarMask armMask, AvatarMask additiveMask,
             AvatarMask facialMask, AvatarMask headMask, AvatarMask footMask,
             bool forwardRootMotion, bool applyRootMotionRotation, bool autoMatchAnimationSpeed,
             AbilityDefSO skillSlot1, AbilityDefSO skillSlot2)
@@ -82,6 +83,7 @@ namespace RedDust.Character
             Physique = physique;
             AudioConfig = audioConfig;
             UpperBodyMask = upperBodyMask;
+            ArmMask = armMask;
             AdditiveMask = additiveMask;
             FacialMask = facialMask;
             HeadMask = headMask;

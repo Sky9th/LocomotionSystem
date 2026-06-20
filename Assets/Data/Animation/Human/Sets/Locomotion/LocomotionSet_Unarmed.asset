@@ -91,9 +91,7 @@ MonoBehaviour:
     _FadeDuration: 0.25
     _Speed: 1
     _Events:
-      _NormalizedTimes:
-      - 0.12
-      - 0.62
+      _NormalizedTimes: []
       _Callbacks: []
       _Names: []
     _Clip: {fileID: 1827226128182048838, guid: 9855ce7b7dba5e94c834b01cbc44b783, type: 3}
@@ -101,6 +99,7 @@ MonoBehaviour:
   walkAnimNativeSpeed: 1.5
   runAnimNativeSpeed: 5
   sprintAnimNativeSpeed: 7
+  crawlAnimNativeSpeed: 1
   turnInPlace90L:
     _FadeDuration: 0.25
     _Speed: 1

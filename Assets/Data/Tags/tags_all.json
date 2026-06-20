@@ -1216,6 +1216,16 @@
       "name": "Tag_DualWield",
       "parent": "Equip.Grip",
       "description": "双持武器握持"
+    },
+    {
+      "name": "Tag_1H_Sidearm",
+      "parent": "Equip.Grip",
+      "description": "单手持副武器（手枪）握持"
+    },
+    {
+      "name": "Tag_1H_Blade",
+      "parent": "Equip.Grip",
+      "description": "单手持近战（刀/匕首）握持"
     }
   ]
 }

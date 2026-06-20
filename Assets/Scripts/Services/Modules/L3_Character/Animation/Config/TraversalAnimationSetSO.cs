@@ -12,15 +12,15 @@ namespace RedDust.Character.Animation
     public sealed class TraversalAnimationSetSO : ScriptableObject
     {
         [Header("Climb Up")]
-        public StringAsset climbUpHalfMeter;
-        public StringAsset climbUp1meter;
-        public StringAsset climbUp2meter;
+        public ClipTransition climbUpHalfMeter;
+        public ClipTransition climbUp1meter;
+        public ClipTransition climbUp2meter;
 
         [Header("Climb Down")]
-        public StringAsset climbDown1meter;
-        public StringAsset climbDown2meter;
+        public ClipTransition climbDown1meter;
+        public ClipTransition climbDown2meter;
 
         [Header("Land")]
-        public StringAsset landFromWall;
+        public ClipTransition landFromWall;
     }
 }

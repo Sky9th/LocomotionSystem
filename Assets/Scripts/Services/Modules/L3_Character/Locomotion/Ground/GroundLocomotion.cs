@@ -1,4 +1,5 @@
 using RedDust.Character;
+using RedDust.Character.Animation;
 using RedDust.Character.Director;
 using RedDust.Core;
 
@@ -12,9 +13,8 @@ namespace RedDust.Character.Locomotion
         internal GroundLocomotion(ModuleRegistry registry) : base(registry) { }
 
         public void Simulate(ref CharacterFrameContext frameCtx, in SCharacterIntent intent,
-            CharacterBuildContext buildCtx, float dt)
+            CharacterBuildContext buildCtx, LocomotionAnimationSetSO animSet, float dt)
         {
-            var animSet = buildCtx.DefaultLocomotionSet;
             var physique = buildCtx.Physique;
             // TODO: posture-aware speed — gait 速度 × posture 系数 (源自 Properties.Body/xxx 或 posture-specific animSet)
             var desiredSpeed = intent.HasMovement ? (animSet != null ? animSet.GetNativeSpeed(intent.DesiredGait) : 0f) : 0f;

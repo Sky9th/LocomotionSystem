@@ -1,0 +1,170 @@
+{
+  "version": "1.0",
+  "description": "Human 角色动画配置 — Unarmed / 1H_Sidearm / 1H_Blade",
+  "profiles": [{
+    "name": "HumanAnimationProfile",
+    "directory": "Human",
+    "locomotionConfig": "Human/Config/LocomotionAnimationConfigSO",
+    "modeProfiles": [
+      "Human/Config/ModeProfiles/Stand_Walk",
+      "Human/Config/ModeProfiles/Stand_Run",
+      "Human/Config/ModeProfiles/Stand_Sprint"
+    ],
+    "defaultLocomotionSet": "Human/Sets/Locomotion/LocomotionSet_Unarmed",
+    "gripTable": "Human/Sets/GripTable_Human",
+    "traversalSet": "Human/Sets/TraversalSet_Human"
+  }],
+  "locomotionConfig": {
+    "name": "LocomotionAnimationConfigSO",
+    "directory": "Human/Config",
+    "headLookSmoothingSpeed": 5.0,
+    "modeProfiles": [
+      "Human/Config/ModeProfiles/Stand_Walk",
+      "Human/Config/ModeProfiles/Stand_Run",
+      "Human/Config/ModeProfiles/Stand_Sprint"
+    ],
+    "defaultInPlaceTurnSpeed": 360.0,
+    "defaultMovingTurnSpeed": 720.0,
+    "landDistanceThreshold": 0.5,
+    "landMinFallDistance": 0.2,
+    "landLightMaxFallDistance": 1.0,
+    "landMediumMaxFallDistance": 3.0,
+    "landLightTriggerDistance": 0.3,
+    "landMediumTriggerDistance": 0.6,
+    "landHardTriggerDistance": 1.0
+  },
+  "modeProfiles": [
+    { "name": "Stand_Walk",  "directory": "Human/Config/ModeProfiles", "posture": "Standing", "gait": "Walk",  "movingTurnSpeed": 720.0, "enterAngle": 90.0, "exitAngle": 20.0 },
+    { "name": "Stand_Run",   "directory": "Human/Config/ModeProfiles", "posture": "Standing", "gait": "Run",   "movingTurnSpeed": 720.0, "enterAngle": 90.0, "exitAngle": 20.0 },
+    { "name": "Stand_Sprint","directory": "Human/Config/ModeProfiles", "posture": "Standing", "gait": "Sprint","movingTurnSpeed": 720.0, "enterAngle": 90.0, "exitAngle": 20.0 }
+  ],
+  "locomotionSets": [
+    {
+      "name": "LocomotionSet_Unarmed",
+      "directory": "Human/Sets/Locomotion",
+      "idleL": { "_Clip": "dd79d46b35e0b7c43b55bcf6a4888f35" },
+      "walkMixer": {
+        "_Animations": [
+          "4135c16ab45576f42bb1f3faabf35474","0ae74e5d8d8154d4d9ee7110a1b0332c",
+          "de81a5517884ebf45be5aa5445e5967b","c0735ae4f8733c249a2a431be4807da1",
+          "3ae0d71ace74c3c4fbc402081c7e7359","dc89382d067d25d48802b9e334756423",
+          "e0c6db2f4b84d4d4988dfcee7b9684cc","2cac407aed14e1243b05cfeabfc5ba8a",
+          "dd79d46b35e0b7c43b55bcf6a4888f35"
+        ],
+        "_Thresholds": [{"x":0,"y":1},{"x":0.5,"y":0.5},{"x":1,"y":0},{"x":0.5,"y":-0.5},{"x":0,"y":-1},{"x":-0.5,"y":-0.5},{"x":-1,"y":0},{"x":-0.5,"y":0.5},{"x":0,"y":0}],
+        "_DefaultParameter": {"x":0,"y":0}, "_Type": 0
+      },
+      "runMixer": {
+        "_Animations": [
+          "9ef3ff83668953644a8fba73f5743064","fbb341d886f31e44681f679781827d39",
+          "29ee5d8eb2335e04d82e48a204759f74","cbfa4fbd6848fbe449dd23dea5b241a0",
+          "40ab0952a0d902342b1958501393fb85","7375c8b8f475a9c4cb57de88c2d1b447",
+          "5d9b18b8a3abfea4a9b2213bddab9260","d4dc070d38e631243a9fb09cb4d5d663",
+          "dd79d46b35e0b7c43b55bcf6a4888f35"
+        ],
+        "_Thresholds": [{"x":0,"y":1},{"x":0.5,"y":0.5},{"x":1,"y":0},{"x":0.5,"y":-0.5},{"x":0,"y":-1},{"x":-0.5,"y":-0.5},{"x":-1,"y":0},{"x":-0.5,"y":0.5},{"x":0,"y":0}],
+        "_DefaultParameter": {"x":0,"y":0}, "_Type": 1
+      },
+      "sprint": { "_Clip": "9855ce7b7dba5e94c834b01cbc44b783" },
+      "walkAnimNativeSpeed": 1.5, "runAnimNativeSpeed": 5.0, "sprintAnimNativeSpeed": 7.0,
+      "turnInPlace90L": { "_Clip": "0ef60e078f73f854894c7a668ff2555e" },
+      "turnInPlace90R": { "_Clip": "92ba5ef29751eb94e9eaf4cbd177df1a" },
+      "airLight": { "_Animations": ["06a342c323699b74782e5c62266ec155","7770a214a8709f34d8fd89f2b6d7c29d","36ece2e2199374a44b7129665054e9fc"], "_Thresholds": [0,1,2], "_DefaultParameter": 0, "_ExtrapolateSpeed": true },
+      "airHard":  { "_Animations": ["4e10d2a660caf984f9352d5f7b9a748a","4771310b4c51ab74e9f9984654239ee6","df817fd41309f8341be1934f45f028ed"], "_Thresholds": [0,1,2], "_DefaultParameter": 0, "_ExtrapolateSpeed": true },
+      "landLight":{ "_Animations": ["d7bf9e7ebc9db1743ad064190ded240e","00450c04c5ec4564d9048cc0d4f49d03","339e38a9f8a579249b43ba03f30ae253"], "_Thresholds": [0,1,2], "_DefaultParameter": 0, "_ExtrapolateSpeed": true },
+      "landHard": { "_Animations": ["bbebb4f4873b0114b96e0cc358e40f47","6295b708fa5035a478b412049e5f2f15","76237e8788f14f547a25ddd71de6bbf0"], "_Thresholds": [0,1,2], "_DefaultParameter": 0, "_ExtrapolateSpeed": true }
+    },
+    {
+      "name": "LocomotionSet_1H_Sidearm_Relax",
+      "directory": "Human/Sets/Locomotion",
+      "idleL": { "_Clip": "db264c644806e564593491b62b5efbe1" },
+      "walkMixer": null,
+      "runMixer": null,
+      "sprint": { "_Clip": "899f62862a730e944a3c398deccd9c49" },
+      "walkAnimNativeSpeed": 1.5, "runAnimNativeSpeed": 5.0, "sprintAnimNativeSpeed": 7.0,
+      "turnInPlace90L": null, "turnInPlace90R": null,
+      "airLight": { "_Animations": ["e5072e09c5faec447a3d4587836a98b2"], "_Thresholds": [0], "_DefaultParameter": 0, "_ExtrapolateSpeed": true },
+      "airHard":  { "_Animations": ["cd01219fb2e04d2458599f97feada56e"], "_Thresholds": [0], "_DefaultParameter": 0, "_ExtrapolateSpeed": true },
+      "landLight":{ "_Animations": ["d303a72b3544aeb4b8f7c6a2e8ca012b"], "_Thresholds": [0], "_DefaultParameter": 0, "_ExtrapolateSpeed": true },
+      "landHard": { "_Animations": ["f11b3d91b89ff3845bfe70f7b17f743c"], "_Thresholds": [0], "_DefaultParameter": 0, "_ExtrapolateSpeed": true }
+    },
+    {
+      "name": "LocomotionSet_1H_Sidearm_Combat",
+      "directory": "Human/Sets/Locomotion",
+      "idleL": { "_Clip": "70ab545423b7525449cb24b369cc721d" },
+      "walkMixer": {
+        "_Animations": ["982c51931e2e4c24c827c1bbdb4c5851","b8111b1061008dc459aec3af28c8a424","d3261266ea92ec94faf0df297cb350ff","b2488d7d52487044fad0dfd92bc40ff5","70ab545423b7525449cb24b369cc721d"],
+        "_Thresholds": [{"x":0,"y":1},{"x":0,"y":-1},{"x":-1,"y":0},{"x":1,"y":0},{"x":0,"y":0}],
+        "_DefaultParameter": {"x":0,"y":0}, "_Type": 0
+      },
+      "runMixer": {
+        "_Animations": ["ba35a5e964f0b184d96680d65b2978c3","cfed701a2dc4acc4e8e86e4e9783806c","71205674048fae44fb9ad7a37483feab","87bf560a8ebeca048987cdbee9ade9bf","70ab545423b7525449cb24b369cc721d"],
+        "_Thresholds": [{"x":0,"y":1},{"x":0,"y":-1},{"x":-1,"y":0},{"x":1,"y":0},{"x":0,"y":0}],
+        "_DefaultParameter": {"x":0,"y":0}, "_Type": 1
+      },
+      "sprint": { "_Clip": "c47655e7d96bb0045a25a173734ee935" },
+      "walkAnimNativeSpeed": 1.5, "runAnimNativeSpeed": 5.0, "sprintAnimNativeSpeed": 7.0,
+      "turnInPlace90L": null, "turnInPlace90R": null,
+      "airLight": { "_Animations": ["ed2314cdf9b357f4f868d9d1b57ee9d3"], "_Thresholds": [0], "_DefaultParameter": 0, "_ExtrapolateSpeed": true },
+      "airHard":  { "_Animations": ["f92e003c167211f46b06181c498479d2"], "_Thresholds": [0], "_DefaultParameter": 0, "_ExtrapolateSpeed": true },
+      "landLight":{ "_Animations": ["41ea04e928acd754a8a5837190a27cb2"], "_Thresholds": [0], "_DefaultParameter": 0, "_ExtrapolateSpeed": true },
+      "landHard": { "_Animations": ["ed7a9878994fa614da1e9e7497506cce"], "_Thresholds": [0], "_DefaultParameter": 0, "_ExtrapolateSpeed": true }
+    },
+    {
+      "name": "LocomotionSet_1H_Blade_Relax",
+      "directory": "Human/Sets/Locomotion",
+      "idleL": { "_Clip": "79350dc6e16f9734ea6983abd3442005" },
+      "walkMixer": null,
+      "runMixer": null,
+      "sprint": { "_Clip": "08bb9fc952cdf66469eb0869171f2439" },
+      "walkAnimNativeSpeed": 1.5, "runAnimNativeSpeed": 5.0, "sprintAnimNativeSpeed": 7.0,
+      "turnInPlace90L": null, "turnInPlace90R": null,
+      "airLight":  null,
+      "airHard":   null,
+      "landLight": null,
+      "landHard":  null
+    },
+    {
+      "name": "LocomotionSet_1H_Blade_Combat",
+      "directory": "Human/Sets/Locomotion",
+      "idleL": { "_Clip": "1b866111e76e4314599902e6bb628697" },
+      "walkMixer": {
+        "_Animations": ["46e82d2c0ea21104caa153ca670d0b46","7f38a28838dc78f4b8c1ff24aa63a317","1b33b565a39edf4478778d906b5fde60","6d2f6be0d11095645b4b259a395317d1","1b866111e76e4314599902e6bb628697"],
+        "_Thresholds": [{"x":0,"y":1},{"x":0,"y":-1},{"x":-1,"y":0},{"x":1,"y":0},{"x":0,"y":0}],
+        "_DefaultParameter": {"x":0,"y":0}, "_Type": 0
+      },
+      "runMixer": {
+        "_Animations": ["e0b6797682acd5b478161d446fe11f17","ace171c7962ee8942886730966d191ca","f1111d55fa0916a4da976d38b227a0bb","5af8c9bd71baec144a1a7b758695c208","1b866111e76e4314599902e6bb628697"],
+        "_Thresholds": [{"x":0,"y":1},{"x":0,"y":-1},{"x":-1,"y":0},{"x":1,"y":0},{"x":0,"y":0}],
+        "_DefaultParameter": {"x":0,"y":0}, "_Type": 1
+      },
+      "sprint": { "_Clip": "0f4c60f213e56ea40a884822b456fb5d" },
+      "walkAnimNativeSpeed": 1.5, "runAnimNativeSpeed": 5.0, "sprintAnimNativeSpeed": 7.0,
+      "turnInPlace90L": null, "turnInPlace90R": null,
+      "airLight": { "_Animations": ["1f8b166c629e8fc46a0eda5095a7da4f"], "_Thresholds": [0], "_DefaultParameter": 0, "_ExtrapolateSpeed": true },
+      "airHard":  { "_Animations": ["376d7f7c28043af4d8220b6f4c57f7c3"], "_Thresholds": [0], "_DefaultParameter": 0, "_ExtrapolateSpeed": true },
+      "landLight":{ "_Animations": ["c40c1dcf96b91c64fb199ecda326c656"], "_Thresholds": [0], "_DefaultParameter": 0, "_ExtrapolateSpeed": true },
+      "landHard": { "_Animations": ["9e1f2fad14268724faf2a8fc9bd08c8a"], "_Thresholds": [0], "_DefaultParameter": 0, "_ExtrapolateSpeed": true }
+    }
+  ],
+  "gripTable": {
+    "name": "GripTable_Human",
+    "directory": "Human/Sets",
+    "defaultSet": "Human/Sets/Locomotion/LocomotionSet_Unarmed",
+    "entries": [
+      { "gripTag": "Equip.Grip.Unarmed",     "animationSet": "Human/Sets/Locomotion/LocomotionSet_Unarmed" },
+      { "gripTag": "Equip.Grip.1H_Sidearm",  "animationSet": "Human/Sets/Locomotion/LocomotionSet_1H_Sidearm_Relax" },
+      { "gripTag": "Equip.Grip.1H_Blade",    "animationSet": "Human/Sets/Locomotion/LocomotionSet_1H_Blade_Relax" }
+    ]
+  },
+  "traversalSet": {
+    "name": "TraversalSet_Human",
+    "directory": "Human/Sets",
+    "climbUpHalfMeter": { "_Clip": "61f51aa432263ea4bbc5edd30a78a64c" },
+    "climbUp1meter":    { "_Clip": "b0e4351f2cf7fed4baa2e50d6f15848c" },
+    "climbUp2meter":    { "_Clip": "33ca24368a558b946a9fffb7598090bd" },
+    "climbDown1meter": null,
+    "climbDown2meter": null,
+    "landFromWall": null
+  }
+}

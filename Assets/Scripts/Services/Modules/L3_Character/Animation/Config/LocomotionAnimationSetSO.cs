@@ -50,5 +50,14 @@ namespace RedDust.Character.Animation
         public LinearMixerTransition airHard;
         public LinearMixerTransition landLight;
         public LinearMixerTransition landHard;
+
+        /// <summary>
+        /// 是否具备完整 locomotion。animset 无 walk/run 时 BaseLayer 不 swap，仅用 idleL 做 UpperBody 覆盖。
+        /// 注意：MixerTransition2D 是内联序列化对象，永远非 null，需检查内部是否实际分配了动画。
+        /// </summary>
+        public bool HasFullLocomotion =>
+            idleL.Clip != null &&
+            walkMixer.Animations is { Length: > 0 } &&
+            runMixer.Animations is { Length: > 0 };
     }
 }

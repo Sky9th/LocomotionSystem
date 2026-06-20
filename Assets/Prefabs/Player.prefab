@@ -73,8 +73,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayer: 1
-  characterPhysicsProfile: {fileID: 11400000, guid: d23c4599050ea9d419499a84d1e017e3,
-    type: 2}
   groundSystemConfig: {fileID: 11400000, guid: 6f5d74115b0df28438f735b18d13da47, type: 2}
   characterAnimationProfile: {fileID: 11400000, guid: e215df4713aa441448d8fe70857a7f32,
     type: 2}
@@ -84,11 +82,11 @@ MonoBehaviour:
     type: 2}
   modelPrefab: {fileID: 1904041790429094, guid: 027cd57972e60824ca74f44e0d80ea9a,
     type: 3}
-  animancerTransitions: {fileID: 0}
   forwardRootMotion: 1
   applyRootMotionRotation: 0
   autoMatchAnimationSpeed: 1
-  upperBodyMask: {fileID: 0}
+  upperBodyMask: {fileID: 31900000, guid: 3bfa1e8417f6abe45b8f2735bb106bc8, type: 2}
+  armMask: {fileID: 31900000, guid: 57adfc75790a5e3428aab575079e67eb, type: 2}
   additiveMask: {fileID: 0}
   facialMask: {fileID: 0}
   headMask: {fileID: 31900000, guid: 91a8c24c60bd42e4d9b539ff6d537342, type: 2}

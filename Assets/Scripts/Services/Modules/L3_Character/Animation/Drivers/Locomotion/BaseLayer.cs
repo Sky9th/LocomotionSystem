@@ -15,7 +15,7 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         private ITransition lastPlayedTransition;
         private AnimancerState currentAnimState;
 
-        internal LocomotionAnimationSetSO AnimSet { get; private set; }
+        internal LocomotionAnimationSetSO AnimSet { get; set; }
         internal LocomotionAnimationConfigSO AnimProfile { get; }
         internal CharacterRig Rig => _buildContext?.Rig;  // 实时读取，Model 替换自动更新
         internal CharacterFrameContext Ctx => ctx;

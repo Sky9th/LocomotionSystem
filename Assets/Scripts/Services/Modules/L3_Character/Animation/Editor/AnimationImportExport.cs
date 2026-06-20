@@ -167,12 +167,12 @@ namespace RedDust.Character.Animation
     {
         public string name;
         public string directory;
-        public string climbUpHalfMeter;   // StringAsset GUID or null
-        public string climbUp1meter;      // StringAsset GUID or null
-        public string climbUp2meter;      // StringAsset GUID or null
-        public string climbDown1meter;    // StringAsset GUID or null
-        public string climbDown2meter;    // StringAsset GUID or null
-        public string landFromWall;       // StringAsset GUID or null
+        public ClipTransitionEntry climbUpHalfMeter;
+        public ClipTransitionEntry climbUp1meter;
+        public ClipTransitionEntry climbUp2meter;
+        public ClipTransitionEntry climbDown1meter;
+        public ClipTransitionEntry climbDown2meter;
+        public ClipTransitionEntry landFromWall;
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -433,12 +433,12 @@ namespace RedDust.Character.Animation
             {
                 name = ts.name,
                 directory = SplitAssetPath(AssetDatabase.GetAssetPath(ts)).dir,
-                climbUpHalfMeter = AssetRefToGuid(ts.climbUpHalfMeter),
-                climbUp1meter = AssetRefToGuid(ts.climbUp1meter),
-                climbUp2meter = AssetRefToGuid(ts.climbUp2meter),
-                climbDown1meter = AssetRefToGuid(ts.climbDown1meter),
-                climbDown2meter = AssetRefToGuid(ts.climbDown2meter),
-                landFromWall = AssetRefToGuid(ts.landFromWall),
+                climbUpHalfMeter = ExportClipTransition(ts.climbUpHalfMeter),
+                climbUp1meter = ExportClipTransition(ts.climbUp1meter),
+                climbUp2meter = ExportClipTransition(ts.climbUp2meter),
+                climbDown1meter = ExportClipTransition(ts.climbDown1meter),
+                climbDown2meter = ExportClipTransition(ts.climbDown2meter),
+                landFromWall = ExportClipTransition(ts.landFromWall),
             });
         }
 
@@ -818,12 +818,18 @@ namespace RedDust.Character.Animation
         private static void ApplyTraversalSet(TraversalAnimationSetSO ts, TraversalSetEntry entry,
             Dictionary<string, Object> guidLookup, List<string> errors)
         {
-            ts.climbUpHalfMeter = ResolveStringAsset(entry.climbUpHalfMeter, guidLookup, errors, $"{entry.name}.climbUpHalfMeter");
-            ts.climbUp1meter = ResolveStringAsset(entry.climbUp1meter, guidLookup, errors, $"{entry.name}.climbUp1meter");
-            ts.climbUp2meter = ResolveStringAsset(entry.climbUp2meter, guidLookup, errors, $"{entry.name}.climbUp2meter");
-            ts.climbDown1meter = ResolveStringAsset(entry.climbDown1meter, guidLookup, errors, $"{entry.name}.climbDown1meter");
-            ts.climbDown2meter = ResolveStringAsset(entry.climbDown2meter, guidLookup, errors, $"{entry.name}.climbDown2meter");
-            ts.landFromWall = ResolveStringAsset(entry.landFromWall, guidLookup, errors, $"{entry.name}.landFromWall");
+            ts.climbUpHalfMeter ??= new ClipTransition();
+            ts.climbUp1meter ??= new ClipTransition();
+            ts.climbUp2meter ??= new ClipTransition();
+            ts.climbDown1meter ??= new ClipTransition();
+            ts.climbDown2meter ??= new ClipTransition();
+            ts.landFromWall ??= new ClipTransition();
+            ApplyClipTransitionToField(ts.climbUpHalfMeter, entry.climbUpHalfMeter, guidLookup, errors, $"{entry.name}.climbUpHalfMeter");
+            ApplyClipTransitionToField(ts.climbUp1meter, entry.climbUp1meter, guidLookup, errors, $"{entry.name}.climbUp1meter");
+            ApplyClipTransitionToField(ts.climbUp2meter, entry.climbUp2meter, guidLookup, errors, $"{entry.name}.climbUp2meter");
+            ApplyClipTransitionToField(ts.climbDown1meter, entry.climbDown1meter, guidLookup, errors, $"{entry.name}.climbDown1meter");
+            ApplyClipTransitionToField(ts.climbDown2meter, entry.climbDown2meter, guidLookup, errors, $"{entry.name}.climbDown2meter");
+            ApplyClipTransitionToField(ts.landFromWall, entry.landFromWall, guidLookup, errors, $"{entry.name}.landFromWall");
         }
 
         // ── Phase 3: LocomotionConfig ───────────────────────
