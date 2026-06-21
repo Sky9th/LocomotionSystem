@@ -18,6 +18,9 @@ namespace RedDust.GameInput
         {
             foreach (var evt in inputEvents)
                 evt.InitializeEvent();
+            if (isActiveAndEnabled)
+                foreach (var evt in inputEvents)
+                    evt.EnableEvent();
         }
 
         public override void OnWire()

@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e58fcdd9b1e00db45bde636b09c47931, type: 3}
+  m_Script: {fileID: 11500000, guid: 41e3f2c1bbf34703b83a52d94cb1e0c6, type: 3}
   m_Name: Stand
   m_EditorClassIdentifier:
   inputAction: {fileID: 1084935737492431555, guid: 1f23a80f490ee6b46bd4db1b0c98d550, type: 3}

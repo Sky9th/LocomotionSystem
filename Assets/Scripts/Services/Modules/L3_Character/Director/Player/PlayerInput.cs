@@ -22,13 +22,13 @@ namespace RedDust.Character.Director
         internal bool SencondSkillRequested { get; set; }
 
         // ── 事件通道 ──
-        private ButtonInputEventSO crouchEvent;
-        private ButtonInputEventSO sprintEvent;
-        private ButtonInputEventSO proneEvent;
-        private ButtonInputEventSO standEvent;
-        private ButtonInputEventSO secondaryInteractEvent;
-        private ButtonInputEventSO firstSkillEvent;
-        private ButtonInputEventSO secondSkillEvent;
+        private CrouchInputEventSO crouchEvent;
+        private SprintInputEventSO sprintEvent;
+        private ProneInputEventSO proneEvent;
+        private StandInputEventSO standEvent;
+        private SecondaryInteractInputEventSO secondaryInteractEvent;
+        private Skill1InputEventSO firstSkillEvent;
+        private Skill2InputEventSO secondSkillEvent;
 
         // ── TEMP ──
         private EventDispatcherService dispatcher;
@@ -44,13 +44,13 @@ namespace RedDust.Character.Director
 
         public void BindEvents()
         {
-            crouchEvent = eventHub.Get<ButtonInputEventSO>("Crouch");
-            sprintEvent = eventHub.Get<ButtonInputEventSO>("Sprint");
-            proneEvent = eventHub.Get<ButtonInputEventSO>("Prone");
-            standEvent = eventHub.Get<ButtonInputEventSO>("Stand");
-            secondaryInteractEvent = eventHub.Get<ButtonInputEventSO>("SecondaryInteract");
-            firstSkillEvent = eventHub.Get<ButtonInputEventSO>("Skill 1");
-            secondSkillEvent = eventHub.Get<ButtonInputEventSO>("Skill 2");
+            crouchEvent = eventHub.Get<CrouchInputEventSO>();
+            sprintEvent = eventHub.Get<SprintInputEventSO>();
+            proneEvent = eventHub.Get<ProneInputEventSO>();
+            standEvent = eventHub.Get<StandInputEventSO>();
+            secondaryInteractEvent = eventHub.Get<SecondaryInteractInputEventSO>();
+            firstSkillEvent = eventHub.Get<Skill1InputEventSO>();
+            secondSkillEvent = eventHub.Get<Skill2InputEventSO>();
 
             crouchEvent.OnRaised += OnCrouch;
             sprintEvent.OnRaised += OnSprint;

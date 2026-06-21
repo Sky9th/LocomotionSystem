@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace RedDust.Core
 {
     public abstract class Module : IInitializable

@@ -4,25 +4,21 @@ namespace RedDust.Core
 {
     public abstract class ModuleBehaviour : MonoBehaviour, IInitializable
     {
-        internal ModuleRegistry Registry { get; private set; }
+        private ModuleRegistry _registry;
+        internal ModuleRegistry Registry => _registry ??= new ModuleRegistry();
 
         protected virtual void Awake()
         {
-            Registry = new ModuleRegistry();
-
-            foreach (var m in GetComponentsInChildren<IInitializable>())
-            {
-                if (m is ModuleBehaviour) continue;
-                Registry.Register(m);
-            }
-
             OnAssemble();
-            Registry.OnAssembleAll();
         }
 
-        protected virtual void Start() => OnWire();
+        protected virtual void Start()
+        {
+            Registry.OnAssembleAll();
+            OnWire();
+        }
 
-        public virtual void OnAssemble() { }
+        public virtual void OnAssemble() {}
 
         public virtual void OnWire()
         {

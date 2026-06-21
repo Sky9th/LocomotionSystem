@@ -21,7 +21,11 @@ namespace RedDust.Character.Director
         public override void OnAssemble()
         {
             input = new PlayerInput(ctx.EventHub);
-            ctx.EventHub.RegisterListener(input);
+        }
+
+        public override void OnWire()
+        {
+            input.BindEvents();
         }
 
         private int debugGripIndex = 0;

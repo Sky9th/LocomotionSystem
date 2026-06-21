@@ -19,7 +19,7 @@ namespace RedDust.GameState
 		private bool hasInitialized;
 		[SerializeField] private EGameState currentState;
 		[SerializeField] private EGameState previousState;
-		[SerializeField] private ButtonInputEventSO escapeEvent;
+		[SerializeField] private EscapeInputEventSO escapeEvent;
 		private EventDispatcherService _dispatcher; // TODO: 替换为 EventHub — EventDispatcher 即将废弃
 		private LogChannel _log;
 
@@ -99,7 +99,7 @@ namespace RedDust.GameState
 			ApplyCursorMode(currentState);
 
 			var snapshot = new SGameState(currentState, previousState);
-			_log.Info($"Transition: {previousState} -> {currentState}");
+			//_log.Info($"Transition: {previousState} -> {currentState}");
 			_dispatcher?.Publish(snapshot);
 
 			if (logTransitions)
