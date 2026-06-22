@@ -46,6 +46,12 @@ namespace RedDust.Character
 
         public TraversalAnimationSetSO TraversalSet => AnimationProfile?.traversalSet;
 
+        /// <summary>
+        /// 握持/装备标签缓存。TODO: 装备系统完成后由 GripSwitchEvent / EquipmentManager 接管，
+        /// 当前 PlayerDirector.ProcessEquipInput 直接写入，Update 做动画集解析消费。
+        /// </summary>
+        public GameplayTagContainer OwnedGripTags { get; } = new();
+
         // ── 系统级物理配置（世界定义，所有角色共享） ──
         public GroundSystemConfigSO GroundSystemConfig { get; }
 

@@ -8,7 +8,7 @@ namespace RedDust.Ability
     /// 负责接收面 ⑥⑦⑧：结算 SDamageInfo → 落地伤害 → 触发反应 → 广播事件。
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class AbilityReactor : MonoBehaviour
+    public sealed class AbilityReactor : ModuleChildMono
     {
         private HitEventSO hitEvent;
 
@@ -24,7 +24,7 @@ namespace RedDust.Ability
         /// <summary>被动通知回调。外部触发目标自身 OnDamaged 被动。</summary>
         public System.Action<SDamageInfo, float> OnDamagedCallback;
 
-        private void Awake()
+        public override void OnWire()
         {
             hitEvent = GetComponent<EventHub>()?.Get<HitEventSO>();
         }

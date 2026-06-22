@@ -18,6 +18,7 @@ namespace RedDust.Character
     [DisallowMultipleComponent]
     [RequireComponent(typeof(EventHub))]
     [RequireComponent(typeof(PropertyAgent))]
+    [RequireComponent(typeof(AbilityReactor))]
     /// <summary>继承 ModuleHub。pre-assemble 在 base.Awake 之前，post-wire 在 base.Start 之后。</summary>
     public partial class CharacterActor : ModuleHub
     {
@@ -216,7 +217,7 @@ namespace RedDust.Character
 
                 // BodyForm 由 Director 意图驱动（Equip 事件 → PlayerInput → Director → Intent），此处为消费方同步。
                 // AnimSet 每帧解析在装备系统提供 GripSwitchEvent 前是可接受的实现。
-                var ownedTags = buildCtx.Ability?.OwnedTags;
+                var ownedTags = buildCtx.OwnedGripTags;
                 buildCtx.BodyForm = intent.DesiredBodyForm;
                 buildCtx.ResolvedLocoAnimSet = buildCtx.GripTable?.Resolve(ownedTags, buildCtx.BodyForm)
                     ?? buildCtx.DefaultLocomotionSet;

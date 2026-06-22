@@ -73,8 +73,7 @@ namespace RedDust.Character.Director
         {
             var table = ctx.GripTable;
             if (table == null || table.entries == null || table.entries.Length == 0) return;
-            var ownedTags = ctx.Ability?.OwnedTags;
-            if (ownedTags == null) return;
+            var ownedTags = ctx.OwnedGripTags;
 
             for (int i = 0; i < equippedSlots.Length; i++)
             {
