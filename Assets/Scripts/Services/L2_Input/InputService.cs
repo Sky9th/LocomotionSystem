@@ -1,6 +1,7 @@
 using RedDust.Core;
 using RedDust.GameState;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace RedDust.GameInput
 {
@@ -11,6 +12,10 @@ namespace RedDust.GameInput
     public class InputService : ModuleChildMono
     {
         [SerializeField] private InputEventBase[] inputEvents = System.Array.Empty<InputEventBase>();
+        [SerializeField] private InputActionAsset inputActionAsset;
+
+        public InputEventBase[] InputEvents => inputEvents;
+        public InputActionAsset InputActionAsset => inputActionAsset;
 
         // ── Lifecycle ──
 

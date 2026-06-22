@@ -15,6 +15,8 @@ namespace RedDust.GameInput
         [Header("Input Binding")]
         [SerializeField] private InputActionReference inputAction;
 
+        public InputActionReference InputActionRef => inputAction;
+
         [Header("State Permission")]
         [SerializeField] private EGameState[] supportedStates = Array.Empty<EGameState>();
 

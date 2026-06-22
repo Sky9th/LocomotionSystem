@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c56e2617a74140240adab9aa81549526, type: 3}
   m_Name: Skill3
   m_EditorClassIdentifier: 
-  inputAction: {fileID: 8596092178668496199, guid: 1f23a80f490ee6b46bd4db1b0c98d550,
+  inputAction: {fileID: 5663190472751788738, guid: 1f23a80f490ee6b46bd4db1b0c98d550,
     type: 3}
   supportedStates: 
