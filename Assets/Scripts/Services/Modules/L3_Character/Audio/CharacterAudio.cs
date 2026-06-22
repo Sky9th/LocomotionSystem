@@ -5,7 +5,7 @@ using RedDust.Character.Animation;
 
 namespace RedDust.Character.Audio
 {
-    public sealed class CharacterAudio : ModuleComponent
+    public sealed class CharacterAudio : ModuleChildMono
     {
         [SerializeField] private AudioSource footSource;
         private AnimationBrain brain;

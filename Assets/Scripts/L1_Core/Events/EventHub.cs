@@ -5,11 +5,11 @@ using UnityEngine;
 namespace RedDust.Core
 {
     /// <summary>
-    /// 事件通道汇入点。ModuleComponent，挂载在 ModuleBehaviour 所在 GameObject。
+    /// 事件通道汇入点。ModuleChildMono，挂载在 ModuleHub 所在 GameObject。
     /// 发布方和订阅方通过 Get&lt;T&gt;() 获取通道引用。
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class EventHub : ModuleComponent
+    public sealed class EventHub : ModuleChildMono
     {
         [SerializeField] private EventChannelBase[] channels = Array.Empty<EventChannelBase>();
 

@@ -10,7 +10,7 @@ using UnityEngine;
 namespace RedDust.UI
 {
 
-    public class UIService : ModuleComponent, IGameplaySessionHandler
+    public class UIService : ModuleChildMono, IGameplaySessionHandler
     {
         [Header("Config")]
         [SerializeField] private UIPanelConfigSO panelConfig;
@@ -34,23 +34,18 @@ namespace RedDust.UI
         public override void OnAssemble()
         {
             if (panelConfig != null) panelConfig.BuildLookup();
+
+            GameContext.Instance.RegisterService(this);
         }
 
         public override void OnWire()
         {
-            GameContext.Instance.RegisterService(this);
             GameContext.Instance.TryResolveService(out _dispatcher);
             if (_dispatcher == null) return;
             _dispatcher.Subscribe<SGameState>(HandleGameState);
             _dispatcher.Subscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
             _dispatcher.Subscribe<SSceneLoadStart>(HandleSceneLoadStart);
             _dispatcher.Subscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
-
-            // Merged OnServicesReady — read initial game state if available
-            if (GameContext.Instance != null && GameContext.Instance.TryGetSnapshot(out SGameState state))
-                HandleGameState(state);
-
-            GameService.Instance?.NotifyServiceWired();
         }
 
         private void OnDestroy()

@@ -11,7 +11,7 @@ namespace RedDust.GameState
 	/// keep GameContext snapshots in sync.
 	/// </summary>
 	[DisallowMultipleComponent]
-	public class GameStateService : ModuleComponent
+	public class GameStateService : ModuleChildMono
 	{
 		[Header("State Options")]
 		[SerializeField] private EGameState initialState = EGameState.MainMenu;
@@ -50,14 +50,13 @@ namespace RedDust.GameState
 				Debug.Log($"[GameState] Bootstrap at {currentState}.", this);
 			}
 
+			GameContext.Instance.RegisterService(this);
 		}
 
 		public override void OnWire()
 		{
-            GameContext.Instance.RegisterService(this);
 			GameContext.Instance.TryResolveService(out _dispatcher);
 			hasInitialized = true;
-			ApplyState(currentState, force: true);
 
 			if (_dispatcher != null)
 			{
@@ -67,7 +66,11 @@ namespace RedDust.GameState
 			if (escapeEvent != null) escapeEvent.OnRaised += OnEscape;
 		else Debug.LogWarning($"[GameState] escapeEvent not assigned — Esc key will not toggle Pause.", this);
 
-            GameService.Instance?.NotifyServiceWired();
+		}
+
+		private void Start()
+		{
+			ApplyState(currentState, force: true);
 		}
 
 		public bool RequestState(EGameState nextState)
@@ -99,7 +102,7 @@ namespace RedDust.GameState
 			ApplyCursorMode(currentState);
 
 			var snapshot = new SGameState(currentState, previousState);
-			//_log.Info($"Transition: {previousState} -> {currentState}");
+			GameContext.Instance.UpdateSnapshot(snapshot);
 			_dispatcher?.Publish(snapshot);
 
 			if (logTransitions)

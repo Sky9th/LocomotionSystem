@@ -4,7 +4,7 @@ using RedDust.Core;
 
 namespace RedDust.Character.Kinematic
 {
-    internal sealed class CharacterKinematic : Module
+    internal sealed class CharacterKinematic : ModuleChild
     {
         private readonly CharacterBuildContext ctx;
 

@@ -7,7 +7,7 @@ namespace RedDust.GameCamera
 {
     [DefaultExecutionOrder(-400)]
     [DisallowMultipleComponent]
-    public class CameraService : ModuleComponent, IGameplaySessionHandler
+    public class CameraService : ModuleChildMono, IGameplaySessionHandler
     {
         [Header("Cinemachine Wiring")]
         [SerializeField] private CinemachineBrain cameraBrain;
@@ -47,16 +47,15 @@ namespace RedDust.GameCamera
             EnsureDefaultVirtualCamera();
             CreateCameraPivot();
             InitializeDefaultRig();
+
+            GameContext.Instance.RegisterService(this);
         }
 
         public override void OnWire()
         {
-            GameContext.Instance.RegisterService(this);
             GameContext.Instance.TryResolveService(out _dispatcher);
             if (_dispatcher != null)
                 _dispatcher.Subscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
-
-            GameService.Instance?.NotifyServiceWired();
         }
 
         private void PublishSnapshot<TSnapshot>(TSnapshot snapshot) where TSnapshot : struct

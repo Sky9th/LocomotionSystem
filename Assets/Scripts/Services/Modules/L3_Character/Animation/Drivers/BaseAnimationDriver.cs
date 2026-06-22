@@ -5,7 +5,7 @@ using RedDust.Character;
 
 namespace RedDust.Character.Animation.Drivers
 {
-    public abstract class BaseAnimationDriver : ModuleComponent, ICharacterAnimationDriver
+    public abstract class BaseAnimationDriver : ModuleChildMono, ICharacterAnimationDriver
     {
         protected AnimationBrain brain;
 

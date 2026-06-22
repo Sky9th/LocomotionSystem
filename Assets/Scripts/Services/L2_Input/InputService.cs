@@ -8,7 +8,7 @@ namespace RedDust.GameInput
     /// 输入服务。绑定 InputAction、管理 EventSO 生命周期、响应 GameState 门控。
     /// </summary>
     [DisallowMultipleComponent]
-    public class InputService : ModuleComponent
+    public class InputService : ModuleChildMono
     {
         [SerializeField] private InputEventBase[] inputEvents = System.Array.Empty<InputEventBase>();
 
@@ -18,15 +18,12 @@ namespace RedDust.GameInput
         {
             foreach (var evt in inputEvents)
                 evt.InitializeEvent();
-            if (isActiveAndEnabled)
-                foreach (var evt in inputEvents)
-                    evt.EnableEvent();
+
+            GameContext.Instance.RegisterService(this);
         }
 
         public override void OnWire()
         {
-            GameContext.Instance.RegisterService(this);
-            GameService.Instance?.NotifyServiceWired();
         }
 
         private void OnEnable()

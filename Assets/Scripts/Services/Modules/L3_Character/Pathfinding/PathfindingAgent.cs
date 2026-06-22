@@ -7,7 +7,7 @@ namespace RedDust.Character.Pathfinding
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Seeker), typeof(AIPath))]
-    public sealed class PathfindingAgent : ModuleComponent
+    public sealed class PathfindingAgent : ModuleChildMono
     {
         private Seeker seeker;
         private AIPath ai;

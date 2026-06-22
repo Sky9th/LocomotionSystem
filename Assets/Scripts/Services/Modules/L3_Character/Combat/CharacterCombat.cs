@@ -8,7 +8,7 @@ namespace RedDust.Character.Combat
     /// <summary>
     /// 战斗中枢。桥接 Ability 管道与 Character 属性系统。
     /// </summary>
-    internal sealed class CharacterCombat : Module
+    internal sealed class CharacterCombat : ModuleChild
     {
         private readonly CharacterBuildContext ctx;
 

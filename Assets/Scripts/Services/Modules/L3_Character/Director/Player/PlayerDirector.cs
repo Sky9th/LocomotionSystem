@@ -4,7 +4,7 @@ using RedDust.Character;
 
 namespace RedDust.Character.Director
 {
-    internal sealed class PlayerDirector : Module, ICharacterDirector
+    internal sealed class PlayerDirector : ModuleChild, ICharacterDirector
     {
         private readonly CharacterBuildContext ctx;
         private PlayerInput input;

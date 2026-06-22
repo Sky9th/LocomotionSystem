@@ -1,6 +1,6 @@
 # BaseService · Service 基类（已删除）
 
-> **v0.16.0 已删除。** Service 现在直接继承 `ModuleComponent`，通过 `OnAssemble` / `OnWire` 自管理。
+> **v0.16.0 已删除。** Service 现在直接继承 `ModuleChildMono`，通过 `OnAssemble` / `OnWire` 自管理。
 
 ## 迁移说明
 

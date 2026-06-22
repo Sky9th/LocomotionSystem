@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace RedDust.GameTime
 {
-    public class TimeService : ModuleComponent
+    public class TimeService : ModuleChildMono
     {
         [SerializeField, Min(0.1f)] private float minScale = 0.2f;
         [SerializeField, Min(0.1f)] private float maxScale = 1f;
@@ -18,18 +18,17 @@ namespace RedDust.GameTime
         public override void OnAssemble()
         {
             defaultScale = Mathf.Max(Time.timeScale, minScale);
+
+            GameContext.Instance.RegisterService(this);
         }
 
         public override void OnWire()
         {
-            GameContext.Instance.RegisterService(this);
             GameContext.Instance.TryResolveService(out _dispatcher);
             _dispatcher.Subscribe<SIActionWorldSpeed>(HandleTimeScaleRequested);
             _dispatcher.Subscribe<SSceneLoadStart>(HandleSceneLoadStart);
             _dispatcher.Subscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
             _dispatcher.Subscribe<SGameState>(HandleGameStateChanged);
-
-            GameService.Instance?.NotifyServiceWired();
         }
 
         private void HandleSceneLoadStart(SSceneLoadStart _, MetaStruct __)

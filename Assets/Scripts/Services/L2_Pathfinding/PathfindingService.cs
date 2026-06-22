@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace RedDust.Pathfinding
 {
-    public class PathfindingService : ModuleComponent, IGameplaySessionHandler
+    public class PathfindingService : ModuleChildMono, IGameplaySessionHandler
     {
         private AstarPath graph;
         private LogChannel _log;
@@ -22,16 +22,15 @@ namespace RedDust.Pathfinding
                 return;
             }
 
-            _log.Info("Assembled.");
+            graph.Scan();
+            _log.Info("Assembled and graph scanned.");
+
+            GameContext.Instance.RegisterService(this);
         }
 
         public override void OnWire()
         {
-            GameContext.Instance.RegisterService(this);
             GameContext.Instance.TryResolveService(out _dispatcher);
-            Scan();
-
-            GameService.Instance?.NotifyServiceWired();
         }
 
         private void OnDestroy()

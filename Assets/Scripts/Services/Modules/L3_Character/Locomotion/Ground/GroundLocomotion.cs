@@ -5,7 +5,7 @@ using RedDust.Core;
 
 namespace RedDust.Character.Locomotion
 {
-    internal sealed class GroundLocomotion : Module, ILocomotionSimulator
+    internal sealed class GroundLocomotion : ModuleChild, ILocomotionSimulator
     {
         private readonly Motor motor = new();
         private readonly Stance stance = new();

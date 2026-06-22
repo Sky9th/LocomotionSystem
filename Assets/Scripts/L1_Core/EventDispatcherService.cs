@@ -9,16 +9,18 @@ namespace RedDust.Core
     /// </summary>
     [System.Obsolete("替换为 EventHub — EventDispatcher 即将废弃")]
     [DisallowMultipleComponent]
-    public class EventDispatcherService : ModuleComponent
+    public class EventDispatcherService : ModuleChildMono
     {
         private readonly Dictionary<Type, List<Delegate>> listeners = new();
         [SerializeField] private List<string> inspectorListeners = new();
 
-        public override void OnWire()
+        public override void OnAssemble()
         {
             GameContext.Instance.RegisterService(this);
+        }
 
-            GameService.Instance?.NotifyServiceWired();
+        public override void OnWire()
+        {
         }
 
         public void Subscribe<TPayload>(Action<TPayload, MetaStruct> handler)

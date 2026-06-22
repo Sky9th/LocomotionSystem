@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 namespace RedDust.GameScene
 {
-    public class SceneService : ModuleComponent
+    public class SceneService : ModuleChildMono
     {
         [SerializeField, Min(0.1f)] private float minLoadingDisplayTime = 0.5f;
 
@@ -21,17 +21,15 @@ namespace RedDust.GameScene
 
         public override void OnAssemble()
         {
+            GameContext.Instance.RegisterService(this);
         }
 
         public override void OnWire()
         {
-            GameContext.Instance.RegisterService(this);
             GameContext.Instance.TryResolveService(out _dispatcher);
             _dispatcher.Subscribe<SLoadSceneRequest>(HandleLoadSceneRequest);
             _dispatcher.Subscribe<SReloadSceneRequest>(HandleReloadSceneRequest);
             _dispatcher.Subscribe<SUnloadSceneRequest>(HandleUnloadSceneRequest);
-
-            GameService.Instance?.NotifyServiceWired();
         }
 
         private void PublishSnapshot<TSnapshot>(TSnapshot snapshot) where TSnapshot : struct

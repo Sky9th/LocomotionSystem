@@ -1,70 +1,164 @@
-# Module 系统 · 树形生命周期统一链路
+# Module 系统 · 架构参考
 
-> `L1_Core/Modules/` — 基于 `IInitializable` 的树形模块工具集，覆盖 C# / MB / 父 / 子全部角色
+> `L1_Core/Modules/` — ModuleHub / ModuleChildMono / ModuleChild / ModuleRegistry / IModuleChild
 
-## 层级定位
+## 类型
 
-L1。与 `IInitializable` 同级，是协议的上层工具封装。任何需要树形父子模块管理的节点均可使用。
+### ModuleHub — 父节点
 
-## 调用链
+```csharp
+public abstract class ModuleHub : MonoBehaviour
+{
+    private ModuleRegistry _registry;
+    internal ModuleRegistry Registry => _registry ??= new ModuleRegistry();
+
+    protected virtual void Awake()
+    {
+        foreach (var child in GetComponentsInChildren<ModuleChildMono>(includeInactive: true))
+        {
+            var owner = child.GetComponentInParent<ModuleHub>(includeInactive: true);
+            if (owner == this)
+                Registry.Register(child);
+        }
+        Registry.OnAssembleAll();
+    }
+
+    protected virtual void Start()
+    {
+        Registry.OnWireAll();
+    }
+}
+```
+
+- 持有 `Registry`（惰性创建 `??=`）
+- 在 Awake 末尾搜索 ModuleChildMono 子模块、注册、调 OnAssembleAll
+- 在 Start 调 OnWireAll
+- **不实现** IModuleChild，没有 OnAssemble / OnWire
+
+### ModuleChildMono — MB 子节点
+
+```csharp
+public abstract class ModuleChildMono : MonoBehaviour, IModuleChild
+{
+    public virtual void OnAssemble() { }
+    public virtual void OnWire() { }
+}
+```
+
+- 实现 IModuleChild
+- Awake 无基类逻辑（留给子类做仅依赖自身序列化字段的 setup）
+- 不自注册。由父 Hub 搜到并 Register
+
+### ModuleChild — C# 子节点
+
+```csharp
+public abstract class ModuleChild : IModuleChild
+{
+    protected ModuleChild(ModuleRegistry parent)
+    {
+        parent.Register(this);
+    }
+
+    public virtual void OnAssemble() { }
+    public virtual void OnWire() { }
+}
+```
+
+- 实现 IModuleChild
+- 构造函数自注册到父 Registry
+- 没有 MonoBehaviour（无 Awake / OnEnable / OnDisable / OnDestroy）
+
+### ModuleRegistry — 收集器
+
+```csharp
+public sealed class ModuleRegistry
+{
+    readonly List<IModuleChild> _modules = new();
+
+    public int Count => _modules.Count;
+
+    internal void Register(IModuleChild module)
+    {
+        if (!_modules.Contains(module))
+            _modules.Add(module);
+    }
+
+    public void OnAssembleAll()
+    {
+        foreach (var m in _modules) m.OnAssemble();
+    }
+
+    public void OnWireAll()
+    {
+        foreach (var m in _modules) m.OnWire();
+    }
+}
+```
+
+### IModuleChild — 子模块接口
+
+```csharp
+public interface IModuleChild
+{
+    void OnAssemble();
+    void OnWire();
+}
+```
+
+位于 `L1_Core/Modules/`。
+
+## 注册路径
 
 ```
-ModuleBehaviour.Awake()
-  ├── Registry = new ModuleRegistry()
-  ├── GetComponentsInChildren<IInitializable>()  → 发现 MB 子模块，Registry.Register()
-  ├── OnAssemble()                                → 子类 override：创建 C# 子模块（Module 构造里自注册）
-  └── Registry.OnAssembleAll()                    → 遍历所有已注册子模块 OnAssemble()
-
-ModuleBehaviour.Start()
-  └── OnWire()
-        ├── 子类 override：额外操作（如 agent.AddModifier）
-        └── base.OnWire() → Registry.OnWireAll()  → 遍历所有子模块 OnWire()
+ModuleHub.Awake
+  │
+  ├── [子类在 base.Awake 之前] new C# 子
+  │       ModuleChild 构造 ──→ Registry.Register(this)
+  │
+  └── [基类 Awake 内] GetComponentsInChildren<ModuleChildMono>(includeInactive: true)
+        │
+        └── foreach child → GetComponentInParent<ModuleHub>(includeInactive: true)
+              │
+              ├── == this  → Registry.Register(child)
+              └── != this  → 跳过（归属更近的 Hub）
 ```
 
-## 耦合模块
+## 嵌套 Hub 边界
 
-| 方向 | 模块 | 关系 |
-|------|------|------|
-| 依赖 | `IInitializable` | Module 系统是 IInitializable 的工具封装 |
-| 被依赖 | CharacterActor | 继承 ModuleBehaviour |
-| 被依赖 | PlayerDirector 等 C# 子模块 | 继承 Module |
-| 被依赖 | LocomotionDriver 等 MB 子模块 | 继承 ModuleComponent |
-| 被依赖 | BaseCharacterAnimationDriver | 继承 ModuleComponent，所有动画驱动自动获得注册能力 |
+```
+CharacterActor (ModuleHub)              ← 根 Hub
+├── EventHub (ModuleChildMono)          ← 归属 CharacterActor
+└── AnimationBrain (ModuleHub)          ← 子 Hub，不在 CharacterActor.Registry 中
+    ├── LocomotionDriver (ModuleChildMono)  ← 归属 AnimationBrain
+    └── TraversalDriver (ModuleChildMono)   ← 归属 AnimationBrain
+```
 
-## 四个工具
+`GetComponentInParent<ModuleHub>` 保证每个 ModuleChildMono 归入最近的 Hub。子 Hub 不在父 Hub 的 Registry 中，两棵树生命周期独立。
 
-| 类 | 定位 | 谁用 | 注册方式 |
-|----|------|------|---------|
-| `ModuleRegistry` | 收集器 | 任何树节点持有 | `Register(module)` |
-| `Module` | C# 子模块基类 | 纯 C# 子模块 | 构造 `base(parent)` 自动注册 |
-| `ModuleBehaviour` | MB 父模块基类 | MB 父节点 | Awake 创建 Registry + 自动发现 MB 子 + OnAssembleAll |
-| `ModuleComponent` | MB 子模块基类 | MB 子模块（Animation 驱动等） | OnAssemble 自动向上查找父 Registry 注册 |
+## 子类用法
 
-## 设计决策
+```
+Hub 子类 Awake:
+  1. SetupModel / ResolveComponents
+  2. new C# 子（构造自注册）
+  3. base.Awake()  ← 发现 MB 子 + OnAssembleAll
 
-| 决策 | 原因 |
-|------|------|
-| 四个类共用一个 `Module` 前缀 | 一眼识别为同一系统 |
-| C# 和 MB 分开两个基类 | C# 单继承限制——MB 必须继承 MonoBehaviour |
-| `ModuleBehaviour.Awake` 自动发现 MB 子组件 | 父模块不应手动维护子模块列表 |
-| `ModuleBehaviour.Awake` 末尾自动调 `OnAssembleAll` | 与 OnAssemble 对称，消除手动调用 |
-| `ModuleBehaviour.Start` 自动调 `OnWire` | 与 OnAssemble 对称 |
-| `ModuleRegistry.Register` 去重 | 防止 MB 发现 + ModuleComponent.OnAssemble 双注册 |
-| `ModuleRegistry.Register` 为 `internal` | 仅同 assembly 的 ModuleBehaviour 创建和 Module/ModuleComponent 自注册使用 |
+Hub 子类 Start:
+  1. [可选] pre-wire（子 OnWire 依赖的共享资源）
+  2. base.Start()  ← OnWireAll
+  3. [可选] post-wire（依赖子 OnWire 结果的收尾）
+```
 
-## 未来规划
+## 约束
 
-| 规划 | 状态 | 依赖 | 来源 |
-|------|------|------|------|
-| ~~BaseService 继承 ModuleBehaviour~~ | ~~v0.16.0 已删除 — Service 直接继承 ModuleComponent~~ | — | 统一 L1→L2 树形链路 |
-| ~~GameService 继承 ModuleBehaviour~~ | ~~v0.16.0 已完成~~ | — | L1 根节点统一管理 |
-| C# 父模块 Pattern 封装 | 观察中 | Module 添加内置 Registry | 如果 C# 父子模式频繁出现 |
+| # | 约束 |
+|---|------|
+| 1 | ModuleChildMono 不在 Awake 做初始化 — OnAssemble 可能在 Awake 之前调用 |
+| 2 | ModuleChildMono 起始 enabled — disabled 组件 OnEnable 被跳过，OnWire 先于 OnEnable |
+| 3 | Hub GO 起始 active — inactive GO 的 Start 被推迟，OnWire 延后 |
+| 4 | 同级子不互相依赖 OnAssemble 顺序 — C# 先注册、MB 后注册 |
+| 5 | OnAssemble 中创建孙子不保证其 OnAssemble 被调用 — OnAssembleAll 遍历快照 |
 
-## 子文档索引
+## 相关文档
 
-| 文档 | 文件 |
-|------|------|
-| [module-registry.md](module-registry.md) | ModuleRegistry |
-| [module.md](module.md) | Module |
-| [module-behaviour.md](module-behaviour.md) | ModuleBehaviour |
-| [module-component.md](module-component.md) | ModuleComponent |
+- [module-lifecycle.md](module-lifecycle.md) — 生命周期时序

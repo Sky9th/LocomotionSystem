@@ -7,7 +7,7 @@
 ---
 
 ```
-CharacterActor : ModuleBehaviour
+CharacterActor : ModuleHub
 │
 │  Awake: ResolveComponents() 收集自身 GameObject 上组件:
 │    AnimationBrain, EventHub, PropertyAgent,
@@ -67,7 +67,7 @@ CharacterActor : ModuleBehaviour
 │     出: 桥接 Ability ↔ Properties
 │
 ├── [Model 子节点, Awake 触发]
-│   AnimationBrain : ModuleBehaviour
+│   AnimationBrain : ModuleHub
 │     ⚠ Awake: GetComponentInParent<CharacterActor>() → _actor
 │     ⚠ 从 _actor 读: Masks×5, AnimationAliasProfile,
 │                      LocomotionAnimationProfile, ForwardRootMotion …
@@ -111,14 +111,14 @@ CharacterActor : ModuleBehaviour
 │           OnStarted/OnCompleted → 控制 Rig 物理
 │
 ├── [Model 子节点]
-│   CharacterAudio : ModuleComponent
+│   CharacterAudio : ModuleChildMono
 │     ⚠ Config getter: GetComponentInParent<CharacterActor>()
 │                      ?.CharacterAudioConfig
 │     OnWire → 订阅 AnimationBrain.OnFootstep
 │     HandleFootstep → AudioChannel.Play
 │
 └── [根 GameObject]
-    PathfindingAgent : ModuleComponent
+    PathfindingAgent : ModuleChildMono
       OnAssemble → GetComponent<Seeker>(), GetComponent<AIPath>()
       SyncLocomotion(in SCharacterDiscrete) → 同步速度
       SetDestination(Vector3) → 寻路

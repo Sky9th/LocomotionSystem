@@ -11,7 +11,7 @@ namespace RedDust.Character.Animation
 {
     [DefaultExecutionOrder(-10)]
     [DisallowMultipleComponent]
-    public sealed class AnimationBrain : ModuleBehaviour
+    public sealed class AnimationBrain : ModuleHub
     {
         // ── Constants ──
         public const int TotalLayerCount = 7;
@@ -66,34 +66,18 @@ namespace RedDust.Character.Animation
 
         protected override void Awake()
         {
-            // 装配 Drivers。ModuleComponent.Awake 自注册到 Registry。
+            // 装配 Drivers。AddComponent 立即触发其 Awake，之后 base.Awake() 扫描发现。
             gameObject.AddComponent<LocomotionDriver>();
             gameObject.AddComponent<TraversalDriver>();
-            
-            base.Awake();  // Registry + OnAssemble + OnAssembleAll
 
+            base.Awake();  // 扫描 ModuleChildMono → Register → OnAssembleAll
         }
 
-        private void OnAnimatorMove()
+        protected override void Start()
         {
-            if (buildCtx == null) return;
-            var rig = buildCtx.Rig;
-            if (!buildCtx.ForwardRootMotion || animator == null || rig == null) return;
-
-            if (rig.SuppressGroundLock)
-                rig.ApplyPosition(animator.deltaPosition);
-            else
-                rig.ApplyPositionPlanar(animator.deltaPosition);
-
-            if (buildCtx.ApplyRootMotionRotation)
-                rig.ApplyRotation(animator.deltaRotation);
-        }
-
-        public override void OnWire()
-        {
+            // ── pre-wire: 解析父 CharacterActor、设置动画图层 ──
             buildCtx = GetComponentInParent<CharacterActor>()?.BuildContext;
 
-            // ── 图层初始化（依赖 buildCtx，在 OnWire 阶段父 OnAssemble 已就位） ──
             if (animancer == null) animancer = GetComponentInChildren<NamedAnimancerComponent>();
             if (animator == null) animator = GetComponentInChildren<Animator>();
             if (animancer != null)
@@ -109,18 +93,29 @@ namespace RedDust.Character.Animation
                 BindLayer(Facial, buildCtx.FacialMask);
                 headLookLayer = BindLayer(HeadLook, buildCtx.HeadMask);
                 BindLayer(Footstep, buildCtx.FootMask);
-
-                // TODO: migrated lookMixer to LocomotionAnimationConfigSO
-                // if (headLookLayer != null && buildCtx.AnimationAlias?.lookMixer != null)
-                //     headLookMixer = headLookLayer.TryPlay(buildCtx.AnimationAlias.lookMixer) as Vector2MixerState;
             }
 
-            base.OnWire();  // LocomotionDriver.OnWire 创建 BaseLayer
-            // TODO: 桥接 BaseLayer.FootstepCallback → AnimationBrain.OnFootstep 事件
-            // 当前是临时方案——未来 BaseLayer 应通过 EventHub 发布，去掉这层桥接。
+            base.Start();  // Registry.OnWireAll() → LocomotionDriver.OnWire 创建 BaseLayer
+
+            // ── post-wire: 桥接 footstep 回调 ──
             var locoDriver = GetComponent<LocomotionDriver>();
             if (locoDriver?.BaseLayer != null)
                 locoDriver.BaseLayer.FootstepCallback = () => OnFootstep?.Invoke();
+        }
+
+        private void OnAnimatorMove()
+        {
+            if (buildCtx == null) return;
+            var rig = buildCtx.Rig;
+            if (!buildCtx.ForwardRootMotion || animator == null || rig == null) return;
+
+            if (rig.SuppressGroundLock)
+                rig.ApplyPosition(animator.deltaPosition);
+            else
+                rig.ApplyPositionPlanar(animator.deltaPosition);
+
+            if (buildCtx.ApplyRootMotionRotation)
+                rig.ApplyRotation(animator.deltaRotation);
         }
 
         // ── Core API ──

@@ -18,8 +18,8 @@ namespace RedDust.Character
     [DisallowMultipleComponent]
     [RequireComponent(typeof(EventHub))]
     [RequireComponent(typeof(PropertyAgent))]
-    /// <summary>继承 ModuleBehaviour。OnAssemble 在 Awake 末尾，OnWire 在 Start。</summary>
-    public partial class CharacterActor : ModuleBehaviour
+    /// <summary>继承 ModuleHub。pre-assemble 在 base.Awake 之前，post-wire 在 base.Start 之后。</summary>
+    public partial class CharacterActor : ModuleHub
     {
         [Header("Identity")]
         [SerializeField] private bool isPlayer;
@@ -102,7 +102,42 @@ namespace RedDust.Character
         {
             SetupModel();
             ResolveComponents();
-            base.Awake();  // Registry + OnAssemble
+
+            // ── pre-assemble: 创建 C# 子模块（构造自注册到 Registry）──
+            characterRig = new CharacterRig(transform, modelRoot);
+
+            Physique = CharacterPhysique.FromAgent(agent);
+
+            buildCtx = new CharacterBuildContext(
+                root: transform, eventHub: eventHub, agent: agent,
+                ability: ability, reactor: reactor, pathfinding: pathfindingAgent,
+                modelRoot: modelRoot, rig: characterRig,
+                animationProfile: characterAnimationProfile,
+                groundSystemConfig: groundSystemConfig,
+                physique: Physique,
+                audioConfig: characterAudioConfig,
+                upperBodyMask: upperBodyMask, armMask: armMask, additiveMask: additiveMask,
+                facialMask: facialMask, headMask: headMask, footMask: footMask,
+                forwardRootMotion: forwardRootMotion,
+                applyRootMotionRotation: applyRootMotionRotation,
+                autoMatchAnimationSpeed: autoMatchAnimationSpeed,
+                skillSlot1: skillSlot1, skillSlot2: skillSlot2
+            );
+
+            if (isPlayer) director = new PlayerDirector(buildCtx, Registry);
+            else          director = new NpcDirector(buildCtx, Registry);
+            characterKinematic = new CharacterKinematic(buildCtx, Registry);
+            locomotionSimulator = new GroundLocomotion(Registry);
+            combat = new CharacterCombat(buildCtx, Registry);
+
+            // ModuleHub.Awake: 扫描 ModuleChildMono → Register → OnAssembleAll
+            base.Awake();
+        }
+
+        protected override void Start()
+        {
+            base.Start();  // Registry.OnWireAll()
+            agent.AddModifier(new FloatModifier { Owner = this, TargetPath = "Vitals/Hunger", Frequency = ModifierFrequency.PerSecond, Delta = -0.01f });
         }
 
         private void SetupModel()
@@ -136,41 +171,6 @@ namespace RedDust.Character
             Props = agent = GetComponent<PropertyAgent>();
             ability = GetComponent<AbilityExecutor>();
             reactor = GetComponent<AbilityReactor>();
-        }
-
-        public override void OnAssemble()
-        {
-            characterRig = new CharacterRig(transform, modelRoot);
-
-            Physique = CharacterPhysique.FromAgent(agent);
-
-            buildCtx = new CharacterBuildContext(
-                root: transform, eventHub: eventHub, agent: agent,
-                ability: ability, reactor: reactor, pathfinding: pathfindingAgent,
-                modelRoot: modelRoot, rig: characterRig,
-                animationProfile: characterAnimationProfile,
-                groundSystemConfig: groundSystemConfig,
-                physique: Physique,
-                audioConfig: characterAudioConfig,
-                upperBodyMask: upperBodyMask, armMask: armMask, additiveMask: additiveMask,
-                facialMask: facialMask, headMask: headMask, footMask: footMask,
-                forwardRootMotion: forwardRootMotion,
-                applyRootMotionRotation: applyRootMotionRotation,
-                autoMatchAnimationSpeed: autoMatchAnimationSpeed,
-                skillSlot1: skillSlot1, skillSlot2: skillSlot2
-            );
-
-            if (isPlayer) director = new PlayerDirector(buildCtx, Registry);
-            else          director = new NpcDirector(buildCtx, Registry);
-            characterKinematic = new CharacterKinematic(buildCtx, Registry);
-            locomotionSimulator = new GroundLocomotion(Registry);
-            combat = new CharacterCombat(buildCtx, Registry);
-        }
-
-        public override void OnWire()
-        {
-            base.OnWire();
-            agent.AddModifier(new FloatModifier { Owner = this, TargetPath = "Vitals/Hunger", Frequency = ModifierFrequency.PerSecond, Delta = -0.01f });
         }
 
         private void OnEnable() { }

@@ -4,11 +4,11 @@ namespace RedDust.Core
 {
     public sealed class ModuleRegistry
     {
-        readonly List<IInitializable> _modules = new();
+        readonly List<IModuleChild> _modules = new();
 
         public int Count => _modules.Count;
 
-        internal void Register(IInitializable module)
+        internal void Register(IModuleChild module)
         {
             if (!_modules.Contains(module))
                 _modules.Add(module);

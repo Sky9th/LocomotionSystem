@@ -4,9 +4,9 @@
 
 ## 层级定位
 
-L1 是架构的根。GameService 继承 ModuleBehaviour 作为 Module 树根节点，GameContext 做数据总线。
+L1 是架构的根。GameService 继承 ModuleHub 作为 Module 树根节点，GameContext 做数据总线。
 
-**向下管理 L2**：GameService 通过 Module 树自动发现所有 L2 Service。
+**向下管理 L2**：GameService 通过 ModuleHub.Awake 自动扫描发现所有 L2 Service。
 **不向上依赖**：L1 不依赖任何上层模块。
 
 ## 调用链
@@ -14,20 +14,17 @@ L1 是架构的根。GameService 继承 ModuleBehaviour 作为 Module 树根节�
 ```
 GameService.Awake() [order=-500, DontDestroyOnLoad]
   │
-  └── base.Awake()  → ModuleBehaviour
-      ├── Registry 创建 + 自动发现 IInitializable 子组件
-      ├── OnAssemble() → GameContext 主动创建 + Initialize
-      └── Registry.OnAssembleAll() → 所有 Service.OnAssemble()
+  ├── 单例守卫 + DontDestroyOnLoad
+  ├── GameContext 主动创建 + Initialize
+  └── base.Awake()  → ModuleHub
+      ├── GetComponentsInChildren<ModuleChildMono> 扫描
+      ├── 判主 → Register
+      └── Registry.OnAssembleAll() → 所有 Service.OnAssemble() → RegisterService(self)
 
 GameService.Start()
-  └── OnWire()
-      ├── EventDispatcher 手动注册 + SGameState 订阅
-      ├── base.OnWire() → Registry.OnWireAll() → 所有 Service.OnWire()
-      ├── 验证 _wiredCount == Registry.Count
-      └── Editor 自动加载场景
-      ├── [3] AttachDispatcherToServices() → OnDispatcherAttached()
-      ├── [4] ActivateServiceSubscriptions() → OnSubscriptionsActivated()
-      └── [5] InitializeServices() → OnServicesReady()
+  ├── TryResolveService<EventDispatcherService> + Subscribe<SGameState> (pre-wire)
+  ├── base.Start() → Registry.OnWireAll() → 所有 Service.OnWire()
+  └── Editor 自动加载场景 (post-wire)
 ```
 
 ## 耦合模块

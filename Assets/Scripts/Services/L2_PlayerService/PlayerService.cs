@@ -5,7 +5,7 @@ using UnityEngine;
 namespace RedDust.Player
 {
     [DisallowMultipleComponent]
-    public class PlayerService : ModuleComponent, IGameplaySessionHandler
+    public class PlayerService : ModuleChildMono, IGameplaySessionHandler
     {
         [SerializeField] private GameObject playerPrefab;
         [SerializeField] private GameObject playerStartAnchor;
@@ -18,6 +18,7 @@ namespace RedDust.Player
 
         public override void OnAssemble()
         {
+            GameContext.Instance.RegisterService(this);
         }
 
         private void Update()
@@ -28,11 +29,8 @@ namespace RedDust.Player
 
         public override void OnWire()
         {
-            GameContext.Instance.RegisterService(this);
             GameContext.Instance.TryResolveService(out _dispatcher);
             _dispatcher.Subscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
-
-            GameService.Instance?.NotifyServiceWired();
         }
 
         private void OnDestroy()

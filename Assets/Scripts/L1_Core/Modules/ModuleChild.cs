@@ -2,9 +2,9 @@ using UnityEngine;
 
 namespace RedDust.Core
 {
-    public abstract class Module : IInitializable
+    public abstract class ModuleChild : IModuleChild
     {
-        protected Module(ModuleRegistry parent)
+        protected ModuleChild(ModuleRegistry parent)
         {
             parent.Register(this);
         }
