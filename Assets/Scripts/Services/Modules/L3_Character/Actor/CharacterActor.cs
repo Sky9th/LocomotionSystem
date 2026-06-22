@@ -214,10 +214,8 @@ namespace RedDust.Character
                 frameCtx.Kinematic = characterKinematic.Evaluate(intent.LocomotionHeading,
                     intent.AimDirection, deltaTime);
 
-                // TODO(临时): 每帧轮询解析。正常流程应为事件驱动——
-                //   Grip 变化：装备系统 → GripSwitchEvent → BuildContext.ResolvedLocoAnimSet
-                //   BodyForm 变化：Director 响应玩家/AI 操作 → BuildContext.BodyForm
-                //   此处不应是数据源头，只是过渡期的每帧同步点。
+                // BodyForm 由 Director 意图驱动（Equip 事件 → PlayerInput → Director → Intent），此处为消费方同步。
+                // AnimSet 每帧解析在装备系统提供 GripSwitchEvent 前是可接受的实现。
                 var ownedTags = buildCtx.Ability?.OwnedTags;
                 buildCtx.BodyForm = intent.DesiredBodyForm;
                 buildCtx.ResolvedLocoAnimSet = buildCtx.GripTable?.Resolve(ownedTags, buildCtx.BodyForm)

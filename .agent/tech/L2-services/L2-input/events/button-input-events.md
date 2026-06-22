@@ -1,41 +1,71 @@
-# 按钮输入事件 (×6)
+# 按钮输入事件
+
+> **Last Verified**: 2026-06-22 | **Verification**: All referenced files exist, signatures match code
 
 `Assets/Scripts/Services/L2_Input/Events/`
 
-## 文件列表
+## 事件列表
 
-| 文件 | 事件类型 | 负载 | CreateAssetMenu |
-|------|---------|------|-----------------|
-| SprintInputEvent.cs | `InputEvent<bool>` | 冲刺按下/释放 | Events/Input/Sprint Event |
-| SecondaryInteractEvent.cs | `InputEvent<bool>` | 右键交互 | Events/Input/Secondary Interact Event |
-| PrimaryInteractEvent.cs | `InputEvent<bool>` | 左键交互 | Events/Input/Primary Interact Event |
-| CrouchInputEvent.cs | `InputEvent<bool>` | 蹲下 | Events/Input/Crouch Event |
-| ProneInputEvent.cs | `InputEvent<bool>` | 趴下 | Events/Input/Prone Event |
-| StandInputEvent.cs | `InputEvent<bool>` | 站立 | Events/Input/Stand Event |
+### Player（14 个）
+| 文件 | menuName | fileName |
+|------|----------|----------|
+| CrouchInputEventSO.cs | `.../Player/Crouch` | Crouch |
+| SprintInputEventSO.cs | `.../Player/Sprint` | Sprint |
+| ProneInputEventSO.cs | `.../Player/Prone` | Prone |
+| StandInputEventSO.cs | `.../Player/Stand` | Stand |
+| WalkInputEventSO.cs | `.../Player/Walk` | Walk |
+| JumpInputEventSO.cs | `.../Player/Jump` | Jump |
+| AttackInputEventSO.cs | `.../Player/Attack` | Attack |
+| MoveInputEventSO.cs | `.../Player/Move` | Move |
+| LookInputEventSO.cs | `.../Player/Look` | Look |
+| NextInputEventSO.cs | `.../Player/Next` | Next |
+| PreviousInputEventSO.cs | `.../Player/Previous` | Previous |
+| PrimaryInteractInputEventSO.cs | `.../Player/PrimaryInteract` | PrimaryInteract |
+| SecondaryInteractInputEventSO.cs | `.../Player/SecondaryInteract` | SecondaryInteract |
+| ThridInteractInputEventSO.cs | `.../Player/ThridInteract` | ThridInteract |
 
-## 统一模式
+### Combat（6 个）
+| 文件 | menuName | fileName |
+|------|----------|----------|
+| Equip1InputEventSO.cs | `.../Combat/Equip1` | Equip1 |
+| Equip2InputEventSO.cs | `.../Combat/Equip2` | Equip2 |
+| Equip3InputEventSO.cs | `.../Combat/Equip3` | Equip3 |
+| Skill1InputEventSO.cs | `.../Combat/Skill1` | Skill1 |
+| Skill2InputEventSO.cs | `.../Combat/Skill2` | Skill2 |
+| Skill3InputEventSO.cs | `.../Combat/Skill3` | Skill3 |
 
-所有按钮事件继承 `InputEvent<bool>`，覆写逻辑完全相同：
+### System（2 个）
+| 文件 | menuName | fileName |
+|------|----------|----------|
+| TimeSlowInputEventSO.cs | `.../System/TimeSlow` | TimeSlow |
+| TimeResumeInputEventSO.cs | `.../System/TimeResume` | TimeResume |
 
-```csharp
-protected override void OnPerformed(InputAction.CallbackContext ctx)
-{
-    Raise(ctx.ReadValueAsButton());
-}
+### UI（1 个）
+| 文件 | menuName | fileName |
+|------|----------|----------|
+| EscapeInputEventSO.cs | `.../UI/Escape` | Escape |
 
-protected override void OnCanceled(InputAction.CallbackContext ctx)
-{
-    Raise(ctx.ReadValueAsButton());
-}
-```
+## 基类
 
-- 不做逻辑判断，只做翻译：`ctx.ReadValueAsButton()` → `Raise(bool)`
-- 由订阅方（PlayerInput handler）决定如何响应
+| 文件 | CreateAssetMenu | 说明 |
+|------|----------------|------|
+| ButtonInputEventSO | ❌ 无 | 按钮事件根，暴露 IsPressed / IsRequested / IsReleased |
+| Vector2InputEventSO | ❌ 无 | 双轴连续输入，暴露 CurrentValue / HasInput |
+| FloatInputEventSO | ❌ 无 | 单轴连续输入，暴露 CurrentValue / HasInput |
+
+> 基类不设 CreateAssetMenu — 它们是原型，不应从菜单创建实例。
+
+## 命名规范
+
+- **menuName**: PascalCase，无空格。格式 `RedDust/Events/Input/{Category}/{Name}`
+- **fileName**: PascalCase 简单名，无 Input 无 EventSO 后缀。如 `Equip1`（非 `Equip1EventSO` 或 `Equip1InputEventSO`）
+- **类名**: `{Name}InputEventSO`，继承 `ButtonInputEventSO`
+- **实际资产**: 统一为 `{Category}/{Name}.asset`，如 `Combat/Equip1.asset`
 
 ## 耦合模块
 
 | 方向 | 模块 | 关系 |
 |------|------|------|
-| → 继承 | InputEvent<bool> | 父类 |
-| ← 调度 | InputService | 管理生命周期（初始化/启停） |
-| ← 订阅 | PlayerInput | 通过 EventHub.Get<T>() 取得后 Register |
+| ← 继承 | ButtonInputEventSO → InputEventBase → EventChannelBase | 三层继承链 |
+| ← 调度 | InputService | InitializeEvent + EnableEvent |
+| ← 订阅 | PlayerInput（IEventListener） | 通过 EventHub.Get\<T\>() 取得后订阅 OnRaised |

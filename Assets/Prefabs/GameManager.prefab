@@ -92,8 +92,10 @@ MonoBehaviour:
   inputEvents:
   - {fileID: 11400000, guid: d0d3ac9b9bdf44bbac2667ed1041fbf2, type: 2}
   - {fileID: 11400000, guid: 80553aad924041999bde74f43bdbe781, type: 2}
+  - {fileID: 11400000, guid: 2bf987305cc2882459a6ffea299b799d, type: 2}
   - {fileID: 11400000, guid: 7805687382c94a90843a7b187704a80b, type: 2}
   - {fileID: 11400000, guid: 9fa5a4f3d5a14fd1935985d9a320ad30, type: 2}
+  - {fileID: 11400000, guid: dc1477752c0c0e644afe2f3da5eb5b82, type: 2}
   - {fileID: 11400000, guid: c2712867f811430a9831dd652463bbbb, type: 2}
   - {fileID: 11400000, guid: d659ac31c88d422e882d1fe722501be4, type: 2}
   - {fileID: 11400000, guid: 46979d4275f4465980e715fc7c8ff9c5, type: 2}

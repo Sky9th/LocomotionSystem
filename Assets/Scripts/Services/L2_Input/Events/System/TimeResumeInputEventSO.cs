@@ -1,5 +1,5 @@
 using UnityEngine;
 namespace RedDust.GameInput {
-[CreateAssetMenu(menuName = "RedDust/Events/Input/System/Time Resume", fileName = "TimeResumeEventSO")]
+[CreateAssetMenu(menuName = "RedDust/Events/Input/System/TimeResume", fileName = "TimeResume")]
 public sealed class TimeResumeInputEventSO : ButtonInputEventSO { }
 }

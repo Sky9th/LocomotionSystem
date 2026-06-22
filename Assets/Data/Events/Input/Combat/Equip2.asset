@@ -9,8 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 576a018c65384e6caf892d5fd9438df7, type: 3}
-  m_Name: Skill 2
-  m_EditorClassIdentifier:
-  inputAction: {fileID: -2550425246446867467, guid: 1f23a80f490ee6b46bd4db1b0c98d550, type: 3}
-  supportedStates: []
+  m_Script: {fileID: 11500000, guid: 3a2139c5dbc949cdbfe81126fc3610eb, type: 3}
+  m_Name: Equip2
+  m_EditorClassIdentifier: 
+  inputAction: {fileID: 4039544204262107376, guid: 1f23a80f490ee6b46bd4db1b0c98d550,
+    type: 3}
+  supportedStates: 

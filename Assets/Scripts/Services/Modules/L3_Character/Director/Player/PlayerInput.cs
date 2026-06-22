@@ -19,7 +19,10 @@ namespace RedDust.Character.Director
         internal bool ProneRequested { get; set; }
         internal bool StandRequested { get; set; }
         internal bool FirstSkillRequested { get; set; }
-        internal bool SencondSkillRequested { get; set; }
+        internal bool SecondSkillRequested { get; set; }
+        internal bool Equip1Requested { get; set; }
+        internal bool Equip2Requested { get; set; }
+        internal bool Equip3Requested { get; set; }
 
         // ── 事件通道 ──
         private CrouchInputEventSO crouchEvent;
@@ -29,6 +32,9 @@ namespace RedDust.Character.Director
         private SecondaryInteractInputEventSO secondaryInteractEvent;
         private Skill1InputEventSO firstSkillEvent;
         private Skill2InputEventSO secondSkillEvent;
+        private Equip1InputEventSO equip1Event;
+        private Equip2InputEventSO equip2Event;
+        private Equip3InputEventSO equip3Event;
 
         // ── TEMP ──
         private EventDispatcherService dispatcher;
@@ -51,6 +57,9 @@ namespace RedDust.Character.Director
             secondaryInteractEvent = eventHub.Get<SecondaryInteractInputEventSO>();
             firstSkillEvent = eventHub.Get<Skill1InputEventSO>();
             secondSkillEvent = eventHub.Get<Skill2InputEventSO>();
+            equip1Event = eventHub.Get<Equip1InputEventSO>();
+            equip2Event = eventHub.Get<Equip2InputEventSO>();
+            equip3Event = eventHub.Get<Equip3InputEventSO>();
 
             crouchEvent.OnRaised += OnCrouch;
             sprintEvent.OnRaised += OnSprint;
@@ -59,6 +68,9 @@ namespace RedDust.Character.Director
             secondaryInteractEvent.OnRaised += OnSecondary;
             firstSkillEvent.OnRaised += OnFirstActivatedSkill;
             secondSkillEvent.OnRaised += OnSecondActivatedSkill;
+            equip1Event.OnRaised += OnEquip1;
+            equip2Event.OnRaised += OnEquip2;
+            equip3Event.OnRaised += OnEquip3;
 
             // TODO: migrate to EventHub
             if (GameContext.Instance != null &&
@@ -75,6 +87,9 @@ namespace RedDust.Character.Director
             secondaryInteractEvent.OnRaised -= OnSecondary;
             firstSkillEvent.OnRaised -= OnFirstActivatedSkill;
             secondSkillEvent.OnRaised -= OnSecondActivatedSkill;
+            equip1Event.OnRaised -= OnEquip1;
+            equip2Event.OnRaised -= OnEquip2;
+            equip3Event.OnRaised -= OnEquip3;
 
             dispatcher?.Unsubscribe<SCameraSnapshot>(OnCameraSnapshot);
             dispatcher = null;
@@ -88,7 +103,10 @@ namespace RedDust.Character.Director
         private void OnStand() => StandRequested = standEvent.IsRequested;
         private void OnSecondary() => SecondaryRequested = secondaryInteractEvent.IsRequested;
         private void OnFirstActivatedSkill() => FirstSkillRequested = firstSkillEvent.IsRequested;
-        private void OnSecondActivatedSkill() => SencondSkillRequested = secondSkillEvent.IsRequested;
+        private void OnSecondActivatedSkill() => SecondSkillRequested = secondSkillEvent.IsRequested;
+        private void OnEquip1() => Equip1Requested = equip1Event.IsRequested;
+        private void OnEquip2() => Equip2Requested = equip2Event.IsRequested;
+        private void OnEquip3() => Equip3Requested = equip3Event.IsRequested;
 
         // TEMP
         private void OnCameraSnapshot(SCameraSnapshot snapshot, MetaStruct _)
@@ -101,7 +119,8 @@ namespace RedDust.Character.Director
         {
             SecondaryRequested = SprintRequested = CrouchRequested =
                 ProneRequested = StandRequested = FirstSkillRequested =
-                SencondSkillRequested = false;
+                SecondSkillRequested = Equip1Requested = Equip2Requested =
+                Equip3Requested = false;
         }
     }
 }

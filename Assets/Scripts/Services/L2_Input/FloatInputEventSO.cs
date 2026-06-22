@@ -6,7 +6,6 @@ namespace RedDust.GameInput
     /// <summary>
     /// 单轴连续输入事件 SO。覆盖滚轮缩放、扳机键等。
     /// </summary>
-    [CreateAssetMenu(menuName = "RedDust/Events/Input/Float Event", fileName = "FloatEventSO")]
     public class FloatInputEventSO : InputEventBase
     {
         /// <summary>当前帧输入值</summary>

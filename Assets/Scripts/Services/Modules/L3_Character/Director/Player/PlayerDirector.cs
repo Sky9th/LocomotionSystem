@@ -11,7 +11,9 @@ namespace RedDust.Character.Director
 
         private EMovementGait currentGait = EMovementGait.Idle;
         private EPosture currentPosture = EPosture.Standing;
-        private EBodyForm currentBodyForm = EBodyForm.Relax;
+
+        /// <summary>Equip1→[0], Equip2→[1], Equip3→[2]。GripTable entries 按序对应。</summary>
+        private readonly bool[] equippedSlots = new bool[3];
 
         internal PlayerDirector(CharacterBuildContext ctx, ModuleRegistry registry) : base(registry)
         {
@@ -28,43 +30,12 @@ namespace RedDust.Character.Director
             input.BindEvents();
         }
 
-        private int debugGripIndex = 0;
-
         public SCharacterIntent Evaluate()
         {
-            ProcessDebugGripSwitch();
-            ProcessDebugCombatToggle();
+            ProcessEquipInput();
             ProcessClickToMove();
 
-            // TODO: 临时方案 — 直接读 Actor 槽位。技能树/装备系统完成后由 AbilitySlotManager 替代。
-            if (input.FirstSkillRequested)
-            {
-                var ability = ctx.Ability;
-                var def = ctx.SkillSlot1;
-                if (ability == null)
-                    Debug.LogWarning("[PlayerDirector] AbilityExecutor is null — skill activation skipped");
-                else if (def == null)
-                    Debug.LogWarning("[PlayerDirector] SkillSlot1 is empty — skill activation skipped");
-                else
-                {
-                    Debug.Log($"[PlayerDirector] Activating SkillSlot1: {def.internalName}");
-                    ability.TryActivate(def, ctx.ModelRoot.position, ctx.ModelRoot.forward);
-                }
-            }
-            if (input.SencondSkillRequested)
-            {
-                var ability = ctx.Ability;
-                var def = ctx.SkillSlot2;
-                if (ability == null)
-                    Debug.LogWarning("[PlayerDirector] AbilityExecutor is null — skill activation skipped");
-                else if (def == null)
-                    Debug.LogWarning("[PlayerDirector] SkillSlot2 is empty — skill activation skipped");
-                else
-                {
-                    Debug.Log($"[PlayerDirector] Activating SkillSlot2: {def.internalName}");
-                    ability.TryActivate(def, ctx.ModelRoot.position, ctx.ModelRoot.forward);
-                }
-            }
+            ProcessSkillInput();
 
             var pathfinding = ctx.Pathfinding;
             bool hasActivePath = pathfinding != null && pathfinding.HasPath && !pathfinding.HasReachedDestination;
@@ -77,7 +48,7 @@ namespace RedDust.Character.Director
                 ResolveBodyForm(),
                 false,
                 input.FirstSkillRequested,
-                input.SencondSkillRequested,
+                input.SecondSkillRequested,
                 pathfinding?.DesiredVelocity ?? Vector3.zero,
                 hasActivePath);
 
@@ -88,34 +59,59 @@ namespace RedDust.Character.Director
             return intent;
         }
 
-        // TODO(debug): 临时 grip 切换，仅用于测试。之后改为 EventHub 事件驱动：
-        //   PlayerDirector 发布 GripSwitchEvent → CharacterActor 订阅 → 更新 OwnedTags
-        private void ProcessDebugGripSwitch()
+        private void ProcessSkillInput()
+        {
+            if (input.FirstSkillRequested) TryActivateSkill(ctx.SkillSlot1, "SkillSlot1");
+            if (input.SecondSkillRequested) TryActivateSkill(ctx.SkillSlot2, "SkillSlot2");
+        }
+
+        /// <summary>
+        /// Equip 输入处理。Equip1→entries[0], Equip2→entries[1], Equip3→entries[2]。
+        /// TODO: 当前 Director 直接写 OwnedTags 是过渡方案。装备系统完成后由 GripSwitchEvent 替代。
+        /// </summary>
+        private void ProcessEquipInput()
         {
             var table = ctx.GripTable;
             if (table == null || table.entries == null || table.entries.Length == 0) return;
             var ownedTags = ctx.Ability?.OwnedTags;
             if (ownedTags == null) return;
 
-            int newIndex = -1;
-            if (Input.GetKeyDown(KeyCode.Alpha1)) newIndex = 0;
-            else if (Input.GetKeyDown(KeyCode.Alpha2) && table.entries.Length > 1) newIndex = 1;
-            else if (Input.GetKeyDown(KeyCode.Alpha3) && table.entries.Length > 2) newIndex = 2;
-
-            if (newIndex < 0 || newIndex == debugGripIndex) return;
-
-            // 清除旧 grip tag
-            for (int i = 0; i < table.entries.Length; i++)
-                if (table.entries[i].gripTag != null)
-                    ownedTags.RemoveTag(table.entries[i].gripTag.FullTag);
-
-            // 添加新 grip tag
-            var entry = table.entries[newIndex];
-            if (entry.gripTag != null)
+            for (int i = 0; i < equippedSlots.Length; i++)
             {
-                ownedTags.AddTag(entry.gripTag.FullTag);
-                debugGripIndex = newIndex;
-                Debug.Log($"[PlayerDirector] Grip switched to: {entry.gripTag.FullTag}");
+                bool requested = i switch
+                {
+                    0 => input.Equip1Requested,
+                    1 => input.Equip2Requested,
+                    2 => input.Equip3Requested,
+                    _ => false
+                };
+                if (!requested) continue;
+
+                if (i >= table.entries.Length) return;
+                var entry = table.entries[i];
+                if (entry.gripTag == null) return;
+
+                if (equippedSlots[i])
+                {
+                    // 卸下
+                    ownedTags.RemoveTag(entry.gripTag.FullTag);
+                    equippedSlots[i] = false;
+                    Debug.Log($"[PlayerDirector] Unequipped slot {i}: {entry.gripTag.FullTag}");
+                }
+                else
+                {
+                    // 清除所有已有 grip tag，装备新 slot（武器互斥）
+                    for (int j = 0; j < table.entries.Length; j++)
+                    {
+                        if (table.entries[j].gripTag != null)
+                            ownedTags.RemoveTag(table.entries[j].gripTag.FullTag);
+                        equippedSlots[j] = false;
+                    }
+                    ownedTags.AddTag(entry.gripTag.FullTag);
+                    equippedSlots[i] = true;
+                    Debug.Log($"[PlayerDirector] Equipped slot {i}: {entry.gripTag.FullTag}");
+                }
+                break; // 每帧只处理一个 Equip 输入
             }
         }
 
@@ -188,24 +184,31 @@ namespace RedDust.Character.Director
             return currentPosture;
         }
 
-        // TODO(debug): 临时 BodyForm 切换，仅用于测试。
-        private void ProcessDebugCombatToggle()
+        // TODO: 临时方案 — 直接读 Actor 槽位。技能树/装备系统完成后由 AbilitySlotManager 替代。
+        private void TryActivateSkill(RedDust.Ability.AbilityDefSO def, string slotName)
         {
-            if (Input.GetKeyDown(KeyCode.Alpha4))
+            var ability = ctx.Ability;
+            if (ability == null)
             {
-                currentBodyForm = EBodyForm.Combat;
-                Debug.Log("[PlayerDirector] BodyForm → Combat");
+                Debug.LogWarning("[PlayerDirector] AbilityExecutor is null — skill activation skipped");
+                return;
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha5))
+            if (def == null)
             {
-                currentBodyForm = EBodyForm.Relax;
-                Debug.Log("[PlayerDirector] BodyForm → Relax");
+                Debug.LogWarning($"[PlayerDirector] {slotName} is empty — skill activation skipped");
+                return;
             }
+            Debug.Log($"[PlayerDirector] Activating {slotName}: {def.internalName}");
+            ability.TryActivate(def, ctx.ModelRoot.position, ctx.ModelRoot.forward);
         }
 
+        /// <summary>任意 slot 装备 → Combat，否则 Relax</summary>
         private EBodyForm ResolveBodyForm()
         {
-            return currentBodyForm;
+            for (int i = 0; i < equippedSlots.Length; i++)
+                if (equippedSlots[i])
+                    return EBodyForm.Combat;
+            return EBodyForm.Relax;
         }
     }
 }

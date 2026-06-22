@@ -1165,7 +1165,7 @@
             "id": "647341ca-4bbc-467a-8738-b80fe774fc77",
             "actions": [
                 {
-                    "name": "Skill1st",
+                    "name": "Skill1",
                     "type": "Button",
                     "id": "91dc2b98-1768-4d33-b83a-93cc0bc6b2de",
                     "expectedControlType": "",
@@ -1174,7 +1174,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Skill2nd",
+                    "name": "Skill2",
                     "type": "Button",
                     "id": "86c57a68-e6fd-4f2f-8d95-86c521c29a10",
                     "expectedControlType": "",
@@ -1183,7 +1183,16 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Equip1st",
+                    "name": "Skill3",
+                    "type": "Button",
+                    "id": "fe91ad0c-edb9-4b3e-8ba7-a6f5e55c30a9",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Equip1",
                     "type": "Button",
                     "id": "4109e86c-bb8d-4fc8-87a1-70cd49b664c1",
                     "expectedControlType": "",
@@ -1192,9 +1201,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Equip2nd",
+                    "name": "Equip2",
                     "type": "Button",
                     "id": "c942c57d-2b0b-4874-a804-b0b060b13210",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Equip3",
+                    "type": "Button",
+                    "id": "58ad929c-458e-4f71-a525-d9529f77ba7b",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -1208,8 +1226,8 @@
                     "path": "<Keyboard>/q",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "Skill1st",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Skill1",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1219,8 +1237,19 @@
                     "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "Skill2nd",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Skill2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ca2d90c7-f5e3-4545-a4c8-373a4c1b18cf",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Skill3",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1231,7 +1260,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Equip1st",
+                    "action": "Equip1",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1242,7 +1271,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Equip2nd",
+                    "action": "Equip2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "248276f6-39fa-4e22-a073-e433dd50d538",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Equip3",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -109,8 +109,10 @@ MonoBehaviour:
   channels:
   - {fileID: 11400000, guid: d0d3ac9b9bdf44bbac2667ed1041fbf2, type: 2}
   - {fileID: 11400000, guid: 80553aad924041999bde74f43bdbe781, type: 2}
+  - {fileID: 11400000, guid: 2bf987305cc2882459a6ffea299b799d, type: 2}
   - {fileID: 11400000, guid: 7805687382c94a90843a7b187704a80b, type: 2}
   - {fileID: 11400000, guid: 9fa5a4f3d5a14fd1935985d9a320ad30, type: 2}
+  - {fileID: 11400000, guid: dc1477752c0c0e644afe2f3da5eb5b82, type: 2}
   - {fileID: 11400000, guid: 9b58987416fd4fa59ac5b8a9a9a7b378, type: 2}
   - {fileID: 11400000, guid: 835f06731ab2460981e8dd2a29da3d32, type: 2}
   - {fileID: 11400000, guid: ab69fe0e38bf4211a0b57a96e315e3a5, type: 2}
@@ -157,7 +159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ac4441024cd53e4ba1ca66b7052fe24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _def: {fileID: 0}
+  _def: {fileID: 11400000, guid: b0e7241e50e1bcd4dbad93e4d8ee9708, type: 2}
 --- !u!114 &7275533382615058559
 MonoBehaviour:
   m_ObjectHideFlags: 0

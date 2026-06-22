@@ -6,7 +6,6 @@ namespace RedDust.GameInput
     /// <summary>
     /// 双轴连续输入事件 SO。覆盖移动 (WASD/左摇杆) 和视角 (鼠标/右摇杆)。
     /// </summary>
-    [CreateAssetMenu(menuName = "RedDust/Events/Input/Vector2 Event", fileName = "Vector2EventSO")]
     public class Vector2InputEventSO : InputEventBase
     {
         /// <summary>当前帧输入值</summary>

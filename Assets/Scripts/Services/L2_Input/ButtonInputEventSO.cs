@@ -6,7 +6,6 @@ namespace RedDust.GameInput
     /// <summary>
     /// 按钮型输入事件 SO。暴露 IsPressed / IsRequested / IsReleased。
     /// </summary>
-    [CreateAssetMenu(menuName = "RedDust/Events/Input/Button Event", fileName = "ButtonEventSO")]
     public class ButtonInputEventSO : InputEventBase
     {
         /// <summary>当前帧是否按住</summary>
