@@ -101,6 +101,7 @@ tech/
 │       │   ├── animation/               # L4: 动画子系统
 │       │   │   ├── AnimationBrain.cs
 │       │   │   ├── DriverArbiter.cs
+│       │   │   ├── protofactor-fbx-assets.md  # PROTOFACTOR FBX 资产目录与映射
 │       │   │   ├── Config/             # AnimationAliasProfile, LocomotionAnimationProfile, LocomotionModeProfile
 │       │   │   ├── Requests/           # AnimationRequest, OnCompleteBehavior, OnInterruptedBehavior
 │       │   │   └── drivers/            # L5: 驱动子系统
