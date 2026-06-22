@@ -18,6 +18,5 @@ namespace RedDust.Character.Animation
         [Header("Sets")]
         public LocomotionAnimationSetSO defaultLocomotionSet;
         public GripAnimationTableSO gripTable;
-        public TraversalAnimationSetSO traversalSet;
     }
 }

@@ -7,7 +7,7 @@
 | 资产 | 职责 |
 |------|------|
 | `CharacterDefSO` | 实体定义（绑定 PropertyTree） |
-| `CharacterAnimationProfileSO` | 动画配置（Locomotion 动画集、Mode 配置、GripTable） |
+| `CharacterAnimationProfileSO` | 动画配置（Locomotion 动画集含 Traversal、Mode 配置、GripTable） |
 | `CharacterAudioConfigSO` | 音效配置 |
 | `GroundSystemConfigSO` | **世界级**地面探测/锁地参数，所有角色共享 |
 

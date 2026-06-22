@@ -70,7 +70,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isPlayer: 0
   groundSystemConfig: {fileID: 11400000, guid: 6f5d74115b0df28438f735b18d13da47, type: 2}
-  characterAnimationProfile: {fileID: 11400000, guid: e215df4713aa441448d8fe70857a7f32,
+  characterAnimationProfile: {fileID: 11400000, guid: b2d836a402ab27945b5d07f1bf603784,
     type: 2}
   skillSlot1: {fileID: 0}
   skillSlot2: {fileID: 0}

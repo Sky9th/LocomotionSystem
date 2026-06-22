@@ -28,7 +28,6 @@ namespace RedDust.Character.Animation
         public ModeConfigEntry[] modeProfiles;
         public LocomotionSetEntry[] locomotionSets;
         public GripTableEntry gripTable;
-        public TraversalSetEntry traversalSet;
     }
 
     [Serializable]
@@ -40,7 +39,6 @@ namespace RedDust.Character.Animation
         public string[] modeProfiles;         // {directory}/{name} paths
         public string defaultLocomotionSet;   // {directory}/{name} path
         public string gripTable;              // {directory}/{name} path
-        public string traversalSet;           // {directory}/{name} path
     }
 
     [Serializable]
@@ -95,6 +93,13 @@ namespace RedDust.Character.Animation
         public float walkAnimNativeSpeed = 1.5f;
         public float runAnimNativeSpeed = 5f;
         public float sprintAnimNativeSpeed = 7f;
+        // Traversal
+        public ClipTransitionEntry climbUpHalfMeter;
+        public ClipTransitionEntry climbUp1meter;
+        public ClipTransitionEntry climbUp2meter;
+        public ClipTransitionEntry climbDown1meter;
+        public ClipTransitionEntry climbDown2meter;
+        public ClipTransitionEntry landFromWall;
     }
 
     [Serializable]
@@ -159,20 +164,8 @@ namespace RedDust.Character.Animation
     public class GripEntryItem
     {
         public string gripTag;                   // GameplayTagDefinitionSO.FullTag
-        public string animationSet;              // {directory}/{name} path
-    }
-
-    [Serializable]
-    public class TraversalSetEntry
-    {
-        public string name;
-        public string directory;
-        public ClipTransitionEntry climbUpHalfMeter;
-        public ClipTransitionEntry climbUp1meter;
-        public ClipTransitionEntry climbUp2meter;
-        public ClipTransitionEntry climbDown1meter;
-        public ClipTransitionEntry climbDown2meter;
-        public ClipTransitionEntry landFromWall;
+        public string animationSet;              // {directory}/{name} path  (Relax)
+        public string combatSet;                 // {directory}/{name} path  (Combat, optional)
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -226,7 +219,6 @@ namespace RedDust.Character.Animation
             var modeEntries = new List<ModeConfigEntry>();
             var setEntries = new List<LocomotionSetEntry>();
             var gripEntries = new List<GripTableEntry>();
-            var traversalEntries = new List<TraversalSetEntry>();
 
             foreach (var guid in profileGuids)
             {
@@ -276,24 +268,16 @@ namespace RedDust.Character.Animation
                     ExportGripTable(profile.gripTable, gripEntries, setEntries, seenSOs);
                 }
 
-                // traversalSet
-                if (profile.traversalSet != null)
-                {
-                    pEntry.traversalSet = MakePath(profile.traversalSet);
-                    ExportTraversalSet(profile.traversalSet, traversalEntries, seenSOs);
-                }
-
                 profileEntries.Add(pEntry);
             }
 
             file.profiles = profileEntries.ToArray();
-            // For simplicity, export the first profile's config/grip/traversal as top-level singletons
+            // For simplicity, export the first profile's config/grip as top-level singletons
             // (matching the JSON sample). Multi-profile files share these via dedup.
             if (configEntries.Count > 0) file.locomotionConfig = configEntries[0];
             if (modeEntries.Count > 0) file.modeProfiles = modeEntries.ToArray();
             if (setEntries.Count > 0) file.locomotionSets = setEntries.ToArray();
             if (gripEntries.Count > 0) file.gripTable = gripEntries[0];
-            if (traversalEntries.Count > 0) file.traversalSet = traversalEntries[0];
 
             return JsonUtility.ToJson(file, true);
         }
@@ -383,6 +367,12 @@ namespace RedDust.Character.Animation
             entry.airHard = ExportLinearMixer(set.airHard);
             entry.landLight = ExportLinearMixer(set.landLight);
             entry.landHard = ExportLinearMixer(set.landHard);
+            entry.climbUpHalfMeter = ExportClipTransition(set.climbUpHalfMeter);
+            entry.climbUp1meter = ExportClipTransition(set.climbUp1meter);
+            entry.climbUp2meter = ExportClipTransition(set.climbUp2meter);
+            entry.climbDown1meter = ExportClipTransition(set.climbDown1meter);
+            entry.climbDown2meter = ExportClipTransition(set.climbDown2meter);
+            entry.landFromWall = ExportClipTransition(set.landFromWall);
 
             sets.Add(entry);
         }
@@ -415,31 +405,16 @@ namespace RedDust.Character.Animation
                     {
                         gripTag = ge.gripTag?.FullTag,
                         animationSet = MakePath(ge.animationSet),
+                        combatSet = ge.combatSet != null ? MakePath(ge.combatSet) : null,
                     };
                     if (ge.animationSet != null)
                         ExportLocomotionSet(ge.animationSet, sets, seen);
+                    if (ge.combatSet != null)
+                        ExportLocomotionSet(ge.combatSet, sets, seen);
                 }
             }
 
             grips.Add(entry);
-        }
-
-        private static void ExportTraversalSet(TraversalAnimationSetSO ts,
-            List<TraversalSetEntry> traversals, HashSet<ScriptableObject> seen)
-        {
-            if (ts == null || !seen.Add(ts)) return;
-
-            traversals.Add(new TraversalSetEntry
-            {
-                name = ts.name,
-                directory = SplitAssetPath(AssetDatabase.GetAssetPath(ts)).dir,
-                climbUpHalfMeter = ExportClipTransition(ts.climbUpHalfMeter),
-                climbUp1meter = ExportClipTransition(ts.climbUp1meter),
-                climbUp2meter = ExportClipTransition(ts.climbUp2meter),
-                climbDown1meter = ExportClipTransition(ts.climbDown1meter),
-                climbDown2meter = ExportClipTransition(ts.climbDown2meter),
-                landFromWall = ExportClipTransition(ts.landFromWall),
-            });
         }
 
         // ── Transition export ───────────────────────────────
@@ -600,7 +575,7 @@ namespace RedDust.Character.Animation
                 }
             }
 
-            // Phase 2: LocomotionSets + TraversalSet (ref Clip/StringAsset by GUID)
+            // Phase 2: LocomotionSets (ref Clip/StringAsset by GUID)
             if (file.locomotionSets != null)
             {
                 foreach (var entry in file.locomotionSets)
@@ -608,16 +583,6 @@ namespace RedDust.Character.Animation
                     if (!ValidateEntry(entry, "LocomotionSet", errors)) continue;
                     var key = $"{entry.directory}/{entry.name}";
                     if (ImportLocomotionSet(entry, assetLookupByGuid, out var inst, out var skipped1, errors))
-                    { createdThisSession[key] = inst; created++; }
-                    else skipped += skipped1;
-                }
-            }
-            if (file.traversalSet != null)
-            {
-                if (ValidateEntry(file.traversalSet, "TraversalSet", errors))
-                {
-                    var key = $"{file.traversalSet.directory}/{file.traversalSet.name}";
-                    if (ImportTraversalSet(file.traversalSet, assetLookupByGuid, out var inst, out var skipped1, errors))
                     { createdThisSession[key] = inst; created++; }
                     else skipped += skipped1;
                 }
@@ -763,6 +728,12 @@ namespace RedDust.Character.Animation
             set.airHard ??= new LinearMixerTransition();
             set.landLight ??= new LinearMixerTransition();
             set.landHard ??= new LinearMixerTransition();
+            set.climbUpHalfMeter ??= new ClipTransition();
+            set.climbUp1meter ??= new ClipTransition();
+            set.climbUp2meter ??= new ClipTransition();
+            set.climbDown1meter ??= new ClipTransition();
+            set.climbDown2meter ??= new ClipTransition();
+            set.landFromWall ??= new ClipTransition();
         }
 
         private static void ApplyLocomotionSet(LocomotionAnimationSetSO set, LocomotionSetEntry entry,
@@ -782,54 +753,19 @@ namespace RedDust.Character.Animation
             set.walkAnimNativeSpeed = entry.walkAnimNativeSpeed;
             set.runAnimNativeSpeed = entry.runAnimNativeSpeed;
             set.sprintAnimNativeSpeed = entry.sprintAnimNativeSpeed;
-        }
 
-        // ── Phase 2: TraversalSet ───────────────────────────
-
-        private static bool ImportTraversalSet(TraversalSetEntry entry,
-            Dictionary<string, Object> guidLookup,
-            out TraversalAnimationSetSO instance, out int skipped, List<string> errors)
-        {
-            instance = null;
-            skipped = 0;
-
-            var path = AssemblePath(entry);
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-            var existing = AssetDatabase.LoadAssetAtPath<Object>(path);
-
-            if (existing != null)
-            {
-                if (existing is not TraversalAnimationSetSO ts)
-                { errors.Add($"[TraversalSet] '{path}' exists but is not TraversalAnimationSetSO (type mismatch)"); skipped = 1; return false; }
-                ApplyTraversalSet(ts, entry, guidLookup, errors);
-                EditorUtility.SetDirty(ts);
-                instance = ts;
-                skipped = 1;
-                return false;
-            }
-
-            instance = ScriptableObject.CreateInstance<TraversalAnimationSetSO>();
-            ApplyTraversalSet(instance, entry, guidLookup, errors);
-            AssetDatabase.CreateAsset(instance, path);
-            instance.name = entry.name;
-            return true;
-        }
-
-        private static void ApplyTraversalSet(TraversalAnimationSetSO ts, TraversalSetEntry entry,
-            Dictionary<string, Object> guidLookup, List<string> errors)
-        {
-            ts.climbUpHalfMeter ??= new ClipTransition();
-            ts.climbUp1meter ??= new ClipTransition();
-            ts.climbUp2meter ??= new ClipTransition();
-            ts.climbDown1meter ??= new ClipTransition();
-            ts.climbDown2meter ??= new ClipTransition();
-            ts.landFromWall ??= new ClipTransition();
-            ApplyClipTransitionToField(ts.climbUpHalfMeter, entry.climbUpHalfMeter, guidLookup, errors, $"{entry.name}.climbUpHalfMeter");
-            ApplyClipTransitionToField(ts.climbUp1meter, entry.climbUp1meter, guidLookup, errors, $"{entry.name}.climbUp1meter");
-            ApplyClipTransitionToField(ts.climbUp2meter, entry.climbUp2meter, guidLookup, errors, $"{entry.name}.climbUp2meter");
-            ApplyClipTransitionToField(ts.climbDown1meter, entry.climbDown1meter, guidLookup, errors, $"{entry.name}.climbDown1meter");
-            ApplyClipTransitionToField(ts.climbDown2meter, entry.climbDown2meter, guidLookup, errors, $"{entry.name}.climbDown2meter");
-            ApplyClipTransitionToField(ts.landFromWall, entry.landFromWall, guidLookup, errors, $"{entry.name}.landFromWall");
+            set.climbUpHalfMeter ??= new ClipTransition();
+            set.climbUp1meter ??= new ClipTransition();
+            set.climbUp2meter ??= new ClipTransition();
+            set.climbDown1meter ??= new ClipTransition();
+            set.climbDown2meter ??= new ClipTransition();
+            set.landFromWall ??= new ClipTransition();
+            ApplyClipTransitionToField(set.climbUpHalfMeter, entry.climbUpHalfMeter, guidLookup, errors, $"{entry.name}.climbUpHalfMeter");
+            ApplyClipTransitionToField(set.climbUp1meter, entry.climbUp1meter, guidLookup, errors, $"{entry.name}.climbUp1meter");
+            ApplyClipTransitionToField(set.climbUp2meter, entry.climbUp2meter, guidLookup, errors, $"{entry.name}.climbUp2meter");
+            ApplyClipTransitionToField(set.climbDown1meter, entry.climbDown1meter, guidLookup, errors, $"{entry.name}.climbDown1meter");
+            ApplyClipTransitionToField(set.climbDown2meter, entry.climbDown2meter, guidLookup, errors, $"{entry.name}.climbDown2meter");
+            ApplyClipTransitionToField(set.landFromWall, entry.landFromWall, guidLookup, errors, $"{entry.name}.landFromWall");
         }
 
         // ── Phase 3: LocomotionConfig ───────────────────────
@@ -935,6 +871,9 @@ namespace RedDust.Character.Animation
 
                     ge.animationSet = ResolveSORef<LocomotionAnimationSetSO>(item.animationSet,
                         nameLookup, createdThisSession, errors, entry.name);
+                    if (!string.IsNullOrEmpty(item.combatSet))
+                        ge.combatSet = ResolveSORef<LocomotionAnimationSetSO>(item.combatSet,
+                            nameLookup, createdThisSession, errors, entry.name);
 
                     newEntries[i] = ge; // struct — assign whole instance
                 }
@@ -983,8 +922,6 @@ namespace RedDust.Character.Animation
             profile.defaultLocomotionSet = ResolveSORef<LocomotionAnimationSetSO>(entry.defaultLocomotionSet,
                 nameLookup, createdThisSession, errors, entry.name);
             profile.gripTable = ResolveSORef<GripAnimationTableSO>(entry.gripTable,
-                nameLookup, createdThisSession, errors, entry.name);
-            profile.traversalSet = ResolveSORef<TraversalAnimationSetSO>(entry.traversalSet,
                 nameLookup, createdThisSession, errors, entry.name);
         }
 
@@ -1187,7 +1124,6 @@ namespace RedDust.Character.Animation
             CollectByName<AnimationModeConfigSO>(dict);
             CollectByName<LocomotionAnimationSetSO>(dict);
             CollectByName<GripAnimationTableSO>(dict);
-            CollectByName<TraversalAnimationSetSO>(dict);
             CollectByName<CharacterAnimationProfileSO>(dict);
             return dict;
         }
@@ -1295,10 +1231,9 @@ namespace RedDust.Character.Animation
             int sets = preview.locomotionSets?.Length ?? 0;
             bool hasConfig = preview.locomotionConfig != null;
             bool hasGrip = preview.gripTable != null;
-            bool hasTraversal = preview.traversalSet != null;
 
             var summary = $"<b>{profiles}</b> profile(s) · {(hasConfig ? "1" : "0")} config · <b>{modes}</b> modes · <b>{sets}</b> sets" +
-                $" · {(hasGrip ? "1" : "0")} gripTable · {(hasTraversal ? "1" : "0")} traversalSet";
+                $" · {(hasGrip ? "1" : "0")} gripTable";
             return $"{summary}\nv{preview.version} · {preview.description ?? "-"}";
         }
     }

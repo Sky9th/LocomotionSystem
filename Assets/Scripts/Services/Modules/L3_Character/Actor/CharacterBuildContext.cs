@@ -44,7 +44,7 @@ namespace RedDust.Character
         /// <summary>当前战备形态。CharacterActor 从 Director 意图中同步。</summary>
         public EBodyForm BodyForm { get; set; } = EBodyForm.Relax;
 
-        public TraversalAnimationSetSO TraversalSet => AnimationProfile?.traversalSet;
+        public LocomotionAnimationSetSO TraversalSet => ResolvedLocoAnimSet;
 
         /// <summary>
         /// 握持/装备标签缓存。TODO: 装备系统完成后由 GripSwitchEvent / EquipmentManager 接管，

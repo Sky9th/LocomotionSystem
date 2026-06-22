@@ -1,0 +1,67 @@
+{
+  "version": "1.0",
+  "description": "Zombie TypeA 动画配置 — Unarmed only, Relax: WalkA+IdleA, Combat: WalkE",
+  "profiles": [{
+    "name": "ZombieAnimationProfile_TypeA",
+    "directory": "Zombie/TypeA",
+    "locomotionConfig": "Zombie/TypeA/Config/LocomotionAnimationConfigSO",
+    "modeProfiles": ["Zombie/TypeA/Config/ModeProfiles/Stand_Walk"],
+    "defaultLocomotionSet": "Zombie/TypeA/Sets/Locomotion/LocomotionSet_TypeA_Relax",
+    "gripTable": "Zombie/TypeA/Sets/GripTable_TypeA"
+  }],
+  "locomotionConfig": {
+    "name": "LocomotionAnimationConfigSO",
+    "directory": "Zombie/TypeA/Config",
+    "headLookSmoothingSpeed": 5.0,
+    "modeProfiles": ["Zombie/TypeA/Config/ModeProfiles/Stand_Walk"],
+    "defaultInPlaceTurnSpeed": 360.0, "defaultMovingTurnSpeed": 720.0,
+    "landDistanceThreshold": 0.5,
+    "landMinFallDistance": 0.2, "landLightMaxFallDistance": 1.0, "landMediumMaxFallDistance": 3.0,
+    "landLightTriggerDistance": 0.3, "landMediumTriggerDistance": 0.6, "landHardTriggerDistance": 1.0
+  },
+  "modeProfiles": [
+    { "name": "Stand_Walk", "directory": "Zombie/TypeA/Config/ModeProfiles", "posture": "Standing", "gait": "Walk", "movingTurnSpeed": 720.0, "enterAngle": 90.0, "exitAngle": 20.0 }
+  ],
+  "locomotionSets": [
+    {
+      "name": "LocomotionSet_TypeA_Relax",
+      "directory": "Zombie/TypeA/Sets/Locomotion",
+      "idleL": { "_Clip": "e370a3d6d2beaa2469183ed771a97d46" },
+      "walkMixer": {
+        "_Animations": ["da3b5bf338f6cdf44a30543fab4e5e08"],
+        "_Thresholds": [{"x":0,"y":1}],
+        "_DefaultParameter": {"x":0,"y":0}, "_Type": 0
+      },
+      "runMixer": null, "sprint": null,
+      "walkAnimNativeSpeed": 0.8, "runAnimNativeSpeed": 0.0, "sprintAnimNativeSpeed": 0.0,
+      "turnInPlace90L": null, "turnInPlace90R": null,
+      "airLight": null, "airHard": null, "landLight": null, "landHard": null,
+      "climbUpHalfMeter": null, "climbUp1meter": null, "climbUp2meter": null,
+      "climbDown1meter": null, "climbDown2meter": null, "landFromWall": null
+    },
+    {
+      "name": "LocomotionSet_TypeA_Combat",
+      "directory": "Zombie/TypeA/Sets/Locomotion",
+      "idleL": null,
+      "walkMixer": {
+        "_Animations": ["63d5dcf4bbd257c4987d0bdbe6f86d4b"],
+        "_Thresholds": [{"x":0,"y":1}],
+        "_DefaultParameter": {"x":0,"y":0}, "_Type": 0
+      },
+      "runMixer": null, "sprint": null,
+      "walkAnimNativeSpeed": 1.8, "runAnimNativeSpeed": 0.0, "sprintAnimNativeSpeed": 0.0,
+      "turnInPlace90L": null, "turnInPlace90R": null,
+      "airLight": null, "airHard": null, "landLight": null, "landHard": null,
+      "climbUpHalfMeter": null, "climbUp1meter": null, "climbUp2meter": null,
+      "climbDown1meter": null, "climbDown2meter": null, "landFromWall": null
+    }
+  ],
+  "gripTable": {
+    "name": "GripTable_TypeA",
+    "directory": "Zombie/TypeA/Sets",
+    "defaultSet": "Zombie/TypeA/Sets/Locomotion/LocomotionSet_TypeA_Relax",
+    "entries": [
+      { "gripTag": "Equip.Grip.Unarmed", "animationSet": "Zombie/TypeA/Sets/Locomotion/LocomotionSet_TypeA_Relax", "combatSet": "Zombie/TypeA/Sets/Locomotion/LocomotionSet_TypeA_Combat" }
+    ]
+  }
+}

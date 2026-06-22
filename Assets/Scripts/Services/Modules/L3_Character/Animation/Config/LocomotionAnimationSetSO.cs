@@ -51,6 +51,18 @@ namespace RedDust.Character.Animation
         public LinearMixerTransition landLight;
         public LinearMixerTransition landHard;
 
+        [Header("Traversal - Climb Up")]
+        public ClipTransition climbUpHalfMeter;
+        public ClipTransition climbUp1meter;
+        public ClipTransition climbUp2meter;
+
+        [Header("Traversal - Climb Down")]
+        public ClipTransition climbDown1meter;
+        public ClipTransition climbDown2meter;
+
+        [Header("Traversal - Land")]
+        public ClipTransition landFromWall;
+
         /// <summary>
         /// 是否具备完整 locomotion。animset 无 walk/run 时 BaseLayer 不 swap，仅用 idleL 做 UpperBody 覆盖。
         /// 注意：MixerTransition2D 是内联序列化对象，永远非 null，需检查内部是否实际分配了动画。

@@ -74,7 +74,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isPlayer: 1
   groundSystemConfig: {fileID: 11400000, guid: 6f5d74115b0df28438f735b18d13da47, type: 2}
-  characterAnimationProfile: {fileID: 11400000, guid: e215df4713aa441448d8fe70857a7f32,
+  characterAnimationProfile: {fileID: 11400000, guid: f7103b380a142f6469bb5f283a8ee979,
     type: 2}
   skillSlot1: {fileID: 11400000, guid: a3dae7e43902d784798ca34b0b71ef24, type: 2}
   skillSlot2: {fileID: 11400000, guid: 2151cf2d96121414e89ba5f6df9d2e22, type: 2}

@@ -12,7 +12,7 @@ namespace RedDust.Character.Animation.Drivers.Traversal
 
         public override int ChannelMask => 1 << 0; // FullBody
 
-        // TODO: migrated to TraversalAnimationSetSO
+        // TODO: migrated to LocomotionAnimationSetSO traversal fields
         public override void Evaluate(in CharacterFrameContext ctx, float dt)
         {
             // var aliasProfile = brain?.BuildContext?.AnimationAlias;
@@ -47,7 +47,7 @@ namespace RedDust.Character.Animation.Drivers.Traversal
 
         public override void OnResumed() { }
 
-        // TODO: migrated to TraversalAnimationSetSO
+        // TODO: migrated to LocomotionAnimationSetSO traversal fields
         /* private static StringAsset ResolveClimbAlias(AnimationClipSetSO aliasProfile, float obstacleHeight)
         {
             ...
