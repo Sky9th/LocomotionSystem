@@ -42,10 +42,26 @@ This session aligned all code to the documented lifecycle standard, then further
 
 ## Known Issues
 
-- [ ] `BaseAnimationDriver.OnEnable` still calls `RegisterDriver` — is a harmless no-op (fullBodyArbiter is null at OnEnable time), but represents redundant code (P2 — cosmetic cleanup)
+- [x] `BaseAnimationDriver.OnEnable/OnDisable` cross-module registration — fixed, moved to OnWire/OnDestroy
 - [ ] `PathfindingService._dispatcher` field stored but never used — dead code carried from old version (P2)
 - [ ] EventDispatcherService is `[Obsolete]` — EventHub replacement not yet complete (P1 — future session)
-- [x] `UIService._dispatcher` null safety in public API methods — pre-existing, not addressed in this session
+
+### Character Module Lifecycle Fixes (same session)
+- **BaseAnimationDriver**: OnEnable/OnDisable cleared, OnDestroy added with `brain?.UnregisterDriver`
+- **LocomotionDriver**: removed empty OnEnable/OnAssemble overrides, removed redundant `GetComponent` in OnWire
+- **CharacterAudio**: `brain` reference moved to OnAssemble, OnDestroy added to unsubscribe OnFootstep
+- **CharacterCombat**: 7 Ability/Reactor callback assignments moved from OnAssemble to OnWire
+- **PathfindingAgent**: `Teleport` moved from OnWire to OnAssemble
+- **AnimationBrain**: added `: IModuleChild`, self-registers in Awake, layer setup moved from Start to OnWire
+- **IModuleChild / ModuleHub / ModuleChildMono**: lifecycle boundary descriptions added to code comments
+- **module-lifecycle.md**: added full phase responsibility table (Awake→OnDestroy)
+
+### Decisions (Character fixes)
+
+| Decision | Alternatives Considered | Reason |
+|----------|------------------------|--------|
+| AnimationBrain 显式 `: ModuleHub, IModuleChild` | A: 改 ModuleHub 基类让所有 Hub 都实现 IModuleChild → 破坏 Hub 不实现接口的约定，根 Hub 无父调用。B: AnimationBrain 改为 ModuleChildMono 内嵌 Registry → 混淆 Hub/Child 职责。 | 显式接口是精确手术——只有需要既父又子的 Hub 才加，根 Hub (GameService) 不受影响 |
+| OnEnable/OnDisable 清空而非保留空壳 | A: 保留 `base.OnEnable()` 调用链 → 无意义调用。B: 保留注释说明 → 注释会过时。 | 清空是最干净的合约表达 |
 
 ## Cross-References
 
@@ -53,8 +69,9 @@ This session aligned all code to the documented lifecycle standard, then further
 - [../plans/spicy-sprouting-bachman.md](../plans/spicy-sprouting-bachman.md) — implementation plan for this alignment
 
 ### Related Tech Docs
-- [../tech/L1-core/module-lifecycle.md](../tech/L1-core/module-lifecycle.md) — lifecycle standard (target)
+- [../tech/L1-core/module-lifecycle.md](../tech/L1-core/module-lifecycle.md) — lifecycle standard + phase boundary table
 - [../tech/L1-core/module-system.md](../tech/L1-core/module-system.md) — updated to reflect current architecture
+- [../tech/L2-services/L2-modules/L3-character/lifecycle-audit.md](../tech/L2-services/L2-modules/L3-character/lifecycle-audit.md) — Character module per-phase audit table
 - Deleted: `iinitializable.md`, `module-behaviour.md`, `module-component.md`, `module.md`, `module-registry.md` — replaced by above two docs
 
 ### Flag for Design Doc Creation

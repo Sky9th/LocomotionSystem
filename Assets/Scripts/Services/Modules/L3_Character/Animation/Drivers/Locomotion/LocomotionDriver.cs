@@ -13,20 +13,9 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
 
         public override int ChannelMask => 1 << 0;
 
-        protected override void OnEnable()
-        {
-            base.OnEnable();
-        }
-
-        public override void OnAssemble()
-        {
-            base.OnAssemble();
-        }
-
         public override void OnWire()
         {
             base.OnWire();
-            brain = GetComponentInChildren<AnimationBrain>();
             var buildCtx = brain?.BuildContext;
             defaultAnimSet = buildCtx?.DefaultLocomotionSet;
             baseLayer = new BaseLayer(

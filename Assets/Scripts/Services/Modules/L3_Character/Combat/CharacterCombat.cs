@@ -17,7 +17,7 @@ namespace RedDust.Character.Combat
             this.ctx = ctx;
         }
 
-        public override void OnAssemble()
+        public override void OnWire()
         {
             if (ctx.Ability != null)
             {
@@ -33,10 +33,7 @@ namespace RedDust.Character.Combat
                 ctx.Reactor.ReactionCallback = OnReaction;
                 ctx.Reactor.OnDamagedCallback = OnDamaged;
             }
-        }
 
-        public override void OnWire()
-        {
             ctx.EventHub?.Get<HitEventSO>()?.Register(OnHitEvent);
         }
 

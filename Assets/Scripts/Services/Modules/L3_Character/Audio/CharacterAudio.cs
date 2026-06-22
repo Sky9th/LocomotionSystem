@@ -13,12 +13,23 @@ namespace RedDust.Character.Audio
         private CharacterAudioConfigSO Config =>
             brain?.BuildContext?.AudioConfig;
 
+        public override void OnAssemble()
+        {
+            base.OnAssemble();
+            brain = GetComponentInChildren<AnimationBrain>();
+        }
+
         public override void OnWire()
         {
             base.OnWire();
-            brain = GetComponentInChildren<AnimationBrain>();
             if (brain != null)
                 brain.OnFootstep += HandleFootstep;
+        }
+
+        private void OnDestroy()
+        {
+            if (brain != null)
+                brain.OnFootstep -= HandleFootstep;
         }
 
         private void HandleFootstep()

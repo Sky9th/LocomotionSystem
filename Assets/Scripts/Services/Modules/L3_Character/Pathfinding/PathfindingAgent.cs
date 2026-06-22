@@ -40,11 +40,7 @@ namespace RedDust.Character.Pathfinding
             ai.updatePosition = false;
             ai.updateRotation = false;
             ai.slowWhenNotFacingTarget = false;
-        }
 
-        public override void OnWire()
-        {
-            base.OnWire();
             Teleport(transform.position);
         }
 

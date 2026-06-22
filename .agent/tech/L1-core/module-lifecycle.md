@@ -51,3 +51,20 @@ OnDestroy                [基类] 不干预子模块                取消事件
 | 3 | OnAssemble 中创建孙子不保证其 OnAssemble 被调用 | OnAssembleAll 遍历的是调用前的注册快照，遍历期间新注册的不在本轮迭代 |
 | 4 | ModuleChildMono 起始 enabled | Unity 对 disabled 组件跳过 OnEnable，OnWire 将先于 OnEnable 触发 |
 | 5 | Hub GO 起始 active | inactive 的 GO 其 Start 被推迟到激活时，OnWire 无限延后 |
+
+## 职责边界
+
+每个生命周期阶段允许和禁止的操作：
+
+| 阶段 | 职责 | 允许 | 禁止 |
+|------|------|------|------|
+| **Awake** (Hub) | 扫描注册 | `GetComponentsInChildren` 扫描 MB 子节点 → Register → `OnAssembleAll` | — |
+| **Awake** (Hub 子类 pre-base) | 前置组装 | 创建 C# 子模块（构造自注册）、`AddComponent` MB 子组件 | — |
+| **Awake** (ChildMono) | 无需使用 | 基类为空，初始化放 OnAssemble | 在此做逻辑初始化（放 OnAssemble） |
+| **OnAssemble** | 组装 | 收集自身引用（GetComponent）、创建孙子模块、注册到全局容器 | 解析其他模块（TryResolveService）、订阅事件、执行业务逻辑 |
+| **Start** (Hub 子类 pre-base) | 前置连线 | 构建子 OnWire 依赖的共享资源 | — |
+| **Start** (Hub 子类 post-base) | 启动 | Publish 初始状态 | — |
+| **OnWire** | 连线 | 解析其他模块、订阅事件 | Publish 初始状态（放 Start） |
+| **OnEnable** | 激活 | 启用自身运行态 | 收集引用、订阅事件 |
+| **OnDisable** | 休眠 | 重置自身运行时状态 | 取消事件订阅（放 OnDestroy） |
+| **OnDestroy** | 销毁 | 取消所有事件订阅、释放资源 | — |

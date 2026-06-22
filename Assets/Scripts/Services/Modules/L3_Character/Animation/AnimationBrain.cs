@@ -11,7 +11,7 @@ namespace RedDust.Character.Animation
 {
     [DefaultExecutionOrder(-10)]
     [DisallowMultipleComponent]
-    public sealed class AnimationBrain : ModuleHub
+    public sealed class AnimationBrain : ModuleHub, IModuleChild
     {
         // ── Constants ──
         public const int TotalLayerCount = 7;
@@ -66,6 +66,9 @@ namespace RedDust.Character.Animation
 
         protected override void Awake()
         {
+            // 自注册到父 Hub (CharacterActor)，使 OnAssemble/OnWire 被纳入生命周期。
+            GetComponentInParent<ModuleHub>()?.Registry?.Register(this);
+
             // 装配 Drivers。AddComponent 立即触发其 Awake，之后 base.Awake() 扫描发现。
             gameObject.AddComponent<LocomotionDriver>();
             gameObject.AddComponent<TraversalDriver>();
@@ -73,9 +76,12 @@ namespace RedDust.Character.Animation
             base.Awake();  // 扫描 ModuleChildMono → Register → OnAssembleAll
         }
 
-        protected override void Start()
+        public void OnAssemble() { }
+
+        public void OnWire()
         {
-            // ── pre-wire: 解析父 CharacterActor、设置动画图层 ──
+            // 由父 Hub (CharacterActor) 的 OnWireAll 驱动。
+            // 解析父 Context、设置动画图层，子 Driver 的 OnWire 依赖这些资源就位。
             buildCtx = GetComponentInParent<CharacterActor>()?.BuildContext;
 
             if (animancer == null) animancer = GetComponentInChildren<NamedAnimancerComponent>();
@@ -94,10 +100,13 @@ namespace RedDust.Character.Animation
                 headLookLayer = BindLayer(HeadLook, buildCtx.HeadMask);
                 BindLayer(Footstep, buildCtx.FootMask);
             }
+        }
 
+        protected override void Start()
+        {
             base.Start();  // Registry.OnWireAll() → LocomotionDriver.OnWire 创建 BaseLayer
 
-            // ── post-wire: 桥接 footstep 回调 ──
+            // 桥接 footstep 回调（依赖 Driver.OnWire 创建的 BaseLayer）
             var locoDriver = GetComponent<LocomotionDriver>();
             if (locoDriver?.BaseLayer != null)
                 locoDriver.BaseLayer.FootstepCallback = () => OnFootstep?.Invoke();
