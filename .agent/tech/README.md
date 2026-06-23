@@ -98,6 +98,9 @@ tech/
 │       │   ├── Config/                 # CharacterProfile, LocomotionEnums [代码结构]
 │       │   ├── Input/                  # CharacterEventReceiver, SCharacterInputActions [代码结构]
 │       │   │
+│       │   ├── L4-equipment/           # L4: 装备组件 — 身体容器管理 + 武器切换
+│       │   │   └── README.md
+│       │   │
 │       │   ├── animation/               # L4: 动画子系统
 │       │   │   ├── AnimationBrain.cs
 │       │   │   ├── DriverArbiter.cs
@@ -138,10 +141,19 @@ tech/
 │       │   ├── property-inventory.md    # Property Inventory — 全量属性与属性树设计（~180 props, 29 trees）
 │       │   └── implementation-plan.md   # 实现计划 — 4 阶段迁移
 │       │
-│       ├── L3-equipment/              # L3: 装备系统 (自身代码: GearDefSO/ GearInstance/ Editor/)
+│       ├── L3-equipment/              # L3: 装备系统 (自身代码: 无 — 设计阶段)
 │       │   ├── README.md               # 模块总览 — 两层架构 + 三层叠加 + 万物皆 GearDefSO
 │       │   ├── gear-def-so.md           # GearDefSO — 装备/零件定义资产，字段详解
 │       │   └── gear-instance.md         # GearInstance — 运行时装备个体，工厂 + 叠加
+│       │
+│       ├── L3-item/                   # L3: 物品系统 — 数据定义 + 运行时实例 + 身份索引
+│       │   └── README.md               # 模块总览 — ItemDefSO / ItemInstance / ItemRegistry
+│       │
+│       ├── L3-container/              # L3: 容器系统 — 泛型容器抽象
+│       │   └── README.md               # 模块总览 — Container<T> / 嵌套 / 容器所有者 Tick
+│       │
+│       ├── L3-skill-tree/             # L3: 技能树系统 — 技能的真实来源
+│       │   └── README.md               # 模块总览 — SkillTreeSO / 武器兼容 / 与 Ability 关系
 │       │
 │       └── L3-pathfinding/             # L3: 寻路系统
 │           └── README.md
