@@ -74,6 +74,7 @@ L3_Ability/
 ├── Config/
 │   ├── AbilityDefSO.cs              # [SO] 主动技能完整定义
 │   ├── AbilityActivationSO.cs       # [SO] 激活方式 + 动画 + 阶段标记
+│   ├── AbilityTreeSO.cs             # [SO] 技能/天赋/套路树 — 一切皆 AbilityTree
 │   ├── PassiveAbilitySO.cs          # [SO] 被动技能定义
 │   ├── NoiseEventSO.cs              # [SO] 噪音事件定义
 │   ├── TagMutualExclusionSO.cs      # [SO] 全局标签互斥规则
@@ -183,5 +184,6 @@ Ability 系统消费的标签用途：
 | [ability-search-assets.md](ability-search-assets.md) | **Search 资产树** — 完整 SearchSO JSON 清单 (~45 资产, Cone/Ray/Circle/Line) |
 | [ability-activation-assets.md](ability-activation-assets.md) | **Activation 资产树** — 完整 ActivationSO JSON 清单 (~28 资产, Instant/Charged/Channel/Toggle) |
 | [ability-noise-assets.md](ability-noise-assets.md) | **Noise 资产树** — 完整 NoiseEventSO JSON 清单 (~44 资产) + Noise Tag 依赖树 (17) |
+| [ability-tree.md](ability-tree.md) | **AbilityTreeSO** — 技能/天赋/套路树，一切皆 AbilityTree |
 
 > GameplayTag 基础设施文档位于 [L1-core](../../../L1-core/)：资产树、运行时 struct、容器用法。

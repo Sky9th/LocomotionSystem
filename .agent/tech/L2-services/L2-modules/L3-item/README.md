@@ -13,7 +13,8 @@
 | 维度 | L3_Ability | L3_Item |
 |------|-----------|---------|
 | 核心职责 | 行为管线（②→⑧） | 身份和位置权威 |
-| 运行时 | AbilityExecutor（Update/冷却） | ItemRegistry（字典索引） |
+| 运行时 | AbilityExecutor（Update/冷却） | ItemInstance（纯 C# 对象） |
+| 索引 | — | L2_ItemService.ItemRegistry |
 | SO | AbilityDefSO | ItemDefSO |
 | 实例 | 无（技能无运行时态） | ItemInstance（ID + 属性管线） |
 | 多人 | 无特殊需求 | Registry = 服务端权威边界 |
@@ -28,8 +29,14 @@
 │    ├── [继承] PropertyTreeSO Template     ← 物品属性结构           │
 │    └── [继承] string OverridesJson        ← 变种属性值             │
 │                                                                   │
-│  ItemDefSO 无任何 C# 字段。所有数据——身份、属性、效果引用、标签    │
-│  ——全部进 PropertyTree。                                           │
+│  ItemDefSO 零 C# 字段。所有数据全进 PropertyTree。                  │
+│                                                                   │
+│  结构化数据（SlotDef[]）通过 PropertyType.Struct 表达：              │
+│    PropertyDefSO.Type = Struct                                     │
+│    PropertyDefSO.StructTypeName = "SlotDef"                        │
+│    → 运行时 JsonUtility.FromJson<SlotDef>(json) 反序列化            │
+│    → C# struct 保留编译期类型安全 + Validator 校验                   │
+│    → PropertyTree 只需一种新 PropertyType，不改数据结构/合并语义     │
 │                                                                   │
 │  能力标记靠 ItemTags（GameplayTagList）：                            │
 │    Consumable.Medical → 消耗品                                     │
@@ -39,8 +46,6 @@
 │                                                                   │
 │  效果引用靠 AssetRefList（EffectSO[] 直接存在 PropertyTree 中）：    │
 │    绷带的 Effects → [HealEffect_CleanBleed, HealEffect_RestoreHP]  │
-│                                                                   │
-│  GearSlot[]（槽位定义）属于容器系统，不在此模块。                   │
 └─────────────────────────┬──────────────────────────────────────────┘
                           │ ItemInstance.Create(def)
 ┌─────────────────────────▼──────────────────────────────────────────┐
@@ -67,21 +72,15 @@
 │    WorldManager.Update()  → item.Tick(0.5f)   ← 0.5Hz，物品衰减   │
 │  无衰减属性的物品 Tick 空转，FloatState 开头直接 return，零开销。    │
 └─────────────────────────┬──────────────────────────────────────────┘
-                          │ ItemRegistry.Track(id, containerSlot)
+                          │ ItemService.RegisterItem(item, slot)   ← L2
 ┌─────────────────────────▼──────────────────────────────────────────┐
-│                   身份索引层                                         │
+│               L2_ItemService · 物品协调层                            │
 │                                                                     │
-│  ItemRegistry                                                       │
-│    ├── _locationIndex: Dictionary<string, ContainerSlot>            │
-│    ├── Track(string itemId, ContainerSlot slot)                     │
-│    ├── Untrack(string itemId)                                       │
-│    ├── FindLocation(string itemId) → ContainerSlot?                 │
-│    └── Transfer(string itemId, ContainerSlot from, ContainerSlot to)│
-│          → bool   ← ⚠ 暂定，待容器模块定稿后确认                     │
+│  ItemRegistry: 物品→位置 索引 → ContainerSlotRef（来自 L3_Container） │
+│  ContainerResolver: ownerId → Container 解析                         │
+│  Transfer: 物品跨容器移动唯一入口 → 原子化 + 回滚                    │
 │                                                                     │
-│  Registry 只管身份索引。不管属性 Tick。                              │
-│  单人: O(1) 物品查找索引                                            │
-│  多人: 服务端权威边界——所有物品移动必须经过 Registry               │
+│  详见 → .agent/tech/L2-services/L2-item-service/README.md           │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -89,12 +88,12 @@
 
 ```
 L3_Item/
-├── ItemDefSO.cs                   # [SO] 物品定义 — 继承 EntityDefSO，无额外 C# 字段
-├── ItemInstance.cs                # [class] 运行时个体 — ID + Props
-└── ItemRegistry.cs                # [class] 身份索引 — 物品→容器映射
+├── ItemDefSO.cs                   # [SO] 物品定义 — 继承 EntityDefSO，零 C# 字段
+└── ItemInstance.cs                # [class] 运行时个体 — ID + Props
 ```
 
-无 Config/ 目录。ItemDefSO 不需要能力 struct——所有数据进 PropertyTree，能力靠 ItemTags 标记。
+无 Config/ 目录。所有数据全进 PropertyTree——叶数据走标量类型，结构化数据走 `PropertyType.Struct`（JSON blob + C# struct 类型名关联）。能力靠 ItemTags 标记。
+`SlotDef` struct 当前定义在 L3_Item/ItemDefSO.cs。PropertyType.Struct 实现后移至 L3_Container。
 
 ## 调用链
 
@@ -102,14 +101,19 @@ L3_Item/
 物品创建:
   ItemDefSO.asset（配置）
     → ItemInstance.Create(def)
-      → EntityProperties.Create(def)  ← 复用 PropertyAgent 管线
-      → ItemRegistry.Track(id, slot)  ← 写入索引
+      → EntityProperties.Create(def)        ← 复用 PropertyAgent 管线
+      → L2_ItemService.RegisterItem(item, slot)
 
 物品移动:
-  Registry.Transfer(itemId, fromSlot, toSlot) → bool
-    内部: fromSlot.Remove() → Untrack(id) → toSlot.Place(item)
-    Place 失败 → 回滚（重新放入 fromSlot + Track 回原位置）
-    容器不知 Registry 存在，只负责 CanAccept/Place/Remove
+  L2_ItemService.Transfer(itemId, fromSlot, toSlot) → bool
+    1. var item = Resolve(fromSlot).Remove(fromSlot.SlotKey, itemId)
+    2. Untrack(itemId)
+    3. Resolve(toSlot).CanAccept(toSlot.SlotKey, item)?
+       CanAccept 失败 → 回滚 Place(fromSlot.SlotKey, item) + Track(fromSlot)
+    4. Resolve(toSlot).Place(toSlot.SlotKey, item)
+       Place 失败 → 同上回滚
+    5. Track(itemId, toSlot)
+  容器不知 Registry 存在，只负责 CanAccept/Place/Remove
 
 物品属性驱动（Tick）:
   容器所有者.Update()
@@ -120,13 +124,13 @@ L3_Item/
 物品销毁:
   ItemInstance.Destroy()
     → Props 清理
-    → Registry.Untrack(id)
+    → L2_ItemService.UnregisterItem(id)
 
 物品查询:
-  ItemRegistry.FindLocation(id) → ContainerSlot?   ← O(1)
+  L2_ItemService.WhereIs(id) → ContainerSlotRef?   ← O(1)
 ```
 
-**Tick 实例**：CharacterActor.Update() 以 60fps 调角色装备槽和背包中的 item.Tick(dt)。WorldManager.Update() 以 0.5Hz 调世界箱子中的 item.Tick(0.5f)。手雷引信不在被动 Tick 里——由技能管线在激活后才开始计时。
+**Tick 模型**：ItemInstance.Tick(dt) 由容器所有者驱动——详见 [L3_Container 文档](../L3-container/README.md)。手雷引信不走被动 Tick——由技能管线在激活后计时。
 
 ## 耦合模块
 
@@ -134,24 +138,27 @@ L3_Item/
 |--------|-----------|------|
 | ItemDefSO | L3-properties (EntityDefSO, PropertyTreeSO) | 继承属性框架 |
 | ItemInstance | L3-properties (EntityProperties) | 持有物品运行时属性 |
-| ItemRegistry | Container 系统 | Registry 调 Transfer，容器不知 Registry |
-| ItemDefSO | 容器系统 | 被容器过滤规则消费（GameplayTag 匹配） |
-| ItemDefSO | SkillTreeSO（将来） | 武器标签匹配技能树兼容性 |
+| L2_ItemService | L3_Item（ItemInstance） | （L2 间接依赖，非 L3_Item 直接依赖 L2） |
+| L2_ItemService | L3_Container（Container\<T\>, ContainerSlotRef, SlotDef） | （同上，L2 胶水层协调） |
+| ItemDefSO | L3_Container（SlotDef struct） | 类型级引用：StructTypeName="SlotDef" 关联（非服务调用） |
+| ItemDefSO | 容器系统 | ItemTags 被容器过滤规则消费（GameplayTag 匹配） |
+| ItemDefSO | AbilityTreeSO（将来） | 武器标签匹配技能树兼容性 |
 | ItemInstance | UI（装备栏/物品栏） | 展示物品信息和状态 |
-| ItemRegistry | 多人服务端 | 物品移动权威验证 |
+| L2_ItemService | 多人服务端 | 物品移动权威验证——ItemService 为唯一入口 |
 
 ## 设计决策
 
 | 决策 | 原因 |
 |------|------|
-| ItemDefSO 纯 PropertyTree，零 C# 字段 | 所有叶子数据进 PropertyTree。能力靠 ItemTags 标记，效果靠 AssetRefList 引用 EffectSO[] |
+| ItemDefSO 纯 PropertyTree，零 C# 字段 | 所有数据全进 PropertyTree。叶数据走标量类型，结构化数据（SlotDef[]）走 PropertyType.Struct + StructTypeName 关联 |
 | 不做能力 struct（ConsumeData 等） | 绷带的 `useTime`=Float、`effects`=AssetRefList→全部可由 PropertyTree 表达。标签即可标记能力 |
 | 不做独立 Capability SO | 三个商业游戏均未采用。WeaponTypeSO 被拆解——字段各有归属 |
+| 结构化数据走 PropertyType.Struct | 不降维拆成 key-value（失内聚），不做独立 SO（无复用），不扩展 GroupProp（改动大）。JSON blob + C# struct 类型名——框架改动最小，类型安全保留 |
 | 物品定义继承 EntityDefSO | 和角色共享同一套属性管线 |
 | 武器类型 = GameplayTag | Weapon.Blade / Weapon.Pistol。被容器过滤、被技能树匹配 |
 | ItemInstance 是纯 C# 类 | 物品在容器间移动只改引用，不 Instantiate/Destroy |
-| 需要 ItemRegistry | 多人联机要求物品身份有服务端权威 |
-| Registry 不管 Tick | 容器所有者驱动 Tick。Registry 只做身份索引 |
+| 需要 ItemRegistry（在 L2_ItemService） | 多人联机要求物品身份有服务端权威。L2_ItemService 持有 Registry |
+| Registry 不管 Tick | 容器所有者驱动 Tick。Registry（L2）只做身份索引 |
 | 容器所有者决定 Tick 频率 | 角色 60fps，箱子 0.5Hz |
 | 装备不是物品类型 | "装备"是物品在身体槽容器中的状态。GearDefSO 原建模将状态和定义混淆——此概念已废弃 |
 
@@ -164,7 +171,7 @@ L3_Item/
 | ItemRegistry 身份索引 | 待做 | ItemInstance + Container |
 | 物品 PropertyAgent 管线 | 待做 | ItemDefSO + PropertyAgent |
 | 容器系统 | 待做 | ItemInstance + ItemRegistry |
-| 与 SkillTreeSO 的技能树匹配 | 远期 | 容器 + ItemRegistry |
+| 与 AbilityTreeSO 的技能树匹配 | 远期 | 容器 + ItemRegistry |
 | 多人服务端权威 | 远期 | ItemRegistry |
 
 ## 已知缺口
@@ -173,8 +180,9 @@ L3_Item/
 |------|:---:|------|
 | 存档/加载 | ⏸ 待定 | EntityProperties 序列化、Registry 重建——暂不处理 |
 | 世界物品管理 | ⏸ 待定 | 类似 PlayerService 的统一管理器——待论证 |
-| 物品转移调用方 | ✅ | Registry.Transfer 为唯一入口。容器只负责 Place/Remove |
-| ContainerSlot 定义 | ❓ | 依赖容器模块。ContainerSlot 需至少提供 Place/Remove |
+| 物品转移调用方 | ✅ | L2_ItemService.Transfer 为唯一入口。容器只负责 Place/Remove |
+| 代码同步 — ItemDefSO 零字段 | ❓ | 当前代码仍持有 SlotDef[]。设计已定：All data → PropertyTree，代码尚未同步 |
+| ContainerSlot 定义 | ✅ | Container\<T\> 提供 Place/Remove/CanAccept（详见 L3_Container） |
 | 具体 PropertyTree 结构 | — | 不属 Item 模块范围 |
 | 物品 ID 生成 | ✅ | GUID |
 
@@ -184,4 +192,3 @@ L3_Item/
 |------|------|
 | （待创建）item-def-so.md | ItemDefSO — 物品定义资产，字段详解 |
 | （待创建）item-instance.md | ItemInstance — 运行时个体，工厂 + 属性管线 |
-| （待创建）item-registry.md | ItemRegistry — 身份索引，物品→容器映射 |

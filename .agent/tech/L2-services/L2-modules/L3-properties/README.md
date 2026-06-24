@@ -6,8 +6,10 @@
 
 - 标签体系 → `L1-core/gameplay-tag.md` — PropertyDefSO 的 GameplayTag 类型依赖 Tag 系统做校验
 - 伤害地基 → [damage-source-model.md](damage-source-model.md) — ATK 是 DamageEffectSO[]，不依赖属性系统，但属性系统需支持 AssetRefList 类型
-- 装备系统 → [equipment-system.md](../../../../design/equipment-system.md) — GearDefSO 作为实例层消费方
-- Stats 系统 → `../L3-stats/README.md` — 当前数值框架，Properties 成型后删除
+- 物品系统 → [L3_Item](../L3-item/README.md) — ItemDefSO : EntityDefSO，所有数据进 PropertyTree
+- 容器系统 → [L3_Container](../L3-container/README.md) — SlotDef[] 通过 PropertyType.Struct 存储
+- ~~装备系统~~ — GearDefSO 模型已否决。装备 = 物品在身体槽中的状态
+- ~~Stats 系统~~ — 已由 Properties 替代。迁移已完成
 - **属性清单** → [property-inventory.md](property-inventory.md) — 全量属性与属性树设计（~180 props, 29 trees, 8 族）
 
 ---
@@ -460,51 +462,12 @@ ActorDefSO 实例字段:
 
 ---
 
-## 九、与 Stats 系统的迁移路径
+## 九、与 Stats 系统的关系（历史）
 
-### 阶段一：并行存在（当前 → Properties 核心实现完成）
+> ⚠ **Stats 迁移已完成。L3_Stats 模块已删除。** 此节仅作历史记录。
 
-```
-Properties                         Stats
-──────────                         ─────
-PropertyDefinitionRegistry         StatDefinitionSO (154 个, 全部是 Float)
-PropertyTreeSO × ~26               StatsTreeSO × ~26
-PropertyNode                       JsonStatNode
-ResolvedPropertyBag                StatInstance[] (Resolve 产出)
-
-两者独立。Stats 消费方不动。
-```
-
-### 阶段二：Properties 覆盖 Stats 的功能集
-
-当 Properties 能满足以下全部：
-- [x] Float 属性定义 + 树继承 + 覆写（= Stats 当前全部能力）
-- [x] 非 Float 类型（AssetRef、GameplayTag、String...）
-- [x] Editor：树编辑窗口
-- [x] Editor：Import/Export JSON
-- [x] 校验：类型 + 范围
-
-→ 消费方开始迁移：
-- GearDefSO → 废弃 statsTree + StatOverride[]，改用 template + overridesJson
-- 装备 Resolve() → 从 StatsTreeSO.Resolve() 改为 PropertyTreeSO.Resolve()
-
-### 阶段三：Stats 删除
-
-所有消费方迁移完毕：
-- CharacterStats → 从 ResolvedPropertyBag 中 Float 子集构建 StatInstance
-- DamageRule / ToggleModifierRule 等 → 继续用 StatInstance（纯 float 运行时）
-- StatsTreeSO / StatDefinitionSO / JsonStatNode / StatsTreeEditorWindow → 全部删除
-- L3_Stats 模块目录 → 归档删除
-
-### 不迁的内容
-
-`StatInstance`、`StatModifier`、`ModifierContext` —— 这些是 float 运行时引擎。它们是 Stats 上下文中最"纯"的一部分——就是 float 值 + Tick + Modifier 累加。迁移路径是：
-
-```
-旧的创建路径:  StatsTreeSO.Resolve() → StatInstance[]
-新的创建路径:  PropertyTreeSO.Resolve() → ResolvedPropertyBag
-               → Float 子集 + 伴生 Rate Def → StatInstance[]
-```
+- `StatInstance`、`StatModifier` 保留——纯 float 运行时引擎，不依赖 Stats 定义系统。
+- `FloatState` 是 StatInstance 的后继，由 PropertyAgent 管理帧驱动。
 
 但如何从 ResolvedPropertyBag 创建 StatInstance 是阶段三才需要回答的问题。当前不过度设计。
 

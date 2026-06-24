@@ -1291,6 +1291,51 @@
       "name": "Tag_Sprint",
       "parent": "Body.Locomotion",
       "description": "冲刺——全速移动，脚步大，消耗体力"
+    },
+    {
+      "name": "Tag_Weapon",
+      "parent": null,
+      "description": "武器类型标签根——容器过滤 + AbilityTree 兼容匹配"
+    },
+    {
+      "name": "Tag_Blade",
+      "parent": "Weapon",
+      "description": "刀/剑类武器"
+    },
+    {
+      "name": "Tag_Pistol",
+      "parent": "Weapon",
+      "description": "手枪类武器"
+    },
+    {
+      "name": "Tag_AbilityTree",
+      "parent": null,
+      "description": "AbilityTree 类别标签根"
+    },
+    {
+      "name": "Tag_Innate",
+      "parent": "AbilityTree",
+      "description": "天生技能树——出生自动持有，不可移除"
+    },
+    {
+      "name": "Tag_Fist",
+      "parent": "Ability.Melee",
+      "description": "徒手战斗——拳、踢、擒"
+    },
+    {
+      "name": "Tag_Punch",
+      "parent": "Ability.Melee.Fist",
+      "description": "拳击——快速直拳，低消耗低伤害"
+    },
+    {
+      "name": "Tag_Kick",
+      "parent": "Ability.Melee.Fist",
+      "description": "脚踢——中等伤害，小幅击退"
+    },
+    {
+      "name": "Tag_Grab",
+      "parent": "Ability.Melee.Fist",
+      "description": "擒拿——短暂控制目标"
     }
   ]
 }

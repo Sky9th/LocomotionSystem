@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e09ce01e94152649b8d1386fddcf687, type: 3}
+  m_Name: Tag_Fist
+  m_EditorClassIdentifier: 
+  leafName: Fist
+  parent: {fileID: 11400000, guid: 7a1579470050a0c4fb26eb4239399742, type: 2}
+  description: "\u5F92\u624B\u6218\u6597\u2014\u2014\u62F3\u3001\u8E22\u3001\u64D2"

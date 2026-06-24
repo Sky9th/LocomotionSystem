@@ -64,6 +64,9 @@ tech/
 │   ├── L2-camera-service/
 │   │   └── camera-service.md
 │   │
+│   ├── L2-item-service/                # L2 Service: 物品身份索引 + 跨容器移动协调
+│   │   └── README.md
+│   │
 │   ├── L2-audio/                       # L2 Service (自身代码: Data/ Structs/)
 │   │   ├── README.md
 │   │   ├── audio-manager.md
@@ -141,10 +144,12 @@ tech/
 │       │   ├── property-inventory.md    # Property Inventory — 全量属性与属性树设计（~180 props, 29 trees）
 │       │   └── implementation-plan.md   # 实现计划 — 4 阶段迁移
 │       │
-│       ├── L3-equipment/              # L3: 装备系统 (自身代码: 无 — 设计阶段)
-│       │   ├── README.md               # 模块总览 — 两层架构 + 三层叠加 + 万物皆 GearDefSO
-│       │   ├── gear-def-so.md           # GearDefSO — 装备/零件定义资产，字段详解
-│       │   └── gear-instance.md         # GearInstance — 运行时装备个体，工厂 + 叠加
+│       ├── L3-equipment/              # ⛔ DEPRECATED — GearDefSO 模型已被否决
+│       │   │                           # 新架构: ItemDefSO + Container + PropertyTree
+│       │   │                           # 装备 = 物品在身体槽容器中的状态
+│       │   ├── README.md               # 旧设计 — 两层架构 + 三层叠加 + 万物皆 GearDefSO
+│       │   ├── gear-def-so.md           # 旧设计 — GearDefSO 字段详解
+│       │   └── gear-instance.md         # 旧设计 — GearInstance 运行时
 │       │
 │       ├── L3-item/                   # L3: 物品系统 — 数据定义 + 运行时实例 + 身份索引
 │       │   └── README.md               # 模块总览 — ItemDefSO / ItemInstance / ItemRegistry
@@ -152,8 +157,7 @@ tech/
 │       ├── L3-container/              # L3: 容器系统 — 泛型容器抽象
 │       │   └── README.md               # 模块总览 — Container<T> / 嵌套 / 容器所有者 Tick
 │       │
-│       ├── L3-skill-tree/             # L3: 技能树系统 — 技能的真实来源
-│       │   └── README.md               # 模块总览 — SkillTreeSO / 武器兼容 / 与 Ability 关系
+│       │   └── ability-tree.md          # AbilityTreeSO — 一切皆技能树（天赋/套路/种族）
 │       │
 │       └── L3-pathfinding/             # L3: 寻路系统
 │           └── README.md

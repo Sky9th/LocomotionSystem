@@ -1,6 +1,12 @@
-# GearInstance — 运行时装备个体
+# ⛔ DEPRECATED — GearInstance — 运行时装备个体
 
-> `L3_Equipment/` · 技术文档 · 2026-06-08
+> ⚠ **GearInstance 概念已被否决。** 运行时物品统一为 ItemInstance（纯 C# 类）。
+> 装备态 = ItemInstance 在身体槽容器中。同一把刀在地面/背包/手上是同一个 ItemInstance。
+> 详见 → [L3_Item](../L3-item/README.md) | [Session 决策](../../../../sessions/2026-06-24-equipment-item-architecture.md)
+
+---
+
+# 以下为旧文档内容
 
 ## 定位
 

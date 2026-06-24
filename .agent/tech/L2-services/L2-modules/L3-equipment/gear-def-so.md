@@ -1,6 +1,12 @@
-# GearDefSO — 装备/零件定义资产
+# ⛔ DEPRECATED — GearDefSO — 装备/零件定义资产
 
-> `L3_Equipment/` · 技术文档 · 2026-06-08
+> ⚠ **GearDefSO 概念已被否决。** 装备不是独立的物品类型——是物品在身体槽容器中的状态。
+> 替代：ItemDefSO : EntityDefSO（零 C# 字段，全进 PropertyTree）。
+> 详见 → [L3_Item](../L3-item/README.md) | [Session 决策](../../../../sessions/2026-06-24-equipment-item-architecture.md)
+
+---
+
+# 以下为旧文档内容
 
 ## 定位
 

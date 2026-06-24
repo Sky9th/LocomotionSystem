@@ -1,4 +1,13 @@
-# L3_Equipment · 装备系统
+# ⛔ DEPRECATED — L3_Equipment · 装备系统
+
+> ⚠ **此文档基于被否决的 GearDefSO 模型。已被新架构替代。**
+>
+> 新方向：装备 = 物品在身体槽容器中的状态。ItemDefSO + Container\<T\> + PropertyTree。
+> 详见 → [L3_Item](../L3-item/README.md) | [L3_Container](../L3-container/README.md) | [L2_ItemService](../../L2-item-service/README.md) | [Session 决策](../../../../sessions/2026-06-24-equipment-item-architecture.md)
+
+---
+
+# 以下为旧文档内容
 
 > `L3_Equipment/` — 独立模块。装备/零件/武器的数据定义与运行时实例管理。被 Character（装备槽位）、Ability Pipeline（伤害地基）、掉落/制造/交易等系统消费。
 

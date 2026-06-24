@@ -1,0 +1,78 @@
+{
+  "version": "1.0",
+  "description": "AbilityTree definitions — 3 innate skill trees (Human/Fist, Sword, Pistol)",
+  "trees": [
+    {
+      "treeId": "Human_Innate",
+      "displayName": "人体基础技能",
+      "description": "所有人类角色与生俱来的徒手战斗能力。空手或武器不兼容时自动生效。",
+      "treeTags": ["AbilityTree.Innate"],
+      "compatibleWeaponTags": [],
+      "exclusiveGroup": "",
+      "nodes": [
+        {
+          "nodeId": "punch",
+          "ability": "Ability_Fist_Punch",
+          "passive": null,
+          "prerequisites": []
+        },
+        {
+          "nodeId": "kick",
+          "ability": "Ability_Fist_Kick",
+          "passive": null,
+          "prerequisites": []
+        },
+        {
+          "nodeId": "grab",
+          "ability": "Ability_Fist_Grab",
+          "passive": null,
+          "prerequisites": []
+        }
+      ]
+    },
+    {
+      "treeId": "Sword_Innate",
+      "displayName": "刀剑基础技法",
+      "description": "持刀/剑类武器时的基础技能。compatibleWeaponTags 匹配 Weapon.Blade 及子标签。",
+      "treeTags": ["AbilityTree.Innate"],
+      "compatibleWeaponTags": ["Weapon.Blade"],
+      "exclusiveGroup": "",
+      "nodes": [
+        {
+          "nodeId": "lightCut",
+          "ability": "Ability_Blade_LightCut",
+          "passive": null,
+          "prerequisites": []
+        },
+        {
+          "nodeId": "heavyChop",
+          "ability": "Ability_Blade_HeavyChop",
+          "passive": null,
+          "prerequisites": []
+        }
+      ]
+    },
+    {
+      "treeId": "Pistol_Innate",
+      "displayName": "手枪基础射击",
+      "description": "持手枪时的基础射击技能。",
+      "treeTags": ["AbilityTree.Innate"],
+      "compatibleWeaponTags": ["Weapon.Pistol"],
+      "exclusiveGroup": "",
+      "nodes": [
+        {
+          "nodeId": "normalFire",
+          "ability": "Ability_Pistol_NormalFire",
+          "passive": null,
+          "prerequisites": []
+        },
+        {
+          "nodeId": "suppressiveFire",
+          "ability": "Ability_Pistol_SuppressiveFire",
+          "passive": null,
+          "prerequisites": []
+        }
+      ]
+    }
+  ]
+}
