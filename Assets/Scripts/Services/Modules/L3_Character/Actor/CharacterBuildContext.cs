@@ -1,4 +1,5 @@
 using RedDust.Ability;
+using RedDust.Character.Ability;
 using RedDust.Core;
 using RedDust.Character.Animation;
 using RedDust.Character.Audio;
@@ -69,9 +70,8 @@ namespace RedDust.Character
         public bool ApplyRootMotionRotation { get; }
         public bool AutoMatchAnimationSpeed { get; }
 
-        // ── 临时配置（TODO: 技能树/装备系统完成后由 AbilitySlotManager 替代） ──
-        public AbilityDefSO SkillSlot1 { get; }
-        public AbilityDefSO SkillSlot2 { get; }
+        // ── 技能森林 — 状态变化时自动 Resolve，外部直接读 ResolvedActives/Passives ──
+        public AbilityForest AbilityForest { get; }
 
         internal CharacterBuildContext(
             Transform root, EventHub eventHub, PropertyAgent agent,
@@ -84,13 +84,14 @@ namespace RedDust.Character
             AvatarMask upperBodyMask, AvatarMask armMask, AvatarMask additiveMask,
             AvatarMask facialMask, AvatarMask headMask, AvatarMask footMask,
             bool forwardRootMotion, bool applyRootMotionRotation, bool autoMatchAnimationSpeed,
-            AbilityDefSO skillSlot1, AbilityDefSO skillSlot2)
+            AbilityForest abilityForest)
         {
             Root = root;
             EventHub = eventHub;
             Agent = agent;
             Ability = ability;
             Reactor = reactor;
+            AbilityForest = abilityForest;
             Pathfinding = pathfinding;
             ModelRoot = modelRoot;
             Rig = rig;
@@ -107,8 +108,6 @@ namespace RedDust.Character
             ForwardRootMotion = forwardRootMotion;
             ApplyRootMotionRotation = applyRootMotionRotation;
             AutoMatchAnimationSpeed = autoMatchAnimationSpeed;
-            SkillSlot1 = skillSlot1;
-            SkillSlot2 = skillSlot2;
         }
     }
 }

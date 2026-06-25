@@ -59,10 +59,13 @@ namespace RedDust.Character.Director
             return intent;
         }
 
+        // TODO: 技能槽/物品栏/装备栏系统未完成，暂用 ctx.AbilityForest 直接取。
         private void ProcessSkillInput()
         {
-            if (input.FirstSkillRequested) TryActivateSkill(ctx.SkillSlot1, "SkillSlot1");
-            if (input.SecondSkillRequested) TryActivateSkill(ctx.SkillSlot2, "SkillSlot2");
+            var slots = ctx.AbilityForest?.ResolvedActives;
+            if (slots == null) return;
+            if (input.FirstSkillRequested  && slots.Length > 0) TryActivateSkill(slots[0], "Q");
+            if (input.SecondSkillRequested && slots.Length > 1) TryActivateSkill(slots[1], "E");
         }
 
         /// <summary>
@@ -183,7 +186,6 @@ namespace RedDust.Character.Director
             return currentPosture;
         }
 
-        // TODO: 临时方案 — 直接读 Actor 槽位。技能树/装备系统完成后由 AbilitySlotManager 替代。
         private void TryActivateSkill(RedDust.Ability.AbilityDefSO def, string slotName)
         {
             var ability = ctx.Ability;

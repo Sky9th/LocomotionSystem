@@ -7,6 +7,7 @@ using RedDust.Character.Kinematic;
 using RedDust.Character.Pathfinding;
 using RedDust.Character.Locomotion;
 using RedDust.Ability;
+using RedDust.Character.Ability;
 using RedDust.Character.Audio;
 using RedDust.Character.Combat;
 using RedDust.Properties;
@@ -31,10 +32,8 @@ namespace RedDust.Character
         [Header("Animation")]
         [SerializeField] private CharacterAnimationProfileSO characterAnimationProfile;
 
-        // TODO: 临时方案 — 技能树/装备系统完成后替换为技能槽位子系统
-        [Header("Ability Slots (Temp)")]
-        [SerializeField] private AbilityDefSO skillSlot1;
-        [SerializeField] private AbilityDefSO skillSlot2;
+        [Header("Ability")]
+        [SerializeField] private AbilityTreeSO[] innateTrees;
 
         [Header("Audio")]
         [SerializeField] private CharacterAudioConfigSO characterAudioConfig;
@@ -99,6 +98,9 @@ namespace RedDust.Character
         private CharacterCombat combat;
         private EventHub eventHub;
 
+        // ── Ability ──
+        private AbilityForest abilityForest;
+
         protected override void Awake()
         {
             SetupModel();
@@ -108,6 +110,8 @@ namespace RedDust.Character
             characterRig = new CharacterRig(transform, modelRoot);
 
             Physique = CharacterPhysique.FromAgent(agent);
+
+            abilityForest = new AbilityForest(innateTrees);
 
             buildCtx = new CharacterBuildContext(
                 root: transform, eventHub: eventHub, agent: agent,
@@ -122,7 +126,7 @@ namespace RedDust.Character
                 forwardRootMotion: forwardRootMotion,
                 applyRootMotionRotation: applyRootMotionRotation,
                 autoMatchAnimationSpeed: autoMatchAnimationSpeed,
-                skillSlot1: skillSlot1, skillSlot2: skillSlot2
+                abilityForest: abilityForest
             );
 
             if (isPlayer) director = new PlayerDirector(buildCtx, Registry);

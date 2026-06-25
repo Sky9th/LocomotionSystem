@@ -137,7 +137,9 @@ tech/
 │       │   ├── ability-editor.md        #  Ability Editor — 编辑器架构（N 窗口 + 树 + 导入导出）
 │       │   ├── ability-search-assets.md   #  Search 资产树 — SearchSO JSON 清单 (~45)
 │       │   ├── ability-activation-assets.md # Activation 资产树 — ActivationSO JSON 清单 (~28)
-│       │   └── ability-noise-assets.md   #  Noise 资产树 — NoiseEventSO JSON 清单 (~44) + Noise Tag (17)
+│       │   ├── ability-noise-assets.md   #  Noise 资产树 — NoiseEventSO JSON 清单 (~44) + Noise Tag (17)
+│       │   ├── ability-tree.md            #  AbilityTreeSO — 一切皆技能树（天赋/套路/种族）
+│       │   └── ability-forest.md          #  AbilityForest — 运行时多来源活跃树集合
 │       │
 │       ├── L3-properties/               # L3: 通用属性系统 (替代 L3-stats)
 │       │   ├── README.md               # 模块总览 — Schema/Data 分离 + 8 类型 + 继承合并
@@ -155,9 +157,8 @@ tech/
 │       │   └── README.md               # 模块总览 — ItemDefSO / ItemInstance / ItemRegistry
 │       │
 │       ├── L3-container/              # L3: 容器系统 — 泛型容器抽象
-│       │   └── README.md               # 模块总览 — Container<T> / 嵌套 / 容器所有者 Tick
-│       │
-│       │   └── ability-tree.md          # AbilityTreeSO — 一切皆技能树（天赋/套路/种族）
+│       │   ├── README.md               # 模块总览 — Container<T> / 嵌套 / 容器所有者 Tick
+│       │   └── container.md            # Container<T> — 泛型容器 API 详解
 │       │
 │       └── L3-pathfinding/             # L3: 寻路系统
 │           └── README.md

@@ -4,9 +4,9 @@
 >
 > 不是 L2 服务，不达 L3 运行时标准。归属 L3_Ability 配置层。
 
-> ⚠ **DRAFT** — 方向已定，代码未创建。
+> 纯数据资产。运行时管理见 [ability-forest.md](ability-forest.md)。
 >
-> **Last Verified**: 2026-06-25 | **Verification**: DESIGN PHASE
+> **Last Verified**: 2026-06-25 | **Verification**: CODE LANDED — AbilityTreeSO.cs + Import/Export 完成
 
 ## 层级定位
 

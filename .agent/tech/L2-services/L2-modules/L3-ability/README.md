@@ -185,5 +185,6 @@ Ability 系统消费的标签用途：
 | [ability-activation-assets.md](ability-activation-assets.md) | **Activation 资产树** — 完整 ActivationSO JSON 清单 (~28 资产, Instant/Charged/Channel/Toggle) |
 | [ability-noise-assets.md](ability-noise-assets.md) | **Noise 资产树** — 完整 NoiseEventSO JSON 清单 (~44 资产) + Noise Tag 依赖树 (17) |
 | [ability-tree.md](ability-tree.md) | **AbilityTreeSO** — 技能/天赋/套路树，一切皆 AbilityTree |
+| [ability-forest.md](ability-forest.md) | **AbilityForest** — 运行时技能森林，多来源活跃树集合 |
 
 > GameplayTag 基础设施文档位于 [L1-core](../../../L1-core/)：资产树、运行时 struct、容器用法。
