@@ -209,6 +209,13 @@ namespace RedDust.Properties.Editor
                 folderRects.Add(GUILayoutUtility.GetLastRect());
             }
 
+            // Draw root-level leaf nodes (e.g., Entity base properties — DisplayName, Icon...)
+            foreach (var root in _centerTreeRoots)
+            {
+                if (root.IsFolder) continue;
+                DrawLeafCard(root);
+            }
+
             // Overlay drop handling (no layout space, same pattern as property reorder)
             if (draggingFolder)
             {
@@ -382,6 +389,9 @@ namespace RedDust.Properties.Editor
             var itemByTree = new Dictionary<PropertyTreeSO, PropertyTreeListItem>();
             foreach (var t in allTrees)
             {
+                // Entity 是隐式基树，不显示在左侧面板
+                if (t.name == "Entity") continue;
+
                 var path = AssetDatabase.GetAssetPath(t);
                 var item = new PropertyTreeListItem
                 {

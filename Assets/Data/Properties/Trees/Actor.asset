@@ -12,11 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e47e6b69f1db8742ab169ebce8acc1e, type: 3}
   m_Name: Actor
   m_EditorClassIdentifier: 
-  InheritsFrom: {fileID: 0}
+  InheritsFrom: {fileID: 11400000, guid: 99b9d61c396ebf9419ddd86c3740fbf8, type: 2}
   treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"Vitals\",\n           
     \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
-    \"NodeId\": \"Common\",\n            \"ParentId\": \"\",\n            \"DefId\":
-    \"\"\n        },\n        {\n            \"NodeId\": \"HP\",\n            \"ParentId\":
-    \"Vitals\",\n            \"DefId\": \"HP\"\n        },\n        {\n           
-    \"NodeId\": \"MaxHP\",\n            \"ParentId\": \"Vitals\",\n            \"DefId\":
-    \"MaxHP\"\n        }\n    ]\n}"
+    \"NodeId\": \"HP\",\n            \"ParentId\": \"Vitals\",\n            \"DefId\":
+    \"HP\"\n        },\n        {\n            \"NodeId\": \"MaxHP\",\n           
+    \"ParentId\": \"Vitals\",\n            \"DefId\": \"MaxHP\"\n        }\n    ]\n}"

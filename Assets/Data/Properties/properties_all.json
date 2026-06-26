@@ -1503,13 +1503,23 @@
     ],
     "trees": [
         {
-            "treeName": "Actor",
+            "treeName": "Entity",
             "inheritsFrom": "",
+            "nodes": [
+                { "nodeId": "Common", "parentId": "", "defId": "" },
+                { "nodeId": "DisplayName", "parentId": "Common", "defId": "DisplayName" },
+                { "nodeId": "Icon", "parentId": "Common", "defId": "Icon" },
+                { "nodeId": "Weight", "parentId": "Common", "defId": "Weight" },
+                { "nodeId": "Slots", "parentId": "Common", "defId": "Slots" }
+            ]
+        },
+        {
+            "treeName": "Actor",
+            "inheritsFrom": "Entity",
             "nodes": [
                 { "nodeId": "Vitals", "parentId": "", "defId": "" },
                 { "nodeId": "HP", "parentId": "Vitals", "defId": "HP" },
-                { "nodeId": "MaxHP", "parentId": "Vitals", "defId": "MaxHP" },
-                { "nodeId": "Slots", "parentId": "", "defId": "Slots" }
+                { "nodeId": "MaxHP", "parentId": "Vitals", "defId": "MaxHP" }
             ]
         },
         {
@@ -1610,12 +1620,11 @@
         },
         {
             "treeName": "WeaponBase",
-            "inheritsFrom": "",
+            "inheritsFrom": "Entity",
             "nodes": [
                 { "nodeId": "Base", "parentId": "", "defId": "" },
                 { "nodeId": "Durability", "parentId": "Base", "defId": "Durability" },
-                { "nodeId": "MaxDurability", "parentId": "Base", "defId": "MaxDurability" },
-                { "nodeId": "Weight", "parentId": "Base", "defId": "Weight" }
+                { "nodeId": "MaxDurability", "parentId": "Base", "defId": "MaxDurability" }
             ]
         },
         {
@@ -1634,9 +1643,7 @@
                 { "nodeId": "DamageType", "parentId": "Tags", "defId": "DamageType" },
                 { "nodeId": "IsTwoHanded", "parentId": "Tags", "defId": "IsTwoHanded" },
                 { "nodeId": "Presentation", "parentId": "", "defId": "" },
-                { "nodeId": "Icon", "parentId": "Presentation", "defId": "Icon" },
                 { "nodeId": "VisualPrefab", "parentId": "Presentation", "defId": "VisualPrefab" },
-                { "nodeId": "DisplayName", "parentId": "Presentation", "defId": "DisplayName" },
                 { "nodeId": "Behavior", "parentId": "", "defId": "" },
                 { "nodeId": "AnimationProfile", "parentId": "Behavior", "defId": "AnimationProfile" },
                 { "nodeId": "AudioProfile", "parentId": "Behavior", "defId": "AudioProfile" }
@@ -1680,9 +1687,7 @@
                 { "nodeId": "HolsterSpeed", "parentId": "Combat", "defId": "HolsterSpeed" },
                 { "nodeId": "HipFirePenalty", "parentId": "Combat", "defId": "HipFirePenalty" },
                 { "nodeId": "Presentation", "parentId": "", "defId": "" },
-                { "nodeId": "Icon", "parentId": "Presentation", "defId": "Icon" },
                 { "nodeId": "VisualPrefab", "parentId": "Presentation", "defId": "VisualPrefab" },
-                { "nodeId": "DisplayName", "parentId": "Presentation", "defId": "DisplayName" },
                 { "nodeId": "Behavior", "parentId": "", "defId": "" },
                 { "nodeId": "AnimationProfile", "parentId": "Behavior", "defId": "AnimationProfile" },
                 { "nodeId": "AudioProfile", "parentId": "Behavior", "defId": "AudioProfile" }
@@ -1696,9 +1701,7 @@
                 { "nodeId": "ScopeZoom", "parentId": "Combat", "defId": "ScopeZoom" },
                 { "nodeId": "AimTime", "parentId": "Combat", "defId": "AimTime" },
                 { "nodeId": "Presentation", "parentId": "", "defId": "" },
-                { "nodeId": "Icon", "parentId": "Presentation", "defId": "Icon" },
                 { "nodeId": "VisualPrefab", "parentId": "Presentation", "defId": "VisualPrefab" },
-                { "nodeId": "DisplayName", "parentId": "Presentation", "defId": "DisplayName" },
                 { "nodeId": "Description", "parentId": "Presentation", "defId": "Description" },
                 { "nodeId": "Behavior", "parentId": "", "defId": "" },
                 { "nodeId": "AnimationProfile", "parentId": "Behavior", "defId": "AnimationProfile" },
@@ -1713,9 +1716,7 @@
                 { "nodeId": "PelletCount", "parentId": "Combat", "defId": "PelletCount" },
                 { "nodeId": "Spread", "parentId": "Combat", "defId": "Spread" },
                 { "nodeId": "Presentation", "parentId": "", "defId": "" },
-                { "nodeId": "Icon", "parentId": "Presentation", "defId": "Icon" },
                 { "nodeId": "VisualPrefab", "parentId": "Presentation", "defId": "VisualPrefab" },
-                { "nodeId": "DisplayName", "parentId": "Presentation", "defId": "DisplayName" },
                 { "nodeId": "Description", "parentId": "Presentation", "defId": "Description" },
                 { "nodeId": "Behavior", "parentId": "", "defId": "" },
                 { "nodeId": "AnimationProfile", "parentId": "Behavior", "defId": "AnimationProfile" },
@@ -1731,9 +1732,7 @@
                 { "nodeId": "ArrowVelocity", "parentId": "Combat", "defId": "ArrowVelocity" },
                 { "nodeId": "HoldStamina", "parentId": "Combat", "defId": "HoldStamina" },
                 { "nodeId": "Presentation", "parentId": "", "defId": "" },
-                { "nodeId": "Icon", "parentId": "Presentation", "defId": "Icon" },
                 { "nodeId": "VisualPrefab", "parentId": "Presentation", "defId": "VisualPrefab" },
-                { "nodeId": "DisplayName", "parentId": "Presentation", "defId": "DisplayName" },
                 { "nodeId": "Behavior", "parentId": "", "defId": "" },
                 { "nodeId": "AnimationProfile", "parentId": "Behavior", "defId": "AnimationProfile" },
                 { "nodeId": "AudioProfile", "parentId": "Behavior", "defId": "AudioProfile" }
@@ -1747,9 +1746,7 @@
                 { "nodeId": "BlastRadius", "parentId": "Combat", "defId": "BlastRadius" },
                 { "nodeId": "FuseTime", "parentId": "Combat", "defId": "FuseTime" },
                 { "nodeId": "Presentation", "parentId": "", "defId": "" },
-                { "nodeId": "Icon", "parentId": "Presentation", "defId": "Icon" },
                 { "nodeId": "VisualPrefab", "parentId": "Presentation", "defId": "VisualPrefab" },
-                { "nodeId": "DisplayName", "parentId": "Presentation", "defId": "DisplayName" },
                 { "nodeId": "Behavior", "parentId": "", "defId": "" },
                 { "nodeId": "AnimationProfile", "parentId": "Behavior", "defId": "AnimationProfile" },
                 { "nodeId": "AudioProfile", "parentId": "Behavior", "defId": "AudioProfile" }
@@ -1757,10 +1754,9 @@
         },
         {
             "treeName": "AmmoBase",
-            "inheritsFrom": "",
+            "inheritsFrom": "Entity",
             "nodes": [
                 { "nodeId": "Base", "parentId": "", "defId": "" },
-                { "nodeId": "Weight", "parentId": "Base", "defId": "Weight" },
                 { "nodeId": "Ammo", "parentId": "Base", "defId": "Ammo" },
                 { "nodeId": "Combat", "parentId": "", "defId": "" },
                 { "nodeId": "BaseDamage", "parentId": "Combat", "defId": "BaseDamage" },
@@ -1795,12 +1791,11 @@
         },
         {
             "treeName": "ArmorBase",
-            "inheritsFrom": "",
+            "inheritsFrom": "Entity",
             "nodes": [
                 { "nodeId": "Base", "parentId": "", "defId": "" },
                 { "nodeId": "Durability", "parentId": "Base", "defId": "Durability" },
                 { "nodeId": "MaxDurability", "parentId": "Base", "defId": "MaxDurability" },
-                { "nodeId": "Weight", "parentId": "Base", "defId": "Weight" },
                 { "nodeId": "Resist", "parentId": "", "defId": "" },
                 { "nodeId": "ResistTypes", "parentId": "Resist", "defId": "ResistTypes" },
                 { "nodeId": "Combat", "parentId": "", "defId": "" },
@@ -1841,31 +1836,27 @@
         },
         {
             "treeName": "ContainerBase",
-            "inheritsFrom": "",
+            "inheritsFrom": "Entity",
             "nodes": [
                 { "nodeId": "Base", "parentId": "", "defId": "" },
                 { "nodeId": "Durability", "parentId": "Base", "defId": "Durability" },
                 { "nodeId": "MaxDurability", "parentId": "Base", "defId": "MaxDurability" },
-                { "nodeId": "Weight", "parentId": "Base", "defId": "Weight" },
                 { "nodeId": "Capacity", "parentId": "", "defId": "" },
                 { "nodeId": "CarryWeightBonus", "parentId": "Capacity", "defId": "CarryWeightBonus" },
                 { "nodeId": "SlotCount", "parentId": "Capacity", "defId": "SlotCount" },
                 { "nodeId": "Penalty", "parentId": "", "defId": "" },
                 { "nodeId": "MoveSpeedPenalty_Container", "parentId": "Penalty", "defId": "MoveSpeedPenalty_Container" },
                 { "nodeId": "Presentation", "parentId": "", "defId": "" },
-                { "nodeId": "Icon", "parentId": "Presentation", "defId": "Icon" },
-                { "nodeId": "VisualPrefab", "parentId": "Presentation", "defId": "VisualPrefab" },
-                { "nodeId": "DisplayName", "parentId": "Presentation", "defId": "DisplayName" }
+                { "nodeId": "VisualPrefab", "parentId": "Presentation", "defId": "VisualPrefab" }
             ]
         },
         {
             "treeName": "ToolBase",
-            "inheritsFrom": "",
+            "inheritsFrom": "Entity",
             "nodes": [
                 { "nodeId": "Base", "parentId": "", "defId": "" },
                 { "nodeId": "Durability", "parentId": "Base", "defId": "Durability" },
                 { "nodeId": "MaxDurability", "parentId": "Base", "defId": "MaxDurability" },
-                { "nodeId": "Weight", "parentId": "Base", "defId": "Weight" },
                 { "nodeId": "Fuel", "parentId": "Base", "defId": "Fuel" },
                 { "nodeId": "Charge", "parentId": "Base", "defId": "Charge" },
                 { "nodeId": "Work", "parentId": "", "defId": "" },
@@ -1878,10 +1869,9 @@
         },
         {
             "treeName": "ConsumableBase",
-            "inheritsFrom": "",
+            "inheritsFrom": "Entity",
             "nodes": [
                 { "nodeId": "Base", "parentId": "", "defId": "" },
-                { "nodeId": "Weight", "parentId": "Base", "defId": "Weight" },
                 { "nodeId": "ConsumeTime", "parentId": "Base", "defId": "ConsumeTime" },
                 { "nodeId": "StackSize", "parentId": "Base", "defId": "StackSize" },
                 { "nodeId": "Tags", "parentId": "", "defId": "" },
@@ -1924,7 +1914,7 @@
         },
         {
             "treeName": "Building",
-            "inheritsFrom": "",
+            "inheritsFrom": "Entity",
             "nodes": [
                 { "nodeId": "Vitals", "parentId": "", "defId": "" },
                 { "nodeId": "Durability", "parentId": "Vitals", "defId": "Durability" },
@@ -1942,7 +1932,7 @@
         },
         {
             "treeName": "Environment",
-            "inheritsFrom": "",
+            "inheritsFrom": "Entity",
             "nodes": [
                 { "nodeId": "Atmosphere", "parentId": "", "defId": "" },
                 { "nodeId": "FogDensity", "parentId": "Atmosphere", "defId": "FogDensity" },
