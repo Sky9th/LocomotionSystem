@@ -101,6 +101,10 @@ namespace RedDust.Character
         // ── Ability ──
         private AbilityForest abilityForest;
 
+        // ── Container ──
+        /// <summary>角色身体容器（装备槽位）。</summary>
+        internal CharacterContainer Container { get; private set; }
+
         protected override void Awake()
         {
             SetupModel();
@@ -134,6 +138,7 @@ namespace RedDust.Character
             characterKinematic = new CharacterKinematic(buildCtx, Registry);
             locomotionSimulator = new GroundLocomotion(Registry);
             combat = new CharacterCombat(buildCtx, Registry);
+            Container = new CharacterContainer(buildCtx, Registry);
 
             // ModuleHub.Awake: 扫描 ModuleChildMono → Register → OnAssembleAll
             base.Awake();

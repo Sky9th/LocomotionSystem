@@ -26,3 +26,5 @@ MonoBehaviour:
   DefaultString: 
   DefaultAssetGUID: 
   AssetTypeConstraint: UnityEngine.Sprite
+  StructTypeName: 
+  DefaultStructJson: 

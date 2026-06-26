@@ -97,6 +97,7 @@ tech/
 │   └── L2-modules/                     # 占位容器: L3 独立模块
 │       ├── L3-character/               # L3: 角色系统
 │       │   ├── README.md
+│       │   ├── character-container.md   # 身体槽位适配器 — 角色身体作为容器
 │       │   ├── Actor/                  # CharacterActor, CharacterRig, CharacterFrameContext [自身组件]
 │       │   ├── Config/                 # CharacterProfile, LocomotionEnums [代码结构]
 │       │   ├── Input/                  # CharacterEventReceiver, SCharacterInputActions [代码结构]
@@ -158,7 +159,10 @@ tech/
 │       │
 │       ├── L3-container/              # L3: 容器系统 — 泛型容器抽象
 │       │   ├── README.md               # 模块总览 — Container<T> / 嵌套 / 容器所有者 Tick
-│       │   └── container.md            # Container<T> — 泛型容器 API 详解
+│       │   ├── slot-def.md             # SlotDef struct — 槽位定义结构体
+│       │   ├── container-slot.md       # ContainerSlot<T> — 泛型槽位
+│       │   ├── container.md            # Container<T> — 泛型容器 API 详解
+│       │   └── container-slot-ref.md   # ContainerSlotRef — 槽位引用
 │       │
 │       └── L3-pathfinding/             # L3: 寻路系统
 │           └── README.md

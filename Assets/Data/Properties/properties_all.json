@@ -1497,7 +1497,7 @@
             "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
             "minInt": 0, "maxInt": 100, "defaultInt": 0,
             "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": "",
-            "structTypeName": "RedDust.Items.SlotDef",
+            "structTypeName": "RedDust.Container.SlotDef",
             "defaultStructJson": "[]"
         }
     ],

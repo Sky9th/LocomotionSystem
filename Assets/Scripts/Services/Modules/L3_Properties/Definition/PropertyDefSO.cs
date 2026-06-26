@@ -43,7 +43,7 @@ namespace RedDust.Properties
         public string AssetTypeConstraint;
 
         [Header("Struct")]
-        [Tooltip("仅 Struct 类型有效。C# struct 全限定名，如 \"RedDust.Items.SlotDef\"。")]
+        [Tooltip("仅 Struct 类型有效。C# struct 全限定名，如 \"RedDust.Container.SlotDef\"。")]
         public string StructTypeName;
 
         [TextArea(2, 5)]

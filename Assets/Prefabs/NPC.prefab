@@ -72,8 +72,7 @@ MonoBehaviour:
   groundSystemConfig: {fileID: 11400000, guid: 6f5d74115b0df28438f735b18d13da47, type: 2}
   characterAnimationProfile: {fileID: 11400000, guid: b2d836a402ab27945b5d07f1bf603784,
     type: 2}
-  skillSlot1: {fileID: 0}
-  skillSlot2: {fileID: 0}
+  innateTrees: []
   characterAudioConfig: {fileID: 11400000, guid: d1bb8260fedfef848a12a32d3f139759,
     type: 2}
   modelPrefab: {fileID: 1187010538823314, guid: b87cb604b959698428935c5d56bd97c0,
@@ -320,4 +319,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ac4441024cd53e4ba1ca66b7052fe24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _def: {fileID: 11400000, guid: b0e7241e50e1bcd4dbad93e4d8ee9708, type: 2}
+  _preset: {fileID: 11400000, guid: b0e7241e50e1bcd4dbad93e4d8ee9708, type: 2}

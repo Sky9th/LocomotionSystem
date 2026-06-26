@@ -1,8 +1,8 @@
 # ItemDefSO — 物品定义资产
 
-> `L3_Item/ItemDefSO.cs` · 技术文档 · 2026-06-24
+> `L3_Item/ItemDefSO.cs` · 技术文档 · 2026-06-24 · Last Verified: 2026-06-27
 >
-> 继承 `PropertyPresetSO`。所有数据进 PropertyTree。
+> 继承 `PropertyPresetSO`。所有数据进 PropertyTree。零 C# 字段，已实现。
 
 ## 概述
 
@@ -79,7 +79,8 @@ ConsumableBase : ItemBase    ContainerBase : ItemBase
 
 ## SlotDef[]
 
-槽位结构定义（当前为 ItemDefSO C# 字段）：
+> **已移至 L3_Container**。SlotDef 结构体定义及运行时存取逻辑已迁移至 L3_Container 模块。
+> ItemDefSO 通过 PropertyTree 的 `Common/Slots` Struct 属性访问槽位定义，不再持有 C# 字段。
 
 ```csharp
 [Serializable]
@@ -92,9 +93,9 @@ public struct SlotDef
 }
 ```
 
-存入 PropertyTree，通过 `PropertyType.Struct` 类型 + `PropertyDefSO.StructTypeName = "SlotDef"` 关联。运行时 `bag.GetStructArray<SlotDef>("Container/Slots")` 读取。C# struct 保留编译期类型安全 + Validator。
+存入 PropertyTree，通过 `PropertyType.Struct` 类型 + `PropertyDefSO.StructTypeName = "SlotDef"` 关联。运行时 `Container<T>` 构造时从 `PropertyTable.GetStructArray<SlotDef>("Common/Slots")` 读取。C# struct 保留编译期类型安全 + Validator。
 
-> ⚠ **代码尚未同步**：当前 `ItemDefSO.cs` 仍持有 `SlotDef[] Slots` C# 字段。待 PropertyType.Struct 实现后移除。
+> 实现状态：ItemDefSO 已移除 `SlotDef[]` C# 字段，SlotDef 完全归属 L3_Container。
 
 ## 与 PropertyPresetSO 的关系
 
@@ -141,6 +142,6 @@ PropertyTable.Create(def)    ← 复用 PropertyAgent 管线
 | 依赖 | 方式 |
 |------|------|
 | PropertyPresetSO (L3_Properties) | 继承 |
-| SlotDef (L3_Item) | 当前 C# 字段引用；未来通过 StructTypeName |
+| SlotDef (L3_Container) | 通过 PropertyTree Struct "Common/Slots" 引用 |
 | PropertyTreeSO | Template 引用 |
 | DamageEffectSO, EffectSO (L3_Ability) | AssetRefList 资产引用 |

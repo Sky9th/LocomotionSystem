@@ -26,5 +26,5 @@ MonoBehaviour:
   DefaultString: 
   DefaultAssetGUID: 
   AssetTypeConstraint: 
-  StructTypeName: RedDust.Items.SlotDef
+  StructTypeName: RedDust.Container.SlotDef
   DefaultStructJson: '[]'

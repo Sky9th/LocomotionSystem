@@ -27,3 +27,5 @@ MonoBehaviour:
   DefaultString: 
   DefaultAssetGUID: 
   AssetTypeConstraint: 
+  StructTypeName: 
+  DefaultStructJson: 
