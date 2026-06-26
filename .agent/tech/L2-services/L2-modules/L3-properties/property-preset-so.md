@@ -1,19 +1,20 @@
-# EntityDefSO — 实体定义基类
+# PropertyPresetSO — 属性预设基类
 
-> `L3_Properties/Definition/EntityDefSO.cs` · 技术文档 · 2026-06-10
+> `L3_Properties/Definition/PropertyPresetSO.cs` · 技术文档 · 2026-06-26
+> **Last Verified**: 2026-06-26 | **Verification**: Renamed from EntityDefSO. All referenced files exist.
 
 ## 层级定位
 
-L3 资产层。EntityDefSO 是 PropertyTreeSO（结构）与实例之间的桥梁——它绑定「这个实体用哪棵属性树」和「这个变种覆写了哪些默认值」。本身不存属性值——displayName/icon/description 等已在 Tree 的属性节点上。
+L3 资产层。PropertyPresetSO 是 PropertyTreeSO（结构）与实例之间的桥梁——它绑定「这个实体用哪棵属性树」和「这个变种覆写了哪些默认值」。本身不存属性值——displayName/icon/description 等已在 Tree 的属性节点上。
 
 ## 调用链
 
 ```
 被谁调:
-  PropertyComponent.Awake()   → new EntityProperties(_def)
+  PropertyComponent.Awake()   → new PropertyTable(_def)
 
 调谁:
-  PropertyTreeSO.ResolveStructure()  → 由 EntityProperties 构造时调用
+  PropertyTreeSO.ResolveStructure()  → 由 PropertyTable 构造时调用
 ```
 
 ## 耦合模块
@@ -21,8 +22,8 @@ L3 资产层。EntityDefSO 是 PropertyTreeSO（结构）与实例之间的桥�
 | 方向 | 模块 | 关系 |
 |------|------|------|
 | 依赖 | PropertyTreeSO | Template 字段引用 |
-| 被消费 | PropertyComponent | 初始化时传入 EntityProperties 构造 |
-| 子类 | GearDefSO | 装备定义（已存在，待迁移到 EntityDefSO） |
+| 被消费 | PropertyComponent | 初始化时传入 PropertyTable 构造 |
+| 子类 | GearDefSO | 装备定义（已存在，待迁移到 PropertyPresetSO） |
 | 子类 | BuildingDefSO | 建筑定义（远期） |
 
 ## 字段
@@ -32,7 +33,7 @@ L3 资产层。EntityDefSO 是 PropertyTreeSO（结构）与实例之间的桥�
 public PropertyTreeSO Template;
 ```
 - **用途**: 指向该实体使用的属性树（如 Zombie、Pistol、Human）
-- **备注**: 同一棵 Tree 可被多个 EntityDefSO 共用（如 TankZombie.asset 和 FastZombie.asset 都指向 Zombie Tree）
+- **备注**: 同一棵 Tree 可被多个 PropertyPresetSO 共用（如 TankZombie.asset 和 FastZombie.asset 都指向 Zombie Tree）
 
 ### OverridesJson
 ```csharp
@@ -49,5 +50,5 @@ public string OverridesJson;
 | 抽象基类，不直接实例化 | 每种实体类型有各自的机械规则字段（slots、spawnBehavior），需要子类承载 |
 | Template + OverridesJson 两个字段 | 分离「有什么属性」（Tree）和「值差多少」（Overrides），职责清晰 |
 | 不放属性值字段（displayName 等） | 这些是 Tree 上的属性节点，通过 OverridesJson 覆写即可 |
-| CreateAssetMenu 在子类定义 | EntityDefSO 是 abstract，不能直接创建资产 |
+| CreateAssetMenu 在子类定义 | PropertyPresetSO 是 abstract，不能直接创建资产 |
 

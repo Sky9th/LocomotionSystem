@@ -167,5 +167,5 @@ Assets/Data/Ability/
 | 一切皆 AbilityTree | 天赋、套路、种族——底层同构 |
 | 节点系统 | 一棵树内技能逐节点解锁，不全给 |
 | exclusiveGroup 代替 mutuallyExclusiveWith | 分组互斥比 pairwise 干净——加第三个选项不改已有节点 |
-| 直接继承 ScriptableObject | 不需要 EntityDefSO 属性管线——数据是引用列表不是属性值 |
+| 直接继承 ScriptableObject | 不需要 PropertyPresetSO 属性管线——数据是引用列表不是属性值 |
 | 归属 L3_Ability Config | 纯配置资产，和 AbilityDefSO 同级 |

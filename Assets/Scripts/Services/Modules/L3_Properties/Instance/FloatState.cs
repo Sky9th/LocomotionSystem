@@ -5,7 +5,7 @@ using UnityEngine;
 namespace RedDust.Properties
 {
     /// <summary>
-    /// 单个 Float 属性的运行时状态。由 EntityProperties 内部持有。
+    /// 单个 Float 属性的运行时状态。由 PropertyTable 内部持有。
     /// 职责：可变 Current + Min/Max 钳制 + 消耗/恢复 Tick + Modifier 管理 + 事件广播。
     /// </summary>
     public class FloatState

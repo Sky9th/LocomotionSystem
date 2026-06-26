@@ -41,5 +41,13 @@ namespace RedDust.Properties
         /// 空 = 不限制。
         /// </summary>
         public string AssetTypeConstraint;
+
+        [Header("Struct")]
+        [Tooltip("仅 Struct 类型有效。C# struct 全限定名，如 \"RedDust.Items.SlotDef\"。")]
+        public string StructTypeName;
+
+        [TextArea(2, 5)]
+        [Tooltip("仅 Struct 类型有效。默认值 JSON。空数组 = \"[]\"。")]
+        public string DefaultStructJson;
     }
 }

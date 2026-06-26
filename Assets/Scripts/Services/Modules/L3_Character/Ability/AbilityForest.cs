@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using RedDust.Ability;
 using RedDust.Core;
+using UnityEngine;
 
 namespace RedDust.Character.Ability
 {
@@ -40,7 +41,14 @@ namespace RedDust.Character.Ability
         /// <summary>创建技能森林，注入天生树（全解锁，source="innate"）。</summary>
         public AbilityForest(AbilityTreeSO[] innateTrees)
         {
+            if (innateTrees == null || innateTrees.Length == 0)
+            {
+                Debug.Log("[AbilityForest] Initialized with 0 innate trees.");
+                return;
+            }
+
             AddTrees(innateTrees, source: "innate");
+            Debug.Log($"[AbilityForest] Init — {ResolveSummary()}");
         }
 
         // 远期 — 角色创建系统 + SCharacterBuild 接入后扩展构造函数：
@@ -67,6 +75,7 @@ namespace RedDust.Character.Ability
         {
             _weaponTags = weaponTags;
             Resolve();
+            Debug.Log($"[AbilityForest] WeaponTags updated — {ResolveSummary()}");
         }
 
         // ── 树管理 ──────────────────────────────────────────
@@ -78,13 +87,16 @@ namespace RedDust.Character.Ability
             foreach (var tree in trees)
                 AddTreeInternal(tree, source);
             Resolve();
+            Debug.Log($"[AbilityForest] +{trees.Length} tree(s) from '{source}' — {ResolveSummary()}");
         }
 
         /// <summary>添加一棵树并解锁全部节点，自动 Resolve。</summary>
         public void AddTree(AbilityTreeSO tree, object source)
         {
+            if (tree == null) return;
             AddTreeInternal(tree, source);
             Resolve();
+            Debug.Log($"[AbilityForest] +tree '{tree.treeId}' from '{source}' — {ResolveSummary()}");
         }
 
         /// <summary>部分解锁添加，自动 Resolve。</summary>
@@ -127,6 +139,7 @@ namespace RedDust.Character.Ability
         {
             _activeTrees.RemoveAll(t => t.Source == source);
             Resolve();
+            Debug.Log($"[AbilityForest] Removed source '{source}' — {ResolveSummary()}");
         }
 
         // ── 节点管理 ──────────────────────────────────────────
@@ -146,6 +159,7 @@ namespace RedDust.Character.Ability
                     {
                         at.UnlockedNodeIds.Add(nodeId);
                         Resolve();
+                        Debug.Log($"[AbilityForest] Unlocked node '{nodeId}' in '{treeId}' — {ResolveSummary()}");
                         return;
                     }
                 }
@@ -212,6 +226,22 @@ namespace RedDust.Character.Ability
                     return true;
             }
             return false;
+        }
+
+        // ── 日志 ──────────────────────────────────────────
+
+        private string ResolveSummary()
+        {
+            var activeNames = new List<string>();
+            foreach (var a in ResolvedActives)
+                if (a != null) activeNames.Add(a.internalName);
+
+            var passiveNames = new List<string>();
+            foreach (var p in ResolvedPassives)
+                if (p != null) passiveNames.Add(p.internalName);
+
+            return $"Actives({ResolvedActives.Length}): [{string.Join(", ", activeNames)}] | " +
+                   $"Passives({ResolvedPassives.Length}): [{string.Join(", ", passiveNames)}]";
         }
     }
 }

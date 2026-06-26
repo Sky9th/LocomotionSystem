@@ -14,7 +14,7 @@ L2 服务，位于 `Services/L2_ItemService/`。L3_Item 和 L3_Container 的胶�
 | 维度 | L3_Item | L3_Container | L2_ItemService |
 |------|---------|-------------|----------------|
 | 职责 | 物品定义 + 运行时实例 | 容器的 Place/Remove/过滤 | 物品身份索引 + 跨容器移动协调 |
-| 依赖 | PropertyTree, EntityDefSO | ItemDefSO.SlotDef[] 读取 | L3_Item + L3_Container |
+| 依赖 | PropertyTree, PropertyPresetSO | ItemDefSO.SlotDef[] 读取 | L3_Item + L3_Container |
 | 感知容器？ | 否 | 否（哑巴机制） | 是——通过 ContainerResolver |
 
 ## 为什么 L2 而不是 L3

@@ -64,6 +64,13 @@ namespace RedDust.Properties.Editor
                 case PropertyType.AssetRefList:
                     EditorGUILayout.HelpBox("No default value — array is empty unless overridden.", MessageType.None);
                     break;
+
+                case PropertyType.Struct:
+                    EditorGUILayout.LabelField("Struct", EditorStyles.boldLabel);
+                    var structTypeProp = serializedObject.FindProperty("StructTypeName");
+                    structTypeProp.stringValue = PropertyStructScanner.DrawDropdown(structTypeProp.stringValue);
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty("DefaultStructJson"));
+                    break;
             }
 
             serializedObject.ApplyModifiedProperties();

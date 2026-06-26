@@ -2,7 +2,7 @@
 
 > `L3_Item/ItemDefSO.cs` · 技术文档 · 2026-06-24
 >
-> 继承 `EntityDefSO`。所有数据进 PropertyTree。
+> 继承 `PropertyPresetSO`。所有数据进 PropertyTree。
 
 ## 概述
 
@@ -96,14 +96,14 @@ public struct SlotDef
 
 > ⚠ **代码尚未同步**：当前 `ItemDefSO.cs` 仍持有 `SlotDef[] Slots` C# 字段。待 PropertyType.Struct 实现后移除。
 
-## 与 EntityDefSO 的关系
+## 与 PropertyPresetSO 的关系
 
 ```
-EntityDefSO (Properties 模块基类)
+PropertyPresetSO (Properties 模块基类)
 ├── Template: PropertyTreeSO    ← Schema: 此物品"有哪些属性"
 └── OverridesJson: string       ← 覆写值: 此物品"每个属性是多少"
 
-ItemDefSO : EntityDefSO
+ItemDefSO : PropertyPresetSO
 ├── [继承] Template + OverridesJson  ← 所有叶数据
 └── SlotDef[] Slots                  ← 暂时存留（准备迁移到 Struct）
 ```
@@ -130,7 +130,7 @@ ItemDefSO : EntityDefSO
 ```
 ItemDefSO.asset (配置)
     ↓ ItemInstance.Create(def)
-EntityProperties.Create(def)    ← 复用 PropertyAgent 管线
+PropertyTable.Create(def)    ← 复用 PropertyAgent 管线
     ↓ ResolvedPropertyBag
 运行时属性读取: props.GetFloat("Base/Weight")
                props.GetStructArray<SlotDef>("Container/Slots")
@@ -140,7 +140,7 @@ EntityProperties.Create(def)    ← 复用 PropertyAgent 管线
 
 | 依赖 | 方式 |
 |------|------|
-| EntityDefSO (L3_Properties) | 继承 |
+| PropertyPresetSO (L3_Properties) | 继承 |
 | SlotDef (L3_Item) | 当前 C# 字段引用；未来通过 StructTypeName |
 | PropertyTreeSO | Template 引用 |
 | DamageEffectSO, EffectSO (L3_Ability) | AssetRefList 资产引用 |

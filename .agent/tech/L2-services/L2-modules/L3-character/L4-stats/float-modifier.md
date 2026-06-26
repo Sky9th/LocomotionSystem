@@ -24,7 +24,7 @@ L4 Character 子系统。由 Properties 模块定义标准的持久修改器。�
 | 方向 | 模块 | 关系 |
 |------|------|------|
 | 被消费 | FloatState | Tick 时读取 OnApplyRate / CustomTick / Delta |
-| 被消费 | EntityProperties | AddModifier / RemoveModifiers |
+| 被消费 | PropertyTable | AddModifier / RemoveModifiers |
 | 被消费 | PropertyComponent | 代理 AddModifier / RemoveModifiers |
 | 被消费 | 所有子系统 | 创建 Modifier 注入 |
 

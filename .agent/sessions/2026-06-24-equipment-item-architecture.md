@@ -12,7 +12,7 @@
 
 ### 架构方向
 
-- **确立"一切皆属性"核心**：角色、物品、NPC 共享 EntityDefSO + PropertyTreeSO + PropertyAgent 管线
+- **确立"一切皆属性"核心**：角色、物品、NPC 共享 PropertyPresetSO + PropertyTreeSO + PropertyAgent 管线
 - **装备不是物品类型**：是物品在身体槽容器中的状态。GearDefSO 概念废弃
 - **武器类型缩减为 GameplayTag**：WeaponTypeSO 被拆解——damageType→技能、gripTags→玩家选择、equipSlot→容器过滤、compatRoutines→AbilityTreeSO 反向声明
 - **ItemDefSO 零 C# 字段**：所有叶子数据进 PropertyTree。能力靠 ItemTags 标记。放弃 Config struct（ConsumeData 等）
@@ -38,7 +38,7 @@
 
 | 决策 | 替代方案 | 原因 |
 |------|---------|------|
-| 统一物品概念（ItemDefSO: EntityDefSO） | 多个子类（WeaponItem, ArmorItem...） | CDDA/RimWorld/PZ 都是统一类型。tag 分类 |
+| 统一物品概念（ItemDefSO: PropertyPresetSO） | 多个子类（WeaponItem, ArmorItem...） | CDDA/RimWorld/PZ 都是统一类型。tag 分类 |
 | ItemDefSO 零 C# 字段 | Config struct（ConsumeData 等） | 大部分能力字段属性能由 PropertyTree 表达。残留的 GearSlot[] 属容器系统 |
 | 武器类型=GameplayTag | WeaponTypeSO | 所有字段被拆解到各自归宿 |
 | Composition over Inheritance | 子类继承 | 一把刀同时是武器+制造材料，子类做不到 |
@@ -140,7 +140,7 @@
 - **叶数据**：走标量 PropertyType（Float/Int/String/Tag/AssetRef...）
 - **结构化数据**：走 PropertyType.Struct——JSON blob + C# struct 类型名
 - **复用行为资产**：独立 SO + AssetRefList 引用（EffectSO 模式）
-- EntityDefSO 子类永远零 C# 字段
+- PropertyPresetSO 子类永远零 C# 字段
 
 ---
 

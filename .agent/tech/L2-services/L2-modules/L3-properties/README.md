@@ -6,7 +6,7 @@
 
 - 标签体系 → `L1-core/gameplay-tag.md` — PropertyDefSO 的 GameplayTag 类型依赖 Tag 系统做校验
 - 伤害地基 → [damage-source-model.md](damage-source-model.md) — ATK 是 DamageEffectSO[]，不依赖属性系统，但属性系统需支持 AssetRefList 类型
-- 物品系统 → [L3_Item](../L3-item/README.md) — ItemDefSO : EntityDefSO，所有数据进 PropertyTree
+- 物品系统 → [L3_Item](../L3-item/README.md) — ItemDefSO : PropertyPresetSO，所有数据进 PropertyTree
 - 容器系统 → [L3_Container](../L3-container/README.md) — SlotDef[] 通过 PropertyType.Struct 存储
 - ~~装备系统~~ — GearDefSO 模型已否决。装备 = 物品在身体槽中的状态
 - ~~Stats 系统~~ — 已由 Properties 替代。迁移已完成
@@ -571,14 +571,14 @@ PropertySystem ───── 替代 ────→ StatsSystem (废弃)
 ### 架构
 
 ```
-EntityDefSO (资产)                        PropertyComponent (MonoBehaviour 门面)
-  ├── Template → PropertyTreeSO                 ├── _def → EntityDefSO
-  └── OverridesJson                             ├── _props → EntityProperties (内部)
+PropertyPresetSO (资产)                        PropertyComponent (MonoBehaviour 门面)
+  ├── Template → PropertyTreeSO                 ├── _def → PropertyPresetSO
+  └── OverridesJson                             ├── _props → PropertyTable (内部)
                                                  │     ├── _structure (Path→Def)
 PropertyTreeSO.ResolveStructure()                │     ├── _floats / _ints / _strings / ... (类型分桶)
         │                                        │     ├── _floatStates (FloatState 运行时)
         ▼                                        │     ├── _guards (修改前拦截)
-EntityProperties 构造 (一次性全解析)              │     └── _modifiers (Modifier 索引)
+PropertyTable 构造 (一次性全解析)              │     └── _modifiers (Modifier 索引)
         │                                        │
         ▼                                        └── 公开 API: Get/Set/Modify/AddModifier/...
   _resolved 字典 (所有属性最终值)
@@ -591,7 +591,7 @@ EntityProperties 构造 (一次性全解析)              │     └── _mod
 
 | 文件 | 内容 |
 |------|------|
-| [entity-def-so.md](entity-def-so.md) | EntityDefSO — 实体定义抽象基类 |
-| [entity-properties.md](entity-properties.md) | EntityProperties — 单实例属性表、Set/Modify/Load、Guard、事件、Tick、快照 |
+| [property-preset-so.md](property-preset-so.md) | PropertyPresetSO — 属性预设基类 |
+| [property-table.md](property-table.md) | PropertyTable — 运行时属性平表、Set/Modify/Load、Guard、事件、Tick |
 | [property-agent.md](property-agent.md) | PropertyAgent — MonoBehaviour 门面 |
 | — | FloatState / FloatModifier 属于 Character/Stats — 见 [float-state.md](../L3-character/L4-stats/float-state.md)

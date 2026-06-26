@@ -9,6 +9,7 @@ namespace RedDust.Properties
         GameplayTag,
         GameplayTagList,
         AssetRef,
-        AssetRefList
+        AssetRefList,
+        Struct
     }
 }

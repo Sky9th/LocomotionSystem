@@ -6,17 +6,17 @@
 
 L4 Character 子系统。单个 Float 属性的运行时引擎——可变 Current + Min/Max 钳制 + 消耗/恢复 Tick + Modifier 管理 + 事件广播。
 
-由 EntityProperties 内部持有和管理，外部不可直接访问。是对旧 Stats 模块 `StatInstance` 的重构——保留 Tick/Modifier/Event 逻辑，移除对 StatDefSO 的依赖。
+由 PropertyTable 内部持有和管理，外部不可直接访问。是对旧 Stats 模块 `StatInstance` 的重构——保留 Tick/Modifier/Event 逻辑，移除对 StatDefSO 的依赖。
 
 ## 调用链
 
 ```
 被谁调:
-  EntityProperties.InitFloatStates()     → new FloatState(...)
-  EntityProperties.EnsureFloatState()    → new FloatState(...)
-  EntityProperties.Tick(dt)              → .Tick(dt)
-  EntityProperties.Set(path, float)      → .SetCurrent / .SetCurrentSilent
-  EntityProperties.AddModifier / Remove  → .AddModifier / .RemoveModifiers
+  PropertyTable.InitFloatStates()     → new FloatState(...)
+  PropertyTable.EnsureFloatState()    → new FloatState(...)
+  PropertyTable.Tick(dt)              → .Tick(dt)
+  PropertyTable.Set(path, float)      → .SetCurrent / .SetCurrentSilent
+  PropertyTable.AddModifier / Remove  → .AddModifier / .RemoveModifiers
 
 调谁:
   FloatModifier                          → OnApplyRate / CustomTick 回调
@@ -29,7 +29,7 @@ L4 Character 子系统。单个 Float 属性的运行时引擎——可变 Curre
 |------|------|------|
 | 依赖 | FloatModifier | 管理 Modifier 列表 |
 | 依赖 | RateContext | 速率计算上下文 |
-| 被消费 | EntityProperties | 唯一持有方 |
+| 被消费 | PropertyTable | 唯一持有方 |
 
 ## 公开属性
 
@@ -63,28 +63,28 @@ internal FloatState(string path, float min, float max, float initialValue,
 public void Modify(float delta)
 ```
 - **用途**: 增量修改 Current。钳制到 [Min, Max]，触发 OnChanged / OnZero 事件
-- **调用者**: EntityProperties.Modify / TickConsume / TickRestore / Modifier 回调
+- **调用者**: PropertyTable.Modify / TickConsume / TickRestore / Modifier 回调
 
 ### SetCurrent()
 ```csharp
 public void SetCurrent(float value)
 ```
 - **用途**: 直接覆写 Current（非增量）。触发事件
-- **调用者**: EntityProperties.Set (Float)
+- **调用者**: PropertyTable.Set (Float)
 
 ### SetCurrentSilent()
 ```csharp
 public void SetCurrentSilent(float value)
 ```
 - **用途**: 静默覆写 Current。不触发事件
-- **调用者**: EntityProperties.Load（读档）
+- **调用者**: PropertyTable.Load（读档）
 
 ### Tick()
 ```csharp
 public void Tick(float dt)
 ```
 - **用途**: 每帧驱动。执行顺序：C（CustomTick）→ A（速率修改 + consume/restore）→ B（定时 Delta）
-- **调用者**: EntityProperties.Tick
+- **调用者**: PropertyTable.Tick
 - **备注**: 无 Modifier 且无 consume/restore 时直接返回
 
 ### AddModifier() / RemoveModifiers()
@@ -100,7 +100,7 @@ public void RemoveModifiers(object owner)
 public event Action OnZero;                           // Current 到达 Min
 public event Action<string, float, float> OnChanged;  // path, old, new
 ```
-- **订阅者**: EntityProperties（桥接到公开事件）
+- **订阅者**: PropertyTable（桥接到公开事件）
 
 ## 内部机制
 
@@ -124,7 +124,7 @@ public event Action<string, float, float> OnChanged;  // path, old, new
 | 决策 | 原因 |
 |------|------|
 | 构造函数注入所有配置，不依赖 SO | FloatState 不绑定 StatDefSO 或 PropertyDefSO |
-| internal 访问 | 只由 EntityProperties 创建和管理 |
+| internal 访问 | 只由 PropertyTable 创建和管理 |
 | Addend + Multiplier 并行槽位 | 多个 Modifier 各自独立修改，不互相覆盖 |
 | C→A→B 执行顺序 | 自定义行为优先执行，速率修改其次，定时修改最后 |
 | SetCurrentSilent 独立方法 | Load（读档）不需要逐个触发事件 |

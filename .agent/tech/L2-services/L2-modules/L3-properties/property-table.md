@@ -1,6 +1,7 @@
-# EntityProperties — 单实例属性表
+# PropertyTable — 运行时属性平表
 
-> `L3_Properties/Instance/EntityProperties.cs` · 技术文档 · 2026-06-10
+> `L3_Properties/Instance/PropertyTable.cs` · 技术文档 · 2026-06-26
+> **Last Verified**: 2026-06-26 | **Verification**: Renamed from EntityProperties. All referenced files exist.
 
 ## 层级定位
 
@@ -12,9 +13,9 @@ L3 运行时层。每个实体实例的最终属性表。构造时一次性全�
 
 ```
 被谁调:
-  PropertyComponent.Awake()        → new EntityProperties(_def)
+  PropertyComponent.Awake()        → new PropertyTable(_def)
   PropertyComponent.Update()       → .Tick(dt)
-  PropertyComponent.Set/Modify/... → 全部代理到 EntityProperties
+  PropertyComponent.Set/Modify/... → 全部代理到 PropertyTable
 
 调谁:
   PropertyTreeSO.ResolveStructure() → 构造时获取 Path→Def 映射
@@ -36,7 +37,7 @@ L3 运行时层。每个实体实例的最终属性表。构造时一次性全�
 ## 内部结构
 
 ```
-EntityProperties
+PropertyTable
   ├── _structure: Dictionary<string, PropertyDefSO>     ← Path→Def
   ├── _floats / _ints / _bools / _strings / _tagLists / _assetRefs / _assetRefLists
   │                                                       ← 按类型分桶的值存储
@@ -47,18 +48,18 @@ EntityProperties
 
 ## 构造
 
-### EntityProperties(EntityDefSO)
+### PropertyTable(PropertyPresetSO)
 ```csharp
-public EntityProperties(EntityDefSO def)
+public PropertyTable(PropertyPresetSO def)
 ```
-- **用途**: 标准构造路径。从 EntityDefSO 读取 Template + OverridesJson
+- **用途**: 标准构造路径。从 PropertyPresetSO 读取 Template + OverridesJson
 - **调用者**: PropertyComponent.Awake()
 
-### EntityProperties(PropertyTreeSO, string)
+### PropertyTable(PropertyTreeSO, string)
 ```csharp
-public EntityProperties(PropertyTreeSO tree, string overridesJson = null)
+public PropertyTable(PropertyTreeSO tree, string overridesJson = null)
 ```
-- **用途**: 直接构造（无 EntityDefSO 时）。测试/程序化生成用
+- **用途**: 直接构造（无 PropertyPresetSO 时）。测试/程序化生成用
 - **调用者**: 工厂、测试代码
 
 构造流程：

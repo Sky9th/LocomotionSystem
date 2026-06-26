@@ -25,7 +25,7 @@
 ┌──────────────────────────────────────────────────────────────────┐
 │                   定义层 (Design Time)                              │
 │                                                                   │
-│  ItemDefSO : EntityDefSO                                          │
+│  ItemDefSO : PropertyPresetSO                                          │
 │    ├── [继承] PropertyTreeSO Template     ← 物品属性结构           │
 │    └── [继承] string OverridesJson        ← 变种属性值             │
 │                                                                   │
@@ -54,7 +54,7 @@
 │  ItemInstance                                                       │
 │    ├── Id: string                      ← 唯一身份（一个堆叠一个 ID）   │
 │    ├── Def: ItemDefSO                  ← 不可变定义                   │
-│    ├── Props: EntityProperties         ← 可变属性（耐久/充能/…）      │
+│    ├── Props: PropertyTable         ← 可变属性（耐久/充能/…）      │
 │    ├── Count: int                      ← 堆叠数（1=不可堆叠物品）     │
 │    └── Tick(float dt)                  ← 驱动属性消耗/恢复/衰减       │
 │                                                                     │
@@ -88,7 +88,7 @@
 
 ```
 L3_Item/
-├── ItemDefSO.cs                   # [SO] 物品定义 — 继承 EntityDefSO，零 C# 字段
+├── ItemDefSO.cs                   # [SO] 物品定义 — 继承 PropertyPresetSO，零 C# 字段
 └── ItemInstance.cs                # [class] 运行时个体 — ID + Props
 ```
 
@@ -101,7 +101,7 @@ L3_Item/
 物品创建:
   ItemDefSO.asset（配置）
     → ItemInstance.Create(def)
-      → EntityProperties.Create(def)        ← 复用 PropertyAgent 管线
+      → PropertyTable.Create(def)        ← 复用 PropertyAgent 管线
       → L2_ItemService.RegisterItem(item, slot)
 
 物品移动:
@@ -118,7 +118,7 @@ L3_Item/
 物品属性驱动（Tick）:
   容器所有者.Update()
     → item.Tick(dt)                   ← 由所有者决定频率
-      → EntityProperties.Tick(dt)     ← 驱动 FloatState 消耗/恢复/衰减
+      → PropertyTable.Tick(dt)     ← 驱动 FloatState 消耗/恢复/衰减
     → 无衰减属性的物品 Tick 空转，FloatState 直接 return，零开销
 
 物品销毁:
@@ -136,8 +136,8 @@ L3_Item/
 
 | 本模块 | 依赖/消费方 | 关系 |
 |--------|-----------|------|
-| ItemDefSO | L3-properties (EntityDefSO, PropertyTreeSO) | 继承属性框架 |
-| ItemInstance | L3-properties (EntityProperties) | 持有物品运行时属性 |
+| ItemDefSO | L3-properties (PropertyPresetSO, PropertyTreeSO) | 继承属性框架 |
+| ItemInstance | L3-properties (PropertyTable) | 持有物品运行时属性 |
 | L2_ItemService | L3_Item（ItemInstance） | （L2 间接依赖，非 L3_Item 直接依赖 L2） |
 | L2_ItemService | L3_Container（Container\<T\>, ContainerSlotRef, SlotDef） | （同上，L2 胶水层协调） |
 | ItemDefSO | L3_Container（SlotDef struct） | 类型级引用：StructTypeName="SlotDef" 关联（非服务调用） |
@@ -154,7 +154,7 @@ L3_Item/
 | 不做能力 struct（ConsumeData 等） | 绷带的 `useTime`=Float、`effects`=AssetRefList→全部可由 PropertyTree 表达。标签即可标记能力 |
 | 不做独立 Capability SO | 三个商业游戏均未采用。WeaponTypeSO 被拆解——字段各有归属 |
 | 结构化数据走 PropertyType.Struct | 不降维拆成 key-value（失内聚），不做独立 SO（无复用），不扩展 GroupProp（改动大）。JSON blob + C# struct 类型名——框架改动最小，类型安全保留 |
-| 物品定义继承 EntityDefSO | 和角色共享同一套属性管线 |
+| 物品定义继承 PropertyPresetSO | 和角色共享同一套属性管线 |
 | 武器类型 = GameplayTag | Weapon.Blade / Weapon.Pistol。被容器过滤、被技能树匹配 |
 | ItemInstance 是纯 C# 类 | 物品在容器间移动只改引用，不 Instantiate/Destroy |
 | 需要 ItemRegistry（在 L2_ItemService） | 多人联机要求物品身份有服务端权威。L2_ItemService 持有 Registry |
@@ -178,7 +178,7 @@ L3_Item/
 
 | 缺口 | 状态 | 说明 |
 |------|:---:|------|
-| 存档/加载 | ⏸ 待定 | EntityProperties 序列化、Registry 重建——暂不处理 |
+| 存档/加载 | ⏸ 待定 | PropertyTable 序列化、Registry 重建——暂不处理 |
 | 世界物品管理 | ⏸ 待定 | 类似 PlayerService 的统一管理器——待论证 |
 | 物品转移调用方 | ✅ | L2_ItemService.Transfer 为唯一入口。容器只负责 Place/Remove |
 | 代码同步 — ItemDefSO 零字段 | ❓ | 当前代码仍持有 SlotDef[]。设计已定：All data → PropertyTree，代码尚未同步 |

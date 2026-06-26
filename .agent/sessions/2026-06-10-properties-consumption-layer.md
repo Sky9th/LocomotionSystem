@@ -3,12 +3,12 @@
 ## 做了什么
 
 从架构层面完成了 Properties 模块的消费层：
-- **EntityDefSO** — 实体定义抽象基类（Template + OverridesJson）
-- **EntityProperties** — 统一类型分发（DoWrite），静态工厂 Create，Set/Modify/Load/Tick/Snapshot/Guard/事件
+- **PropertyPresetSO** — 实体定义抽象基类（Template + OverridesJson）
+- **PropertyTable** — 统一类型分发（DoWrite），静态工厂 Create，Set/Modify/Load/Tick/Snapshot/Guard/事件
 - **PropertyComponent** — MonoBehaviour 门面
 - **FloatState + FloatModifier + RateContext** — Float 运行时引擎，预设频率 + 共享计时器 + 分桶存储
 
-删除了 ResolvedPropertyBag（逻辑融入 EntityProperties）。
+删除了 ResolvedPropertyBag（逻辑融入 PropertyTable）。
 
 ## 设计决策
 
@@ -25,8 +25,8 @@
 
 ## 相关文件
 
-- `Assets/Scripts/Services/Modules/L3_Properties/Definition/EntityDefSO.cs`
-- `Assets/Scripts/Services/Modules/L3_Properties/Instance/EntityProperties.cs`
+- `Assets/Scripts/Services/Modules/L3_Properties/Definition/PropertyPresetSO.cs`
+- `Assets/Scripts/Services/Modules/L3_Properties/Instance/PropertyTable.cs`
 - `Assets/Scripts/Services/Modules/L3_Properties/Instance/FloatModifier.cs`
 - `Assets/Scripts/Services/Modules/L3_Properties/Instance/FloatState.cs`
 - `Assets/Scripts/Services/Modules/L3_Properties/PropertyComponent.cs`

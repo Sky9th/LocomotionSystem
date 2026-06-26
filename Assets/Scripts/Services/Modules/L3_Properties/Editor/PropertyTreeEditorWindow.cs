@@ -60,6 +60,11 @@ namespace RedDust.Properties.Editor
         private string _dragParentId = null;
         private int _dropIndex = -1;
         private string _dropParentId;
+
+        // Track inline rename editing state per folder (nodeId → edited name).
+        // We cache the edited text here so we can feed it back as the TextField's
+        // value parameter — this prevents IMGUI from resetting the text on focus loss.
+        private Dictionary<string, string> _folderEdits = new();
         private float _bestDropDistance;
         private float _defDropTargetY;
         private string _defDropTargetNodeId;
@@ -564,23 +569,41 @@ namespace RedDust.Properties.Editor
                 // Header row: TextField (editable name) + delete
                 EditorGUILayout.BeginHorizontal();
 
-                // Editable folder name
-                GUI.SetNextControlName($"folder_{node.NodeId}");
+                // Editable folder name — uses cached edit buffer so IMGUI
+                // doesn't reset the value when the TextField loses focus.
+                string ctrlName = $"folder_{node.NodeId}";
+                bool hasFocus = GUI.GetNameOfFocusedControl() == ctrlName;
+                bool hasCachedEdit = _folderEdits.TryGetValue(node.NodeId, out var cachedName);
+
+                // Just lost focus? Commit the rename, then fall through to normal display.
+                if (!hasFocus && hasCachedEdit)
+                {
+                    if (cachedName != node.NodeId)
+                        TryRenameFolder(node.NodeId, cachedName);
+                    _folderEdits.Remove(node.NodeId);
+                    hasCachedEdit = false;
+                }
+
+                string displayName = hasCachedEdit ? cachedName : node.NodeId;
+                GUI.SetNextControlName(ctrlName);
                 GUI.enabled = string.IsNullOrEmpty(_dragNodeId) && node.IsLocal;
-                var newName = EditorGUILayout.TextField(node.NodeId, GUILayout.Width(160));
+                var newName = EditorGUILayout.TextField(displayName, GUILayout.Width(160));
                 GUI.enabled = true;
 
-                // Commit rename on Enter or focus loss
-                if (newName != node.NodeId)
+                // Cache changes while the TextField has focus.
+                if (hasFocus && newName != displayName)
+                    _folderEdits[node.NodeId] = newName;
+
+                // Commit on Enter.
+                if (hasFocus)
                 {
                     var evt = Event.current;
-                    bool isEnter = evt.type == EventType.KeyDown && (evt.keyCode == KeyCode.Return || evt.keyCode == KeyCode.KeypadEnter);
-                    bool lostFocus = Event.current.type == EventType.Repaint
-                        && GUI.GetNameOfFocusedControl() != $"folder_{node.NodeId}";
-                    if (isEnter || lostFocus)
+                    if (evt.type == EventType.KeyDown && (evt.keyCode == KeyCode.Return || evt.keyCode == KeyCode.KeypadEnter))
                     {
-                        TryRenameFolder(node.NodeId, newName);
-                        if (isEnter) evt.Use();
+                        if (_folderEdits.TryGetValue(node.NodeId, out var enterName) && enterName != node.NodeId)
+                            TryRenameFolder(node.NodeId, enterName);
+                        _folderEdits.Remove(node.NodeId);
+                        evt.Use();
                     }
                 }
 

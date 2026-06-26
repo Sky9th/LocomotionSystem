@@ -6,10 +6,10 @@ using UnityEngine;
 namespace RedDust.Properties
 {
     /// <summary>
-    /// 单个实体实例的最终属性表。由 PropertyComponent 内部持有。
-    /// 通过静态工厂 Create() 构造，运行时提供 Set / Modify / Load / Tick / Snapshot / Guard / 事件。
+    /// 运行时属性平表。静态工厂 FromPreset() 从 PropertyPresetSO 构造。
+    /// 提供 Get/Set/Modify/Load/Tick/Guard/事件。
     /// </summary>
-    public class EntityProperties
+    public class PropertyTable
     {
         private readonly Dictionary<string, PropertyDefSO> _structure;
         private readonly Dictionary<string, float> _floats;
@@ -23,6 +23,7 @@ namespace RedDust.Properties
         private readonly Dictionary<string, List<Guard>> _guards;
         private readonly Dictionary<string, List<FloatModifier>> _modifiers;
         private readonly Dictionary<string, List<FloatAdjunct>> _adjuncts;
+        private readonly Dictionary<string, string> _structJsons;
 
         public event Action<string, float, float> OnFloatChanged;
         public event Action<string> OnZero;
@@ -33,12 +34,12 @@ namespace RedDust.Properties
         // 静态工厂
         // ============================================================
 
-        /// <summary>从 EntityDefSO 创建。解析 Tree 结构 → 写值（覆写优先，否则取 Def 默认值）→ 推断伴生属性创建 FloatState。</summary>
-        public static EntityProperties Create(EntityDefSO def)
+        /// <summary>从 PropertyPresetSO 创建 Table。解析 Tree 结构 → 写值（覆写优先，否则取 Def 默认值）。</summary>
+        public static PropertyTable FromPreset(PropertyPresetSO preset)
         {
-            if (def?.Template == null) { Debug.LogError("[EntityProperties] EntityDefSO or Template is null"); return null; }
-            var props = new EntityProperties(def.Template.ResolveStructure());
-            var overrides = ParseOverrides(def.OverridesJson);
+            if (preset?.Template == null) { Debug.LogError("[PropertyTable] PropertyPresetSO or Template is null"); return null; }
+            var props = new PropertyTable(preset.Template.ResolveStructure());
+            var overrides = ParseOverrides(preset.OverridesJson);
 
             foreach (var (path, d) in props._structure)
             {
@@ -51,14 +52,14 @@ namespace RedDust.Properties
 
             foreach (var (path, _) in overrides)
                 if (!props._structure.ContainsKey(path))
-                    Debug.LogWarning($"[EntityProperties] Override key '{path}' not in structure. Skipped.");
+                    Debug.LogWarning($"[PropertyTable] Override key '{path}' not in structure. Skipped.");
 
-            // TODO: 行为配置入口——EntityDefSO 显式声明 consume/restore 后再创建 FloatState
+            // TODO: 行为配置入口——PropertyPresetSO 显式声明 consume/restore 后再创建 FloatState
             return props;
         }
 
         /// <summary>私有构造，只分配字典。值填充由 Build 完成。</summary>
-        private EntityProperties(Dictionary<string, PropertyDefSO> structure)
+        private PropertyTable(Dictionary<string, PropertyDefSO> structure)
         {
             _structure = structure;
             _floats = new();
@@ -72,6 +73,7 @@ namespace RedDust.Properties
             _guards = new();
             _modifiers = new();
             _adjuncts = new();
+            _structJsons = new();
         }
 
         // ============================================================
@@ -207,6 +209,24 @@ namespace RedDust.Properties
                     _assetRefLists[path] = arl;
                     if (!flags.HasFlag(WriteFlags.SkipEvents)) OnPropertyChanged?.Invoke(path, oldArl, arl);
                     break;
+
+                case PropertyType.Struct:
+                {
+                    var oldJson = _structJsons.TryGetValue(path, out var oj) ? oj : null;
+                    string json;
+                    if (isDefault)      json = def.DefaultStructJson ?? "[]";
+                    else if (isRaw)     json = (string)value ?? "[]";
+                    else                json = value != null ? JsonUtility.ToJson(value) : "[]";
+
+                    // 用户写裸数组 "[{...}]" 是自然写法，内部统一包装
+                    if (json.TrimStart().StartsWith("["))
+                        json = $"{{\"Items\":{json}}}";
+
+                    _structJsons[path] = json;
+                    if (!flags.HasFlag(WriteFlags.SkipEvents) && json != oldJson)
+                        OnPropertyChanged?.Invoke(path, oldJson, json);
+                    break;
+                }
             }
         }
 
@@ -301,14 +321,14 @@ namespace RedDust.Properties
         // 内部工具
         // ============================================================
 
-        private static void WarnPath(string path) => Debug.LogWarning($"[EntityProperties] Path '{path}' not in structure.");
+        private static void WarnPath(string path) => Debug.LogWarning($"[PropertyTable] Path '{path}' not in structure.");
 
         private static float SafeFloat(object v, float fallback) { try { return Convert.ToSingle(v); } catch { return fallback; } }
         private static int SafeInt(object v, int fallback) { try { return Convert.ToInt32(v); } catch { return fallback; } }
         private static bool SafeBool(object v, bool fallback) { try { return Convert.ToBoolean(v); } catch { return fallback; } }
 
         /// <summary>从 JSON string 解析 Float 并钳制到 [Min, Max]。</summary>
-        private static float ParseFloat(string raw, PropertyDefSO def) { if (float.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out var f)) return Mathf.Clamp(f, def.Min, def.Max); Debug.LogWarning($"[EntityProperties] Bad float '{raw}'"); return def.DefaultFloat; }
+        private static float ParseFloat(string raw, PropertyDefSO def) { if (float.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out var f)) return Mathf.Clamp(f, def.Min, def.Max); Debug.LogWarning($"[PropertyTable] Bad float '{raw}'"); return def.DefaultFloat; }
 
         /// <summary>解析 AssetRef：Object 直接返回，GUID string 则加载资产。</summary>
         private static UnityEngine.Object ResolveAssetRef(object value, PropertyDefSO def) { if (value is UnityEngine.Object o) return o; if (value is string g && !string.IsNullOrEmpty(g)) return LoadAssetByGuid(g, def?.AssetTypeConstraint); return null; }
@@ -323,12 +343,60 @@ namespace RedDust.Properties
 #if UNITY_EDITOR
             var ap = UnityEditor.AssetDatabase.GUIDToAssetPath(guid); if (string.IsNullOrEmpty(ap)) return null;
             var obj = UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(ap);
-            if (obj && !string.IsNullOrEmpty(typeConstraint)) { var et = Type.GetType(typeConstraint); if (et != null && !et.IsInstanceOfType(obj)) { Debug.LogWarning("[EntityProperties] Asset type mismatch"); return null; } }
+            if (obj && !string.IsNullOrEmpty(typeConstraint)) { var et = Type.GetType(typeConstraint); if (et != null && !et.IsInstanceOfType(obj)) { Debug.LogWarning("[PropertyTable] Asset type mismatch"); return null; } }
             return obj;
 #else
             return null;
 #endif
         }
+
+        // ============================================================
+        // Struct 读取
+        // ============================================================
+
+        /// <summary>校验 StructTypeName 与泛型 T 是否一致。不一致报错返回 true。</summary>
+        private bool StructTypeMismatch<T>(string path)
+        {
+            if (!_structure.TryGetValue(path, out var def)
+                || def.Type != PropertyType.Struct
+                || string.IsNullOrEmpty(def.StructTypeName))
+                return false; // 无定义或非 Struct——不校验
+
+            var declaredType = Type.GetType(def.StructTypeName);
+            if (declaredType == null)
+            {
+                Debug.LogError($"[PropertyTable] {path}: StructTypeName '{def.StructTypeName}' could not be resolved.");
+                return true;
+            }
+            if (declaredType != typeof(T))
+            {
+                Debug.LogError($"[PropertyTable] {path}: declared '{declaredType.Name}' but called with '{typeof(T).Name}'.");
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>从 JSON 反序列化单个 struct。类型不匹配或 JSON 无效返回 default。</summary>
+        public T GetStruct<T>(string path)
+        {
+            if (StructTypeMismatch<T>(path)) return default;
+            if (!_structJsons.TryGetValue(path, out var json) || string.IsNullOrEmpty(json))
+                return default;
+            return JsonUtility.FromJson<T>(json);
+        }
+
+        /// <summary>从 JSON 反序列化 struct 数组。内部自动处理 {Items:[...]} 包装。</summary>
+        public T[] GetStructArray<T>(string path)
+        {
+            if (StructTypeMismatch<T>(path)) return Array.Empty<T>();
+            if (!_structJsons.TryGetValue(path, out var json) || string.IsNullOrEmpty(json))
+                return Array.Empty<T>();
+            var wrapper = JsonUtility.FromJson<StructArrayWrapper<T>>(json);
+            return wrapper?.Items ?? Array.Empty<T>();
+        }
+
+        [Serializable]
+        private class StructArrayWrapper<T> { public T[] Items; }
 
         // JSON 序列化辅助
         [Serializable] private class OverrideEntry { public string Path; public string Value; }
@@ -340,7 +408,7 @@ namespace RedDust.Properties
         {
             var r = new Dictionary<string, string>(); if (string.IsNullOrEmpty(json)) return r;
             try { var c = JsonUtility.FromJson<OverrideContainer>(json); if (c?.Overrides != null) foreach (var e in c.Overrides) { if (!string.IsNullOrEmpty(e.Path)) r[e.Path] = e.Value; } }
-            catch (Exception e) { Debug.LogError($"[EntityProperties] Parse overridesJson failed: {e.Message}"); }
+            catch (Exception e) { Debug.LogError($"[PropertyTable] Parse overridesJson failed: {e.Message}"); }
             return r;
         }
 
@@ -349,7 +417,7 @@ namespace RedDust.Properties
         {
             if (string.IsNullOrEmpty(raw)) return Array.Empty<string>();
             try { return JsonUtility.FromJson<TagListWrapper>($"{{\"Items\":{raw}}}")?.Items ?? Array.Empty<string>(); }
-            catch (Exception e) { Debug.LogWarning($"[EntityProperties] Parse tag array: {e.Message}"); return Array.Empty<string>(); }
+            catch (Exception e) { Debug.LogWarning($"[PropertyTable] Parse tag array: {e.Message}"); return Array.Empty<string>(); }
         }
     }
 

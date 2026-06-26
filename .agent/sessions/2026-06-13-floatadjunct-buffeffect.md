@@ -25,12 +25,12 @@ Ability Pipeline 的 Search / Activation / Noise 三个维度已有完整资产�
 - 6 个 `*_all.json` 全量文件按子系统目录摆放
 
 ## 设计决策
-- 不建 BuffInstance 类 — FloatAdjunct 归属 EntityProperties，Tags 归属 OwnedTags，各自在 Actor 内部
+- 不建 BuffInstance 类 — FloatAdjunct 归属 PropertyTable，Tags 归属 OwnedTags，各自在 Actor 内部
 - valueAdd 按层数线性叠加（×stackCount），valueMultiply 不随层数变化
 - 堆叠的非线性曲线留到 Phase 2
 - 写入用 GetFloat（raw Current），读取修正值用 GetEffectiveFloat
 
 ## 涉及模块
-- `L3_Properties/` — FloatAdjunct + FloatState + EntityProperties + PropertyAgent
+- `L3_Properties/` — FloatAdjunct + FloatState + PropertyTable + PropertyAgent
 - `L3_Ability/` — BuffEffectSO + AbilityExecutor + EffectImportExport
 - `Tags/` — 新增 Tag_SuppressiveFire

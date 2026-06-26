@@ -27,7 +27,7 @@
 - `L3_Character/Combat/CharacterCombat.cs`
 - `L3_Properties/PropertyAgent.cs`
 - `L3_Properties/IPropertyReader.cs`
-- `L3_Properties/Instance/EntityProperties.cs`
+- `L3_Properties/Instance/PropertyTable.cs`
 - `L3_Properties/Instance/FloatState.cs`
 - `L3_Properties/Instance/FloatModifier.cs`
 - `L3_Ability/AbilityExecutor.cs`

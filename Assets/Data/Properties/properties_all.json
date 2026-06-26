@@ -1488,6 +1488,17 @@
             "min": 0.0, "max": 90.0, "defaultFloat": 75.0,
             "minInt": 0, "maxInt": 100, "defaultInt": 0,
             "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "Slots",
+            "type": "Struct",
+            "isDeprecated": false,
+            "description": "容器槽位定义。所有Actor共用，默认空数组。预设通过OverridesJson覆写具体槽位（如人形11槽、箱子1槽）。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": "",
+            "structTypeName": "RedDust.Items.SlotDef",
+            "defaultStructJson": "[]"
         }
     ],
     "trees": [
@@ -1497,7 +1508,8 @@
             "nodes": [
                 { "nodeId": "Vitals", "parentId": "", "defId": "" },
                 { "nodeId": "HP", "parentId": "Vitals", "defId": "HP" },
-                { "nodeId": "MaxHP", "parentId": "Vitals", "defId": "MaxHP" }
+                { "nodeId": "MaxHP", "parentId": "Vitals", "defId": "MaxHP" },
+                { "nodeId": "Slots", "parentId": "", "defId": "Slots" }
             ]
         },
         {

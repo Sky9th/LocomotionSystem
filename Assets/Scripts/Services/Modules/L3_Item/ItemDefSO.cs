@@ -10,6 +10,7 @@ namespace RedDust.Items
     /// 结构体聚合（非标量），因此留在 C# 不在 PropertyTree。
     /// </summary>
     [Serializable]
+    [PropertyStruct]
     public struct SlotDef
     {
         /// <summary>槽位标识，同一物品内唯一。——"Main", "WeaponSling", "WaterPouch"</summary>
@@ -32,7 +33,7 @@ namespace RedDust.Items
     }
 
     /// <summary>
-    /// 物品定义资产。继承 EntityDefSO。
+    /// 物品定义资产。继承 PropertyPresetSO。
     ///
     /// 所有叶子数据进 PropertyTree（Template + OverridesJson）：
     ///   身份:    DisplayName (String), Description (String), Icon (AssetRef)
@@ -47,10 +48,10 @@ namespace RedDust.Items
     ///   结构化数据——聚合体，数组表达多槽位。
     ///   不进 PropertyTree：PropertyTree 是 key→标量映射，不表达结构体内聚。
     ///   不做独立 SO：槽位配置 1:1 专属物品，无复用场景，不值得独立资产化。
-    ///   和 EntityDefSO 基类注释一致——"子类追加机械规则字段（slots, spawnBehavior）"。
+    ///   和 PropertyPresetSO 基类注释一致——"子类追加机械规则字段（slots, spawnBehavior）"。
     /// </summary>
     [CreateAssetMenu(menuName = "RedDust/Item/ItemDef", fileName = "NewItem")]
-    public class ItemDefSO : EntityDefSO
+    public class ItemDefSO : PropertyPresetSO
     {
         /// <summary>
         /// 此物品提供的容器槽位。空数组 = 不可容纳其他物品（消耗品、弹药、非容器装备）。

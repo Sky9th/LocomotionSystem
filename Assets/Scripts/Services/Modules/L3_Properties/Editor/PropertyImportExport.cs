@@ -36,6 +36,8 @@ namespace RedDust.Properties.Editor
             public string defaultString;
             public string defaultAssetGUID;
             public string assetTypeConstraint;
+            public string structTypeName;
+            public string defaultStructJson;
         }
 
         [Serializable]
@@ -100,6 +102,8 @@ namespace RedDust.Properties.Editor
                 def.DefaultString = entry.defaultString;
                 def.DefaultAssetGUID = entry.defaultAssetGUID;
                 def.AssetTypeConstraint = entry.assetTypeConstraint;
+                def.StructTypeName = entry.structTypeName;
+                def.DefaultStructJson = entry.defaultStructJson;
 
                 AssetDatabase.CreateAsset(def, assetPath);
                 defMap[entry.id] = def;
@@ -182,7 +186,9 @@ namespace RedDust.Properties.Editor
                     min = def.Min, max = def.Max, defaultFloat = def.DefaultFloat,
                     minInt = def.MinInt, maxInt = def.MaxInt, defaultInt = def.DefaultInt,
                     defaultString = def.DefaultString, defaultAssetGUID = def.DefaultAssetGUID,
-                    assetTypeConstraint = def.AssetTypeConstraint
+                    assetTypeConstraint = def.AssetTypeConstraint,
+                    structTypeName = def.StructTypeName,
+                    defaultStructJson = def.DefaultStructJson
                 });
             }
 

@@ -185,6 +185,12 @@ namespace RedDust.Properties.Editor
                         case PropertyType.AssetRefList:
                             EditorGUILayout.LabelField("Asset reference array. No constraints.", ValueStyle);
                             break;
+                        case PropertyType.Struct:
+                        {
+                            var current = string.IsNullOrEmpty(_def.StructTypeName) ? "(unset)" : _def.StructTypeName;
+                            DrawFieldRow("Struct Type", current);
+                            break;
+                        }
                     }
                 }
 
@@ -259,6 +265,10 @@ namespace RedDust.Properties.Editor
                 // AssetRef
                 private string _assetTypeConstraint = "";
 
+                // Struct
+                private string _structTypeName = "";
+                private string _defaultStructJson = "";
+
                 private void OnGUI()
                 {
                     var pad = 6f;
@@ -297,6 +307,10 @@ namespace RedDust.Properties.Editor
                             break;
                         case PropertyType.AssetRef:
                             _assetTypeConstraint = EditorGUILayout.TextField("Asset Type Constraint", _assetTypeConstraint);
+                            break;
+                        case PropertyType.Struct:
+                            _structTypeName = PropertyStructScanner.DrawDropdown(_structTypeName);
+                            _defaultStructJson = EditorGUILayout.TextField("Default JSON", _defaultStructJson);
                             break;
                     }
 
@@ -352,6 +366,8 @@ namespace RedDust.Properties.Editor
                     def.DefaultBool = _defaultBool;
                     def.DefaultString = _defaultString;
                     def.AssetTypeConstraint = _assetTypeConstraint;
+                    def.StructTypeName = _structTypeName;
+                    def.DefaultStructJson = _defaultStructJson;
                     AssetDatabase.CreateAsset(def, $"{dir}/{_id}.asset");
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
