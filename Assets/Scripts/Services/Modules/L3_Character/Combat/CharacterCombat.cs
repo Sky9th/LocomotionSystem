@@ -48,12 +48,12 @@ namespace RedDust.Character.Combat
 
         private float OnPeekStat(PropertyDefSO def)
         {
-            return ctx.Agent.GetFloat(def.Id);
+            return ctx.PropertyAgent.GetFloat(def.Id);
         }
 
         private void OnModifyStat(PropertyDefSO def, float delta)
         {
-            ctx.Agent.Modify(def.Id, delta);
+            ctx.PropertyAgent.Modify(def.Id, delta);
         }
 
         private float OnEffectModify(EffectSO effect, GameObject target, float baseDamage)
@@ -68,7 +68,7 @@ namespace RedDust.Character.Combat
             float amount = hit.Amount;
             float incoming = amount;
 
-            var endurance = ctx.Agent.GetFloat("Attributes/Endurance");
+            var endurance = ctx.PropertyAgent.GetFloat("Attributes/Endurance");
             if (endurance > 0f)
                 amount *= 1f - endurance * 0.05f;
 
@@ -84,9 +84,9 @@ namespace RedDust.Character.Combat
         /// <summary>伤害落地。直接写入 HP。</summary>
         private void OnApplyDamage(SDamageInfo hit, float finalAmount)
         {
-            var before = ctx.Agent.GetFloat("Vitals/HP");
-            ctx.Agent.Modify("Vitals/HP", -finalAmount);
-            Debug.Log($"[Combat] {hit.Target.name} HP: {before:F1} -{finalAmount:F1} → {ctx.Agent.GetFloat("Vitals/HP"):F1}");
+            var before = ctx.PropertyAgent.GetFloat("Vitals/HP");
+            ctx.PropertyAgent.Modify("Vitals/HP", -finalAmount);
+            Debug.Log($"[Combat] {hit.Target.name} HP: {before:F1} -{finalAmount:F1} → {ctx.PropertyAgent.GetFloat("Vitals/HP"):F1}");
         }
 
         private void OnReaction(SDamageInfo hit, float finalAmount) { }

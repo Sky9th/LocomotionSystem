@@ -1,7 +1,7 @@
 # PropertyTable — 运行时属性平表
 
 > `L3_Properties/Instance/PropertyTable.cs` · 技术文档 · 2026-06-26
-> **Last Verified**: 2026-06-26 | **Verification**: Renamed from EntityProperties. All referenced files exist.
+> **Last Verified**: 2026-06-27 | **Verification**: All referenced files exist. Get methods updated: missing path now errors.
 
 ## 层级定位
 
@@ -74,10 +74,10 @@ public PropertyTable(PropertyTreeSO tree, string overridesJson = null)
 
 ```csharp
 public float GetFloat(string path)
+public float GetEffectiveFloat(string path)
 public int GetInt(string path)
 public bool GetBool(string path)
 public string GetString(string path)
-public string GetTag(string path)
 public string[] GetTagList(string path)
 public T GetAsset<T>(string path) where T : UnityEngine.Object
 public float GetMin(string path)
@@ -85,7 +85,8 @@ public float GetMax(string path)
 public bool Has(string path)
 ```
 - **用途**: 读取属性值。GetFloat 优先返回 FloatState.Current，无则返回静态值
-- **消费者**: PropertyComponent 代理
+- **错误处理**: 路径不在 `_structure` 中 → `Debug.LogError` + 返回 default。禁止静默返回
+- **消费者**: PropertyAgent 代理
 
 ### Set / Modify / Load — 修改
 

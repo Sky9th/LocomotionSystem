@@ -169,7 +169,7 @@ namespace RedDust.UI
 
         public bool TryGetPlayerProps(out IPropertyReader props)
         {
-            props = _playerActor != null ? _playerActor.Props : null;
+            props = _playerActor != null ? _playerActor.Properties : null;
             return props != null;
         }
 

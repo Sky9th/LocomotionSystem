@@ -1,6 +1,6 @@
 # CharacterActor · 角色主控
 
-> **Last Verified**: 2026-06-22 | **Verification**: All referenced files exist, signatures match code
+> **Last Verified**: 2026-06-27 | **Verification**: Field renames (agent→propertyAgent), access modifiers (Physique/Container→private), Physique extraction moved to Start, TODOs added
 
 > `Character/Actor/CharacterActor.cs` — ModuleHub，角色组合根，每帧流水线入口
 
@@ -19,7 +19,8 @@
 
   Start:
     base.Start() → Registry.OnWireAll (递归)
-    agent.AddModifier (post-wire)
+    buildCtx.Physique = CharacterPhysique.FromAgent(propertyAgent) (所有 Awake 已跑完，安全读取)
+    propertyAgent.AddModifier (TODO: 饥饿消耗硬编码 — 应由生理系统/预设 Modifier 驱动)
 
   Update:
     director.Evaluate() → characterKinematic.Evaluate() → locomotionSimulator.Simulate()

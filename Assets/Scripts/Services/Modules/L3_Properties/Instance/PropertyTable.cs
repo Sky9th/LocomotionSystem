@@ -80,24 +80,64 @@ namespace RedDust.Properties
         // 读
         // ============================================================
 
-        /// <summary>读 Float。返回原始 Current（不含 Adjunct 修正）。</summary>
-        public float GetFloat(string path) =>
-            _floatStates.TryGetValue(path, out var s) ? s.Current : _floats.TryGetValue(path, out var f) ? f : 0f;
+        /// <summary>读 Float。返回原始 Current（不含 Adjunct 修正）。路径不存在报错。</summary>
+        public float GetFloat(string path)
+        {
+            if (_floatStates.TryGetValue(path, out var s)) return s.Current;
+            if (_floats.TryGetValue(path, out var f)) return f;
+            ErrorPath(path);
+            return 0f;
+        }
 
         /// <summary>读 Float 有效值。有 FloatState 返回 Effective（Current + Adjunct 修正），无返回静态值。</summary>
-        public float GetEffectiveFloat(string path) =>
-            _floatStates.TryGetValue(path, out var s) ? s.Effective : _floats.TryGetValue(path, out var f) ? f : 0f;
-        public int GetInt(string path) => _ints.TryGetValue(path, out var v) ? v : 0;
-        public bool GetBool(string path) => _bools.TryGetValue(path, out var v) && v;
-        public string GetString(string path) => _strings.TryGetValue(path, out var v) ? v : null;
-        public string[] GetTagList(string path) => _tagLists.TryGetValue(path, out var v) ? v : null;
-        /// <summary>读 AssetRef 类型资产（Sprite, AnimationProfile 等）。</summary>
-        public T GetAsset<T>(string path) where T : UnityEngine.Object => _assetRefs.TryGetValue(path, out var v) ? v as T : null;
+        public float GetEffectiveFloat(string path)
+        {
+            if (_floatStates.TryGetValue(path, out var s)) return s.Effective;
+            if (_floats.TryGetValue(path, out var f)) return f;
+            ErrorPath(path);
+            return 0f;
+        }
 
-        /// <summary>Float 属性的 Min 约束。</summary>
-        public float GetMin(string path) => _structure.TryGetValue(path, out var d) ? d.Min : 0f;
-        /// <summary>Float 属性的 Max 约束。</summary>
-        public float GetMax(string path) => _structure.TryGetValue(path, out var d) ? d.Max : 0f;
+        public int GetInt(string path)
+        {
+            if (_ints.TryGetValue(path, out var v)) return v;
+            ErrorPath(path);
+            return 0;
+        }
+
+        public bool GetBool(string path)
+        {
+            if (_bools.TryGetValue(path, out var v)) return v;
+            ErrorPath(path);
+            return false;
+        }
+
+        public string GetString(string path)
+        {
+            if (_strings.TryGetValue(path, out var v)) return v;
+            ErrorPath(path);
+            return null;
+        }
+
+        public string[] GetTagList(string path)
+        {
+            if (_tagLists.TryGetValue(path, out var v)) return v;
+            ErrorPath(path);
+            return null;
+        }
+
+        /// <summary>读 AssetRef 类型资产（Sprite, AnimationProfile 等）。路径不存在报错。</summary>
+        public T GetAsset<T>(string path) where T : UnityEngine.Object
+        {
+            if (_assetRefs.TryGetValue(path, out var v)) return v as T;
+            ErrorPath(path);
+            return null;
+        }
+
+        /// <summary>Float 属性的 Min 约束。路径不存在报错。</summary>
+        public float GetMin(string path) => _structure.TryGetValue(path, out var d) ? d.Min : ErrorPath<float>(path);
+        /// <summary>Float 属性的 Max 约束。路径不存在报错。</summary>
+        public float GetMax(string path) => _structure.TryGetValue(path, out var d) ? d.Max : ErrorPath<float>(path);
         /// <summary>该属性是否存在。</summary>
         public bool Has(string path) => _structure.ContainsKey(path);
 
@@ -122,7 +162,7 @@ namespace RedDust.Properties
         /// <summary>运行时写入入口（object → 类型分发）。</summary>
         private void WriteFromObject(string path, object value, WriteFlags flags)
         {
-            if (!_structure.TryGetValue(path, out var def)) { WarnPath(path); return; }
+            if (!_structure.TryGetValue(path, out var def)) { ErrorPath(path); return; }
             DoWrite(path, value, def, flags);
         }
 
@@ -321,7 +361,8 @@ namespace RedDust.Properties
         // 内部工具
         // ============================================================
 
-        private static void WarnPath(string path) => Debug.LogWarning($"[PropertyTable] Path '{path}' not in structure.");
+        private static void ErrorPath(string path) => Debug.LogError($"[PropertyTable] Path '{path}' not found. Check property path string for typos.");
+        private static T ErrorPath<T>(string path) { ErrorPath(path); return default; }
 
         private static float SafeFloat(object v, float fallback) { try { return Convert.ToSingle(v); } catch { return fallback; } }
         private static int SafeInt(object v, int fallback) { try { return Convert.ToInt32(v); } catch { return fallback; } }

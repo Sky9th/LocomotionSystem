@@ -28,10 +28,10 @@ namespace RedDust.Character
 
         public override void OnWire()
         {
-            BodySlots = ctx.Agent.GetStructArray<SlotDef>("Common/Slots") ?? System.Array.Empty<SlotDef>();
+            BodySlots = ctx.PropertyAgent.GetStructArray<SlotDef>("Common/Slots") ?? System.Array.Empty<SlotDef>();
 
             if (BodySlots.Length == 0)
-                Debug.LogWarning($"[CharacterContainer] {ctx.Agent.name}: Common/Slots is empty — no body slots configured.");
+                Debug.LogWarning($"[CharacterContainer] {ctx.PropertyAgent.name}: Common/Slots is empty — no body slots configured.");
             else
             {
                 var names = new System.Text.StringBuilder();
@@ -40,7 +40,7 @@ namespace RedDust.Character
                     if (i > 0) names.Append(", ");
                     names.Append(BodySlots[i].SlotId);
                 }
-                Debug.Log($"[CharacterContainer] {ctx.Agent.name}: {BodySlots.Length} body slots — {names}");
+                Debug.Log($"[CharacterContainer] {ctx.PropertyAgent.name}: {BodySlots.Length} body slots — {names}");
             }
         }
     }

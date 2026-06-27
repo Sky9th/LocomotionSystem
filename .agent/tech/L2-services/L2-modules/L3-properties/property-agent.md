@@ -1,6 +1,7 @@
 # PropertyComponent — 属性门面
 
-> `L3_Properties/PropertyComponent.cs` · 技术文档 · 2026-06-10
+> `L3_Properties/PropertyAgent.cs` · 技术文档 · 2026-06-10
+> **Last Verified**: 2026-06-27 | **Verification**: Class renamed PropertyComponent→PropertyAgent.
 
 ## 层级定位
 
@@ -95,8 +96,8 @@ public Dictionary<string, FloatSnapshot> GetFloatSnapshot()
 ```csharp
 private void Awake()
 ```
-- 从 `_def` (PropertyPresetSO) 构建 `PropertyTable`
-- _def 为 null 时 LogError
+- 从 `_preset` (PropertyPresetSO) 构建 `PropertyTable`
+- _preset 为 null 时跳过（延迟初始化）
 
 ### Update
 ```csharp

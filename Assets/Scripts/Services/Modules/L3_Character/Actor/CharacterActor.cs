@@ -61,7 +61,6 @@ namespace RedDust.Character
 
         // ── Config SO ──
         internal CharacterAnimationProfileSO CharacterAnimationProfile => characterAnimationProfile;
-        internal CharacterPhysique Physique { get; private set; }
         internal CharacterAudioConfigSO CharacterAudioConfig => characterAudioConfig;
 
         // ── Animation ──
@@ -80,10 +79,13 @@ namespace RedDust.Character
         // ── Runtime ──
         internal CharacterBuildContext BuildContext => buildCtx;
         internal CharacterRig CharacterRig => characterRig;
-        public IPropertyReader Props { get; private set; }
+        // TODO: 架构债 — UIService 直接读 Properties 违反 L2→L3 单向依赖原则。
+        // 切除条件：属性变化事件或 GameContext Snapshot 到位后，VitalsOverlay 改为订阅/轮询快照。
+        public IPropertyReader Properties { get; private set; }
         internal SCharacterKinematic LastKinematic { get; private set; }
         internal SCharacterMotor LastMotor { get; private set; }
         internal SCharacterDiscrete LastDiscrete { get; private set; }
+        private CharacterContainer container;
 
         private CharacterBuildContext buildCtx;
         private ICharacterDirector director;
@@ -92,7 +94,7 @@ namespace RedDust.Character
         private CharacterKinematic characterKinematic;
         private ILocomotionSimulator locomotionSimulator;
         private AnimationBrain characterAnimation;
-        private PropertyAgent agent;
+        private PropertyAgent propertyAgent;
         private AbilityExecutor ability;
         private AbilityReactor reactor;
         private CharacterCombat combat;
@@ -100,10 +102,6 @@ namespace RedDust.Character
 
         // ── Ability ──
         private AbilityForest abilityForest;
-
-        // ── Container ──
-        /// <summary>角色身体容器（装备槽位）。</summary>
-        internal CharacterContainer Container { get; private set; }
 
         protected override void Awake()
         {
@@ -113,17 +111,15 @@ namespace RedDust.Character
             // ── pre-assemble: 创建 C# 子模块（构造自注册到 Registry）──
             characterRig = new CharacterRig(transform, modelRoot);
 
-            Physique = CharacterPhysique.FromAgent(agent);
-
             abilityForest = new AbilityForest(innateTrees);
 
             buildCtx = new CharacterBuildContext(
-                root: transform, eventHub: eventHub, agent: agent,
+                root: transform, eventHub: eventHub, propertyAgent: propertyAgent,
                 ability: ability, reactor: reactor, pathfinding: pathfindingAgent,
                 modelRoot: modelRoot, rig: characterRig,
                 animationProfile: characterAnimationProfile,
                 groundSystemConfig: groundSystemConfig,
-                physique: Physique,
+                physique: default,
                 audioConfig: characterAudioConfig,
                 upperBodyMask: upperBodyMask, armMask: armMask, additiveMask: additiveMask,
                 facialMask: facialMask, headMask: headMask, footMask: footMask,
@@ -138,7 +134,7 @@ namespace RedDust.Character
             characterKinematic = new CharacterKinematic(buildCtx, Registry);
             locomotionSimulator = new GroundLocomotion(Registry);
             combat = new CharacterCombat(buildCtx, Registry);
-            Container = new CharacterContainer(buildCtx, Registry);
+            container = new CharacterContainer(buildCtx, Registry);
 
             // ModuleHub.Awake: 扫描 ModuleChildMono → Register → OnAssembleAll
             base.Awake();
@@ -147,7 +143,12 @@ namespace RedDust.Character
         protected override void Start()
         {
             base.Start();  // Registry.OnWireAll()
-            agent.AddModifier(new FloatModifier { Owner = this, TargetPath = "Vitals/Hunger", Frequency = ModifierFrequency.PerSecond, Delta = -0.01f });
+            buildCtx.Physique = CharacterPhysique.FromAgent(propertyAgent);
+            // TODO: 饥饿消耗是测试代码。Actor 不应内联属性变化逻辑。
+            // 可能的归属（尚未决策）：NeedsSystem (L3) 在 OnWire 后注入标准生理 Modifier；
+            // 或 PropertyDefSO 声明属性固有变化率，PropertyAgent.Init 自动 Apply。
+            // 无论哪种，都需要 FloatModifier 的数据定义与运行时实例分离。
+            propertyAgent.AddModifier(new FloatModifier { Owner = this, TargetPath = "Vitals/Hunger", Frequency = ModifierFrequency.PerSecond, Delta = -0.01f });
         }
 
         private void SetupModel()
@@ -178,7 +179,7 @@ namespace RedDust.Character
             characterAnimation = GetComponentInChildren<AnimationBrain>();
             eventHub = GetComponent<EventHub>();
             pathfindingAgent = GetComponent<PathfindingAgent>();
-            Props = agent = GetComponent<PropertyAgent>();
+            Properties = propertyAgent = GetComponent<PropertyAgent>();
             ability = GetComponent<AbilityExecutor>();
             reactor = GetComponent<AbilityReactor>();
         }

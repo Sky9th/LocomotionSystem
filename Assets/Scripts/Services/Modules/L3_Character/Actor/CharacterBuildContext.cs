@@ -20,7 +20,7 @@ namespace RedDust.Character
         // ── 同 GameObject 组件（静态，构造期确定，永不变） ──
         public Transform Root { get; }
         public EventHub EventHub { get; }
-        public PropertyAgent Agent { get; }
+        public PropertyAgent PropertyAgent { get; }
         public AbilityExecutor Ability { get; }
         public AbilityReactor Reactor { get; }
         public PathfindingAgent Pathfinding { get; }
@@ -58,7 +58,7 @@ namespace RedDust.Character
 
         // TODO: Properties 接入更多属性后（负重、移速修正等）在此追加字段。
         // 角色物理属性缓存——从 PropertyAgent 读取一次，hot path 零开销 struct 字段访问。
-        public CharacterPhysique Physique { get; }
+        public CharacterPhysique Physique { get; internal set; }
         public CharacterAudioConfigSO AudioConfig { get; }
         public AvatarMask UpperBodyMask { get; }
         public AvatarMask ArmMask { get; }
@@ -74,7 +74,7 @@ namespace RedDust.Character
         public AbilityForest AbilityForest { get; }
 
         internal CharacterBuildContext(
-            Transform root, EventHub eventHub, PropertyAgent agent,
+            Transform root, EventHub eventHub, PropertyAgent propertyAgent,
             AbilityExecutor ability, AbilityReactor reactor, PathfindingAgent pathfinding,
             Transform modelRoot, CharacterRig rig,
             CharacterAnimationProfileSO animationProfile,
@@ -88,7 +88,7 @@ namespace RedDust.Character
         {
             Root = root;
             EventHub = eventHub;
-            Agent = agent;
+            PropertyAgent = propertyAgent;
             Ability = ability;
             Reactor = reactor;
             AbilityForest = abilityForest;
