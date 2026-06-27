@@ -14,5 +14,8 @@ namespace RedDust.Properties
         [TextArea(3, 20)]
         [Tooltip("变种覆写 JSON。覆写 Tree 中声明的属性的默认值。格式与 PropertyComponent.OverridesJson 一致。")]
         public string OverridesJson;
+
+        [Tooltip("实体 Prefab。EntityService.Spawn 时 Instantiate。")]
+        public GameObject Prefab;
     }
 }

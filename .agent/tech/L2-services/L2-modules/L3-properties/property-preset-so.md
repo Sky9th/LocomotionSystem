@@ -1,7 +1,7 @@
 # PropertyPresetSO — 属性预设基类
 
 > `L3_Properties/Definition/PropertyPresetSO.cs` · 技术文档 · 2026-06-26
-> **Last Verified**: 2026-06-26 | **Verification**: Renamed from EntityDefSO. All referenced files exist.
+> **Last Verified**: 2026-06-27 | **Verification**: Prefab field added. All referenced files exist.
 
 ## 层级定位
 
@@ -42,6 +42,13 @@ public string OverridesJson;
 - **用途**: 变种覆写 JSON。覆写 Tree 中声明的属性的默认值
 - **格式**: `{"Overrides":[{"Path":"Vitals/HP","Value":"300"},{"Path":"Vitals/Speed","Value":"1.5"}]}`
 - **优先级**: OverridesJson > PropertyDefSO.Default。运行时传入的额外覆写 > OverridesJson
+
+### Prefab
+```csharp
+public GameObject Prefab;
+```
+- **用途**: 实体 GO 载体 Prefab。EntityService.Spawn 时 Instantiate
+- **备注**: 不同 Preset 指向不同 Prefab（Player.prefab、NPC.prefab、GroundItem.prefab 等）
 
 ## 设计决策
 

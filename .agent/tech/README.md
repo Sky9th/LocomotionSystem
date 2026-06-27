@@ -64,6 +64,11 @@ tech/
 │   ├── L2-camera-service/
 │   │   └── camera-service.md
 │   │
+│   ├── L2-entity-service/            # L2 Service: 实体管理 — 数据注册表 + GO 生成/销毁
+│   │   ├── entity-service.md          # 模块总览 — 引用模型、数据流、API、设计决策
+│   │   ├── entity.md                  # Entity — 纯 C# 数据模型（Id + Preset + Properties）
+│   │   └── entity-service-impl.md     # EntityService — 实现详解（Register / Spawn / Despawn）
+│   │
 │   ├── L2-item-service/                # L2 Service: 物品身份索引 + 跨容器移动协调
 │   │   └── README.md
 │   │
@@ -156,6 +161,9 @@ tech/
 │       │
 │       ├── L3-item/                   # L3: 物品系统 — 数据定义 + 运行时实例 + 身份索引
 │       │   └── README.md               # 模块总览 — ItemDefSO / ItemInstance / ItemRegistry
+│       │
+│       ├── L3-identity/               # L3: 实体身份 — GO 侧数据锚点（EntityId + 标签）
+│       │   └── README.md               # 模块总览 — Identity（EntityId + Tags + BindEntity）
 │       │
 │       ├── L3-container/              # L3: 容器系统 — 泛型容器抽象
 │       │   ├── README.md               # 模块总览 — Container<T> / 嵌套 / 容器所有者 Tick

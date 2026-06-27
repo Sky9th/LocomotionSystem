@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: 3cdba62ac873c3b4fac8c20ab25863bc, type: 2}
   OverridesJson: '{"Overrides":[{"Path":"Common/Slots","Value":"[{\"SlotId\":\"RightHand\",\"Capacity\":1},{\"SlotId\":\"LeftHand\",\"Capacity\":1},{\"SlotId\":\"Head\",\"Capacity\":1},{\"SlotId\":\"Body\",\"Capacity\":1},{\"SlotId\":\"LeftLeg\",\"Capacity\":1},{\"SlotId\":\"RightLeg\",\"Capacity\":1},{\"SlotId\":\"LeftFoot\",\"Capacity\":1},{\"SlotId\":\"RightFoot\",\"Capacity\":1},{\"SlotId\":\"Back\",\"Capacity\":1}]"}]}'
+  Prefab: {fileID: 8667043660662020576, guid: 4c0627a5cad7b734c8c24cbdadfe712f, type: 3}
