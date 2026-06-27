@@ -6,7 +6,7 @@ namespace RedDust.Character.Kinematic
     /// 临时方案：角色物理属性缓存。从 PropertyAgent 字符串路径手动提取 9 个值。
     ///
     /// 问题：手动维护字段映射，新增属性需改代码；角色域逻辑散落在 Actor/Physique 中。
-    /// 应由专门的 CharacterAttributes 子模块接管——统一持有所有角色属性路径映射、
+    /// 应由专门的子模块接管——统一持有所有角色属性路径映射、
     /// 注入名字/生命/饥饿变化等角色域逻辑。届时删除此 struct，消费者读 Attributes。
     /// </summary>
     public struct CharacterPhysique

@@ -85,52 +85,50 @@ namespace RedDust.Properties
         {
             if (_floatStates.TryGetValue(path, out var s)) return s.Current;
             if (_floats.TryGetValue(path, out var f)) return f;
-            ErrorPath(path);
-            return 0f;
+            if (!_structure.ContainsKey(path)) { ErrorPath(path); return 0f; }
+            return 0f; // 路径合法但尚未写入（如构造期 DoWrite 取旧值）
         }
 
-        /// <summary>读 Float 有效值。有 FloatState 返回 Effective（Current + Adjunct 修正），无返回静态值。</summary>
         public float GetEffectiveFloat(string path)
         {
             if (_floatStates.TryGetValue(path, out var s)) return s.Effective;
             if (_floats.TryGetValue(path, out var f)) return f;
-            ErrorPath(path);
+            if (!_structure.ContainsKey(path)) { ErrorPath(path); return 0f; }
             return 0f;
         }
 
         public int GetInt(string path)
         {
             if (_ints.TryGetValue(path, out var v)) return v;
-            ErrorPath(path);
+            if (!_structure.ContainsKey(path)) { ErrorPath(path); return 0; }
             return 0;
         }
 
         public bool GetBool(string path)
         {
             if (_bools.TryGetValue(path, out var v)) return v;
-            ErrorPath(path);
+            if (!_structure.ContainsKey(path)) { ErrorPath(path); return false; }
             return false;
         }
 
         public string GetString(string path)
         {
             if (_strings.TryGetValue(path, out var v)) return v;
-            ErrorPath(path);
+            if (!_structure.ContainsKey(path)) { ErrorPath(path); return null; }
             return null;
         }
 
         public string[] GetTagList(string path)
         {
             if (_tagLists.TryGetValue(path, out var v)) return v;
-            ErrorPath(path);
+            if (!_structure.ContainsKey(path)) { ErrorPath(path); return null; }
             return null;
         }
 
-        /// <summary>读 AssetRef 类型资产（Sprite, AnimationProfile 等）。路径不存在报错。</summary>
         public T GetAsset<T>(string path) where T : UnityEngine.Object
         {
             if (_assetRefs.TryGetValue(path, out var v)) return v as T;
-            ErrorPath(path);
+            if (!_structure.ContainsKey(path)) { ErrorPath(path); return null; }
             return null;
         }
 

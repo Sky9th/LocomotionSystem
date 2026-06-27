@@ -23,6 +23,7 @@ v0.25.2 落地 L3_Container + 角色身体槽位后，对 CharacterActor 周边�
 ### 错误处理强化
 - PropertyTable `WarnPath` → `ErrorPath`：路径不存在由 `Debug.LogWarning` 改为 `Debug.LogError`
 - `GetFloat/GetInt/GetBool/GetString/GetTagList/GetAsset/GetMin/GetMax` 全部路径缺失时抛错，替代静默返回默认值
+- 修正：`ErrorPath` 前先查 `_structure.ContainsKey`——路径在结构中但值未写入（表构建期 DoWrite 取旧值）不报错
 
 ### 架构债标记（TODO）
 - `public IPropertyReader Properties`：标记 L2→L3 反查，待属性事件/快照到位后切除
@@ -34,7 +35,7 @@ v0.25.2 落地 L3_Container + 角色身体槽位后，对 CharacterActor 周边�
 | Decision | Alternatives Considered | Reason |
 |----------|------------------------|--------|
 | Physique 提取从 Awake 移到 Start | A: 留在 Awake + `[DefaultExecutionOrder]` 强行排序 → Vito：用外力破坏自有生命周期体系，自毁长城 | 遵循 ModuleChild 生命周期原则，跟 CharacterContainer 一致 |
-| `GetFloat` 路径不存在直接 `Debug.LogError` | A: `#if UNITY_EDITOR` 条件编译 → 运行时拼写错误会静默。B: 返回 default + Warning → Vito 要求主动抛错 | 拼写错误是 bug，应该当场炸 |
+| `GetFloat` 路径不存在直接 `Debug.LogError` | 初版实现未考虑表构建期 GetFloat 取旧值场景（值字典空但路径合法），导致启动报错。修正：先查 _structure，路径在结构中但值未写入 → 返回 default（非错误） | 真 typo 当场炸，未写入的不误报 |
 | `CharacterPhysique` 价值重定位：类型边界而非性能快照 | A: 继续用"hot path 性能"辩护（字典查找 ~200ns/帧，不构成热路径） | 承认性能论不成立；价值在于一次字符串→强类型转换、编译期保证、不可变传递 |
 
 ## Known Issues

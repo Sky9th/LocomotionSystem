@@ -161,16 +161,13 @@ namespace RedDust.Character
 
             var model = Instantiate(modelPrefab, transform);
             model.name = "Model";
-
             var animancer = model.GetComponent<NamedAnimancerComponent>();
             if (animancer == null)
-                animancer = model.AddComponent<NamedAnimancerComponent>();
+                model.AddComponent<NamedAnimancerComponent>();
             if (model.GetComponent<AnimationBrain>() == null)
             {
-                Debug.LogWarning($"[CharacterActor] modelPrefab '{modelPrefab.name}' missing AnimationBrain. Adding at runtime.", this);
                 model.AddComponent<AnimationBrain>();
             }
-
             modelRoot = model.transform;
         }
 
