@@ -61,16 +61,16 @@ namespace RedDust.Character.Director
             equip2Event = eventHub.Get<Equip2InputEventSO>();
             equip3Event = eventHub.Get<Equip3InputEventSO>();
 
-            crouchEvent.OnRaised += OnCrouch;
-            sprintEvent.OnRaised += OnSprint;
-            proneEvent.OnRaised += OnProne;
-            standEvent.OnRaised += OnStand;
-            secondaryInteractEvent.OnRaised += OnSecondary;
-            firstSkillEvent.OnRaised += OnFirstActivatedSkill;
-            secondSkillEvent.OnRaised += OnSecondActivatedSkill;
-            equip1Event.OnRaised += OnEquip1;
-            equip2Event.OnRaised += OnEquip2;
-            equip3Event.OnRaised += OnEquip3;
+            crouchEvent.Register(OnCrouch);
+            sprintEvent.Register(OnSprint);
+            proneEvent.Register(OnProne);
+            standEvent.Register(OnStand);
+            secondaryInteractEvent.Register(OnSecondary);
+            firstSkillEvent.Register(OnFirstActivatedSkill);
+            secondSkillEvent.Register(OnSecondActivatedSkill);
+            equip1Event.Register(OnEquip1);
+            equip2Event.Register(OnEquip2);
+            equip3Event.Register(OnEquip3);
 
             // TODO: migrate to EventHub
             if (GameContext.Instance != null &&
@@ -80,16 +80,16 @@ namespace RedDust.Character.Director
 
         public void UnbindEvents()
         {
-            crouchEvent.OnRaised -= OnCrouch;
-            sprintEvent.OnRaised -= OnSprint;
-            proneEvent.OnRaised -= OnProne;
-            standEvent.OnRaised -= OnStand;
-            secondaryInteractEvent.OnRaised -= OnSecondary;
-            firstSkillEvent.OnRaised -= OnFirstActivatedSkill;
-            secondSkillEvent.OnRaised -= OnSecondActivatedSkill;
-            equip1Event.OnRaised -= OnEquip1;
-            equip2Event.OnRaised -= OnEquip2;
-            equip3Event.OnRaised -= OnEquip3;
+            crouchEvent.Unregister(OnCrouch);
+            sprintEvent.Unregister(OnSprint);
+            proneEvent.Unregister(OnProne);
+            standEvent.Unregister(OnStand);
+            secondaryInteractEvent.Unregister(OnSecondary);
+            firstSkillEvent.Unregister(OnFirstActivatedSkill);
+            secondSkillEvent.Unregister(OnSecondActivatedSkill);
+            equip1Event.Unregister(OnEquip1);
+            equip2Event.Unregister(OnEquip2);
+            equip3Event.Unregister(OnEquip3);
 
             dispatcher?.Unsubscribe<SCameraSnapshot>(OnCameraSnapshot);
             dispatcher = null;
@@ -97,16 +97,16 @@ namespace RedDust.Character.Director
 
         // ── Handlers ──
 
-        private void OnCrouch() => CrouchRequested = crouchEvent.IsRequested;
-        private void OnSprint() => SprintRequested = sprintEvent.IsRequested;
-        private void OnProne() => ProneRequested = proneEvent.IsRequested;
-        private void OnStand() => StandRequested = standEvent.IsRequested;
-        private void OnSecondary() => SecondaryRequested = secondaryInteractEvent.IsRequested;
-        private void OnFirstActivatedSkill() => FirstSkillRequested = firstSkillEvent.IsRequested;
-        private void OnSecondActivatedSkill() => SecondSkillRequested = secondSkillEvent.IsRequested;
-        private void OnEquip1() => Equip1Requested = equip1Event.IsRequested;
-        private void OnEquip2() => Equip2Requested = equip2Event.IsRequested;
-        private void OnEquip3() => Equip3Requested = equip3Event.IsRequested;
+        private void OnCrouch(SButtonInputPayload p) => CrouchRequested = p.IsRequested;
+        private void OnSprint(SButtonInputPayload p) => SprintRequested = p.IsRequested;
+        private void OnProne(SButtonInputPayload p) => ProneRequested = p.IsRequested;
+        private void OnStand(SButtonInputPayload p) => StandRequested = p.IsRequested;
+        private void OnSecondary(SButtonInputPayload p) => SecondaryRequested = p.IsRequested;
+        private void OnFirstActivatedSkill(SButtonInputPayload p) => FirstSkillRequested = p.IsRequested;
+        private void OnSecondActivatedSkill(SButtonInputPayload p) => SecondSkillRequested = p.IsRequested;
+        private void OnEquip1(SButtonInputPayload p) => Equip1Requested = p.IsRequested;
+        private void OnEquip2(SButtonInputPayload p) => Equip2Requested = p.IsRequested;
+        private void OnEquip3(SButtonInputPayload p) => Equip3Requested = p.IsRequested;
 
         // TEMP
         private void OnCameraSnapshot(SCameraSnapshot snapshot, MetaStruct _)

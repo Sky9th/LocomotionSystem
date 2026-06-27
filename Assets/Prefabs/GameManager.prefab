@@ -89,15 +89,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52579f3da28d4aa4c9d21090ebd520e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputEvents:
+  inputActionAsset: {fileID: -944628639613478452, guid: 1f23a80f490ee6b46bd4db1b0c98d550,
+    type: 3}
+  eventChannels:
+  - {fileID: 11400000, guid: c2712867f811430a9831dd652463bbbb, type: 2}
+  - {fileID: 11400000, guid: d659ac31c88d422e882d1fe722501be4, type: 2}
   - {fileID: 11400000, guid: d0d3ac9b9bdf44bbac2667ed1041fbf2, type: 2}
   - {fileID: 11400000, guid: 80553aad924041999bde74f43bdbe781, type: 2}
   - {fileID: 11400000, guid: 2bf987305cc2882459a6ffea299b799d, type: 2}
-  - {fileID: 11400000, guid: 7805687382c94a90843a7b187704a80b, type: 2}
-  - {fileID: 11400000, guid: 9fa5a4f3d5a14fd1935985d9a320ad30, type: 2}
-  - {fileID: 11400000, guid: dc1477752c0c0e644afe2f3da5eb5b82, type: 2}
-  - {fileID: 11400000, guid: c2712867f811430a9831dd652463bbbb, type: 2}
-  - {fileID: 11400000, guid: d659ac31c88d422e882d1fe722501be4, type: 2}
+  - {fileID: 11400000, guid: b8e8e31254474d86a72c536ad0aa9728, type: 2}
+  - {fileID: 11400000, guid: e9174a438bfeb664daebe77fe8ff89f8, type: 2}
   - {fileID: 11400000, guid: 46979d4275f4465980e715fc7c8ff9c5, type: 2}
   - {fileID: 11400000, guid: e849e5dbec80470cb3c1f554bf69e1de, type: 2}
   - {fileID: 11400000, guid: f570435f34b34b49bc5454afea1494c1, type: 2}
@@ -106,14 +107,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9b58987416fd4fa59ac5b8a9a9a7b378, type: 2}
   - {fileID: 11400000, guid: cd4e0a32a7514219a977ca3a13bf107e, type: 2}
   - {fileID: 11400000, guid: 835f06731ab2460981e8dd2a29da3d32, type: 2}
+  - {fileID: 11400000, guid: 7805687382c94a90843a7b187704a80b, type: 2}
+  - {fileID: 11400000, guid: 9fa5a4f3d5a14fd1935985d9a320ad30, type: 2}
+  - {fileID: 11400000, guid: dc1477752c0c0e644afe2f3da5eb5b82, type: 2}
   - {fileID: 11400000, guid: 85042818654c41028886f0b3ca14434d, type: 2}
   - {fileID: 11400000, guid: 2af41ecde8ae4f33bf84bde3f6c9069d, type: 2}
   - {fileID: 11400000, guid: ab69fe0e38bf4211a0b57a96e315e3a5, type: 2}
-  - {fileID: 11400000, guid: 57202d83d53448ebb099161365bbfa46, type: 2}
   - {fileID: 11400000, guid: 2f38c5eeb630445ba30b6dfaf80ec88e, type: 2}
   - {fileID: 11400000, guid: a394377cadc94a489b54798082af77d5, type: 2}
-  - {fileID: 11400000, guid: b8e8e31254474d86a72c536ad0aa9728, type: 2}
-  inputActionAsset: {fileID: 0}
+  - {fileID: 11400000, guid: 57202d83d53448ebb099161365bbfa46, type: 2}
 --- !u!1 &1179361730580851819
 GameObject:
   m_ObjectHideFlags: 0

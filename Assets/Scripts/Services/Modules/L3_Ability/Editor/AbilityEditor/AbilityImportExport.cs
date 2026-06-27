@@ -165,7 +165,7 @@ namespace RedDust.Ability
             var effectByName = BuildAssetLookup<EffectSO>("t:EffectSO");
             var noiseByName = BuildAssetLookup<NoiseEventSO>("t:NoiseEventSO");
             var abilityDefByName = BuildAssetLookup<AbilityDefSO>("t:AbilityDefSO");
-            var eventChannelByName = BuildAssetLookup<EventChannelBase>("t:EventChannelBase");
+            var eventChannelByName = BuildAssetLookup<GameEvent>("t:GameEvent");
 
             foreach (var entry in file.abilities)
             {
@@ -263,7 +263,7 @@ namespace RedDust.Ability
             Dictionary<string, EffectSO> effects,
             Dictionary<string, NoiseEventSO> noises,
             Dictionary<string, AbilityDefSO> abilityDefs,
-            Dictionary<string, EventChannelBase> channels)
+            Dictionary<string, GameEvent> channels)
         {
             // Base fields
             a.internalName = entry.internalName;

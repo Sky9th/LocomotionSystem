@@ -19,7 +19,7 @@ namespace RedDust.Ability
         public ETriggerEvent trigger;
 
         [Tooltip("外部事件通道。非 null 时覆盖 trigger 枚举，用于罕见事件（时间/天气/Boss阶段）。")]
-        public EventChannelBase triggerChannel;
+        public GameEvent triggerChannel;
 
         [Tooltip("触发参数。OnLowHP=HP阈值(0~1), OnComboStage=连招段号。")]
         public float triggerValue;

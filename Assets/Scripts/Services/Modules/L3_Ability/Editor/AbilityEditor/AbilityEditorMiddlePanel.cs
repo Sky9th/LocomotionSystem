@@ -255,7 +255,7 @@ namespace RedDust.Ability
             {
                 EditorFormItem.Enum<ETriggerEvent>("trigger");
                 EditorFormItem.Float("triggerValue", label: "Trigger Value");
-                EditorFormItem.ObjectField<EventChannelBase>("triggerChannel", label: "Channel");
+                EditorFormItem.ObjectField<GameEvent>("triggerChannel", label: "Channel");
                 EditorFormItem.ObjectFieldWithTag<GameplayTagDefinitionSO>("targetRequiredTag",
                     ref _abilityTagButtonRect, label: "Target Tag");
                 form.OnChange += () => { EditorUtility.SetDirty(p); _onChanged?.Invoke(); };

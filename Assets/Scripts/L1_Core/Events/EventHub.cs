@@ -11,9 +11,9 @@ namespace RedDust.Core
     [DisallowMultipleComponent]
     public sealed class EventHub : ModuleChildMono
     {
-        [SerializeField] private EventChannelBase[] channels = Array.Empty<EventChannelBase>();
+        [SerializeField] private GameEvent[] channels = Array.Empty<GameEvent>();
 
-        private readonly Dictionary<Type, EventChannelBase> lookup = new();
+        private readonly Dictionary<Type, GameEvent> lookup = new();
 
         protected override void Awake()
         {
@@ -26,7 +26,7 @@ namespace RedDust.Core
         }
 
         /// <summary>按类型获取事件通道。未注册时告警。</summary>
-        public T Get<T>() where T : EventChannelBase
+        public T Get<T>() where T : GameEvent
         {
             if (lookup.TryGetValue(typeof(T), out var ch))
                 return ch as T;

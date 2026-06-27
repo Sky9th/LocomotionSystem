@@ -124,7 +124,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "SecendaryInteract",
+                    "name": "SecondaryInteract",
                     "type": "Button",
                     "id": "38bbe166-c585-4f2c-b5d1-2f32cece0882",
                     "expectedControlType": "",
@@ -570,7 +570,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "SecendaryInteract",
+                    "action": "SecondaryInteract",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -63,7 +63,7 @@ namespace RedDust.GameState
 				_dispatcher.Subscribe<SGameStateRequest>(HandleStateRequest);
 			}
 
-			if (escapeEvent != null) escapeEvent.OnRaised += OnEscape;
+			if (escapeEvent != null) escapeEvent.Register(OnEscape);
 		else Debug.LogWarning($"[GameState] escapeEvent not assigned — Esc key will not toggle Pause.", this);
 
 		}
@@ -113,7 +113,7 @@ namespace RedDust.GameState
 
 		private void OnDestroy()
 		{
-		if (escapeEvent != null) escapeEvent.OnRaised -= OnEscape;
+		if (escapeEvent != null) escapeEvent.Unregister(OnEscape);
 			if (_dispatcher != null)
 			{
 				_dispatcher.Unsubscribe<SGameStateRequest>(HandleStateRequest);
@@ -125,9 +125,9 @@ namespace RedDust.GameState
 			RequestState(evt.TargetState);
 		}
 
-		private void OnEscape()
+		private void OnEscape(SButtonInputPayload p)
 		{
-			if (!escapeEvent.IsRequested)
+			if (!p.IsRequested)
 				return;
 
 			switch (currentState)
