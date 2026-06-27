@@ -7,7 +7,6 @@ using RedDust.Character.Kinematic;
 using RedDust.Character.Pathfinding;
 using RedDust.Character.Locomotion;
 using RedDust.Ability;
-using RedDust.Character.Ability;
 using RedDust.Character.Audio;
 using RedDust.Character.Combat;
 using RedDust.Properties;
@@ -18,7 +17,6 @@ namespace RedDust.Character
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(EventHub))]
-    [RequireComponent(typeof(PropertyAgent))]
     [RequireComponent(typeof(AbilityReactor))]
     /// <summary>继承 ModuleHub。pre-assemble 在 base.Awake 之前，post-wire 在 base.Start 之后。</summary>
     public partial class CharacterActor : ModuleHub
@@ -53,6 +51,9 @@ namespace RedDust.Character
         [SerializeField] private AvatarMask headMask;
         [SerializeField] private AvatarMask footMask;
 
+        [Header("Properties")]
+        [SerializeField] private PropertyPresetSO propertyPreset;
+
         [Header("Hierarchy")]
         [SerializeField] private Transform modelRoot;
 
@@ -81,7 +82,8 @@ namespace RedDust.Character
         internal CharacterRig CharacterRig => characterRig;
         // TODO: 架构债 — UIService 直接读 Properties 违反 L2→L3 单向依赖原则。
         // 切除条件：属性变化事件或 GameContext Snapshot 到位后，VitalsOverlay 改为订阅/轮询快照。
-        public IPropertyReader Properties { get; private set; }
+        // 注意：公开为 PropertyTable（非接口），调用方获得完全读写权限。
+        public PropertyTable Properties { get; private set; }
         internal SCharacterKinematic LastKinematic { get; private set; }
         internal SCharacterMotor LastMotor { get; private set; }
         internal SCharacterDiscrete LastDiscrete { get; private set; }
@@ -94,7 +96,6 @@ namespace RedDust.Character
         private CharacterKinematic characterKinematic;
         private ILocomotionSimulator locomotionSimulator;
         private AnimationBrain characterAnimation;
-        private PropertyAgent propertyAgent;
         private AbilityExecutor ability;
         private AbilityReactor reactor;
         private CharacterCombat combat;
@@ -108,13 +109,17 @@ namespace RedDust.Character
             SetupModel();
             ResolveComponents();
 
+            Properties = PropertyTable.FromPreset(propertyPreset);
+            if (Properties == null)
+                Debug.LogError("[CharacterActor] PropertyPreset is null.", this);
+
             // ── pre-assemble: 创建 C# 子模块（构造自注册到 Registry）──
             characterRig = new CharacterRig(transform, modelRoot);
 
             abilityForest = new AbilityForest(innateTrees);
 
             buildCtx = new CharacterBuildContext(
-                root: transform, eventHub: eventHub, propertyAgent: propertyAgent,
+                root: transform, eventHub: eventHub, properties: Properties,
                 ability: ability, reactor: reactor, pathfinding: pathfindingAgent,
                 modelRoot: modelRoot, rig: characterRig,
                 animationProfile: characterAnimationProfile,
@@ -142,13 +147,11 @@ namespace RedDust.Character
 
         protected override void Start()
         {
+            if (Properties == null) return;
             base.Start();  // Registry.OnWireAll()
-            buildCtx.Physique = CharacterPhysique.FromAgent(propertyAgent);
+            buildCtx.Physique = CharacterPhysique.From(Properties);
             // TODO: 饥饿消耗是测试代码。Actor 不应内联属性变化逻辑。
-            // 可能的归属（尚未决策）：NeedsSystem (L3) 在 OnWire 后注入标准生理 Modifier；
-            // 或 PropertyDefSO 声明属性固有变化率，PropertyAgent.Init 自动 Apply。
-            // 无论哪种，都需要 FloatModifier 的数据定义与运行时实例分离。
-            propertyAgent.AddModifier(new FloatModifier { Owner = this, TargetPath = "Vitals/Hunger", Frequency = ModifierFrequency.PerSecond, Delta = -0.01f });
+            Properties.AddModifier(new FloatModifier { Owner = this, TargetPath = "Vitals/Hunger", Frequency = ModifierFrequency.PerSecond, Delta = -0.01f });
         }
 
         private void SetupModel()
@@ -176,7 +179,7 @@ namespace RedDust.Character
             characterAnimation = GetComponentInChildren<AnimationBrain>();
             eventHub = GetComponent<EventHub>();
             pathfindingAgent = GetComponent<PathfindingAgent>();
-            Properties = propertyAgent = GetComponent<PropertyAgent>();
+            // Properties = PropertyTable.FromPreset(propertyPreset) in Awake
             ability = GetComponent<AbilityExecutor>();
             reactor = GetComponent<AbilityReactor>();
         }
@@ -243,6 +246,8 @@ namespace RedDust.Character
                 Debug.LogError($"[CharacterActor] {name} — 配置缺失或运行时异常，跳过帧:\n{e}", this);
                 enabled = false;
             }
+
+            Properties.Tick(deltaTime);
         }
     }
 }

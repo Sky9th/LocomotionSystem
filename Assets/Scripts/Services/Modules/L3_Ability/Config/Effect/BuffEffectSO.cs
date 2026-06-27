@@ -9,7 +9,7 @@ namespace RedDust.Ability
     /// Buff/Debuff 效果。向目标注入 FloatAdjunct（只读修正） + GameplayTag，
     /// duration 秒后全部自动还原。
     ///
-    /// 运行时翻译：读 BuffEffectSO → 拼 FloatAdjunct → PropertyAgent.AddAdjunct。
+    /// 运行时翻译：读 BuffEffectSO → 拼 FloatAdjunct → PropertyTable.AddAdjunct。
     /// 过期：FloatAdjunct.ExpiryTime 到期后 FloatState.Tick 自动清理。
     /// Tags 由 AbilityComponent._buffTags 跟踪，Tick 中清理。
     ///

@@ -45,7 +45,7 @@ namespace RedDust.UI
             TryUpdateBar(staminaBar, staminaStatPath, props);
         }
 
-        private static void TryUpdateBar(UIStatBar bar, string path, IPropertyReader props)
+        private static void TryUpdateBar(UIStatBar bar, string path, PropertyTable props)
         {
             if (bar == null) return;
             bar.SetValue(props.GetFloat(path), props.GetMax(path));

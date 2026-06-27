@@ -1,5 +1,4 @@
 using RedDust.Ability;
-using RedDust.Character.Ability;
 using RedDust.Core;
 using RedDust.Character.Animation;
 using RedDust.Character.Audio;
@@ -20,7 +19,7 @@ namespace RedDust.Character
         // ── 同 GameObject 组件（静态，构造期确定，永不变） ──
         public Transform Root { get; }
         public EventHub EventHub { get; }
-        public PropertyAgent PropertyAgent { get; }
+        public PropertyTable Properties { get; }
         public AbilityExecutor Ability { get; }
         public AbilityReactor Reactor { get; }
         public PathfindingAgent Pathfinding { get; }
@@ -57,7 +56,7 @@ namespace RedDust.Character
         public GroundSystemConfigSO GroundSystemConfig { get; }
 
         // TODO: Properties 接入更多属性后（负重、移速修正等）在此追加字段。
-        // 角色物理属性缓存——从 PropertyAgent 读取一次，hot path 零开销 struct 字段访问。
+        // 角色物理属性缓存——从 Properties 读取一次
         public CharacterPhysique Physique { get; internal set; }
         public CharacterAudioConfigSO AudioConfig { get; }
         public AvatarMask UpperBodyMask { get; }
@@ -74,7 +73,7 @@ namespace RedDust.Character
         public AbilityForest AbilityForest { get; }
 
         internal CharacterBuildContext(
-            Transform root, EventHub eventHub, PropertyAgent propertyAgent,
+            Transform root, EventHub eventHub, PropertyTable properties,
             AbilityExecutor ability, AbilityReactor reactor, PathfindingAgent pathfinding,
             Transform modelRoot, CharacterRig rig,
             CharacterAnimationProfileSO animationProfile,
@@ -88,7 +87,7 @@ namespace RedDust.Character
         {
             Root = root;
             EventHub = eventHub;
-            PropertyAgent = propertyAgent;
+            Properties = properties;
             Ability = ability;
             Reactor = reactor;
             AbilityForest = abilityForest;

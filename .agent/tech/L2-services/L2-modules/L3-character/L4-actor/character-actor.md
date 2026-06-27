@@ -19,8 +19,8 @@
 
   Start:
     base.Start() → Registry.OnWireAll (递归)
-    buildCtx.Physique = CharacterPhysique.FromAgent(propertyAgent) (所有 Awake 已跑完，安全读取)
-    propertyAgent.AddModifier (TODO: 饥饿消耗硬编码 — 应由生理系统/预设 Modifier 驱动)
+    buildCtx.Physique = CharacterPhysique.From(Properties) (所有 Awake 已跑完，安全读取)
+    Properties.AddModifier (TODO: 饥饿消耗硬编码 — 应由生理系统/预设 Modifier 驱动)
 
   Update:
     director.Evaluate() → characterKinematic.Evaluate() → locomotionSimulator.Simulate()

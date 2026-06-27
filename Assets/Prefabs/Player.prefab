@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 8772549948613042888}
   - component: {fileID: 4110265966624315599}
   - component: {fileID: -2784309485338590956}
-  - component: {fileID: 624086542894485764}
   - component: {fileID: 7275533382615058559}
   - component: {fileID: 5085968444530936421}
   - component: {fileID: 3610630312856158315}
@@ -93,6 +92,7 @@ MonoBehaviour:
   facialMask: {fileID: 0}
   headMask: {fileID: 31900000, guid: 91a8c24c60bd42e4d9b539ff6d537342, type: 2}
   footMask: {fileID: 31900000, guid: f651dcec4c7c1f24896fff756d009351, type: 2}
+  propertyPreset: {fileID: 11400000, guid: b0e7241e50e1bcd4dbad93e4d8ee9708, type: 2}
   modelRoot: {fileID: 0}
   drawDebugGizmos: 1
   debugArrowLength: 2
@@ -149,19 +149,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92eb18dbee701fa43af6a404c7de1fdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &624086542894485764
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8667043660662020576}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ac4441024cd53e4ba1ca66b7052fe24, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _preset: {fileID: 11400000, guid: b0e7241e50e1bcd4dbad93e4d8ee9708, type: 2}
 --- !u!114 &7275533382615058559
 MonoBehaviour:
   m_ObjectHideFlags: 0

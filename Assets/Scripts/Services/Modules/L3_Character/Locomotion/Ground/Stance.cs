@@ -17,7 +17,7 @@ namespace RedDust.Character.Locomotion
         private bool isTurning;
 
         // TODO: 姿势/步态缓存 —— 后续 posture-aware speed 接入 Properties 后，
-        // motionSpeedScale 仅在 gait/posture 变化时重算，避免每帧查 PropertyAgent。
+        // motionSpeedScale 仅在 gait/posture 变化时重算，避免每帧查 Properties。
         private float cachedMotionSpeedScale = 1f;
         private EMovementGait cachedGait;
         private EPosture cachedPosture;

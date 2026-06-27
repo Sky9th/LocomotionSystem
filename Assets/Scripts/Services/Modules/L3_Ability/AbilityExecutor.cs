@@ -469,24 +469,26 @@ namespace RedDust.Ability
         {
             if (buff == null || target == null) return;
 
+            // TODO: AbilityExecutor 重构时重新设计 Buff 注入路径。
+            // 当前仅 CharacterActor 有 PropertyTable — 后续多实体时抽接口。
             // FloatAdjunct 注入 Properties
-            var agent = target.GetComponent<PropertyAgent>();
-            if (agent != null && buff.adjuncts != null)
-            {
-                float expiry = buff.duration > 0f ? Time.time + buff.duration : -1f;
-                foreach (var adj in buff.adjuncts)
-                {
-                    if (adj.property == null) continue;
-                    agent.AddAdjunct(new FloatAdjunct
-                    {
-                        Owner = this,
-                        TargetPath = adj.property.Id,
-                        ValueAdd = adj.valueAdd,
-                        ValueMultiply = adj.valueMultiply,
-                        ExpiryTime = expiry,
-                    });
-                }
-            }
+            // var agent = target.GetComponent<PropertyAgent>();
+            // if (agent != null && buff.adjuncts != null)
+            // {
+            //     float expiry = buff.duration > 0f ? Time.time + buff.duration : -1f;
+            //     foreach (var adj in buff.adjuncts)
+            //     {
+            //         if (adj.property == null) continue;
+            //         agent.AddAdjunct(new FloatAdjunct
+            //         {
+            //             Owner = this,
+            //             TargetPath = adj.property.Id,
+            //             ValueAdd = adj.valueAdd,
+            //             ValueMultiply = adj.valueMultiply,
+            //             ExpiryTime = expiry,
+            //         });
+            //     }
+            // }
 
             // Tags 写入 OwnedTags + 注册过期
             if (buff.grantedTags != null && buff.grantedTags.Length > 0)

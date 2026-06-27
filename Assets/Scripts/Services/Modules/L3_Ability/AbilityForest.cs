@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using RedDust.Ability;
 using RedDust.Core;
 using UnityEngine;
 
-namespace RedDust.Character.Ability
+namespace RedDust.Ability
 {
     /// <summary>
     /// 活跃树——AbilityTreeSO + 运行时解锁状态 + 来源标识。

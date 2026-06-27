@@ -167,7 +167,7 @@ namespace RedDust.UI
             return GameContext.Instance != null && GameContext.Instance.TryGetSnapshot(out snapshot);
         }
 
-        public bool TryGetPlayerProps(out IPropertyReader props)
+        public bool TryGetPlayerProps(out PropertyTable props)
         {
             props = _playerActor != null ? _playerActor.Properties : null;
             return props != null;

@@ -1,8 +1,8 @@
 # AbilityForest — 技能树运行时
 
-> `L3_Character/Ability/AbilityForest.cs` · `namespace RedDust.Character.Ability` · 纯 C# 类，无 MonoBehaviour
+> `L3_Ability/AbilityForest.cs` · `namespace RedDust.Ability` · 纯 C# 类，无 MonoBehaviour
 >
-> **Last Verified**: 2026-06-25 | **Verification**: CODE LANDED — `AbilityForest.cs` 已创建
+> **Last Verified**: 2026-06-27 | **Verification**: Moved from L3_Character/Ability/ → L3_Ability/. Namespace changed to RedDust.Ability.
 
 ## 定位
 
