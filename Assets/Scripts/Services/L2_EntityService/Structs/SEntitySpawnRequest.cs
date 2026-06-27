@@ -1,28 +1,29 @@
+using RedDust.Properties;
 using UnityEngine;
 
 namespace RedDust.Entities
 {
     /// <summary>
-    /// 请求生成实体 GO。由外部系统（PlayerService、场景管理器）发布，
-    /// EntityService 订阅并执行 Spawn。
+    /// 请求生成实体 GO。由外部系统发布，EntityService 订阅后创建 Entity + Instantiate。
+    /// 请求方不需要知道 Entity.Id——EntityService 分配。
     /// </summary>
     public readonly struct SEntitySpawnRequest
     {
-        public readonly string EntityId;
+        public readonly PropertyPresetSO Preset;
         public readonly Vector3 Position;
         public readonly Quaternion Rotation;
 
-        public SEntitySpawnRequest(string entityId, Vector3 position, Quaternion rotation)
+        public SEntitySpawnRequest(PropertyPresetSO preset, Vector3 position, Quaternion rotation)
         {
-            EntityId = entityId;
+            Preset = preset;
             Position = position;
             Rotation = rotation;
         }
 
-        public SEntitySpawnRequest(string entityId, Vector3 position)
-            : this(entityId, position, Quaternion.identity) { }
+        public SEntitySpawnRequest(PropertyPresetSO preset, Vector3 position)
+            : this(preset, position, Quaternion.identity) { }
 
-        public SEntitySpawnRequest(string entityId)
-            : this(entityId, Vector3.zero, Quaternion.identity) { }
+        public SEntitySpawnRequest(PropertyPresetSO preset)
+            : this(preset, Vector3.zero, Quaternion.identity) { }
     }
 }

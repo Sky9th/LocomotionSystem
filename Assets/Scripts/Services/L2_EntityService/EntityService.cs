@@ -9,14 +9,20 @@ namespace RedDust.Entities
     /// <summary>
     /// 实体管理服务——所有 Entity 数据的唯一拥有者。
     ///
-    /// 数据层（Dictionary）：Register / Unregister / Get / All / GetByPreset —— 永远生效。
-    /// GO 层：Spawn / Despawn —— 调用方请求，EntityService 执行 Instantiate/Destroy。
+    /// 数据层：Register / Unregister / Get / All / GetByPreset —— 永远生效。
+    /// GO 层：通过 SpawnRequest / DespawnRequest 通道触发，完成后发布 Spawned / Despawned。
     ///
     /// Entity 数据可以脱离 GO 存在——物品在背包、NPC 未加载时，Entity 仍在注册表。
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class EntityService : ModuleChildMono
     {
+        [Header("Event Channels")]
+        [SerializeField] private EntitySpawnRequestEvent spawnRequestEvent;
+        [SerializeField] private EntitySpawnedEvent spawnedEvent;
+        [SerializeField] private EntityDespawnRequestEvent despawnRequestEvent;
+        [SerializeField] private EntityDespawnedEvent despawnedEvent;
+
         private readonly Dictionary<string, Entity> _entities = new();
         private readonly Dictionary<string, GameObject> _views = new();
 
@@ -25,10 +31,65 @@ namespace RedDust.Entities
             GameContext.Instance.RegisterService(this);
         }
 
+        public override void OnWire()
+        {
+            if (spawnRequestEvent != null) spawnRequestEvent.Register(OnSpawnRequest);
+            if (despawnRequestEvent != null) despawnRequestEvent.Register(OnDespawnRequest);
+        }
+
+        private void OnDestroy()
+        {
+            if (spawnRequestEvent != null) spawnRequestEvent.Unregister(OnSpawnRequest);
+            if (despawnRequestEvent != null) despawnRequestEvent.Unregister(OnDespawnRequest);
+        }
+
+        // ────────────────── 事件处理 ──────────────────
+
+        private void OnSpawnRequest(SEntitySpawnRequest req)
+        {
+            if (req.Preset == null)
+            {
+                Debug.LogError("[EntityService] SpawnRequest: Preset is null.");
+                return;
+            }
+
+            if (req.Preset.Prefab == null)
+            {
+                Debug.LogError($"[EntityService] SpawnRequest: Preset '{req.Preset.name}' has null Prefab.");
+                return;
+            }
+
+            var entity = new Entity(null, req.Preset);
+            Register(entity);
+
+            var go = Instantiate(req.Preset.Prefab, req.Position, req.Rotation);
+            go.name = entity.Id;
+
+            var identity = go.GetComponent<Identity>();
+            if (identity != null)
+                identity.BindEntity(entity.Id);
+
+            _views[entity.Id] = go;
+
+            spawnedEvent?.Raise(new SEntitySpawned(entity.Id, go));
+        }
+
+        private void OnDespawnRequest(SEntityDespawnRequest req)
+        {
+            if (string.IsNullOrEmpty(req.EntityId)) return;
+
+            if (!_views.TryGetValue(req.EntityId, out var go)) return;
+
+            if (go != null) Destroy(go);
+            _views.Remove(req.EntityId);
+
+            despawnedEvent?.Raise(new SEntityDespawned(req.EntityId));
+        }
+
         // ────────────────── 数据层 ──────────────────
 
         /// <summary>注册实体。Id 重复 → LogError + 返回 false。</summary>
-        public bool Register(Entity entity)
+        private bool Register(Entity entity)
         {
             if (entity == null)
             {
@@ -51,7 +112,12 @@ namespace RedDust.Entities
         {
             if (string.IsNullOrEmpty(id)) return;
 
-            Despawn(id);
+            if (_views.TryGetValue(id, out var go))
+            {
+                if (go != null) Destroy(go);
+                _views.Remove(id);
+            }
+
             _entities.Remove(id);
         }
 
@@ -69,56 +135,6 @@ namespace RedDust.Entities
         /// <summary>按 Preset 类型筛选。</summary>
         public IEnumerable<Entity> GetByPreset<T>() where T : PropertyPresetSO
             => _entities.Values.Where(e => e.Preset is T);
-
-        // ────────────────── GO 层 ──────────────────
-
-        /// <summary>
-        /// 为指定实体生成 GO 载体。
-        /// 从 entity.Preset.Prefab Instantiate，设置 Identity.EntityId。
-        /// 已存在 GO → 先 Destroy 旧的再实例化。
-        /// </summary>
-        public GameObject Spawn(string id, Vector3? position = null, Quaternion? rotation = null)
-        {
-            var entity = Get(id);
-            if (entity == null)
-            {
-                Debug.LogError($"[EntityService] Spawn: entity '{id}' not found.");
-                return null;
-            }
-
-            if (entity.Preset == null)
-            {
-                Debug.LogError($"[EntityService] Spawn: entity '{id}' has null Preset.");
-                return null;
-            }
-
-            if (entity.Preset.Prefab == null)
-            {
-                Debug.LogError($"[EntityService] Spawn: Preset '{entity.Preset.name}' has null Prefab.");
-                return null;
-            }
-
-            Despawn(id);
-
-            var go = Instantiate(entity.Preset.Prefab, position ?? Vector3.zero, rotation ?? Quaternion.identity);
-            go.name = entity.Id;
-
-            var identity = go.GetComponent<Identity>();
-            if (identity != null)
-                identity.BindEntity(entity.Id);
-
-            _views[id] = go;
-            return go;
-        }
-
-        /// <summary>销毁实体对应的 GO。Entity 数据不受影响。</summary>
-        public void Despawn(string id)
-        {
-            if (!_views.TryGetValue(id, out var go)) return;
-
-            if (go != null) Destroy(go);
-            _views.Remove(id);
-        }
 
         /// <summary>实体是否已 Spawn（当前存在 GO）。</summary>
         public bool IsSpawned(string id) => _views.ContainsKey(id);

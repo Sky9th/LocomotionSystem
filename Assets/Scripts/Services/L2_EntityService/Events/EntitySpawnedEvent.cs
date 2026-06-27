@@ -3,6 +3,6 @@ using UnityEngine;
 
 namespace RedDust.Entities
 {
-    [CreateAssetMenu(menuName = "RedDust/Events/Entity/Spawned", fileName = "Event_EntitySpawned")]
+    [CreateAssetMenu(menuName = "RedDust/Events/Entity/Spawned", fileName = "EntitySpawned")]
     public sealed class EntitySpawnedEvent : GameEvent<SEntitySpawned> { }
 }

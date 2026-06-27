@@ -417,7 +417,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2149d263bb253db4eb5ec19ecac9dc0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  channels: []
+  channels:
+  - {fileID: 11400000, guid: 4c46ce5b3d91dac43add70a33bdd49cf, type: 2}
+  - {fileID: 11400000, guid: b2695415bfb5ea44e8362d8e2daa7920, type: 2}
+  - {fileID: 11400000, guid: 6a8a4979991f50f46a7094ac95fcd532, type: 2}
+  - {fileID: 11400000, guid: 877c0c04f407c59419120d30b11b5548, type: 2}
 --- !u!1 &2434817937819614488
 GameObject:
   m_ObjectHideFlags: 0
@@ -891,6 +895,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50785249093aeac48badd01eab21d16c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnRequestEvent: {fileID: 11400000, guid: 877c0c04f407c59419120d30b11b5548, type: 2}
+  spawnedEvent: {fileID: 11400000, guid: 6a8a4979991f50f46a7094ac95fcd532, type: 2}
+  despawnRequestEvent: {fileID: 11400000, guid: b2695415bfb5ea44e8362d8e2daa7920,
+    type: 2}
+  despawnedEvent: {fileID: 11400000, guid: 4c46ce5b3d91dac43add70a33bdd49cf, type: 2}
 --- !u!1 &6974227687109179904
 GameObject:
   m_ObjectHideFlags: 0
@@ -935,9 +944,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bbae2fefb804dd4a81e63708894d735, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 8667043660662020576, guid: 4c0627a5cad7b734c8c24cbdadfe712f,
-    type: 3}
+  characterDef: {fileID: 11400000, guid: b0e7241e50e1bcd4dbad93e4d8ee9708, type: 2}
   playerStartAnchor: {fileID: 0}
+  spawnRequestEvent: {fileID: 11400000, guid: 877c0c04f407c59419120d30b11b5548, type: 2}
+  spawnedEvent: {fileID: 11400000, guid: 6a8a4979991f50f46a7094ac95fcd532, type: 2}
+  despawnRequestEvent: {fileID: 11400000, guid: b2695415bfb5ea44e8362d8e2daa7920,
+    type: 2}
 --- !u!1 &6987912418579276946
 GameObject:
   m_ObjectHideFlags: 0

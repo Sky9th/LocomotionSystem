@@ -3,6 +3,6 @@ using UnityEngine;
 
 namespace RedDust.Entities
 {
-    [CreateAssetMenu(menuName = "RedDust/Events/Entity/Despawned", fileName = "Event_EntityDespawned")]
+    [CreateAssetMenu(menuName = "RedDust/Events/Entity/Despawned", fileName = "EntityDespawned")]
     public sealed class EntityDespawnedEvent : GameEvent<SEntityDespawned> { }
 }
