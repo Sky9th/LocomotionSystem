@@ -1,7 +1,10 @@
 using RedDust.Character;
+using RedDust.Container;
 using RedDust.Core;
 using RedDust.Entities;
 using RedDust.GameScene;
+using RedDust.Items;
+using RedDust.Properties;
 using UnityEngine;
 
 namespace RedDust.Player
@@ -14,6 +17,11 @@ namespace RedDust.Player
 
         [Header("Spawn")]
         [SerializeField] private GameObject playerStartAnchor;
+
+        [Header("Test — 临时生成")]
+        [SerializeField] private CharacterDefSO zombieDef;
+        [SerializeField] private ItemDefSO bladeDef;
+        [SerializeField] private ItemDefSO pistolDef;
 
         [Header("Event Channels")]
         [SerializeField] private EntitySpawnRequestEvent spawnRequestEvent;
@@ -59,6 +67,8 @@ namespace RedDust.Player
                 CreatePlayer();
         }
 
+        private const string PlayerEntityId = "player_local";
+
         private void CreatePlayer()
         {
             if (playerStartAnchor == null)
@@ -81,17 +91,56 @@ namespace RedDust.Player
             var rot = playerStartAnchor != null
                 ? playerStartAnchor.transform.rotation : Quaternion.identity;
 
-            spawnRequestEvent.Raise(new SEntitySpawnRequest(characterDef, pos, rot));
+            spawnRequestEvent.Raise(new SEntitySpawnRequest(characterDef, PlayerEntityId, pos, rot));
         }
 
         private void OnPlayerSpawned(SEntitySpawned e)
         {
+            if (e.EntityId != PlayerEntityId) return;
+
             playerInstance = e.View;
             playerEntityId = e.EntityId;
 
             GameContext.Instance.UpdateSnapshot(
                 SPlayer.FromTransform(playerInstance.transform, isLocalPlayer: true));
             _dispatcher.Publish(new SPlayerSpawnedEvent(playerInstance.transform, isLocalPlayer: true));
+
+            SpawnTestEntities();
+        }
+
+        private void SpawnTestEntities()
+        {
+            if (!GameContext.Instance.TryResolveService<EntityService>(out var entityService))
+                return;
+
+            var actor = playerInstance.GetComponent<CharacterActor>();
+            var container = actor?.BuildContext?.CharacterContainer?.BodyContainer;
+
+            // Zombie 在玩家右侧 3 米
+            if (zombieDef != null)
+            {
+                var pos = playerStartAnchor.transform.position + Vector3.forward * 3f;
+                pos += Vector3.up * 3f;
+                spawnRequestEvent.Raise(new SEntitySpawnRequest(zombieDef, "test_zombie", pos));
+            }
+
+            // Blade → RightHand
+            if (bladeDef != null && container != null)
+            {
+                const string bladeId = "test_blade";
+                spawnRequestEvent.Raise(new SEntitySpawnRequest(bladeDef, bladeId, null));
+                var e = entityService.Get(bladeId);
+                if (e != null) container.Place("RightHand", e);
+            }
+
+            // Pistol → LeftHand
+            // if (pistolDef != null && container != null)
+            // {
+            //     const string pistolId = "test_pistol";
+            //     spawnRequestEvent.Raise(new SEntitySpawnRequest(pistolDef, pistolId, null));
+            //     var e = entityService.Get(pistolId);
+            //     if (e != null) container.Place("LeftHand", e);
+            // }
         }
 
         public void OnGameplaySessionEnd()

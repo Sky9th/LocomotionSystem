@@ -20,4 +20,4 @@ MonoBehaviour:
     \"ParentId\": \"Common\",\n            \"DefId\": \"Icon\"\n        },\n       
     {\n            \"NodeId\": \"Weight\",\n            \"ParentId\": \"Common\",\n           
     \"DefId\": \"Weight\"\n        },\n        {\n            \"NodeId\": \"Slots\",\n           
-    \"ParentId\": \"Common\",\n            \"DefId\": \"Slots\"\n        }\n    ]\n}"
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        }\n    ]\n}"

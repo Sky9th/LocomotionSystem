@@ -1,5 +1,6 @@
-using UnityEngine;
 using RedDust.Core;
+using RedDust.Properties;
+using UnityEngine;
 
 namespace RedDust
 {
@@ -18,7 +19,7 @@ namespace RedDust
     {
         /// <summary>数据身份 — EntityService 中的唯一标识。为空表示尚未绑定 Entity。</summary>
         public string EntityId => _entityId;
-        private string _entityId;
+        [SerializeField] private string _entityId;
 
         /// <summary>实体持有的设计标签集合。物种、阵营、身份等。</summary>
         public GameplayTagContainer Tags { get; } = new();
@@ -27,10 +28,19 @@ namespace RedDust
         [Tooltip("初始身份标签。运行时可通过 Tags 增删。")]
         [SerializeField] private GameplayTagDefinitionSO[] initialTags;
 
+        /// <summary>Entity 的运行时属性。由 EntityService.Spawn 在 BindEntity 之后注入。</summary>
+        internal PropertyTable Properties { get; private set; }
+
         /// <summary>绑定 Entity 数据。由 EntityService.Spawn 调用。</summary>
         internal void BindEntity(string entityId)
         {
             _entityId = entityId;
+        }
+
+        /// <summary>注入 Entity 的 PropertyTable。由 EntityService.Spawn 调用。</summary>
+        internal void SetProperties(PropertyTable properties)
+        {
+            Properties = properties;
         }
 
         private void Awake()

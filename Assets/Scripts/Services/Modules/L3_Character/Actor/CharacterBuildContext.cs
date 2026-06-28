@@ -19,7 +19,11 @@ namespace RedDust.Character
         // ── 同 GameObject 组件（静态，构造期确定，永不变） ──
         public Transform Root { get; }
         public EventHub EventHub { get; }
-        public PropertyTable Properties { get; }
+        /// <summary>实体身份——EntityId + Tags + Properties。由 CharacterActor.Start 注入。</summary>
+        public Identity Identity { get; internal set; }
+
+        /// <summary>运行时属性数据。转发自 Identity.Properties。</summary>
+        public PropertyTable Properties => Identity?.Properties;
         public AbilityExecutor Ability { get; }
         public AbilityReactor Reactor { get; }
         public PathfindingAgent Pathfinding { get; }
@@ -52,6 +56,9 @@ namespace RedDust.Character
         /// </summary>
         public GameplayTagContainer OwnedGripTags { get; } = new();
 
+        /// <summary>角色容器模块——持有身体装备 Container。CharacterContainer 构造后赋值。</summary>
+        public CharacterContainer CharacterContainer { get; internal set; }
+
         // ── 系统级物理配置（世界定义，所有角色共享） ──
         public GroundSystemConfigSO GroundSystemConfig { get; }
 
@@ -73,7 +80,7 @@ namespace RedDust.Character
         public AbilityForest AbilityForest { get; }
 
         internal CharacterBuildContext(
-            Transform root, EventHub eventHub, PropertyTable properties,
+            Transform root, EventHub eventHub, Identity identity,
             AbilityExecutor ability, AbilityReactor reactor, PathfindingAgent pathfinding,
             Transform modelRoot, CharacterRig rig,
             CharacterAnimationProfileSO animationProfile,
@@ -87,7 +94,7 @@ namespace RedDust.Character
         {
             Root = root;
             EventHub = eventHub;
-            Properties = properties;
+            Identity = identity;
             Ability = ability;
             Reactor = reactor;
             AbilityForest = abilityForest;

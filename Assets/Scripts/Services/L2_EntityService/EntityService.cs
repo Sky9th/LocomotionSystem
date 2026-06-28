@@ -24,7 +24,6 @@ namespace RedDust.Entities
         [SerializeField] private EntityDespawnedEvent despawnedEvent;
 
         private readonly Dictionary<string, Entity> _entities = new();
-        private readonly Dictionary<string, GameObject> _views = new();
 
         public override void OnAssemble()
         {
@@ -47,43 +46,90 @@ namespace RedDust.Entities
 
         private void OnSpawnRequest(SEntitySpawnRequest req)
         {
-            if (req.Preset == null)
+            // ── 无效请求 ──
+            if (req.Preset == null && string.IsNullOrEmpty(req.EntityId))
             {
-                Debug.LogError("[EntityService] SpawnRequest: Preset is null.");
+                Debug.LogError("[EntityService] SpawnRequest: both Preset and EntityId are null.");
                 return;
             }
 
-            if (req.Preset.Prefab == null)
+            // ── 新 Entity 创建 ──
+            if (req.Preset != null)
             {
-                Debug.LogError($"[EntityService] SpawnRequest: Preset '{req.Preset.name}' has null Prefab.");
+                if (req.Position.HasValue && req.Preset.Prefab == null)
+                {
+                    Debug.LogError($"[EntityService] SpawnRequest: Preset '{req.Preset.name}' has null Prefab.");
+                    return;
+                }
+
+                var id = req.EntityId ?? System.Guid.NewGuid().ToString();
+                var entity = new Entity(id, req.Preset);
+                Register(entity);
+
+                if (req.Position.HasValue)
+                {
+                    var go = Instantiate(req.Preset.Prefab, req.Position.Value, req.Rotation);
+                    go.name = entity.Id;
+                    var identity = go.GetComponent<Identity>() ?? go.AddComponent<Identity>();
+                    identity.BindEntity(entity.Id);
+                    identity.SetProperties(entity.Properties);
+                    entity.View = go;
+                    spawnedEvent?.Raise(new SEntitySpawned(entity.Id, entity.Preset, go));
+                }
+                else
+                {
+                    spawnedEvent?.Raise(new SEntitySpawned(entity.Id, entity.Preset, null));
+                }
                 return;
             }
 
-            var entity = new Entity(null, req.Preset);
-            Register(entity);
+            // ── 已有 Entity，生成 GO ──
+            var existing = Get(req.EntityId);
+            if (existing == null)
+            {
+                Debug.LogError($"[EntityService] SpawnRequest: entity '{req.EntityId}' not found.");
+                return;
+            }
 
-            var go = Instantiate(req.Preset.Prefab, req.Position, req.Rotation);
-            go.name = entity.Id;
+            if (!req.Position.HasValue)
+            {
+                Debug.LogError($"[EntityService] SpawnRequest: Position required when Preset is null.");
+                return;
+            }
 
-            var identity = go.GetComponent<Identity>();
-            if (identity != null)
-                identity.BindEntity(entity.Id);
+            if (existing.HasView)
+            {
+                Debug.LogError($"[EntityService] SpawnRequest: entity '{req.EntityId}' already has a View. Despawn first.");
+                return;
+            }
 
-            _views[entity.Id] = go;
+            if (existing.Preset.Prefab == null)
+            {
+                Debug.LogError($"[EntityService] SpawnRequest: entity '{req.EntityId}' Preset has null Prefab.");
+                return;
+            }
 
-            spawnedEvent?.Raise(new SEntitySpawned(entity.Id, go));
+            var go2 = Instantiate(existing.Preset.Prefab, req.Position.Value, req.Rotation);
+            go2.name = existing.Id;
+            var id2 = go2.GetComponent<Identity>() ?? go2.AddComponent<Identity>();
+            id2.BindEntity(existing.Id);
+            id2.SetProperties(existing.Properties);
+            existing.View = go2;
+            spawnedEvent?.Raise(new SEntitySpawned(existing.Id, existing.Preset, go2));
         }
 
         private void OnDespawnRequest(SEntityDespawnRequest req)
         {
             if (string.IsNullOrEmpty(req.EntityId)) return;
 
-            if (!_views.TryGetValue(req.EntityId, out var go)) return;
+            var entity = Get(req.EntityId);
+            if (entity == null || !entity.HasView) return;
 
-            if (go != null) Destroy(go);
-            _views.Remove(req.EntityId);
+            var go = entity.View;
+            entity.View = null;
+            Destroy(go);
 
-            despawnedEvent?.Raise(new SEntityDespawned(req.EntityId));
+            despawnedEvent?.Raise(new SEntityDespawned(req.EntityId, go));
         }
 
         // ────────────────── 数据层 ──────────────────
@@ -107,18 +153,20 @@ namespace RedDust.Entities
             return true;
         }
 
-        /// <summary>注销实体。同时 Despawn（如果已生成 GO）。</summary>
+        /// <summary>注销实体。如果有 GO 则先 Despawn。</summary>
         public void Unregister(string id)
         {
             if (string.IsNullOrEmpty(id)) return;
 
-            if (_views.TryGetValue(id, out var go))
+            if (_entities.TryGetValue(id, out var entity))
             {
-                if (go != null) Destroy(go);
-                _views.Remove(id);
+                if (entity.HasView)
+                {
+                    Destroy(entity.View);
+                    entity.View = null;
+                }
+                _entities.Remove(id);
             }
-
-            _entities.Remove(id);
         }
 
         /// <summary>按 Id 检索实体。未找到返回 null。</summary>
@@ -136,14 +184,8 @@ namespace RedDust.Entities
         public IEnumerable<Entity> GetByPreset<T>() where T : PropertyPresetSO
             => _entities.Values.Where(e => e.Preset is T);
 
-        /// <summary>实体是否已 Spawn（当前存在 GO）。</summary>
-        public bool IsSpawned(string id) => _views.ContainsKey(id);
-
-        /// <summary>获取实体对应的 GO。未生成返回 null。</summary>
-        public GameObject GetView(string id)
-        {
-            _views.TryGetValue(id, out var go);
-            return go;
-        }
+        /// <summary>所有已生成 GO 的实体。</summary>
+        public IEnumerable<Entity> GetSpawnedEntities()
+            => _entities.Values.Where(e => e.HasView);
     }
 }

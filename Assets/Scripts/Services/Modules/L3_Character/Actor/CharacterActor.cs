@@ -18,6 +18,7 @@ namespace RedDust.Character
     [DisallowMultipleComponent]
     [RequireComponent(typeof(EventHub))]
     [RequireComponent(typeof(AbilityReactor))]
+    [RequireComponent(typeof(Identity))]
     /// <summary>继承 ModuleHub。pre-assemble 在 base.Awake 之前，post-wire 在 base.Start 之后。</summary>
     public partial class CharacterActor : ModuleHub
     {
@@ -51,8 +52,6 @@ namespace RedDust.Character
         [SerializeField] private AvatarMask headMask;
         [SerializeField] private AvatarMask footMask;
 
-        [Header("Properties")]
-        [SerializeField] private PropertyPresetSO propertyPreset;
 
         [Header("Hierarchy")]
         [SerializeField] private Transform modelRoot;
@@ -80,10 +79,6 @@ namespace RedDust.Character
         // ── Runtime ──
         internal CharacterBuildContext BuildContext => buildCtx;
         internal CharacterRig CharacterRig => characterRig;
-        // TODO: 架构债 — UIService 直接读 Properties 违反 L2→L3 单向依赖原则。
-        // 切除条件：属性变化事件或 GameContext Snapshot 到位后，VitalsOverlay 改为订阅/轮询快照。
-        // 注意：公开为 PropertyTable（非接口），调用方获得完全读写权限。
-        public PropertyTable Properties { get; private set; }
         internal SCharacterKinematic LastKinematic { get; private set; }
         internal SCharacterMotor LastMotor { get; private set; }
         internal SCharacterDiscrete LastDiscrete { get; private set; }
@@ -100,6 +95,7 @@ namespace RedDust.Character
         private AbilityReactor reactor;
         private CharacterCombat combat;
         private EventHub eventHub;
+        private Identity identity;
 
         // ── Ability ──
         private AbilityForest abilityForest;
@@ -109,17 +105,15 @@ namespace RedDust.Character
             SetupModel();
             ResolveComponents();
 
-            Properties = PropertyTable.FromPreset(propertyPreset);
-            if (Properties == null)
-                Debug.LogError("[CharacterActor] PropertyPreset is null.", this);
-
+            // Identity 组件在 Awake 时已在 GO 上（Properties 由 EntityService 在 Instantiate 后 push）。
             // ── pre-assemble: 创建 C# 子模块（构造自注册到 Registry）──
             characterRig = new CharacterRig(transform, modelRoot);
 
             abilityForest = new AbilityForest(innateTrees);
 
             buildCtx = new CharacterBuildContext(
-                root: transform, eventHub: eventHub, properties: Properties,
+                root: transform, eventHub: eventHub,
+                identity: identity,
                 ability: ability, reactor: reactor, pathfinding: pathfindingAgent,
                 modelRoot: modelRoot, rig: characterRig,
                 animationProfile: characterAnimationProfile,
@@ -147,11 +141,10 @@ namespace RedDust.Character
 
         protected override void Start()
         {
-            if (Properties == null) return;
-            base.Start();  // Registry.OnWireAll()
-            buildCtx.Physique = CharacterPhysique.From(Properties);
+            base.Start();  // Registry.OnWireAll() → CharacterContainer.OnWire 读取 ctx.Properties
+            buildCtx.Physique = CharacterPhysique.From(buildCtx.Properties);
             // TODO: 饥饿消耗是测试代码。Actor 不应内联属性变化逻辑。
-            Properties.AddModifier(new FloatModifier { Owner = this, TargetPath = "Vitals/Hunger", Frequency = ModifierFrequency.PerSecond, Delta = -0.01f });
+            buildCtx.Properties.AddModifier(new FloatModifier { Owner = this, TargetPath = "Vitals/Hunger", Frequency = ModifierFrequency.PerSecond, Delta = -0.01f });
         }
 
         private void SetupModel()
@@ -176,10 +169,10 @@ namespace RedDust.Character
 
         private void ResolveComponents()
         {
+            identity = GetComponent<Identity>();
             characterAnimation = GetComponentInChildren<AnimationBrain>();
             eventHub = GetComponent<EventHub>();
             pathfindingAgent = GetComponent<PathfindingAgent>();
-            // Properties = PropertyTable.FromPreset(propertyPreset) in Awake
             ability = GetComponent<AbilityExecutor>();
             reactor = GetComponent<AbilityReactor>();
         }
@@ -247,7 +240,7 @@ namespace RedDust.Character
                 enabled = false;
             }
 
-            Properties.Tick(deltaTime);
+            buildCtx.Properties.Tick(deltaTime);
         }
     }
 }

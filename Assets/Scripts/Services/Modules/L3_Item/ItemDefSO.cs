@@ -21,7 +21,7 @@ namespace RedDust.Items
     /// 槽位定义（SlotDef）已移至 L3_Container，通过 PropertyType.Struct 在 PropertyTree 中存取。
     /// 运行时：Container&lt;T&gt; 构造时从 PropertyTable.GetStructArray&lt;SlotDef&gt;("Common/Slots") 读取。
     /// </summary>
-    [CreateAssetMenu(menuName = "RedDust/Item/ItemDef", fileName = "NewItem")]
+    [CreateAssetMenu(menuName = "RedDust/Entity/Item", fileName = "NewItem")]
     public class ItemDefSO : PropertyPresetSO
     {
     }

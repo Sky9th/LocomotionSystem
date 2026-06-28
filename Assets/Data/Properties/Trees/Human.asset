@@ -134,4 +134,18 @@ MonoBehaviour:
     \"Vision\",\n            \"DefId\": \"FlashResist_Human\"\n        },\n       
     {\n            \"NodeId\": \"NPC\",\n            \"ParentId\": \"\",\n           
     \"DefId\": \"\"\n        },\n        {\n            \"NodeId\": \"Loyalty\",\n           
-    \"ParentId\": \"NPC\",\n            \"DefId\": \"Loyalty\"\n        }\n    ]\n}"
+    \"ParentId\": \"NPC\",\n            \"DefId\": \"Loyalty\"\n        },\n       
+    {\n            \"NodeId\": \"RightHand\",\n            \"ParentId\": \"Slots\",\n           
+    \"DefId\": \"RightHand\"\n        },\n        {\n            \"NodeId\": \"LeftHand\",\n           
+    \"ParentId\": \"Slots\",\n            \"DefId\": \"LeftHand\"\n        },\n       
+    {\n            \"NodeId\": \"Head\",\n            \"ParentId\": \"Slots\",\n           
+    \"DefId\": \"Head\"\n        },\n        {\n            \"NodeId\": \"Chest\",\n           
+    \"ParentId\": \"Slots\",\n            \"DefId\": \"Chest\"\n        },\n       
+    {\n            \"NodeId\": \"LeftLeg\",\n            \"ParentId\": \"Slots\",\n           
+    \"DefId\": \"LeftLeg\"\n        },\n        {\n            \"NodeId\": \"RightLeg\",\n           
+    \"ParentId\": \"Slots\",\n            \"DefId\": \"RightLeg\"\n        },\n       
+    {\n            \"NodeId\": \"LeftFoot\",\n            \"ParentId\": \"Slots\",\n           
+    \"DefId\": \"LeftFoot\"\n        },\n        {\n            \"NodeId\": \"RightFoot\",\n           
+    \"ParentId\": \"Slots\",\n            \"DefId\": \"RightFoot\"\n        },\n       
+    {\n            \"NodeId\": \"Back\",\n            \"ParentId\": \"Slots\",\n           
+    \"DefId\": \"Back\"\n        }\n    ]\n}"

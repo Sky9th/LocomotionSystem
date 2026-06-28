@@ -294,6 +294,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5837086406208072246, guid: c944287bd34c14149a516139d3693ed3,
+        type: 3}
+      propertyPath: bladeDef
+      value: 
+      objectReference: {fileID: 11400000, guid: cad24fb7ff3a81e4998c53392a0618e4,
+        type: 2}
+    - target: {fileID: 5837086406208072246, guid: c944287bd34c14149a516139d3693ed3,
+        type: 3}
+      propertyPath: pistolDef
+      value: 
+      objectReference: {fileID: 11400000, guid: ed6eb8d8681880349956461a1a0fff7f,
+        type: 2}
+    - target: {fileID: 5837086406208072246, guid: c944287bd34c14149a516139d3693ed3,
+        type: 3}
+      propertyPath: zombieDef
+      value: 
+      objectReference: {fileID: 11400000, guid: 298daeb6b08bdd048973f55a32e69856,
+        type: 2}
+    - target: {fileID: 5837086406208072246, guid: c944287bd34c14149a516139d3693ed3,
+        type: 3}
+      propertyPath: characterDef
+      value: 
+      objectReference: {fileID: 11400000, guid: b0e7241e50e1bcd4dbad93e4d8ee9708,
+        type: 2}
     - target: {fileID: 6975220665892660605, guid: c944287bd34c14149a516139d3693ed3,
         type: 3}
       propertyPath: m_LocalPosition.x

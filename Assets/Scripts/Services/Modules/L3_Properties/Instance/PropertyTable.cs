@@ -139,6 +139,26 @@ namespace RedDust.Properties
         /// <summary>该属性是否存在。</summary>
         public bool Has(string path) => _structure.ContainsKey(path);
 
+        /// <summary>
+        /// 返回 parentPath 文件夹下所有直接子属性的完整路径。
+        /// parentPath 为空或 "" 时返回根级属性。
+        /// 例：GetChildren("Slots") → ["Slots/RightHand", "Slots/LeftHand", ...]
+        /// </summary>
+        public IEnumerable<string> GetChildren(string parentPath)
+        {
+            var prefix = string.IsNullOrEmpty(parentPath) ? "" : parentPath + "/";
+            var seen = new HashSet<string>();
+            foreach (var key in _structure.Keys)
+            {
+                if (!key.StartsWith(prefix)) continue;
+                var relative = key.Substring(prefix.Length);
+                var slash = relative.IndexOf('/');
+                var child = slash >= 0 ? relative.Substring(0, slash) : relative;
+                if (seen.Add(child))
+                    yield return string.IsNullOrEmpty(parentPath) ? child : prefix + child;
+            }
+        }
+
         // ============================================================
         // 修改 —— 统一类型分发
         // ============================================================

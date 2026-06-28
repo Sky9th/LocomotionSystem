@@ -1,29 +1,26 @@
 using System.Collections.Generic;
-using System.Linq;
+using RedDust.Entities;
 using UnityEngine;
 
 namespace RedDust.Container
 {
     /// <summary>
-    /// 泛型容器——管理物品的放置、取出、过滤和 Tick。
+    /// 实体容器——管理 Entity 的放置、取出、过滤和 Tick。
     ///
     /// 技术文档: .agent/tech/L2-services/L2-modules/L3-container/container.md
     ///
-    /// T 取值：
-    ///   ItemInstance — 物品容器（身体槽、背包、世界箱子）
-    ///   AbilityDefSO — 技能槽（Q/E/R/F 技能栏）
-    ///
     /// 容器不负责 Tick——由容器所有者在 Update 中调用 Container.Tick(dt)。
+    /// Entity 引用指向 EntityService 注册表中的同一对象。
     /// </summary>
-    public class Container<T>
+    public class Container
     {
         public string ContainerId { get; }
 
         /// <summary>按 SlotKey 索引的槽位表。</summary>
-        public IReadOnlyDictionary<string, ContainerSlot<T>> Slots => _slots;
+        public IReadOnlyDictionary<string, ContainerSlot> Slots => _slots;
 
         /// <summary>有序槽位列表（按构造顺序）。</summary>
-        public IReadOnlyList<ContainerSlot<T>> SlotsOrdered { get; }
+        public IReadOnlyList<ContainerSlot> SlotsOrdered { get; }
 
         /// <summary>所有槽位物品总重。</summary>
         public float CurrentTotalWeight { get; private set; }
@@ -31,8 +28,8 @@ namespace RedDust.Container
         /// <summary>容器承载重量上限。0 = 无限制。</summary>
         public float CarryWeightMax { get; }
 
-        private readonly Dictionary<string, ContainerSlot<T>> _slots = new();
-        private readonly List<ContainerSlot<T>> _slotsOrdered = new();
+        private readonly Dictionary<string, ContainerSlot> _slots = new();
+        private readonly List<ContainerSlot> _slotsOrdered = new();
 
         /// <summary>
         /// 从 SlotDef[] 构造容器。
@@ -59,100 +56,101 @@ namespace RedDust.Container
                     continue;
                 }
 
-                var slot = new ContainerSlot<T>(def);
+                var slot = new ContainerSlot(def);
                 _slots[def.SlotId] = slot;
                 _slotsOrdered.Add(slot);
             }
         }
 
         /// <summary>
-        /// 检查 item 是否可放入 slotKey 槽位。
+        /// 检查实体是否可放入 slotKey 槽位。
         /// </summary>
-        public bool CanAccept(string slotKey, T item)
+        public bool CanAccept(string slotKey, Entity entity)
         {
             if (!_slots.TryGetValue(slotKey, out var slot)) return false;
-            return slot.CanAccept(item);
+            return slot.CanAccept(entity);
         }
 
         /// <summary>
-        /// 放入物品。先调 CanAccept，失败返回 false。
-        /// 成功 → 更新 CurrentTotalWeight。
+        /// 放入实体。可堆叠时合并 StackCount。
+        /// 返回被完全合并应销毁的 Entity（null = 已放置，无需额外处理）。
         /// </summary>
-        public bool Place(string slotKey, T item)
+        public Entity Place(string slotKey, Entity entity)
+        {
+            if (!_slots.TryGetValue(slotKey, out var slot)) return null;
+
+            var weightBefore = slot.CurrentWeight;
+            var consumed = slot.Place(entity);
+            CurrentTotalWeight += slot.CurrentWeight - weightBefore;
+
+            return consumed;
+        }
+
+        /// <summary>
+        /// 按 EntityId 从指定槽位移除。未找到返回 null。
+        /// </summary>
+        public Entity Remove(string slotKey, string entityId)
+        {
+            if (!_slots.TryGetValue(slotKey, out var slot)) return null;
+            var entity = slot.Remove(entityId);
+            if (entity != null)
+                CurrentTotalWeight -= entity.Properties.GetFloat("Common/Weight") * entity.StackCount;
+            return entity;
+        }
+
+        /// <summary>
+        /// 按引用移除实体。未找到返回 false。
+        /// </summary>
+        public bool Remove(string slotKey, Entity entity)
         {
             if (!_slots.TryGetValue(slotKey, out var slot)) return false;
-            if (!slot.Place(item)) return false;
-            // TODO ItemInstance 到位后: CurrentTotalWeight += item.Weight
+            if (!slot.Remove(entity)) return false;
+            CurrentTotalWeight -= entity.Properties.GetFloat("Common/Weight") * entity.StackCount;
             return true;
         }
 
         /// <summary>
-        /// 按 itemId 从指定槽位移除。未找到返回 default。
+        /// 找到第一个能接受该实体的槽位 SlotKey。没有返回 null。
         /// </summary>
-        public T Remove(string slotKey, string itemId)
-        {
-            if (!_slots.TryGetValue(slotKey, out var slot)) return default;
-            var item = slot.Remove(itemId);
-            if (item != null)
-            {
-                // TODO ItemInstance 到位后: CurrentTotalWeight -= item.Weight
-            }
-            return item;
-        }
-
-        /// <summary>
-        /// 按引用移除物品。未找到返回 false。
-        /// </summary>
-        public bool Remove(string slotKey, T item)
-        {
-            if (!_slots.TryGetValue(slotKey, out var slot)) return false;
-            if (!slot.Remove(item)) return false;
-            // TODO ItemInstance 到位后: CurrentTotalWeight -= item.Weight
-            return true;
-        }
-
-        /// <summary>
-        /// 找到第一个能接受该物品的槽位 SlotKey。没有返回 null。
-        /// </summary>
-        public string FindSlotFor(T item)
+        public string FindSlotFor(Entity entity)
         {
             foreach (var slot in _slotsOrdered)
             {
-                if (slot.CanAccept(item))
+                if (slot.CanAccept(entity))
                     return slot.Def.SlotId;
             }
             return null;
         }
 
         /// <summary>
-        /// 所有槽位中所有物品的枚举器。
+        /// 所有槽位中所有实体的枚举器。
         /// </summary>
-        public IEnumerable<T> AllItems()
+        public IEnumerable<Entity> AllItems()
         {
             foreach (var slot in _slotsOrdered)
             {
-                foreach (var item in slot.Items)
-                    yield return item;
+                foreach (var entity in slot.Items)
+                    yield return entity;
             }
         }
 
         /// <summary>
         /// 获取指定槽位，不存在返回 null。
         /// </summary>
-        public ContainerSlot<T> GetSlot(string slotKey)
+        public ContainerSlot GetSlot(string slotKey)
         {
             _slots.TryGetValue(slotKey, out var slot);
             return slot;
         }
 
         /// <summary>
-        /// 遍历所有槽位的所有物品，逐调 item.Tick(dt)。
-        /// 由容器所有者驱动（CharacterActor 60fps / WorldManager 0.5Hz）。
+        /// 遍历所有槽位的所有实体，逐调 entity.Tick(dt)。
+        /// 由容器所有者驱动。
         /// </summary>
         public void Tick(float dt)
         {
-            // TODO ItemInstance 到位后: foreach item in AllItems() → item.Tick(dt)
-            // 当前 T 无 Tick 方法，空转。
+            foreach (var entity in AllItems())
+                entity.Tick(dt);
         }
     }
 }

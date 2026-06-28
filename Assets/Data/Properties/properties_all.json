@@ -1493,12 +1493,173 @@
             "id": "Slots",
             "type": "Struct",
             "isDeprecated": false,
-            "description": "容器槽位定义。所有Actor共用，默认空数组。预设通过OverridesJson覆写具体槽位（如人形11槽、箱子1槽）。",
+            "description": "[Fallback] 通用容器槽位定义。推荐使用特定槽位 PropertyDef（RightHand/Head/Chest/Pouch/Scope 等），各自有独立 AcceptTags 默认值。本定义仅用于无特殊需求的槽位。",
             "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
             "minInt": 0, "maxInt": 100, "defaultInt": 0,
             "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": "",
             "structTypeName": "RedDust.Container.SlotDef",
-            "defaultStructJson": "[]"
+            "defaultStructJson": "{\"Capacity\":1}"
+        },
+        {
+            "id": "RightHand",
+            "type": "Struct",
+            "isDeprecated": false,
+            "description": "主手武器槽位。默认接受 Weapon 标签物品。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": "",
+            "structTypeName": "RedDust.Container.SlotDef",
+            "defaultStructJson": "{\"AcceptTags\":[\"Weapon\"],\"Capacity\":1}"
+        },
+        {
+            "id": "LeftHand",
+            "type": "Struct",
+            "isDeprecated": false,
+            "description": "副手武器/盾牌槽位。默认接受 Weapon 或 Shield 标签物品。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": "",
+            "structTypeName": "RedDust.Container.SlotDef",
+            "defaultStructJson": "{\"AcceptTags\":[\"Weapon\",\"Shield\"],\"Capacity\":1}"
+        },
+        {
+            "id": "Head",
+            "type": "Struct",
+            "isDeprecated": false,
+            "description": "头部防具槽位。默认接受 Armor.Head 标签物品。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": "",
+            "structTypeName": "RedDust.Container.SlotDef",
+            "defaultStructJson": "{\"AcceptTags\":[\"Armor.Head\"],\"Capacity\":1}"
+        },
+        {
+            "id": "Chest",
+            "type": "Struct",
+            "isDeprecated": false,
+            "description": "躯干防具槽位（胸甲/背心）。默认接受 Armor.Body 标签物品。NodeId 用 Chest 以避 Human 树 Body 文件夹同名冲突。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": "",
+            "structTypeName": "RedDust.Container.SlotDef",
+            "defaultStructJson": "{\"AcceptTags\":[\"Armor.Body\"],\"Capacity\":1}"
+        },
+        {
+            "id": "LeftLeg",
+            "type": "Struct",
+            "isDeprecated": false,
+            "description": "左腿防具槽位。默认接受 Armor.Leg 标签物品。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": "",
+            "structTypeName": "RedDust.Container.SlotDef",
+            "defaultStructJson": "{\"AcceptTags\":[\"Armor.Leg\"],\"Capacity\":1}"
+        },
+        {
+            "id": "RightLeg",
+            "type": "Struct",
+            "isDeprecated": false,
+            "description": "右腿防具槽位。默认接受 Armor.Leg 标签物品。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": "",
+            "structTypeName": "RedDust.Container.SlotDef",
+            "defaultStructJson": "{\"AcceptTags\":[\"Armor.Leg\"],\"Capacity\":1}"
+        },
+        {
+            "id": "LeftFoot",
+            "type": "Struct",
+            "isDeprecated": false,
+            "description": "左脚鞋具槽位。默认接受 Armor.Foot 标签物品。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": "",
+            "structTypeName": "RedDust.Container.SlotDef",
+            "defaultStructJson": "{\"AcceptTags\":[\"Armor.Foot\"],\"Capacity\":1}"
+        },
+        {
+            "id": "RightFoot",
+            "type": "Struct",
+            "isDeprecated": false,
+            "description": "右脚鞋具槽位。默认接受 Armor.Foot 标签物品。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": "",
+            "structTypeName": "RedDust.Container.SlotDef",
+            "defaultStructJson": "{\"AcceptTags\":[\"Armor.Foot\"],\"Capacity\":1}"
+        },
+        {
+            "id": "Back",
+            "type": "Struct",
+            "isDeprecated": false,
+            "description": "背部槽位（背包）。默认接受 Backpack 标签物品。可嵌套子容器。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": "",
+            "structTypeName": "RedDust.Container.SlotDef",
+            "defaultStructJson": "{\"AcceptTags\":[\"Backpack\"],\"Capacity\":1}"
+        },
+        {
+            "id": "Pouch",
+            "type": "Struct",
+            "isDeprecated": false,
+            "description": "胸挂/弹匣袋槽位。防弹背心等装备的子槽位。默认接受 Magazine 标签物品。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": "",
+            "structTypeName": "RedDust.Container.SlotDef",
+            "defaultStructJson": "{\"AcceptTags\":[\"Magazine\"],\"Capacity\":1}"
+        },
+        {
+            "id": "Scope",
+            "type": "Struct",
+            "isDeprecated": false,
+            "description": "瞄准镜附件槽位。枪械的子槽位。默认接受 Attachment.Scope 标签物品。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": "",
+            "structTypeName": "RedDust.Container.SlotDef",
+            "defaultStructJson": "{\"AcceptTags\":[\"Attachment.Scope\"],\"Capacity\":1}"
+        },
+        {
+            "id": "Magazine",
+            "type": "Struct",
+            "isDeprecated": false,
+            "description": "弹匣附件槽位。枪械的子槽位。默认接受 Attachment.Magazine 标签物品。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": "",
+            "structTypeName": "RedDust.Container.SlotDef",
+            "defaultStructJson": "{\"AcceptTags\":[\"Attachment.Magazine\"],\"Capacity\":1}"
+        },
+        {
+            "id": "Muzzle",
+            "type": "Struct",
+            "isDeprecated": false,
+            "description": "枪口装置附件槽位。枪械的子槽位。默认接受 Attachment.Muzzle 标签物品。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": "",
+            "structTypeName": "RedDust.Container.SlotDef",
+            "defaultStructJson": "{\"AcceptTags\":[\"Attachment.Muzzle\"],\"Capacity\":1}"
+        },
+        {
+            "id": "BleedChance",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "近战武器流血概率(0-1)。Blade 类武器专属。每击概率对目标造成流血(Bleeding)状态，持续失血。默认 0（斧/棍/矛无流血）。",
+            "min": 0.0, "max": 1.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
+            "id": "ArmorPierce",
+            "type": "Float",
+            "isDeprecated": false,
+            "description": "近战护甲穿透比例(0-1)。Axe 类武器专属。1.0=完全无视护甲。默认 0（剑/棍/矛无破甲）。",
+            "min": 0.0, "max": 1.0, "defaultFloat": 0.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
         }
     ],
     "trees": [
@@ -1510,7 +1671,7 @@
                 { "nodeId": "DisplayName", "parentId": "Common", "defId": "DisplayName" },
                 { "nodeId": "Icon", "parentId": "Common", "defId": "Icon" },
                 { "nodeId": "Weight", "parentId": "Common", "defId": "Weight" },
-                { "nodeId": "Slots", "parentId": "Common", "defId": "Slots" }
+                { "nodeId": "Slots", "parentId": "", "defId": "" }
             ]
         },
         {
@@ -1601,7 +1762,16 @@
                 { "nodeId": "NightVision", "parentId": "Vision", "defId": "NightVision_Human" },
                 { "nodeId": "FlashResist", "parentId": "Vision", "defId": "FlashResist_Human" },
                 { "nodeId": "NPC", "parentId": "", "defId": "" },
-                { "nodeId": "Loyalty", "parentId": "NPC", "defId": "Loyalty" }
+                { "nodeId": "Loyalty", "parentId": "NPC", "defId": "Loyalty" },
+                { "nodeId": "RightHand", "parentId": "Slots", "defId": "RightHand" },
+                { "nodeId": "LeftHand", "parentId": "Slots", "defId": "LeftHand" },
+                { "nodeId": "Head", "parentId": "Slots", "defId": "Head" },
+                { "nodeId": "Chest", "parentId": "Slots", "defId": "Chest" },
+                { "nodeId": "LeftLeg", "parentId": "Slots", "defId": "LeftLeg" },
+                { "nodeId": "RightLeg", "parentId": "Slots", "defId": "RightLeg" },
+                { "nodeId": "LeftFoot", "parentId": "Slots", "defId": "LeftFoot" },
+                { "nodeId": "RightFoot", "parentId": "Slots", "defId": "RightFoot" },
+                { "nodeId": "Back", "parentId": "Slots", "defId": "Back" }
             ]
         },
         {
@@ -1650,6 +1820,32 @@
             ]
         },
         {
+            "treeName": "Blade",
+            "inheritsFrom": "MeleeWeapon",
+            "nodes": [
+                { "nodeId": "Combat", "parentId": "", "defId": "" },
+                { "nodeId": "BleedChance", "parentId": "Combat", "defId": "BleedChance" }
+            ]
+        },
+        {
+            "treeName": "Axe",
+            "inheritsFrom": "MeleeWeapon",
+            "nodes": [
+                { "nodeId": "Combat", "parentId": "", "defId": "" },
+                { "nodeId": "ArmorPierce", "parentId": "Combat", "defId": "ArmorPierce" }
+            ]
+        },
+        {
+            "treeName": "Blunt",
+            "inheritsFrom": "MeleeWeapon",
+            "nodes": []
+        },
+        {
+            "treeName": "Spear",
+            "inheritsFrom": "MeleeWeapon",
+            "nodes": []
+        },
+        {
             "treeName": "RangedWeapon",
             "inheritsFrom": "WeaponBase",
             "nodes": [
@@ -1676,7 +1872,10 @@
                 { "nodeId": "Reliability", "parentId": "Combat", "defId": "Reliability" },
                 { "nodeId": "Tags", "parentId": "", "defId": "" },
                 { "nodeId": "IsAutomatic", "parentId": "Tags", "defId": "IsAutomatic" },
-                { "nodeId": "GearType", "parentId": "Tags", "defId": "GearType" }
+                { "nodeId": "GearType", "parentId": "Tags", "defId": "GearType" },
+                { "nodeId": "Scope", "parentId": "Slots", "defId": "Scope" },
+                { "nodeId": "Magazine", "parentId": "Slots", "defId": "Magazine" },
+                { "nodeId": "Muzzle", "parentId": "Slots", "defId": "Muzzle" }
             ]
         },
         {
@@ -1822,7 +2021,10 @@
             "nodes": [
                 { "nodeId": "Combat", "parentId": "", "defId": "" },
                 { "nodeId": "KnockdownResist", "parentId": "Combat", "defId": "KnockdownResist" },
-                { "nodeId": "CarryWeight", "parentId": "Combat", "defId": "CarryWeight" }
+                { "nodeId": "CarryWeight", "parentId": "Combat", "defId": "CarryWeight" },
+                { "nodeId": "Pouch1", "parentId": "Slots", "defId": "Pouch" },
+                { "nodeId": "Pouch2", "parentId": "Slots", "defId": "Pouch" },
+                { "nodeId": "Pouch3", "parentId": "Slots", "defId": "Pouch" }
             ]
         },
         {

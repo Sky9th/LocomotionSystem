@@ -9,7 +9,6 @@ using RedDust.Character;
 
 namespace RedDust.Character.Animation
 {
-    [DefaultExecutionOrder(-10)]
     [DisallowMultipleComponent]
     public sealed class AnimationBrain : ModuleHub, IModuleChild
     {

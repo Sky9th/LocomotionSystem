@@ -1,4 +1,5 @@
 using Animancer;
+using UnityEngine;
 
 namespace RedDust.Character.Animation.Drivers.Locomotion
 {
@@ -30,6 +31,13 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
             var fallDist = Owner.MaxFallDistance;
             var transition = fallDist <= Owner.AnimProfile.landLightMaxFallDistance
                 ? Owner.AnimSet?.landLight : Owner.AnimSet?.landHard;
+            if (transition == null || transition.Animations.Length == 0)
+            {
+                Debug.LogWarning($"[BaseAirLand] {Owner.AnimSet?.name}: land animation is empty, skipping to Idle.");
+                Owner.Rig?.SetSuppressGroundLock(false);
+                Owner.ForceSetState(BaseStateKey.Idle);
+                return;
+            }
             Owner.Play(transition);
             Owner.Rig?.SetSuppressGroundLock(true);
         }

@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace RedDust.Character.Animation.Drivers.Locomotion
 {
     internal sealed class BaseAirLoopState : LocomotionLayerFsmState<BaseLayer>
@@ -18,7 +20,15 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         // TODO: 按 fall 落差选择 AirLight / AirHard（需新增阈值字段）
         public override void OnEnterState()
         {
-            Owner.Play(Owner.AnimSet?.airLight);
+            var air = Owner.AnimSet?.airLight;
+            if (air == null || air.Animations.Length == 0)
+            {
+                Debug.LogWarning($"[BaseAirLoop] {Owner.AnimSet?.name}: airLight is empty, skipping to ground.");
+            }
+            else
+            {
+                Owner.Play(air);
+            }
             Owner.AirborneStartY = Owner.Ctx.Kinematic.Position.y;
             Owner.MaxFallDistance = 0f;
             Owner.Rig?.SetSuppressGroundLock(true);
@@ -30,6 +40,10 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
             if (fall > Owner.MaxFallDistance) Owner.MaxFallDistance = fall;
 
             if (Owner.TrySetState(BaseStateKey.AirLand)) return;
+            // 空动画无着陆过渡，直接落地
+            if (!Owner.Ctx.Kinematic.GroundContact.IsGrounded) return;
+            Owner.Rig?.SetSuppressGroundLock(false);
+            Owner.ForceSetState(BaseStateKey.Idle);
         }
     }
 }

@@ -18,4 +18,8 @@ MonoBehaviour:
     \"NodeId\": \"KnockdownResist\",\n            \"ParentId\": \"Combat\",\n           
     \"DefId\": \"KnockdownResist\"\n        },\n        {\n            \"NodeId\":
     \"CarryWeight\",\n            \"ParentId\": \"Combat\",\n            \"DefId\":
-    \"CarryWeight\"\n        }\n    ]\n}"
+    \"CarryWeight\"\n        },\n        {\n            \"NodeId\": \"Pouch1\",\n           
+    \"ParentId\": \"Slots\",\n            \"DefId\": \"Pouch\"\n        },\n       
+    {\n            \"NodeId\": \"Pouch2\",\n            \"ParentId\": \"Slots\",\n           
+    \"DefId\": \"Pouch\"\n        },\n        {\n            \"NodeId\": \"Pouch3\",\n           
+    \"ParentId\": \"Slots\",\n            \"DefId\": \"Pouch\"\n        }\n    ]\n}"

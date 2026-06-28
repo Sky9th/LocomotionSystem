@@ -25,5 +25,9 @@ MonoBehaviour:
     \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
     \"NodeId\": \"IsAutomatic\",\n            \"ParentId\": \"Tags\",\n           
     \"DefId\": \"IsAutomatic\"\n        },\n        {\n            \"NodeId\": \"GearType\",\n           
-    \"ParentId\": \"Tags\",\n            \"DefId\": \"GearType\"\n        }\n   
-    ]\n}"
+    \"ParentId\": \"Tags\",\n            \"DefId\": \"GearType\"\n        },\n       
+    {\n            \"NodeId\": \"Scope\",\n            \"ParentId\": \"Slots\",\n           
+    \"DefId\": \"Scope\"\n        },\n        {\n            \"NodeId\": \"Magazine\",\n           
+    \"ParentId\": \"Slots\",\n            \"DefId\": \"Magazine\"\n        },\n       
+    {\n            \"NodeId\": \"Muzzle\",\n            \"ParentId\": \"Slots\",\n           
+    \"DefId\": \"Muzzle\"\n        }\n    ]\n}"

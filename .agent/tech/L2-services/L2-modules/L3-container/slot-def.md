@@ -2,7 +2,7 @@
 
 > `L3_Container/SlotDef.cs` · `namespace RedDust.Container` · `[Serializable]` `[PropertyStruct]`
 >
-> **Last Verified**: 2026-06-27 | **Verification**: CODE LANDED -- 结构体已定义，`[PropertyStruct]` attribute 已落地
+> **Last Verified**: 2026-06-28 | **Verification**: AcceptTags → string[], SlotId 由路径提取回填，PropertyTree Slots/ 下独立 Struct 属性
 
 ## 定位
 

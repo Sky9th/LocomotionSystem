@@ -1,12 +1,14 @@
 using RedDust.Properties;
+using UnityEngine;
 
 namespace RedDust.Entities
 {
     /// <summary>
     /// 游戏实体数据——所有可持久对象的基类。
     ///
-    /// 纯 C#，不依赖 GameObject。EntityService 是唯一拥有者（Dictionary 注册表），
-    /// 其他系统（Actor、Container、地面 GO）只持有 Id 或缓存引用，不存在多份拷贝。
+    /// EntityService 是唯一拥有者（Dictionary 注册表），其他系统只持有 Id 或缓存引用。
+    /// View 是 Entity 在场景中的 GO 载体——由 EntityService.Spawn 绑定，Despawn 清空。
+    /// 无 GO 时 View 为 null（物品在背包、未加载 NPC 等）。
     ///
     /// Preset 即 EntityType——<see cref="CharacterDefSO"/> 为角色，<see cref="ItemDefSO"/> 为物品。
     /// </summary>
@@ -20,6 +22,20 @@ namespace RedDust.Entities
 
         /// <summary>运行时属性数据。与 Preset 共享同一 PropertyTree 结构。</summary>
         public PropertyTable Properties { get; }
+
+        /// <summary>堆叠数量。1 表示独件（武器、装备），>1 表示合并堆叠（弹药、消耗品）。</summary>
+        public int StackCount { get; set; } = 1;
+
+        /// <summary>最大堆叠数——从 PropertyTree 读取。</summary>
+        public int MaxStackSize => (int)(Properties?.GetFloat("Common/MaxStackSize") ?? 1);
+
+        /// <summary>堆叠未满——允许同 Preset 物品合并。</summary>
+        public bool CanStack => StackCount < MaxStackSize;
+
+        /// <summary>场景中的 GO 载体。无 GO 时为 null。</summary>
+        [System.NonSerialized] private GameObject _view;
+        public GameObject View { get => _view; internal set => _view = value; }
+        public bool HasView => _view != null;
 
         public Entity(string id, PropertyPresetSO preset)
         {
