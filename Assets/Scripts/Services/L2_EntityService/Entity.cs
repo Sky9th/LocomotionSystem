@@ -1,3 +1,4 @@
+using RedDust.Container;
 using RedDust.Properties;
 using UnityEngine;
 
@@ -36,6 +37,9 @@ namespace RedDust.Entities
         [System.NonSerialized] private GameObject _view;
         public GameObject View { get => _view; internal set => _view = value; }
         public bool HasView => _view != null;
+
+        /// <summary>嵌套容器。容器类实体（背包等）Register 时由 EntityService 自动创建。</summary>
+        public Container.Container NestedContainer { get; internal set; }
 
         public Entity(string id, PropertyPresetSO preset)
         {

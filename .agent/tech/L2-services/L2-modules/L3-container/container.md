@@ -2,7 +2,7 @@
 
 > `L3_Container/Container.cs` · `namespace RedDust.Container` · 泛型 class，无 MonoBehaviour
 >
-> **Last Verified**: 2026-06-27 | **Verification**: CODE LANDED -- 核心结构已实现，ItemInstance 到位后接入 Tick/重量跟踪
+> **Last Verified**: 2026-06-28 | **Verification**: Tick 改递归 depth + NestedContainer 传播 + 环检测，其他模块引用存在。
 
 ## 定位
 
@@ -130,17 +130,10 @@ public ContainerSlot<T> GetSlot(string slotKey)
 ### Tick
 
 ```csharp
-public void Tick(float dt)
+public void Tick(float dt, int depth = 0)
 ```
 
-遍历所有槽位的所有物品，逐调 `item.Tick(dt)`。由容器所有者驱动。
-
-**当前实现是空方法**——`T` 无 `Tick` 约束/接口，等 ItemInstance 到位后接入：
-```csharp
-// TODO ItemInstance 到位后:
-// foreach (var item in AllItems())
-//     item.Tick(dt);
-```
+遍历所有槽位所有物品，逐调 `entity.Tick(dt)` + `entity.NestedContainer?.Tick(dt, depth + 1)`。由容器所有者驱动。`depth` 仅容器内部递归使用，外部调用方只传 `dt`。环检测：`depth >= 10` → `Debug.LogError` + 停止递归。
 
 ## 内部结构
 

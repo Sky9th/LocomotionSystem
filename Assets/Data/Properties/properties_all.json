@@ -579,6 +579,15 @@
             "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
         },
         {
+            "id": "Tags",
+            "type": "GameplayTagList",
+            "isDeprecated": false,
+            "description": "实体分类标签。回答「这个实体是什么类型」(Weapon/Armor.Head/Backpack/Magazine)，供 Container 槽位 AcceptTags 过滤匹配。默认空数组。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": ""
+        },
+        {
             "id": "Weight",
             "type": "Float",
             "isDeprecated": false,
@@ -1611,6 +1620,17 @@
             "defaultStructJson": "{\"AcceptTags\":[\"Magazine\"],\"Capacity\":1}"
         },
         {
+            "id": "ContainerSlot",
+            "type": "Struct",
+            "isDeprecated": false,
+            "description": "通用容器槽位。背包等容器的内部格子。AcceptTags 为空=接受所有物品。TODO: nodeId 与 defId 相同时可简化——树节点只列 defId，运行时以 defId 为 slot key，省去 nodeId 冗余。",
+            "min": 0.0, "max": 100.0, "defaultFloat": 100.0,
+            "minInt": 0, "maxInt": 100, "defaultInt": 0,
+            "defaultString": "", "defaultAssetGUID": "", "assetTypeConstraint": "",
+            "structTypeName": "RedDust.Container.SlotDef",
+            "defaultStructJson": "{\"AcceptTags\":[],\"Capacity\":20}"
+        },
+        {
             "id": "Scope",
             "type": "Struct",
             "isDeprecated": false,
@@ -1671,6 +1691,7 @@
                 { "nodeId": "DisplayName", "parentId": "Common", "defId": "DisplayName" },
                 { "nodeId": "Icon", "parentId": "Common", "defId": "Icon" },
                 { "nodeId": "Weight", "parentId": "Common", "defId": "Weight" },
+                { "nodeId": "Tags", "parentId": "Common", "defId": "Tags" },
                 { "nodeId": "Slots", "parentId": "", "defId": "" }
             ]
         },
@@ -2050,6 +2071,14 @@
                 { "nodeId": "MoveSpeedPenalty_Container", "parentId": "Penalty", "defId": "MoveSpeedPenalty_Container" },
                 { "nodeId": "Presentation", "parentId": "", "defId": "" },
                 { "nodeId": "VisualPrefab", "parentId": "Presentation", "defId": "VisualPrefab" }
+            ]
+        },
+        {
+            "treeName": "Backpack",
+            "inheritsFrom": "ContainerBase",
+            "nodes": [
+                { "nodeId": "Slots", "parentId": "", "defId": "" },
+                { "nodeId": "ContainerSlot", "parentId": "Slots", "defId": "ContainerSlot" }
             ]
         },
         {

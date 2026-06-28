@@ -19,5 +19,7 @@ MonoBehaviour:
     \"DefId\": \"DisplayName\"\n        },\n        {\n            \"NodeId\": \"Icon\",\n           
     \"ParentId\": \"Common\",\n            \"DefId\": \"Icon\"\n        },\n       
     {\n            \"NodeId\": \"Weight\",\n            \"ParentId\": \"Common\",\n           
-    \"DefId\": \"Weight\"\n        },\n        {\n            \"NodeId\": \"Slots\",\n           
-    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        }\n    ]\n}"
+    \"DefId\": \"Weight\"\n        },\n        {\n            \"NodeId\": \"Tags\",\n           
+    \"ParentId\": \"Common\",\n            \"DefId\": \"Tags\"\n        },\n       
+    {\n            \"NodeId\": \"Slots\",\n            \"ParentId\": \"\",\n           
+    \"DefId\": \"\"\n        }\n    ]\n}"

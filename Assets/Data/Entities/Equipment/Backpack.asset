@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88e7de01cba5b3d46863f0f1e374a0a9, type: 3}
-  m_Name: Pistol
+  m_Name: Backpack
   m_EditorClassIdentifier: 
-  Template: {fileID: 11400000, guid: d07b40a576e56764aa15afde97dc3383, type: 2}
-  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Weapon\",\"Equip.Grip.1H_Sidearm\"]"}]}'
-  Prefab: {fileID: 1111015175407080, guid: 151fe3144103e1440900697f4b29c68e, type: 3}
+  Template: {fileID: 11400000, guid: dfb12c954eea5d442bba0a4efc1bc5f5, type: 2}
+  OverridesJson: 
+  Prefab: {fileID: 0}

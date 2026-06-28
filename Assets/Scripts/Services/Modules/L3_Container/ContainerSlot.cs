@@ -66,7 +66,7 @@ namespace RedDust.Container
             // Tag 过滤 — AcceptTags 非空时须有交集
             if (Def.AcceptTags is { Length: > 0 })
             {
-                var itemTags = entity.Properties.GetTagList("Common/ItemTags");
+                var itemTags = entity.Properties.GetTagList("Common/Tags");
                 if (itemTags == null || itemTags.Length == 0) return false;
 
                 bool matched = false;

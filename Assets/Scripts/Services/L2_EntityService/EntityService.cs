@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using RedDust.Container;
 using RedDust.Core;
 using RedDust.Properties;
 using UnityEngine;
@@ -150,16 +151,24 @@ namespace RedDust.Entities
             }
 
             _entities[entity.Id] = entity;
+            TryCreateNestedContainer(entity);
             return true;
         }
 
-        /// <summary>注销实体。如果有 GO 则先 Despawn。</summary>
+        /// <summary>注销实体。级联清理嵌套容器子实体。</summary>
         public void Unregister(string id)
         {
             if (string.IsNullOrEmpty(id)) return;
 
             if (_entities.TryGetValue(id, out var entity))
             {
+                if (entity.NestedContainer != null)
+                {
+                    foreach (var child in entity.NestedContainer.AllItems())
+                        Unregister(child.Id);
+                    entity.NestedContainer = null;
+                }
+
                 if (entity.HasView)
                 {
                     Destroy(entity.View);
@@ -167,6 +176,21 @@ namespace RedDust.Entities
                 }
                 _entities.Remove(id);
             }
+        }
+
+        private void TryCreateNestedContainer(Entity entity)
+        {
+            var slotDefs = new List<SlotDef>();
+            foreach (var path in entity.Properties.GetChildren("Slots"))
+            {
+                var def = entity.Properties.GetStruct<SlotDef>(path);
+                def.SlotId = path.Substring(path.LastIndexOf('/') + 1);
+                slotDefs.Add(def);
+            }
+
+            if (slotDefs.Count == 0) return;
+
+            entity.NestedContainer = new Container.Container($"{entity.Id}/Storage", slotDefs.ToArray());
         }
 
         /// <summary>按 Id 检索实体。未找到返回 null。</summary>

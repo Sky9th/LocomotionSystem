@@ -59,5 +59,34 @@ namespace RedDust.Character
             }
             Debug.Log($"[CharacterContainer] {ctx.Root.name}: {BodySlots.Length} body slots — {names}");
         }
+
+        /// <summary>打印当前容器内容（测试用）。</summary>
+        public void DumpContents()
+        {
+            if (BodyContainer == null)
+            {
+                Debug.Log($"[CharacterContainer] {ctx.Root.name}: BodyContainer is null.");
+                return;
+            }
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine($"[CharacterContainer] {ctx.Root.name} — BodyContainer contents:");
+            foreach (var slot in BodyContainer.SlotsOrdered)
+            {
+                sb.Append($"  {slot.Def.SlotId}: ");
+                if (slot.IsEmpty)
+                    sb.AppendLine("empty");
+                else
+                {
+                    for (int i = 0; i < slot.Items.Count; i++)
+                    {
+                        if (i > 0) sb.Append(", ");
+                        var e = slot.Items[i];
+                        sb.Append($"{e.Preset.name}({e.Id}) x{e.StackCount}");
+                    }
+                    sb.AppendLine();
+                }
+            }
+            Debug.Log(sb.ToString());
+        }
     }
 }

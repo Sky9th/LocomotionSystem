@@ -1,7 +1,7 @@
 # Entity — 实体数据模型
 
 > `L2_EntityService/Entity.cs` · 纯 C# 数据类
-> **Last Verified**: 2026-06-27 | **Verification**: All referenced files exist, signatures match code.
+> **Last Verified**: 2026-06-28 | **Verification**: All referenced files exist, signatures match code. +NestedContainer +Container.Tick depth.
 
 ## 调用链
 
@@ -25,6 +25,7 @@
 | 依赖 | PropertyPresetSO | Preset 字段 |
 | 依赖 | PropertyTable | Properties 字段 |
 | 被消费 | EntityService | 管理对象 |
+| 被消费 | Container (L3) | 通过 NestedContainer 引用嵌套容器 |
 | 被消费 | Identity (未来) | BindEntity 提供 Id |
 
 ## 公开属性
@@ -34,6 +35,7 @@
 | `Id` | `string { get; }` | 持久标识，存档/联机引用锚点。null → Guid 兜底 |
 | `Preset` | `PropertyPresetSO { get; }` | 属性预设资产，定义模板+初始值+实体种类（= EntityType） |
 | `Properties` | `PropertyTable { get; }` | 运行时属性数据，与 Preset 共享结构 |
+| `NestedContainer` | `Container.Container { get; internal set; }` | 嵌套容器。容器类实体（背包等）Register 时由 EntityService 自动创建，非容器实体为 null |
 
 ## 方法
 
@@ -49,8 +51,8 @@ public Entity(string id, PropertyPresetSO preset)
 ```csharp
 public void Tick(float dt) => Properties?.Tick(dt);
 ```
-- **Purpose**: 每帧驱动属性变化（modifier 衰减等）
-- **Callers**: EntityService 或持有者的 Update
+- **Purpose**: 每帧驱动属性变化（modifier 衰减等）。只 Tick Properties，不管容器递归
+- **Callers**: Container.Tick 遍历 AllItems 时调用。嵌套 NestedContainer 由 Container.Tick(depth+1) 驱动
 
 ## 未来规划
 

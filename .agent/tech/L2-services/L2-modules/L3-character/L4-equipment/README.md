@@ -1,10 +1,8 @@
 # L4_Equipment · 装备组件
 
-> `L3_Character/Equipment/` — CharacterActor 子模块。管理角色身体容器——武器槽、防具槽、武器选择。角色插上此模块即具备穿戴装备的能力。
+> `L3_Character/Equipment/` — CharacterActor 子模块。每帧以 BodyContainer 为数据源同步武器 GO 和 GripTag。
 
-> ⚠ **DRAFT** — 未定稿。设计方向已确定，细节仍在讨论中。
->
-> **Last Verified**: 2026-06-23 | **Verification**: DESIGN PHASE — 代码尚未创建
+> **Last Verified**: 2026-06-28 | **Verification**: 代码已落地 — CharacterEquipment (ModuleChild) + SlotBoneMapper (static utility)
 
 ## 层级定位
 
@@ -14,31 +12,26 @@ L4 子系统，隶属于 `L3_Character`。是 CharacterActor 的 ModuleChild。�
 
 | 职责 | 说明 |
 |------|------|
-| 身体容器管理 | 持有角色的装备槽（右手/左手/头部/背包…），每个槽是一个 `Container<ItemInstance>` |
-| 武器选择 | 管理当前激活的武器槽（1/2/3 键切换） |
-| GripTag 同步 | 激活武器时写入 `BuildContext.OwnedGripTags`，动画系统读出切换姿态 |
-| 技能栏数据源 | 提供当前激活武器的 ItemDefSO，供技能栏求交 |
-| UI 数据源 | 装备栏 UI 读取各槽位状态 |
+| 武器 GO 生命周期 | 每帧 diff BodyContainer → Spawn/Despawn 武器 Prefab，parent 到手部骨骼 |
+| GripTag 同步 | 从装备 Entity 的 `Common/Tags` 提取 `Equip.Grip.*` → 写入 `OwnedGripTags` |
+| 槽位→骨骼映射 | SlotBoneMapper 静态类，SlotId→HumanBodyBones 人形抽象 |
 
-## 架构
+## 当前实现
 
 ```
-EquipmentComponent : ModuleChild
-  ├── _slots: Container<ItemInstance>[]     ← 身体装备槽
-  │     [0] 右手      filter: [Weapon.*, Tool]
-  │     [1] 左手      filter: [Weapon.*, Shield]
-  │     [2] 头部      filter: [Armor.Head]
-  │     [3] 身体      filter: [Armor.Body]
-  │     ...
+CharacterEquipment : ModuleChild
+  ├── _slotSnapshot: Dict<SlotKey, EntityId>   ← 上一帧快照，用于 diff
+  ├── _spawnedViews: Dict<SlotKey, GameObject>  ← 已生成武器 GO
+  ├── _animator: Animator                      ← OnWire 缓存
   │
-  ├── _activeWeaponIndex: int               ← 当前手持（-1=空手）
+  ├── SyncEquipment()                           ← 每帧由 CharacterActor.Update 调用
+  │     ├─ ReadSlotState() → diff _slotSnapshot
+  │     ├─ Added → SpawnView(Instantiate + parent to bone)
+  │     ├─ Removed → DespawnView(Destroy GO)
+  │     └─ SyncGripTags() → 写 OwnedGripTags
   │
-  ├── Equip(int slotIndex, ItemInstance item)
-  ├── Unequip(int slotIndex) → ItemInstance?
-  ├── SetActiveWeapon(int slotIndex)
-  ├── GetActiveWeapon() → ItemInstance?
-  ├── GetSlotState(int index) → bool        ← UI 读：装备栏高亮
-  └── GetActiveGripTags() → GameplayTag[]   ← → BuildContext.OwnedGripTags
+  └── SlotBoneMapper (static)
+        └─ GetBoneForSlot(animator, slotId) → Transform or null
 ```
 
 ## 调用链
@@ -114,4 +107,5 @@ UI 查询:
 
 | 文档 | 说明 |
 |------|------|
-| （待创建）equipment-component.md | EquipmentComponent — ModuleChild，身体容器管理 |
+| （待创建）character-equipment.md | CharacterEquipment — ModuleChild，每帧装备同步 |
+| （待创建）slot-bone-mapper.md | SlotBoneMapper — SlotId→HumanBodyBones 静态映射 |

@@ -45,7 +45,7 @@ namespace RedDust.Character.Director
                 ComputeAim(),
                 ResolveGait(),
                 ResolvePosture(),
-                ResolveBodyForm(),
+                EBodyForm.Relax,
                 false,
                 input.FirstSkillRequested,
                 input.SecondSkillRequested,
@@ -203,13 +203,5 @@ namespace RedDust.Character.Director
             ability.TryActivate(def, ctx.ModelRoot.position, ctx.ModelRoot.forward);
         }
 
-        /// <summary>任意 slot 装备 → Combat，否则 Relax</summary>
-        private EBodyForm ResolveBodyForm()
-        {
-            for (int i = 0; i < equippedSlots.Length; i++)
-                if (equippedSlots[i])
-                    return EBodyForm.Combat;
-            return EBodyForm.Relax;
-        }
     }
 }

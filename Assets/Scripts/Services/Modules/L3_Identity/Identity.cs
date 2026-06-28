@@ -37,10 +37,19 @@ namespace RedDust
             _entityId = entityId;
         }
 
-        /// <summary>注入 Entity 的 PropertyTable。由 EntityService.Spawn 调用。</summary>
+        /// <summary>注入 Entity 的 PropertyTable 并合并 Common/Tags 到身份标签。由 EntityService.Spawn 调用。</summary>
         internal void SetProperties(PropertyTable properties)
         {
             Properties = properties;
+            var entityTags = properties?.GetTagList("Common/Tags");
+            if (entityTags != null)
+            {
+                foreach (var tag in entityTags)
+                {
+                    if (!string.IsNullOrEmpty(tag))
+                        Tags.AddTag(tag);
+                }
+            }
         }
 
         private void Awake()

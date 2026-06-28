@@ -83,6 +83,7 @@ namespace RedDust.Character
         internal SCharacterMotor LastMotor { get; private set; }
         internal SCharacterDiscrete LastDiscrete { get; private set; }
         private CharacterContainer container;
+        private CharacterEquipment equipment;
 
         private CharacterBuildContext buildCtx;
         private ICharacterDirector director;
@@ -134,6 +135,7 @@ namespace RedDust.Character
             locomotionSimulator = new GroundLocomotion(Registry);
             combat = new CharacterCombat(buildCtx, Registry);
             container = new CharacterContainer(buildCtx, Registry);
+            equipment = new CharacterEquipment(buildCtx, Registry);
 
             // ModuleHub.Awake: 扫描 ModuleChildMono → Register → OnAssembleAll
             base.Awake();
@@ -218,8 +220,9 @@ namespace RedDust.Character
                 frameCtx.Kinematic = characterKinematic.Evaluate(intent.LocomotionHeading,
                     intent.AimDirection, deltaTime);
 
-                // BodyForm 由 Director 意图驱动（Equip 事件 → PlayerInput → Director → Intent），此处为消费方同步。
-                // AnimSet 每帧解析在装备系统提供 GripSwitchEvent 前是可接受的实现。
+                // 装备同步：以 Container 为数据源，diff 管理 GO + GripTag
+                equipment.SyncEquipment();
+
                 var ownedTags = buildCtx.OwnedGripTags;
                 buildCtx.BodyForm = intent.DesiredBodyForm;
                 buildCtx.ResolvedLocoAnimSet = buildCtx.GripTable?.Resolve(ownedTags, buildCtx.BodyForm)

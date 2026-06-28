@@ -1,7 +1,7 @@
 # EntityService — 实现
 
 > `L2_EntityService/EntityService.cs` · L2 服务，MonoBehaviour
-> **Last Verified**: 2026-06-27 | **Verification**: All referenced files exist, signatures match code.
+> **Last Verified**: 2026-06-28 | **Verification**: All referenced files exist. +TryCreateNestedContainer +Unregister cascade.
 
 ## 内部机制
 

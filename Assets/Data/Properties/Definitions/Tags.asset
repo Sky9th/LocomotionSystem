@@ -10,13 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e56e5e7ec7eb8fa4d8f875b0e63eee81, type: 3}
-  m_Name: Slots
+  m_Name: Tags
   m_EditorClassIdentifier: 
-  Id: Slots
-  Description: "[Fallback] \u901A\u7528\u5BB9\u5668\u69FD\u4F4D\u5B9A\u4E49\u3002\u63A8\u8350\u4F7F\u7528\u7279\u5B9A\u69FD\u4F4D
-    PropertyDef\uFF08RightHand/Head/Chest/Pouch/Scope \u7B49\uFF09\uFF0C\u5404\u81EA\u6709\u72EC\u7ACB
-    AcceptTags \u9ED8\u8BA4\u503C\u3002\u672C\u5B9A\u4E49\u4EC5\u7528\u4E8E\u65E0\u7279\u6B8A\u9700\u6C42\u7684\u69FD\u4F4D\u3002"
-  Type: 8
+  Id: Tags
+  Description: "\u5B9E\u4F53\u5206\u7C7B\u6807\u7B7E\u3002\u56DE\u7B54\u300C\u8FD9\u4E2A\u5B9E\u4F53\u662F\u4EC0\u4E48\u7C7B\u578B\u300D(Weapon/Armor.Head/Backpack/Magazine)\uFF0C\u4F9B
+    Container \u69FD\u4F4D AcceptTags \u8FC7\u6EE4\u5339\u914D\u3002\u9ED8\u8BA4\u7A7A\u6570\u7EC4\u3002"
+  Type: 5
   IsDeprecated: 0
   Min: 0
   Max: 100
@@ -28,5 +27,5 @@ MonoBehaviour:
   DefaultString: 
   DefaultAssetGUID: 
   AssetTypeConstraint: 
-  StructTypeName: RedDust.Container.SlotDef
-  DefaultStructJson: '{"Capacity":1}'
+  StructTypeName: 
+  DefaultStructJson: 

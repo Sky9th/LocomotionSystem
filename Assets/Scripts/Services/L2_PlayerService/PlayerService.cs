@@ -1,5 +1,4 @@
 using RedDust.Character;
-using RedDust.Container;
 using RedDust.Core;
 using RedDust.Entities;
 using RedDust.GameScene;
@@ -22,6 +21,7 @@ namespace RedDust.Player
         [SerializeField] private CharacterDefSO zombieDef;
         [SerializeField] private ItemDefSO bladeDef;
         [SerializeField] private ItemDefSO pistolDef;
+        [SerializeField] private ItemDefSO backpackDef;
 
         [Header("Event Channels")]
         [SerializeField] private EntitySpawnRequestEvent spawnRequestEvent;
@@ -105,6 +105,12 @@ namespace RedDust.Player
                 SPlayer.FromTransform(playerInstance.transform, isLocalPlayer: true));
             _dispatcher.Publish(new SPlayerSpawnedEvent(playerInstance.transform, isLocalPlayer: true));
 
+            StartCoroutine(SpawnTestEntitiesNextFrame());
+        }
+
+        private System.Collections.IEnumerator SpawnTestEntitiesNextFrame()
+        {
+            yield return null;  // 等 Start → OnWire 完成
             SpawnTestEntities();
         }
 
@@ -124,23 +130,41 @@ namespace RedDust.Player
                 spawnRequestEvent.Raise(new SEntitySpawnRequest(zombieDef, "test_zombie", pos));
             }
 
-            // Blade → RightHand
-            if (bladeDef != null && container != null)
+            // Backpack → Back，武器进背包
+            if (backpackDef != null && container != null)
             {
-                const string bladeId = "test_blade";
-                spawnRequestEvent.Raise(new SEntitySpawnRequest(bladeDef, bladeId, null));
-                var e = entityService.Get(bladeId);
-                if (e != null) container.Place("RightHand", e);
+                const string backpackId = "test_backpack";
+                spawnRequestEvent.Raise(new SEntitySpawnRequest(backpackDef, backpackId, null));
+                var bp = entityService.Get(backpackId);
+                if (bp != null)
+                {
+                    container.Place("Back", bp);
+                    Debug.Log($"[PlayerService] Backpack placed into Back: {bp.Id}");
+
+                    // Blade → 背包
+                    if (bladeDef != null)
+                    {
+                        const string bladeId = "test_blade";
+                        spawnRequestEvent.Raise(new SEntitySpawnRequest(bladeDef, bladeId, null));
+                        var blade = entityService.Get(bladeId);
+                        if (blade != null && bp.NestedContainer != null)
+                            bp.NestedContainer.Place("ContainerSlot", blade);
+                    }
+
+                    // Pistol → 背包
+                    if (pistolDef != null)
+                    {
+                        const string pistolId = "test_pistol";
+                        spawnRequestEvent.Raise(new SEntitySpawnRequest(pistolDef, pistolId, null));
+                        var pistol = entityService.Get(pistolId);
+                        if (pistol != null && bp.NestedContainer != null)
+                            bp.NestedContainer.Place("ContainerSlot", pistol);
+                    }
+                }
             }
 
-            // Pistol → LeftHand
-            // if (pistolDef != null && container != null)
-            // {
-            //     const string pistolId = "test_pistol";
-            //     spawnRequestEvent.Raise(new SEntitySpawnRequest(pistolDef, pistolId, null));
-            //     var e = entityService.Get(pistolId);
-            //     if (e != null) container.Place("LeftHand", e);
-            // }
+            // Dump container contents
+            actor?.BuildContext?.CharacterContainer?.DumpContents();
         }
 
         public void OnGameplaySessionEnd()

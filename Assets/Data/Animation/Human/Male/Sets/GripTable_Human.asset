@@ -19,7 +19,7 @@ MonoBehaviour:
     combatSet: {fileID: 0}
   - gripTag: {fileID: 11400000, guid: 4db2aca5a5eb91f4287224f4005671c8, type: 2}
     animationSet: {fileID: 11400000, guid: c81796de84b39354ba6838e6c932ceff, type: 2}
-    combatSet: {fileID: 0}
+    combatSet: {fileID: 11400000, guid: 7e306c7c743684845bd63c8192939b86, type: 2}
   - gripTag: {fileID: 11400000, guid: 228db8510b10a454c87b61f481041e87, type: 2}
     animationSet: {fileID: 11400000, guid: 3d7a9b5ae6dd1094ea49d7386e239c37, type: 2}
-    combatSet: {fileID: 0}
+    combatSet: {fileID: 11400000, guid: 9c3a17e9b10a83c479db465b06871794, type: 2}

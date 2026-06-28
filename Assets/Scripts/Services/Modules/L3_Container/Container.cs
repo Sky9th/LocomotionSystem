@@ -20,7 +20,7 @@ namespace RedDust.Container
         public IReadOnlyDictionary<string, ContainerSlot> Slots => _slots;
 
         /// <summary>有序槽位列表（按构造顺序）。</summary>
-        public IReadOnlyList<ContainerSlot> SlotsOrdered { get; }
+        public IReadOnlyList<ContainerSlot> SlotsOrdered => _slotsOrdered;
 
         /// <summary>所有槽位物品总重。</summary>
         public float CurrentTotalWeight { get; private set; }
@@ -147,10 +147,19 @@ namespace RedDust.Container
         /// 遍历所有槽位的所有实体，逐调 entity.Tick(dt)。
         /// 由容器所有者驱动。
         /// </summary>
-        public void Tick(float dt)
+        public void Tick(float dt, int depth = 0)
         {
+            const int maxDepth = 10;
+            if (depth >= maxDepth)
+            {
+                Debug.LogError($"[Container] {ContainerId}: max depth {maxDepth} exceeded — possible cycle.");
+                return;
+            }
             foreach (var entity in AllItems())
+            {
                 entity.Tick(dt);
+                entity.NestedContainer?.Tick(dt, depth + 1);
+            }
         }
     }
 }

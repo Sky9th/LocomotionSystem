@@ -227,7 +227,7 @@ PrefabInstance:
     - target: {fileID: 2675367199521931450, guid: c944287bd34c14149a516139d3693ed3,
         type: 3}
       propertyPath: showNavGraphs
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2675367199521931450, guid: c944287bd34c14149a516139d3693ed3,
         type: 3}
