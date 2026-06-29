@@ -36,7 +36,6 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
             lastAnimSet = animSet;
 
             var bodyForm = buildCtx?.BodyForm ?? EBodyForm.Relax;
-            Debug.Log($"[LocomotionDriver] AnimSet → {animSet.name} (BodyForm={bodyForm})");
 
             if (animSet.HasFullLocomotion)
             {

@@ -42,12 +42,10 @@ namespace RedDust.Ability
         {
             if (innateTrees == null || innateTrees.Length == 0)
             {
-                Debug.Log("[AbilityForest] Initialized with 0 innate trees.");
                 return;
             }
 
             AddTrees(innateTrees, source: "innate");
-            Debug.Log($"[AbilityForest] Init — {ResolveSummary()}");
         }
 
         // 远期 — 角色创建系统 + SCharacterBuild 接入后扩展构造函数：
@@ -74,7 +72,6 @@ namespace RedDust.Ability
         {
             _weaponTags = weaponTags;
             Resolve();
-            Debug.Log($"[AbilityForest] WeaponTags updated — {ResolveSummary()}");
         }
 
         // ── 树管理 ──────────────────────────────────────────
@@ -86,7 +83,6 @@ namespace RedDust.Ability
             foreach (var tree in trees)
                 AddTreeInternal(tree, source);
             Resolve();
-            Debug.Log($"[AbilityForest] +{trees.Length} tree(s) from '{source}' — {ResolveSummary()}");
         }
 
         /// <summary>添加一棵树并解锁全部节点，自动 Resolve。</summary>
@@ -95,7 +91,6 @@ namespace RedDust.Ability
             if (tree == null) return;
             AddTreeInternal(tree, source);
             Resolve();
-            Debug.Log($"[AbilityForest] +tree '{tree.treeId}' from '{source}' — {ResolveSummary()}");
         }
 
         /// <summary>部分解锁添加，自动 Resolve。</summary>

@@ -190,12 +190,10 @@ namespace RedDust.Entities
 
             if (slotDefs.Count == 0)
             {
-                Debug.Log($"[EntityService] {entity.Id} ({entity.Preset.name}): Slots/ is empty — no NestedContainer.");
                 return;
             }
 
             entity.NestedContainer = new Container.Container($"{entity.Id}/Storage", slotDefs.ToArray());
-            Debug.Log($"[EntityService] {entity.Id} ({entity.Preset.name}): NestedContainer created, {slotDefs.Count} slot(s): {string.Join(", ", slotDefs.ConvertAll(d => d.SlotId))}");
         }
 
         /// <summary>按 Id 检索实体。未找到返回 null。</summary>

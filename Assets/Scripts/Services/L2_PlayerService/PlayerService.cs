@@ -139,7 +139,6 @@ namespace RedDust.Player
                 if (bp != null)
                 {
                     container.Place("Back", bp);
-                    Debug.Log($"[PlayerService] Backpack placed into Back: {bp.Id}");
 
                     // Blade → 背包
                     if (bladeDef != null)
@@ -163,8 +162,6 @@ namespace RedDust.Player
                 }
             }
 
-            // Dump container contents
-            actor?.BuildContext?.CharacterContainer?.DumpContents();
         }
 
         public void OnGameplaySessionEnd()
