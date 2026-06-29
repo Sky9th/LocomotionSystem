@@ -19,6 +19,8 @@ namespace RedDust.Core.Editor
         public const string ENTITY_ITEM        = "Entity.Item";
         public const string BODY               = "Body";
         public const string GRIP               = "Grip";
+        public const string GRIP_MELEE         = "Grip.Melee";
+        public const string GRIP_RANGED        = "Grip.Ranged";
         public const string NOISE              = "Noise";
 
         // ── 字段映射 ──

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd502afaf7ff75c47b42269f0eb3c4c9, type: 3}
   m_Name: Damage_Elemental_Shock
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 11400000, guid: 9d1a7e40beda8e349a8deef591142fbb, type: 2}
+  effectTag: {fileID: 11400000, guid: de1e7d7e5687a9e4092d574edd007ad0, type: 2}
   description: "\u7535\u51FB\u4F24\u5BB3\u3002\u7535\u51FB\u9677\u9631/Taser/\u80FD\u91CF\u6B66\u5668\u3002\u77AC\u65F6"
   duration: 0
   stackable: 0

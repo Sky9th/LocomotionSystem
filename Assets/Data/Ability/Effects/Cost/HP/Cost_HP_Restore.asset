@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 141cf4e8366df5c47949c79fda63fae0, type: 3}
   m_Name: Cost_HP_Restore
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 11400000, guid: c702240394258e24498bb122899142ce, type: 2}
+  effectTag: {fileID: 0}
   description: "\u751F\u547D\u6062\u590D\u3002\u7EF7\u5E26/\u533B\u7597\u5305\u3002\u56DE
     20 HP"
   duration: 0

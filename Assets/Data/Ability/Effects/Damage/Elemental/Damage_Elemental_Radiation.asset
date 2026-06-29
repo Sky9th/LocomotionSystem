@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd502afaf7ff75c47b42269f0eb3c4c9, type: 3}
   m_Name: Damage_Elemental_Radiation
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 11400000, guid: fe4b7bd23b602004b934d78beb6acf28, type: 2}
+  effectTag: {fileID: 11400000, guid: ca6abfed3052ab54b8c6ccc4c0426625, type: 2}
   description: "\u8F90\u5C04\u4F24\u5BB3\u3002\u8F90\u5C04\u533A/\u653E\u5C04\u6027\u5E9F\u7269\u300230
     \u79D2\u6301\u7EED\u8F90\u7167"
   duration: 30

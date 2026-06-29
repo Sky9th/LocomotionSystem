@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultSet: {fileID: 11400000, guid: f94d816d7dd50ed408590ade30db4d83, type: 2}
   entries:
-  - gripTag: {fileID: 11400000, guid: d1b99ad09a70d8b4cb60f11e5d099167, type: 2}
+  - gripTag: {fileID: 11400000, guid: ba0c8934bf862d84197b5957704273c1, type: 2}
+    weaponTypeTag: {fileID: 0}
     animationSet: {fileID: 11400000, guid: f94d816d7dd50ed408590ade30db4d83, type: 2}
     combatSet: {fileID: 11400000, guid: a480a84b69fcf8c4e932c0341ca2a7f3, type: 2}

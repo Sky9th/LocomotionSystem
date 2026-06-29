@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd502afaf7ff75c47b42269f0eb3c4c9, type: 3}
   m_Name: Damage_Physical_Blunt_Heavy
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 11400000, guid: e61f419bdfee6444bb9fca9e09fb95f3, type: 2}
+  effectTag: {fileID: 11400000, guid: 57e0ce184f310be46adfe880c17005d5, type: 2}
   description: "\u949D\u51FB\u4F24\u5BB3\xB7\u91CD\u51FB\u3002\u500D\u7387 1.5\u3002\u5BF9\u5E94
     HeavySmash/ShieldBash \u7B49\u91CD\u51FB\u6280\u80FD"
   duration: 0

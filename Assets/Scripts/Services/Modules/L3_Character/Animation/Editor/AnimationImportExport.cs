@@ -24,10 +24,10 @@ namespace RedDust.Character.Animation
         public string version = "1.0";
         public string description;
         public ProfileEntry[] profiles;
-        public LocomotionConfigEntry locomotionConfig;
+        public LocomotionConfigEntry[] locomotionConfigs;
         public ModeConfigEntry[] modeProfiles;
         public LocomotionSetEntry[] locomotionSets;
-        public GripTableEntry gripTable;
+        public GripTableEntry[] gripTables;
     }
 
     [Serializable]
@@ -164,6 +164,7 @@ namespace RedDust.Character.Animation
     public class GripEntryItem
     {
         public string gripTag;                   // rTagDefSO.FullTag
+        public string weaponTypeTag;             // rTagDefSO.FullTag, null=不限
         public string animationSet;              // {directory}/{name} path  (Relax)
         public string combatSet;                 // {directory}/{name} path  (Combat, optional)
     }
@@ -272,12 +273,10 @@ namespace RedDust.Character.Animation
             }
 
             file.profiles = profileEntries.ToArray();
-            // For simplicity, export the first profile's config/grip as top-level singletons
-            // (matching the JSON sample). Multi-profile files share these via dedup.
-            if (configEntries.Count > 0) file.locomotionConfig = configEntries[0];
-            if (modeEntries.Count > 0) file.modeProfiles = modeEntries.ToArray();
-            if (setEntries.Count > 0) file.locomotionSets = setEntries.ToArray();
-            if (gripEntries.Count > 0) file.gripTable = gripEntries[0];
+            file.locomotionConfigs = configEntries.ToArray();
+            file.modeProfiles = modeEntries.ToArray();
+            file.locomotionSets = setEntries.ToArray();
+            file.gripTables = gripEntries.ToArray();
 
             return JsonUtility.ToJson(file, true);
         }
@@ -404,6 +403,7 @@ namespace RedDust.Character.Animation
                     entry.entries[i] = new GripEntryItem
                     {
                         gripTag = ge.gripTag?.FullTag,
+                        weaponTypeTag = ge.weaponTypeTag?.FullTag,
                         animationSet = MakePath(ge.animationSet),
                         combatSet = ge.combatSet != null ? MakePath(ge.combatSet) : null,
                     };
@@ -550,8 +550,8 @@ namespace RedDust.Character.Animation
             catch (Exception e) { errors.Add($"Parse failed: {e.Message}"); return (0, 0, errors); }
             if (file == null) { errors.Add("JSON deserialized to null."); return (0, 0, errors); }
 
-            if (string.IsNullOrEmpty(file.version) || file.version != "1.0")
-            { errors.Add($"Unsupported version '{file.version}'. Only '1.0' is supported."); return (0, 0, errors); }
+            if (string.IsNullOrEmpty(file.version) || (file.version != "1.0" && file.version != "2.0"))
+            { errors.Add($"Unsupported version '{file.version}'. Only '1.0' / '2.0' is supported."); return (0, 0, errors); }
 
             if (file.profiles == null || file.profiles.Length == 0)
             { errors.Add("JSON contains no profiles."); return (0, 0, errors); }
@@ -588,24 +588,26 @@ namespace RedDust.Character.Animation
                 }
             }
 
-            // Phase 3: LocomotionConfig + GripTable (ref Phase 1+2 SOs by {directory}/{name})
-            if (file.locomotionConfig != null)
+            // Phase 3: LocomotionConfigs + GripTables (ref Phase 1+2 SOs by {directory}/{name})
+            if (file.locomotionConfigs != null)
             {
-                if (ValidateEntry(file.locomotionConfig, "LocomotionConfig", errors))
+                foreach (var cfg in file.locomotionConfigs)
                 {
-                    var key = $"{file.locomotionConfig.directory}/{file.locomotionConfig.name}";
-                    if (ImportLocomotionConfig(file.locomotionConfig, soLookupByName, createdThisSession,
+                    if (!ValidateEntry(cfg, "LocomotionConfig", errors)) continue;
+                    var key = $"{cfg.directory}/{cfg.name}";
+                    if (ImportLocomotionConfig(cfg, soLookupByName, createdThisSession,
                             out var inst, out var skipped1, errors))
                     { createdThisSession[key] = inst; created++; }
                     else skipped += skipped1;
                 }
             }
-            if (file.gripTable != null)
+            if (file.gripTables != null)
             {
-                if (ValidateEntry(file.gripTable, "GripTable", errors))
+                foreach (var gt in file.gripTables)
                 {
-                    var key = $"{file.gripTable.directory}/{file.gripTable.name}";
-                    if (ImportGripTable(file.gripTable, soLookupByName, createdThisSession, tagLookup,
+                    if (!ValidateEntry(gt, "GripTable", errors)) continue;
+                    var key = $"{gt.directory}/{gt.name}";
+                    if (ImportGripTable(gt, soLookupByName, createdThisSession, tagLookup,
                             out var inst, out var skipped1, errors))
                     { createdThisSession[key] = inst; created++; }
                     else skipped += skipped1;
@@ -868,6 +870,9 @@ namespace RedDust.Character.Animation
                         ge.gripTag = tag;
                     else if (!string.IsNullOrEmpty(item.gripTag))
                         errors.Add($"[GripTable] '{entry.name}': tag '{item.gripTag}' not found");
+
+                    if (!string.IsNullOrEmpty(item.weaponTypeTag) && tagLookup.TryGetValue(item.weaponTypeTag, out var wtTag))
+                        ge.weaponTypeTag = wtTag;
 
                     ge.animationSet = ResolveSORef<LocomotionAnimationSetSO>(item.animationSet,
                         nameLookup, createdThisSession, errors, entry.name);
@@ -1229,11 +1234,11 @@ namespace RedDust.Character.Animation
             int profiles = preview.profiles?.Length ?? 0;
             int modes = preview.modeProfiles?.Length ?? 0;
             int sets = preview.locomotionSets?.Length ?? 0;
-            bool hasConfig = preview.locomotionConfig != null;
-            bool hasGrip = preview.gripTable != null;
+            int configs = preview.locomotionConfigs?.Length ?? 0;
+            int grips = preview.gripTables?.Length ?? 0;
 
-            var summary = $"<b>{profiles}</b> profile(s) · {(hasConfig ? "1" : "0")} config · <b>{modes}</b> modes · <b>{sets}</b> sets" +
-                $" · {(hasGrip ? "1" : "0")} gripTable";
+            var summary = $"<b>{profiles}</b> profile(s) · <b>{configs}</b> configs · <b>{modes}</b> modes · <b>{sets}</b> sets" +
+                $" · <b>{grips}</b> gripTables";
             return $"{summary}\nv{preview.version} · {preview.description ?? "-"}";
         }
     }

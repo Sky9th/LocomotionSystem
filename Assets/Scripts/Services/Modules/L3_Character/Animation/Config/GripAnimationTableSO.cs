@@ -6,8 +6,11 @@ namespace RedDust.Character.Animation
     [System.Serializable]
     public struct GripAnimationEntry
     {
-        [Tooltip("握持姿态标签（Equip.Grip.*），精确匹配")]
+        [Tooltip("握持姿态标签（Grip.*），HasTagExact 精确匹配。必填。")]
         public rTagDefSO gripTag;
+
+        [Tooltip("武器类型标签（Entity.Weapon.*），HasTag 前缀匹配。null=不限武器。")]
+        public rTagDefSO weaponTypeTag;
 
         [Tooltip("默认（Relax）使用的 Locomotion 动画集")]
         public LocomotionAnimationSetSO animationSet;
@@ -17,8 +20,8 @@ namespace RedDust.Character.Animation
     }
 
     /// <summary>
-    /// 握持姿态 → LocomotionAnimationSetSO 查表。
-    /// 装备系统换武器时，根据 OwnedTags 中 Equip.Grip.* 标签解析对应动画集。
+    /// 握持姿态 × 武器类型 → LocomotionAnimationSetSO 查表。
+    /// 装备系统换武器时，根据 OwnedTags 中 Grip.* + Entity.Weapon.* 双维度匹配解析动画集。
     /// </summary>
     [CreateAssetMenu(
         fileName = "GripAnimationTableSO",
@@ -28,7 +31,7 @@ namespace RedDust.Character.Animation
         [Tooltip("无 Tag 匹配时使用的动画集。必填。")]
         public LocomotionAnimationSetSO defaultSet;
 
-        [Tooltip("Grip Tag → 动画集映射。按数组顺序，首个精确命中即返回。")]
+        [Tooltip("Grip × WeaponType → 动画集映射。按数组顺序，首个命中即返回。")]
         public GripAnimationEntry[] entries;
 
         public LocomotionAnimationSetSO Resolve(rTagContainer ownedTags, EBodyForm bodyForm)
@@ -38,21 +41,24 @@ namespace RedDust.Character.Animation
             for (int i = 0; i < entries.Length; i++)
             {
                 var e = entries[i];
-                if (e.gripTag != null
-                    && e.animationSet != null
-                    && ownedTags.HasTagExact(e.gripTag.FullTag))
+                if (e.gripTag == null || e.animationSet == null) continue;
+
+                // Grip 精确匹配
+                if (!ownedTags.HasTagExact(e.gripTag.FullTag)) continue;
+
+                // WeaponType 前缀匹配（null=不限）
+                if (e.weaponTypeTag != null && !ownedTags.HasTag(e.weaponTypeTag.FullTag)) continue;
+
+                if (inCombat)
                 {
-                    if (inCombat)
+                    if (e.combatSet != null)
                     {
-                        if (e.combatSet != null)
-                        {
-                            Debug.Log($"[GripTable] Matched grip={e.gripTag.FullTag} BodyForm=Combat → {e.combatSet.name}");
-                            return e.combatSet;
-                        }
-                        Debug.Log($"[GripTable] Matched grip={e.gripTag.FullTag} BodyForm=Combat → combatSet is null, fallback");
+                        Debug.Log($"[GripTable] Matched grip={e.gripTag.FullTag} weapon={e.weaponTypeTag?.FullTag} BodyForm=Combat → {e.combatSet.name}");
+                        return e.combatSet;
                     }
-                    return e.animationSet;
+                    Debug.Log($"[GripTable] Matched grip={e.gripTag.FullTag} weapon={e.weaponTypeTag?.FullTag} BodyForm=Combat → combatSet is null, fallback");
                 }
+                return e.animationSet;
             }
             return defaultSet;
         }

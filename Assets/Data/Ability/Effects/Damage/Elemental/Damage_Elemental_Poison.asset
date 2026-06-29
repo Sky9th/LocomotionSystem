@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd502afaf7ff75c47b42269f0eb3c4c9, type: 3}
   m_Name: Damage_Elemental_Poison
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 11400000, guid: a029d97617e3c3a4ca4c6e2b6ce0b0c6, type: 2}
+  effectTag: {fileID: 11400000, guid: 0465ab7a38e23834da9496f14bf456be, type: 2}
   description: "\u6BD2\u7D20\u4F24\u5BB3\u3002\u6BD2\u6C14/\u6DEC\u6BD2\u6B66\u5668/\u6BD2\u8611\u83C7\u300210
     \u79D2\u53EF\u53E0\u52A0 DoT"
   duration: 10

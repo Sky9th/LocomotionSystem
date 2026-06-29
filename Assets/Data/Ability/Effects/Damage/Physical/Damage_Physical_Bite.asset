@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd502afaf7ff75c47b42269f0eb3c4c9, type: 3}
   m_Name: Damage_Physical_Bite
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 11400000, guid: 18f04e797e0836747a137ad44ac6c065, type: 2}
+  effectTag: {fileID: 11400000, guid: d65180b1d32ff074b999a70ce9956853, type: 2}
   description: "\u6495\u54AC\u4F24\u5BB3\u3002\u50F5\u5C38/\u91CE\u517D\u653B\u51FB\u3002\u53EF\u80FD\u9644\u5E26
     Disease/Bleed"
   duration: 0

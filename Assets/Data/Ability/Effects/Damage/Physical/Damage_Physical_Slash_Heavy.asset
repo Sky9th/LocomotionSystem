@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd502afaf7ff75c47b42269f0eb3c4c9, type: 3}
   m_Name: Damage_Physical_Slash_Heavy
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 11400000, guid: cb1240ebbb8e5d848b226a6860e9d34b, type: 2}
+  effectTag: {fileID: 11400000, guid: 7651a80b5cf07914396abc1d912c2d5f, type: 2}
   description: "\u5207\u5272\u4F24\u5BB3\xB7\u91CD\u51FB\u3002\u500D\u7387 1.5\u3002\u5BF9\u5E94
     HeavyChop/HeavyCleave \u7B49\u91CD\u780D\u6280\u80FD"
   duration: 0

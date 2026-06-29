@@ -195,6 +195,9 @@ namespace RedDust.Ability
                 if (!IsWeaponCompatible(tree.compatibleWeaponTags, _weaponTags))
                     continue;
 
+                if (!IsGripCompatible(tree.compatibleGripTags, _weaponTags))
+                    continue;
+
                 foreach (var node in tree.nodes)
                 {
                     if (string.IsNullOrEmpty(node.nodeId)) continue;
@@ -222,6 +225,24 @@ namespace RedDust.Ability
             foreach (var tag in compatibleTags)
             {
                 if (tag != null && weaponTags.HasTag(tag.FullTag))
+                    return true;
+            }
+            return false;
+        }
+
+        private static bool IsGripCompatible(
+            rTagDefSO[] compatibleGripTags,
+            rTagContainer equipmentTags)
+        {
+            if (compatibleGripTags == null || compatibleGripTags.Length == 0)
+                return true;
+
+            if (equipmentTags == null)
+                return false;
+
+            foreach (var tag in compatibleGripTags)
+            {
+                if (tag != null && equipmentTags.HasTag(tag.FullTag))
                     return true;
             }
             return false;

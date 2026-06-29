@@ -15,19 +15,21 @@ MonoBehaviour:
   treeId: Sword_Innate
   displayName: "\u5200\u5251\u57FA\u7840\u6280\u6CD5"
   description: "\u6301\u5200/\u5251\u7C7B\u6B66\u5668\u65F6\u7684\u57FA\u7840\u6280\u80FD\u3002compatibleWeaponTags
-    \u5339\u914D Weapon.Blade \u53CA\u5B50\u6807\u7B7E\u3002"
+    \u5339\u914D Entity.Weapon.Melee.Blade\u3002"
   icon: {fileID: 0}
   treeTags:
-  - {fileID: 11400000, guid: dd037fbb735088547a338bc754186503, type: 2}
+  - {fileID: 11400000, guid: 374974b8bd8c98d46af1bd15c54b9f47, type: 2}
   compatibleWeaponTags:
-  - {fileID: 11400000, guid: de881ddbb1b6a9b4f8ad15a4d5020353, type: 2}
+  - {fileID: 11400000, guid: 63f34b1adeceab2408926be904f32039, type: 2}
+  compatibleGripTags:
+  - {fileID: 11400000, guid: d8227c65e8125634fbe557ed3dd798a6, type: 2}
   exclusiveGroup: 
   nodes:
   - nodeId: lightCut
-    ability: {fileID: 11400000, guid: a3dae7e43902d784798ca34b0b71ef24, type: 2}
+    ability: {fileID: 11400000, guid: ddaef91dca5393e4abaf0a2cd8498d97, type: 2}
     passive: {fileID: 0}
     prerequisites: []
   - nodeId: heavyChop
-    ability: {fileID: 11400000, guid: 2aba8f32928b4974f80e63aa4989bd41, type: 2}
+    ability: {fileID: 11400000, guid: 553084be4c2923a4692c2c5d3717fce5, type: 2}
     passive: {fileID: 0}
     prerequisites: []

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd502afaf7ff75c47b42269f0eb3c4c9, type: 3}
   m_Name: Damage_Biological_Disease
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 11400000, guid: d78b18856eb36954db05226496b35632, type: 2}
+  effectTag: {fileID: 11400000, guid: 15095d42a967c25469b39f3f7f84c234, type: 2}
   description: "\u75BE\u75C5\u4F24\u5BB3\u3002\u50F5\u5C38\u54AC\u4F24\u611F\u67D3/\u761F\u75AB\u300230
     \u79D2\u6F5C\u4F0F+\u53D1\u75C5"
   duration: 30

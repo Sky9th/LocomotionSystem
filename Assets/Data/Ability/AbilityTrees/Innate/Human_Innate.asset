@@ -14,22 +14,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   treeId: Human_Innate
   displayName: "\u4EBA\u4F53\u57FA\u7840\u6280\u80FD"
-  description: "\u6240\u6709\u4EBA\u7C7B\u89D2\u8272\u4E0E\u751F\u4FF1\u6765\u7684\u5F92\u624B\u6218\u6597\u80FD\u529B\u3002\u7A7A\u624B\u6216\u6B66\u5668\u4E0D\u517C\u5BB9\u65F6\u81EA\u52A8\u751F\u6548\u3002"
+  description: "\u7A7A\u624B\u65F6\u7684\u5F92\u624B\u6218\u6597\u80FD\u529B\u3002compatibleGripTags
+    \u5339\u914D Grip.Unarmed\u3002"
   icon: {fileID: 0}
   treeTags:
-  - {fileID: 11400000, guid: dd037fbb735088547a338bc754186503, type: 2}
+  - {fileID: 11400000, guid: 374974b8bd8c98d46af1bd15c54b9f47, type: 2}
   compatibleWeaponTags: []
+  compatibleGripTags:
+  - {fileID: 11400000, guid: 8249bdc132514d54388bbeaa4e7fa164, type: 2}
   exclusiveGroup: 
   nodes:
   - nodeId: punch
-    ability: {fileID: 11400000, guid: d1f8a9826bab6c4489dc183852ddc60a, type: 2}
+    ability: {fileID: 11400000, guid: cb162c5dcb5d5f045a7c6fa679394029, type: 2}
     passive: {fileID: 0}
     prerequisites: []
   - nodeId: kick
-    ability: {fileID: 11400000, guid: 7a4df747e3614c947badacce34ad7bf8, type: 2}
+    ability: {fileID: 11400000, guid: 949bd32b9ccd347499eb280ba5449edd, type: 2}
     passive: {fileID: 0}
     prerequisites: []
   - nodeId: grab
-    ability: {fileID: 11400000, guid: f51e95724452fd7479c9029b91e3834e, type: 2}
+    ability: {fileID: 11400000, guid: 7dc99acb0e0e8e54aaf75ea4b1c89987, type: 2}
     passive: {fileID: 0}
     prerequisites: []

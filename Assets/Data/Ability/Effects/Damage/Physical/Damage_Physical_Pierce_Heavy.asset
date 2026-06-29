@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd502afaf7ff75c47b42269f0eb3c4c9, type: 3}
   m_Name: Damage_Physical_Pierce_Heavy
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 11400000, guid: f4e02dfe912923043ae61393c06c4a00, type: 2}
+  effectTag: {fileID: 11400000, guid: 1f6b1aafde16dce4885fad33a9277602, type: 2}
   description: "\u7A7F\u523A\u4F24\u5BB3\xB7\u91CD\u51FB\u3002\u500D\u7387 1.5\u3002\u5BF9\u5E94
     Snipe/BreathControl \u7B49\u7CBE\u51C6\u5C04\u51FB"
   duration: 0

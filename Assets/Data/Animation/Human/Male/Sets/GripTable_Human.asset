@@ -14,12 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultSet: {fileID: 11400000, guid: 11f11b6d47e584c47a9f80461d84a0bd, type: 2}
   entries:
-  - gripTag: {fileID: 11400000, guid: d1b99ad09a70d8b4cb60f11e5d099167, type: 2}
+  - gripTag: {fileID: 11400000, guid: ba0c8934bf862d84197b5957704273c1, type: 2}
+    weaponTypeTag: {fileID: 0}
     animationSet: {fileID: 11400000, guid: 11f11b6d47e584c47a9f80461d84a0bd, type: 2}
     combatSet: {fileID: 0}
-  - gripTag: {fileID: 11400000, guid: 4db2aca5a5eb91f4287224f4005671c8, type: 2}
+  - gripTag: {fileID: 11400000, guid: 084fd9735b6c6824083c01813a0bea8a, type: 2}
+    weaponTypeTag: {fileID: 11400000, guid: 8fd15cc8d0571b143a0564f2c9dc1f3e, type: 2}
     animationSet: {fileID: 11400000, guid: c81796de84b39354ba6838e6c932ceff, type: 2}
     combatSet: {fileID: 11400000, guid: 7e306c7c743684845bd63c8192939b86, type: 2}
-  - gripTag: {fileID: 11400000, guid: 228db8510b10a454c87b61f481041e87, type: 2}
+  - gripTag: {fileID: 11400000, guid: dfbed699ddaa7854a8de021f7998d138, type: 2}
+    weaponTypeTag: {fileID: 11400000, guid: 63f34b1adeceab2408926be904f32039, type: 2}
     animationSet: {fileID: 11400000, guid: 3d7a9b5ae6dd1094ea49d7386e239c37, type: 2}
     combatSet: {fileID: 11400000, guid: 9c3a17e9b10a83c479db465b06871794, type: 2}

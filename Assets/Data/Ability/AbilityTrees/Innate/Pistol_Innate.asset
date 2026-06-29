@@ -17,16 +17,18 @@ MonoBehaviour:
   description: "\u6301\u624B\u67AA\u65F6\u7684\u57FA\u7840\u5C04\u51FB\u6280\u80FD\u3002"
   icon: {fileID: 0}
   treeTags:
-  - {fileID: 11400000, guid: dd037fbb735088547a338bc754186503, type: 2}
+  - {fileID: 11400000, guid: 374974b8bd8c98d46af1bd15c54b9f47, type: 2}
   compatibleWeaponTags:
-  - {fileID: 11400000, guid: 35d9bdebb5e87334cbd013e9b16f1489, type: 2}
+  - {fileID: 11400000, guid: 8fd15cc8d0571b143a0564f2c9dc1f3e, type: 2}
+  compatibleGripTags:
+  - {fileID: 11400000, guid: 2a906ea0870790a46a04db7ec0e22531, type: 2}
   exclusiveGroup: 
   nodes:
   - nodeId: normalFire
-    ability: {fileID: 11400000, guid: 2151cf2d96121414e89ba5f6df9d2e22, type: 2}
+    ability: {fileID: 11400000, guid: 61a31e3c090421646b0d67454371a2b4, type: 2}
     passive: {fileID: 0}
     prerequisites: []
   - nodeId: suppressiveFire
-    ability: {fileID: 11400000, guid: 17c62833e64ed44408103ee0336f89dd, type: 2}
+    ability: {fileID: 11400000, guid: 8f2ac9a53448b18488cece33818c70d8, type: 2}
     passive: {fileID: 0}
     prerequisites: []

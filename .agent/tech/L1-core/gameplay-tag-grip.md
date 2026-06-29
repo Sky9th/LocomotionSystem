@@ -8,12 +8,21 @@
 
 ```
 Grip
-├── Unarmed
-├── OneHanded
-├── TwoHanded
-├── DualWield
-├── Fencing
-└── Shield
+├── Melee
+│   ├── Unarmed
+│   ├── OneHanded
+│   ├── TwoHanded
+│   ├── DualWield
+│   ├── Fencing
+│   └── Shield
+└── Ranged
+    ├── Pistol2H
+    ├── DualPistol
+    ├── Rifle
+    ├── Shotgun
+    ├── Bow
+    ├── Launcher
+    └── Heavy
 ```
 
 ## 字段映射

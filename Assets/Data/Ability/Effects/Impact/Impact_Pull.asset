@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f5e3a295d6f83c4385b1550d2a6db42, type: 3}
   m_Name: Impact_Pull
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 11400000, guid: 6ac25a91bd8b95c4da3999fae90d4ce1, type: 2}
+  effectTag: {fileID: 0}
   description: "\u62C9\u8FD1\u3002\u6293\u53D6/\u94A9\u7D22\u6280\u80FD\u3002\u5411\u65BD\u6CD5\u8005\u62D6\u62FD"
   duration: 0
   stackable: 0

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37bc0a4598d729a43879ed8d3a7b72a9, type: 3}
+  m_Name: GripTable_TypeE
+  m_EditorClassIdentifier: 
+  defaultSet: {fileID: 11400000, guid: 0aef2c6000b10c14a98b2ac4b3641d92, type: 2}
+  entries:
+  - gripTag: {fileID: 11400000, guid: ba0c8934bf862d84197b5957704273c1, type: 2}
+    weaponTypeTag: {fileID: 0}
+    animationSet: {fileID: 11400000, guid: 0aef2c6000b10c14a98b2ac4b3641d92, type: 2}
+    combatSet: {fileID: 11400000, guid: a685537f6779dfa44b798af9fe15cafc, type: 2}

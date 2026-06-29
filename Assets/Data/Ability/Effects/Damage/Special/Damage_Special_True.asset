@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd502afaf7ff75c47b42269f0eb3c4c9, type: 3}
   m_Name: Damage_Special_True
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 11400000, guid: 279c45afa453c3b48a2389f3c4680aef, type: 2}
+  effectTag: {fileID: 11400000, guid: c9643f4c009d9eb4097b860e75723833, type: 2}
   description: "\u771F\u5B9E\u4F24\u5BB3\u3002\u65E0\u89C6\u5168\u90E8\u9632\u5FA1/\u62A4\u7532/\u6297\u6027\u3002\u5904\u51B3/\u5373\u6B7B\u7C7B\u6280\u80FD"
   duration: 0
   stackable: 0

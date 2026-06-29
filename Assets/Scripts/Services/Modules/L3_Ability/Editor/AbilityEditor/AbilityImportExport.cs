@@ -59,7 +59,7 @@ namespace RedDust.Ability
 
     public static class AbilityImporter
     {
-        internal const string AbilitiesDir = "Assets/Data/Ability/Abilities";
+        internal const string AbilitiesDir = "Assets/Data/Ability";
 
         public static string ExportToJson()
         {
@@ -247,13 +247,19 @@ namespace RedDust.Ability
         /// </summary>
         private static string ResolveActiveDir(string abilityTag)
         {
-            if (string.IsNullOrWhiteSpace(abilityTag)) return "Actives";
+            if (string.IsNullOrWhiteSpace(abilityTag)) return "Definition/Actives";
             var parts = abilityTag.Split('.');
-            if (parts.Length < 3) return "Actives";
-            var middle = new string[parts.Length - 2];
-            for (int i = 1; i < parts.Length - 1; i++)
-                middle[i - 1] = parts[i];
-            return $"Actives/{string.Join("/", middle)}";
+            // abilityTag: Ability.Definition.Active.Melee.OneHanded.Blade.LightCut
+            // Skip [0]Ability [1]Definition, map [2]Active→Actives, keep rest
+            if (parts.Length < 4) return "Definition/Actives";
+            var middle = new string[parts.Length - 4]; // skip Ability, Definition, Active, leaf
+            for (int i = 3; i < parts.Length - 1; i++)
+                middle[i - 3] = parts[i];
+            return parts[1] switch
+            {
+                "Definition" => $"Definition/Actives/{string.Join("/", middle)}",
+                _ => $"{parts[1]}/Actives/{string.Join("/", middle)}"
+            };
         }
 
         private static void ApplyFields(AbilitySO a, AbilityEntry entry,
@@ -357,7 +363,7 @@ namespace RedDust.Ability
             EditorImportExport.Draw(
                 title: "Ability Import-Export",
                 subtitle: "L3_Ability · JSON ↔ .asset",
-                defaultDir: "Assets/Data/Ability",
+                defaultDir: "Assets/Data/Ability/Definition",
                 fileExtension: "json",
                 defaultFileName: "abilities_export",
                 filePath: ref _filePath,

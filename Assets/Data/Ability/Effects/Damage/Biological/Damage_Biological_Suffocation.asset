@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd502afaf7ff75c47b42269f0eb3c4c9, type: 3}
   m_Name: Damage_Biological_Suffocation
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 11400000, guid: e1c51647c102eba4e94d3ef7fb50072a, type: 2}
+  effectTag: {fileID: 11400000, guid: 8128c6f0dbb02b64c8e7a1672e313343, type: 2}
   description: "\u7A92\u606F\u4F24\u5BB3\u3002\u70DF\u96FE\u5F39/\u6BD2\u6C14\u5BA4/\u6EBA\u6C34\u30023
     \u79D2\u6301\u7EED\u7A92\u606F"
   duration: 3

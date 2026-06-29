@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a4a78cf897a28d4bbf5924bd8422b20, type: 3}
   m_Name: Execute_LowHP_30
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 11400000, guid: 12855441054652f4fb309e54205ba220, type: 2}
+  effectTag: {fileID: 11400000, guid: 51e380c37c36fc842a1b79988078d0d9, type: 2}
   description: "\u65A9\u6740\xB730%\u3002\u76EE\u6807 HP \u4F4E\u4E8E 30% \u65F6\u5373\u6B7B"
   duration: 0
   stackable: 0

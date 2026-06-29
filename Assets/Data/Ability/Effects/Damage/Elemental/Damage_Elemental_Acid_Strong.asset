@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd502afaf7ff75c47b42269f0eb3c4c9, type: 3}
   m_Name: Damage_Elemental_Acid_Strong
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 11400000, guid: b64cb01f083cc624293df19f1add387f, type: 2}
+  effectTag: {fileID: 11400000, guid: bc640d63aa2e15d4094bdd0c54bb2a68, type: 2}
   description: "\u9178\u8680\u4F24\u5BB3\xB7\u5F3A\u3002\u500D\u7387 2.5\uFF0C6 \u79D2\u8150\u8680\u3002\u5DE5\u4E1A\u9178\u6DB2/\u9AD8\u7EA7\u8150\u8680\u5242"
   duration: 6
   stackable: 0

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f5e3a295d6f83c4385b1550d2a6db42, type: 3}
   m_Name: Impact_Light
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 11400000, guid: 9b574a28af68cbd4fb0150cbb0d2030b, type: 2}
+  effectTag: {fileID: 0}
   description: "\u8F7B\u786C\u76F4\u3002\u8F7B\u653B\u51FB\u9644\u5E26\u3002\u786C\u76F4\u503C
     5\uFF0C\u65E0\u51FB\u9000"
   duration: 0

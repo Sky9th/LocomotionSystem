@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a301d1db9e245b4692497ca6ccef8d0, type: 3}
+  m_Name: ZombieAnimationProfile_TypeE
+  m_EditorClassIdentifier: 
+  locomotionConfig: {fileID: 11400000, guid: ff3c3ab7ca360eb45bde6fd3a1a20113, type: 2}
+  modeProfiles:
+  - {fileID: 11400000, guid: a1d0fe66e1fea0c47bf5d475fa929fed, type: 2}
+  defaultLocomotionSet: {fileID: 11400000, guid: 0aef2c6000b10c14a98b2ac4b3641d92,
+    type: 2}
+  gripTable: {fileID: 11400000, guid: c3ac1a1e469d93c4fb7266ee4b3a3f89, type: 2}

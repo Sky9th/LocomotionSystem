@@ -30,6 +30,7 @@ namespace RedDust.Ability
         public string icon;                // asset path, nullable
         public string[] treeTags;          // FullTag[]
         public string[] compatibleWeaponTags; // FullTag[]
+        public string[] compatibleGripTags;   // FullTag[]
         public string exclusiveGroup;      // "" = no exclusion
         public TreeNodeEntry[] nodes;
     }
@@ -87,6 +88,8 @@ namespace RedDust.Ability
                 icon = tree.icon != null ? AssetDatabase.GetAssetPath(tree.icon) : null,
                 treeTags = tree.treeTags?.Select(t => t?.FullTag).Where(t => t != null).ToArray(),
                 compatibleWeaponTags = tree.compatibleWeaponTags?
+                    .Select(t => t?.FullTag).Where(t => t != null).ToArray(),
+                compatibleGripTags = tree.compatibleGripTags?
                     .Select(t => t?.FullTag).Where(t => t != null).ToArray(),
                 exclusiveGroup = tree.exclusiveGroup ?? "",
                 nodes = tree.nodes?.Select(ExportNode).ToArray(),
@@ -155,6 +158,7 @@ namespace RedDust.Ability
                 // Resolve tags
                 tree.treeTags = ResolveTags(entry.treeTags, tagByFullTag, errors, entry.treeId);
                 tree.compatibleWeaponTags = ResolveTags(entry.compatibleWeaponTags, tagByFullTag, errors, entry.treeId);
+                tree.compatibleGripTags = ResolveTags(entry.compatibleGripTags, tagByFullTag, errors, entry.treeId);
 
                 // Resolve icon
                 if (!string.IsNullOrEmpty(entry.icon))

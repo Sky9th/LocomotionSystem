@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd502afaf7ff75c47b42269f0eb3c4c9, type: 3}
   m_Name: Damage_Biological_Bleed
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 11400000, guid: c2b20101734dc134788135b34b4829fc, type: 2}
+  effectTag: {fileID: 11400000, guid: adb586111614a4b4392a067df4fd6744, type: 2}
   description: "\u6D41\u8840\u4F24\u5BB3\u3002\u952F\u9F7F\u5200/\u94C1\u4E1D\u7F51/\u88C2\u4F24\u30025
     \u79D2\u53EF\u53E0\u52A0 DoT"
   duration: 5

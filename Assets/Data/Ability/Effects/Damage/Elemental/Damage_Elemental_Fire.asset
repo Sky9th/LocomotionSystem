@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd502afaf7ff75c47b42269f0eb3c4c9, type: 3}
   m_Name: Damage_Elemental_Fire
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 11400000, guid: 4d69f9f5c98239e4e98df5e3fbd38ae4, type: 2}
+  effectTag: {fileID: 11400000, guid: 1e0289c5b48386f4e8652d3726823e5d, type: 2}
   description: "\u706B\u7130\u4F24\u5BB3\u3002\u71C3\u70E7\u74F6/\u706B\u7130\u6B66\u5668/\u6C7D\u6CB9\u9677\u9631\u30023
     \u79D2\u71C3\u70E7 DoT"
   duration: 3

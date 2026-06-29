@@ -5,9 +5,10 @@
     {
       "treeId": "Human_Innate",
       "displayName": "人体基础技能",
-      "description": "所有人类角色与生俱来的徒手战斗能力。空手或武器不兼容时自动生效。",
-      "treeTags": ["AbilityTree.Innate"],
+      "description": "空手时的徒手战斗能力。compatibleGripTags 匹配 Grip.Melee.Unarmed。",
+      "treeTags": ["Ability.Tree.Innate"],
       "compatibleWeaponTags": [],
+      "compatibleGripTags": ["Grip.Melee.Unarmed"],
       "exclusiveGroup": "",
       "nodes": [
         {
@@ -33,9 +34,10 @@
     {
       "treeId": "Sword_Innate",
       "displayName": "刀剑基础技法",
-      "description": "持刀/剑类武器时的基础技能。compatibleWeaponTags 匹配 Weapon.Blade 及子标签。",
-      "treeTags": ["AbilityTree.Innate"],
-      "compatibleWeaponTags": ["Weapon.Blade"],
+      "description": "持刀/剑类武器时的基础技能。compatibleWeaponTags 匹配 Entity.Weapon.Melee.Blade。",
+      "treeTags": ["Ability.Tree.Innate"],
+      "compatibleWeaponTags": ["Entity.Weapon.Melee.Blade"],
+      "compatibleGripTags": ["Grip.Melee.OneHanded"],
       "exclusiveGroup": "",
       "nodes": [
         {
@@ -56,8 +58,9 @@
       "treeId": "Pistol_Innate",
       "displayName": "手枪基础射击",
       "description": "持手枪时的基础射击技能。",
-      "treeTags": ["AbilityTree.Innate"],
-      "compatibleWeaponTags": ["Weapon.Pistol"],
+      "treeTags": ["Ability.Tree.Innate"],
+      "compatibleWeaponTags": ["Entity.Weapon.Ranged.Pistol"],
+      "compatibleGripTags": ["Grip.Ranged.Pistol2H"],
       "exclusiveGroup": "",
       "nodes": [
         {

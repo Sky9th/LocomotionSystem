@@ -76,6 +76,13 @@ namespace RedDust.Ability
         [Tooltip("武器兼容标签。空 = 不限武器。")]
         public rTagDefSO[] compatibleWeaponTags;
 
+        /// <summary>
+        /// 握持兼容标签。树内主动技能只对匹配的握法生效。
+        /// 空数组 = 不限握法。
+        /// </summary>
+        [Tooltip("握持兼容标签。空 = 不限握法。")]
+        public rTagDefSO[] compatibleGripTags;
+
         [Header("Mutual Exclusion")]
         /// <summary>
         /// 互斥分组。同组只能选一个。

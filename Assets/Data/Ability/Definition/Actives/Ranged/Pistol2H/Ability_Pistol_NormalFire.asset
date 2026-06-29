@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc5d887e4581bc943a22e3f58f987fec, type: 3}
+  m_Name: Ability_Pistol_NormalFire
+  m_EditorClassIdentifier: 
+  internalName: Pistol_NormalFire
+  displayName: "\u624B\u67AA\xB7\u666E\u901A\u5C04\u51FB"
+  icon: {fileID: 0}
+  description: "\u57FA\u7840\u5C04\u51FB\u3002\u76F4\u7EBF12m\uFF0CPierce\u4F24\u5BB3\uFF0C\u566A\u97F3Lv5\u3002"
+  abilityTag: {fileID: 11400000, guid: b3ea06da997051c4881ecc5e16b0a9b1, type: 2}
+  targetEffects:
+  - {fileID: 11400000, guid: c4fa017476fb6314e9a980916d01c93b, type: 2}
+  selfEffects:
+  - {fileID: 11400000, guid: e554411e5d1c44943bb6b412d6872718, type: 2}
+  cooldownDuration: 0
+  sharedCooldownTag: {fileID: 0}
+  activation: {fileID: 11400000, guid: 55c3681ff4793f146b0b6cf7ec9130f4, type: 2}
+  search: {fileID: 11400000, guid: f14600dcd41b56d4da7267f2943e9e9e, type: 2}
+  overrideExclusion: 0
+  extraExclusionTags: []
+  noise: {fileID: 11400000, guid: 63d045454e28cb84b97a969acb1da288, type: 2}
+  comboLinks: []
