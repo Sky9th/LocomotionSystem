@@ -41,7 +41,7 @@ Ability
 │   │   │   ├── DualPistol / AkimboFire, SuppressiveFire, CrossFire
 │   │   │   ├── Rifle / NormalFire, BracedFire, FollowUpShot, MeleeStrike
 │   │   │   ├── Shotgun / NormalFire, CloseQuarters, CombatLoad, MeleeStrike
-│   │   │   ├── Bow / NormalShot, ChargedShot, MultiArrow
+│   │   │   ├── Bow / NormalFire, ChargedShot, MultiArrow
 │   │   │   ├── Launcher / NormalFire, AimedFire
 │   │   │   └── Heavy / SpinUp, SuppressiveFire, Overheat
 │   │   │

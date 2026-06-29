@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: Crouching
   parent: {fileID: 11400000, guid: 98a473c285b399b44bcf170a6940ef07, type: 2}
-  description: "\u8E72\u4F0F\u2014\u2014\u5C48\u819D\u534A\u8E72\uFF0C\u964D\u4F4E\u7EA640%\u8EAB\u9AD8"
+  description: "\u8E72\u4F0F"

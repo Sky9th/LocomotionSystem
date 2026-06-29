@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: Run
   parent: {fileID: 11400000, guid: fe3623fa492f4c74ab392e4c5303d5fa, type: 2}
-  description: "\u5954\u8DD1\u2014\u2014\u4E2D\u901F\u79FB\u52A8\uFF0C\u811A\u6B65\u4E2D\u7B49"
+  description: "\u5954\u8DD1"

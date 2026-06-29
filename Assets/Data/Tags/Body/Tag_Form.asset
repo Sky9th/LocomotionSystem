@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: Form
   parent: {fileID: 11400000, guid: 9796b0e994c40c64887576ae69ea16cf, type: 2}
-  description: "\u6218\u5907\u5F62\u6001\u6839"
+  description: "\u6218\u5907\u5F62\u6001"

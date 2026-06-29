@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: Standing
   parent: {fileID: 11400000, guid: 98a473c285b399b44bcf170a6940ef07, type: 2}
-  description: "\u7AD9\u7ACB\u2014\u2014\u5168\u8EAB\u76F4\u7ACB\uFF0C\u5168\u9AD8"
+  description: "\u7AD9\u7ACB"

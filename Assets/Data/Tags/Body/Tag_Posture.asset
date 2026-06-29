@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: Posture
   parent: {fileID: 11400000, guid: 9796b0e994c40c64887576ae69ea16cf, type: 2}
-  description: "\u9AD8\u5EA6\u59FF\u6001\u6839"
+  description: "\u9AD8\u5EA6\u59FF\u6001"

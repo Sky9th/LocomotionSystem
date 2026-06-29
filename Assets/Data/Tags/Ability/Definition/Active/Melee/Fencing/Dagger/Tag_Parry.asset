@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e09ce01e94152649b8d1386fddcf687, type: 3}
+  m_Name: Tag_Parry
+  m_EditorClassIdentifier: 
+  leafName: Parry
+  parent: {fileID: 11400000, guid: 5355e7eddb5ad85418f94217f0d9a6c3, type: 2}
+  description: "\u62DB\u67B6"

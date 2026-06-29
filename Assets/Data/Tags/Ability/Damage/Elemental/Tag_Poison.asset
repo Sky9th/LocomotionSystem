@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e09ce01e94152649b8d1386fddcf687, type: 3}
+  m_Name: Tag_Poison
+  m_EditorClassIdentifier: 
+  leafName: Poison
+  parent: {fileID: 11400000, guid: d079d23714b126241ba44dec79d84868, type: 2}
+  description: "\u6BD2\u7D20"

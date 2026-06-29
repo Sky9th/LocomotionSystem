@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: Prone
   parent: {fileID: 11400000, guid: 98a473c285b399b44bcf170a6940ef07, type: 2}
-  description: "\u530D\u5310\u2014\u2014\u8EAB\u4F53\u5E73\u8D34\u5730\u9762\uFF0C\u6700\u4F4E\u8EAB\u9AD8"
+  description: "\u530D\u5310"

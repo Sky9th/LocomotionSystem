@@ -43,6 +43,7 @@ tech/
 │   ├── gameplay-tag-body.md             # GameplayTag — Character 模块产出 Tag 域（Body）
 │   ├── gameplay-tag-entity.md           # GameplayTag — Entity 系统产出 Tag 域（Weapon + Item）
 │   ├── gameplay-tag-grip.md             # GameplayTag — Character/动画域（Grip）
+│   ├── gameplay-tag-noise.md            # GameplayTag — Noise 独立根
 │   ├── gameplay-tag-runtime.md         # GameplayTag struct — 运行时值类型
 │   ├── gameplay-tag-container.md       # GameplayTagContainer — 标签集合
 │   ├── gameplay-tag-editor.md          # TagEditor — 可视化标签管理 + TagPicker

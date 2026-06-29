@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e09ce01e94152649b8d1386fddcf687, type: 3}
   m_Name: Tag_Ability
   m_EditorClassIdentifier: 
-  leafName: 
+  leafName: Ability
   parent: {fileID: 0}
-  description: 
+  description: "\u6280\u80FD\u6807\u7B7E\u6839 \u2014 L3_Ability \u4EA7\u51FA"

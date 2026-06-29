@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e09ce01e94152649b8d1386fddcf687, type: 3}
   m_Name: Tag_Noise
   m_EditorClassIdentifier: 
-  leafName: 
+  leafName: Noise
   parent: {fileID: 0}
-  description: 
+  description: "\u566A\u97F3\u6807\u7B7E\u6839 \u2014 L3_Ability \u4EA7\u51FA\uFF0CAI
+    \u6D88\u8D39"

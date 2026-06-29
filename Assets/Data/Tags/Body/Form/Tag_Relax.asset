@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: Relax
   parent: {fileID: 11400000, guid: cf5ef24b575be6945a8c425abf548de4, type: 2}
-  description: "\u653E\u677E\u2014\u2014\u6B66\u5668\u81EA\u7136\u653E\u7F6E\uFF0C\u79FB\u52A8\u968F\u610F"
+  description: "\u653E\u677E"

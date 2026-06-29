@@ -1,1341 +1,341 @@
 {
-  "version": "1.0",
-  "description": "全量标签：Actor(已有) + Ability(主动技能全量，ch1-11) + Noise + Stat。directory 由 parent FullTag 自动派生（点→斜杠），无需手工指定。",
+  "version": "2.0",
+  "description": "Tag 域按模块产出重构 — 2026-06-29。根: Ability / Identity / Body / Entity / Grip / Noise",
   "tags": [
-    {
-      "name": "Tag_Actor",
-      "parent": null,
-      "description": "角色标签根"
-    },
-    {
-      "name": "Tag_Ability",
-      "parent": null,
-      "description": "技能标签根"
-    },
-    {
-      "name": "Tag_Noise",
-      "parent": null,
-      "description": "噪音标签根"
-    },
-    {
-      "name": "Tag_Damage",
-      "parent": null,
-      "description": "伤害标签根——路由到防御/抗性公式"
-    },
-    {
-      "name": "Tag_Impact",
-      "parent": null,
-      "description": "撞击噪音"
-    },
-    {
-      "name": "Tag_Execute",
-      "parent": null,
-      "description": "斩杀标签根——处决阈值"
-    },
-    {
-      "name": "Tag_Cost",
-      "parent": null,
-      "description": "消耗标签根——资源消耗/恢复路由"
-    },
-    {
-      "name": "Tag_Stamina",
-      "parent": "Cost",
-      "description": "体力消耗"
-    },
-    {
-      "name": "Tag_HP",
-      "parent": "Cost",
-      "description": "生命消耗/恢复"
-    },
-    {
-      "name": "Tag_Ammo",
-      "parent": "Cost",
-      "description": "弹药消耗"
-    },
-    {
-      "name": "Tag_Durability",
-      "parent": "Cost",
-      "description": "耐久消耗"
-    },
-    {
-      "name": "Tag_Fuel",
-      "parent": "Cost",
-      "description": "燃料消耗"
-    },
-    {
-      "name": "Tag_Charge",
-      "parent": "Cost",
-      "description": "电量消耗"
-    },
-    {
-      "name": "Tag_Faction",
-      "parent": "Actor",
-      "description": "阵营"
-    },
-    {
-      "name": "Tag_Identity",
-      "parent": "Actor",
-      "description": "身份：玩家/NPC/敌对"
-    },
-    {
-      "name": "Tag_Role",
-      "parent": "Actor",
-      "description": "角色定位"
-    },
-    {
-      "name": "Tag_Species",
-      "parent": "Actor",
-      "description": "种族：人类/僵尸/变异体/机器"
-    },
-    {
-      "name": "Tag_Melee",
-      "parent": "Ability",
-      "description": "近战技能"
-    },
-    {
-      "name": "Tag_Ranged",
-      "parent": "Ability",
-      "description": "远程技能"
-    },
-    {
-      "name": "Tag_Throwable",
-      "parent": "Ability",
-      "description": "投掷物技能"
-    },
-    {
-      "name": "Tag_Defensive",
-      "parent": "Ability",
-      "description": "防御技能"
-    },
-    {
-      "name": "Tag_Stealth",
-      "parent": "Ability",
-      "description": "潜行技能"
-    },
-    {
-      "name": "Tag_Medical",
-      "parent": "Ability",
-      "description": "医疗技能"
-    },
-    {
-      "name": "Tag_Survival",
-      "parent": "Ability",
-      "description": "生存技能"
-    },
-    {
-      "name": "Tag_Craft",
-      "parent": "Ability",
-      "description": "制造技能"
-    },
-    {
-      "name": "Tag_Trade",
-      "parent": "Ability",
-      "description": "交易技能"
-    },
-    {
-      "name": "Tag_Lockpicking",
-      "parent": "Ability",
-      "description": "开锁技能"
-    },
-    {
-      "name": "Tag_Trap",
-      "parent": "Ability",
-      "description": "陷阱技能"
-    },
-    {
-      "name": "Tag_Universal",
-      "parent": "Ability",
-      "description": "通用技能"
-    },
-    {
-      "name": "Tag_Combat",
-      "parent": "Noise",
-      "description": "战斗噪音"
-    },
-    {
-      "name": "Tag_Physical",
-      "parent": "Damage",
-      "description": "物理伤害类型"
-    },
-    {
-      "name": "Tag_Elemental",
-      "parent": "Damage",
-      "description": "元素伤害类型"
-    },
-    {
-      "name": "Tag_Biological",
-      "parent": "Damage",
-      "description": "生物伤害类型"
-    },
-    {
-      "name": "Tag_True",
-      "parent": "Damage",
-      "description": "真实伤害——无视全部防御"
-    },
-    {
-      "name": "Tag_Fall",
-      "parent": "Damage",
-      "description": "坠落伤害——按高度缩放"
-    },
-    {
-      "name": "Tag_Light",
-      "parent": "Impact",
-      "description": "轻硬直"
-    },
-    {
-      "name": "Tag_Medium",
-      "parent": "Impact",
-      "description": "中硬直"
-    },
-    {
-      "name": "Tag_Heavy",
-      "parent": "Impact",
-      "description": "重硬直/击倒"
-    },
-    {
-      "name": "Tag_Launch",
-      "parent": "Impact",
-      "description": "击飞"
-    },
-    {
-      "name": "Tag_Pull",
-      "parent": "Impact",
-      "description": "拉近"
-    },
-    {
-      "name": "Tag_Threshold",
-      "parent": "Execute",
-      "description": "斩杀阈值——HP%低于此值即死"
-    },
-    {
-      "name": "Tag_Enclave",
-      "parent": "Actor.Faction",
-      "description": "飞地"
-    },
-    {
-      "name": "Tag_Mercenary",
-      "parent": "Actor.Faction",
-      "description": "佣兵"
-    },
-    {
-      "name": "Tag_Nomad",
-      "parent": "Actor.Faction",
-      "description": "游民"
-    },
-    {
-      "name": "Tag_Raider",
-      "parent": "Actor.Faction",
-      "description": "劫掠者"
-    },
-    {
-      "name": "Tag_Survivor",
-      "parent": "Actor.Faction",
-      "description": "幸存者"
-    },
-    {
-      "name": "Tag_Companion",
-      "parent": "Actor.Identity",
-      "description": "同伴"
-    },
-    {
-      "name": "Tag_Hostile",
-      "parent": "Actor.Identity",
-      "description": "敌对"
-    },
-    {
-      "name": "Tag_NPC",
-      "parent": "Actor.Identity",
-      "description": "中立NPC"
-    },
-    {
-      "name": "Tag_Player",
-      "parent": "Actor.Identity",
-      "description": "玩家"
-    },
-    {
-      "name": "Tag_Brute",
-      "parent": "Actor.Role",
-      "description": "重装"
-    },
-    {
-      "name": "Tag_Engineer",
-      "parent": "Actor.Role",
-      "description": "工程师"
-    },
-    {
-      "name": "Tag_Guard",
-      "parent": "Actor.Role",
-      "description": "护卫"
-    },
-    {
-      "name": "Tag_Leader",
-      "parent": "Actor.Role",
-      "description": "首领"
-    },
-    {
-      "name": "Tag_Medic",
-      "parent": "Actor.Role",
-      "description": "医疗兵"
-    },
-    {
-      "name": "Tag_Scout",
-      "parent": "Actor.Role",
-      "description": "侦察兵"
-    },
-    {
-      "name": "Tag_Sniper",
-      "parent": "Actor.Role",
-      "description": "狙击手"
-    },
-    {
-      "name": "Tag_Trader",
-      "parent": "Actor.Role",
-      "description": "商人"
-    },
-    {
-      "name": "Tag_Creature",
-      "parent": "Actor.Species",
-      "description": "动物/怪物"
-    },
-    {
-      "name": "Tag_Human",
-      "parent": "Actor.Species",
-      "description": "人类"
-    },
-    {
-      "name": "Tag_Mutant",
-      "parent": "Actor.Species",
-      "description": "变异体"
-    },
-    {
-      "name": "Tag_Robot",
-      "parent": "Actor.Species",
-      "description": "机器人"
-    },
-    {
-      "name": "Tag_Blade",
-      "parent": "Ability.Melee",
-      "description": "刃器"
-    },
-    {
-      "name": "Tag_Staff",
-      "parent": "Ability.Melee",
-      "description": "长棍"
-    },
-    {
-      "name": "Tag_Axe",
-      "parent": "Ability.Melee",
-      "description": "斧"
-    },
-    {
-      "name": "Tag_Routines",
-      "parent": "Ability.Melee",
-      "description": "武术套路"
-    },
-    {
-      "name": "Tag_Pistol",
-      "parent": "Ability.Ranged",
-      "description": "手枪"
-    },
-    {
-      "name": "Tag_Shotgun",
-      "parent": "Ability.Ranged",
-      "description": "霰弹枪"
-    },
-    {
-      "name": "Tag_Rifle",
-      "parent": "Ability.Ranged",
-      "description": "步枪"
-    },
-    {
-      "name": "Tag_Molotov",
-      "parent": "Ability.Throwable",
-      "description": "燃烧瓶"
-    },
-    {
-      "name": "Tag_FragGrenade",
-      "parent": "Ability.Throwable",
-      "description": "破片手雷"
-    },
-    {
-      "name": "Tag_SmokeGrenade",
-      "parent": "Ability.Throwable",
-      "description": "烟雾弹"
-    },
-    {
-      "name": "Tag_Flashbang",
-      "parent": "Ability.Throwable",
-      "description": "闪光弹"
-    },
-    {
-      "name": "Tag_AcidVial",
-      "parent": "Ability.Throwable",
-      "description": "酸液瓶"
-    },
-    {
-      "name": "Tag_PoisonGas",
-      "parent": "Ability.Throwable",
-      "description": "毒气弹"
-    },
-    {
-      "name": "Tag_ThrowingKnife",
-      "parent": "Ability.Throwable",
-      "description": "投掷飞刀"
-    },
-    {
-      "name": "Tag_BaitBottle",
-      "parent": "Ability.Throwable",
-      "description": "诱饵瓶"
-    },
-    {
-      "name": "Tag_GuardStance",
-      "parent": "Ability.Defensive",
-      "description": "防御姿态"
-    },
-    {
-      "name": "Tag_ShieldBash",
-      "parent": "Ability.Defensive",
-      "description": "盾击"
-    },
-    {
-      "name": "Tag_HunkerDown",
-      "parent": "Ability.Defensive",
-      "description": "蹲伏"
-    },
-    {
-      "name": "Tag_CoveringFire",
-      "parent": "Ability.Defensive",
-      "description": "掩护射击"
-    },
-    {
-      "name": "Tag_GuardianAura",
-      "parent": "Ability.Defensive",
-      "description": "守护光环"
-    },
-    {
-      "name": "Tag_ShieldWall",
-      "parent": "Ability.Defensive",
-      "description": "盾墙"
-    },
-    {
-      "name": "Tag_Parry",
-      "parent": "Ability.Defensive",
-      "description": "招架"
-    },
-    {
-      "name": "Tag_StealthMode",
-      "parent": "Ability.Stealth",
-      "description": "潜行模式"
-    },
-    {
-      "name": "Tag_Assassination",
-      "parent": "Ability.Stealth",
-      "description": "暗杀"
-    },
-    {
-      "name": "Tag_Blackjack",
-      "parent": "Ability.Stealth",
-      "description": "闷棍"
-    },
-    {
-      "name": "Tag_ImprovisedCamouflage",
-      "parent": "Ability.Stealth",
-      "description": "伪装"
-    },
-    {
-      "name": "Tag_DistractionWhistle",
-      "parent": "Ability.Stealth",
-      "description": "吸引口哨"
-    },
-    {
-      "name": "Tag_DragBody",
-      "parent": "Ability.Stealth",
-      "description": "拖拽尸体"
-    },
-    {
-      "name": "Tag_QuickEscape",
-      "parent": "Ability.Stealth",
-      "description": "快速脱逃"
-    },
-    {
-      "name": "Tag_QuickBandage",
-      "parent": "Ability.Medical",
-      "description": "快速包扎"
-    },
-    {
-      "name": "Tag_Tourniquet",
-      "parent": "Ability.Medical",
-      "description": "止血带"
-    },
-    {
-      "name": "Tag_Splint",
-      "parent": "Ability.Medical",
-      "description": "夹板"
-    },
-    {
-      "name": "Tag_CPR",
-      "parent": "Ability.Medical",
-      "description": "心肺复苏"
-    },
-    {
-      "name": "Tag_Detoxification",
-      "parent": "Ability.Medical",
-      "description": "解毒"
-    },
-    {
-      "name": "Tag_DisinfectWound",
-      "parent": "Ability.Medical",
-      "description": "伤口消毒"
-    },
-    {
-      "name": "Tag_CombatMedic",
-      "parent": "Ability.Medical",
-      "description": "战地医生"
-    },
-    {
-      "name": "Tag_Assessment",
-      "parent": "Ability.Medical",
-      "description": "伤情评估"
-    },
-    {
-      "name": "Tag_MakeFire",
-      "parent": "Ability.Survival",
-      "description": "生火"
-    },
-    {
-      "name": "Tag_PurifyWater",
-      "parent": "Ability.Survival",
-      "description": "净水"
-    },
-    {
-      "name": "Tag_Shelter",
-      "parent": "Ability.Survival",
-      "description": "搭建避难所"
-    },
-    {
-      "name": "Tag_TrackPrey",
-      "parent": "Ability.Survival",
-      "description": "追踪猎物"
-    },
-    {
-      "name": "Tag_FieldDress",
-      "parent": "Ability.Survival",
-      "description": "野外处理猎物"
-    },
-    {
-      "name": "Tag_ForagingFocus",
-      "parent": "Ability.Survival",
-      "description": "专注采集"
-    },
-    {
-      "name": "Tag_WeatherSense",
-      "parent": "Ability.Survival",
-      "description": "感知天气"
-    },
-    {
-      "name": "Tag_EmergencyShelter",
-      "parent": "Ability.Survival",
-      "description": "紧急避难所"
-    },
-    {
-      "name": "Tag_FieldRepair",
-      "parent": "Ability.Craft",
-      "description": "战场修理"
-    },
-    {
-      "name": "Tag_WeaponSharpening",
-      "parent": "Ability.Craft",
-      "description": "武器磨砺"
-    },
-    {
-      "name": "Tag_AmmoReloading",
-      "parent": "Ability.Craft",
-      "description": "弹药复装"
-    },
-    {
-      "name": "Tag_ImprovisedExplosive",
-      "parent": "Ability.Craft",
-      "description": "简易爆炸物"
-    },
-    {
-      "name": "Tag_WeaponModding",
-      "parent": "Ability.Craft",
-      "description": "武器改装"
-    },
-    {
-      "name": "Tag_PartSalvage",
-      "parent": "Ability.Craft",
-      "description": "零件拆解"
-    },
-    {
-      "name": "Tag_CraftTrap",
-      "parent": "Ability.Craft",
-      "description": "制作陷阱"
-    },
-    {
-      "name": "Tag_ChemicalExtraction",
-      "parent": "Ability.Craft",
-      "description": "化学提取"
-    },
-    {
-      "name": "Tag_Haggle",
-      "parent": "Ability.Trade",
-      "description": "讨价还价"
-    },
-    {
-      "name": "Tag_Appraise",
-      "parent": "Ability.Trade",
-      "description": "鉴定估价"
-    },
-    {
-      "name": "Tag_FastTalk",
-      "parent": "Ability.Trade",
-      "description": "话术"
-    },
-    {
-      "name": "Tag_Investment",
-      "parent": "Ability.Trade",
-      "description": "投资"
-    },
-    {
-      "name": "Tag_Lockpick",
-      "parent": "Ability.Lockpicking",
-      "description": "撬锁"
-    },
-    {
-      "name": "Tag_ForceEntry",
-      "parent": "Ability.Lockpicking",
-      "description": "强行进入"
-    },
-    {
-      "name": "Tag_HackTerminal",
-      "parent": "Ability.Lockpicking",
-      "description": "入侵终端"
-    },
-    {
-      "name": "Tag_ThermalCut",
-      "parent": "Ability.Lockpicking",
-      "description": "热切割"
-    },
-    {
-      "name": "Tag_KeyImpression",
-      "parent": "Ability.Lockpicking",
-      "description": "钥匙复制"
-    },
-    {
-      "name": "Tag_SecurityCheck",
-      "parent": "Ability.Lockpicking",
-      "description": "安全检查"
-    },
-    {
-      "name": "Tag_BearTrap",
-      "parent": "Ability.Trap",
-      "description": "捕兽夹"
-    },
-    {
-      "name": "Tag_TripMine",
-      "parent": "Ability.Trap",
-      "description": "绊雷"
-    },
-    {
-      "name": "Tag_AlarmTrap",
-      "parent": "Ability.Trap",
-      "description": "警报陷阱"
-    },
-    {
-      "name": "Tag_GasTrap",
-      "parent": "Ability.Trap",
-      "description": "毒气陷阱"
-    },
-    {
-      "name": "Tag_ShockTrap",
-      "parent": "Ability.Trap",
-      "description": "电击陷阱"
-    },
-    {
-      "name": "Tag_RazorWire",
-      "parent": "Ability.Trap",
-      "description": "铁丝网"
-    },
-    {
-      "name": "Tag_PitfallSpike",
-      "parent": "Ability.Trap",
-      "description": "尖刺陷阱"
-    },
-    {
-      "name": "Tag_OilSlick",
-      "parent": "Ability.Trap",
-      "description": "油滑陷阱"
-    },
-    {
-      "name": "Tag_Tripwire",
-      "parent": "Ability.Trap",
-      "description": "绊线"
-    },
-    {
-      "name": "Tag_NoiseDecoy",
-      "parent": "Ability.Trap",
-      "description": "噪音诱饵"
-    },
-    {
-      "name": "Tag_CombatRoll",
-      "parent": "Ability.Universal",
-      "description": "战斗翻滚"
-    },
-    {
-      "name": "Tag_PushKick",
-      "parent": "Ability.Universal",
-      "description": "推踢"
-    },
-    {
-      "name": "Tag_EmergencyReload",
-      "parent": "Ability.Universal",
-      "description": "紧急换弹"
-    },
-    {
-      "name": "Tag_MeleeSwing",
-      "parent": "Noise.Combat",
-      "description": "近战挥舞噪音"
-    },
-    {
-      "name": "Tag_WeaponFire",
-      "parent": "Noise.Combat",
-      "description": "枪声噪音"
-    },
-    {
-      "name": "Tag_Impact",
-      "parent": "Noise.Combat",
-      "description": "撞击噪音"
-    },
-    {
-      "name": "Tag_Slash",
-      "parent": "Damage.Physical",
-      "description": "切割——刃器砍击"
-    },
-    {
-      "name": "Tag_Blunt",
-      "parent": "Damage.Physical",
-      "description": "钝击——锤/棍/拳"
-    },
-    {
-      "name": "Tag_Pierce",
-      "parent": "Damage.Physical",
-      "description": "穿刺——枪械/弓箭/刺刀"
-    },
-    {
-      "name": "Tag_Bite",
-      "parent": "Damage.Physical",
-      "description": "撕咬——僵尸/野兽"
-    },
-    {
-      "name": "Tag_Explosive",
-      "parent": "Damage.Physical",
-      "description": "爆炸——手雷/地雷/油桶"
-    },
-    {
-      "name": "Tag_Crush",
-      "parent": "Damage.Physical",
-      "description": "碾压——重物/建筑坍塌/载具"
-    },
-    {
-      "name": "Tag_Fire",
-      "parent": "Damage.Elemental",
-      "description": "火焰——燃烧瓶/火焰武器"
-    },
-    {
-      "name": "Tag_Cold",
-      "parent": "Damage.Elemental",
-      "description": "寒冷——极寒环境/冰霜武器"
-    },
-    {
-      "name": "Tag_Shock",
-      "parent": "Damage.Elemental",
-      "description": "电击——电击陷阱/能量武器"
-    },
-    {
-      "name": "Tag_Acid",
-      "parent": "Damage.Elemental",
-      "description": "酸蚀——酸液/腐蚀剂"
-    },
-    {
-      "name": "Tag_Poison",
-      "parent": "Damage.Elemental",
-      "description": "毒素——毒气/淬毒"
-    },
-    {
-      "name": "Tag_Radiation",
-      "parent": "Damage.Elemental",
-      "description": "辐射——辐射区/核废料"
-    },
-    {
-      "name": "Tag_Bleed",
-      "parent": "Damage.Biological",
-      "description": "流血——锯齿刀/铁丝网"
-    },
-    {
-      "name": "Tag_Disease",
-      "parent": "Damage.Biological",
-      "description": "疾病——感染/瘟疫"
-    },
-    {
-      "name": "Tag_Suffocation",
-      "parent": "Damage.Biological",
-      "description": "窒息——烟雾/毒气/溺水"
-    },
-    {
-      "name": "Tag_LightCut",
-      "parent": "Ability.Melee.Blade",
-      "description": "轻砍"
-    },
-    {
-      "name": "Tag_HeavyChop",
-      "parent": "Ability.Melee.Blade",
-      "description": "重砍"
-    },
-    {
-      "name": "Tag_Block",
-      "parent": "Ability.Melee.Blade",
-      "description": "格挡"
-    },
-    {
-      "name": "Tag_LightSwing",
-      "parent": "Ability.Melee.Staff",
-      "description": "轻挥"
-    },
-    {
-      "name": "Tag_HeavySmash",
-      "parent": "Ability.Melee.Staff",
-      "description": "重击"
-    },
-    {
-      "name": "Tag_Block",
-      "parent": "Ability.Melee.Staff",
-      "description": "格挡"
-    },
-    {
-      "name": "Tag_LightHack",
-      "parent": "Ability.Melee.Axe",
-      "description": "轻劈"
-    },
-    {
-      "name": "Tag_HeavyCleave",
-      "parent": "Ability.Melee.Axe",
-      "description": "重劈"
-    },
-    {
-      "name": "Tag_Block",
-      "parent": "Ability.Melee.Axe",
-      "description": "格挡"
-    },
-    {
-      "name": "Tag_Boxing",
-      "parent": "Ability.Melee.Routines",
-      "description": "拳击"
-    },
-    {
-      "name": "Tag_MuayThai",
-      "parent": "Ability.Melee.Routines",
-      "description": "泰拳"
-    },
-    {
-      "name": "Tag_BajiQuan",
-      "parent": "Ability.Melee.Routines",
-      "description": "八极拳"
-    },
-    {
-      "name": "Tag_WingChun",
-      "parent": "Ability.Melee.Routines",
-      "description": "咏春"
-    },
-    {
-      "name": "Tag_TaiChi",
-      "parent": "Ability.Melee.Routines",
-      "description": "太极"
-    },
-    {
-      "name": "Tag_Judo",
-      "parent": "Ability.Melee.Routines",
-      "description": "柔道"
-    },
-    {
-      "name": "Tag_Eskrima",
-      "parent": "Ability.Melee.Routines",
-      "description": "菲律宾魔杖"
-    },
-    {
-      "name": "Tag_Kendo",
-      "parent": "Ability.Melee.Routines",
-      "description": "剑道"
-    },
-    {
-      "name": "Tag_MiaoDao",
-      "parent": "Ability.Melee.Routines",
-      "description": "苗刀"
-    },
-    {
-      "name": "Tag_KravMaga",
-      "parent": "Ability.Melee.Routines",
-      "description": "以色列格斗术"
-    },
-    {
-      "name": "Tag_Sanda",
-      "parent": "Ability.Melee.Routines",
-      "description": "散打"
-    },
-    {
-      "name": "Tag_NormalFire",
-      "parent": "Ability.Ranged.Pistol",
-      "description": "普通射击"
-    },
-    {
-      "name": "Tag_QuickDraw",
-      "parent": "Ability.Ranged.Pistol",
-      "description": "快速拔枪"
-    },
-    {
-      "name": "Tag_Akimbo",
-      "parent": "Ability.Ranged.Pistol",
-      "description": "双持"
-    },
-    {
-      "name": "Tag_SpeedReload",
-      "parent": "Ability.Ranged.Pistol",
-      "description": "快速换弹"
-    },
-    {
-      "name": "Tag_MovingFire",
-      "parent": "Ability.Ranged.Pistol",
-      "description": "移动射击"
-    },
-    {
-      "name": "Tag_NormalFire",
-      "parent": "Ability.Ranged.Shotgun",
-      "description": "普通射击"
-    },
-    {
-      "name": "Tag_CloseQuarters",
-      "parent": "Ability.Ranged.Shotgun",
-      "description": "近距离作战"
-    },
-    {
-      "name": "Tag_StockStrike",
-      "parent": "Ability.Ranged.Shotgun",
-      "description": "枪托打击"
-    },
-    {
-      "name": "Tag_CombatLoad",
-      "parent": "Ability.Ranged.Shotgun",
-      "description": "战斗装填"
-    },
-    {
-      "name": "Tag_SuppressiveBlast",
-      "parent": "Ability.Ranged.Shotgun",
-      "description": "压制射击"
-    },
-    {
-      "name": "Tag_NormalFire",
-      "parent": "Ability.Ranged.Rifle",
-      "description": "普通射击"
-    },
-    {
-      "name": "Tag_BreathControl",
-      "parent": "Ability.Ranged.Rifle",
-      "description": "呼吸控制"
-    },
-    {
-      "name": "Tag_BracedFire",
-      "parent": "Ability.Ranged.Rifle",
-      "description": "依托射击"
-    },
-    {
-      "name": "Tag_FollowUpShot",
-      "parent": "Ability.Ranged.Rifle",
-      "description": "追射"
-    },
-    {
-      "name": "Tag_LongRangeSniping",
-      "parent": "Ability.Ranged.Rifle",
-      "description": "远距离狙击"
-    },
-    {
-      "name": "Tag_Fragment",
-      "parent": "Ability.Melee.Routines.Boxing",
-      "description": "残篇"
-    },
-    {
-      "name": "Tag_Complete",
-      "parent": "Ability.Melee.Routines.Boxing",
-      "description": "完整"
-    },
-    {
-      "name": "Tag_Refined",
-      "parent": "Ability.Melee.Routines.Boxing",
-      "description": "精炼"
-    },
-    {
-      "name": "Tag_Masterwork",
-      "parent": "Ability.Melee.Routines.Boxing",
-      "description": "杰作"
-    },
-    {
-      "name": "Tag_Fragment",
-      "parent": "Ability.Melee.Routines.MuayThai",
-      "description": "残篇"
-    },
-    {
-      "name": "Tag_Complete",
-      "parent": "Ability.Melee.Routines.MuayThai",
-      "description": "完整"
-    },
-    {
-      "name": "Tag_Refined",
-      "parent": "Ability.Melee.Routines.MuayThai",
-      "description": "精炼"
-    },
-    {
-      "name": "Tag_Masterwork",
-      "parent": "Ability.Melee.Routines.MuayThai",
-      "description": "杰作"
-    },
-    {
-      "name": "Tag_Fragment",
-      "parent": "Ability.Melee.Routines.BajiQuan",
-      "description": "残篇"
-    },
-    {
-      "name": "Tag_Complete",
-      "parent": "Ability.Melee.Routines.BajiQuan",
-      "description": "完整"
-    },
-    {
-      "name": "Tag_Refined",
-      "parent": "Ability.Melee.Routines.BajiQuan",
-      "description": "精炼"
-    },
-    {
-      "name": "Tag_Masterwork",
-      "parent": "Ability.Melee.Routines.BajiQuan",
-      "description": "杰作"
-    },
-    {
-      "name": "Tag_Fragment",
-      "parent": "Ability.Melee.Routines.WingChun",
-      "description": "残篇"
-    },
-    {
-      "name": "Tag_Complete",
-      "parent": "Ability.Melee.Routines.WingChun",
-      "description": "完整"
-    },
-    {
-      "name": "Tag_Refined",
-      "parent": "Ability.Melee.Routines.WingChun",
-      "description": "精炼"
-    },
-    {
-      "name": "Tag_Masterwork",
-      "parent": "Ability.Melee.Routines.WingChun",
-      "description": "杰作"
-    },
-    {
-      "name": "Tag_Fragment",
-      "parent": "Ability.Melee.Routines.TaiChi",
-      "description": "残篇"
-    },
-    {
-      "name": "Tag_Complete",
-      "parent": "Ability.Melee.Routines.TaiChi",
-      "description": "完整"
-    },
-    {
-      "name": "Tag_Refined",
-      "parent": "Ability.Melee.Routines.TaiChi",
-      "description": "精炼"
-    },
-    {
-      "name": "Tag_Masterwork",
-      "parent": "Ability.Melee.Routines.TaiChi",
-      "description": "杰作"
-    },
-    {
-      "name": "Tag_Fragment",
-      "parent": "Ability.Melee.Routines.Judo",
-      "description": "残篇"
-    },
-    {
-      "name": "Tag_Complete",
-      "parent": "Ability.Melee.Routines.Judo",
-      "description": "完整"
-    },
-    {
-      "name": "Tag_Refined",
-      "parent": "Ability.Melee.Routines.Judo",
-      "description": "精炼"
-    },
-    {
-      "name": "Tag_Masterwork",
-      "parent": "Ability.Melee.Routines.Judo",
-      "description": "杰作"
-    },
-    {
-      "name": "Tag_Fragment",
-      "parent": "Ability.Melee.Routines.Eskrima",
-      "description": "残篇"
-    },
-    {
-      "name": "Tag_Complete",
-      "parent": "Ability.Melee.Routines.Eskrima",
-      "description": "完整"
-    },
-    {
-      "name": "Tag_Refined",
-      "parent": "Ability.Melee.Routines.Eskrima",
-      "description": "精炼"
-    },
-    {
-      "name": "Tag_Masterwork",
-      "parent": "Ability.Melee.Routines.Eskrima",
-      "description": "杰作"
-    },
-    {
-      "name": "Tag_Fragment",
-      "parent": "Ability.Melee.Routines.Kendo",
-      "description": "残篇"
-    },
-    {
-      "name": "Tag_Complete",
-      "parent": "Ability.Melee.Routines.Kendo",
-      "description": "完整"
-    },
-    {
-      "name": "Tag_Refined",
-      "parent": "Ability.Melee.Routines.Kendo",
-      "description": "精炼"
-    },
-    {
-      "name": "Tag_Masterwork",
-      "parent": "Ability.Melee.Routines.Kendo",
-      "description": "杰作"
-    },
-    {
-      "name": "Tag_Fragment",
-      "parent": "Ability.Melee.Routines.MiaoDao",
-      "description": "残篇"
-    },
-    {
-      "name": "Tag_Complete",
-      "parent": "Ability.Melee.Routines.MiaoDao",
-      "description": "完整"
-    },
-    {
-      "name": "Tag_Refined",
-      "parent": "Ability.Melee.Routines.MiaoDao",
-      "description": "精炼"
-    },
-    {
-      "name": "Tag_Masterwork",
-      "parent": "Ability.Melee.Routines.MiaoDao",
-      "description": "杰作"
-    },
-    {
-      "name": "Tag_Fragment",
-      "parent": "Ability.Melee.Routines.KravMaga",
-      "description": "残篇"
-    },
-    {
-      "name": "Tag_Complete",
-      "parent": "Ability.Melee.Routines.KravMaga",
-      "description": "完整"
-    },
-    {
-      "name": "Tag_Refined",
-      "parent": "Ability.Melee.Routines.KravMaga",
-      "description": "精炼"
-    },
-    {
-      "name": "Tag_Masterwork",
-      "parent": "Ability.Melee.Routines.KravMaga",
-      "description": "杰作"
-    },
-    {
-      "name": "Tag_Fragment",
-      "parent": "Ability.Melee.Routines.Sanda",
-      "description": "残篇"
-    },
-    {
-      "name": "Tag_Complete",
-      "parent": "Ability.Melee.Routines.Sanda",
-      "description": "完整"
-    },
-    {
-      "name": "Tag_Refined",
-      "parent": "Ability.Melee.Routines.Sanda",
-      "description": "精炼"
-    },
-    {
-      "name": "Tag_Masterwork",
-      "parent": "Ability.Melee.Routines.Sanda",
-      "description": "杰作"
-    },
-    {
-      "name": "Tag_SuppressiveFire",
-      "parent": "Ability.Ranged.Pistol",
-      "description": "手枪压制射击"
-    },
-    {
-      "name": "Tag_Equip",
-      "parent": null,
-      "description": "装备标签根"
-    },
-    {
-      "name": "Tag_Grip",
-      "parent": "Equip",
-      "description": "握持姿态标签根"
-    },
-    {
-      "name": "Tag_Unarmed",
-      "parent": "Equip.Grip",
-      "description": "徒手/无武器握持"
-    },
-    {
-      "name": "Tag_OneHanded",
-      "parent": "Equip.Grip",
-      "description": "单手武器握持"
-    },
-    {
-      "name": "Tag_TwoHanded",
-      "parent": "Equip.Grip",
-      "description": "双手武器握持"
-    },
-    {
-      "name": "Tag_Shield",
-      "parent": "Equip.Grip",
-      "description": "盾牌握持"
-    },
-    {
-      "name": "Tag_DualWield",
-      "parent": "Equip.Grip",
-      "description": "双持武器握持"
-    },
-    {
-      "name": "Tag_1H_Sidearm",
-      "parent": "Equip.Grip",
-      "description": "单手持副武器（手枪）握持"
-    },
-    {
-      "name": "Tag_1H_Blade",
-      "parent": "Equip.Grip",
-      "description": "单手持近战（刀/匕首）握持"
-    },
-    {
-      "name": "Tag_Body",
-      "parent": null,
-      "description": "角色身体物理配置根——枚举派生，外部只读"
-    },
-    {
-      "name": "Tag_Form",
-      "parent": "Body",
-      "description": "战备形态根"
-    },
-    {
-      "name": "Tag_Relax",
-      "parent": "Body.Form",
-      "description": "放松——武器自然放置，移动随意"
-    },
-    {
-      "name": "Tag_Combat",
-      "parent": "Body.Form",
-      "description": "战备——武器就位/拳架摆好，移动戒备"
-    },
-    {
-      "name": "Tag_Posture",
-      "parent": "Body",
-      "description": "高度姿态根"
-    },
-    {
-      "name": "Tag_Standing",
-      "parent": "Body.Posture",
-      "description": "站立——全身直立，全高"
-    },
-    {
-      "name": "Tag_Crouching",
-      "parent": "Body.Posture",
-      "description": "蹲伏——屈膝半蹲，降低约40%身高"
-    },
-    {
-      "name": "Tag_Prone",
-      "parent": "Body.Posture",
-      "description": "匍匐——身体平贴地面，最低身高"
-    },
-    {
-      "name": "Tag_Locomotion",
-      "parent": "Body",
-      "description": "移动步态根"
-    },
-    {
-      "name": "Tag_Idle",
-      "parent": "Body.Locomotion",
-      "description": "静止——原地站立，有微动"
-    },
-    {
-      "name": "Tag_Walk",
-      "parent": "Body.Locomotion",
-      "description": "行走——慢速移动，脚步轻微"
-    },
-    {
-      "name": "Tag_Run",
-      "parent": "Body.Locomotion",
-      "description": "奔跑——中速移动，脚步中等"
-    },
-    {
-      "name": "Tag_Sprint",
-      "parent": "Body.Locomotion",
-      "description": "冲刺——全速移动，脚步大，消耗体力"
-    },
-    {
-      "name": "Tag_Weapon",
-      "parent": null,
-      "description": "武器类型标签根——容器过滤 + AbilityTree 兼容匹配"
-    },
-    {
-      "name": "Tag_Blade",
-      "parent": "Weapon",
-      "description": "刀/剑类武器"
-    },
-    {
-      "name": "Tag_Pistol",
-      "parent": "Weapon",
-      "description": "手枪类武器"
-    },
-    {
-      "name": "Tag_AbilityTree",
-      "parent": null,
-      "description": "AbilityTree 类别标签根"
-    },
-    {
-      "name": "Tag_Innate",
-      "parent": "AbilityTree",
-      "description": "天生技能树——出生自动持有，不可移除"
-    },
-    {
-      "name": "Tag_Fist",
-      "parent": "Ability.Melee",
-      "description": "徒手战斗——拳、踢、擒"
-    },
-    {
-      "name": "Tag_Punch",
-      "parent": "Ability.Melee.Fist",
-      "description": "拳击——快速直拳，低消耗低伤害"
-    },
-    {
-      "name": "Tag_Kick",
-      "parent": "Ability.Melee.Fist",
-      "description": "脚踢——中等伤害，小幅击退"
-    },
-    {
-      "name": "Tag_Grab",
-      "parent": "Ability.Melee.Fist",
-      "description": "擒拿——短暂控制目标"
-    }
+    {"name":"Tag_Ability","parent":null,"description":"技能标签根 — L3_Ability 产出"},
+    {"name":"Tag_Definition","parent":"Ability","description":"技能定义"},
+    {"name":"Tag_Active","parent":"Ability.Definition","description":"主动技能"},
+    {"name":"Tag_Melee","parent":"Ability.Definition.Active","description":"近战"},
+    {"name":"Tag_Unarmed","parent":"Ability.Definition.Active.Melee","description":"空手 — Combat Bare Fists"},
+    {"name":"Tag_Punch","parent":"Ability.Definition.Active.Melee.Unarmed","description":"拳击"},
+    {"name":"Tag_Kick","parent":"Ability.Definition.Active.Melee.Unarmed","description":"脚踢"},
+    {"name":"Tag_Grab","parent":"Ability.Definition.Active.Melee.Unarmed","description":"擒拿"},
+    {"name":"Tag_OneHanded","parent":"Ability.Definition.Active.Melee","description":"单手近战 — 1Handed Melee Weapon"},
+    {"name":"Tag_Blade","parent":"Ability.Definition.Active.Melee.OneHanded","description":"单手剑"},
+    {"name":"Tag_LightCut","parent":"Ability.Definition.Active.Melee.OneHanded.Blade","description":"轻击"},
+    {"name":"Tag_HeavyChop","parent":"Ability.Definition.Active.Melee.OneHanded.Blade","description":"重击"},
+    {"name":"Tag_Block","parent":"Ability.Definition.Active.Melee.OneHanded.Blade","description":"格挡"},
+    {"name":"Tag_Axe","parent":"Ability.Definition.Active.Melee.OneHanded","description":"单手斧"},
+    {"name":"Tag_LightHack","parent":"Ability.Definition.Active.Melee.OneHanded.Axe","description":"轻击"},
+    {"name":"Tag_HeavyCleave","parent":"Ability.Definition.Active.Melee.OneHanded.Axe","description":"重击"},
+    {"name":"Tag_Block","parent":"Ability.Definition.Active.Melee.OneHanded.Axe","description":"格挡"},
+    {"name":"Tag_Club","parent":"Ability.Definition.Active.Melee.OneHanded","description":"单手棍"},
+    {"name":"Tag_LightSwing","parent":"Ability.Definition.Active.Melee.OneHanded.Club","description":"轻击"},
+    {"name":"Tag_HeavySmash","parent":"Ability.Definition.Active.Melee.OneHanded.Club","description":"重击"},
+    {"name":"Tag_Block","parent":"Ability.Definition.Active.Melee.OneHanded.Club","description":"格挡"},
+    {"name":"Tag_Dagger","parent":"Ability.Definition.Active.Melee.OneHanded","description":"匕首"},
+    {"name":"Tag_QuickStab","parent":"Ability.Definition.Active.Melee.OneHanded.Dagger","description":"速刺"},
+    {"name":"Tag_Slash","parent":"Ability.Definition.Active.Melee.OneHanded.Dagger","description":"横切"},
+    {"name":"Tag_Backstab","parent":"Ability.Definition.Active.Melee.OneHanded.Dagger","description":"背刺"},
+    {"name":"Tag_TwoHanded","parent":"Ability.Definition.Active.Melee","description":"双手近战 — 2Handed Melee Weapon"},
+    {"name":"Tag_Greatsword","parent":"Ability.Definition.Active.Melee.TwoHanded","description":"双手大剑"},
+    {"name":"Tag_LightSwing","parent":"Ability.Definition.Active.Melee.TwoHanded.Greatsword","description":"轻击"},
+    {"name":"Tag_HeavySmash","parent":"Ability.Definition.Active.Melee.TwoHanded.Greatsword","description":"重击"},
+    {"name":"Tag_Block","parent":"Ability.Definition.Active.Melee.TwoHanded.Greatsword","description":"格挡"},
+    {"name":"Tag_Axe2H","parent":"Ability.Definition.Active.Melee.TwoHanded","description":"双手斧"},
+    {"name":"Tag_LightCleave","parent":"Ability.Definition.Active.Melee.TwoHanded.Axe2H","description":"轻击"},
+    {"name":"Tag_HeavyCleave","parent":"Ability.Definition.Active.Melee.TwoHanded.Axe2H","description":"重击"},
+    {"name":"Tag_Block","parent":"Ability.Definition.Active.Melee.TwoHanded.Axe2H","description":"格挡"},
+    {"name":"Tag_Club2H","parent":"Ability.Definition.Active.Melee.TwoHanded","description":"双手棍"},
+    {"name":"Tag_LightSwing","parent":"Ability.Definition.Active.Melee.TwoHanded.Club2H","description":"轻击"},
+    {"name":"Tag_HeavySmash","parent":"Ability.Definition.Active.Melee.TwoHanded.Club2H","description":"重击"},
+    {"name":"Tag_Block","parent":"Ability.Definition.Active.Melee.TwoHanded.Club2H","description":"格挡"},
+    {"name":"Tag_Polearm","parent":"Ability.Definition.Active.Melee.TwoHanded","description":"长杆"},
+    {"name":"Tag_Thrust","parent":"Ability.Definition.Active.Melee.TwoHanded.Polearm","description":"突刺"},
+    {"name":"Tag_Sweep","parent":"Ability.Definition.Active.Melee.TwoHanded.Polearm","description":"横扫"},
+    {"name":"Tag_Block","parent":"Ability.Definition.Active.Melee.TwoHanded.Polearm","description":"格挡"},
+    {"name":"Tag_DualWield","parent":"Ability.Definition.Active.Melee","description":"双持 — Dual Swords"},
+    {"name":"Tag_Blade","parent":"Ability.Definition.Active.Melee.DualWield","description":"双持剑"},
+    {"name":"Tag_CrossSlash","parent":"Ability.Definition.Active.Melee.DualWield.Blade","description":"十字斩"},
+    {"name":"Tag_SpinningCut","parent":"Ability.Definition.Active.Melee.DualWield.Blade","description":"回旋斩"},
+    {"name":"Tag_Axe","parent":"Ability.Definition.Active.Melee.DualWield","description":"双持斧"},
+    {"name":"Tag_DoubleCleave","parent":"Ability.Definition.Active.Melee.DualWield.Axe","description":"双斧劈"},
+    {"name":"Tag_Whirlwind","parent":"Ability.Definition.Active.Melee.DualWield.Axe","description":"旋风斩"},
+    {"name":"Tag_Fencing","parent":"Ability.Definition.Active.Melee","description":"刺剑 — Fencing"},
+    {"name":"Tag_Rapier","parent":"Ability.Definition.Active.Melee.Fencing","description":"刺剑"},
+    {"name":"Tag_Lunge","parent":"Ability.Definition.Active.Melee.Fencing.Rapier","description":"突刺"},
+    {"name":"Tag_Riposte","parent":"Ability.Definition.Active.Melee.Fencing.Rapier","description":"还击"},
+    {"name":"Tag_Feint","parent":"Ability.Definition.Active.Melee.Fencing.Rapier","description":"虚晃"},
+    {"name":"Tag_Dagger","parent":"Ability.Definition.Active.Melee.Fencing","description":"匕首"},
+    {"name":"Tag_QuickStab","parent":"Ability.Definition.Active.Melee.Fencing.Dagger","description":"速刺"},
+    {"name":"Tag_Parry","parent":"Ability.Definition.Active.Melee.Fencing.Dagger","description":"招架"},
+    {"name":"Tag_Shield","parent":"Ability.Definition.Active.Melee","description":"剑盾 — Sword&Shield"},
+    {"name":"Tag_Blade","parent":"Ability.Definition.Active.Melee.Shield","description":"剑盾"},
+    {"name":"Tag_ShieldBash","parent":"Ability.Definition.Active.Melee.Shield.Blade","description":"盾击"},
+    {"name":"Tag_GuardStance","parent":"Ability.Definition.Active.Melee.Shield.Blade","description":"防御姿态"},
+    {"name":"Tag_Counter","parent":"Ability.Definition.Active.Melee.Shield.Blade","description":"反击"},
+    {"name":"Tag_Axe","parent":"Ability.Definition.Active.Melee.Shield","description":"斧盾"},
+    {"name":"Tag_ShieldCrush","parent":"Ability.Definition.Active.Melee.Shield.Axe","description":"盾压"},
+    {"name":"Tag_HeavyGuard","parent":"Ability.Definition.Active.Melee.Shield.Axe","description":"重防"},
+    {"name":"Tag_Ranged","parent":"Ability.Definition.Active","description":"远程"},
+    {"name":"Tag_Pistol1H","parent":"Ability.Definition.Active.Ranged","description":"单持手枪 — 预留"},
+    {"name":"Tag_NormalFire","parent":"Ability.Definition.Active.Ranged.Pistol1H","description":"普通射击"},
+    {"name":"Tag_Pistol2H","parent":"Ability.Definition.Active.Ranged","description":"双手持手枪 — 2Handed Gun"},
+    {"name":"Tag_NormalFire","parent":"Ability.Definition.Active.Ranged.Pistol2H","description":"普通射击"},
+    {"name":"Tag_AimedShot","parent":"Ability.Definition.Active.Ranged.Pistol2H","description":"精确射击"},
+    {"name":"Tag_QuickReload","parent":"Ability.Definition.Active.Ranged.Pistol2H","description":"快速换弹"},
+    {"name":"Tag_DualPistol","parent":"Ability.Definition.Active.Ranged","description":"双持手枪 — Double Guns"},
+    {"name":"Tag_AkimboFire","parent":"Ability.Definition.Active.Ranged.DualPistol","description":"双枪齐射"},
+    {"name":"Tag_SuppressiveFire","parent":"Ability.Definition.Active.Ranged.DualPistol","description":"压制射击"},
+    {"name":"Tag_CrossFire","parent":"Ability.Definition.Active.Ranged.DualPistol","description":"交叉火力"},
+    {"name":"Tag_Rifle","parent":"Ability.Definition.Active.Ranged","description":"步枪 — Assault Rifle"},
+    {"name":"Tag_NormalFire","parent":"Ability.Definition.Active.Ranged.Rifle","description":"普通射击"},
+    {"name":"Tag_BracedFire","parent":"Ability.Definition.Active.Ranged.Rifle","description":"架枪射击"},
+    {"name":"Tag_FollowUpShot","parent":"Ability.Definition.Active.Ranged.Rifle","description":"追击射击"},
+    {"name":"Tag_MeleeStrike","parent":"Ability.Definition.Active.Ranged.Rifle","description":"枪托挥击"},
+    {"name":"Tag_Shotgun","parent":"Ability.Definition.Active.Ranged","description":"霰弹枪 — Shotgun"},
+    {"name":"Tag_NormalFire","parent":"Ability.Definition.Active.Ranged.Shotgun","description":"普通射击"},
+    {"name":"Tag_CloseQuarters","parent":"Ability.Definition.Active.Ranged.Shotgun","description":"抵近射击"},
+    {"name":"Tag_CombatLoad","parent":"Ability.Definition.Active.Ranged.Shotgun","description":"快速装填"},
+    {"name":"Tag_MeleeStrike","parent":"Ability.Definition.Active.Ranged.Shotgun","description":"枪托挥击"},
+    {"name":"Tag_Bow","parent":"Ability.Definition.Active.Ranged","description":"弓箭 — Bow & Arrow"},
+    {"name":"Tag_NormalFire","parent":"Ability.Definition.Active.Ranged.Bow","description":"普通射击"},
+    {"name":"Tag_ChargedShot","parent":"Ability.Definition.Active.Ranged.Bow","description":"蓄力射击"},
+    {"name":"Tag_MultiArrow","parent":"Ability.Definition.Active.Ranged.Bow","description":"多重箭"},
+    {"name":"Tag_Launcher","parent":"Ability.Definition.Active.Ranged","description":"火箭筒 — Bazooka"},
+    {"name":"Tag_NormalFire","parent":"Ability.Definition.Active.Ranged.Launcher","description":"普通射击"},
+    {"name":"Tag_AimedFire","parent":"Ability.Definition.Active.Ranged.Launcher","description":"瞄准射击"},
+    {"name":"Tag_Heavy","parent":"Ability.Definition.Active.Ranged","description":"加特林 — Minigun"},
+    {"name":"Tag_SpinUp","parent":"Ability.Definition.Active.Ranged.Heavy","description":"预热"},
+    {"name":"Tag_SuppressiveFire","parent":"Ability.Definition.Active.Ranged.Heavy","description":"压制射击"},
+    {"name":"Tag_Overheat","parent":"Ability.Definition.Active.Ranged.Heavy","description":"过热"},
+    {"name":"Tag_Trap","parent":"Ability.Definition.Active","description":"陷阱"},
+    {"name":"Tag_BearTrap","parent":"Ability.Definition.Active.Trap","description":"捕兽夹"},
+    {"name":"Tag_TripMine","parent":"Ability.Definition.Active.Trap","description":"绊雷"},
+    {"name":"Tag_AlarmTrap","parent":"Ability.Definition.Active.Trap","description":"警报器"},
+    {"name":"Tag_GasTrap","parent":"Ability.Definition.Active.Trap","description":"毒气陷阱"},
+    {"name":"Tag_ShockTrap","parent":"Ability.Definition.Active.Trap","description":"电击陷阱"},
+    {"name":"Tag_RazorWire","parent":"Ability.Definition.Active.Trap","description":"铁丝网"},
+    {"name":"Tag_PitfallSpike","parent":"Ability.Definition.Active.Trap","description":"地刺"},
+    {"name":"Tag_OilSlick","parent":"Ability.Definition.Active.Trap","description":"油滑陷阱"},
+    {"name":"Tag_Tripwire","parent":"Ability.Definition.Active.Trap","description":"绊索"},
+    {"name":"Tag_NoiseDecoy","parent":"Ability.Definition.Active.Trap","description":"噪音诱饵"},
+    {"name":"Tag_Medical","parent":"Ability.Definition.Active","description":"医疗"},
+    {"name":"Tag_QuickBandage","parent":"Ability.Definition.Active.Medical","description":"快速包扎"},
+    {"name":"Tag_Tourniquet","parent":"Ability.Definition.Active.Medical","description":"止血带"},
+    {"name":"Tag_Splint","parent":"Ability.Definition.Active.Medical","description":"骨折固定"},
+    {"name":"Tag_CPR","parent":"Ability.Definition.Active.Medical","description":"心肺复苏"},
+    {"name":"Tag_Detoxification","parent":"Ability.Definition.Active.Medical","description":"解毒"},
+    {"name":"Tag_DisinfectWound","parent":"Ability.Definition.Active.Medical","description":"消毒清创"},
+    {"name":"Tag_CombatMedic","parent":"Ability.Definition.Active.Medical","description":"战地急救"},
+    {"name":"Tag_Assessment","parent":"Ability.Definition.Active.Medical","description":"诊断"},
+    {"name":"Tag_Survival","parent":"Ability.Definition.Active","description":"生存"},
+    {"name":"Tag_MakeFire","parent":"Ability.Definition.Active.Survival","description":"生火"},
+    {"name":"Tag_PurifyWater","parent":"Ability.Definition.Active.Survival","description":"净水"},
+    {"name":"Tag_Shelter","parent":"Ability.Definition.Active.Survival","description":"搭建庇护所"},
+    {"name":"Tag_TrackPrey","parent":"Ability.Definition.Active.Survival","description":"追踪猎物"},
+    {"name":"Tag_FieldDress","parent":"Ability.Definition.Active.Survival","description":"屠宰"},
+    {"name":"Tag_ForagingFocus","parent":"Ability.Definition.Active.Survival","description":"采集增效"},
+    {"name":"Tag_WeatherSense","parent":"Ability.Definition.Active.Survival","description":"天气预判"},
+    {"name":"Tag_EmergencyShelter","parent":"Ability.Definition.Active.Survival","description":"紧急避难"},
+    {"name":"Tag_Craft","parent":"Ability.Definition.Active","description":"制作"},
+    {"name":"Tag_FieldRepair","parent":"Ability.Definition.Active.Craft","description":"临时修理"},
+    {"name":"Tag_WeaponSharpening","parent":"Ability.Definition.Active.Craft","description":"武器打磨"},
+    {"name":"Tag_AmmoReloading","parent":"Ability.Definition.Active.Craft","description":"弹药复装"},
+    {"name":"Tag_ImprovisedExplosive","parent":"Ability.Definition.Active.Craft","description":"简易炸药"},
+    {"name":"Tag_WeaponModding","parent":"Ability.Definition.Active.Craft","description":"武器改装"},
+    {"name":"Tag_PartSalvage","parent":"Ability.Definition.Active.Craft","description":"零部件拆解"},
+    {"name":"Tag_CraftTrap","parent":"Ability.Definition.Active.Craft","description":"陷阱制作"},
+    {"name":"Tag_ChemicalExtraction","parent":"Ability.Definition.Active.Craft","description":"化学提炼"},
+    {"name":"Tag_Trade","parent":"Ability.Definition.Active","description":"交易"},
+    {"name":"Tag_Haggle","parent":"Ability.Definition.Active.Trade","description":"议价"},
+    {"name":"Tag_Appraise","parent":"Ability.Definition.Active.Trade","description":"估价"},
+    {"name":"Tag_FastTalk","parent":"Ability.Definition.Active.Trade","description":"唬骗"},
+    {"name":"Tag_Investment","parent":"Ability.Definition.Active.Trade","description":"投资"},
+    {"name":"Tag_Lockpicking","parent":"Ability.Definition.Active","description":"开锁"},
+    {"name":"Tag_Lockpick","parent":"Ability.Definition.Active.Lockpicking","description":"撬锁"},
+    {"name":"Tag_ForceEntry","parent":"Ability.Definition.Active.Lockpicking","description":"暴力破锁"},
+    {"name":"Tag_HackTerminal","parent":"Ability.Definition.Active.Lockpicking","description":"电子锁破解"},
+    {"name":"Tag_ThermalCut","parent":"Ability.Definition.Active.Lockpicking","description":"热切割"},
+    {"name":"Tag_KeyImpression","parent":"Ability.Definition.Active.Lockpicking","description":"钥匙模具"},
+    {"name":"Tag_SecurityCheck","parent":"Ability.Definition.Active.Lockpicking","description":"安全检查"},
+    {"name":"Tag_Universal","parent":"Ability.Definition.Active","description":"通用"},
+    {"name":"Tag_CombatRoll","parent":"Ability.Definition.Active.Universal","description":"翻滚闪避"},
+    {"name":"Tag_EmergencyReload","parent":"Ability.Definition.Active.Universal","description":"紧急换弹"},
+    {"name":"Tag_PushKick","parent":"Ability.Definition.Active.Universal","description":"脚踢推开"},
+    {"name":"Tag_Passive","parent":"Ability.Definition","description":"被动技能"},
+    {"name":"Tag_StatModify","parent":"Ability.Definition.Passive","description":"属性修改类被动"},
+    {"name":"Tag_TriggerAttack","parent":"Ability.Definition.Passive","description":"触发攻击类被动"},
+    {"name":"Tag_GrantBuff","parent":"Ability.Definition.Passive","description":"授权Buff类被动"},
+    {"name":"Tag_Tree","parent":"Ability","description":"技能树类型"},
+    {"name":"Tag_Innate","parent":"Ability.Tree","description":"天生技能树"},
+    {"name":"Tag_Talent","parent":"Ability.Tree","description":"天赋技能树"},
+    {"name":"Tag_Routine","parent":"Ability.Tree","description":"武学套路技能树"},
+    {"name":"Tag_Learned","parent":"Ability.Tree","description":"习得技能树"},
+    {"name":"Tag_Boss","parent":"Ability.Tree","description":"Boss技能树"},
+    {"name":"Tag_Mutation","parent":"Ability.Tree","description":"变异技能树"},
+    {"name":"Tag_Faction","parent":"Ability.Tree","description":"阵营技能树"},
+    {"name":"Tag_Execute","parent":"Ability","description":"处决"},
+    {"name":"Tag_Threshold","parent":"Ability.Execute","description":"血量阈值处决"},
+    {"name":"Tag_Damage","parent":"Ability","description":"伤害类型"},
+    {"name":"Tag_Physical","parent":"Ability.Damage","description":"物理伤害"},
+    {"name":"Tag_Slash","parent":"Ability.Damage.Physical","description":"斩击"},
+    {"name":"Tag_Blunt","parent":"Ability.Damage.Physical","description":"钝击"},
+    {"name":"Tag_Pierce","parent":"Ability.Damage.Physical","description":"穿刺"},
+    {"name":"Tag_Bite","parent":"Ability.Damage.Physical","description":"撕咬"},
+    {"name":"Tag_Crush","parent":"Ability.Damage.Physical","description":"碾压"},
+    {"name":"Tag_Elemental","parent":"Ability.Damage","description":"元素伤害"},
+    {"name":"Tag_Fire","parent":"Ability.Damage.Elemental","description":"火焰"},
+    {"name":"Tag_Cold","parent":"Ability.Damage.Elemental","description":"寒冷"},
+    {"name":"Tag_Shock","parent":"Ability.Damage.Elemental","description":"电击"},
+    {"name":"Tag_Acid","parent":"Ability.Damage.Elemental","description":"酸蚀"},
+    {"name":"Tag_Poison","parent":"Ability.Damage.Elemental","description":"毒素"},
+    {"name":"Tag_Radiation","parent":"Ability.Damage.Elemental","description":"辐射"},
+    {"name":"Tag_Biological","parent":"Ability.Damage","description":"生物伤害"},
+    {"name":"Tag_Bleed","parent":"Ability.Damage.Biological","description":"出血"},
+    {"name":"Tag_Disease","parent":"Ability.Damage.Biological","description":"疾病"},
+    {"name":"Tag_Suffocation","parent":"Ability.Damage.Biological","description":"窒息"},
+    {"name":"Tag_True","parent":"Ability.Damage","description":"真实伤害"},
+    {"name":"Tag_Fall","parent":"Ability.Damage","description":"坠落伤害"},
+    {"name":"Tag_Effect","parent":"Ability","description":"状态效果"},
+    {"name":"Tag_Buff","parent":"Ability.Effect","description":"增益"},
+    {"name":"Tag_Fortify","parent":"Ability.Effect.Buff","description":"护体"},
+    {"name":"Tag_Haste","parent":"Ability.Effect.Buff","description":"加速"},
+    {"name":"Tag_Strengthen","parent":"Ability.Effect.Buff","description":"强化"},
+    {"name":"Tag_Endow","parent":"Ability.Effect.Buff","description":"赋能"},
+    {"name":"Tag_Inspire","parent":"Ability.Effect.Buff","description":"激励"},
+    {"name":"Tag_Regeneration","parent":"Ability.Effect.Buff","description":"再生"},
+    {"name":"Tag_Debuff","parent":"Ability.Effect","description":"减益"},
+    {"name":"Tag_Slow","parent":"Ability.Effect.Debuff","description":"减速"},
+    {"name":"Tag_Stun","parent":"Ability.Effect.Debuff","description":"眩晕"},
+    {"name":"Tag_Silence","parent":"Ability.Effect.Debuff","description":"沉默"},
+    {"name":"Tag_Disarm","parent":"Ability.Effect.Debuff","description":"缴械"},
+    {"name":"Tag_Blind","parent":"Ability.Effect.Debuff","description":"致盲"},
+    {"name":"Tag_Weakness","parent":"Ability.Effect.Debuff","description":"虚弱"},
+    {"name":"Tag_Cripple","parent":"Ability.Effect.Debuff","description":"残废"},
+    {"name":"Tag_Fear","parent":"Ability.Effect.Debuff","description":"恐惧"},
+    {"name":"Tag_Taunt","parent":"Ability.Effect.Debuff","description":"嘲讽"},
+    {"name":"Tag_Root","parent":"Ability.Effect.Debuff","description":"定身"},
+    {"name":"Tag_DoT","parent":"Ability.Effect","description":"持续伤害"},
+    {"name":"Tag_Bleeding","parent":"Ability.Effect.DoT","description":"流血"},
+    {"name":"Tag_Burning","parent":"Ability.Effect.DoT","description":"燃烧"},
+    {"name":"Tag_Poisoned","parent":"Ability.Effect.DoT","description":"中毒"},
+    {"name":"Tag_Infected","parent":"Ability.Effect.DoT","description":"感染"},
+    {"name":"Tag_Status","parent":"Ability.Effect","description":"特殊状态"},
+    {"name":"Tag_Downed","parent":"Ability.Effect.Status","description":"倒地"},
+    {"name":"Tag_Zombifying","parent":"Ability.Effect.Status","description":"尸变中"},
+    {"name":"Tag_Exposed","parent":"Ability.Effect.Status","description":"暴露"},
+    {"name":"Tag_Marked","parent":"Ability.Effect.Status","description":"被标记"},
+    {"name":"Tag_Condition","parent":"Ability.Effect","description":"生存状态"},
+    {"name":"Tag_Hungry","parent":"Ability.Effect.Condition","description":"饥饿"},
+    {"name":"Tag_Thirsty","parent":"Ability.Effect.Condition","description":"口渴"},
+    {"name":"Tag_Exhausted","parent":"Ability.Effect.Condition","description":"疲惫"},
+    {"name":"Tag_Diseased","parent":"Ability.Effect.Condition","description":"患病"},
+    {"name":"Tag_Freezing","parent":"Ability.Effect.Condition","description":"失温"},
+    {"name":"Tag_Overheating","parent":"Ability.Effect.Condition","description":"过热"},
+    {"name":"Tag_Immunity","parent":"Ability.Effect","description":"免疫标记"},
+    {"name":"Tag_BleedImmune","parent":"Ability.Effect.Immunity","description":"免疫流血"},
+    {"name":"Tag_PoisonImmune","parent":"Ability.Effect.Immunity","description":"免疫中毒"},
+    {"name":"Tag_InfectionImmune","parent":"Ability.Effect.Immunity","description":"免疫感染"},
+    {"name":"Tag_StunImmune","parent":"Ability.Effect.Immunity","description":"免疫眩晕"},
+    {"name":"Tag_Functional","parent":"Ability.Effect","description":"功能性效果"},
+    {"name":"Tag_Heal","parent":"Ability.Effect.Functional","description":"治疗"},
+    {"name":"Tag_Shield","parent":"Ability.Effect.Functional","description":"护盾"},
+    {"name":"Tag_Cleanse","parent":"Ability.Effect.Functional","description":"净化"},
+    {"name":"Tag_Mark","parent":"Ability.Effect.Functional","description":"施加标记"},
+    {"name":"Tag_Reveal","parent":"Ability.Effect.Functional","description":"揭示"},
+    {"name":"Tag_Invulnerable","parent":"Ability.Effect.Functional","description":"无敌"},
+    {"name":"Tag_Impact","parent":"Ability","description":"冲击/击退"},
+    {"name":"Tag_Launch","parent":"Ability.Impact","description":"击飞"},
+
+    {"name":"Tag_Identity","parent":null,"description":"身份标签根 — L3_Identity 产出"},
+    {"name":"Tag_Species","parent":"Identity","description":"物种"},
+    {"name":"Tag_Human","parent":"Identity.Species","description":"人类"},
+    {"name":"Tag_Mutant","parent":"Identity.Species","description":"变种人"},
+    {"name":"Tag_Robot","parent":"Identity.Species","description":"机器人"},
+    {"name":"Tag_Creature","parent":"Identity.Species","description":"生物"},
+    {"name":"Tag_Kind","parent":"Identity","description":"游戏实体类型"},
+    {"name":"Tag_Player","parent":"Identity.Kind","description":"玩家"},
+    {"name":"Tag_Companion","parent":"Identity.Kind","description":"同伴"},
+    {"name":"Tag_NPC","parent":"Identity.Kind","description":"NPC"},
+    {"name":"Tag_Hostile","parent":"Identity.Kind","description":"敌对"},
+    {"name":"Tag_Faction","parent":"Identity","description":"阵营"},
+    {"name":"Tag_Survivor","parent":"Identity.Faction","description":"幸存者"},
+    {"name":"Tag_Raider","parent":"Identity.Faction","description":"掠夺者"},
+    {"name":"Tag_Mercenary","parent":"Identity.Faction","description":"雇佣兵"},
+    {"name":"Tag_Enclave","parent":"Identity.Faction","description":"飞地"},
+    {"name":"Tag_Nomad","parent":"Identity.Faction","description":"游民"},
+    {"name":"Tag_Role","parent":"Identity","description":"职能"},
+    {"name":"Tag_Scout","parent":"Identity.Role","description":"侦察"},
+    {"name":"Tag_Guard","parent":"Identity.Role","description":"守卫"},
+    {"name":"Tag_Brute","parent":"Identity.Role","description":"重装"},
+    {"name":"Tag_Sniper","parent":"Identity.Role","description":"狙击手"},
+    {"name":"Tag_Medic","parent":"Identity.Role","description":"医疗兵"},
+    {"name":"Tag_Engineer","parent":"Identity.Role","description":"工程师"},
+    {"name":"Tag_Trader","parent":"Identity.Role","description":"商人"},
+    {"name":"Tag_Leader","parent":"Identity.Role","description":"领袖"},
+
+    {"name":"Tag_Body","parent":null,"description":"身体状态标签根 — L3_Character 产出"},
+    {"name":"Tag_Form","parent":"Body","description":"战备形态"},
+    {"name":"Tag_Relax","parent":"Body.Form","description":"放松"},
+    {"name":"Tag_Combat","parent":"Body.Form","description":"战斗"},
+    {"name":"Tag_Posture","parent":"Body","description":"高度姿态"},
+    {"name":"Tag_Standing","parent":"Body.Posture","description":"站立"},
+    {"name":"Tag_Crouching","parent":"Body.Posture","description":"蹲伏"},
+    {"name":"Tag_Prone","parent":"Body.Posture","description":"匍匐"},
+    {"name":"Tag_Locomotion","parent":"Body","description":"移动步态"},
+    {"name":"Tag_Idle","parent":"Body.Locomotion","description":"静止"},
+    {"name":"Tag_Walk","parent":"Body.Locomotion","description":"行走"},
+    {"name":"Tag_Run","parent":"Body.Locomotion","description":"奔跑"},
+    {"name":"Tag_Sprint","parent":"Body.Locomotion","description":"冲刺"},
+    {"name":"Tag_Crawl","parent":"Body.Locomotion","description":"爬行"},
+
+    {"name":"Tag_Entity","parent":null,"description":"实体标签根 — Entity 系统产出"},
+    {"name":"Tag_Weapon","parent":"Entity","description":"武器类型"},
+    {"name":"Tag_Melee","parent":"Entity.Weapon","description":"近战武器"},
+    {"name":"Tag_Blade","parent":"Entity.Weapon.Melee","description":"单手剑"},
+    {"name":"Tag_Axe","parent":"Entity.Weapon.Melee","description":"单手斧"},
+    {"name":"Tag_Club","parent":"Entity.Weapon.Melee","description":"单手棍"},
+    {"name":"Tag_Dagger","parent":"Entity.Weapon.Melee","description":"匕首"},
+    {"name":"Tag_Greatsword","parent":"Entity.Weapon.Melee","description":"双手大剑"},
+    {"name":"Tag_Polearm","parent":"Entity.Weapon.Melee","description":"长杆"},
+    {"name":"Tag_Rapier","parent":"Entity.Weapon.Melee","description":"刺剑"},
+    {"name":"Tag_Ranged","parent":"Entity.Weapon","description":"远程武器"},
+    {"name":"Tag_Pistol","parent":"Entity.Weapon.Ranged","description":"手枪"},
+    {"name":"Tag_Rifle","parent":"Entity.Weapon.Ranged","description":"步枪"},
+    {"name":"Tag_Shotgun","parent":"Entity.Weapon.Ranged","description":"霰弹枪"},
+    {"name":"Tag_Bow","parent":"Entity.Weapon.Ranged","description":"弓"},
+    {"name":"Tag_Launcher","parent":"Entity.Weapon.Ranged","description":"火箭筒"},
+    {"name":"Tag_Heavy","parent":"Entity.Weapon.Ranged","description":"加特林"},
+    {"name":"Tag_Item","parent":"Entity","description":"物品分类"},
+    {"name":"Tag_Weapon","parent":"Entity.Item","description":"武器类"},
+    {"name":"Tag_Armor","parent":"Entity.Item","description":"护甲"},
+    {"name":"Tag_Head","parent":"Entity.Item.Armor","description":"头盔"},
+    {"name":"Tag_Chest","parent":"Entity.Item.Armor","description":"胸甲"},
+    {"name":"Tag_Legs","parent":"Entity.Item.Armor","description":"腿甲"},
+    {"name":"Tag_Feet","parent":"Entity.Item.Armor","description":"鞋"},
+    {"name":"Tag_Hands","parent":"Entity.Item.Armor","description":"手套"},
+    {"name":"Tag_Ammo","parent":"Entity.Item","description":"弹药"},
+    {"name":"Tag_Consumable","parent":"Entity.Item","description":"消耗品"},
+    {"name":"Tag_Medical","parent":"Entity.Item","description":"医疗品"},
+    {"name":"Tag_Tool","parent":"Entity.Item","description":"工具"},
+    {"name":"Tag_Material","parent":"Entity.Item","description":"材料"},
+    {"name":"Tag_Component","parent":"Entity.Item","description":"零件"},
+
+    {"name":"Tag_Grip","parent":null,"description":"握持标签根 — 独立域，GripAnimationTableSO 消费"},
+    {"name":"Tag_Unarmed","parent":"Grip","description":"空手"},
+    {"name":"Tag_OneHanded","parent":"Grip","description":"单手"},
+    {"name":"Tag_TwoHanded","parent":"Grip","description":"双手"},
+    {"name":"Tag_DualWield","parent":"Grip","description":"双持"},
+    {"name":"Tag_Fencing","parent":"Grip","description":"刺剑"},
+    {"name":"Tag_Shield","parent":"Grip","description":"剑盾"},
+
+    {"name":"Tag_Noise","parent":null,"description":"噪音标签根 — L3_Ability 产出，AI 消费"},
+    {"name":"Tag_Combat","parent":"Noise","description":"战斗噪音"},
+    {"name":"Tag_WeaponFire","parent":"Noise.Combat","description":"枪声"},
+    {"name":"Tag_MeleeSwing","parent":"Noise.Combat","description":"近战挥舞"},
+    {"name":"Tag_Explosion","parent":"Noise.Combat","description":"爆炸"},
+    {"name":"Tag_Impact","parent":"Noise.Combat","description":"撞击声"},
+    {"name":"Tag_World","parent":"Noise","description":"环境噪音"},
+    {"name":"Tag_Footstep","parent":"Noise.World","description":"脚步"},
+    {"name":"Tag_Door","parent":"Noise.World","description":"门"},
+    {"name":"Tag_ItemUse","parent":"Noise.World","description":"使用物品"},
+    {"name":"Tag_BodyFall","parent":"Noise.World","description":"倒地"},
+    {"name":"Tag_Alert","parent":"Noise","description":"警戒噪音"},
+    {"name":"Tag_Voice","parent":"Noise.Alert","description":"语音"},
+    {"name":"Tag_Death","parent":"Noise.Alert","description":"死亡"},
+    {"name":"Tag_Alarm","parent":"Noise.Alert","description":"警报"},
+    {"name":"Tag_TrapTrigger","parent":"Noise.Alert","description":"陷阱触发"},
+    {"name":"Tag_Distraction","parent":"Noise.Alert","description":"诱饵"}
   ]
 }

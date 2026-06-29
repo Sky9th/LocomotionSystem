@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: Idle
   parent: {fileID: 11400000, guid: fe3623fa492f4c74ab392e4c5303d5fa, type: 2}
-  description: "\u9759\u6B62\u2014\u2014\u539F\u5730\u7AD9\u7ACB\uFF0C\u6709\u5FAE\u52A8"
+  description: "\u9759\u6B62"

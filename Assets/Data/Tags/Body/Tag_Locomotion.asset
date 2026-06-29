@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: Locomotion
   parent: {fileID: 11400000, guid: 9796b0e994c40c64887576ae69ea16cf, type: 2}
-  description: "\u79FB\u52A8\u6B65\u6001\u6839"
+  description: "\u79FB\u52A8\u6B65\u6001"

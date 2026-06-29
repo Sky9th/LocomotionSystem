@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: Combat
   parent: {fileID: 11400000, guid: a6eb36390cdddf74d9ec7da90d25b956, type: 2}
-  description: 
+  description: "\u6218\u6597\u566A\u97F3"

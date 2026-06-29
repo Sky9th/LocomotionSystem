@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: Body
   parent: {fileID: 0}
-  description: "\u89D2\u8272\u8EAB\u4F53\u7269\u7406\u914D\u7F6E\u6839\u2014\u2014\u679A\u4E3E\u6D3E\u751F\uFF0C\u5916\u90E8\u53EA\u8BFB"
+  description: "\u8EAB\u4F53\u72B6\u6001\u6807\u7B7E\u6839 \u2014 L3_Character \u4EA7\u51FA"
