@@ -25,7 +25,7 @@ namespace RedDust.Core.Editor
         // -- 创建表单 --
         private string _createLeafName = "";
 
-        [MenuItem("RedDust/Tag Editor", priority = 4)]
+        [MenuItem("RedDust/Tag Editor", priority = 5)]
         private static void Open()
             => GetWindow<TagEditorWindow>("Tag Editor");
 

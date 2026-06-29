@@ -329,7 +329,7 @@ namespace RedDust.Core
         private string _previewText;
         private (int created, int skipped, List<string> errors) _result;
 
-        [MenuItem("RedDust/Tag Import-Export", priority = 23)]
+        [MenuItem("RedDust/Tag Import-Export", priority = 26)]
         public static void Open()
         {
             var window = GetWindow<rTagImportWindow>("Tag Import-Export");

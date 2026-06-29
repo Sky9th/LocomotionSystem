@@ -1189,7 +1189,7 @@ namespace RedDust.Character.Animation
         private string _previewText;
         private (int created, int skipped, List<string> errors) _result;
 
-        [MenuItem("RedDust/Animation Import-Export", priority = 25)]
+        [MenuItem("RedDust/Animation Import-Export", priority = 28)]
         public static void Open()
         {
             var window = GetWindow<AnimationImportWindow>("Animation Import-Export");

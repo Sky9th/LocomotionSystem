@@ -344,7 +344,7 @@ namespace RedDust.Ability
         private string _previewText;
         private (int created, int skipped, List<string> errors) _result;
 
-        [MenuItem("RedDust/Ability Import-Export", priority = 24)]
+        [MenuItem("RedDust/Ability Import-Export", priority = 20)]
         public static void Open()
         {
             var window = GetWindow<AbilityImportWindow>("Ability Import-Export");

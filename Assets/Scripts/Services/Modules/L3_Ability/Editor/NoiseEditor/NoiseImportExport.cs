@@ -134,7 +134,7 @@ namespace RedDust.Ability
         private string _previewText;
         private (int created, int skipped, List<string> errors) _result;
 
-        [MenuItem("RedDust/Noise Import-Export", priority = 23)]
+        [MenuItem("RedDust/Noise Import-Export", priority = 25)]
         public static void Open()
         {
             var window = GetWindow<NoiseImportWindow>("Noise Import-Export");

@@ -17,7 +17,7 @@ namespace RedDust.Ability
         private string _previewText;
         private (int created, int skipped, List<string> errors) _result;
 
-        [MenuItem("RedDust/Ability Tree Import-Export", priority = 3)]
+        [MenuItem("RedDust/Ability Tree Import-Export", priority = 21)]
         public static void Open()
         {
             var window = GetWindow<AbilityTreeImportWindow>("Ability Tree Import-Export");

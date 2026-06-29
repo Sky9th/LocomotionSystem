@@ -97,7 +97,7 @@ namespace RedDust.Properties.Editor
         private PropertyDefSO _dragDef;
         private Vector2 _dragStart;
 
-        [MenuItem("RedDust/Property Tree Editor", priority = 5)]
+        [MenuItem("RedDust/Property Tree Editor", priority = 6)]
         private static void Open() => GetWindow<PropertyTreeEditorWindow>("Property Tree");
 
         private void OnEnable()

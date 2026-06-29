@@ -431,7 +431,7 @@ namespace RedDust.Ability
         private string _previewText;
         private (int created, int skipped, List<string> errors) _result;
 
-        [MenuItem("RedDust/Effect Import-Export", priority = 20)]
+        [MenuItem("RedDust/Effect Import-Export", priority = 24)]
         public static void Open()
         {
             var window = GetWindow<EffectImportWindow>("Effect Import-Export");

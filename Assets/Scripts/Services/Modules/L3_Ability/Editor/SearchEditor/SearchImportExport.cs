@@ -144,7 +144,7 @@ namespace RedDust.Ability
         private string _previewText;
         private (int created, int skipped, List<string> errors) _result;
 
-        [MenuItem("RedDust/Search Import-Export", priority = 21)]
+        [MenuItem("RedDust/Search Import-Export", priority = 23)]
         public static void Open()
         {
             var window = GetWindow<SearchImportWindow>("Search Import-Export");
