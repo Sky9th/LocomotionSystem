@@ -14,7 +14,7 @@ namespace RedDust.Ability
     /// Tags 由 AbilityComponent._buffTags 跟踪，Tick 中清理。
     ///
     /// 用法范本：
-    /// - 临时 Buff：AbilityDefSO.selfEffects, duration=2s → 压制射击减速
+    /// - 临时 Buff：ActiveAbilitySO.selfEffects, duration=2s → 压制射击减速
     /// - 天赋（永久 Buff）：PassiveAbilitySO(OnEquip).selfEffects, duration≤0 → 铁壁
     /// - 条件 Buff：PassiveAbilitySO(OnDamaged).targetEffects, duration=5s → 受伤减伤
     /// - 装备 Buff：GearDefSO.outputEffects, duration≤0 → 防具护甲

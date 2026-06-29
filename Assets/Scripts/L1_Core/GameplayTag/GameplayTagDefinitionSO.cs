@@ -35,7 +35,7 @@ namespace RedDust.Core
         /// <summary>层级深度。根=1，"State.Attacking"=2。</summary>
         public int Depth { get; private set; }
 
-        /// <summary>隐式转换到运行时 struct。AbilityDefSO 等持有此 SO 的地方可直接当 GameplayTag 用。</summary>
+        /// <summary>隐式转换到运行时 struct。ActiveAbilitySO 等持有此 SO 的地方可直接当 GameplayTag 用。</summary>
         public static implicit operator GameplayTag(GameplayTagDefinitionSO def)
             => def != null ? new GameplayTag(def.FullTag) : default;
 

@@ -11,7 +11,7 @@ namespace RedDust.Ability
     /// 不命令动画走多快。animationSpeed 是唯一的调参旋钮——
     /// 实际阶段时间 = marker / animationSpeed。
     ///
-    /// AbilityDefSO 持有此资产引用，AbilityDriver 消费。
+    /// ActiveAbilitySO 持有此资产引用，AbilityDriver 消费。
     /// </summary>
     [CreateAssetMenu(menuName = "RedDust/Ability/Activation", fileName = "Activation_")]
     public sealed class AbilityActivationSO : ScriptableObject

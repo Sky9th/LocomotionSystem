@@ -15,7 +15,7 @@ namespace RedDust.Ability
     public class TreeNodeEntry
     {
         public string nodeId;
-        public string ability;      // AbilityDefSO asset name, nullable
+        public string ability;      // ActiveAbilitySO asset name, nullable
         public string passive;      // PassiveAbilitySO asset name, nullable
         public string[] prerequisites;  // nodeId[], empty = root
     }
@@ -121,7 +121,7 @@ namespace RedDust.Ability
 
             // Build lookups
             var tagByFullTag = BuildTagLookup();
-            var abilityByName = BuildAssetLookup<AbilityDefSO>("t:AbilityDefSO");
+            var abilityByName = BuildAssetLookup<ActiveAbilitySO>("t:ActiveAbilitySO");
             var passiveByName = BuildAssetLookup<PassiveAbilitySO>("t:PassiveAbilitySO");
 
             foreach (var entry in file.trees)
@@ -179,7 +179,7 @@ namespace RedDust.Ability
         }
 
         private static SAbilityTreeNode ImportNode(TreeNodeEntry entry,
-            Dictionary<string, AbilityDefSO> abilityByName,
+            Dictionary<string, ActiveAbilitySO> abilityByName,
             Dictionary<string, PassiveAbilitySO> passiveByName,
             List<string> errors, string treeId)
         {

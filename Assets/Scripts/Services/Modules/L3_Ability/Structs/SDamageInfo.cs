@@ -27,7 +27,7 @@ namespace RedDust.Ability
         /// <summary>从攻击者指向命中点的方向。</summary>
         public readonly Vector3 HitDirection;
 
-        /// <summary>伤害来源技能。AbilityDefSO 或 PassiveAbilitySO。</summary>
+        /// <summary>伤害来源技能。ActiveAbilitySO 或 PassiveAbilitySO。</summary>
         public readonly AbilitySO SourceAbility;
 
         public SDamageInfo(GameObject caster, GameObject target, float amount, GameplayTag effectTag,

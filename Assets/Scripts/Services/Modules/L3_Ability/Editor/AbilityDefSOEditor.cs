@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace RedDust.Ability
 {
-    [CustomEditor(typeof(AbilityDefSO))]
-    public class AbilityDefSOEditor : UnityEditor.Editor
+    [CustomEditor(typeof(ActiveAbilitySO))]
+    public class ActiveAbilitySOEditor : UnityEditor.Editor
     {
         private bool damageFoldout = true;
 
@@ -18,7 +18,7 @@ namespace RedDust.Ability
 
         private void DrawDamagePreview()
         {
-            var def = (AbilityDefSO)target;
+            var def = (ActiveAbilitySO)target;
             if (def.targetEffects == null || def.targetEffects.Length == 0) return;
 
             var damages = new List<DamageEffectSO>();

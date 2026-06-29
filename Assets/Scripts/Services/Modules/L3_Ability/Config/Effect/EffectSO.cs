@@ -5,7 +5,7 @@ namespace RedDust.Ability
 {
     /// <summary>
     /// 游戏效果抽象基类。所有效果——伤害、硬直、消耗、噪音、冷却、Buff——统一管道。
-    /// AbilityDefSO.targetEffects[] / selfEffects[] 持有子类实例。
+    /// ActiveAbilitySO.targetEffects[] / selfEffects[] 持有子类实例。
     ///
     /// 对标 UE GAS UGameplayEffect。
     /// </summary>

@@ -59,7 +59,7 @@ namespace RedDust.Ability
         // }
 
         /// <summary>最近一次解析产出的主动技能列表（Q/E/R/F）。</summary>
-        public AbilityDefSO[] ResolvedActives { get; private set; } = System.Array.Empty<AbilityDefSO>();
+        public ActiveAbilitySO[] ResolvedActives { get; private set; } = System.Array.Empty<ActiveAbilitySO>();
 
         /// <summary>最近一次解析产出的被动技能列表。</summary>
         public PassiveAbilitySO[] ResolvedPassives { get; private set; } = System.Array.Empty<PassiveAbilitySO>();
@@ -184,7 +184,7 @@ namespace RedDust.Ability
         /// <summary>使用当前存储的 weaponTags 重解析。状态变化时自动调用。</summary>
         private void Resolve()
         {
-            var actives = new List<AbilityDefSO>();
+            var actives = new List<ActiveAbilitySO>();
             var passives = new List<PassiveAbilitySO>();
 
             foreach (var at in _activeTrees)

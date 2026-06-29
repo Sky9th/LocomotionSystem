@@ -73,6 +73,10 @@ namespace RedDust.Character.Director
         /// <summary>
         /// Equip 输入处理。1=空手 2=Blade 3=Pistol（无 UI 临时硬编码）。
         /// 从背包 Container 拿武器到手，Equipment.SyncEquipment 负责后续 GO + GripTag 同步。
+        ///
+        /// TODO: 临时措施。Director 是输入行为层，不应直接操作 Container。
+        /// 技能槽/物品栏/装备栏完成后，输入应经装备系统中转，而非 Director 直接 Place/Remove。
+        /// NpcDirector 同理——NPC 的装备行为不应走 Container 裸操作。
         /// </summary>
         private void ProcessEquipInput()
         {
@@ -194,7 +198,7 @@ namespace RedDust.Character.Director
             return currentPosture;
         }
 
-        private void TryActivateSkill(RedDust.Ability.AbilityDefSO def, string slotName)
+        private void TryActivateSkill(RedDust.Ability.ActiveAbilitySO def, string slotName)
         {
             var ability = ctx.Ability;
             if (ability == null)

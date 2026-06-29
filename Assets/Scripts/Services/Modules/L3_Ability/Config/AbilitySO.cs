@@ -4,7 +4,7 @@ using UnityEngine;
 namespace RedDust.Ability
 {
     /// <summary>
-    /// 技能定义抽象基类。AbilityDefSO（主动）和 PassiveAbilitySO（被动）的公共根。
+    /// 技能定义抽象基类。ActiveAbilitySO（主动）和 PassiveAbilitySO（被动）的公共根。
     /// 提取共享的 Identity、Effects、Cooldown，SDamageInfo / HitReactionComponent 等
     /// 消费侧使用此类型，不区分主动被动。
     /// </summary>

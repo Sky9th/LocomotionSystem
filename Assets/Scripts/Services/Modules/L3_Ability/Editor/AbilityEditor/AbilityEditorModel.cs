@@ -16,7 +16,7 @@ namespace RedDust.Ability
     public class AbilityEditorModel
     {
         // ── 主资产 ──
-        public List<AbilityDefSO> AllDefs = new();
+        public List<ActiveAbilitySO> AllDefs = new();
         public List<PassiveAbilitySO> AllPassives = new();
         public List<AbilitySO> AllAbilities => AllDefs.Cast<AbilitySO>().Concat(AllPassives).ToList();
 
@@ -50,11 +50,11 @@ namespace RedDust.Ability
             AbilityIndex.Clear();
 
             // 主资产
-            var defGuids = AssetDatabase.FindAssets("t:AbilityDefSO");
+            var defGuids = AssetDatabase.FindAssets("t:ActiveAbilitySO");
             foreach (var guid in defGuids)
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
-                var def = AssetDatabase.LoadAssetAtPath<AbilityDefSO>(path);
+                var def = AssetDatabase.LoadAssetAtPath<ActiveAbilitySO>(path);
                 if (def != null)
                 {
                     AllDefs.Add(def);

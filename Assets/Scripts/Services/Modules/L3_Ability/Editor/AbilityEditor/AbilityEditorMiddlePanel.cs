@@ -58,7 +58,7 @@ namespace RedDust.Ability
 
             _onChanged = onChanged;
             DrawSection("Identity", () => DrawIdentityFields(ability));
-            if (ability is AbilityDefSO def)
+            if (ability is ActiveAbilitySO def)
             {
                 DrawSection("Activation",
                     () => DrawSubAssetSlot(def.activation, GetActivationSummary(def.activation),
@@ -224,7 +224,7 @@ namespace RedDust.Ability
                 form.OnChange += () => { EditorUtility.SetDirty(a); _onChanged?.Invoke(); };
             });
 
-            if (a is AbilityDefSO def)
+            if (a is ActiveAbilitySO def)
             {
                 EditorForm.Draw(def, form =>
                 {
@@ -265,7 +265,7 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════════════
         // Combo
         // ═══════════════════════════════════════════════════════════
-        private static void DrawComboList(AbilityDefSO def)
+        private static void DrawComboList(ActiveAbilitySO def)
         {
             var links = def.comboLinks;
             if (links != null)
@@ -279,8 +279,8 @@ namespace RedDust.Ability
                     EditorGUILayout.BeginHorizontal();
                     EditorLabel.Draw("→", 14f);
 
-                    var next = (AbilityDefSO)EditorGUILayout.ObjectField(
-                        l.NextSkill, typeof(AbilityDefSO), false, GUILayout.Width(140));
+                    var next = (ActiveAbilitySO)EditorGUILayout.ObjectField(
+                        l.NextSkill, typeof(ActiveAbilitySO), false, GUILayout.Width(140));
                     if (next != l.NextSkill) { l.NextSkill = next; def.comboLinks[i] = l; EditorUtility.SetDirty(def); _onChanged?.Invoke(); }
 
                     EditorLabel.Draw("Start", 35f);
@@ -337,7 +337,7 @@ namespace RedDust.Ability
         private static string GetEffectIcon(EffectSO e)
             => AbilityEditorUtility.GetEffectIcon(e);
 
-        private static void AddComboLink(AbilityDefSO def)
+        private static void AddComboLink(ActiveAbilitySO def)
         {
             var links = def.comboLinks ?? Array.Empty<SComboLink>();
             var arr = AbilityEditorUtility.Append(links, new SComboLink { WindowStart = 0.2f, WindowDuration = 0.3f });
@@ -345,7 +345,7 @@ namespace RedDust.Ability
             EditorUtility.SetDirty(def); _onChanged?.Invoke();
         }
 
-        private static void RemoveComboLink(AbilityDefSO def, int index)
+        private static void RemoveComboLink(ActiveAbilitySO def, int index)
         {
             var links = def.comboLinks;
             if (links == null || index < 0 || index >= links.Length) return;

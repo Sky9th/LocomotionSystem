@@ -151,7 +151,8 @@ namespace RedDust.Character
         // ── Grip Tags ──
 
         /// <summary>
-        /// 从所有装备 Entity 的 Common/Tags 提取 Equip.Grip.* 标签，写回 ctx.OwnedGripTags。
+        /// 从所有装备 Entity 的 Common/Tags 同步全部标签到 ctx.OwnedGripTags。
+        /// 动画系统用 Equip.Grip.* 选动画集，AbilityForest 用 Weapon.* 过滤技能树。
         /// Container 全空时跳过 —— 保留 PlayerDirector hack 可用。
         /// </summary>
         private void SyncGripTags(Container.Container container)
@@ -171,7 +172,7 @@ namespace RedDust.Character
 
                 foreach (var tag in tags)
                 {
-                    if (!string.IsNullOrEmpty(tag) && tag.StartsWith("Equip.Grip.", System.StringComparison.Ordinal))
+                    if (!string.IsNullOrEmpty(tag))
                         ctx.OwnedGripTags.AddTag(tag);
                 }
             }

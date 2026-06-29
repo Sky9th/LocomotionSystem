@@ -9,7 +9,7 @@ namespace RedDust.Ability
     /// 被 AbilityExecutor / AbilityPipeline / AbilityDriver 消费。
     /// </summary>
     [CreateAssetMenu(menuName = "RedDust/Ability/Active Ability", fileName = "Ability_")]
-    public sealed class AbilityDefSO : AbilitySO
+    public sealed class ActiveAbilitySO : AbilitySO
     {
         [Header("Activation")]
         [Tooltip("技能「怎么放」的完整定义。动画、阶段时机、激活方式。")]

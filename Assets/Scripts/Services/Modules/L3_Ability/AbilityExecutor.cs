@@ -32,7 +32,7 @@ namespace RedDust.Ability
         public System.Func<EffectSO, GameObject, float, float> EffectCallback;
 
         /// <summary>② 条件门控回调。外部注入。null=通过，非null=拒绝原因（沉默/眩晕等）。</summary>
-        public System.Func<AbilityDefSO, string> ConditionCallback;
+        public System.Func<ActiveAbilitySO, string> ConditionCallback;
 
         // TODO: Phase 4.2 — 特殊消耗回调，当前无真正需求，暂注释
         // public System.Func<CostEffectSO, bool> CostCallback;
@@ -280,7 +280,7 @@ namespace RedDust.Ability
         /// 尝试激活主动技能。②→③→④→⑤→⑥→⑧ 完整管道，同步执行（瞬发）。
         /// </summary>
         /// <returns>true=激活成功，false=被门控拒绝。</returns>
-        public bool TryActivate(AbilityDefSO ability, Vector3 origin, Vector3 direction)
+        public bool TryActivate(ActiveAbilitySO ability, Vector3 origin, Vector3 direction)
         {
             if (ability == null) return false;
 

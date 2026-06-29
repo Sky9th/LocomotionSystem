@@ -66,10 +66,10 @@ namespace RedDust.Ability
             var entries = new List<AbilityEntry>();
 
             // Active abilities
-            foreach (var guid in AssetDatabase.FindAssets("t:AbilityDefSO"))
+            foreach (var guid in AssetDatabase.FindAssets("t:ActiveAbilitySO"))
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
-                var def = AssetDatabase.LoadAssetAtPath<AbilityDefSO>(path);
+                var def = AssetDatabase.LoadAssetAtPath<ActiveAbilitySO>(path);
                 if (def == null) continue;
                 entries.Add(ExportDef(def));
             }
@@ -98,7 +98,7 @@ namespace RedDust.Ability
             }, true);
         }
 
-        private static AbilityEntry ExportDef(AbilityDefSO def)
+        private static AbilityEntry ExportDef(ActiveAbilitySO def)
         {
             var entry = ExportBase(def, "Active");
             entry.activation = def.activation?.name;
@@ -164,7 +164,7 @@ namespace RedDust.Ability
             var searchByName = BuildAssetLookup<AbilitySearchSO>("t:AbilitySearchSO");
             var effectByName = BuildAssetLookup<EffectSO>("t:EffectSO");
             var noiseByName = BuildAssetLookup<NoiseEventSO>("t:NoiseEventSO");
-            var abilityDefByName = BuildAssetLookup<AbilityDefSO>("t:AbilityDefSO");
+            var abilityDefByName = BuildAssetLookup<ActiveAbilitySO>("t:ActiveAbilitySO");
             var eventChannelByName = BuildAssetLookup<GameEvent>("t:GameEvent");
 
             foreach (var entry in file.abilities)
@@ -189,7 +189,7 @@ namespace RedDust.Ability
                 var existing = AssetDatabase.LoadAssetAtPath<AbilitySO>(assetPath);
                 if (existing != null)
                 {
-                    if ((isActive && existing is not AbilityDefSO) || (isPassive && existing is not PassiveAbilitySO))
+                    if ((isActive && existing is not ActiveAbilitySO) || (isPassive && existing is not PassiveAbilitySO))
                     { errors.Add($"'{entry.name}': type mismatch"); skipped++; continue; }
                     ApplyFields(existing, entry, tagByFullTag, activationByName, searchByName,
                         effectByName, noiseByName, abilityDefByName, eventChannelByName);
@@ -200,7 +200,7 @@ namespace RedDust.Ability
 
                 // Create new
                 AbilitySO instance = isActive
-                    ? ScriptableObject.CreateInstance<AbilityDefSO>()
+                    ? ScriptableObject.CreateInstance<ActiveAbilitySO>()
                     : ScriptableObject.CreateInstance<PassiveAbilitySO>();
                 instance.name = entry.name;
                 ApplyFields(instance, entry, tagByFullTag, activationByName, searchByName,
@@ -262,7 +262,7 @@ namespace RedDust.Ability
             Dictionary<string, AbilitySearchSO> searches,
             Dictionary<string, EffectSO> effects,
             Dictionary<string, NoiseEventSO> noises,
-            Dictionary<string, AbilityDefSO> abilityDefs,
+            Dictionary<string, ActiveAbilitySO> abilityDefs,
             Dictionary<string, GameEvent> channels)
         {
             // Base fields
@@ -281,7 +281,7 @@ namespace RedDust.Ability
             a.selfEffects = ResolveEffects(entry.selfEffects, effects);
 
             // Active-specific
-            if (a is AbilityDefSO def)
+            if (a is ActiveAbilitySO def)
             {
                 if (!string.IsNullOrEmpty(entry.activation) && activations.TryGetValue(entry.activation, out var act))
                     def.activation = act;

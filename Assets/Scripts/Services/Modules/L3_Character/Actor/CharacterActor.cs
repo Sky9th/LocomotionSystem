@@ -228,6 +228,9 @@ namespace RedDust.Character
                 buildCtx.ResolvedLocoAnimSet = buildCtx.GripTable?.Resolve(ownedTags, buildCtx.BodyForm)
                     ?? buildCtx.DefaultLocomotionSet;
 
+                // 装备变化 → 技能重解析（武器树 × 兼容标签）
+                buildCtx.AbilityForest?.SetWeaponTags(ownedTags);
+
                 locomotionSimulator.Simulate(ref frameCtx, intent, buildCtx, deltaTime);
 
                 LastKinematic = frameCtx.Kinematic;

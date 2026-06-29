@@ -6,7 +6,7 @@ namespace RedDust.Ability
 {
     /// <summary>
     /// 技能树节点——树内的一个可解锁单元。
-    /// 可携带主动技能（AbilityDefSO）或被动效果（PassiveAbilitySO），或两者兼有。
+    /// 可携带主动技能（ActiveAbilitySO）或被动效果（PassiveAbilitySO），或两者兼有。
     /// prerequisites 为空 = 根节点（初始即可解锁）。
     /// </summary>
     [Serializable]
@@ -18,7 +18,7 @@ namespace RedDust.Ability
 
         /// <summary>主动技能。可选——纯被动节点填 null。</summary>
         [Tooltip("主动技能（Q/E/R/F）。可选。")]
-        public AbilityDefSO ability;
+        public ActiveAbilitySO ability;
 
         /// <summary>被动效果。可选——纯主动节点填 null。</summary>
         [Tooltip("被动效果。可选。")]

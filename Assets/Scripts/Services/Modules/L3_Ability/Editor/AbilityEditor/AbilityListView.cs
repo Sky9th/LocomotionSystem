@@ -41,7 +41,7 @@ namespace RedDust.Ability
                 {
                     var menu = new GenericMenu();
                     menu.AddItem(new GUIContent("Active Ability"), false,
-                        () => CreateAbility<AbilityDefSO>("Ability_New", "Assets/Data/Ability/Actives", onCreated));
+                        () => CreateAbility<ActiveAbilitySO>("Ability_New", "Assets/Data/Ability/Actives", onCreated));
                     menu.AddItem(new GUIContent("Passive Ability"), false,
                         () => CreateAbility<PassiveAbilitySO>("Passive_New", "Assets/Data/Ability/Passives", onCreated));
                     menu.ShowAsContext();

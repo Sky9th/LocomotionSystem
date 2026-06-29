@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0cc97f32b034b9459eb499254e9ab21, type: 3}
+  m_Script: {fileID: 11500000, guid: dc5d887e4581bc943a22e3f58f987fec, type: 3}
   m_Name: Ability_Fist_Punch
   m_EditorClassIdentifier: 
   internalName: Punch

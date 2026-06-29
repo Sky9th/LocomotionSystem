@@ -80,7 +80,7 @@ namespace RedDust.Ability
                 {
                     var menu = new GenericMenu();
                     menu.AddItem(new GUIContent("Active Ability"), false,
-                        () => AbilityListView.CreateAbility<AbilityDefSO>("Ability_New", "Assets/Data/Ability/Actives", a => { _selectedAbility = a; _needsRefresh = true; _hasChanges = true; EditorGUIUtility.PingObject(a); }));
+                        () => AbilityListView.CreateAbility<ActiveAbilitySO>("Ability_New", "Assets/Data/Ability/Actives", a => { _selectedAbility = a; _needsRefresh = true; _hasChanges = true; EditorGUIUtility.PingObject(a); }));
                     menu.AddItem(new GUIContent("Passive Ability"), false,
                         () => AbilityListView.CreateAbility<PassiveAbilitySO>("Passive_New", "Assets/Data/Ability/Passives", a => { _selectedAbility = a; _needsRefresh = true; _hasChanges = true; EditorGUIUtility.PingObject(a); }));
                     menu.ShowAsContext();
@@ -196,15 +196,15 @@ namespace RedDust.Ability
             switch (slot)
             {
                 case SubAssetSlot.Activation:
-                    if (_selectedAbility is AbilityDefSO def && asset is AbilityActivationSO act)
+                    if (_selectedAbility is ActiveAbilitySO def && asset is AbilityActivationSO act)
                     { def.activation = act; EditorUtility.SetDirty(def); }
                     break;
                 case SubAssetSlot.Search:
-                    if (_selectedAbility is AbilityDefSO def2 && asset is AbilitySearchSO search)
+                    if (_selectedAbility is ActiveAbilitySO def2 && asset is AbilitySearchSO search)
                     { def2.search = search; EditorUtility.SetDirty(def2); }
                     break;
                 case SubAssetSlot.Noise:
-                    if (_selectedAbility is AbilityDefSO def3 && asset is NoiseEventSO noise)
+                    if (_selectedAbility is ActiveAbilitySO def3 && asset is NoiseEventSO noise)
                     { def3.noise = noise; EditorUtility.SetDirty(def3); }
                     break;
                 case SubAssetSlot.TargetEffects:
@@ -225,7 +225,7 @@ namespace RedDust.Ability
 
         private void ClearSubAsset(SubAssetSlot slot)
         {
-            if (_selectedAbility is not AbilityDefSO def) return;
+            if (_selectedAbility is not ActiveAbilitySO def) return;
             switch (slot)
             {
                 case SubAssetSlot.Activation: def.activation = null; break;
@@ -282,7 +282,7 @@ namespace RedDust.Ability
             if (_selectedAbility != null)
             {
                 GUILayout.FlexibleSpace();
-                var t = _selectedAbility is AbilityDefSO ? "Active" : "Passive";
+                var t = _selectedAbility is ActiveAbilitySO ? "Active" : "Passive";
                 EditorLabel.Draw($"{_selectedAbility.name} ({t})", style: EditorStyles.miniLabel);
             }
 
