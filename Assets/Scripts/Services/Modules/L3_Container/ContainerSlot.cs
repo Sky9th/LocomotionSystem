@@ -36,6 +36,8 @@ namespace RedDust.Container
 
         public bool IsEmpty => Items.Count == 0;
 
+        private static float WeightOf(Entity entity) => entity.Properties.GetFloat("Common/Weight");
+
         public ContainerSlot(SlotDef def)
         {
             Def = def;
@@ -49,45 +51,48 @@ namespace RedDust.Container
         {
             if (entity == null) return false;
 
-            // 堆叠合并 — 同 Preset + 可堆叠 → 不占新槽位
-            var stackTarget = StackTarget(entity);
-            if (stackTarget != null)
-            {
-                // 合并后的重量
-                var mergedWeight = CurrentWeight + entity.Properties.GetFloat("Common/Weight");
-                if (Def.WeightLimit > 0f && mergedWeight > Def.WeightLimit)
-                    return false;
-                return true;
-            }
+            // 重量 — 堆叠和新物品都要过
+            if (Def.WeightLimit > 0f && CurrentWeight + WeightOf(entity) > Def.WeightLimit)
+                return false;
 
-            // 新槽位 — 需要容量
-            if (IsFull) return false;
+            // 堆叠 — 同 Preset + 可堆叠 → 不占新槽位，跳过 Tag/Capacity
+            if (StackTarget(entity) != null) return true;
 
-            // Tag 过滤 — AcceptTags 非空时须有交集
-            if (Def.AcceptTags is { Length: > 0 })
-            {
-                var itemTags = entity.Properties.GetTagList("Common/Tags");
-                if (itemTags == null || itemTags.Length == 0) return false;
+            return HasCapacityFor(entity) && AcceptsTag(entity);
+        }
 
-                bool matched = false;
-                foreach (var acceptTag in Def.AcceptTags)
-                {
-                    if (acceptTag == null) continue;
-                    foreach (var itemTag in itemTags)
-                    {
-                        if (itemTag == acceptTag) { matched = true; break; }
-                    }
-                    if (matched) break;
-                }
-                if (!matched) return false;
-            }
+        /// <summary>检查 incoming 是否可替换 outgoing。跳过容量检查，只校验 Tag + 置换后重量。</summary>
+        public bool CanSwap(Entity incoming, Entity outgoing)
+        {
+            if (incoming == null) return false;
+            if (!AcceptsTag(incoming)) return false;
 
-            // 重量检查 — 0 = 不限
-            var weight = entity.Properties.GetFloat("Common/Weight");
-            if (Def.WeightLimit > 0f && CurrentWeight + weight > Def.WeightLimit)
+            float outgoingWeight = outgoing?.Properties.GetFloat("Common/Weight") ?? 0f;
+            float incomingWeight = incoming.Properties.GetFloat("Common/Weight");
+            float newWeight = CurrentWeight - outgoingWeight + incomingWeight;
+            if (Def.WeightLimit > 0f && newWeight > Def.WeightLimit)
                 return false;
 
             return true;
+        }
+
+        private bool AcceptsTag(Entity entity)
+        {
+            if (Def.AcceptTags is not { Length: > 0 }) return true;
+            var tags = entity.Properties.GetTagList("Common/Tags");
+            if (tags == null || tags.Length == 0) return false;
+            foreach (var acceptTag in Def.AcceptTags)
+            {
+                if (acceptTag == null) continue;
+                foreach (var tag in tags)
+                    if (tag == acceptTag) return true;
+            }
+            return false;
+        }
+
+        private bool HasCapacityFor(Entity entity)
+        {
+            return StackTarget(entity) != null || !IsFull;
         }
 
         /// <summary>
@@ -106,7 +111,7 @@ namespace RedDust.Container
                 int take = System.Math.Min(entity.StackCount, space);
                 stackTarget.StackCount += take;
 
-                var weight = entity.Properties.GetFloat("Common/Weight");
+                var weight = WeightOf(entity);
                 CurrentWeight += weight * take;
 
                 if (take >= entity.StackCount)
@@ -123,7 +128,7 @@ namespace RedDust.Container
             // 新槽位
             Items.Add(entity);
 
-            var w = entity.Properties.GetFloat("Common/Weight");
+            var w = WeightOf(entity);
             CurrentWeight += w * entity.StackCount;
             return null;
         }
@@ -134,7 +139,7 @@ namespace RedDust.Container
         public bool Remove(Entity entity)
         {
             if (!Items.Remove(entity)) return false;
-            CurrentWeight -= entity.Properties.GetFloat("Common/Weight") * entity.StackCount;
+            CurrentWeight -= WeightOf(entity) * entity.StackCount;
             return true;
         }
 
@@ -150,8 +155,7 @@ namespace RedDust.Container
                 if (Items[i].Id == entityId)
                 {
                     var entity = Items[i];
-                    Items.RemoveAt(i);
-                    CurrentWeight -= entity.Properties.GetFloat("Common/Weight") * entity.StackCount;
+                    Remove(entity);
                     return entity;
                 }
             }

@@ -143,6 +143,42 @@ namespace RedDust.Container
             return slot;
         }
 
+        /// <summary>返回指定槽位第 index 个物品。越界或槽不存在返回 null。</summary>
+        public Entity GetItem(string slotKey, int index = 0)
+        {
+            var slot = GetSlot(slotKey);
+            if (slot == null || index < 0 || index >= slot.Items.Count) return null;
+            return slot.Items[index];
+        }
+
+        /// <summary>
+        /// 互换两个槽位中的物品。走 Place/Remove 统一进出入口，不直接操作 Items。
+        /// </summary>
+        public bool Swap(string slotA, Entity itemA, string slotB, Entity itemB)
+        {
+            var a = GetSlot(slotA);
+            var b = GetSlot(slotB);
+            if (a == null || b == null) return false;
+            if (!a.Items.Contains(itemA) || !b.Items.Contains(itemB)) return false;
+
+            if (!a.CanSwap(itemB, itemA)) return false;
+            if (!b.CanSwap(itemA, itemB)) return false;
+
+            a.Remove(itemA);
+            b.Remove(itemB);
+            a.Place(itemB);
+            b.Place(itemA);
+            return true;
+        }
+
+        /// <summary>按 EntityId 从指定槽位查找物品。未找到返回 null。</summary>
+        public Entity FindItem(string slotKey, string entityId)
+        {
+            var slot = GetSlot(slotKey);
+            if (slot == null || string.IsNullOrEmpty(entityId)) return null;
+            return slot.Items.Find(e => e.Id == entityId);
+        }
+
         /// <summary>
         /// 遍历所有槽位的所有实体，逐调 entity.Tick(dt)。
         /// 由容器所有者驱动。

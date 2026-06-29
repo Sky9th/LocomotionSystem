@@ -1,4 +1,6 @@
+using RedDust.Container;
 using RedDust.Core;
+using RedDust.Entities;
 using UnityEngine;
 using RedDust.Character;
 
@@ -12,8 +14,8 @@ namespace RedDust.Character.Director
         private EMovementGait currentGait = EMovementGait.Idle;
         private EPosture currentPosture = EPosture.Standing;
 
-        /// <summary>Equip1→[0], Equip2→[1], Equip3→[2]。GripTable entries 按序对应。</summary>
-        private readonly bool[] equippedSlots = new bool[3];
+        // 硬编码：1=空手, 2=Blade, 3=Pistol（无 UI 临时方案）
+        private static readonly string[] EquipMap = { null, "test_blade", "test_pistol" };
 
         internal PlayerDirector(CharacterBuildContext ctx, ModuleRegistry registry) : base(registry)
         {
@@ -69,52 +71,58 @@ namespace RedDust.Character.Director
         }
 
         /// <summary>
-        /// Equip 输入处理。Equip1→entries[0], Equip2→entries[1], Equip3→entries[2]。
-        /// TODO: 当前 Director 直接写 OwnedTags 是过渡方案。装备系统完成后由 GripSwitchEvent 替代。
+        /// Equip 输入处理。1=空手 2=Blade 3=Pistol（无 UI 临时硬编码）。
+        /// 从背包 Container 拿武器到手，Equipment.SyncEquipment 负责后续 GO + GripTag 同步。
         /// </summary>
         private void ProcessEquipInput()
         {
-            var table = ctx.GripTable;
-            if (table == null || table.entries == null || table.entries.Length == 0) return;
-            var ownedTags = ctx.OwnedGripTags;
+            int equipIndex = -1;
+            if (input.Equip1Requested) equipIndex = 0;
+            else if (input.Equip2Requested) equipIndex = 1;
+            else if (input.Equip3Requested) equipIndex = 2;
+            if (equipIndex < 0) return;
 
-            for (int i = 0; i < equippedSlots.Length; i++)
+            var bodyContainer = ctx.CharacterContainer?.BodyContainer;
+            if (bodyContainer == null) return;
+
+            var currentEquipped = bodyContainer.GetItem("RightHand");
+            string targetId = EquipMap[equipIndex];
+
+            // 已在手上 或 空手→空手 → 跳过
+            if (currentEquipped != null && currentEquipped.Id == targetId) return;
+            if (currentEquipped == null && targetId == null) return;
+
+            var bpContainer = GetBackpackContainer();
+            if (bpContainer == null) { Debug.Log("[ProcessEquipInput] No backpack found."); return; }
+
+            // 先确认目标在背包
+            Entity target = null;
+            if (targetId != null)
             {
-                bool requested = i switch
-                {
-                    0 => input.Equip1Requested,
-                    1 => input.Equip2Requested,
-                    2 => input.Equip3Requested,
-                    _ => false
-                };
-                if (!requested) continue;
-
-                if (i >= table.entries.Length) return;
-                var entry = table.entries[i];
-                if (entry.gripTag == null) return;
-
-                if (equippedSlots[i])
-                {
-                    // 卸下
-                    ownedTags.RemoveTag(entry.gripTag.FullTag);
-                    equippedSlots[i] = false;
-                    Debug.Log($"[PlayerDirector] Unequipped slot {i}: {entry.gripTag.FullTag}");
-                }
-                else
-                {
-                    // 清除所有已有 grip tag，装备新 slot（武器互斥）
-                    for (int j = 0; j < table.entries.Length; j++)
-                    {
-                        if (table.entries[j].gripTag != null)
-                            ownedTags.RemoveTag(table.entries[j].gripTag.FullTag);
-                        equippedSlots[j] = false;
-                    }
-                    ownedTags.AddTag(entry.gripTag.FullTag);
-                    equippedSlots[i] = true;
-                    Debug.Log($"[PlayerDirector] Equipped slot {i}: {entry.gripTag.FullTag}");
-                }
-                break; // 每帧只处理一个 Equip 输入
+                target = bpContainer.FindItem("ContainerSlot", targetId);
+                if (target == null) { Debug.Log($"[ProcessEquipInput] {targetId} not in backpack."); return; }
             }
+
+            Debug.Log($"[ProcessEquipInput] Key {equipIndex + 1}: {(targetId ?? "empty")} ← {(currentEquipped != null ? currentEquipped.Id : "empty")}");
+
+            // 卸当前手持 → 背包
+            if (currentEquipped != null)
+            {
+                bodyContainer.Remove("RightHand", currentEquipped);
+                bpContainer.Place("ContainerSlot", currentEquipped);
+            }
+
+            // 装目标 → RightHand
+            if (target != null)
+            {
+                bpContainer.Remove("ContainerSlot", target);
+                bodyContainer.Place("RightHand", target);
+            }
+        }
+
+        private Container.Container GetBackpackContainer()
+        {
+            return ctx.CharacterContainer?.BodyContainer?.GetItem("Back")?.NestedContainer;
         }
 
         private void ProcessClickToMove()
