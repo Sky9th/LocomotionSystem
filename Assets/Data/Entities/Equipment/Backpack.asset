@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Backpack
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: dfb12c954eea5d442bba0a4efc1bc5f5, type: 2}
-  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Backpack\"]"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Item.Armor\"]"}]}'
 
   Prefab: {fileID: 0}

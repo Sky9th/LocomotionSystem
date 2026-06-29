@@ -28,4 +28,4 @@ MonoBehaviour:
   DefaultAssetGUID: 
   AssetTypeConstraint: 
   StructTypeName: RedDust.Container.SlotDef
-  DefaultStructJson: '{"AcceptTags":["Weapon","Shield"],"Capacity":1}'
+  DefaultStructJson: '{"AcceptTags":["Entity.Item.Weapon","Entity.Item.Armor"],"Capacity":1}'

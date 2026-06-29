@@ -53,6 +53,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8891bd2a6b779747920e2e625df7eea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _entityId: 
   initialTags:
   - {fileID: 11400000, guid: 79f39f36937038f45af4ea7bd5d35912, type: 2}
 --- !u!114 &8721387818594905132
@@ -69,7 +70,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isPlayer: 0
   groundSystemConfig: {fileID: 11400000, guid: 6f5d74115b0df28438f735b18d13da47, type: 2}
-  characterAnimationProfile: {fileID: 11400000, guid: b2d836a402ab27945b5d07f1bf603784,
+  characterAnimationProfile: {fileID: 11400000, guid: f7103b380a142f6469bb5f283a8ee979,
     type: 2}
   innateTrees: []
   characterAudioConfig: {fileID: 11400000, guid: d1bb8260fedfef848a12a32d3f139759,
@@ -85,7 +86,6 @@ MonoBehaviour:
   facialMask: {fileID: 0}
   headMask: {fileID: 31900000, guid: 91a8c24c60bd42e4d9b539ff6d537342, type: 2}
   footMask: {fileID: 31900000, guid: f651dcec4c7c1f24896fff756d009351, type: 2}
-  propertyPreset: {fileID: 11400000, guid: b0e7241e50e1bcd4dbad93e4d8ee9708, type: 2}
   modelRoot: {fileID: 0}
   drawDebugGizmos: 1
   debugArrowLength: 2

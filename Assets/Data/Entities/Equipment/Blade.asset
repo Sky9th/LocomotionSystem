@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Blade
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: 05ded621eb3328c4382b8fdc9a620a31, type: 2}
-  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Weapon\",\"Equip.Grip.1H_Blade\"]"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Weapon.Melee.Blade\",\"Grip.Melee.OneHanded\",\"Entity.Item.Weapon\"]"}]}'
   Prefab: {fileID: 1167932600818802, guid: bef05be41376b52498b91573c3ff5a3b, type: 3}

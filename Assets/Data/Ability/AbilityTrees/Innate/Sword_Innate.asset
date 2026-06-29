@@ -22,7 +22,7 @@ MonoBehaviour:
   compatibleWeaponTags:
   - {fileID: 11400000, guid: 63f34b1adeceab2408926be904f32039, type: 2}
   compatibleGripTags:
-  - {fileID: 11400000, guid: d8227c65e8125634fbe557ed3dd798a6, type: 2}
+  - {fileID: 11400000, guid: dfbed699ddaa7854a8de021f7998d138, type: 2}
   exclusiveGroup: 
   nodes:
   - nodeId: lightCut

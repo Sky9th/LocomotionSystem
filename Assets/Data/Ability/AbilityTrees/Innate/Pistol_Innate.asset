@@ -21,7 +21,7 @@ MonoBehaviour:
   compatibleWeaponTags:
   - {fileID: 11400000, guid: 8fd15cc8d0571b143a0564f2c9dc1f3e, type: 2}
   compatibleGripTags:
-  - {fileID: 11400000, guid: 2a906ea0870790a46a04db7ec0e22531, type: 2}
+  - {fileID: 11400000, guid: 084fd9735b6c6824083c01813a0bea8a, type: 2}
   exclusiveGroup: 
   nodes:
   - nodeId: normalFire

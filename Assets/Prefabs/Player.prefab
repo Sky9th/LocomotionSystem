@@ -58,8 +58,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _entityId: 
   initialTags:
-  - {fileID: 11400000, guid: 79f39f36937038f45af4ea7bd5d35912, type: 2}
-  - {fileID: 11400000, guid: 5505cab366507894ba217b84b24f5af7, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &8721387818594905132
 MonoBehaviour:
   m_ObjectHideFlags: 0

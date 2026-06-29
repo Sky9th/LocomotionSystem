@@ -15,13 +15,13 @@ MonoBehaviour:
   treeId: Human_Innate
   displayName: "\u4EBA\u4F53\u57FA\u7840\u6280\u80FD"
   description: "\u7A7A\u624B\u65F6\u7684\u5F92\u624B\u6218\u6597\u80FD\u529B\u3002compatibleGripTags
-    \u5339\u914D Grip.Unarmed\u3002"
+    \u5339\u914D Grip.Melee.Unarmed\u3002"
   icon: {fileID: 0}
   treeTags:
   - {fileID: 11400000, guid: 374974b8bd8c98d46af1bd15c54b9f47, type: 2}
   compatibleWeaponTags: []
   compatibleGripTags:
-  - {fileID: 11400000, guid: 8249bdc132514d54388bbeaa4e7fa164, type: 2}
+  - {fileID: 11400000, guid: ba0c8934bf862d84197b5957704273c1, type: 2}
   exclusiveGroup: 
   nodes:
   - nodeId: punch

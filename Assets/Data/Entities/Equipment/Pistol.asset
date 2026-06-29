@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Pistol
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: d07b40a576e56764aa15afde97dc3383, type: 2}
-  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Weapon\",\"Equip.Grip.1H_Sidearm\"]"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Weapon.Ranged.Pistol\",\"Grip.Ranged.Pistol2H\",\"Entity.Item.Weapon\"]"}]}'
   Prefab: {fileID: 1111015175407080, guid: 151fe3144103e1440900697f4b29c68e, type: 3}
