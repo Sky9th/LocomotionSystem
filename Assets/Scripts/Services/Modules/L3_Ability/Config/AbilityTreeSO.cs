@@ -35,7 +35,7 @@ namespace RedDust.Ability
     /// 一切皆 AbilityTree：天生技能、天赋筛选、武学套路、丧尸变异——底层同构。
     /// 树内技能通过 SAbilityTreeNode 逐节点解锁，不是一次性全部获得。
     ///
-    /// 类别通过 treeTags（GameplayTag）区分，不用 Enum：
+    /// 类别通过 treeTags（rTag）区分，不用 Enum：
     ///   AbilityTree.Innate  — 天生（出生全解锁，不可移除）
     ///   AbilityTree.Talent  — 天赋（创建时选择，逐节点解锁，exclusiveGroup 互斥）
     ///   AbilityTree.Routine — 套路（装备切换，和武器求交，逐节点解锁）
@@ -66,7 +66,7 @@ namespace RedDust.Ability
         /// 多选适用：例如一个丧尸 Boss 树可同时有 Innate 和 Boss。
         /// </summary>
         [Tooltip("类别标签。AbilityTree.Innate / Talent / Routine。")]
-        public GameplayTagDefinitionSO[] treeTags;
+        public rTagDefSO[] treeTags;
 
         /// <summary>
         /// 武器兼容标签。树内主动技能只对匹配的武器生效。
@@ -74,7 +74,7 @@ namespace RedDust.Ability
         /// Talent 类别的树通常为空——被动不受武器限制。
         /// </summary>
         [Tooltip("武器兼容标签。空 = 不限武器。")]
-        public GameplayTagDefinitionSO[] compatibleWeaponTags;
+        public rTagDefSO[] compatibleWeaponTags;
 
         [Header("Mutual Exclusion")]
         /// <summary>

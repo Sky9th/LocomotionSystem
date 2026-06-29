@@ -50,8 +50,8 @@ namespace RedDust.Properties.Editor
                     EditorGUILayout.PropertyField(serializedObject.FindProperty("DefaultString"));
                     break;
 
-                case PropertyType.GameplayTag:
-                case PropertyType.GameplayTagList:
+                case PropertyType.rTag:
+                case PropertyType.rTagList:
                     EditorGUILayout.HelpBox("No default value — tags are empty unless overridden.", MessageType.None);
                     break;
 

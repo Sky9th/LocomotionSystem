@@ -35,7 +35,7 @@ namespace RedDust.Ability
     internal class AbilityForest
     {
         private readonly List<ActiveTree> _activeTrees = new();
-        private GameplayTagContainer _weaponTags;
+        private rTagContainer _weaponTags;
 
         /// <summary>创建技能森林，注入天生树（全解锁，source="innate"）。</summary>
         public AbilityForest(AbilityTreeSO[] innateTrees)
@@ -70,7 +70,7 @@ namespace RedDust.Ability
         /// 更新当前武器标签并触发技能重解析。
         /// 装备切换时由 CharacterActor.SwitchWeapon 调用。
         /// </summary>
-        public void SetWeaponTags(GameplayTagContainer weaponTags)
+        public void SetWeaponTags(rTagContainer weaponTags)
         {
             _weaponTags = weaponTags;
             Resolve();
@@ -210,8 +210,8 @@ namespace RedDust.Ability
         }
 
         private static bool IsWeaponCompatible(
-            GameplayTagDefinitionSO[] compatibleTags,
-            GameplayTagContainer weaponTags)
+            rTagDefSO[] compatibleTags,
+            rTagContainer weaponTags)
         {
             if (compatibleTags == null || compatibleTags.Length == 0)
                 return true;

@@ -82,14 +82,14 @@ namespace RedDust.Shared.EditorUI
 
         /// <summary>ObjectField + TagPicker 按钮。Tag 按钮点击 → 弹出 TagPicker → onTagSelected 回调。</summary>
         public static T ObjectFieldWithTagPicker<T>(T value, ref Rect tagBtnRect,
-            Action<T> onTagSelected = null) where T : Object
+            Action<T> onTagSelected = null, string rootFilter = null) where T : Object
         {
             var next = (T)EditorGUILayout.ObjectField(value, typeof(T), false);
 
             if (TagButton(ref tagBtnRect))
             {
-                var currentTag = value as GameplayTagDefinitionSO;
-                TagPicker.Show(tagBtnRect, allowCreate: true,
+                var currentTag = value as rTagDefSO;
+                TagPicker.Show(tagBtnRect, rootFilter: rootFilter, allowCreate: true,
                     currentFullTag: currentTag?.FullTag,
                     onSelected: t => onTagSelected?.Invoke(t as T));
             }

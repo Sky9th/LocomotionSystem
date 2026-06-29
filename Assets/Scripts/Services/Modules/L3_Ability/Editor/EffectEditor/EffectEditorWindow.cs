@@ -247,9 +247,12 @@ namespace RedDust.Ability
                         drawFunc: v => EditorGUILayout.TextField((string)v),
                         equals: (a, b) => (string)a == (string)b);
 
-                    // effectTag → ObjectField + TagPicker
-                    EditorFormItem.ObjectFieldWithTag<GameplayTagDefinitionSO>("effectTag",
-                        ref _effectTagButtonRect);
+                    // effectTag → ObjectField + TagPicker（根过滤依赖子类类型）
+                    var effectTagFilter = e is DamageEffectSO ? TagDomainFilter.EFFECT_TAG_DAMAGE
+                        : e is ImpactEffectSO ? TagDomainFilter.EFFECT_TAG_IMPACT
+                        : TagDomainFilter.EFFECT_TAG_EFFECT;
+                    EditorFormItem.ObjectFieldWithTag<rTagDefSO>("effectTag",
+                        ref _effectTagButtonRect, rootFilter: effectTagFilter);
 
                     // 标准字段
                     EditorFormItem.Float("duration");
@@ -261,15 +264,15 @@ namespace RedDust.Ability
                     form.OnChange += MarkDirty;
 
                     // Blocked Tags — tags that prevent this effect from applying
-                    EditorFormItem.ArrayField<GameplayTagDefinitionSO>(
+                    EditorFormItem.ArrayField<rTagDefSO>(
                         "Blocked Tags",
                         getValue: () => e.applicationBlockedTags,
                         setValue: v => e.applicationBlockedTags = v,
                         drawRow: (i, tag) =>
                         {
                             var arr = e.applicationBlockedTags;
-                            var newTag = (GameplayTagDefinitionSO)EditorGUILayout.ObjectField(
-                                tag, typeof(GameplayTagDefinitionSO), false);
+                            var newTag = (rTagDefSO)EditorGUILayout.ObjectField(
+                                tag, typeof(rTagDefSO), false);
                             if (newTag != tag)
                             {
                                 arr[i] = newTag;
@@ -278,7 +281,7 @@ namespace RedDust.Ability
                             if (EditorButton.Default("Tag", EditorButtonSize.Small, width: 35))
                             {
                                 var cap = tag;
-                                TagPicker.Show(_blockedTagButtonRect, allowCreate: true,
+                                TagPicker.Show(_blockedTagButtonRect, rootFilter: TagDomainFilter.APPLICATION_BLOCKED_TAGS, allowCreate: true,
                                     currentFullTag: cap?.FullTag,
                                     onSelected: t =>
                                     {
@@ -375,19 +378,19 @@ namespace RedDust.Ability
             EditorForm.Draw(b, form =>
             {
 
-                EditorFormItem.ArrayField<GameplayTagDefinitionSO>(
+                EditorFormItem.ArrayField<rTagDefSO>(
                     "Granted Tags",
                     getValue: () => b.grantedTags,
                     setValue: v => b.grantedTags = v,
                     drawRow: (i, t) =>
                     {
-                        var tag = (GameplayTagDefinitionSO)EditorGUILayout.ObjectField(
-                            t, typeof(GameplayTagDefinitionSO), false);
+                        var tag = (rTagDefSO)EditorGUILayout.ObjectField(
+                            t, typeof(rTagDefSO), false);
                         if (tag != t) { b.grantedTags[i] = tag; MarkDirty(); }
                         if (EditorButton.Default("Tag", EditorButtonSize.Small, width: 35))
                         {
                             var cap = t;
-                            TagPicker.Show(_grantedTagButtonRect, allowCreate: true, currentFullTag: cap?.FullTag,
+                            TagPicker.Show(_grantedTagButtonRect, rootFilter: TagDomainFilter.GRANTED_TAGS, allowCreate: true, currentFullTag: cap?.FullTag,
                                 onSelected: tg =>
                                 {
                                     b.grantedTags[i] = tg; MarkDirty();
@@ -513,7 +516,7 @@ namespace RedDust.Ability
                     continue;
                 }
 
-                var tagChain = new List<GameplayTagDefinitionSO>();
+                var tagChain = new List<rTagDefSO>();
                 var t = tag;
                 while (t != null)
                 {

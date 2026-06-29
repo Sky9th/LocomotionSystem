@@ -173,11 +173,11 @@ namespace RedDust.Properties.Editor
                         case PropertyType.String:
                             DrawFieldRow("Default", string.IsNullOrEmpty(_def.DefaultString) ? "(empty)" : _def.DefaultString);
                             break;
-                        case PropertyType.GameplayTag:
-                            EditorGUILayout.LabelField("Single GameplayTag reference. No numeric constraints.", ValueStyle);
+                        case PropertyType.rTag:
+                            EditorGUILayout.LabelField("Single rTag reference. No numeric constraints.", ValueStyle);
                             break;
-                        case PropertyType.GameplayTagList:
-                            EditorGUILayout.LabelField("GameplayTag array reference. No numeric constraints.", ValueStyle);
+                        case PropertyType.rTagList:
+                            EditorGUILayout.LabelField("rTag array reference. No numeric constraints.", ValueStyle);
                             break;
                         case PropertyType.AssetRef:
                             DrawFieldRow("Asset Type", string.IsNullOrEmpty(_def.AssetTypeConstraint) ? "(any)" : _def.AssetTypeConstraint);

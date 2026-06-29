@@ -217,13 +217,13 @@ namespace RedDust.Ability
             }
 
             // ── Phase 3: Resolve references ──
-            // Build GameplayTagDefinitionSO lookup by FullTag
-            var tagByFullTag = new Dictionary<string, GameplayTagDefinitionSO>();
-            var tagGuids = AssetDatabase.FindAssets("t:GameplayTagDefinitionSO");
+            // Build rTagDefSO lookup by FullTag
+            var tagByFullTag = new Dictionary<string, rTagDefSO>();
+            var tagGuids = AssetDatabase.FindAssets("t:rTagDefSO");
             foreach (var tg in tagGuids)
             {
                 var tp = AssetDatabase.GUIDToAssetPath(tg);
-                var t = AssetDatabase.LoadAssetAtPath<GameplayTagDefinitionSO>(tp);
+                var t = AssetDatabase.LoadAssetAtPath<rTagDefSO>(tp);
                 if (t != null && !string.IsNullOrEmpty(t.FullTag))
                     tagByFullTag[t.FullTag] = t;
             }
@@ -240,12 +240,12 @@ namespace RedDust.Ability
             }
 
             // Resolve per entry
-            var resolved = new List<(EffectEntry entry, GameplayTagDefinitionSO effectTag,
-                GameplayTagDefinitionSO[] blockedTags, PropertyDefSO def)>();
+            var resolved = new List<(EffectEntry entry, rTagDefSO effectTag,
+                rTagDefSO[] blockedTags, PropertyDefSO def)>();
             foreach (var entry in valid)
             {
                 // effectTag
-                GameplayTagDefinitionSO resolvedTag = null;
+                rTagDefSO resolvedTag = null;
                 if (!string.IsNullOrEmpty(entry.effectTag))
                 {
                     if (!tagByFullTag.TryGetValue(entry.effectTag, out resolvedTag))
@@ -253,7 +253,7 @@ namespace RedDust.Ability
                 }
 
                 // applicationBlockedTags
-                var resolvedBlocked = new List<GameplayTagDefinitionSO>();
+                var resolvedBlocked = new List<rTagDefSO>();
                 if (entry.applicationBlockedTags != null)
                 {
                     foreach (var bt in entry.applicationBlockedTags)
@@ -370,9 +370,9 @@ namespace RedDust.Ability
         };
 
         private static void ApplyFields(EffectSO instance, EffectEntry entry,
-            GameplayTagDefinitionSO effTag, GameplayTagDefinitionSO[] blockedTags,
+            rTagDefSO effTag, rTagDefSO[] blockedTags,
             PropertyDefSO def,
-            Dictionary<string, GameplayTagDefinitionSO> tagByFullTag,
+            Dictionary<string, rTagDefSO> tagByFullTag,
             Dictionary<string, PropertyDefSO> defById)
         {
             instance.effectTag = effTag;

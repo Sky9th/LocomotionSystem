@@ -6,7 +6,7 @@ using UnityEngine;
 namespace RedDust.Ability
 {
     /// <summary>
-    /// Buff/Debuff 效果。向目标注入 FloatAdjunct（只读修正） + GameplayTag，
+    /// Buff/Debuff 效果。向目标注入 FloatAdjunct（只读修正） + rTag，
     /// duration 秒后全部自动还原。
     ///
     /// 运行时翻译：读 BuffEffectSO → 拼 FloatAdjunct → PropertyTable.AddAdjunct。
@@ -24,7 +24,7 @@ namespace RedDust.Ability
     {
         [Header("Buff")]
         [Tooltip("持续期间写入 OwnedTags 的标签。通过 AbilityComponent._buffTags 管理过期。")]
-        public GameplayTagDefinitionSO[] grantedTags;
+        public rTagDefSO[] grantedTags;
 
         [Tooltip("持续期间的 FloatAdjunct 模板。运行时翻译为 FloatAdjunct 注入 Properties。")]
         public SBuffAdjunct[] adjuncts;

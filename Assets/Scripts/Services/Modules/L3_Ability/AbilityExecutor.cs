@@ -12,7 +12,7 @@ namespace RedDust.Ability
     [DisallowMultipleComponent]
     public sealed class AbilityExecutor : MonoBehaviour
     {
-        public GameplayTagContainer OwnedTags { get; } = new();
+        public rTagContainer OwnedTags { get; } = new();
 
         [Header("Passives")]
         [SerializeField] private PassiveAbilitySO[] initialPassives;
@@ -118,7 +118,7 @@ namespace RedDust.Ability
         }
 
         /// <summary>注册 Buff 授权 Tag，到期自动移除。</summary>
-        public void AddBuffTags(GameplayTagDefinitionSO[] tags, float expiryTime)
+        public void AddBuffTags(rTagDefSO[] tags, float expiryTime)
         {
             if (tags == null || expiryTime <= Time.time) return;
             foreach (var t in tags)

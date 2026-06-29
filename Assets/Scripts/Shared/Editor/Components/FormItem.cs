@@ -173,7 +173,7 @@ namespace RedDust.Shared.EditorUI
         // ═══════════════════════════════════════════════════
 
         public static void ObjectFieldWithTag<T>(string fieldName, ref Rect tagBtnRect,
-            string label = null, float? labelWidth = null) where T : Object
+            string label = null, float? labelWidth = null, string rootFilter = null) where T : Object
         {
             var fd = Resolve(fieldName);
             if (fd.Field == null) return;
@@ -183,6 +183,7 @@ namespace RedDust.Shared.EditorUI
             Draw(Label(fieldName, label), () =>
             {
                 var next = EditorInput.ObjectFieldWithTagPicker(val, ref localRect,
+                    rootFilter: rootFilter,
                     onTagSelected: selected =>
                     {
                         if (!object.ReferenceEquals(val, selected))

@@ -214,13 +214,13 @@ namespace RedDust.Ability
             return (created, skipped, errors);
         }
 
-        private static Dictionary<string, GameplayTagDefinitionSO> BuildTagLookup()
+        private static Dictionary<string, rTagDefSO> BuildTagLookup()
         {
-            var dict = new Dictionary<string, GameplayTagDefinitionSO>();
-            foreach (var guid in AssetDatabase.FindAssets("t:GameplayTagDefinitionSO"))
+            var dict = new Dictionary<string, rTagDefSO>();
+            foreach (var guid in AssetDatabase.FindAssets("t:rTagDefSO"))
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
-                var t = AssetDatabase.LoadAssetAtPath<GameplayTagDefinitionSO>(path);
+                var t = AssetDatabase.LoadAssetAtPath<rTagDefSO>(path);
                 if (t != null && !string.IsNullOrEmpty(t.FullTag))
                     dict[t.FullTag] = t;
             }
@@ -257,7 +257,7 @@ namespace RedDust.Ability
         }
 
         private static void ApplyFields(AbilitySO a, AbilityEntry entry,
-            Dictionary<string, GameplayTagDefinitionSO> tags,
+            Dictionary<string, rTagDefSO> tags,
             Dictionary<string, AbilityActivationSO> activations,
             Dictionary<string, AbilitySearchSO> searches,
             Dictionary<string, EffectSO> effects,

@@ -4,14 +4,14 @@ using System.Linq;
 namespace RedDust.Core
 {
     /// <summary>
-    /// GameplayTag 集合，管理实体当前持有的所有标签。
+    /// rTag 集合，管理实体当前持有的所有标签。
     /// 全系统通用基础设施。用于门控、冷却、状态查询、跨系统通信。
     ///
     /// HashSet 底层：自动去重，O(1) 查询。
     /// </summary>
-    public sealed class GameplayTagContainer
+    public sealed class rTagContainer
     {
-        private readonly HashSet<GameplayTag> _tags = new();
+        private readonly HashSet<rTag> _tags = new();
 
         /// <summary>当前标签数量。</summary>
         public int Count => _tags.Count;
@@ -22,11 +22,11 @@ namespace RedDust.Core
         public void AddTag(string tag)
         {
             if (string.IsNullOrEmpty(tag)) return;
-            _tags.Add(new GameplayTag(tag));
+            _tags.Add(new rTag(tag));
         }
 
         /// <summary>类型安全重载。无效标签或已存在则无操作。</summary>
-        public void AddTag(GameplayTag tag)
+        public void AddTag(rTag tag)
         {
             if (!tag.IsValid) return;
             _tags.Add(tag);
@@ -36,11 +36,11 @@ namespace RedDust.Core
         public void RemoveTag(string tag)
         {
             if (string.IsNullOrEmpty(tag)) return;
-            _tags.Remove(new GameplayTag(tag));
+            _tags.Remove(new rTag(tag));
         }
 
         /// <summary>类型安全重载。无效标签或不存在则无操作。</summary>
-        public void RemoveTag(GameplayTag tag)
+        public void RemoveTag(rTag tag)
         {
             if (!tag.IsValid) return;
             _tags.Remove(tag);
@@ -59,7 +59,7 @@ namespace RedDust.Core
         }
 
         /// <summary>类型安全重载。</summary>
-        public bool HasTag(GameplayTag query) => HasTag(query.Tag);
+        public bool HasTag(rTag query) => HasTag(query.Tag);
 
         // ── 精确查询（冷却管理专用）──
 
@@ -68,11 +68,11 @@ namespace RedDust.Core
         public bool HasTagExact(string query)
         {
             if (string.IsNullOrEmpty(query)) return false;
-            return _tags.Contains(new GameplayTag(query));
+            return _tags.Contains(new rTag(query));
         }
 
         /// <summary>类型安全重载。</summary>
-        public bool HasTagExact(GameplayTag query) => HasTagExact(query.Tag);
+        public bool HasTagExact(rTag query) => HasTagExact(query.Tag);
 
         // ── 深度查询 ──
 

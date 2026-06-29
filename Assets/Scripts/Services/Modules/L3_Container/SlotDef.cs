@@ -24,7 +24,7 @@ namespace RedDust.Container
 
         /// <summary>
         /// 此槽位接受什么类型的物品。匹配候选物品的 ItemTags。空或 null = 接受所有物品。
-        /// 存储 GameplayTag 全路径字符串（如 "Weapon"、"Armor.Head"），兼容 JSON 序列化。
+        /// 存储 rTag 全路径字符串（如 "Weapon"、"Armor.Head"），兼容 JSON 序列化。
         /// </summary>
         [Tooltip("此槽位接受什么类型的物品。匹配候选物品的 ItemTags。空 = 接受所有。")]
         public string[] AcceptTags;

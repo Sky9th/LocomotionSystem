@@ -18,7 +18,7 @@ namespace RedDust.Core.Editor
         /// 创建完整标签链，返回叶节点 SO。
         /// "Damage.Elemental.Fire" → 确保 Damage, Damage.Elemental 存在，创建 Fire。
         /// </summary>
-        public static GameplayTagDefinitionSO CreateTagChain(string fullTag)
+        public static rTagDefSO CreateTagChain(string fullTag)
         {
             if (string.IsNullOrEmpty(fullTag))
                 throw new ArgumentException("fullTag is required");
@@ -39,7 +39,7 @@ namespace RedDust.Core.Editor
 
                 // 删除残留资产（上次失败可能留下的）
                 var assetPath = $"{dir}/Tag_{segments[i]}.asset";
-                var stale = AssetDatabase.LoadAssetAtPath<GameplayTagDefinitionSO>(assetPath);
+                var stale = AssetDatabase.LoadAssetAtPath<rTagDefSO>(assetPath);
                 if (stale != null)
                 {
                     AssetDatabase.DeleteAsset(assetPath);
@@ -47,7 +47,7 @@ namespace RedDust.Core.Editor
                 }
             }
 
-            GameplayTagDefinitionSO parent = null;
+            rTagDefSO parent = null;
 
             AssetDatabase.StartAssetEditing();
             try
@@ -63,7 +63,7 @@ namespace RedDust.Core.Editor
                     }
 
                     var assetPath = $"{GetAssetDirectory(segments, i)}/Tag_{segments[i]}.asset";
-                    var newTag = ScriptableObject.CreateInstance<GameplayTagDefinitionSO>();
+                    var newTag = ScriptableObject.CreateInstance<rTagDefSO>();
                     using (var serialized = new SerializedObject(newTag))
                     {
                         serialized.FindProperty("leafName").stringValue = segments[i];
@@ -99,13 +99,13 @@ namespace RedDust.Core.Editor
             return path;
         }
 
-        private static GameplayTagDefinitionSO FindExistingTag(string fullTag)
+        private static rTagDefSO FindExistingTag(string fullTag)
         {
-            var guids = AssetDatabase.FindAssets("t:GameplayTagDefinitionSO");
+            var guids = AssetDatabase.FindAssets("t:rTagDefSO");
             foreach (var guid in guids)
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
-                var tag = AssetDatabase.LoadAssetAtPath<GameplayTagDefinitionSO>(path);
+                var tag = AssetDatabase.LoadAssetAtPath<rTagDefSO>(path);
                 if (tag != null && tag.FullTag == fullTag)
                     return tag;
             }

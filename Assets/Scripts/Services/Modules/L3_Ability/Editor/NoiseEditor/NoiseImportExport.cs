@@ -72,12 +72,12 @@ namespace RedDust.Ability
             { errors.Add("Empty or invalid JSON."); return (0, 0, errors); }
 
             // Build tag lookup by FullTag
-            var tagByFullTag = new Dictionary<string, GameplayTagDefinitionSO>();
-            var tagGuids = AssetDatabase.FindAssets("t:GameplayTagDefinitionSO");
+            var tagByFullTag = new Dictionary<string, rTagDefSO>();
+            var tagGuids = AssetDatabase.FindAssets("t:rTagDefSO");
             foreach (var tg in tagGuids)
             {
                 var tp = AssetDatabase.GUIDToAssetPath(tg);
-                var t = AssetDatabase.LoadAssetAtPath<GameplayTagDefinitionSO>(tp);
+                var t = AssetDatabase.LoadAssetAtPath<rTagDefSO>(tp);
                 if (t != null && !string.IsNullOrEmpty(t.FullTag))
                     tagByFullTag[t.FullTag] = t;
             }
@@ -115,7 +115,7 @@ namespace RedDust.Ability
         }
 
         private static void ApplyFields(NoiseEventSO n, NoiseEntry e,
-            Dictionary<string, GameplayTagDefinitionSO> tagByFullTag)
+            Dictionary<string, rTagDefSO> tagByFullTag)
         {
             if (!string.IsNullOrEmpty(e.noiseType))
             {

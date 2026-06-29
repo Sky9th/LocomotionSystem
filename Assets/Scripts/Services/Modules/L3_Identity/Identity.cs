@@ -22,11 +22,11 @@ namespace RedDust
         [SerializeField] private string _entityId;
 
         /// <summary>实体持有的设计标签集合。物种、阵营、身份等。</summary>
-        public GameplayTagContainer Tags { get; } = new();
+        public rTagContainer Tags { get; } = new();
 
         [Header("Identity")]
         [Tooltip("初始身份标签。运行时可通过 Tags 增删。")]
-        [SerializeField] private GameplayTagDefinitionSO[] initialTags;
+        [SerializeField] private rTagDefSO[] initialTags;
 
         /// <summary>Entity 的运行时属性。由 EntityService.Spawn 在 BindEntity 之后注入。</summary>
         internal PropertyTable Properties { get; private set; }

@@ -10,9 +10,9 @@ namespace RedDust.Items
     ///
     /// 所有数据全进 PropertyTree（Template + OverridesJson）：
     ///   身份:    DisplayName (String), Description (String), Icon (AssetRef)
-    ///   分类:    ItemTags (GameplayTagList) — Weapon.Blade / Consumable.Medical / Container.Backpack
+    ///   分类:    ItemTags (rTagList) — Weapon.Blade / Consumable.Medical / Container.Backpack
     ///   属性:    Weight (Float), MaxDurability (Float), MaxStackSize (Int)
-    ///   战斗:    ATK (AssetRefList → DamageEffectSO[]), DamageType (GameplayTag)
+    ///   战斗:    ATK (AssetRefList → DamageEffectSO[]), DamageType (rTag)
     ///   效果:    Effects (AssetRefList → EffectSO[])
     ///   表现:    VisualPrefab (AssetRef), AnimationProfile (AssetRef), AudioProfile (AssetRef)
     ///   容器:    CarryWeightMax (Float), CarryVolumeMax (Float)

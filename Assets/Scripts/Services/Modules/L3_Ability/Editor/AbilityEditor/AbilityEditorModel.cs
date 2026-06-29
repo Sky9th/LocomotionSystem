@@ -136,7 +136,7 @@ namespace RedDust.Ability
                     continue;
                 }
 
-                var tagChain = new List<GameplayTagDefinitionSO>();
+                var tagChain = new List<rTagDefSO>();
                 var t = aTag;
                 while (t != null)
                 {
@@ -236,7 +236,7 @@ namespace RedDust.Ability
                     continue;
                 }
 
-                var tagChain = new List<GameplayTagDefinitionSO>();
+                var tagChain = new List<rTagDefSO>();
                 var t = tag;
                 while (t != null)
                 {

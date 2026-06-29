@@ -7,7 +7,7 @@ namespace RedDust.Character.Animation
     public struct GripAnimationEntry
     {
         [Tooltip("握持姿态标签（Equip.Grip.*），精确匹配")]
-        public GameplayTagDefinitionSO gripTag;
+        public rTagDefSO gripTag;
 
         [Tooltip("默认（Relax）使用的 Locomotion 动画集")]
         public LocomotionAnimationSetSO animationSet;
@@ -31,7 +31,7 @@ namespace RedDust.Character.Animation
         [Tooltip("Grip Tag → 动画集映射。按数组顺序，首个精确命中即返回。")]
         public GripAnimationEntry[] entries;
 
-        public LocomotionAnimationSetSO Resolve(GameplayTagContainer ownedTags, EBodyForm bodyForm)
+        public LocomotionAnimationSetSO Resolve(rTagContainer ownedTags, EBodyForm bodyForm)
         {
             bool inCombat = bodyForm == EBodyForm.Combat;
 

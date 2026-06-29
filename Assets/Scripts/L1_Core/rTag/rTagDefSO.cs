@@ -3,19 +3,19 @@ using UnityEngine;
 namespace RedDust.Core
 {
     /// <summary>
-    /// GameplayTag 的 ScriptableObject 定义资产。
-    /// 设计时使用父子引用组织层级，运行时通过隐式转换获取 <see cref="GameplayTag"/> struct。
+    /// rTag 的 ScriptableObject 定义资产。
+    /// 设计时使用父子引用组织层级，运行时通过隐式转换获取 <see cref="rTag"/> struct。
     ///
     /// 改父级 leafName → 所有子孙 FullTag 自动更新（非字符串副本，安全重命名）。
     /// </summary>
-    [CreateAssetMenu(menuName = "RedDust/GameplayTag", fileName = "Tag_")]
-    public sealed class GameplayTagDefinitionSO : ScriptableObject
+    [CreateAssetMenu(menuName = "RedDust/rTag", fileName = "Tag_")]
+    public sealed class rTagDefSO : ScriptableObject
     {
         [SerializeField, Tooltip("本层级名称片段，不含父级前缀。如 State 的子标签填 Attacking")]
         private string leafName;
 
         [SerializeField, Tooltip("父级标签 SO。根标签（如 State）为 null")]
-        private GameplayTagDefinitionSO parent;
+        private rTagDefSO parent;
 
         [SerializeField, Tooltip("标签说明。策划可读的描述文本。")]
         private string description;
@@ -27,7 +27,7 @@ namespace RedDust.Core
         public string LeafName => leafName;
 
         /// <summary>父级标签 SO，根为 null。</summary>
-        public GameplayTagDefinitionSO Parent => parent;
+        public rTagDefSO Parent => parent;
 
         /// <summary>完整层级路径，如 "State.Attacking"。</summary>
         public string FullTag => cachedFullTag;
@@ -35,9 +35,9 @@ namespace RedDust.Core
         /// <summary>层级深度。根=1，"State.Attacking"=2。</summary>
         public int Depth { get; private set; }
 
-        /// <summary>隐式转换到运行时 struct。ActiveAbilitySO 等持有此 SO 的地方可直接当 GameplayTag 用。</summary>
-        public static implicit operator GameplayTag(GameplayTagDefinitionSO def)
-            => def != null ? new GameplayTag(def.FullTag) : default;
+        /// <summary>隐式转换到运行时 struct。ActiveAbilitySO 等持有此 SO 的地方可直接当 rTag 用。</summary>
+        public static implicit operator rTag(rTagDefSO def)
+            => def != null ? new rTag(def.FullTag) : default;
 
         private void OnEnable()
         {
@@ -67,7 +67,7 @@ namespace RedDust.Core
                 return;
             }
             // 不匹配 → 修正（覆盖复制粘贴残留值）
-            Debug.LogWarning($"[GameplayTag] leafName mismatch: file={assetName}, was=\"{leafName}\", corrected=\"{derived}\"");
+            Debug.LogWarning($"[rTag] leafName mismatch: file={assetName}, was=\"{leafName}\", corrected=\"{derived}\"");
             leafName = derived;
         }
 

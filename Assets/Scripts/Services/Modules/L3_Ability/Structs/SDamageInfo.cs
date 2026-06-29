@@ -19,7 +19,7 @@ namespace RedDust.Ability
         public readonly float Amount;
 
         /// <summary>伤害类型标签。防御公式用此路由抗性。</summary>
-        public readonly GameplayTag EffectTag;
+        public readonly rTag EffectTag;
 
         /// <summary>命中世界坐标。</summary>
         public readonly Vector3 HitPoint;
@@ -30,7 +30,7 @@ namespace RedDust.Ability
         /// <summary>伤害来源技能。ActiveAbilitySO 或 PassiveAbilitySO。</summary>
         public readonly AbilitySO SourceAbility;
 
-        public SDamageInfo(GameObject caster, GameObject target, float amount, GameplayTag effectTag,
+        public SDamageInfo(GameObject caster, GameObject target, float amount, rTag effectTag,
             Vector3 hitPoint, Vector3 hitDirection,
             AbilitySO sourceAbility = null)
         {

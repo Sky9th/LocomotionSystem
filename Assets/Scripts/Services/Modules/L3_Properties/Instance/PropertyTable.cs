@@ -238,14 +238,14 @@ namespace RedDust.Properties
                     break;
 
                 case PropertyType.String:
-                case PropertyType.GameplayTag:
+                case PropertyType.rTag:
                     string s = isDefault ? def.DefaultString : (value as string) ?? def.DefaultString;
                     string oldS = _strings.TryGetValue(path, out var ps) ? ps : null;
                     _strings[path] = s;
                     if (!flags.HasFlag(WriteFlags.SkipEvents) && oldS != s) OnPropertyChanged?.Invoke(path, oldS, s);
                     break;
 
-                case PropertyType.GameplayTagList:
+                case PropertyType.rTagList:
                     string[] tl = isDefault ? Array.Empty<string>() : isRaw ? ParseTagArray((string)value) : (value as string[] ?? Array.Empty<string>());
                     string[] oldTl = _tagLists.TryGetValue(path, out var ptl) ? ptl : null;
                     _tagLists[path] = tl;

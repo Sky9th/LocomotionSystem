@@ -9,12 +9,12 @@ using UnityEngine;
 namespace RedDust.Core.Editor
 {
     /// <summary>
-    /// 标签树数据模型。扫描 AssetDatabase 中所有 GameplayTagDefinitionSO，
+    /// 标签树数据模型。扫描 AssetDatabase 中所有 rTagDefSO，
     /// 按 parent 引用构建多叉树，提供查找和搜索。
     /// </summary>
     public class TagTreeModel
     {
-        public Dictionary<string, GameplayTagDefinitionSO> AllTags = new();
+        public Dictionary<string, rTagDefSO> AllTags = new();
         public Dictionary<string, EditorTreeNode> NodeIndex = new();
         public List<EditorTreeNode> Roots = new();
         public bool HasCycle { get; private set; }
@@ -28,13 +28,13 @@ namespace RedDust.Core.Editor
             Roots.Clear();
             HasCycle = false;
 
-            var guids = AssetDatabase.FindAssets("t:GameplayTagDefinitionSO");
-            var tagList = new List<GameplayTagDefinitionSO>();
+            var guids = AssetDatabase.FindAssets("t:rTagDefSO");
+            var tagList = new List<rTagDefSO>();
 
             foreach (var guid in guids)
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
-                var tag = AssetDatabase.LoadAssetAtPath<GameplayTagDefinitionSO>(path);
+                var tag = AssetDatabase.LoadAssetAtPath<rTagDefSO>(path);
                 if (tag == null || string.IsNullOrEmpty(tag.FullTag)) continue;
                 AllTags[tag.FullTag] = tag;
                 tagList.Add(tag);
@@ -68,7 +68,7 @@ namespace RedDust.Core.Editor
             }
 
             // 收集根 + 循环检测
-            var visited = new HashSet<GameplayTagDefinitionSO>();
+            var visited = new HashSet<rTagDefSO>();
             foreach (var tag in tagList)
             {
                 if (tag.Parent == null)
@@ -83,10 +83,10 @@ namespace RedDust.Core.Editor
             SortChildrenRecursive(Roots);
         }
 
-        private bool HasCycleInChain(GameplayTagDefinitionSO start, HashSet<GameplayTagDefinitionSO> visited)
+        private bool HasCycleInChain(rTagDefSO start, HashSet<rTagDefSO> visited)
         {
             var current = start;
-            var path = new HashSet<GameplayTagDefinitionSO>();
+            var path = new HashSet<rTagDefSO>();
             while (current != null)
             {
                 if (!path.Add(current))

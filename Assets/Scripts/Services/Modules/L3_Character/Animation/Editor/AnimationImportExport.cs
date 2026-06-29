@@ -163,7 +163,7 @@ namespace RedDust.Character.Animation
     [Serializable]
     public class GripEntryItem
     {
-        public string gripTag;                   // GameplayTagDefinitionSO.FullTag
+        public string gripTag;                   // rTagDefSO.FullTag
         public string animationSet;              // {directory}/{name} path  (Relax)
         public string combatSet;                 // {directory}/{name} path  (Combat, optional)
     }
@@ -821,7 +821,7 @@ namespace RedDust.Character.Animation
 
         private static bool ImportGripTable(GripTableEntry entry,
             Dictionary<string, Object> nameLookup, Dictionary<string, Object> createdThisSession,
-            Dictionary<string, GameplayTagDefinitionSO> tagLookup,
+            Dictionary<string, rTagDefSO> tagLookup,
             out GripAnimationTableSO instance, out int skipped, List<string> errors)
         {
             instance = null;
@@ -851,7 +851,7 @@ namespace RedDust.Character.Animation
 
         private static void ApplyGripTable(GripAnimationTableSO table, GripTableEntry entry,
             Dictionary<string, Object> nameLookup, Dictionary<string, Object> createdThisSession,
-            Dictionary<string, GameplayTagDefinitionSO> tagLookup, List<string> errors)
+            Dictionary<string, rTagDefSO> tagLookup, List<string> errors)
         {
             table.defaultSet = ResolveSORef<LocomotionAnimationSetSO>(entry.defaultSet,
                 nameLookup, createdThisSession, errors, entry.name);
@@ -1165,13 +1165,13 @@ namespace RedDust.Character.Animation
             }
         }
 
-        private static Dictionary<string, GameplayTagDefinitionSO> BuildTagLookup()
+        private static Dictionary<string, rTagDefSO> BuildTagLookup()
         {
-            var dict = new Dictionary<string, GameplayTagDefinitionSO>();
-            foreach (var guid in AssetDatabase.FindAssets("t:GameplayTagDefinitionSO"))
+            var dict = new Dictionary<string, rTagDefSO>();
+            foreach (var guid in AssetDatabase.FindAssets("t:rTagDefSO"))
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
-                var t = AssetDatabase.LoadAssetAtPath<GameplayTagDefinitionSO>(path);
+                var t = AssetDatabase.LoadAssetAtPath<rTagDefSO>(path);
                 if (t != null && !string.IsNullOrEmpty(t.FullTag))
                     dict[t.FullTag] = t;
             }

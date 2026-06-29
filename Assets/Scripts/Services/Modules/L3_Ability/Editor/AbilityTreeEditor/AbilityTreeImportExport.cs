@@ -230,13 +230,13 @@ namespace RedDust.Ability
                 Directory.CreateDirectory(path);
         }
 
-        private static Dictionary<string, GameplayTagDefinitionSO> BuildTagLookup()
+        private static Dictionary<string, rTagDefSO> BuildTagLookup()
         {
-            var dict = new Dictionary<string, GameplayTagDefinitionSO>();
-            foreach (var guid in AssetDatabase.FindAssets("t:GameplayTagDefinitionSO"))
+            var dict = new Dictionary<string, rTagDefSO>();
+            foreach (var guid in AssetDatabase.FindAssets("t:rTagDefSO"))
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
-                var tag = AssetDatabase.LoadAssetAtPath<GameplayTagDefinitionSO>(path);
+                var tag = AssetDatabase.LoadAssetAtPath<rTagDefSO>(path);
                 if (tag != null && !dict.ContainsKey(tag.FullTag))
                     dict[tag.FullTag] = tag;
             }
@@ -256,12 +256,12 @@ namespace RedDust.Ability
             return dict;
         }
 
-        private static GameplayTagDefinitionSO[] ResolveTags(string[] fullTags,
-            Dictionary<string, GameplayTagDefinitionSO> lookup, List<string> errors, string treeId)
+        private static rTagDefSO[] ResolveTags(string[] fullTags,
+            Dictionary<string, rTagDefSO> lookup, List<string> errors, string treeId)
         {
-            if (fullTags == null || fullTags.Length == 0) return Array.Empty<GameplayTagDefinitionSO>();
+            if (fullTags == null || fullTags.Length == 0) return Array.Empty<rTagDefSO>();
 
-            var result = new List<GameplayTagDefinitionSO>();
+            var result = new List<rTagDefSO>();
             foreach (var ft in fullTags)
             {
                 if (string.IsNullOrEmpty(ft)) continue;
