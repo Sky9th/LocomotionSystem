@@ -37,7 +37,12 @@ tech/
 │   ├── module-system.md                 # Module 系统 — 架构参考 (五类型签名+注册+约束)
 │   ├── base-service.md                 # BaseService — 四阶段生命周期
 │   ├── structs.md                      # MetaStruct + Core Context Structs
-│   ├── gameplay-tag.md                 # GameplayTag 完整资产树 — 9 根 190 资产
+│   ├── gameplay-tag.md                 # ⛔ OUTDATED — GameplayTag 旧版全量资产树
+│   ├── gameplay-tag-ability.md          # GameplayTag — Ability 模块产出 Tag 域
+│   ├── gameplay-tag-identity.md         # GameplayTag — Identity 模块产出 Tag 域
+│   ├── gameplay-tag-body.md             # GameplayTag — Character 模块产出 Tag 域（Body）
+│   ├── gameplay-tag-entity.md           # GameplayTag — Entity 系统产出 Tag 域（Weapon + Item）
+│   ├── gameplay-tag-grip.md             # GameplayTag — Character/动画域（Grip）
 │   ├── gameplay-tag-runtime.md         # GameplayTag struct — 运行时值类型
 │   ├── gameplay-tag-container.md       # GameplayTagContainer — 标签集合
 │   ├── gameplay-tag-editor.md          # TagEditor — 可视化标签管理 + TagPicker

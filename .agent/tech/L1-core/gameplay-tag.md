@@ -1,8 +1,9 @@
-# GameplayTag — 全系统层级标签（完整资产树）
+# ⛔ OUTDATED — GameplayTag 旧版全量资产树
 
-> `L1_Core/GameplayTag/` · `namespace RedDust.Core` · 对标 UE GAS FGameplayTag
+> **此文档已过时。** 2026-06-29 起 Tag 架构按模块产出域重构。
+> 新文档：[gameplay-tag-ability.md](gameplay-tag-ability.md) — Ability 模块产出 Tag 域
 >
-> 设计时 SO 资产 + 运行时 struct，全系统通用基础设施。服务战斗、AI、伤病、物品、建造、任务等所有子系统。
+> 保留此文档仅作历史参考。
 
 ## 两层架构
 
