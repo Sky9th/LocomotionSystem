@@ -24,8 +24,9 @@ namespace RedDust.Properties
         private readonly Dictionary<string, List<FloatModifier>> _modifiers;
         private readonly Dictionary<string, List<FloatAdjunct>> _adjuncts;
         private readonly Dictionary<string, string> _structJsons;
+        private readonly Dictionary<string, float> _minOverrides;
+        private readonly Dictionary<string, float> _maxOverrides;
 
-        public event Action<string, float, float> OnFloatChanged;
         public event Action<string> OnZero;
         public event Action<string> OnMax;
         public event Action<string, object, object> OnPropertyChanged;
@@ -39,7 +40,7 @@ namespace RedDust.Properties
         {
             if (preset?.Template == null) { Debug.LogError("[PropertyTable] PropertyPresetSO or Template is null"); return null; }
             var props = new PropertyTable(preset.Template.ResolveStructure());
-            var overrides = ParseOverrides(preset.OverridesJson);
+            var overrides = ParseOverrides(preset.OverridesJson, props._minOverrides, props._maxOverrides);
 
             foreach (var (path, d) in props._structure)
             {
@@ -74,6 +75,8 @@ namespace RedDust.Properties
             _modifiers = new();
             _adjuncts = new();
             _structJsons = new();
+            _minOverrides = new();
+            _maxOverrides = new();
         }
 
         // ============================================================
@@ -145,12 +148,30 @@ namespace RedDust.Properties
             return null;
         }
 
-        /// <summary>Float 属性的 Min 约束。路径不存在报错。</summary>
-        public float GetMin(string path) => _structure.TryGetValue(path, out var d) ? d.Min : ErrorPath<float>(path);
-        /// <summary>Float 属性的 Max 约束。路径不存在报错。</summary>
-        public float GetMax(string path) => _structure.TryGetValue(path, out var d) ? d.Max : ErrorPath<float>(path);
+        /// <summary>Float 属性的 Min 约束。路径不存在报错。覆写优先于 Def。</summary>
+        public float GetMin(string path) => _structure.TryGetValue(path, out var d)
+            ? (_minOverrides.TryGetValue(path, out var min) ? min : ((FloatPropertyDefSO)d).Min)
+            : ErrorPath<float>(path);
+        /// <summary>Float 属性的 Max 约束。路径不存在报错。覆写优先于 Def。</summary>
+        public float GetMax(string path) => _structure.TryGetValue(path, out var d)
+            ? (_maxOverrides.TryGetValue(path, out var max) ? max : ((FloatPropertyDefSO)d).Max)
+            : ErrorPath<float>(path);
         /// <summary>该属性是否存在。</summary>
         public bool Has(string path) => _structure.ContainsKey(path);
+
+        /// <summary>内部取 Float Min——覆写优先，路径不存在返回 0（调用方保证路径合法）。</summary>
+        private float EffectiveMin(string path)
+        {
+            if (_minOverrides.TryGetValue(path, out var min)) return min;
+            return _structure.TryGetValue(path, out var d) ? ((FloatPropertyDefSO)d).Min : 0f;
+        }
+
+        /// <summary>内部取 Float Max——覆写优先，路径不存在返回 0（调用方保证路径合法）。</summary>
+        private float EffectiveMax(string path)
+        {
+            if (_maxOverrides.TryGetValue(path, out var max)) return max;
+            return _structure.TryGetValue(path, out var d) ? ((FloatPropertyDefSO)d).Max : 0f;
+        }
 
         /// <summary>
         /// 返回 parentPath 文件夹下所有直接子属性的完整路径。
@@ -208,94 +229,98 @@ namespace RedDust.Properties
         /// <summary>唯一的类型分发写入口。isRaw: 值来自 JSON string → 需解析。isDefault: 值来自 Def 默认值。</summary>
         private void DoWrite(string path, object value, PropertyDefSO def, WriteFlags flags, bool isRaw = false, bool isDefault = false)
         {
-            switch (def.Type)
+            object newValue = def.ComputeWriteValue(value, isRaw, isDefault);
+
+            // Float has unique runtime: FloatState, guards, multiple events
+            if (def is FloatPropertyDefSO fd)
             {
-                case PropertyType.Float:
-                    float f = isDefault ? def.DefaultFloat : isRaw ? ParseFloat((string)value, def) : SafeFloat(value, def.DefaultFloat);
-                    f = Mathf.Clamp(f, def.Min, def.Max);
-                    float oldF = GetFloat(path);
-                    if (!flags.HasFlag(WriteFlags.SkipGuards) && !RunGuards(path, oldF, f)) return;
+                float f = Mathf.Clamp((float)newValue, EffectiveMin(path), EffectiveMax(path));
+                float oldF = GetFloat(path);
+                if (!flags.HasFlag(WriteFlags.SkipGuards) && !RunGuards(path, oldF, f)) return;
 
-                    if (_floatStates.TryGetValue(path, out var fs))
+                if (_floatStates.TryGetValue(path, out var fs))
+                {
+                    if (flags.HasFlag(WriteFlags.SkipEvents)) fs.SetCurrentSilent(f);
+                    else if (Math.Abs(fs.Current - f) > 0.001f) { fs.SetCurrent(f); OnPropertyChanged?.Invoke(path, oldF, f); }
+                }
+                else
+                {
+                    float prev = _floats.TryGetValue(path, out var pf) ? pf : 0f;
+                    _floats[path] = f;
+                    if (!flags.HasFlag(WriteFlags.SkipEvents) && Math.Abs(prev - f) > 0.001f)
                     {
-                        if (flags.HasFlag(WriteFlags.SkipEvents)) fs.SetCurrentSilent(f);
-                        else if (Math.Abs(fs.Current - f) > 0.001f) { fs.SetCurrent(f); OnPropertyChanged?.Invoke(path, oldF, f); }
+                        OnPropertyChanged?.Invoke(path, prev, f);
+                        if (f >= EffectiveMax(path)) OnMax?.Invoke(path);
+                        if (f <= EffectiveMin(path)) OnZero?.Invoke(path);
                     }
-                    else
-                    {
-                        float prev = _floats.TryGetValue(path, out var pf) ? pf : 0f;
-                        _floats[path] = f;
-                        if (!flags.HasFlag(WriteFlags.SkipEvents) && Math.Abs(prev - f) > 0.001f)
-                        {
-                            OnFloatChanged?.Invoke(path, prev, f);
-                            OnPropertyChanged?.Invoke(path, prev, f);
-                            if (f >= def.Max) OnMax?.Invoke(path);
-                            if (f <= def.Min) OnZero?.Invoke(path);
-                        }
-                    }
-                    break;
+                }
+                return;
+            }
 
+            // All other types: simple dict write + single event
+            WriteSimpleTyped(path, def.Type, newValue, flags);
+        }
+
+        /// <summary>简单类型写入：选字典 → 写值 → 发事件（仅 OnPropertyChanged）。</summary>
+        private void WriteSimpleTyped(string path, PropertyType type, object newValue, WriteFlags flags)
+        {
+            switch (type)
+            {
                 case PropertyType.Int:
-                    int i = isDefault ? def.DefaultInt : isRaw ? int.Parse((string)value) : SafeInt(value, def.DefaultInt);
-                    i = Mathf.Clamp(i, def.MinInt, def.MaxInt);
+                {
+                    int i = (int)newValue;
                     int oldI = _ints.TryGetValue(path, out var pi) ? pi : 0;
                     _ints[path] = i;
                     if (!flags.HasFlag(WriteFlags.SkipEvents) && oldI != i) OnPropertyChanged?.Invoke(path, oldI, i);
                     break;
-
+                }
                 case PropertyType.Bool:
-                    bool b = isDefault ? def.DefaultBool : isRaw ? bool.Parse((string)value) : SafeBool(value, def.DefaultBool);
+                {
+                    bool b = (bool)newValue;
                     bool oldB = _bools.TryGetValue(path, out var pb) && pb;
                     _bools[path] = b;
                     if (!flags.HasFlag(WriteFlags.SkipEvents) && oldB != b) OnPropertyChanged?.Invoke(path, oldB, b);
                     break;
-
+                }
                 case PropertyType.String:
                 case PropertyType.rTag:
-                    string s = isDefault ? def.DefaultString : (value as string) ?? def.DefaultString;
+                {
+                    string s = (string)newValue;
                     string oldS = _strings.TryGetValue(path, out var ps) ? ps : null;
                     _strings[path] = s;
                     if (!flags.HasFlag(WriteFlags.SkipEvents) && oldS != s) OnPropertyChanged?.Invoke(path, oldS, s);
                     break;
-
+                }
                 case PropertyType.rTagList:
-                    string[] tl = isDefault ? Array.Empty<string>() : isRaw ? ParseTagArray((string)value) : (value as string[] ?? Array.Empty<string>());
+                {
+                    string[] tl = (string[])newValue;
                     string[] oldTl = _tagLists.TryGetValue(path, out var ptl) ? ptl : null;
                     _tagLists[path] = tl;
                     if (!flags.HasFlag(WriteFlags.SkipEvents)) OnPropertyChanged?.Invoke(path, oldTl, tl);
                     break;
-
+                }
                 case PropertyType.AssetRef:
-                    var ar = isDefault ? LoadAssetByGuid(def.DefaultAssetGUID, def.AssetTypeConstraint)
-                           : isRaw ? ResolveAssetRef((string)value, def) : ResolveAssetRef(value, def);
+                {
+                    var ar = (UnityEngine.Object)newValue;
                     var oldAr = _assetRefs.TryGetValue(path, out var par) ? par : null;
                     _assetRefs[path] = ar;
                     if (!flags.HasFlag(WriteFlags.SkipEvents) && oldAr != ar) OnPropertyChanged?.Invoke(path, oldAr, ar);
                     break;
-
+                }
                 case PropertyType.AssetRefList:
-                    var arl = isDefault ? Array.Empty<UnityEngine.Object>()
-                            : isRaw ? ResolveAssetRefList((string)value, def) : ResolveAssetRefList(value, def);
+                {
+                    var arl = (UnityEngine.Object[])newValue;
                     var oldArl = _assetRefLists.TryGetValue(path, out var parl) ? parl : null;
                     _assetRefLists[path] = arl;
                     if (!flags.HasFlag(WriteFlags.SkipEvents)) OnPropertyChanged?.Invoke(path, oldArl, arl);
                     break;
-
+                }
                 case PropertyType.Struct:
                 {
+                    var json = (string)newValue;
                     var oldJson = _structJsons.TryGetValue(path, out var oj) ? oj : null;
-                    string json;
-                    if (isDefault)      json = def.DefaultStructJson ?? "[]";
-                    else if (isRaw)     json = (string)value ?? "[]";
-                    else                json = value != null ? JsonUtility.ToJson(value) : "[]";
-
-                    // 用户写裸数组 "[{...}]" 是自然写法，内部统一包装
-                    if (json.TrimStart().StartsWith("["))
-                        json = $"{{\"Items\":{json}}}";
-
                     _structJsons[path] = json;
-                    if (!flags.HasFlag(WriteFlags.SkipEvents) && json != oldJson)
-                        OnPropertyChanged?.Invoke(path, oldJson, json);
+                    if (!flags.HasFlag(WriteFlags.SkipEvents) && json != oldJson) OnPropertyChanged?.Invoke(path, oldJson, json);
                     break;
                 }
             }
@@ -344,15 +369,17 @@ namespace RedDust.Properties
         {
             if (_floatStates.ContainsKey(path)) return;
             if (!_structure.TryGetValue(path, out var def) || def.Type != PropertyType.Float) return;
-            float v = _floats.TryGetValue(path, out var f) ? f : def.DefaultFloat;
-            WireFloatState(new FloatState(path, def.Min, def.Max, v, false, 0, 0, false, 0, 0), def);
+            float v = _floats.TryGetValue(path, out var f) ? f : ((FloatPropertyDefSO)def).DefaultValue;
+            float effMin = EffectiveMin(path);
+            float effMax = EffectiveMax(path);
+            WireFloatState(new FloatState(path, effMin, effMax, v, false, 0, 0, false, 0, 0), effMax);
         }
 
-        /// <summary>绑定 FloatState 事件到公开事件，并加入 _floatStates。</summary>
-        private void WireFloatState(FloatState s, PropertyDefSO def)
+        /// <summary>绑定 FloatState 事件到公开事件，并加入 _floatStates。effectiveMax 用于 OnMax 判定。</summary>
+        private void WireFloatState(FloatState s, float effectiveMax)
         {
             s.OnZero += () => OnZero?.Invoke(s.Path);
-            s.OnChanged += (p, old, cur) => { OnFloatChanged?.Invoke(p, old, cur); OnPropertyChanged?.Invoke(p, old, cur); if (cur >= def.Max) OnMax?.Invoke(p); };
+            s.OnChanged += (p, old, cur) => { OnPropertyChanged?.Invoke(p, old, cur); if (cur >= effectiveMax) OnMax?.Invoke(p); };
             _floatStates[s.Path] = s;
         }
 
@@ -395,32 +422,6 @@ namespace RedDust.Properties
         private static void ErrorPath(string path) => Debug.LogError($"[PropertyTable] Path '{path}' not found. Check property path string for typos.");
         private static T ErrorPath<T>(string path) { ErrorPath(path); return default; }
 
-        private static float SafeFloat(object v, float fallback) { try { return Convert.ToSingle(v); } catch { return fallback; } }
-        private static int SafeInt(object v, int fallback) { try { return Convert.ToInt32(v); } catch { return fallback; } }
-        private static bool SafeBool(object v, bool fallback) { try { return Convert.ToBoolean(v); } catch { return fallback; } }
-
-        /// <summary>从 JSON string 解析 Float 并钳制到 [Min, Max]。</summary>
-        private static float ParseFloat(string raw, PropertyDefSO def) { if (float.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out var f)) return Mathf.Clamp(f, def.Min, def.Max); Debug.LogWarning($"[PropertyTable] Bad float '{raw}'"); return def.DefaultFloat; }
-
-        /// <summary>解析 AssetRef：Object 直接返回，GUID string 则加载资产。</summary>
-        private static UnityEngine.Object ResolveAssetRef(object value, PropertyDefSO def) { if (value is UnityEngine.Object o) return o; if (value is string g && !string.IsNullOrEmpty(g)) return LoadAssetByGuid(g, def?.AssetTypeConstraint); return null; }
-
-        /// <summary>解析 AssetRefList。</summary>
-        private static UnityEngine.Object[] ResolveAssetRefList(object value, PropertyDefSO def) { if (value is UnityEngine.Object[] oa) return oa; if (value is string[] ga) { var r = new List<UnityEngine.Object>(); foreach (var g in ga) { var o = LoadAssetByGuid(g, def?.AssetTypeConstraint); if (o) r.Add(o); } return r.ToArray(); } return Array.Empty<UnityEngine.Object>(); }
-
-        /// <summary>GUID → AssetDatabase 加载。仅 Editor 有效。</summary>
-        private static UnityEngine.Object LoadAssetByGuid(string guid, string typeConstraint)
-        {
-            if (string.IsNullOrEmpty(guid)) return null;
-#if UNITY_EDITOR
-            var ap = UnityEditor.AssetDatabase.GUIDToAssetPath(guid); if (string.IsNullOrEmpty(ap)) return null;
-            var obj = UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(ap);
-            if (obj && !string.IsNullOrEmpty(typeConstraint)) { var et = Type.GetType(typeConstraint); if (et != null && !et.IsInstanceOfType(obj)) { Debug.LogWarning("[PropertyTable] Asset type mismatch"); return null; } }
-            return obj;
-#else
-            return null;
-#endif
-        }
 
         // ============================================================
         // Struct 读取
@@ -429,23 +430,10 @@ namespace RedDust.Properties
         /// <summary>校验 StructTypeName 与泛型 T 是否一致。不一致报错返回 true。</summary>
         private bool StructTypeMismatch<T>(string path)
         {
-            if (!_structure.TryGetValue(path, out var def)
-                || def.Type != PropertyType.Struct
-                || string.IsNullOrEmpty(def.StructTypeName))
-                return false; // 无定义或非 Struct——不校验
+            if (!_structure.TryGetValue(path, out var def) || def.Type != PropertyType.Struct)
+                return false;
 
-            var declaredType = Type.GetType(def.StructTypeName);
-            if (declaredType == null)
-            {
-                Debug.LogError($"[PropertyTable] {path}: StructTypeName '{def.StructTypeName}' could not be resolved.");
-                return true;
-            }
-            if (declaredType != typeof(T))
-            {
-                Debug.LogError($"[PropertyTable] {path}: declared '{declaredType.Name}' but called with '{typeof(T).Name}'.");
-                return true;
-            }
-            return false;
+            return !((StructPropertyDefSO)def).TypeMatches<T>();
         }
 
         /// <summary>从 JSON 反序列化单个 struct。类型不匹配或 JSON 无效返回 default。</summary>
@@ -471,25 +459,28 @@ namespace RedDust.Properties
         private class StructArrayWrapper<T> { public T[] Items; }
 
         // JSON 序列化辅助
-        [Serializable] private class OverrideEntry { public string Path; public string Value; }
+        [Serializable] private class OverrideEntry { public string Path; public string Value; public string Min; public string Max; }
         [Serializable] private class OverrideContainer { public List<OverrideEntry> Overrides = new(); }
-        [Serializable] private class TagListWrapper { public string[] Items; }
-
-        /// <summary>解析 OverridesJson：[{Path, Value}] → Dictionary。</summary>
-        private static Dictionary<string, string> ParseOverrides(string json)
+        /// <summary>解析 OverridesJson：[{Path, Value, Min?, Max?}] → (值字典, 填充约束字典)。</summary>
+        private static Dictionary<string, string> ParseOverrides(string json, Dictionary<string, float> minOverrides, Dictionary<string, float> maxOverrides)
         {
             var r = new Dictionary<string, string>(); if (string.IsNullOrEmpty(json)) return r;
-            try { var c = JsonUtility.FromJson<OverrideContainer>(json); if (c?.Overrides != null) foreach (var e in c.Overrides) { if (!string.IsNullOrEmpty(e.Path)) r[e.Path] = e.Value; } }
+            try
+            {
+                var c = JsonUtility.FromJson<OverrideContainer>(json);
+                if (c?.Overrides != null)
+                    foreach (var e in c.Overrides)
+                    {
+                        if (string.IsNullOrEmpty(e.Path)) continue;
+                        if (e.Value != null) r[e.Path] = e.Value;
+                        if (!string.IsNullOrEmpty(e.Min) && float.TryParse(e.Min, NumberStyles.Float, CultureInfo.InvariantCulture, out var min))
+                            minOverrides[e.Path] = min;
+                        if (!string.IsNullOrEmpty(e.Max) && float.TryParse(e.Max, NumberStyles.Float, CultureInfo.InvariantCulture, out var max))
+                            maxOverrides[e.Path] = max;
+                    }
+            }
             catch (Exception e) { Debug.LogError($"[PropertyTable] Parse overridesJson failed: {e.Message}"); }
             return r;
-        }
-
-        /// <summary>解析 Tag 数组 JSON：["Tag.A","Tag.B"] → string[]。</summary>
-        private static string[] ParseTagArray(string raw)
-        {
-            if (string.IsNullOrEmpty(raw)) return Array.Empty<string>();
-            try { return JsonUtility.FromJson<TagListWrapper>($"{{\"Items\":{raw}}}")?.Items ?? Array.Empty<string>(); }
-            catch (Exception e) { Debug.LogWarning($"[PropertyTable] Parse tag array: {e.Message}"); return Array.Empty<string>(); }
         }
     }
 

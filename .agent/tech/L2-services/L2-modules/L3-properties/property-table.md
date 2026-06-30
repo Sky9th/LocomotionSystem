@@ -1,7 +1,7 @@
 # PropertyTable — 运行时属性平表
 
 > `L3_Properties/Instance/PropertyTable.cs` · 技术文档 · 2026-06-26
-> **Last Verified**: 2026-06-27 | **Verification**: All referenced files exist. Get methods updated: missing path errors; _structure guard prevents false errors during table construction.
+> **Last Verified**: 2026-06-30 | **Verification**: DoWrite refactored (ComputeWriteValue dispatch); OnFloatChanged removed; Min/Max override system added; 6 helpers moved to SO subclasses. All referenced files exist, signatures match.
 
 ## 层级定位
 
@@ -93,8 +93,8 @@ public bool Has(string path)
 ```csharp
 public void Set(string path, object value)
 ```
-- **用途**: 设值，统一入口。内部按 PropertyDefSO.Type 分发校验（Float 钳制、Int 钳制、AssetRef 解析 GUID 等）
-- **流程**: 取 Def → 类型校验 → Guard 拦截 → 写值 → 事件广播
+- **用途**: 设值，统一入口。调用 `def.ComputeWriteValue(value, isRaw, isDefault)` 做类型专属解析
+- **流程**: ComputeWriteValue（SO 子类覆写）→ Float 走 Guard + FloatState 特殊逻辑，其余走 WriteSimpleTyped → 字典写入 + 事件
 
 ```csharp
 public void Modify(string path, float delta)
@@ -106,6 +106,20 @@ public void Load(Dictionary<string, object> values)
 ```
 - **用途**: 全量设置（读档/重生）。与 Set 同一套内部分发逻辑
 - **区别**: 跳过 Guard、不逐条触发事件、不清除 Modifier
+
+### DoWrite 内部结构（v0.30 重构）
+
+```
+DoWrite(path, value, def, flags)
+  │
+  ├→ def.ComputeWriteValue(value, isRaw, isDefault)   ← SO 子类覆写，类型专属解析
+  │
+  ├→ if FloatPropertyDefSO:
+  │     EffectiveMin/Max clamp → Guard → FloatState or _floats → OnPropertyChanged/OnZero/OnMax
+  │
+  └→ else: WriteSimpleTyped(path, type, newValue, flags)
+        switch(type) → 选字典 → 写值 → OnPropertyChanged
+```
 
 ### 持久修改器
 
@@ -144,12 +158,16 @@ public Dictionary<string, FloatSnapshot> GetFloatSnapshot()
 ## 事件
 
 ```csharp
-public event Action<string, float, float> OnFloatChanged;   // path, old, new
 public event Action<string> OnZero;                          // path 到达 Min
 public event Action<string> OnMax;                           // path 到达 Max
 public event Action<string, object, object> OnPropertyChanged; // path, old, new (任意类型)
 ```
 - **用途**: PropertyComponent 代理给外部订阅者
+- **备注**: `OnFloatChanged` 已在 v0.30 删除——与 OnPropertyChanged 对 Float 成对触发，零外部订阅者
+
+## Min/Max 约束覆写
+
+Float 属性的 Min/Max 可在 Preset 层覆写（`PropertyPresetSO.OverridesJson` 中的 `"Min"`/`"Max"` 可选字段）。PropertyTable 内部维护 `_minOverrides` / `_maxOverrides` 字典，`GetMin`/`GetMax`/`EffectiveMin`/`EffectiveMax` 覆写优先。
 
 ## 伴生属性推断
 

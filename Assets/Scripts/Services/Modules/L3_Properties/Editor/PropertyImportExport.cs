@@ -33,6 +33,7 @@ namespace RedDust.Properties.Editor
             public int maxInt = 100;
             public int defaultInt;
 
+            public bool defaultBool;
             public string defaultString;
             public string defaultAssetGUID;
             public string assetTypeConstraint;
@@ -88,22 +89,11 @@ namespace RedDust.Properties.Editor
                 if (existing != null) { skipped++; defMap[entry.id] = existing; continue; }
 
                 EnsureDirectory(DefinitionsRoot);
-                var def = ScriptableObject.CreateInstance<PropertyDefSO>();
+                var def = PropertyDefSO.Create(propType);
                 def.Id = entry.id;
                 def.Description = entry.description ?? string.Empty;
-                def.Type = propType;
                 def.IsDeprecated = entry.isDeprecated;
-                def.Min = entry.min;
-                def.Max = entry.max;
-                def.DefaultFloat = entry.defaultFloat;
-                def.MinInt = entry.minInt;
-                def.MaxInt = entry.maxInt;
-                def.DefaultInt = entry.defaultInt;
-                def.DefaultString = entry.defaultString;
-                def.DefaultAssetGUID = entry.defaultAssetGUID;
-                def.AssetTypeConstraint = entry.assetTypeConstraint;
-                def.StructTypeName = entry.structTypeName;
-                def.DefaultStructJson = entry.defaultStructJson;
+                PopulateDef(def, entry);
 
                 AssetDatabase.CreateAsset(def, assetPath);
                 defMap[entry.id] = def;
@@ -179,17 +169,13 @@ namespace RedDust.Properties.Editor
                 var path = AssetDatabase.GUIDToAssetPath(guid);
                 var def = AssetDatabase.LoadAssetAtPath<PropertyDefSO>(path);
                 if (def == null) continue;
-                export.definitions.Add(new PropertyDefEntry
+                var entry = new PropertyDefEntry
                 {
                     id = def.Id, type = def.Type.ToString(), isDeprecated = def.IsDeprecated,
-                    description = def.Description,
-                    min = def.Min, max = def.Max, defaultFloat = def.DefaultFloat,
-                    minInt = def.MinInt, maxInt = def.MaxInt, defaultInt = def.DefaultInt,
-                    defaultString = def.DefaultString, defaultAssetGUID = def.DefaultAssetGUID,
-                    assetTypeConstraint = def.AssetTypeConstraint,
-                    structTypeName = def.StructTypeName,
-                    defaultStructJson = def.DefaultStructJson
-                });
+                    description = def.Description
+                };
+                ReadDef(def, entry);
+                export.definitions.Add(entry);
             }
 
             var treeGuids = AssetDatabase.FindAssets("t:PropertyTreeSO", new[] { TreesRoot });
@@ -230,6 +216,30 @@ namespace RedDust.Properties.Editor
         {
             if (!File.Exists(jsonPath)) return (0, 0, new List<string> { $"File not found: {jsonPath}" });
             return ImportFromJson(File.ReadAllText(jsonPath));
+        }
+
+        private static void PopulateDef(PropertyDefSO def, PropertyDefEntry entry)
+        {
+            if (def is FloatPropertyDefSO fd) { fd.Min = entry.min; fd.Max = entry.max; fd.DefaultValue = entry.defaultFloat; }
+            else if (def is IntPropertyDefSO id) { id.Min = entry.minInt; id.Max = entry.maxInt; id.DefaultValue = entry.defaultInt; }
+            else if (def is BoolPropertyDefSO bd) { bd.DefaultValue = entry.defaultBool; }
+            else if (def is StringPropertyDefSO sd) { sd.DefaultValue = entry.defaultString; }
+            else if (def is RTagPropertyDefSO rd) { rd.DefaultValue = entry.defaultString; }
+            else if (def is AssetRefPropertyDefSO ad) { ad.DefaultAssetGUID = entry.defaultAssetGUID; ad.AssetTypeConstraint = entry.assetTypeConstraint; }
+            else if (def is AssetRefListPropertyDefSO ald) { ald.AssetTypeConstraint = entry.assetTypeConstraint; }
+            else if (def is StructPropertyDefSO std) { std.StructTypeName = entry.structTypeName; std.DefaultJson = entry.defaultStructJson ?? "[]"; }
+        }
+
+        private static void ReadDef(PropertyDefSO def, PropertyDefEntry entry)
+        {
+            if (def is FloatPropertyDefSO fd) { entry.min = fd.Min; entry.max = fd.Max; entry.defaultFloat = fd.DefaultValue; }
+            else if (def is IntPropertyDefSO id) { entry.minInt = id.Min; entry.maxInt = id.Max; entry.defaultInt = id.DefaultValue; }
+            else if (def is BoolPropertyDefSO bd) { entry.defaultBool = bd.DefaultValue; }
+            else if (def is StringPropertyDefSO sd) { entry.defaultString = sd.DefaultValue; }
+            else if (def is RTagPropertyDefSO rd) { entry.defaultString = rd.DefaultValue; }
+            else if (def is AssetRefPropertyDefSO ad) { entry.defaultAssetGUID = ad.DefaultAssetGUID; entry.assetTypeConstraint = ad.AssetTypeConstraint; }
+            else if (def is AssetRefListPropertyDefSO ald) { entry.assetTypeConstraint = ald.AssetTypeConstraint; }
+            else if (def is StructPropertyDefSO std) { entry.structTypeName = std.StructTypeName; entry.defaultStructJson = std.DefaultJson; }
         }
 
         private static void EnsureDirectory(string path)

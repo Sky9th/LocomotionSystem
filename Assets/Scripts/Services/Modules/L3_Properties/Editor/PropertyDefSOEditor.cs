@@ -27,49 +27,78 @@ namespace RedDust.Properties.Editor
             switch (def.Type)
             {
                 case PropertyType.Float:
-                    EditorGUILayout.LabelField("Float", EditorStyles.boldLabel);
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("Min"));
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("Max"));
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("DefaultFloat"));
+                    if (def is FloatPropertyDefSO)
+                    {
+                        EditorGUILayout.LabelField("Float", EditorStyles.boldLabel);
+                        EditorGUILayout.PropertyField(serializedObject.FindProperty("Min"));
+                        EditorGUILayout.PropertyField(serializedObject.FindProperty("Max"));
+                        EditorGUILayout.PropertyField(serializedObject.FindProperty("DefaultValue"));
+                    }
                     break;
 
                 case PropertyType.Int:
-                    EditorGUILayout.LabelField("Int", EditorStyles.boldLabel);
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("MinInt"));
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("MaxInt"));
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("DefaultInt"));
+                    if (def is IntPropertyDefSO)
+                    {
+                        EditorGUILayout.LabelField("Int", EditorStyles.boldLabel);
+                        EditorGUILayout.PropertyField(serializedObject.FindProperty("Min"));
+                        EditorGUILayout.PropertyField(serializedObject.FindProperty("Max"));
+                        EditorGUILayout.PropertyField(serializedObject.FindProperty("DefaultValue"));
+                    }
                     break;
 
                 case PropertyType.Bool:
-                    EditorGUILayout.LabelField("Bool", EditorStyles.boldLabel);
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("DefaultBool"));
+                    if (def is BoolPropertyDefSO)
+                    {
+                        EditorGUILayout.LabelField("Bool", EditorStyles.boldLabel);
+                        EditorGUILayout.PropertyField(serializedObject.FindProperty("DefaultValue"));
+                    }
                     break;
 
                 case PropertyType.String:
-                    EditorGUILayout.LabelField("String", EditorStyles.boldLabel);
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("DefaultString"));
+                    if (def is StringPropertyDefSO)
+                    {
+                        EditorGUILayout.LabelField("String", EditorStyles.boldLabel);
+                        EditorGUILayout.PropertyField(serializedObject.FindProperty("DefaultValue"));
+                    }
                     break;
 
                 case PropertyType.rTag:
+                    if (def is RTagPropertyDefSO)
+                    {
+                        EditorGUILayout.LabelField("rTag", EditorStyles.boldLabel);
+                        EditorGUILayout.PropertyField(serializedObject.FindProperty("DefaultValue"));
+                    }
+                    break;
+
                 case PropertyType.rTagList:
-                    EditorGUILayout.HelpBox("No default value — tags are empty unless overridden.", MessageType.None);
+                    EditorGUILayout.HelpBox("rTag List — no default value (always empty array).", MessageType.None);
                     break;
 
                 case PropertyType.AssetRef:
-                    EditorGUILayout.LabelField("AssetRef", EditorStyles.boldLabel);
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("DefaultAssetGUID"));
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("AssetTypeConstraint"));
+                    if (def is AssetRefPropertyDefSO)
+                    {
+                        EditorGUILayout.LabelField("AssetRef", EditorStyles.boldLabel);
+                        EditorGUILayout.PropertyField(serializedObject.FindProperty("DefaultAssetGUID"));
+                        EditorGUILayout.PropertyField(serializedObject.FindProperty("AssetTypeConstraint"));
+                    }
                     break;
 
                 case PropertyType.AssetRefList:
-                    EditorGUILayout.HelpBox("No default value — array is empty unless overridden.", MessageType.None);
+                    if (def is AssetRefListPropertyDefSO)
+                    {
+                        EditorGUILayout.LabelField("AssetRefList", EditorStyles.boldLabel);
+                        EditorGUILayout.PropertyField(serializedObject.FindProperty("AssetTypeConstraint"));
+                    }
                     break;
 
                 case PropertyType.Struct:
-                    EditorGUILayout.LabelField("Struct", EditorStyles.boldLabel);
-                    var structTypeProp = serializedObject.FindProperty("StructTypeName");
-                    structTypeProp.stringValue = PropertyStructScanner.DrawDropdown(structTypeProp.stringValue);
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("DefaultStructJson"));
+                    if (def is StructPropertyDefSO)
+                    {
+                        EditorGUILayout.LabelField("Struct", EditorStyles.boldLabel);
+                        var structTypeProp = serializedObject.FindProperty("StructTypeName");
+                        structTypeProp.stringValue = PropertyStructScanner.DrawDropdown(structTypeProp.stringValue);
+                        EditorGUILayout.PropertyField(serializedObject.FindProperty("DefaultJson"));
+                    }
                     break;
             }
 

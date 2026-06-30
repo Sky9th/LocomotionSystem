@@ -158,37 +158,43 @@ namespace RedDust.Properties.Editor
                     switch (_def.Type)
                     {
                         case PropertyType.Float:
-                            DrawFieldRow("Min", _def.Min.ToString("G"));
-                            DrawFieldRow("Max", _def.Max.ToString("G"));
-                            DrawFieldRow("Default", _def.DefaultFloat.ToString("G"));
+                            var fd = (FloatPropertyDefSO)_def;
+                            DrawFieldRow("Min", fd.Min.ToString("G"));
+                            DrawFieldRow("Max", fd.Max.ToString("G"));
+                            DrawFieldRow("Default", fd.DefaultValue.ToString("G"));
                             break;
                         case PropertyType.Int:
-                            DrawFieldRow("Min", _def.MinInt.ToString());
-                            DrawFieldRow("Max", _def.MaxInt.ToString());
-                            DrawFieldRow("Default", _def.DefaultInt.ToString());
+                            var id = (IntPropertyDefSO)_def;
+                            DrawFieldRow("Min", id.Min.ToString());
+                            DrawFieldRow("Max", id.Max.ToString());
+                            DrawFieldRow("Default", id.DefaultValue.ToString());
                             break;
                         case PropertyType.Bool:
-                            DrawFieldRow("Default", _def.DefaultBool ? "true" : "false");
+                            DrawFieldRow("Default", ((BoolPropertyDefSO)_def).DefaultValue ? "true" : "false");
                             break;
                         case PropertyType.String:
-                            DrawFieldRow("Default", string.IsNullOrEmpty(_def.DefaultString) ? "(empty)" : _def.DefaultString);
+                            var sv = ((StringPropertyDefSO)_def).DefaultValue;
+                            DrawFieldRow("Default", string.IsNullOrEmpty(sv) ? "(empty)" : sv);
                             break;
                         case PropertyType.rTag:
-                            EditorGUILayout.LabelField("Single rTag reference. No numeric constraints.", ValueStyle);
+                            var tv = ((RTagPropertyDefSO)_def).DefaultValue;
+                            DrawFieldRow("Default", string.IsNullOrEmpty(tv) ? "(empty)" : tv);
                             break;
                         case PropertyType.rTagList:
                             EditorGUILayout.LabelField("rTag array reference. No numeric constraints.", ValueStyle);
                             break;
                         case PropertyType.AssetRef:
-                            DrawFieldRow("Asset Type", string.IsNullOrEmpty(_def.AssetTypeConstraint) ? "(any)" : _def.AssetTypeConstraint);
+                            var ac = ((AssetRefPropertyDefSO)_def).AssetTypeConstraint;
+                            DrawFieldRow("Asset Type", string.IsNullOrEmpty(ac) ? "(any)" : ac);
                             break;
                         case PropertyType.AssetRefList:
-                            EditorGUILayout.LabelField("Asset reference array. No constraints.", ValueStyle);
+                            var alc = ((AssetRefListPropertyDefSO)_def).AssetTypeConstraint;
+                            DrawFieldRow("Asset Type", string.IsNullOrEmpty(alc) ? "(any)" : alc);
                             break;
                         case PropertyType.Struct:
                         {
-                            var current = string.IsNullOrEmpty(_def.StructTypeName) ? "(unset)" : _def.StructTypeName;
-                            DrawFieldRow("Struct Type", current);
+                            var current = ((StructPropertyDefSO)_def).StructTypeName;
+                            DrawFieldRow("Struct Type", string.IsNullOrEmpty(current) ? "(unset)" : current);
                             break;
                         }
                     }
@@ -352,28 +358,25 @@ namespace RedDust.Properties.Editor
                         var parts = dir.Split('/');
                         AssetDatabase.CreateFolder(string.Join("/", parts.Take(parts.Length - 1)), parts.Last());
                     }
-                    var def = CreateInstance<PropertyDefSO>();
+                    var def = PropertyDefSO.Create(_type);
                     def.Id = _id;
                     def.Description = _description;
-                    def.Type = _type;
                     def.IsDeprecated = _isDeprecated;
-                    def.Min = _min;
-                    def.Max = _max;
-                    def.DefaultFloat = _defaultFloat;
-                    def.MinInt = _minInt;
-                    def.MaxInt = _maxInt;
-                    def.DefaultInt = _defaultInt;
-                    def.DefaultBool = _defaultBool;
-                    def.DefaultString = _defaultString;
-                    def.AssetTypeConstraint = _assetTypeConstraint;
-                    def.StructTypeName = _structTypeName;
-                    def.DefaultStructJson = _defaultStructJson;
+
+                    if (def is FloatPropertyDefSO fd) { fd.Min = _min; fd.Max = _max; fd.DefaultValue = _defaultFloat; }
+                    else if (def is IntPropertyDefSO id) { id.Min = _minInt; id.Max = _maxInt; id.DefaultValue = _defaultInt; }
+                    else if (def is BoolPropertyDefSO bd) { bd.DefaultValue = _defaultBool; }
+                    else if (def is StringPropertyDefSO sd) { sd.DefaultValue = _defaultString; }
+                    else if (def is RTagPropertyDefSO rd) { rd.DefaultValue = _defaultString; }
+                    else if (def is AssetRefPropertyDefSO ad) { ad.AssetTypeConstraint = _assetTypeConstraint; }
+                    else if (def is AssetRefListPropertyDefSO ald) { ald.AssetTypeConstraint = _assetTypeConstraint; }
+                    else if (def is StructPropertyDefSO std) { std.StructTypeName = _structTypeName; std.DefaultJson = _defaultStructJson ?? "[]"; }
+
                     AssetDatabase.CreateAsset(def, $"{dir}/{_id}.asset");
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
                     return def;
-                }
-            }
+                }            }
         }
     }
 }

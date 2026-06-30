@@ -1,8 +1,8 @@
+using System;
 using UnityEngine;
 
 namespace RedDust.Properties
 {
-    [CreateAssetMenu(fileName = "PropertyDefinition", menuName = "RedDust/Properties/Property Definition")]
     public class PropertyDefSO : ScriptableObject
     {
         [Header("Identity")]
@@ -11,43 +11,39 @@ namespace RedDust.Properties
         [TextArea(2, 6)]
         public string Description;
 
+        [HideInInspector]
         public PropertyType Type;
 
         public bool IsDeprecated;
 
-        [Header("Float")]
-        public float Min;
-
-        public float Max = 100f;
-        public float DefaultFloat = 100f;
-
-        [Header("Int")]
-        public int MinInt;
-
-        public int MaxInt = 100;
-        public int DefaultInt;
-
-        [Header("Bool")]
-        public bool DefaultBool;
-
-        [Header("String")]
-        public string DefaultString;
-
-        [Header("AssetRef")]
-        public string DefaultAssetGUID;
+        /// <summary>
+        /// 计算待写入的最终值。子类覆写以处理 raw/default/direct 三种来源的类型专属解析。
+        /// 基类默认 passthrough。
+        /// </summary>
+        public virtual object ComputeWriteValue(object rawValue, bool isRaw, bool isDefault)
+        {
+            return rawValue;
+        }
 
         /// <summary>
-        /// 约束可拖拽的 Unity 资产类型，如 "UnityEngine.Sprite" 或 "UnityEngine.GameObject"。
-        /// 空 = 不限制。
+        /// 校验泛型 T 是否与结构体类型匹配。仅 StructPropertyDefSO 覆写。
+        /// 基类默认返回 true（不过滤）。
         /// </summary>
-        public string AssetTypeConstraint;
+        public virtual bool TypeMatches<T>() => true;
 
-        [Header("Struct")]
-        [Tooltip("仅 Struct 类型有效。C# struct 全限定名，如 \"RedDust.Container.SlotDef\"。")]
-        public string StructTypeName;
-
-        [TextArea(2, 5)]
-        [Tooltip("仅 Struct 类型有效。默认值 JSON。空数组 = \"[]\"。")]
-        public string DefaultStructJson;
+        /// <summary>工厂：按 PropertyType 创建对应的子类实例。</summary>
+        public static PropertyDefSO Create(PropertyType type) => type switch
+        {
+            PropertyType.Float        => ScriptableObject.CreateInstance<FloatPropertyDefSO>(),
+            PropertyType.Int          => ScriptableObject.CreateInstance<IntPropertyDefSO>(),
+            PropertyType.Bool         => ScriptableObject.CreateInstance<BoolPropertyDefSO>(),
+            PropertyType.String       => ScriptableObject.CreateInstance<StringPropertyDefSO>(),
+            PropertyType.rTag         => ScriptableObject.CreateInstance<RTagPropertyDefSO>(),
+            PropertyType.rTagList     => ScriptableObject.CreateInstance<RTagListPropertyDefSO>(),
+            PropertyType.AssetRef     => ScriptableObject.CreateInstance<AssetRefPropertyDefSO>(),
+            PropertyType.AssetRefList => ScriptableObject.CreateInstance<AssetRefListPropertyDefSO>(),
+            PropertyType.Struct       => ScriptableObject.CreateInstance<StructPropertyDefSO>(),
+            _ => null
+        };
     }
 }

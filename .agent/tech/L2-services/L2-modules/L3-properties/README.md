@@ -593,5 +593,6 @@ PropertyTable 构造 (一次性全解析)              │     └── _modifi
 |------|------|
 | [property-preset-so.md](property-preset-so.md) | PropertyPresetSO — 属性预设基类 |
 | [property-table.md](property-table.md) | PropertyTable — 运行时属性平表、Set/Modify/Load、Guard、事件、Tick |
-| [property-agent.md](property-agent.md) | PropertyAgent — MonoBehaviour 门面 |
+| [property-agent.md](property-agent.md) | ⛔ DEPRECATED — PropertyAgent 类不存在，PropertyTable 由消费者直接使用 |
+| [property-def-so-subclasses.md](property-def-so-subclasses.md) | PropertyDefSO 子类体系 — 9 个类型化 SO |
 | — | FloatState / FloatModifier 属于 Character/Stats — 见 [float-state.md](../L3-character/L4-stats/float-state.md)

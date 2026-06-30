@@ -1,7 +1,7 @@
-# PropertyComponent — 属性门面
+# ⛔ DEPRECATED — PropertyComponent / PropertyAgent
 
-> `L3_Properties/PropertyAgent.cs` · 技术文档 · 2026-06-10
-> **Last Verified**: 2026-06-27 | **Verification**: Class renamed PropertyComponent→PropertyAgent.
+> 原 `L3_Properties/PropertyAgent.cs` · 2026-06-10
+> **Last Verified**: 2026-06-30 | **Verification**: STALE — PropertyAgent class no longer exists. PropertyTable is used directly by consumers (CharacterCombat, VitalsOverlay, etc.). This doc kept for historical reference only.
 
 ## 层级定位
 
