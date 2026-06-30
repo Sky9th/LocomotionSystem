@@ -1,6 +1,6 @@
 # 长期开发计划
 
-> 更新: 2026-06-19
+> 更新: 2026-06-30
 > 来源: `.agent/design/` GDD + 子系统设计文档
 > 原则: 每步有可玩增量，每个子系统先跑通基本闭环 → 全生态联通 → 数值统一规划
 >      **设计文档不设具体数值，所有数值在系统骨架完成后从上至下统一规划**
@@ -12,7 +12,9 @@
 ```
 短期:  Ability Pipeline 运行时 (feature/ability-pipeline 分支)
   前置: Character 模块重构 ✅  Properties 系统 ✅  Animation 重构 ✅
+        PropertyTree Equipment 层重构 ✅  Container 系统 ✅
   目标: AbilityComponent + HitReactionComponent + AbilityDriver 落地
+  当前: StateMachine 框架 + GatingState + CostState 完工，Execution/Cooldown/Recovery 待做
 
 已完成:
   角色运动 ✅    音效骨架 ✅    数值系统（Properties 替代旧 Stats SO）✅
@@ -20,15 +22,15 @@
   Module 系统 + 树形生命周期 ✅  ctx 全链路 ✅
   俯视角切换 ✅   A* 寻路集成 ✅  SO Event Channel ✅
   Ability 数据资产 ✅ (Search/Activation/Effect/Noise/Passive 全量)
-  GameplayTag 199 标签 ✅  CharacterCombat 骨架 ✅
+  GameplayTag → rTag 199 标签 ✅  CharacterCombat 骨架 ✅
   Animation LinearMixer 统一 + In-line Transition ✅
+  PropertyTree Equipment 层 + 6 分支文档 ✅
+  Container AcceptTags 层级匹配 ✅
 
 设计完成:
   GDD ✅  伤病系统 ✅  噪音系统 ✅  负重/背包 ✅  死亡/存档 ✅
   Ability Pipeline 八维度管道 ✅ (2026-06-06)
   Properties 全量属性体系 ✅ (~185 PropertyDef / 30 Trees)
-  Equipment 装备系统 ✅ (GearDefSO + GearInstance)
-```
 
 ---
 
@@ -47,6 +49,7 @@
 | 6/16-17 | Module 系统 + 树形生命周期 + ctx 全链路 + Service 标准化 | 3 | 2天 |
 | 6/18-19 | Animation 重构（废弃 State 清理 + SO 重构 + FSM In-line Transition） | 3 | 2天 |
 | 6/19 | PolygonApocalypse 武器导入 + Properties 接管角色物理 | 2 | 1天 |
+| 6/30 | Ability Pipeline StateMachine 框架 + Gating/Cost State + Container AcceptTags 修复 | 1 | 1天 |
 
 **节奏特征**:
 - 跨模块架构重构（Module 系统、Animation 重构）≈ **2 天**，约 3 个 commit
@@ -104,6 +107,8 @@ RedDust
 > 施工计划: [short-term.md](short-term.md)
 
 **4.1 Ability Pipeline 运行时**：AbilityComponent（发送中枢 → ②③④⑤ 门控/释放/搜索/效果）+ HitReactionComponent（接收中枢 → ⑥⑦ 结算/反应）+ AbilityDriver（③ 阶段机 Windup→Fire→Recovery）+ ⑧ 事件广播。闭环：按键→AbilityComponent.TryActivate→门控检查→AbilityDriver 播放动画→搜索命中→HitReactionComponent 结算扣血→HitEvent 广播。
+
+**4.1a 日志格式规范化**（管道完成后立即执行）：详见 [log-format-standardization.md](log-format-standardization.md)。格式 `[L1][L2][L3][子模块] 消息`、等级开关 Error/Info/Debug（Debug 提交前必删）、模块开关 L1/L2/L3 粒度（L4/L5 不设）。逐个模块替换现有日志，清理遗留临时 Debug 日志。
 
 **4.2 敌人 AI 基础**：复用 AbilityComponent + HitReactionComponent（纯类，不绑 Player），行为 FSM，听觉感知（消费 SNoiseEvent）+ 视觉感知。
 

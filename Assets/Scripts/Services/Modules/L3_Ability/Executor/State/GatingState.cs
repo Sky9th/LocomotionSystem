@@ -3,21 +3,12 @@ using UnityEngine;
 namespace RedDust.Ability
 {
     /// <summary>
-    /// ② 门控 State。冷却 → 互斥 → 外部条件，三道闸门串联。
-    /// 通过 → _next（BeforeExe）；任一失败 → _rejected。
+    /// ② 门控检查。冷却 → 互斥 → 外部条件，三道闸门串联。
+    /// 通过 → CostState；失败 → RejectedState。
     /// </summary>
     public class GatingState : AbilityState
     {
-        public override EActiveAbilityState Id => EActiveAbilityState.CanEnter;
-
-        private readonly AbilityState _next;
-        private readonly AbilityState _rejected;
-
-        public GatingState(AbilityState next, AbilityState rejected)
-        {
-            _next = next;
-            _rejected = rejected;
-        }
+        public override EActiveAbilityState Id => EActiveAbilityState.Gating;
 
         public override IState<SActiveAbilityContext> OnTick(SActiveAbilityContext ctx, float dt)
         {
@@ -29,7 +20,7 @@ namespace RedDust.Ability
             if (cdKey != null && e.IsOnCooldown(cdKey))
             {
                 Debug.LogWarning($"[Gating] Rejected: {a.internalName} — on cooldown ({cdKey})");
-                return _rejected;
+                return new RejectedState();
             }
 
             // ── 2. 互斥 ──
@@ -38,7 +29,7 @@ namespace RedDust.Ability
                 if (a.abilityTag?.Parent != null && e.OwnedTags.HasTag(a.abilityTag.Parent.FullTag))
                 {
                     Debug.LogWarning($"[Gating] Rejected: {a.internalName} — mutual exclusion ({a.abilityTag.Parent.FullTag})");
-                    return _rejected;
+                    return new RejectedState();
                 }
 
                 if (a.extraExclusionTags != null)
@@ -48,7 +39,7 @@ namespace RedDust.Ability
                         if (tag != null && e.OwnedTags.HasTag(tag.FullTag))
                         {
                             Debug.LogWarning($"[Gating] Rejected: {a.internalName} — extra exclusion ({tag.FullTag})");
-                            return _rejected;
+                            return new RejectedState();
                         }
                     }
                 }
@@ -61,12 +52,12 @@ namespace RedDust.Ability
                 if (reason != null)
                 {
                     Debug.LogWarning($"[Gating] Rejected: {a.internalName} — condition: {reason}");
-                    return _rejected;
+                    return new RejectedState();
                 }
             }
 
-            Debug.Log($"[Gating] Passed: {a.internalName} → BeforeExe");
-            return _next;
+            Debug.Log($"[Gating] Passed: {a.internalName} → Cost");
+            return new CostState();
         }
 
         private static string ResolveCooldownKey(AbilitySO ability)

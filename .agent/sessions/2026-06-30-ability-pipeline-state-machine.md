@@ -28,12 +28,21 @@ Property 重构刚完成，MeleeWeaponSO 路径未同步（`Combat/ATK` → `Wea
 - `ContainerSlot.AcceptsTag` — 精确匹配改为层级匹配（`==` || `StartsWith(acceptTag + ".")`）
 - 9 个身体槽位 StructDef AcceptTags 统一加 `Entity.` 前缀
 
+### State 链自组装
+- `GatingState` / `CostState` — 去掉构造参数 `next`/`rejected`，State 内部 `new` 下一站
+- `ActiveAbilityPipeline` — 移除 State 组装代码，仅 `new GatingState()`
+- `EActiveAbilityState` 枚举值对齐 State 名：`CanEnter→Gating` / `BeforeExe→Cost` / `Execute→Execution` / `AfterExe→Cooldown` / `CanExit→Recovery`
+
 ### PlayerDirector 对接
 - `TryActivateSkill` — `TryActivate` → `Enqueue`，武器 Entity 从 `BodyContainer.GetItem("RightHand")` 传入
 
+### 计划
+- 新建 `plans/log-format-standardization.md` — 日志格式规范化计划（管道完成后执行）
+- 更新 `long-term.md` / `short-term.md` — S3 进度 + 施工历史 + 4.1a 日志任务
+
 ### 资产
 - 新建 `Assets/Data/Entities/Equipment/Backpack.asset`
-- 删除 `AbilitySearchUtility.cs`, `AbilityGating.cs`（逻辑迁入 State 类）
+- 删除 `AbilitySearchUtility.cs`, `AbilityGating.cs`, `AbilityCost.cs`（逻辑迁入 State 类）
 
 ## Decisions
 

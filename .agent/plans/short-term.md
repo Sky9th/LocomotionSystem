@@ -1,9 +1,9 @@
 # 短期开发计划
 
-> 更新: 2026-06-29
+> 更新: 2026-06-30
 > 分支: `feature/ability-pipeline`
 > 原则: 每步有可玩增量，先完成基础设施再铺玩法
-> 前置: Character 模块重构 ✅ · Properties 系统 ✅ · Animation 重构 ✅ · Ability 数据资产 ✅ · AbilityTreeSO ✅ · EntityService + Container ✅ · Tag 6 域 339 标签 ✅ · Equipment→技能闭环 ✅
+> 前置: Character 模块重构 ✅ · Properties 系统 ✅ · Animation 重构 ✅ · Ability 数据资产 ✅ · AbilityTreeSO ✅ · EntityService + Container ✅ · Tag 6 域 339 标签 ✅ · Equipment→技能闭环 ✅ · PropertyTree Equipment 层重构 ✅
 
 ---
 
@@ -75,19 +75,35 @@ S2.8 不在行将废弃的 AbilityExecutor 上修修补补——内含进 S3.1 A
 
 ---
 
-## S3 — Ability Pipeline 运行时 [~4天]
+## S3 — Ability Pipeline 运行时 [~4天] 🚧 施工中
 
 > 背景: S2 闭环用现有 AbilityExecutor 直接调用。S3 将管道正式化——AbilityComponent（发送中枢）+ HitReactionComponent（接收中枢）+ AbilityDriver（动画驱动）。
 > 设计文档: [ability-pipeline-design.md](../tech/L2-services/L2-modules/L3-ability/ability-pipeline-design.md)
 
 **架构**: AbilityComponent（发送中枢 → ②③④⑤）→ HitReactionComponent（接收中枢 → ⑥⑦⑧）
 
-| # | 任务 | 说明 | 耗时 |
+| # | 任务 | 说明 | 状态 |
 |---|------|------|------|
-| S3.1 | **`AbilityComponent`** + `IConditionModifier` + ⑧ 广播 | `TryActivate()` + 被动触发 + 冷却/OwnedTags + 门控回调 + 事件发布 | ~1.5天 |
-| S3.2 | **`HitReactionComponent`** | `Resolve(SResolvedHit[])` + `ReceiveRawDamage()`。三阶段：Avoidance → Mitigation → Absorption | ~1天 |
-| S3.3 | **`AbilityDriver`** | ③ 释放动画 — 继承 `BaseCharacterAnimationDriver`，消费 `AbilityActivationSO` Windup→Fire→Recovery | ~0.5天 |
-| S3.4 | **CharacterActor 集成 + 闭环测试** | AbilityForest 对接 AbilityComponent；Q 键全链路验证 | ~1天 |
+| S3.1 | **`AbilityComponent`** + `IConditionModifier` + ⑧ 广播 | `TryActivate()` + 被动触发 + 冷却/OwnedTags + 门控回调 + 事件发布 | 🚧 StateMachine 框架完成 |
+| S3.2 | **`HitReactionComponent`** | `Resolve(SResolvedHit[])` + `ReceiveRawDamage()`。三阶段：Avoidance → Mitigation → Absorption | ⏳ 未开始 |
+| S3.3 | **`AbilityDriver`** | ③ 释放动画 — 继承 `BaseCharacterAnimationDriver`，消费 `AbilityActivationSO` Windup→Fire→Recovery | ⏳ 未开始 |
+| S3.4 | **CharacterActor 集成 + 闭环测试** | AbilityForest 对接 AbilityComponent；Q 键全链路验证 | ⏳ 未开始 |
+
+### S3.1 已完成
+
+- `IState<TContext>` + `StateMachine<TContext>` 泛型基础设施（零领域依赖，[MARK] 可提至 Shared/）
+- `ActiveAbilityPipeline` — 持有 `StateMachine<SActiveAbilityContext>`，`Start()` / `Tick()` / `Interrupt()`
+- `AbilityExecutor` 重构 — 旧代码归档 `#region OLD`，新增 `Queue<SQueuedSkill>` + `Enqueue()` 队列接口
+- `GatingState` ② 门控落地 — 冷却/互斥/外部条件三闸门
+- `CostState` ③ 资源消耗 — 双阶段预检+扣除
+- `PlayerDirector` 对接 — `TryActivate` → `Enqueue`，武器 Entity 传入管道
+
+### S3.1 待完成
+
+- `ExecutionState` ④⑤ — 搜索命中 + 效果载荷（依赖旧 `AbilitySearch`/`AbilityEffects` 迁入）
+- `CooldownState` — 冷却施加
+- `RecoveryState` — 等待后摇结束
+- `AbilityExecutor` 旧 `#region` 清理
 
 **可验证增量**: 按 Q → AbilityComponent.TryActivate → 门控 → AbilityDriver 播放横斩动画 → 搜索命中 → HitReactionComponent 结算扣血 → 事件广播。
 

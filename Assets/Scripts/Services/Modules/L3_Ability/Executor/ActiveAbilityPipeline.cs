@@ -13,17 +13,7 @@ namespace RedDust.Ability
         private readonly StateMachine<SActiveAbilityContext> _fsm = new();
         private SActiveAbilityContext _ctx;
 
-        // ── State 链 ──
-        private readonly AbilityState _rejected = new RejectedState();
-        private readonly AbilityState _completed = new CompletedState();
-
-        // TODO: 逐一定义 BeforeExe / Execute / AfterExe / CanExit，替换 _completed 占位
-        private readonly AbilityState _gating;
-
-        public ActiveAbilityPipeline()
-        {
-            _gating = new GatingState(_completed, _rejected); // TODO: next → BeforeExeState
-        }
+        // State 链由每个 State 内部决定下一站，Pipeline 不组装。
 
         /// <summary>管道空闲——未启动或已到达终态（Completed/Rejected）。</summary>
         public bool IsIdle => _fsm.Current == null
@@ -55,7 +45,7 @@ namespace RedDust.Ability
             Debug.Log($"[ActivePipeline] Start: {ability.internalName} | origin={origin} dir={direction}" +
                       (weaponEntity != null ? $" | weapon={weaponEntity.Preset.name}" : ""));
 
-            return _fsm.Start(_gating, _ctx);
+            return _fsm.Start(new GatingState(), _ctx);
         }
 
         /// <summary>
