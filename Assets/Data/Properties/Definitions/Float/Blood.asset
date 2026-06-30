@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd75724e680ef884184a96c37c07aa2c, type: 3}
+  m_Name: Blood
+  m_EditorClassIdentifier: 
+  Id: Blood
+  Description: "\u5F53\u524D\u8840\u91CF\u3002\u53D7\u4F24(\u5272\u4F24/\u54AC\u4F24)\u65F6\u6D88\u8017\uFF0C0=\u5931\u8840\u6B7B\u4EA1\u3002\u6709\u81EA\u7136\u51DD\u8840\u6062\u590D\u3002\u6D88\u8017\u578B(Consumable)\u3002"
+  Type: 0
+  IsDeprecated: 0
+  Min: 0
+  Max: 100
+  DefaultValue: 100

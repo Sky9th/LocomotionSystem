@@ -18,189 +18,150 @@ namespace RedDust.Properties.Editor
         private const string TreesRoot = "Assets/Data/Properties/Trees";
 
         [Serializable]
-        public class PropertyDefEntry
+        public class PropertyNodeEntry { public string nodeId, parentId, defId; }
+
+        [Serializable]
+        public class PropertyTreeEntry { public string treeName, inheritsFrom; public List<PropertyNodeEntry> nodes = new(); }
+
+        [Serializable]
+        public class ImportDefs
         {
-            public string id;
-            public string type;
-            public bool isDeprecated;
+            public List<FloatPropertyDefSO.JsonData> _float;
+            public List<IntPropertyDefSO.JsonData> _int;
+            public List<BoolPropertyDefSO.JsonData> _bool;
+            public List<StringPropertyDefSO.JsonData> _string;
+            public List<RTagPropertyDefSO.JsonData> _rTag;
+            public List<RTagListPropertyDefSO.JsonData> _rTagList;
+            public List<AssetRefPropertyDefSO.JsonData> _assetRef;
+            public List<AssetRefListPropertyDefSO.JsonData> _assetRefList;
+            public List<StructPropertyDefSO.JsonData> _struct;
+        }
+
+        [Serializable]
+        public class ImportRoot
+        {
+            public string version;
             public string description;
-
-            public float min;
-            public float max = 100f;
-            public float defaultFloat = 100f;
-
-            public int minInt;
-            public int maxInt = 100;
-            public int defaultInt;
-
-            public bool defaultBool;
-            public string defaultString;
-            public string defaultAssetGUID;
-            public string assetTypeConstraint;
-            public string structTypeName;
-            public string defaultStructJson;
+            public ImportDefs definitions;
+            public List<PropertyTreeEntry> trees;
         }
 
-        [Serializable]
-        public class PropertyNodeEntry
-        {
-            public string nodeId;
-            public string parentId;
-            public string defId;
-        }
-
-        [Serializable]
-        public class PropertyTreeEntry
-        {
-            public string treeName;
-            public string inheritsFrom;
-            public List<PropertyNodeEntry> nodes = new();
-        }
-
-        [Serializable]
-        public class PropertyImportFile
-        {
-            public string version = "1.0";
-            public string description;
-            public List<PropertyDefEntry> definitions = new();
-            public List<PropertyTreeEntry> trees = new();
-        }
+        // ============================================================
+        // Import
+        // ============================================================
 
         public static (int created, int skipped, List<string> errors) ImportFromJson(string jsonText)
         {
             var errors = new List<string>();
             int created = 0, skipped = 0;
 
-            PropertyImportFile importFile;
-            try { importFile = JsonUtility.FromJson<PropertyImportFile>(jsonText); }
+            ImportRoot root;
+            try { root = JsonUtility.FromJson<ImportRoot>(jsonText); }
             catch (Exception e) { errors.Add($"JSON parse failed: {e.Message}"); return (0, 0, errors); }
+            if (root?.definitions == null) { errors.Add("JSON empty or missing definitions"); return (0, 0, errors); }
 
-            if (importFile == null) { errors.Add("JSON is empty"); return (0, 0, errors); }
-
-            // -- Phase 1: create definitions --
             var defMap = new Dictionary<string, PropertyDefSO>();
-            foreach (var entry in importFile.definitions)
+            void AddDef(PropertyDefSO def, PropertyType type)
             {
-                if (string.IsNullOrWhiteSpace(entry.id)) { errors.Add("Skip: def id empty"); skipped++; continue; }
-                if (!Enum.TryParse<PropertyType>(entry.type, out var propType)) { errors.Add($"Unknown type '{entry.type}' for '{entry.id}'"); skipped++; continue; }
-
-                var assetPath = $"{DefinitionsRoot}/{SanitizeFileName(entry.id)}.asset";
-                var existing = AssetDatabase.LoadAssetAtPath<PropertyDefSO>(assetPath);
-                if (existing != null) { skipped++; defMap[entry.id] = existing; continue; }
-
-                EnsureDirectory(DefinitionsRoot);
-                var def = PropertyDefSO.Create(propType);
-                def.Id = entry.id;
-                def.Description = entry.description ?? string.Empty;
-                def.IsDeprecated = entry.isDeprecated;
-                PopulateDef(def, entry);
-
+                if (string.IsNullOrWhiteSpace(def.Id)) { errors.Add("Skip: empty id"); skipped++; return; }
+                var dir = $"{DefinitionsRoot}/{type}";
+                EnsureDirectory(dir);
+                var assetPath = $"{dir}/{SanitizeFileName(def.Id)}.asset";
+                if (AssetDatabase.LoadAssetAtPath<PropertyDefSO>(assetPath) != null) { skipped++; defMap[def.Id] = def; return; }
                 AssetDatabase.CreateAsset(def, assetPath);
-                defMap[entry.id] = def;
-                created++;
+                defMap[def.Id] = def; created++;
             }
+
+            if (root.definitions._float != null) foreach (var d in root.definitions._float) { var def = (FloatPropertyDefSO)PropertyDefSO.Create(PropertyType.Float); def.Id = d.id; def.Description = d.description; def.IsDeprecated = d.isDeprecated; def.Min = d.min; def.Max = d.max; def.DefaultValue = d.defaultValue; AddDef(def, PropertyType.Float); }
+            if (root.definitions._int != null) foreach (var d in root.definitions._int) { var def = (IntPropertyDefSO)PropertyDefSO.Create(PropertyType.Int); def.Id = d.id; def.Description = d.description; def.IsDeprecated = d.isDeprecated; def.Min = d.min; def.Max = d.max; def.DefaultValue = d.defaultValue; AddDef(def, PropertyType.Int); }
+            if (root.definitions._bool != null) foreach (var d in root.definitions._bool) { var def = (BoolPropertyDefSO)PropertyDefSO.Create(PropertyType.Bool); def.Id = d.id; def.Description = d.description; def.IsDeprecated = d.isDeprecated; def.DefaultValue = d.defaultValue; AddDef(def, PropertyType.Bool); }
+            if (root.definitions._string != null) foreach (var d in root.definitions._string) { var def = (StringPropertyDefSO)PropertyDefSO.Create(PropertyType.String); def.Id = d.id; def.Description = d.description; def.IsDeprecated = d.isDeprecated; def.DefaultValue = d.defaultValue; AddDef(def, PropertyType.String); }
+            if (root.definitions._rTag != null) foreach (var d in root.definitions._rTag) { var def = (RTagPropertyDefSO)PropertyDefSO.Create(PropertyType.rTag); def.Id = d.id; def.Description = d.description; def.IsDeprecated = d.isDeprecated; def.DefaultValue = d.defaultValue; AddDef(def, PropertyType.rTag); }
+            if (root.definitions._rTagList != null) foreach (var d in root.definitions._rTagList) { var def = (RTagListPropertyDefSO)PropertyDefSO.Create(PropertyType.rTagList); def.Id = d.id; def.Description = d.description; def.IsDeprecated = d.isDeprecated; AddDef(def, PropertyType.rTagList); }
+            if (root.definitions._assetRef != null) foreach (var d in root.definitions._assetRef) { var def = (AssetRefPropertyDefSO)PropertyDefSO.Create(PropertyType.AssetRef); def.Id = d.id; def.Description = d.description; def.IsDeprecated = d.isDeprecated; def.DefaultAssetGUID = d.defaultAssetGUID; def.AssetTypeConstraint = d.assetTypeConstraint; AddDef(def, PropertyType.AssetRef); }
+            if (root.definitions._assetRefList != null) foreach (var d in root.definitions._assetRefList) { var def = (AssetRefListPropertyDefSO)PropertyDefSO.Create(PropertyType.AssetRefList); def.Id = d.id; def.Description = d.description; def.IsDeprecated = d.isDeprecated; def.AssetTypeConstraint = d.assetTypeConstraint; AddDef(def, PropertyType.AssetRefList); }
+            if (root.definitions._struct != null) foreach (var d in root.definitions._struct) { var def = (StructPropertyDefSO)PropertyDefSO.Create(PropertyType.Struct); def.Id = d.id; def.Description = d.description; def.IsDeprecated = d.isDeprecated; def.StructTypeName = d.structTypeName; def.DefaultJson = d.defaultJson ?? "[]"; AddDef(def, PropertyType.Struct); }
 
             AssetDatabase.SaveAssets();
 
-            // -- Phase 2: create trees --
+            // -- Trees --
             var treeMap = new Dictionary<string, PropertyTreeSO>();
-            foreach (var entry in importFile.trees)
-            {
-                if (string.IsNullOrWhiteSpace(entry.treeName)) { errors.Add("Skip: tree name empty"); skipped++; continue; }
-
-                var assetPath = $"{TreesRoot}/{SanitizeFileName(entry.treeName)}.asset";
-                var existing = AssetDatabase.LoadAssetAtPath<PropertyTreeSO>(assetPath);
-                if (existing != null) { skipped++; treeMap[entry.treeName] = existing; continue; }
-
-                EnsureDirectory(TreesRoot);
-                var container = new PropertyTreeContainer
+            if (root.trees != null)
+                foreach (var entry in root.trees)
                 {
-                    Nodes = entry.nodes.Select(n => new PropertyNode
-                    {
-                        NodeId = n.nodeId,
-                        ParentId = n.parentId,
-                        DefId = n.defId
-                    }).ToList()
-                };
+                    if (string.IsNullOrWhiteSpace(entry.treeName)) { errors.Add("Skip: tree name empty"); skipped++; continue; }
+                    var assetPath = $"{TreesRoot}/{SanitizeFileName(entry.treeName)}.asset";
+                    if (AssetDatabase.LoadAssetAtPath<PropertyTreeSO>(assetPath) != null) { skipped++; continue; }
 
-                var tree = ScriptableObject.CreateInstance<PropertyTreeSO>();
-                tree.treeJson = JsonUtility.ToJson(container, true);
-                AssetDatabase.CreateAsset(tree, assetPath);
-                treeMap[entry.treeName] = tree;
-                created++;
-            }
-
-            AssetDatabase.SaveAssets();
-
-            // -- Phase 3: link InheritsFrom --
-            foreach (var entry in importFile.trees)
-            {
-                if (string.IsNullOrEmpty(entry.inheritsFrom)) continue;
-                if (!treeMap.TryGetValue(entry.treeName, out var tree)) continue;
-                if (!treeMap.TryGetValue(entry.inheritsFrom, out var parent))
-                {
-                    // fallback: search on disk
-                    var parentPath = $"{TreesRoot}/{SanitizeFileName(entry.inheritsFrom)}.asset";
-                    parent = AssetDatabase.LoadAssetAtPath<PropertyTreeSO>(parentPath);
+                    EnsureDirectory(TreesRoot);
+                    var tree = ScriptableObject.CreateInstance<PropertyTreeSO>();
+                    tree.treeJson = JsonUtility.ToJson(new PropertyTreeContainer { Nodes = entry.nodes?.ConvertAll(n => new PropertyNode { NodeId = n.nodeId, ParentId = n.parentId, DefId = n.defId }) ?? new() }, true);
+                    AssetDatabase.CreateAsset(tree, assetPath);
+                    treeMap[entry.treeName] = tree;
+                    created++;
                 }
-                if (parent == null) { errors.Add($"Parent tree '{entry.inheritsFrom}' not found for '{entry.treeName}'"); continue; }
-
-                tree.InheritsFrom = parent;
-                EditorUtility.SetDirty(tree);
-            }
 
             AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
 
+            if (root.trees != null)
+                foreach (var entry in root.trees)
+                {
+                    if (string.IsNullOrEmpty(entry.inheritsFrom) || !treeMap.TryGetValue(entry.treeName, out var tree)) continue;
+                    if (!treeMap.TryGetValue(entry.inheritsFrom, out var parent))
+                        parent = AssetDatabase.LoadAssetAtPath<PropertyTreeSO>($"{TreesRoot}/{SanitizeFileName(entry.inheritsFrom)}.asset");
+                    if (parent == null) { errors.Add($"Parent tree '{entry.inheritsFrom}' not found for '{entry.treeName}'"); continue; }
+                    tree.InheritsFrom = parent; EditorUtility.SetDirty(tree);
+                }
+
+            AssetDatabase.SaveAssets(); AssetDatabase.Refresh();
             return (created, skipped, errors);
         }
 
+        // ============================================================
+        // Export
+        // ============================================================
+
         public static string ExportToJson()
         {
-            var export = new PropertyImportFile
-            {
-                version = "1.0",
-                description = "Exported from Unity Editor"
-            };
-
             var defGuids = AssetDatabase.FindAssets("t:PropertyDefSO", new[] { DefinitionsRoot });
+            var root = new ImportRoot { version = "2.0", description = "Exported from Unity Editor", definitions = new ImportDefs() };
+
             foreach (var guid in defGuids)
             {
-                var path = AssetDatabase.GUIDToAssetPath(guid);
-                var def = AssetDatabase.LoadAssetAtPath<PropertyDefSO>(path);
+                var def = AssetDatabase.LoadAssetAtPath<PropertyDefSO>(AssetDatabase.GUIDToAssetPath(guid));
                 if (def == null) continue;
-                var entry = new PropertyDefEntry
-                {
-                    id = def.Id, type = def.Type.ToString(), isDeprecated = def.IsDeprecated,
-                    description = def.Description
-                };
-                ReadDef(def, entry);
-                export.definitions.Add(entry);
+                if (def is FloatPropertyDefSO fd) Add(ref root.definitions._float, new FloatPropertyDefSO.JsonData { id=fd.Id,description=fd.Description,isDeprecated=fd.IsDeprecated,min=fd.Min,max=fd.Max,defaultValue=fd.DefaultValue });
+                else if (def is IntPropertyDefSO id) Add(ref root.definitions._int, new IntPropertyDefSO.JsonData { id=id.Id,description=id.Description,isDeprecated=id.IsDeprecated,min=id.Min,max=id.Max,defaultValue=id.DefaultValue });
+                else if (def is BoolPropertyDefSO bd) Add(ref root.definitions._bool, new BoolPropertyDefSO.JsonData { id=bd.Id,description=bd.Description,isDeprecated=bd.IsDeprecated,defaultValue=bd.DefaultValue });
+                else if (def is StringPropertyDefSO sd) Add(ref root.definitions._string, new StringPropertyDefSO.JsonData { id=sd.Id,description=sd.Description,isDeprecated=sd.IsDeprecated,defaultValue=sd.DefaultValue });
+                else if (def is RTagPropertyDefSO rd) Add(ref root.definitions._rTag, new RTagPropertyDefSO.JsonData { id=rd.Id,description=rd.Description,isDeprecated=rd.IsDeprecated,defaultValue=rd.DefaultValue });
+                else if (def is RTagListPropertyDefSO td) Add(ref root.definitions._rTagList, new RTagListPropertyDefSO.JsonData { id=td.Id,description=td.Description,isDeprecated=td.IsDeprecated });
+                else if (def is AssetRefPropertyDefSO ad) Add(ref root.definitions._assetRef, new AssetRefPropertyDefSO.JsonData { id=ad.Id,description=ad.Description,isDeprecated=ad.IsDeprecated,defaultAssetGUID=ad.DefaultAssetGUID,assetTypeConstraint=ad.AssetTypeConstraint });
+                else if (def is AssetRefListPropertyDefSO ald) Add(ref root.definitions._assetRefList, new AssetRefListPropertyDefSO.JsonData { id=ald.Id,description=ald.Description,isDeprecated=ald.IsDeprecated,assetTypeConstraint=ald.AssetTypeConstraint });
+                else if (def is StructPropertyDefSO std) Add(ref root.definitions._struct, new StructPropertyDefSO.JsonData { id=std.Id,description=std.Description,isDeprecated=std.IsDeprecated,structTypeName=std.StructTypeName,defaultJson=std.DefaultJson });
             }
 
-            var treeGuids = AssetDatabase.FindAssets("t:PropertyTreeSO", new[] { TreesRoot });
-            foreach (var guid in treeGuids)
-            {
-                var path = AssetDatabase.GUIDToAssetPath(guid);
-                var tree = AssetDatabase.LoadAssetAtPath<PropertyTreeSO>(path);
-                if (tree == null) continue;
+            root.trees = BuildTreeEntries();
+            return JsonUtility.ToJson(root, true);
+        }
+        static void Add<T>(ref List<T> list, T item) { (list ??= new()).Add(item); }
 
-                var entry = new PropertyTreeEntry
-                {
-                    treeName = tree.name,
-                    inheritsFrom = tree.InheritsFrom?.name
-                };
+        static List<PropertyTreeEntry> BuildTreeEntries()
+        {
+            var trees = new List<PropertyTreeEntry>();
+            foreach (var guid in AssetDatabase.FindAssets("t:PropertyTreeSO", new[] { TreesRoot }))
+            {
+                var tree = AssetDatabase.LoadAssetAtPath<PropertyTreeSO>(AssetDatabase.GUIDToAssetPath(guid));
+                if (tree == null) continue;
+                var entry = new PropertyTreeEntry { treeName = tree.name, inheritsFrom = tree.InheritsFrom?.name };
                 if (!string.IsNullOrEmpty(tree.treeJson))
                 {
-                    var container = JsonUtility.FromJson<PropertyTreeContainer>(tree.treeJson);
-                    if (container?.Nodes != null)
-                        entry.nodes = container.Nodes.Select(n => new PropertyNodeEntry
-                        { nodeId = n.NodeId, parentId = n.ParentId, defId = n.DefId }).ToList();
+                    var c = JsonUtility.FromJson<PropertyTreeContainer>(tree.treeJson);
+                    if (c?.Nodes != null) entry.nodes = c.Nodes.Select(n => new PropertyNodeEntry { nodeId = n.NodeId, parentId = n.ParentId, defId = n.DefId }).ToList();
                 }
-                export.trees.Add(entry);
+                trees.Add(entry);
             }
-
-            return JsonUtility.ToJson(export, true);
+            return trees;
         }
 
         public static void ExportToFile(string jsonPath)
@@ -216,30 +177,6 @@ namespace RedDust.Properties.Editor
         {
             if (!File.Exists(jsonPath)) return (0, 0, new List<string> { $"File not found: {jsonPath}" });
             return ImportFromJson(File.ReadAllText(jsonPath));
-        }
-
-        private static void PopulateDef(PropertyDefSO def, PropertyDefEntry entry)
-        {
-            if (def is FloatPropertyDefSO fd) { fd.Min = entry.min; fd.Max = entry.max; fd.DefaultValue = entry.defaultFloat; }
-            else if (def is IntPropertyDefSO id) { id.Min = entry.minInt; id.Max = entry.maxInt; id.DefaultValue = entry.defaultInt; }
-            else if (def is BoolPropertyDefSO bd) { bd.DefaultValue = entry.defaultBool; }
-            else if (def is StringPropertyDefSO sd) { sd.DefaultValue = entry.defaultString; }
-            else if (def is RTagPropertyDefSO rd) { rd.DefaultValue = entry.defaultString; }
-            else if (def is AssetRefPropertyDefSO ad) { ad.DefaultAssetGUID = entry.defaultAssetGUID; ad.AssetTypeConstraint = entry.assetTypeConstraint; }
-            else if (def is AssetRefListPropertyDefSO ald) { ald.AssetTypeConstraint = entry.assetTypeConstraint; }
-            else if (def is StructPropertyDefSO std) { std.StructTypeName = entry.structTypeName; std.DefaultJson = entry.defaultStructJson ?? "[]"; }
-        }
-
-        private static void ReadDef(PropertyDefSO def, PropertyDefEntry entry)
-        {
-            if (def is FloatPropertyDefSO fd) { entry.min = fd.Min; entry.max = fd.Max; entry.defaultFloat = fd.DefaultValue; }
-            else if (def is IntPropertyDefSO id) { entry.minInt = id.Min; entry.maxInt = id.Max; entry.defaultInt = id.DefaultValue; }
-            else if (def is BoolPropertyDefSO bd) { entry.defaultBool = bd.DefaultValue; }
-            else if (def is StringPropertyDefSO sd) { entry.defaultString = sd.DefaultValue; }
-            else if (def is RTagPropertyDefSO rd) { entry.defaultString = rd.DefaultValue; }
-            else if (def is AssetRefPropertyDefSO ad) { entry.defaultAssetGUID = ad.DefaultAssetGUID; entry.assetTypeConstraint = ad.AssetTypeConstraint; }
-            else if (def is AssetRefListPropertyDefSO ald) { entry.assetTypeConstraint = ald.AssetTypeConstraint; }
-            else if (def is StructPropertyDefSO std) { entry.structTypeName = std.StructTypeName; entry.defaultStructJson = std.DefaultJson; }
         }
 
         private static void EnsureDirectory(string path)
@@ -300,27 +237,39 @@ namespace RedDust.Properties.Editor
         private static string BuildPreview(string filePath)
         {
             if (!File.Exists(filePath)) return null;
-            PropertyImporter.PropertyImportFile preview;
-            try { preview = JsonUtility.FromJson<PropertyImporter.PropertyImportFile>(File.ReadAllText(filePath)); }
+            try
+            {
+                var root = JsonUtility.FromJson<PropertyImporter.ImportRoot>(File.ReadAllText(filePath));
+                if (root?.definitions == null) return null;
+
+                int defCount = 0, existCount = 0;
+                void Count<T>(List<T> list, PropertyType type, Func<T, string> getId)
+                {
+                    if (list == null) return;
+                    foreach (var item in list)
+                    {
+                        var defId = getId(item);
+                        if (string.IsNullOrEmpty(defId)) continue;
+                        defCount++;
+                        if (AssetDatabase.LoadAssetAtPath<PropertyDefSO>($"Assets/Data/Properties/Definitions/{type}/{defId}.asset") != null) existCount++;
+                    }
+                }
+                Count(root.definitions._float,        PropertyType.Float,        d => d.id);
+                Count(root.definitions._int,          PropertyType.Int,          d => d.id);
+                Count(root.definitions._bool,         PropertyType.Bool,         d => d.id);
+                Count(root.definitions._string,       PropertyType.String,       d => d.id);
+                Count(root.definitions._rTag,         PropertyType.rTag,         d => d.id);
+                Count(root.definitions._rTagList,     PropertyType.rTagList,     d => d.id);
+                Count(root.definitions._assetRef,     PropertyType.AssetRef,     d => d.id);
+                Count(root.definitions._assetRefList, PropertyType.AssetRefList, d => d.id);
+                Count(root.definitions._struct,       PropertyType.Struct,       d => d.id);
+
+                int treeCount = root.trees?.Count ?? 0;
+                return $"<b>{defCount} defs + {treeCount} trees</b>\n" +
+                       $"v{root.version ?? "?"} · {root.description ?? "-"}\n" +
+                       $"<color=#66CC66>New defs {defCount - existCount}</color>  " +
+                       $"<color=#888888>Exist {existCount}</color>";
+            }
             catch { return null; }
-            if (preview == null) return null;
-
-            int newDefs = 0, existDefs = 0, newTrees = 0, existTrees = 0;
-            foreach (var d in preview.definitions)
-            {
-                var p = $"Assets/Data/Properties/Definitions/{d.id}.asset";
-                if (AssetDatabase.LoadAssetAtPath<PropertyDefSO>(p) != null) existDefs++; else newDefs++;
-            }
-            foreach (var t in preview.trees)
-            {
-                var p = $"Assets/Data/Properties/Trees/{t.treeName}.asset";
-                if (AssetDatabase.LoadAssetAtPath<PropertyTreeSO>(p) != null) existTrees++; else newTrees++;
-            }
-
-            return $"<b>{preview.definitions.Count} defs + {preview.trees.Count} trees</b>\n" +
-                   $"v{preview.version} · {preview.description ?? "-"}\n" +
-                   $"<color=#66CC66>New defs {newDefs}</color>  <color=#888888>Exist {existDefs}</color>  " +
-                   $"<color=#66CC66>New trees {newTrees}</color>  <color=#888888>Exist {existTrees}</color>";
-        }
-    }
+        }    }
 }

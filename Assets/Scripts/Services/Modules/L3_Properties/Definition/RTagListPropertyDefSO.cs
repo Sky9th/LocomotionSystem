@@ -23,5 +23,7 @@ namespace RedDust.Properties
         }
 
         [Serializable] private class TagListWrap { public string[] Items; }
+
+        [Serializable] public struct JsonData { public string id, description; public bool isDeprecated; }
     }
 }

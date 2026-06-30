@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e47e6b69f1db8742ab169ebce8acc1e, type: 3}
+  m_Name: MeleeWeapon
+  m_EditorClassIdentifier: 
+  InheritsFrom: {fileID: 11400000, guid: ed72acee741a741498508d06f3d6ad8f, type: 2}
+  treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"Combat\",\n           
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
+    \"NodeId\": \"ATK\",\n            \"ParentId\": \"Combat\",\n            \"DefId\":
+    \"ATK\"\n        },\n        {\n            \"NodeId\": \"AttackSpeed\",\n           
+    \"ParentId\": \"Combat\",\n            \"DefId\": \"AttackSpeed\"\n        },\n       
+    {\n            \"NodeId\": \"CritMulti\",\n            \"ParentId\": \"Combat\",\n           
+    \"DefId\": \"CritMulti\"\n        },\n        {\n            \"NodeId\": \"StunChance\",\n           
+    \"ParentId\": \"Combat\",\n            \"DefId\": \"StunChance\"\n        },\n       
+    {\n            \"NodeId\": \"Knockback\",\n            \"ParentId\": \"Combat\",\n           
+    \"DefId\": \"Knockback\"\n        },\n        {\n            \"NodeId\": \"Reach\",\n           
+    \"ParentId\": \"Combat\",\n            \"DefId\": \"Reach\"\n        },\n       
+    {\n            \"NodeId\": \"StaminaCost\",\n            \"ParentId\": \"Combat\",\n           
+    \"DefId\": \"StaminaCost\"\n        },\n        {\n            \"NodeId\": \"Tags\",\n           
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
+    \"NodeId\": \"DamageType\",\n            \"ParentId\": \"Tags\",\n           
+    \"DefId\": \"DamageType\"\n        },\n        {\n            \"NodeId\": \"IsTwoHanded\",\n           
+    \"ParentId\": \"Tags\",\n            \"DefId\": \"IsTwoHanded\"\n        },\n       
+    {\n            \"NodeId\": \"Presentation\",\n            \"ParentId\": \"\",\n           
+    \"DefId\": \"\"\n        },\n        {\n            \"NodeId\": \"VisualPrefab\",\n           
+    \"ParentId\": \"Presentation\",\n            \"DefId\": \"VisualPrefab\"\n       
+    },\n        {\n            \"NodeId\": \"Behavior\",\n            \"ParentId\":
+    \"\",\n            \"DefId\": \"\"\n        },\n        {\n            \"NodeId\":
+    \"AnimationProfile\",\n            \"ParentId\": \"Behavior\",\n            \"DefId\":
+    \"AnimationProfile\"\n        },\n        {\n            \"NodeId\": \"AudioProfile\",\n           
+    \"ParentId\": \"Behavior\",\n            \"DefId\": \"AudioProfile\"\n       
+    }\n    ]\n}"

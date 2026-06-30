@@ -17,5 +17,7 @@ namespace RedDust.Properties
         }
 
         private bool SafeBool(object v) { try { return Convert.ToBoolean(v); } catch { return DefaultValue; } }
+
+        [Serializable] public struct JsonData { public string id, description; public bool isDeprecated, defaultValue; }
     }
 }

@@ -39,5 +39,7 @@ namespace RedDust.Properties
             }
             return true;
         }
+
+        [Serializable] public struct JsonData { public string id, description, structTypeName, defaultJson; public bool isDeprecated; }
     }
 }

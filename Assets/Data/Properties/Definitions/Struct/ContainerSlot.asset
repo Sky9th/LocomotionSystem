@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9a62865f3ddb974ca7b797922db5ab1, type: 3}
+  m_Name: ContainerSlot
+  m_EditorClassIdentifier: 
+  Id: ContainerSlot
+  Description: "\u901A\u7528\u5BB9\u5668\u69FD\u4F4D\u3002\u80CC\u5305\u7B49\u5BB9\u5668\u7684\u5185\u90E8\u683C\u5B50\u3002AcceptTags
+    \u4E3A\u7A7A=\u63A5\u53D7\u6240\u6709\u7269\u54C1\u3002TODO: nodeId \u4E0E defId
+    \u76F8\u540C\u65F6\u53EF\u7B80\u5316\u2014\u2014\u6811\u8282\u70B9\u53EA\u5217
+    defId\uFF0C\u8FD0\u884C\u65F6\u4EE5 defId \u4E3A slot key\uFF0C\u7701\u53BB nodeId
+    \u5197\u4F59\u3002"
+  Type: 8
+  IsDeprecated: 0
+  StructTypeName: RedDust.Container.SlotDef
+  DefaultJson: '{"AcceptTags":[],"Capacity":20}'

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace RedDust.Properties
@@ -13,5 +14,7 @@ namespace RedDust.Properties
         {
             return isDefault ? DefaultValue : (rawValue as string) ?? DefaultValue;
         }
+
+        [Serializable] public struct JsonData { public string id, description, defaultValue; public bool isDeprecated; }
     }
 }

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e47e6b69f1db8742ab169ebce8acc1e, type: 3}
+  m_Name: ToolBase
+  m_EditorClassIdentifier: 
+  InheritsFrom: {fileID: 11400000, guid: 99b9d61c396ebf9419ddd86c3740fbf8, type: 2}
+  treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"Base\",\n           
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
+    \"NodeId\": \"Durability\",\n            \"ParentId\": \"Base\",\n           
+    \"DefId\": \"Durability\"\n        },\n        {\n            \"NodeId\": \"MaxDurability\",\n           
+    \"ParentId\": \"Base\",\n            \"DefId\": \"MaxDurability\"\n        },\n       
+    {\n            \"NodeId\": \"Fuel\",\n            \"ParentId\": \"Base\",\n           
+    \"DefId\": \"Fuel\"\n        },\n        {\n            \"NodeId\": \"Charge\",\n           
+    \"ParentId\": \"Base\",\n            \"DefId\": \"Charge\"\n        },\n       
+    {\n            \"NodeId\": \"Work\",\n            \"ParentId\": \"\",\n           
+    \"DefId\": \"\"\n        },\n        {\n            \"NodeId\": \"Efficiency\",\n           
+    \"ParentId\": \"Work\",\n            \"DefId\": \"Efficiency\"\n        },\n       
+    {\n            \"NodeId\": \"MaterialTier\",\n            \"ParentId\": \"Work\",\n           
+    \"DefId\": \"MaterialTier\"\n        },\n        {\n            \"NodeId\": \"StaminaCostPerUse\",\n           
+    \"ParentId\": \"Work\",\n            \"DefId\": \"StaminaCostPerUse\"\n       
+    },\n        {\n            \"NodeId\": \"Tags\",\n            \"ParentId\": \"\",\n           
+    \"DefId\": \"\"\n        },\n        {\n            \"NodeId\": \"ToolType\",\n           
+    \"ParentId\": \"Tags\",\n            \"DefId\": \"ToolType\"\n        }\n   
+    ]\n}"

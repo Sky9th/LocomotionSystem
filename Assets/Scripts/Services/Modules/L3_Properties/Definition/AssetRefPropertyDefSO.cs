@@ -40,5 +40,7 @@ namespace RedDust.Properties
             return null;
 #endif
         }
+
+        [Serializable] public struct JsonData { public string id, description, defaultAssetGUID, assetTypeConstraint; public bool isDeprecated; }
     }
 }

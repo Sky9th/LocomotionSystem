@@ -31,6 +31,10 @@ namespace RedDust.Properties
         /// </summary>
         public virtual bool TypeMatches<T>() => true;
 
+        // ============================================================
+        // 工厂
+        // ============================================================
+
         /// <summary>工厂：按 PropertyType 创建对应的子类实例。</summary>
         public static PropertyDefSO Create(PropertyType type) => type switch
         {

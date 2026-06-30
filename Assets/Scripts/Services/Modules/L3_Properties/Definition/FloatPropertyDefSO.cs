@@ -30,5 +30,8 @@ namespace RedDust.Properties
         }
 
         private float SafeFloat(object v) { try { return Convert.ToSingle(v); } catch { return DefaultValue; } }
+
+        // ══ JsonData — 仅 JSON Import/Export 用，与 SO 字段重复是设计取舍（JsonUtility 无法序列化 SO） ══
+        [Serializable] public struct JsonData { public string id, description; public bool isDeprecated; public float min, max, defaultValue; }
     }
 }

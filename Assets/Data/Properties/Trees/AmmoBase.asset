@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e47e6b69f1db8742ab169ebce8acc1e, type: 3}
+  m_Name: AmmoBase
+  m_EditorClassIdentifier: 
+  InheritsFrom: {fileID: 11400000, guid: 99b9d61c396ebf9419ddd86c3740fbf8, type: 2}
+  treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"Base\",\n           
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
+    \"NodeId\": \"Ammo\",\n            \"ParentId\": \"Base\",\n            \"DefId\":
+    \"Ammo\"\n        },\n        {\n            \"NodeId\": \"Combat\",\n           
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
+    \"NodeId\": \"BaseDamage\",\n            \"ParentId\": \"Combat\",\n           
+    \"DefId\": \"BaseDamage\"\n        },\n        {\n            \"NodeId\": \"Penetration\",\n           
+    \"ParentId\": \"Combat\",\n            \"DefId\": \"Penetration\"\n        },\n       
+    {\n            \"NodeId\": \"NoiseRadius\",\n            \"ParentId\": \"Combat\",\n           
+    \"DefId\": \"NoiseRadius\"\n        },\n        {\n            \"NodeId\": \"BulletWeight\",\n           
+    \"ParentId\": \"Combat\",\n            \"DefId\": \"BulletWeight\"\n        },\n       
+    {\n            \"NodeId\": \"OverPenetration\",\n            \"ParentId\": \"Combat\",\n           
+    \"DefId\": \"OverPenetration\"\n        },\n        {\n            \"NodeId\":
+    \"AmmoReliability\",\n            \"ParentId\": \"Combat\",\n            \"DefId\":
+    \"AmmoReliability\"\n        },\n        {\n            \"NodeId\": \"FoulingRate\",\n           
+    \"ParentId\": \"Combat\",\n            \"DefId\": \"FoulingRate\"\n        },\n       
+    {\n            \"NodeId\": \"Recoil\",\n            \"ParentId\": \"\",\n           
+    \"DefId\": \"\"\n        },\n        {\n            \"NodeId\": \"RecoilFactor\",\n           
+    \"ParentId\": \"Recoil\",\n            \"DefId\": \"RecoilFactor\"\n        },\n       
+    {\n            \"NodeId\": \"Tags\",\n            \"ParentId\": \"\",\n           
+    \"DefId\": \"\"\n        },\n        {\n            \"NodeId\": \"DamageType\",\n           
+    \"ParentId\": \"Tags\",\n            \"DefId\": \"DamageType\"\n        },\n       
+    {\n            \"NodeId\": \"Compat\",\n            \"ParentId\": \"\",\n           
+    \"DefId\": \"\"\n        },\n        {\n            \"NodeId\": \"Platform\",\n           
+    \"ParentId\": \"Compat\",\n            \"DefId\": \"Platform\"\n        }\n   
+    ]\n}"

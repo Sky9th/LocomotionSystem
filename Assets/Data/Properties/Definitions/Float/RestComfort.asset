@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd75724e680ef884184a96c37c07aa2c, type: 3}
+  m_Name: RestComfort
+  m_EditorClassIdentifier: 
+  Id: RestComfort
+  Description: "\u4F11\u606F\u8212\u9002\u5EA6(0-100)\u3002\u5F71\u54CDSleepiness\u6062\u590D\u901F\u5EA6\u30020=\u7761\u5730\u9762(\u6162)
+    50=\u7761\u888B 100=\u9AD8\u7EA7\u5E8A(\u5FEB)\u3002Building\u5C5E\u6027\u3002"
+  Type: 0
+  IsDeprecated: 0
+  Min: 0
+  Max: 100
+  DefaultValue: 20

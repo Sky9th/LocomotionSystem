@@ -29,5 +29,7 @@ namespace RedDust.Properties
             }
             return Array.Empty<UnityEngine.Object>();
         }
+
+        [Serializable] public struct JsonData { public string id, description, assetTypeConstraint; public bool isDeprecated; }
     }
 }

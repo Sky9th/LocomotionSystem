@@ -85,3 +85,20 @@ PropertyDefSO 原本是一个包含 17 个平铺字段的 God-object — Float �
 
 ### Flag for Design Doc Creation
 - [x] No design doc needed — internal refactoring, no gameplay-facing changes.
+
+---
+
+## Session Update (后续同一天)
+
+### JSON 格式重构
+- 旧 `PropertyDefEntry` DTO（12 字段平铺 union）彻底删除
+- 新：每个 SO 子类内嵌 `[Serializable] public struct JsonData`（标注"仅 JSON 用，字段重复是设计取舍"）
+- JSON 格式 v2.0：按类型分组 + proper nested objects，零 escaped string
+- Export：`JsonUtility.ToJson(ImportRoot)` 直接序列化 JsonData struct 列表
+- Import：typed list 直接读字段创建 SO
+- 删除 `ToJson()`/`FromJson()`/`WriteJsonFields()`/`Escape()` 全部手动 JSON 构建代码
+- 资产目录按类型分：`Definitions/Float/` 等 9 个分子目录
+- `properties_all.json` 已转换为 v2.0 格式，就绪可导入 ~185 Def
+
+### Decisions Updated
+| 用内嵌 JsonData struct 而非全局 DTO | A: 全局 DTO → 每个子类旁边放自己的 JsonData，一眼看清字段映射；B: 无 DTO 手动 JSON → 转义和嵌套问题无法解决 | JsonData scope 限定在子类内部，重复标记清楚即可 |

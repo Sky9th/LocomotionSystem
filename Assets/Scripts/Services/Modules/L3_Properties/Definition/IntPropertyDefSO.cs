@@ -22,5 +22,7 @@ namespace RedDust.Properties
         }
 
         private int SafeInt(object v) { try { return Convert.ToInt32(v); } catch { return DefaultValue; } }
+
+        [Serializable] public struct JsonData { public string id, description; public bool isDeprecated; public int min, max, defaultValue; }
     }
 }

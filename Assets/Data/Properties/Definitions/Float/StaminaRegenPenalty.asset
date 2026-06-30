@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd75724e680ef884184a96c37c07aa2c, type: 3}
+  m_Name: StaminaRegenPenalty
+  m_EditorClassIdentifier: 
+  Id: StaminaRegenPenalty
+  Description: "\u62A4\u7532\u4F53\u529B\u6062\u590D\u60E9\u7F5A\u6BD4\u4F8B(0-0.5)\u3002\u6700\u7EC8\u4F53\u529B\u6062\u590D
+    = BaseRegen \xD7 (1 - StaminaRegenPenalty)\u3002\u91CD\u7532=0.3 \u8F7B\u7532=0.05\u3002ArmorBase\u5C5E\u6027\u3002"
+  Type: 0
+  IsDeprecated: 0
+  Min: 0
+  Max: 0.5
+  DefaultValue: 0.1
