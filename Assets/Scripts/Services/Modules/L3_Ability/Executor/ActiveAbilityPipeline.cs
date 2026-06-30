@@ -45,7 +45,7 @@ namespace RedDust.Ability
             Debug.Log($"[ActivePipeline] Start: {ability.internalName} | origin={origin} dir={direction}" +
                       (weaponEntity != null ? $" | weapon={weaponEntity.Preset.name}" : ""));
 
-            return _fsm.Start(new GatingState(), _ctx);
+            return _fsm.Start(new GatingState(), ref _ctx);
         }
 
         /// <summary>
@@ -54,12 +54,12 @@ namespace RedDust.Ability
         public void Tick(float dt)
         {
             var prev = _fsm.Current;
-            _fsm.Tick(_ctx, dt);
+            _fsm.Tick(ref _ctx, dt);
 
             if (_fsm.Current == prev) return;
 
-            var id = (_fsm.Current as AbilityState)?.Id;
-            Debug.Log($"[ActivePipeline] {(prev as AbilityState)?.Id} → {id}");
+            var id = (_fsm.Current as AbilityPipelineState)?.Id;
+            Debug.Log($"[ActivePipeline] {(prev as AbilityPipelineState)?.Id} → {id}");
 
             switch (id)
             {
@@ -77,7 +77,7 @@ namespace RedDust.Ability
         /// </summary>
         public bool Interrupt(IState<SActiveAbilityContext> target)
         {
-            return _fsm.Interrupt(target, _ctx);
+            return _fsm.Interrupt(target, ref _ctx);
         }
     }
 }

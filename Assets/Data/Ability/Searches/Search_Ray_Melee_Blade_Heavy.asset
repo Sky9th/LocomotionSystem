@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Search_Ray_Melee_Blade_Heavy
   m_EditorClassIdentifier: 
   searchType: 1
-  range: 0
+  range: 2.5
   targetMask:
     serializedVersion: 2
     m_Bits: 4294967295

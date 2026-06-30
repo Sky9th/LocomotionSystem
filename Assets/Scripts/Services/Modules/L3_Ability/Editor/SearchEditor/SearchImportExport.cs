@@ -109,6 +109,7 @@ namespace RedDust.Ability
                 {
                     var instance = CreateInstance(entry);
                     instance.name = entry.name;
+                    ApplyFields(instance, entry);
                     AssetDatabase.CreateAsset(instance, assetPath);
                     created++;
                 }

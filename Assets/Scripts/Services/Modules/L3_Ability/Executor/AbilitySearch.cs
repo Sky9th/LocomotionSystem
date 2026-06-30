@@ -5,8 +5,7 @@ using UnityEngine;
 namespace RedDust.Ability
 {
     /// <summary>
-    /// ④ 搜索命中。根据 SearchSO 子类型分发到对应的物理查询。
-    /// 非静态：可由 AbilityExecutor 持有实例，未来支持配置（如 Layer 覆写）。
+    /// ⛔ DEPRECATED — 逻辑已内联至 <see cref="SearchState"/>。旧 AbilityExecutor.TryActivate 仍在引用，该旧代码废弃后删除本类。
     /// </summary>
     public class AbilitySearch
     {

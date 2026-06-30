@@ -6,11 +6,11 @@ namespace RedDust.Ability
     /// ② 门控检查。冷却 → 互斥 → 外部条件，三道闸门串联。
     /// 通过 → CostState；失败 → RejectedState。
     /// </summary>
-    public class GatingState : AbilityState
+    public class GatingState : AbilityPipelineState
     {
         public override EActiveAbilityState Id => EActiveAbilityState.Gating;
 
-        public override IState<SActiveAbilityContext> OnTick(SActiveAbilityContext ctx, float dt)
+        public override IState<SActiveAbilityContext> OnTick(ref SActiveAbilityContext ctx, float dt)
         {
             var a = ctx.Ability;
             var e = ctx.Executor;
@@ -56,11 +56,11 @@ namespace RedDust.Ability
                 }
             }
 
-            Debug.Log($"[Gating] Passed: {a.internalName} → Cost");
-            return new CostState();
+            Debug.Log($"[Gating] Passed: {a.internalName} → Search");
+            return new SearchState();
         }
 
-        private static string ResolveCooldownKey(AbilitySO ability)
+        internal static string ResolveCooldownKey(AbilitySO ability)
         {
             if (ability == null || ability.cooldownDuration <= 0f) return null;
             return ability.sharedCooldownTag != null

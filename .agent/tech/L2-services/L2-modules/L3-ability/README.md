@@ -176,6 +176,7 @@ Ability 系统消费的标签用途：
 | 文档 | 说明 |
 |------|------|
 | [ability-pipeline-design.md](ability-pipeline-design.md) | Ability Pipeline — 八维度技能管道完整设计 |
+| [ability-pipeline-states.md](ability-pipeline-states.md) | Ability Pipeline States — 状态机实现（IState / StateMachine / Gating / Search / Cost / Execution） |
 | [ability-inventory.md](ability-inventory.md) | Ability Inventory — 154 技能全量树 + 闭环测试集 |
 | [ability-component.md](ability-component.md) | AbilityComponent — 能力执行中枢，API + 调用链 |
 | [ability-editor.md](ability-editor.md) | Ability Editor — 编辑器架构 |

@@ -24,26 +24,26 @@ namespace RedDust.Ability
         /// <summary>
         /// 启动状态机。调 first.CanEnter 验证，失败返回 false。
         /// </summary>
-        public bool Start(IState<TContext> first, TContext ctx)
+        public bool Start(IState<TContext> first, ref TContext ctx)
         {
-            if (first == null || !first.CanEnter(ctx)) return false;
+            if (first == null || !first.CanEnter(ref ctx)) return false;
             _current = first;
             StateTime = 0f;
-            _current.OnEnter(ctx);
+            _current.OnEnter(ref ctx);
             return true;
         }
 
         /// <summary>
         /// 逐帧驱动。当前 State 的 OnTick 返回新 State 时触发流转检查。
         /// </summary>
-        public void Tick(TContext ctx, float dt)
+        public void Tick(ref TContext ctx, float dt)
         {
             if (_current == null) return;
 
-            var next = _current.OnTick(ctx, dt);
-            if (next != null && next != _current && _current.CanExit(ctx) && next.CanEnter(ctx))
+            var next = _current.OnTick(ref ctx, dt);
+            if (next != null && next != _current && _current.CanExit(ref ctx) && next.CanEnter(ref ctx))
             {
-                Transition(next, ctx);
+                Transition(next, ref ctx);
             }
             StateTime += dt;
         }
@@ -52,23 +52,23 @@ namespace RedDust.Ability
         /// 外部强行打断当前 State。CanBeInterrupted 是唯一闸门。
         /// 打断后走正常 OnExit → OnEnter 生命周期。
         /// </summary>
-        public bool Interrupt(IState<TContext> target, TContext ctx)
+        public bool Interrupt(IState<TContext> target, ref TContext ctx)
         {
             if (_current == null || target == null) return false;
-            if (!_current.CanBeInterrupted(ctx)) return false;
+            if (!_current.CanBeInterrupted(ref ctx)) return false;
 
-            _current.OnInterrupted(ctx);
-            Transition(target, ctx);
+            _current.OnInterrupted(ref ctx);
+            Transition(target, ref ctx);
             return true;
         }
 
-        private void Transition(IState<TContext> next, TContext ctx)
+        private void Transition(IState<TContext> next, ref TContext ctx)
         {
-            _current.OnExit(ctx);
+            _current.OnExit(ref ctx);
             Previous = _current;
             _current = next;
             StateTime = 0f;
-            _current.OnEnter(ctx);
+            _current.OnEnter(ref ctx);
         }
     }
 }

@@ -137,14 +137,14 @@ namespace RedDust.Player
             }
 
             // Zombie 在玩家右侧 3 米
-            // if (zombieDef != null)
-            // {
-            //     var pos = playerStartAnchor.transform.position + Vector3.forward * 3f;
-            //     pos += Vector3.up * 3f;
-            //     spawnRequestEvent.Raise(new SEntitySpawnRequest(zombieDef, "test_zombie", pos));
-            //     Debug.Log($"[PlayerService] Spawned zombie at {pos}");
-            // }
-            // else { Debug.LogWarning("[PlayerService] zombieDef is null."); }
+            if (zombieDef != null)
+            {
+                var pos = playerStartAnchor.transform.position + Vector3.forward * 3f;
+                pos += Vector3.up * 3f;
+                spawnRequestEvent.Raise(new SEntitySpawnRequest(zombieDef, "test_zombie", pos));
+                Debug.Log($"[PlayerService] Spawned zombie at {pos}");
+            }
+            else { Debug.LogWarning("[PlayerService] zombieDef is null."); }
 
             // Backpack → Back，武器进背包
             if (backpackDef == null)

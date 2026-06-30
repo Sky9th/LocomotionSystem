@@ -52,7 +52,7 @@ namespace RedDust.Ability
         }
 
         // ═══════════════════════════════════════════════════════════════
-        // ▼ OLD IMPLEMENTATION — preserved as reference
+        // ▼ OLD IMPLEMENTATION — ⛔ 即将废弃，Pipeline 全量接管后删除
         // ═══════════════════════════════════════════════════════════════
         #region OLD_IMPLEMENTATION
 

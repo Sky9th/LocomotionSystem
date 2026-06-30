@@ -3,14 +3,14 @@ using UnityEngine;
 namespace RedDust.Ability
 {
     /// <summary>
-    /// ③ 资源消耗。双阶段：预检（全部可负担?）→ 扣除。
-    /// 预检失败 → RejectedState；通过 → CompletedState（TODO: → ExecutionState）。
+    /// ④ 资源消耗。双阶段：预检（全部可负担?）→ 扣除。
+    /// 预检失败 → RejectedState；通过 → ExecutionState。
     /// </summary>
-    public class CostState : AbilityState
+    public class CostState : AbilityPipelineState
     {
         public override EActiveAbilityState Id => EActiveAbilityState.Cost;
 
-        public override IState<SActiveAbilityContext> OnTick(SActiveAbilityContext ctx, float dt)
+        public override IState<SActiveAbilityContext> OnTick(ref SActiveAbilityContext ctx, float dt)
         {
             var a = ctx.Ability;
             var e = ctx.Executor;
@@ -18,7 +18,7 @@ namespace RedDust.Ability
             if (a.selfEffects == null)
             {
                 Debug.Log($"[Cost] No selfEffects — skip. → Execute");
-                return new CompletedState(); // TODO: → ExecutionState
+                return new ExecutionState();
             }
 
             // ── Phase 1: 预检 ──
@@ -47,12 +47,9 @@ namespace RedDust.Ability
                 e.ModifyStatCallback?.Invoke(cost.def, -cost.amount);
             }
 
-            // 有冷却时挂 abilityTag
-            if (a.cooldownDuration > 0f && a.abilityTag != null)
-                e.OwnedTags.AddTag(a.abilityTag.FullTag);
-
+            // abilityTag 冷却互斥由 CooldownState 统一管理（AddCooldown + cooldownAbilityTags + 清理）
             Debug.Log($"[Cost] Deducted: {a.internalName} → Execute");
-            return new CompletedState(); // TODO: → ExecutionState
+            return new ExecutionState();
         }
     }
 }
