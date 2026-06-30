@@ -50,10 +50,13 @@ namespace RedDust.Ability
         [Tooltip("前摇期间是否可被打断（翻滚/格挡）。")]
         public bool canCancelWindup;
 
+        [Tooltip("后摇时长（秒）。当前由设计师手动设置，远期由 AbilityDriver 从 AnimationClip.length 自动计算。")]
+        public float recoveryDuration;
+
         [Tooltip("后摇期间是否可被下一技能/翻滚打断。")]
         public bool canCancelRecovery;
 
-        // ── Recovery: 由 AbilityDriver 运行时从 AnimationClip.length 计算 ──
-        // recovery = clipLength / animationSpeed - (windup + fire) / animationSpeed
+        // ── 远期: AbilityDriver 自动计算 recoveryDuration ──
+        // recoveryDuration = clipLength / animationSpeed - (windup + fire) / animationSpeed
     }
 }

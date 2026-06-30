@@ -6,8 +6,7 @@ using UnityEngine;
 namespace RedDust.Ability
 {
     /// <summary>
-    /// ⑤ 效果载荷。从装备 Entity 读取 DamageEffectSO → 构造 SDamageInfo 理想伤害。
-    /// 同时处理 BuffEffectSO（Tag 写入 + Adjunct 注入）和 duration Effect 标签。
+    /// ⛔ DEPRECATED — 逻辑已内联至 <see cref="ExecutionState"/>。旧 AbilityExecutor.TryActivate 仍在引用，该旧代码废弃后删除本类。
     /// </summary>
     /// <remarks>
     /// 伤害来源链：武器 Entity → Preset.GetDamageEffect(entity)

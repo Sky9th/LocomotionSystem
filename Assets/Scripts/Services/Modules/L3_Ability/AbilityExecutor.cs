@@ -17,17 +17,27 @@ namespace RedDust.Ability
         private readonly Queue<SQueuedSkill> _queue = new();
 
         /// <summary>
-        /// 将主动技能加入释放队列。当前无技能在释放时下一帧开始执行。
+        /// 将主动技能加入释放队列。Pipeline 空闲时立即启动；运行中则替换排队位（只保留最新一个待释放技能）。
+        /// 队列结构保留供后续预指令扩展。
         /// </summary>
         public void Enqueue(ActiveAbilitySO ability, Vector3 origin, Vector3 direction, Entity weaponEntity = null)
         {
-            _queue.Enqueue(new SQueuedSkill
+            var skill = new SQueuedSkill
             {
                 Ability = ability,
                 Origin = origin,
                 Direction = direction,
                 WeaponEntity = weaponEntity,
-            });
+            };
+
+            if (!_pipeline.IsIdle)
+            {
+                // 运行中：清掉上一个排队技能，只留最新的
+                while (_queue.Count > 0)
+                    _queue.Dequeue();
+            }
+
+            _queue.Enqueue(skill);
         }
 
         private void Update()
@@ -126,6 +136,31 @@ namespace RedDust.Ability
             if (string.IsNullOrEmpty(tag) || duration <= 0f) return;
             OwnedTags.AddTag(tag);
             cooldownEndTimes[tag] = Time.time + duration;
+        }
+
+        /// <summary>
+        /// 施加技能冷却。写入 cooldownEndTimes + cooldownAbilityTags 映射，
+        /// CleanupExpiredCooldowns 在冷却到期后自动清理 abilityTag。
+        /// </summary>
+        /// <param name="overrideDuration">覆写冷却时长。>0 时使用覆写值，≤0 时使用 ability.cooldownDuration。</param>
+        public void StartCooldown(AbilitySO ability, float overrideDuration = -1f)
+        {
+            if (ability == null) return;
+
+            float duration = overrideDuration > 0f ? overrideDuration : ability.cooldownDuration;
+            if (duration <= 0f) return;
+
+            var key = ability.sharedCooldownTag != null
+                ? ability.sharedCooldownTag.FullTag
+                : $"Ability.Cooldown.{ability.internalName}";
+
+            AddCooldown(key, duration);
+
+            if (ability.abilityTag != null)
+            {
+                cooldownAbilityTags[key] = ability.abilityTag.FullTag;
+                OwnedTags.AddTag(ability.abilityTag.FullTag);
+            }
         }
 
         public bool IsOnCooldown(string tag)

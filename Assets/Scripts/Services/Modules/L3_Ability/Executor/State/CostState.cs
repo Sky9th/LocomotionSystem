@@ -17,8 +17,8 @@ namespace RedDust.Ability
 
             if (a.selfEffects == null)
             {
-                Debug.Log($"[Cost] No selfEffects — skip. → Execute");
-                return new ExecutionState();
+                Debug.Log($"[Cost] No selfEffects — skip. → Activation");
+                return new ActivationState();
             }
 
             // ── Phase 1: 预检 ──
@@ -48,8 +48,8 @@ namespace RedDust.Ability
             }
 
             // abilityTag 冷却互斥由 CooldownState 统一管理（AddCooldown + cooldownAbilityTags + 清理）
-            Debug.Log($"[Cost] Deducted: {a.internalName} → Execute");
-            return new ExecutionState();
+            Debug.Log($"[Cost] Deducted: {a.internalName} → Activation");
+            return new ActivationState();
         }
     }
 }

@@ -5,8 +5,12 @@ using UnityEngine;
 namespace RedDust.Ability
 {
     /// <summary>
-    /// ③ 搜索命中。根据 AbilitySearchSO 子类型分发物理查询，填充 ctx.Targets。
-    /// 最少停留 0.5s 以便调试观察；每帧绘制 Debug 形状。
+    /// ④ 搜索命中。Fire 窗口内每帧物理查询 + 累加去重。
+    /// 窗口时长 = activation.fireWindowDuration / activation.animationSpeed。
+    ///
+    /// TODO: 去 _searched flag，每帧 ExecuteSearch + 合并去重到 ctx.Targets
+    /// TODO: MinDuration → fireWindowDuration / animationSpeed
+    /// 当前: 仅首帧搜一次，硬编码 0.5s 调试窗口。
     /// 通过 → CostState。
     /// </summary>
     public class SearchState : AbilityPipelineState

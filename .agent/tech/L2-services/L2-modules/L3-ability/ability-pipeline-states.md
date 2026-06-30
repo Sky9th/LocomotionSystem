@@ -1,6 +1,6 @@
 # Ability Pipeline — 状态机实现
 
-> **Last Verified**: 2026-06-30 | **Verification**: All referenced files exist, signatures match code
+> **Last Verified**: 2026-07-01 | **Verification**: All referenced files exist, signatures match code
 
 ## Layer Position
 
@@ -21,9 +21,12 @@ AbilityExecutor.Update()
                            └─ OnExit(current, ref ctx) → OnEnter(next, ref ctx)
 
 GatingState.OnTick         → SearchState / RejectedState
-SearchState.OnTick         → CostState                   （0.5s 最小停留）
-CostState.OnTick           → ExecutionState / RejectedState
-ExecutionState.OnTick      → CompletedState              （TODO: → CooldownState）
+SearchState.OnTick         → CostState                   （Fire 窗口每帧采样，TODO: fireWindowDuration）
+CostState.OnTick           → ActivationState / RejectedState
+ActivationState.OnTick     → CooldownState               （Windup 前摇，TODO: windupDuration 计时）
+CooldownState.OnTick       → ExecutionState              （冷却从 commit 点开始，与 Fire+Recovery 重叠）
+ExecutionState.OnTick      → RecoveryState
+RecoveryState.OnTick       → CompletedState              （后摇等待，TODO: animationSpeed 除法）
 CompletedState / RejectedState / IdleState               （终态，永远返回自身）
 ```
 
@@ -33,13 +36,16 @@ CompletedState / RejectedState / IdleState               （终态，永远返�
 |-------|-----|------------|------|
 | `GatingState` | 1 | `SearchState` | 冷却/互斥/外部条件全通过 |
 | | | `RejectedState` | 任一闸门失败 |
-| `SearchState` | 2 | `CostState` | 等待 0.5s 最小停留 |
-| `CostState` | 3 | `ExecutionState` | 资源预检+扣除通过 |
+| `SearchState` | 3 | `CostState` | Fire 窗口每帧采样完毕 |
+| `CostState` | 4 | `ActivationState` | 资源预检+扣除通过 |
 | | | `RejectedState` | 资源不足或回调缺失 |
-| `ExecutionState` | 4 | `CompletedState` | 效果施加完毕（TODO: → CooldownState） |
+| `ActivationState` | 2 | `CooldownState` | Windup 前摇结束（TODO: 计时） |
+| `CooldownState` | 6 | `ExecutionState` | 冷却施加完成 |
+| `ExecutionState` | 5 | `RecoveryState` | 效果施加完毕 |
+| `RecoveryState` | 7 | `CompletedState` | 后摇结束（TODO: animationSpeed） |
 | `IdleState` | 0 | 自身 | 终态 |
-| `RejectedState` | 8 | 自身 | 终态 |
-| `CompletedState` | 7 | 自身 | 终态 |
+| `RejectedState` | 9 | 自身 | 终态 |
+| `CompletedState` | 8 | 自身 | 终态 |
 
 ## Coupled Modules
 
