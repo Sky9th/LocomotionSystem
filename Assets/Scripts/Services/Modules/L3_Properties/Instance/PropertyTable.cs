@@ -132,6 +132,19 @@ namespace RedDust.Properties
             return null;
         }
 
+        public T[] GetAssetList<T>(string path) where T : UnityEngine.Object
+        {
+            if (_assetRefLists.TryGetValue(path, out var v))
+            {
+                var result = new T[v.Length];
+                for (int i = 0; i < v.Length; i++)
+                    result[i] = v[i] as T;
+                return result;
+            }
+            if (!_structure.ContainsKey(path)) { ErrorPath(path); return null; }
+            return null;
+        }
+
         /// <summary>Float 属性的 Min 约束。路径不存在报错。</summary>
         public float GetMin(string path) => _structure.TryGetValue(path, out var d) ? d.Min : ErrorPath<float>(path);
         /// <summary>Float 属性的 Max 约束。路径不存在报错。</summary>

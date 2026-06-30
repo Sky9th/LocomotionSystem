@@ -1,13 +1,13 @@
 # 短期开发计划
 
-> 更新: 2026-06-25
+> 更新: 2026-06-29
 > 分支: `feature/ability-pipeline`
 > 原则: 每步有可玩增量，先完成基础设施再铺玩法
-> 前置: Character 模块重构 ✅ · Properties 系统 ✅ · Animation 重构 ✅ · Ability 数据资产 ✅ · AbilityTreeSO ✅
+> 前置: Character 模块重构 ✅ · Properties 系统 ✅ · Animation 重构 ✅ · Ability 数据资产 ✅ · AbilityTreeSO ✅ · EntityService + Container ✅ · Tag 6 域 339 标签 ✅ · Equipment→技能闭环 ✅
 
 ---
 
-## 近期完成（2026-06 上半月）
+## 近期完成（2026-06）
 
 | 事项 | 说明 |
 |------|------|
@@ -16,10 +16,15 @@
 | Module 系统 + ctx 全链路 | BaseService 删除，Service 直接继承 ModuleComponent |
 | Animation 重构 | LinearMixer + In-line Transition + 废弃 State 清理 |
 | Ability 数据资产 | Search / Activation / Effect / Noise / Passive 全量 SO + Editor |
-| Tag 系统 | 199 全量 GameplayTag + EditorTreeView 迁移 |
+| AbilityTreeSO | 代码 + Import/Export + 7 技能 + 3 天生树 + 9 Tag |
+| Event 系统统一 | `GameEvent<T>` 唯一推模式通道 |
+| EntityService + Entity 数据模型 | Id + Preset + Properties + StackCount + Tick + NestedContainer |
+| Container 系统 | 泛型 `Container<T>` + Place/Remove/CanAccept/FindSlotFor + 嵌套递归 |
+| AbilityForest | 多来源树集合 + Tag 兼容过滤 → ResolvedActives[] |
+| Entity→CharacterActor 数据管线 | Slots PropertyTree → BodyContainer + CharacterEquipment GO 同步 |
+| Tag 架构重构 | 6 域 339 标签（Ability/Identity/Body/Entity/Grip/Noise）+ GameplayTag→rTag 全局改名 |
 | CharacterCombat 骨架 | 回调绑定 + 伤害管线骨架 |
 | 武器模型 | PolygonApocalypse 武器模型 + 材质导入 |
-| AbilityTreeSO | 代码 + Import/Export + 7 技能 + 3 天生树 + 9 Tag |
 
 ---
 
@@ -27,6 +32,7 @@
 
 > 背景: 物理属性已进 Properties，但速度系数层仍是占位。
 > `Stance.motionSpeedScale = 1f` 硬编码，姿势/负重/敏捷不参与速度计算。
+> S2/S3 不依赖 S1，可并行推进。
 
 | # | 任务 | 涉及 |
 |---|------|------|
@@ -40,7 +46,7 @@
 
 ---
 
-## S2 — 装备→技能闭环 [~4天]
+## S2 — 装备→技能闭环 [✅ 完成]
 
 > **目标**: 最小闭环——角色持有装备 → 切换装备触发技能切换 → 释放技能 → 扣血。
 > 不依赖 AbilityComponent/HitReactionComponent，直接通过现有 AbilityExecutor 跑通全链路。
@@ -48,25 +54,24 @@
 > 设计文档: [ability-forest.md](../tech/L2-services/L2-modules/L3-ability/ability-forest.md)
 
 ```
-数据流: ItemInstance → Container<T> → CharacterActor.SwitchWeapon
-          → AbilityForest.Resolve() → ctx.AbilitySlots
-          → PlayerDirector → AbilityExecutor.TryActivate() → 扣血
+数据流: Entity → Container → CharacterEquipment.SyncEquipment → GripTags
+          → AbilityForest.SetWeaponTags() → ResolvedActives[]
+          → PlayerDirector → AbilityExecutor.TryActivate() → ②③④⑤ → 扣血 ❌
 ```
 
-| # | 任务 | 说明 | 耗时 |
+| # | 任务 | 状态 | 说明 |
 |---|------|------|------|
-| S2.1 | **`ItemInstance.cs`** | 纯 C# 类：Id(GUID) + Def + Props + Count + Tick。`static Create(ItemDefSO)` 工厂方法 | ~0.5天 |
-| S2.2 | **`Container.cs`** | 泛型 `Container<T>` + `ContainerSlot`。Place/Remove/CanAccept/FindSlotFor | ~1天 |
-| S2.3 | **`AbilityForest.cs`** | 纯 C# 类：多来源活跃树集合。AddTree/RemoveBySource/Resolve。树 ∩ 武器Tag → 技能槽 + 被动列表 | ~0.5天 |
-| S2.4 | **`ItemDefSO` 扩展** | 新增 `GrantedAbilityTrees` 临时 C# 字段（远期进 PropertyTree） | ~0.2天 |
-| S2.5 | **`CharacterBuildContext` 改造** | SkillSlot1/2 → `AbilitySlots[]` + `ActivePassives[]` | ~0.3天 |
-| S2.6 | **`CharacterActor` 改造** | 创建 Container(RightHand/LeftHand) + AbilityForest + SwitchWeapon 方法 | ~0.5天 |
-| S2.7 | **`PlayerDirector` 改造** | ProcessEquipInput → SwitchWeapon → 消费 ctx.AbilitySlots | ~0.5天 |
-| S2.8 | **`AbilityExecutor` 取消注释** | baseDamage 从武器 PropertyTree 读取 ATK，伤害管线取消注释 | ~0.5天 |
+| S2.1 | **`ItemInstance.cs`** | ~~过时~~ | `Entity` 已全覆盖（Id/Preset/Properties/StackCount/Tick），不需另建类 |
+| S2.2 | **`Container.cs`** | ✅ 完成 | 泛型 `Container<T>` + Place/Remove/CanAccept/FindSlotFor |
+| S2.3 | **`AbilityForest.cs`** | ✅ 完成 | AddTree/RemoveBySource/Resolve → ResolvedActives[]/ResolvedPassives[] |
+| S2.4 | **`ItemDefSO` 扩展** | ~~过时~~ | 技能树来源是学习/天生，武器只做 Tag 过滤——不授予技能树 |
+| S2.5 | **`CharacterBuildContext` 改造** | ~~框架覆盖~~ | `AbilityForest.ResolvedActives[]` 直接提供，PlayerDirector 已消费 |
+| S2.6 | **`CharacterActor` 改造** | ⚠️ 变通 | 无 SwitchWeapon 方法，`CharacterEquipment.SyncEquipment()` 每帧 diff 等效实现 |
+| S2.7 | **`PlayerDirector` 改造** | ⚠️ Hack | 硬编码 EquipMap + 裸操作 Container，功能可用，远期装备栏 UI 清理 |
+| S2.8 | **`AbilityExecutor` 伤害管线** | ❌ 未做 | DamageEffectSO → SDamageInfo → AbilityReactor.Resolve 全部注释。**内含进 S3.1** |
 
-**依赖链**: S2.1 → S2.2 → S2.3 → S2.4 → S2.5 → S2.6 → S2.7 → S2.8（串行）
-
-**可验证增量**: 按 1 装备刀 → Q 技能栏显示斩击；按 2 装备手枪 → Q 技能栏切换为射击；按 Q → 搜索目标 → 扣血 → HUD 显示。
+**⚡ 装备→技能→输入→②③④ 全链路已跑通**，唯 ⑤→⑥ 伤害结算未接通。
+S2.8 不在行将废弃的 AbilityExecutor 上修修补补——内含进 S3.1 AbilityComponent 正编，一步到位读武器 PropertyTree ATK。
 
 ---
 
@@ -121,19 +126,17 @@
 ```
 S1 (~1天) ──────────────────────────────┐
                                          │
-S2 (~4天 — 装备→技能闭环，当前核心) ─────┤
+S2 (✅ 基础闭环完成) ────────────────────┤
                                          ├── S5 (~3天 — 可并行)
-S3 (~4天 — Ability Pipeline) ────────────┤
+S3 (~4天 — Ability Pipeline，当前焦点) ──┤
                                          │
 S4 (~1天 — Combat 补完) ────────────────┘
 ```
 
-**总计约 10 天（2 周）。基于 [施工历史](../plans/long-term.md#施工历史用于工期校准) 校准。**
+**S2→S3 无阻塞依赖。S3 可直接开工。**
 
-S2 是当前分支 `feature/ability-pipeline` 的第一目标——先让装备→技能→伤害跑通。
-S3 在 S2 基础上把管道正式化，S3.4 做集成。
-S1 优先于 S2 — AbilityForest 需要读 Properties（属性门槛—远期）。
-S5 可与 S2-S4 并行推进。
+S2.8（伤害管线）内含进 S3.1 — AbilityComponent 正编时直接读武器 PropertyTree ATK。
+S1 优先于 S4 但 S3 不依赖 S1。
 
 ---
 
