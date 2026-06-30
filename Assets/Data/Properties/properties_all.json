@@ -1331,55 +1331,55 @@
         "id": "RightHand",
         "description": "主手武器槽位。默认接受 Weapon 标签物品。",
         "structTypeName": "RedDust.Container.SlotDef",
-        "defaultJson": "{\"AcceptTags\":[\"Weapon\"],\"Capacity\":1}"
+        "defaultJson": "{\"AcceptTags\":[\"Entity.Weapon\"],\"Capacity\":1}"
       },
       {
         "id": "LeftHand",
-        "description": "副手武器/盾牌槽位。默认接受 Weapon 或 Shield 标签物品。",
+        "description": "副手武器/盾牌槽位。默认接受 Entity.Weapon 或 Entity.Armor.Shield 标签物品。",
         "structTypeName": "RedDust.Container.SlotDef",
-        "defaultJson": "{\"AcceptTags\":[\"Weapon\",\"Shield\"],\"Capacity\":1}"
+        "defaultJson": "{\"AcceptTags\":[\"Entity.Weapon\",\"Entity.Armor.Shield\"],\"Capacity\":1}"
       },
       {
         "id": "Head",
-        "description": "头部防具槽位。默认接受 Armor.Head 标签物品。",
+        "description": "头部防具槽位。默认接受 Entity.Armor.Head 标签物品。",
         "structTypeName": "RedDust.Container.SlotDef",
-        "defaultJson": "{\"AcceptTags\":[\"Armor.Head\"],\"Capacity\":1}"
+        "defaultJson": "{\"AcceptTags\":[\"Entity.Armor.Head\"],\"Capacity\":1}"
       },
       {
         "id": "Chest",
-        "description": "躯干防具槽位（胸甲/背心）。默认接受 Armor.Body 标签物品。NodeId 用 Chest 以避 Human 树 Body 文件夹同名冲突。",
+        "description": "躯干防具槽位（胸甲/背心）。默认接受 Entity.Armor.Body 标签物品。NodeId 用 Chest 以避 Human 树 Body 文件夹同名冲突。",
         "structTypeName": "RedDust.Container.SlotDef",
-        "defaultJson": "{\"AcceptTags\":[\"Armor.Body\"],\"Capacity\":1}"
+        "defaultJson": "{\"AcceptTags\":[\"Entity.Armor.Body\"],\"Capacity\":1}"
       },
       {
         "id": "LeftLeg",
-        "description": "左腿防具槽位。默认接受 Armor.Leg 标签物品。",
+        "description": "左腿防具槽位。默认接受 Entity.Armor.Leg 标签物品。",
         "structTypeName": "RedDust.Container.SlotDef",
-        "defaultJson": "{\"AcceptTags\":[\"Armor.Leg\"],\"Capacity\":1}"
+        "defaultJson": "{\"AcceptTags\":[\"Entity.Armor.Leg\"],\"Capacity\":1}"
       },
       {
         "id": "RightLeg",
-        "description": "右腿防具槽位。默认接受 Armor.Leg 标签物品。",
+        "description": "右腿防具槽位。默认接受 Entity.Armor.Leg 标签物品。",
         "structTypeName": "RedDust.Container.SlotDef",
-        "defaultJson": "{\"AcceptTags\":[\"Armor.Leg\"],\"Capacity\":1}"
+        "defaultJson": "{\"AcceptTags\":[\"Entity.Armor.Leg\"],\"Capacity\":1}"
       },
       {
         "id": "LeftFoot",
-        "description": "左脚鞋具槽位。默认接受 Armor.Foot 标签物品。",
+        "description": "左脚鞋具槽位。默认接受 Entity.Armor.Foot 标签物品。",
         "structTypeName": "RedDust.Container.SlotDef",
-        "defaultJson": "{\"AcceptTags\":[\"Armor.Foot\"],\"Capacity\":1}"
+        "defaultJson": "{\"AcceptTags\":[\"Entity.Armor.Foot\"],\"Capacity\":1}"
       },
       {
         "id": "RightFoot",
-        "description": "右脚鞋具槽位。默认接受 Armor.Foot 标签物品。",
+        "description": "右脚鞋具槽位。默认接受 Entity.Armor.Foot 标签物品。",
         "structTypeName": "RedDust.Container.SlotDef",
-        "defaultJson": "{\"AcceptTags\":[\"Armor.Foot\"],\"Capacity\":1}"
+        "defaultJson": "{\"AcceptTags\":[\"Entity.Armor.Foot\"],\"Capacity\":1}"
       },
       {
         "id": "Back",
-        "description": "背部槽位（背包）。默认接受 Backpack 标签物品。可嵌套子容器。",
+        "description": "背部槽位（背包）。默认接受 Entity.Equipment.Backpack 标签物品。可嵌套子容器。",
         "structTypeName": "RedDust.Container.SlotDef",
-        "defaultJson": "{\"AcceptTags\":[\"Backpack\"],\"Capacity\":1}"
+        "defaultJson": "{\"AcceptTags\":[\"Entity.Equipment.Backpack\"],\"Capacity\":1}"
       },
       {
         "id": "Pouch",

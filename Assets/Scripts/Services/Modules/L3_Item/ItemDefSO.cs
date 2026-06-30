@@ -10,10 +10,10 @@ namespace RedDust.Items
     ///
     /// 所有数据全进 PropertyTree（Template + OverridesJson）：
     ///   通用:    Common/Weight (Float), Common/MaxStackSize (Float), Common/Tags (rTagList)
-    ///   战斗:    Combat/ATK (AssetRefList → DamageEffectSO[])
+    ///   战斗:    Weapon/ATK (AssetRefList → DamageEffectSO[])
     ///   槽位:    Common/Slots (Struct → SlotDef[]) — 容器物品通过 OverridesJson 覆写
     ///
-    /// 武器子类：MeleeWeaponSO 覆写 GetDamageEffect → 从 Combat/ATK 读取 DamageEffectSO。
+    /// 武器子类：MeleeWeaponSO 覆写 GetDamageEffect → 从 Weapon/ATK 读取 DamageEffectSO。
     /// RangedWeaponSO 沿容器链递归查询弹药 Entity 的 DamageEffectSO。
     ///
     /// 槽位定义（SlotDef）已移至 L3_Container，通过 PropertyType.Struct 在 PropertyTree 中存取。

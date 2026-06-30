@@ -85,7 +85,7 @@ namespace RedDust.Container
             {
                 if (acceptTag == null) continue;
                 foreach (var tag in tags)
-                    if (tag == acceptTag) return true;
+                    if (tag == acceptTag || tag.StartsWith(acceptTag + ".")) return true;
             }
             return false;
         }

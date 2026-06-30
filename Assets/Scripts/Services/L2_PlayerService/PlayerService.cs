@@ -117,51 +117,74 @@ namespace RedDust.Player
         private void SpawnTestEntities()
         {
             if (!GameContext.Instance.TryResolveService<EntityService>(out var entityService))
+            {
+                Debug.LogError("[PlayerService] EntityService not found — spawn aborted.");
                 return;
+            }
 
-            var actor = playerInstance.GetComponent<CharacterActor>();
-            var container = actor?.BuildContext?.CharacterContainer?.BodyContainer;
+            var actor = playerInstance != null ? playerInstance.GetComponent<CharacterActor>() : null;
+            if (actor == null)
+            {
+                Debug.LogError("[PlayerService] CharacterActor not found on player instance.");
+                return;
+            }
+
+            var container = actor.BuildContext?.CharacterContainer?.BodyContainer;
+            if (container == null)
+            {
+                Debug.LogError("[PlayerService] BodyContainer is null.");
+                return;
+            }
 
             // Zombie 在玩家右侧 3 米
-            if (zombieDef != null)
-            {
-                var pos = playerStartAnchor.transform.position + Vector3.forward * 3f;
-                pos += Vector3.up * 3f;
-                spawnRequestEvent.Raise(new SEntitySpawnRequest(zombieDef, "test_zombie", pos));
-            }
+            // if (zombieDef != null)
+            // {
+            //     var pos = playerStartAnchor.transform.position + Vector3.forward * 3f;
+            //     pos += Vector3.up * 3f;
+            //     spawnRequestEvent.Raise(new SEntitySpawnRequest(zombieDef, "test_zombie", pos));
+            //     Debug.Log($"[PlayerService] Spawned zombie at {pos}");
+            // }
+            // else { Debug.LogWarning("[PlayerService] zombieDef is null."); }
 
             // Backpack → Back，武器进背包
-            if (backpackDef != null && container != null)
+            if (backpackDef == null)
             {
-                const string backpackId = "test_backpack";
-                spawnRequestEvent.Raise(new SEntitySpawnRequest(backpackDef, backpackId, null));
-                var bp = entityService.Get(backpackId);
-                if (bp != null)
-                {
-                    container.Place("Back", bp);
+                Debug.LogError("[PlayerService] backpackDef is null — no backpack spawned.");
+                return;
+            }
+            if (bladeDef == null)  Debug.LogWarning("[PlayerService] bladeDef is null.");
+            if (pistolDef == null) Debug.LogWarning("[PlayerService] pistolDef is null.");
 
-                    // Blade → 背包
-                    if (bladeDef != null)
-                    {
-                        const string bladeId = "test_blade";
-                        spawnRequestEvent.Raise(new SEntitySpawnRequest(bladeDef, bladeId, null));
-                        var blade = entityService.Get(bladeId);
-                        if (blade != null && bp.NestedContainer != null)
-                            bp.NestedContainer.Place("ContainerSlot", blade);
-                    }
-
-                    // Pistol → 背包
-                    if (pistolDef != null)
-                    {
-                        const string pistolId = "test_pistol";
-                        spawnRequestEvent.Raise(new SEntitySpawnRequest(pistolDef, pistolId, null));
-                        var pistol = entityService.Get(pistolId);
-                        if (pistol != null && bp.NestedContainer != null)
-                            bp.NestedContainer.Place("ContainerSlot", pistol);
-                    }
-                }
+            const string backpackId = "test_backpack";
+            spawnRequestEvent.Raise(new SEntitySpawnRequest(backpackDef, backpackId, null));
+            var bp = entityService.Get(backpackId);
+            if (bp == null)
+            {
+                Debug.LogError($"[PlayerService] Spawn backpack failed — entityService.Get(\"{backpackId}\") returned null.");
+                return;
             }
 
+            container.Place("Back", bp);
+
+            // Blade → 背包
+            if (bladeDef != null)
+            {
+                const string bladeId = "test_blade";
+                spawnRequestEvent.Raise(new SEntitySpawnRequest(bladeDef, bladeId, null));
+                var blade = entityService.Get(bladeId);
+                if (blade != null && bp.NestedContainer != null)
+                    bp.NestedContainer.Place("ContainerSlot", blade);
+            }
+
+            // Pistol → 背包
+            if (pistolDef != null)
+            {
+                const string pistolId = "test_pistol";
+                spawnRequestEvent.Raise(new SEntitySpawnRequest(pistolDef, pistolId, null));
+                var pistol = entityService.Get(pistolId);
+                if (pistol != null && bp.NestedContainer != null)
+                    bp.NestedContainer.Place("ContainerSlot", pistol);
+            }
         }
 
         public void OnGameplaySessionEnd()

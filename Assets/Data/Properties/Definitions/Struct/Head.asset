@@ -18,4 +18,4 @@ MonoBehaviour:
   Type: 8
   IsDeprecated: 0
   StructTypeName: RedDust.Container.SlotDef
-  DefaultJson: '{"AcceptTags":["Armor.Head"],"Capacity":1}'
+  DefaultJson: '{"AcceptTags":["Entity.Armor.Head"],"Capacity":1}'

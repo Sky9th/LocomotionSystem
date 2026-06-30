@@ -99,7 +99,6 @@ namespace RedDust.Character.Director
             var bpContainer = GetBackpackContainer();
             if (bpContainer == null) { Debug.Log("[ProcessEquipInput] No backpack found."); return; }
 
-            // 先确认目标在背包
             Entity target = null;
             if (targetId != null)
             {
@@ -211,8 +210,11 @@ namespace RedDust.Character.Director
                 Debug.LogWarning($"[PlayerDirector] {slotName} is empty — skill activation skipped");
                 return;
             }
-            Debug.Log($"[PlayerDirector] Activating {slotName}: {def.internalName}");
-            ability.TryActivate(def, ctx.ModelRoot.position, ctx.ModelRoot.forward);
+
+            var weapon = ctx.CharacterContainer?.BodyContainer?.GetItem("RightHand");
+            Debug.Log($"[PlayerDirector] Enqueue {slotName}: {def.internalName}" +
+                      (weapon != null ? $" | weapon={weapon.Preset.name}" : ""));
+            ability.Enqueue(def, ctx.ModelRoot.position, ctx.ModelRoot.forward, weapon);
         }
 
     }

@@ -49,13 +49,6 @@ namespace RedDust.Character
             }
 
             BodyContainer = new Container.Container($"{ctx.Root.name}/Body", BodySlots);
-
-            var names = new System.Text.StringBuilder();
-            for (int i = 0; i < BodySlots.Length; i++)
-            {
-                if (i > 0) names.Append(", ");
-                names.Append(BodySlots[i].SlotId);
-            }
         }
 
     }
