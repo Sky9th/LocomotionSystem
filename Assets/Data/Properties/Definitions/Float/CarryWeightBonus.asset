@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: CarryWeightBonus
   m_EditorClassIdentifier: 
   Id: CarryWeightBonus
-  Description: "\u8D1F\u91CD\u4E0A\u9650\u52A0\u6210(kg)\u3002\u80CC\u5305/\u5BB9\u5668\u6838\u5FC3\u5C5E\u6027\u3002\u76F4\u63A5\u589E\u52A0CarryWeight\u3002\u767B\u5C71\u5305=30kg
-    \u5C0F\u80CC\u5305=10kg\u3002ContainerBase\u6838\u5FC3\u5C5E\u6027\u3002"
+  Description: "\u8D1F\u91CD\u4E0A\u9650\u52A0\u6210(kg)\u3002\u80CC\u5305\u6838\u5FC3\u5C5E\u6027\u3002\u76F4\u63A5\u589E\u52A0CarryWeight\u3002\u767B\u5C71\u5305=30kg
+    \u5C0F\u80CC\u5305=10kg\u3002Backpack\u5C5E\u6027\u3002"
   Type: 0
   IsDeprecated: 0
   Min: 5

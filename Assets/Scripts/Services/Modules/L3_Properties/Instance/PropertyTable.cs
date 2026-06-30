@@ -283,7 +283,7 @@ namespace RedDust.Properties
                     break;
                 }
                 case PropertyType.String:
-                case PropertyType.rTag:
+                case PropertyType.RdTag:
                 {
                     string s = (string)newValue;
                     string oldS = _strings.TryGetValue(path, out var ps) ? ps : null;
@@ -291,7 +291,7 @@ namespace RedDust.Properties
                     if (!flags.HasFlag(WriteFlags.SkipEvents) && oldS != s) OnPropertyChanged?.Invoke(path, oldS, s);
                     break;
                 }
-                case PropertyType.rTagList:
+                case PropertyType.RdTagList:
                 {
                     string[] tl = (string[])newValue;
                     string[] oldTl = _tagLists.TryGetValue(path, out var ptl) ? ptl : null;

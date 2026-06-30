@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd75724e680ef884184a96c37c07aa2c, type: 3}
+  m_Name: ConsciousnessRestore
+  m_EditorClassIdentifier: 
+  Id: ConsciousnessRestore
+  Description: "\u610F\u8BC6\u6062\u590D\u91CF(0-100)\u3002\u55C5\u76D0=30 \u80BE\u4E0A\u817A\u7D20=60\u3002Medical\u4E13\u5C5E\u5C5E\u6027\u3002"
+  Type: 0
+  IsDeprecated: 0
+  Min: 0
+  Max: 100
+  DefaultValue: 0

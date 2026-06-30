@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MoveSpeedPenalty_Container
   m_EditorClassIdentifier: 
   Id: MoveSpeedPenalty_Container
-  Description: "\u80CC\u5305\u79FB\u901F\u60E9\u7F5A\u6BD4\u4F8B(0-0.3)\u3002\u80CC\u5305\u8D8A\u91CD/\u8D8A\u5927\u60E9\u7F5A\u8D8A\u9AD8\u3002ContainerBase\u5C5E\u6027\u3002\u6CE8\u610F:
+  Description: "\u80CC\u5305\u79FB\u901F\u60E9\u7F5A\u6BD4\u4F8B(0-0.3)\u3002\u80CC\u5305\u8D8A\u91CD/\u8D8A\u5927\u60E9\u7F5A\u8D8A\u9AD8\u3002Backpack\u5C5E\u6027\u3002\u6CE8\u610F:
     \u72EC\u7ACB\u4E8EArmorBase\u7684MoveSpeedPenalty\uFF0C\u4E24\u8005\u53E0\u52A0\u3002"
   Type: 0
   IsDeprecated: 0

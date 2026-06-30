@@ -21,5 +21,6 @@ MonoBehaviour:
     {\n            \"NodeId\": \"Weight\",\n            \"ParentId\": \"Common\",\n           
     \"DefId\": \"Weight\"\n        },\n        {\n            \"NodeId\": \"Tags\",\n           
     \"ParentId\": \"Common\",\n            \"DefId\": \"Tags\"\n        },\n       
-    {\n            \"NodeId\": \"Slots\",\n            \"ParentId\": \"\",\n           
-    \"DefId\": \"\"\n        }\n    ]\n}"
+    {\n            \"NodeId\": \"Description\",\n            \"ParentId\": \"Common\",\n           
+    \"DefId\": \"Description\"\n        },\n        {\n            \"NodeId\": \"Slots\",\n           
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        }\n    ]\n}"

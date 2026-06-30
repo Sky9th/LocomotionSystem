@@ -12,10 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e47e6b69f1db8742ab169ebce8acc1e, type: 3}
   m_Name: WeaponBase
   m_EditorClassIdentifier: 
-  InheritsFrom: {fileID: 11400000, guid: 99b9d61c396ebf9419ddd86c3740fbf8, type: 2}
-  treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"Base\",\n           
+  InheritsFrom: {fileID: 11400000, guid: b21c32e3b46d97a46bd89e6af31d3036, type: 2}
+  treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"Weapon\",\n           
     \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
-    \"NodeId\": \"Durability\",\n            \"ParentId\": \"Base\",\n           
-    \"DefId\": \"Durability\"\n        },\n        {\n            \"NodeId\": \"MaxDurability\",\n           
-    \"ParentId\": \"Base\",\n            \"DefId\": \"MaxDurability\"\n        }\n   
-    ]\n}"
+    \"NodeId\": \"ATK\",\n            \"ParentId\": \"Weapon\",\n            \"DefId\":
+    \"ATK\"\n        },\n        {\n            \"NodeId\": \"AttackSpeed\",\n           
+    \"ParentId\": \"Weapon\",\n            \"DefId\": \"AttackSpeed\"\n        },\n       
+    {\n            \"NodeId\": \"AttackRange\",\n            \"ParentId\": \"Weapon\",\n           
+    \"DefId\": \"AttackRange\"\n        },\n        {\n            \"NodeId\": \"NoiseRadius\",\n           
+    \"ParentId\": \"Weapon\",\n            \"DefId\": \"NoiseRadius\"\n        },\n       
+    {\n            \"NodeId\": \"IsTwoHanded\",\n            \"ParentId\": \"Weapon\",\n           
+    \"DefId\": \"IsTwoHanded\"\n        }\n    ]\n}"

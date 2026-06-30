@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: ArmorPierce
   m_EditorClassIdentifier: 
   Id: ArmorPierce
-  Description: "\u8FD1\u6218\u62A4\u7532\u7A7F\u900F\u6BD4\u4F8B(0-1)\u3002Axe \u7C7B\u6B66\u5668\u4E13\u5C5E\u30021.0=\u5B8C\u5168\u65E0\u89C6\u62A4\u7532\u3002\u9ED8\u8BA4
-    0\uFF08\u5251/\u68CD/\u77DB\u65E0\u7834\u7532\uFF09\u3002"
+  Description: "\u8FD1\u6218\u7834\u7532\u6BD4\u4F8B(0-1)\u3002Axe\u7C7B\u6B66\u5668\u4E13\u5C5E\u3002\u7EDF\u4E00\u547D\u540D\u4E3APenetration\u7CFB\u5217\uFF08\u8FD1\u6218ratio/\u8FDC\u7A0Babsolute\uFF09\u3002"
   Type: 0
   IsDeprecated: 0
   Min: 0
   Max: 1
-  DefaultValue: 100
+  DefaultValue: 0

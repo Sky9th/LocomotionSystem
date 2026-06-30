@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd75724e680ef884184a96c37c07aa2c, type: 3}
+  m_Name: WindDirection
+  m_EditorClassIdentifier: 
+  Id: WindDirection
+  Description: "\u98CE\u5411(\u5EA6, 0-360)\u30020=\u5317\u98CE 90=\u4E1C\u98CE\u3002\u5F71\u54CD\u566A\u97F3\u4F20\u64AD\u65B9\u5411\u548C\u6BD2\u6C14\u6269\u6563\u3002Environment\u5168\u5C40\u5355\u4F8B\u5C5E\u6027(\u8FDC\u671F)\u3002"
+  Type: 0
+  IsDeprecated: 0
+  Min: 0
+  Max: 360
+  DefaultValue: 0

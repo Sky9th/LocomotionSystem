@@ -55,73 +55,87 @@ MonoBehaviour:
     \"ParentId\": \"Combat\",\n            \"DefId\": \"ThrowableProf\"\n       
     },\n        {\n            \"NodeId\": \"DefensiveProf\",\n            \"ParentId\":
     \"Combat\",\n            \"DefId\": \"DefensiveProf\"\n        },\n        {\n           
-    \"NodeId\": \"Work\",\n            \"ParentId\": \"\",\n            \"DefId\":
-    \"\"\n        },\n        {\n            \"NodeId\": \"CookProf\",\n           
-    \"ParentId\": \"Work\",\n            \"DefId\": \"CookProf\"\n        },\n       
-    {\n            \"NodeId\": \"FarmProf\",\n            \"ParentId\": \"Work\",\n           
-    \"DefId\": \"FarmProf\"\n        },\n        {\n            \"NodeId\": \"BuildProf\",\n           
-    \"ParentId\": \"Work\",\n            \"DefId\": \"BuildProf\"\n        },\n       
-    {\n            \"NodeId\": \"GatherProf\",\n            \"ParentId\": \"Work\",\n           
-    \"DefId\": \"GatherProf\"\n        },\n        {\n            \"NodeId\": \"CraftProf\",\n           
-    \"ParentId\": \"Work\",\n            \"DefId\": \"CraftProf\"\n        },\n       
-    {\n            \"NodeId\": \"MedicalProf\",\n            \"ParentId\": \"Work\",\n           
-    \"DefId\": \"MedicalProf\"\n        },\n        {\n            \"NodeId\": \"ResearchProf\",\n           
-    \"ParentId\": \"Work\",\n            \"DefId\": \"ResearchProf\"\n        },\n       
-    {\n            \"NodeId\": \"TradeProf\",\n            \"ParentId\": \"Work\",\n           
-    \"DefId\": \"TradeProf\"\n        },\n        {\n            \"NodeId\": \"StealthProf\",\n           
-    \"ParentId\": \"Work\",\n            \"DefId\": \"StealthProf\"\n        },\n       
-    {\n            \"NodeId\": \"SurvivalProf\",\n            \"ParentId\": \"Work\",\n           
-    \"DefId\": \"SurvivalProf\"\n        },\n        {\n            \"NodeId\": \"LockpickingProf\",\n           
-    \"ParentId\": \"Work\",\n            \"DefId\": \"LockpickingProf\"\n       
-    },\n        {\n            \"NodeId\": \"TrapProf\",\n            \"ParentId\":
-    \"Work\",\n            \"DefId\": \"TrapProf\"\n        },\n        {\n           
-    \"NodeId\": \"Needs\",\n            \"ParentId\": \"\",\n            \"DefId\":
-    \"\"\n        },\n        {\n            \"NodeId\": \"Morale\",\n           
-    \"ParentId\": \"Needs\",\n            \"DefId\": \"Morale\"\n        },\n       
-    {\n            \"NodeId\": \"Sleepiness\",\n            \"ParentId\": \"Needs\",\n           
+    \"NodeId\": \"BowProf\",\n            \"ParentId\": \"Combat\",\n           
+    \"DefId\": \"BowProf\"\n        },\n        {\n            \"NodeId\": \"Work\",\n           
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
+    \"NodeId\": \"CookProf\",\n            \"ParentId\": \"Work\",\n            \"DefId\":
+    \"CookProf\"\n        },\n        {\n            \"NodeId\": \"FarmProf\",\n           
+    \"ParentId\": \"Work\",\n            \"DefId\": \"FarmProf\"\n        },\n       
+    {\n            \"NodeId\": \"BuildProf\",\n            \"ParentId\": \"Work\",\n           
+    \"DefId\": \"BuildProf\"\n        },\n        {\n            \"NodeId\": \"GatherProf\",\n           
+    \"ParentId\": \"Work\",\n            \"DefId\": \"GatherProf\"\n        },\n       
+    {\n            \"NodeId\": \"CraftProf\",\n            \"ParentId\": \"Work\",\n           
+    \"DefId\": \"CraftProf\"\n        },\n        {\n            \"NodeId\": \"MedicalProf\",\n           
+    \"ParentId\": \"Work\",\n            \"DefId\": \"MedicalProf\"\n        },\n       
+    {\n            \"NodeId\": \"ResearchProf\",\n            \"ParentId\": \"Work\",\n           
+    \"DefId\": \"ResearchProf\"\n        },\n        {\n            \"NodeId\": \"TradeProf\",\n           
+    \"ParentId\": \"Work\",\n            \"DefId\": \"TradeProf\"\n        },\n       
+    {\n            \"NodeId\": \"StealthProf\",\n            \"ParentId\": \"Work\",\n           
+    \"DefId\": \"StealthProf\"\n        },\n        {\n            \"NodeId\": \"SurvivalProf\",\n           
+    \"ParentId\": \"Work\",\n            \"DefId\": \"SurvivalProf\"\n        },\n       
+    {\n            \"NodeId\": \"LockpickingProf\",\n            \"ParentId\": \"Work\",\n           
+    \"DefId\": \"LockpickingProf\"\n        },\n        {\n            \"NodeId\":
+    \"TrapProf\",\n            \"ParentId\": \"Work\",\n            \"DefId\": \"TrapProf\"\n       
+    },\n        {\n            \"NodeId\": \"FishingProf\",\n            \"ParentId\":
+    \"Work\",\n            \"DefId\": \"FishingProf\"\n        },\n        {\n           
+    \"NodeId\": \"ButcheringProf\",\n            \"ParentId\": \"Work\",\n           
+    \"DefId\": \"ButcheringProf\"\n        },\n        {\n            \"NodeId\":
+    \"Needs\",\n            \"ParentId\": \"\",\n            \"DefId\": \"\"\n       
+    },\n        {\n            \"NodeId\": \"Morale\",\n            \"ParentId\":
+    \"Needs\",\n            \"DefId\": \"Morale\"\n        },\n        {\n           
+    \"NodeId\": \"Sleepiness\",\n            \"ParentId\": \"Needs\",\n           
     \"DefId\": \"Sleepiness\"\n        },\n        {\n            \"NodeId\": \"Comfort\",\n           
     \"ParentId\": \"Needs\",\n            \"DefId\": \"Comfort\"\n        },\n       
     {\n            \"NodeId\": \"SocialNeed\",\n            \"ParentId\": \"Needs\",\n           
     \"DefId\": \"SocialNeed\"\n        },\n        {\n            \"NodeId\": \"Boredom\",\n           
     \"ParentId\": \"Needs\",\n            \"DefId\": \"Boredom\"\n        },\n       
-    {\n            \"NodeId\": \"Movement\",\n            \"ParentId\": \"\",\n           
-    \"DefId\": \"\"\n        },\n        {\n            \"NodeId\": \"CarryWeight\",\n           
-    \"ParentId\": \"Movement\",\n            \"DefId\": \"CarryWeight\"\n       
-    },\n        {\n            \"NodeId\": \"Acceleration\",\n            \"ParentId\":
-    \"Movement\",\n            \"DefId\": \"Acceleration\"\n        },\n        {\n           
-    \"NodeId\": \"MaxSlopeAngle\",\n            \"ParentId\": \"Movement\",\n           
-    \"DefId\": \"MaxSlopeAngle\"\n        },\n        {\n            \"NodeId\":
-    \"Body\",\n            \"ParentId\": \"\",\n            \"DefId\": \"\"\n       
-    },\n        {\n            \"NodeId\": \"Height\",\n            \"ParentId\":
-    \"Body\",\n            \"DefId\": \"Height\"\n        },\n        {\n           
-    \"NodeId\": \"ObstacleProbeVertical\",\n            \"ParentId\": \"Body\",\n           
-    \"DefId\": \"ObstacleProbeVertical\"\n        },\n        {\n            \"NodeId\":
-    \"ObstacleProbeDistance\",\n            \"ParentId\": \"Body\",\n           
-    \"DefId\": \"ObstacleProbeDistance\"\n        },\n        {\n            \"NodeId\":
-    \"ObstacleMinClimb\",\n            \"ParentId\": \"Body\",\n            \"DefId\":
-    \"ObstacleMinClimb\"\n        },\n        {\n            \"NodeId\": \"ObstacleMaxClimb\",\n           
-    \"ParentId\": \"Body\",\n            \"DefId\": \"ObstacleMaxClimb\"\n       
-    },\n        {\n            \"NodeId\": \"MaxHeadYaw\",\n            \"ParentId\":
-    \"Body\",\n            \"DefId\": \"MaxHeadYaw\"\n        },\n        {\n           
-    \"NodeId\": \"MaxHeadPitch\",\n            \"ParentId\": \"Body\",\n           
+    {\n            \"NodeId\": \"Hygiene\",\n            \"ParentId\": \"Needs\",\n           
+    \"DefId\": \"Hygiene\"\n        },\n        {\n            \"NodeId\": \"Movement\",\n           
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
+    \"NodeId\": \"CarryWeight\",\n            \"ParentId\": \"Movement\",\n           
+    \"DefId\": \"CarryWeight\"\n        },\n        {\n            \"NodeId\": \"Acceleration\",\n           
+    \"ParentId\": \"Movement\",\n            \"DefId\": \"Acceleration\"\n       
+    },\n        {\n            \"NodeId\": \"MaxSlopeAngle\",\n            \"ParentId\":
+    \"Movement\",\n            \"DefId\": \"MaxSlopeAngle\"\n        },\n       
+    {\n            \"NodeId\": \"Body\",\n            \"ParentId\": \"\",\n           
+    \"DefId\": \"\"\n        },\n        {\n            \"NodeId\": \"Height\",\n           
+    \"ParentId\": \"Body\",\n            \"DefId\": \"Height\"\n        },\n       
+    {\n            \"NodeId\": \"ObstacleProbeVertical\",\n            \"ParentId\":
+    \"Body\",\n            \"DefId\": \"ObstacleProbeVertical\"\n        },\n       
+    {\n            \"NodeId\": \"ObstacleProbeDistance\",\n            \"ParentId\":
+    \"Body\",\n            \"DefId\": \"ObstacleProbeDistance\"\n        },\n       
+    {\n            \"NodeId\": \"ObstacleMinClimb\",\n            \"ParentId\": \"Body\",\n           
+    \"DefId\": \"ObstacleMinClimb\"\n        },\n        {\n            \"NodeId\":
+    \"ObstacleMaxClimb\",\n            \"ParentId\": \"Body\",\n            \"DefId\":
+    \"ObstacleMaxClimb\"\n        },\n        {\n            \"NodeId\": \"MaxHeadYaw\",\n           
+    \"ParentId\": \"Body\",\n            \"DefId\": \"MaxHeadYaw\"\n        },\n       
+    {\n            \"NodeId\": \"MaxHeadPitch\",\n            \"ParentId\": \"Body\",\n           
     \"DefId\": \"MaxHeadPitch\"\n        },\n        {\n            \"NodeId\": \"Resistance\",\n           
     \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
     \"NodeId\": \"BleedResist\",\n            \"ParentId\": \"Resistance\",\n           
-    \"DefId\": \"BleedResist\"\n        },\n        {\n            \"NodeId\": \"InfectionResist\",\n           
-    \"ParentId\": \"Resistance\",\n            \"DefId\": \"InfectionResist\"\n       
-    },\n        {\n            \"NodeId\": \"BluntResist\",\n            \"ParentId\":
-    \"Resistance\",\n            \"DefId\": \"BluntResist\"\n        },\n       
-    {\n            \"NodeId\": \"FractureResist\",\n            \"ParentId\": \"Resistance\",\n           
-    \"DefId\": \"FractureResist\"\n        },\n        {\n            \"NodeId\":
-    \"FireResist\",\n            \"ParentId\": \"Resistance\",\n            \"DefId\":
-    \"FireResist\"\n        },\n        {\n            \"NodeId\": \"PoisonResist\",\n           
+    \"DefId\": \"BleedResist\"\n        },\n        {\n            \"NodeId\": \"SlashResist\",\n           
+    \"ParentId\": \"Resistance\",\n            \"DefId\": \"SlashResist\"\n       
+    },\n        {\n            \"NodeId\": \"PierceResist\",\n            \"ParentId\":
+    \"Resistance\",\n            \"DefId\": \"PierceResist\"\n        },\n       
+    {\n            \"NodeId\": \"BiteResist\",\n            \"ParentId\": \"Resistance\",\n           
+    \"DefId\": \"BiteResist\"\n        },\n        {\n            \"NodeId\": \"BluntResist\",\n           
+    \"ParentId\": \"Resistance\",\n            \"DefId\": \"BluntResist\"\n       
+    },\n        {\n            \"NodeId\": \"FractureResist\",\n            \"ParentId\":
+    \"Resistance\",\n            \"DefId\": \"FractureResist\"\n        },\n       
+    {\n            \"NodeId\": \"FireResist\",\n            \"ParentId\": \"Resistance\",\n           
+    \"DefId\": \"FireResist\"\n        },\n        {\n            \"NodeId\": \"PoisonResist\",\n           
     \"ParentId\": \"Resistance\",\n            \"DefId\": \"PoisonResist\"\n       
     },\n        {\n            \"NodeId\": \"ColdResist\",\n            \"ParentId\":
     \"Resistance\",\n            \"DefId\": \"ColdResist\"\n        },\n        {\n           
-    \"NodeId\": \"ElectricResist\",\n            \"ParentId\": \"Resistance\",\n           
-    \"DefId\": \"ElectricResist\"\n        },\n        {\n            \"NodeId\":
-    \"RadiationResist\",\n            \"ParentId\": \"Resistance\",\n           
-    \"DefId\": \"RadiationResist\"\n        },\n        {\n            \"NodeId\":
+    \"NodeId\": \"ShockResist\",\n            \"ParentId\": \"Resistance\",\n           
+    \"DefId\": \"ShockResist\"\n        },\n        {\n            \"NodeId\": \"AcidResist\",\n           
+    \"ParentId\": \"Resistance\",\n            \"DefId\": \"AcidResist\"\n       
+    },\n        {\n            \"NodeId\": \"RadiationResist\",\n            \"ParentId\":
+    \"Resistance\",\n            \"DefId\": \"RadiationResist\"\n        },\n       
+    {\n            \"NodeId\": \"DiseaseResist\",\n            \"ParentId\": \"Resistance\",\n           
+    \"DefId\": \"DiseaseResist\"\n        },\n        {\n            \"NodeId\":
+    \"InfectionResist\",\n            \"ParentId\": \"Resistance\",\n           
+    \"DefId\": \"InfectionResist\"\n        },\n        {\n            \"NodeId\":
     \"PainResist\",\n            \"ParentId\": \"Resistance\",\n            \"DefId\":
     \"PainResist\"\n        },\n        {\n            \"NodeId\": \"KnockdownResist\",\n           
     \"ParentId\": \"Resistance\",\n            \"DefId\": \"KnockdownResist\"\n       

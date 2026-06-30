@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd75724e680ef884184a96c37c07aa2c, type: 3}
+  m_Name: RecoilModifier
+  m_EditorClassIdentifier: 
+  Id: RecoilModifier
+  Description: "\u67AA\u68B0\u540E\u5750\u529B\u524A\u51CF\u7CFB\u6570\u3002\u67AA\u8BBE\u8BA1\u56FA\u6709\u7279\u6027\uFF0C\u597D\u7684\u8BBE\u8BA1\u53EF\u964D\u4F4E\u540E\u5750\u529B\u30020.5=\u534A\u540E\u5EA7,
+    1.0=\u6807\u51C6\u3002Firearm\u5C5E\u6027\u3002"
+  Type: 0
+  IsDeprecated: 0
+  Min: 0.3
+  Max: 1.5
+  DefaultValue: 1

@@ -15,7 +15,7 @@ MonoBehaviour:
   InheritsFrom: {fileID: 11400000, guid: f63ab8fb0f234dd4f95c1b69993e1f4c, type: 2}
   treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"Quality\",\n           
     \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
-    \"NodeId\": \"Rarity\",\n            \"ParentId\": \"Quality\",\n           
-    \"DefId\": \"Rarity\"\n        },\n        {\n            \"NodeId\": \"MaterialType_Tag\",\n           
-    \"ParentId\": \"Quality\",\n            \"DefId\": \"MaterialType_Tag\"\n       
+    \"NodeId\": \"ScarcityTier\",\n            \"ParentId\": \"Quality\",\n           
+    \"DefId\": \"ScarcityTier\"\n        },\n        {\n            \"NodeId\": \"MaterialType\",\n           
+    \"ParentId\": \"Quality\",\n            \"DefId\": \"MaterialType\"\n       
     }\n    ]\n}"

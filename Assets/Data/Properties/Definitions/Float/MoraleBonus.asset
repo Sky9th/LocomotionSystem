@@ -19,4 +19,4 @@ MonoBehaviour:
   IsDeprecated: 0
   Min: -50
   Max: 50
-  DefaultValue: 100
+  DefaultValue: 0

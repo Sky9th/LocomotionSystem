@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e47e6b69f1db8742ab169ebce8acc1e, type: 3}
   m_Name: Backpack
   m_EditorClassIdentifier: 
-  InheritsFrom: {fileID: 11400000, guid: cf14a3bc7add53c429fd120ea665f3ad, type: 2}
-  treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"Slots\",\n           
+  InheritsFrom: {fileID: 11400000, guid: b21c32e3b46d97a46bd89e6af31d3036, type: 2}
+  treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"Backpack\",\n           
     \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
-    \"NodeId\": \"ContainerSlot\",\n            \"ParentId\": \"Slots\",\n           
-    \"DefId\": \"ContainerSlot\"\n        }\n    ]\n}"
+    \"NodeId\": \"CarryWeightBonus\",\n            \"ParentId\": \"Backpack\",\n           
+    \"DefId\": \"CarryWeightBonus\"\n        },\n        {\n            \"NodeId\":
+    \"ContainerSlot\",\n            \"ParentId\": \"Slots\",\n            \"DefId\":
+    \"ContainerSlot\"\n        }\n    ]\n}"

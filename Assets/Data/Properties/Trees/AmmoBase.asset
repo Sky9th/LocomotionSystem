@@ -21,21 +21,20 @@ MonoBehaviour:
     \"NodeId\": \"BaseDamage\",\n            \"ParentId\": \"Combat\",\n           
     \"DefId\": \"BaseDamage\"\n        },\n        {\n            \"NodeId\": \"Penetration\",\n           
     \"ParentId\": \"Combat\",\n            \"DefId\": \"Penetration\"\n        },\n       
-    {\n            \"NodeId\": \"NoiseRadius\",\n            \"ParentId\": \"Combat\",\n           
-    \"DefId\": \"NoiseRadius\"\n        },\n        {\n            \"NodeId\": \"BulletWeight\",\n           
-    \"ParentId\": \"Combat\",\n            \"DefId\": \"BulletWeight\"\n        },\n       
-    {\n            \"NodeId\": \"OverPenetration\",\n            \"ParentId\": \"Combat\",\n           
-    \"DefId\": \"OverPenetration\"\n        },\n        {\n            \"NodeId\":
-    \"AmmoReliability\",\n            \"ParentId\": \"Combat\",\n            \"DefId\":
-    \"AmmoReliability\"\n        },\n        {\n            \"NodeId\": \"FoulingRate\",\n           
-    \"ParentId\": \"Combat\",\n            \"DefId\": \"FoulingRate\"\n        },\n       
-    {\n            \"NodeId\": \"Recoil\",\n            \"ParentId\": \"\",\n           
-    \"DefId\": \"\"\n        },\n        {\n            \"NodeId\": \"RecoilFactor\",\n           
-    \"ParentId\": \"Recoil\",\n            \"DefId\": \"RecoilFactor\"\n        },\n       
-    {\n            \"NodeId\": \"Tags\",\n            \"ParentId\": \"\",\n           
-    \"DefId\": \"\"\n        },\n        {\n            \"NodeId\": \"DamageType\",\n           
+    {\n            \"NodeId\": \"BulletWeight\",\n            \"ParentId\": \"Combat\",\n           
+    \"DefId\": \"BulletWeight\"\n        },\n        {\n            \"NodeId\": \"OverPenetration\",\n           
+    \"ParentId\": \"Combat\",\n            \"DefId\": \"OverPenetration\"\n       
+    },\n        {\n            \"NodeId\": \"NoiseRadius\",\n            \"ParentId\":
+    \"Combat\",\n            \"DefId\": \"NoiseRadius\"\n        },\n        {\n           
+    \"NodeId\": \"MuzzleVelocity\",\n            \"ParentId\": \"Combat\",\n           
+    \"DefId\": \"MuzzleVelocity\"\n        },\n        {\n            \"NodeId\":
+    \"RecoilFactor\",\n            \"ParentId\": \"Combat\",\n            \"DefId\":
+    \"RecoilFactor\"\n        },\n        {\n            \"NodeId\": \"AmmoReliability\",\n           
+    \"ParentId\": \"Combat\",\n            \"DefId\": \"AmmoReliability\"\n       
+    },\n        {\n            \"NodeId\": \"FoulingRate\",\n            \"ParentId\":
+    \"Combat\",\n            \"DefId\": \"FoulingRate\"\n        },\n        {\n           
+    \"NodeId\": \"Tags\",\n            \"ParentId\": \"\",\n            \"DefId\":
+    \"\"\n        },\n        {\n            \"NodeId\": \"DamageType\",\n           
     \"ParentId\": \"Tags\",\n            \"DefId\": \"DamageType\"\n        },\n       
-    {\n            \"NodeId\": \"Compat\",\n            \"ParentId\": \"\",\n           
-    \"DefId\": \"\"\n        },\n        {\n            \"NodeId\": \"Platform\",\n           
-    \"ParentId\": \"Compat\",\n            \"DefId\": \"Platform\"\n        }\n   
-    ]\n}"
+    {\n            \"NodeId\": \"Platform\",\n            \"ParentId\": \"Tags\",\n           
+    \"DefId\": \"Platform\"\n        }\n    ]\n}"

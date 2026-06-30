@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd75724e680ef884184a96c37c07aa2c, type: 3}
+  m_Name: StanceStability
+  m_EditorClassIdentifier: 
+  Id: StanceStability
+  Description: "\u7AD9\u59FF\u7A33\u5B9A\u6027(0-100)\u3002\u5F71\u54CD\u88AB\u51FB\u9000/\u51FB\u5012\u65F6\u7684\u6062\u590D\u901F\u5EA6\u3002BodyArmor\u4E13\u5C5E\u3002"
+  Type: 0
+  IsDeprecated: 0
+  Min: 0
+  Max: 100
+  DefaultValue: 0

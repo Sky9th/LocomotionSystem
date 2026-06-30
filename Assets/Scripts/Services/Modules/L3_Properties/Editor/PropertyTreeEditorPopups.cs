@@ -176,12 +176,12 @@ namespace RedDust.Properties.Editor
                             var sv = ((StringPropertyDefSO)_def).DefaultValue;
                             DrawFieldRow("Default", string.IsNullOrEmpty(sv) ? "(empty)" : sv);
                             break;
-                        case PropertyType.rTag:
-                            var tv = ((RTagPropertyDefSO)_def).DefaultValue;
+                        case PropertyType.RdTag:
+                            var tv = ((RdTagPropertyDefSO)_def).DefaultValue;
                             DrawFieldRow("Default", string.IsNullOrEmpty(tv) ? "(empty)" : tv);
                             break;
-                        case PropertyType.rTagList:
-                            EditorGUILayout.LabelField("rTag array reference. No numeric constraints.", ValueStyle);
+                        case PropertyType.RdTagList:
+                            EditorGUILayout.LabelField("RdTag array reference. No numeric constraints.", ValueStyle);
                             break;
                         case PropertyType.AssetRef:
                             var ac = ((AssetRefPropertyDefSO)_def).AssetTypeConstraint;
@@ -367,7 +367,7 @@ namespace RedDust.Properties.Editor
                     else if (def is IntPropertyDefSO id) { id.Min = _minInt; id.Max = _maxInt; id.DefaultValue = _defaultInt; }
                     else if (def is BoolPropertyDefSO bd) { bd.DefaultValue = _defaultBool; }
                     else if (def is StringPropertyDefSO sd) { sd.DefaultValue = _defaultString; }
-                    else if (def is RTagPropertyDefSO rd) { rd.DefaultValue = _defaultString; }
+                    else if (def is RdTagPropertyDefSO rd) { rd.DefaultValue = _defaultString; }
                     else if (def is AssetRefPropertyDefSO ad) { ad.AssetTypeConstraint = _assetTypeConstraint; }
                     else if (def is AssetRefListPropertyDefSO ald) { ald.AssetTypeConstraint = _assetTypeConstraint; }
                     else if (def is StructPropertyDefSO std) { std.StructTypeName = _structTypeName; std.DefaultJson = _defaultStructJson ?? "[]"; }

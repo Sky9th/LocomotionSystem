@@ -1,6 +1,6 @@
 {
-  "version": "2.0",
-  "description": "全量属性与属性树 — 30 Trees, ~185 PropertyDefs, 8族。基于 property-inventory.md 设计，经双Agent交叉验证修复。",
+  "version": "2.1",
+  "description": "全族对齐 — 6分支审核完成 + 两轮交叉验证",
   "definitions": {
     "_float": [
       {
@@ -64,7 +64,7 @@
         "description": "当前感染值。咬伤累积，>10发热 >30意识模糊 >60器官衰竭 >90丧尸化。累积型(Cumulative)，只增不减。抗生素可延缓但不可逆。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "Consciousness",
@@ -78,7 +78,7 @@
         "description": "当前疼痛值。受伤增加，>60触发行动惩罚(攻速/移速降低)。静止缓慢恢复。消耗型(Consumable)。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "Strength",
@@ -127,147 +127,168 @@
         "description": "刀剑熟练度(0-100)。使用刀剑武器命中目标时累积。影响命中率(+1%/点)、暴击率(+1%/点)、破防率。累积型(Cumulative)。绑定Ability.Melee.Blade。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "AxeProf",
         "description": "斧熟练度(0-100)。使用斧武器命中目标时累积。累积型(Cumulative)。绑定Ability.Melee.Axe。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "StaffProf",
         "description": "棍杖熟练度(0-100)。使用棍杖武器命中目标时累积。累积型(Cumulative)。绑定Ability.Melee.Staff。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "UnarmedProf",
         "description": "徒手/武术熟练度(0-100)。空手或使用武术套路时累积。累积型(Cumulative)。绑定Ability.Melee.Routines。A测暂不启用。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "PistolProf",
         "description": "手枪熟练度(0-100)。使用手枪命中目标时累积。累积型(Cumulative)。绑定Ability.Ranged.Pistol。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "ShotgunProf",
         "description": "霰弹枪熟练度(0-100)。使用霰弹枪命中目标时累积。累积型(Cumulative)。绑定Ability.Ranged.Shotgun。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "RifleProf",
         "description": "步枪熟练度(0-100)。使用步枪命中目标时累积。累积型(Cumulative)。绑定Ability.Ranged.Rifle。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "ThrowableProf",
         "description": "投掷物熟练度(0-100)。使用投掷物时累积。累积型(Cumulative)。绑定Ability.Throwable。A测暂不启用。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "DefensiveProf",
         "description": "防御熟练度(0-100)。格挡/闪避/盾牌使用时累积。累积型(Cumulative)。绑定Ability.Defensive。A测暂不启用。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
+      },
+      {
+        "id": "BowProf",
+        "description": "弓熟练度(0-100)。使用弓命中目标时累积。累积型(Cumulative)。绑定Ability.Ranged.Bow。",
+        "min": 0,
+        "max": 100,
+        "defaultValue": 0
       },
       {
         "id": "CookProf",
         "description": "烹饪熟练度(0-100)。NPC持续从事烹饪工作时累积。影响食物品质和士气加成。累积型(Cumulative)。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "FarmProf",
         "description": "耕种熟练度(0-100)。NPC持续从事耕种工作时累积。影响作物产量和收获效率。累积型(Cumulative)。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "BuildProf",
         "description": "建造熟练度(0-100)。NPC持续从事建造工作时累积。影响建造速度和建筑耐久。累积型(Cumulative)。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "GatherProf",
         "description": "采集熟练度(0-100)。NPC持续从事采集(木材/石材/草药)时累积。影响采集速度和稀有产出概率。累积型(Cumulative)。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "CraftProf",
         "description": "制作熟练度(0-100)。NPC持续从事制作(工具/武器/零件)时累积。影响制作品质和材料消耗。累积型(Cumulative)。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "MedicalProf",
         "description": "医疗熟练度(0-100)。NPC/玩家进行医疗行为时累积。影响治疗效果和成功率。A测暂不启用(Phase 12+)。累积型(Cumulative)。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "ResearchProf",
         "description": "研究熟练度(0-100)。NPC持续从事科技研究时累积。影响研究速度。累积型(Cumulative)。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "TradeProf",
         "description": "交易熟练度(0-100)。NPC/玩家进行交易时累积。影响买卖价格。累积型(Cumulative)。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "StealthProf",
         "description": "潜行熟练度(0-100)。潜行移动时累积。影响噪音降低(移动-1级/交互-1级)和潜行侦测难度。累积型(Cumulative)。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "SurvivalProf",
         "description": "生存熟练度(0-100)。从事生火/净化水/辨识植物等生存行为时累积。影响生存技能成功率。累积型(Cumulative)。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "LockpickingProf",
         "description": "开锁/破解熟练度(0-100)。开锁或破解电子设备时累积。A测暂不启用。累积型(Cumulative)。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "TrapProf",
         "description": "陷阱熟练度(0-100)。布置/拆除陷阱时累积。A测暂不启用。累积型(Cumulative)。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
+      },
+      {
+        "id": "FishingProf",
+        "description": "钓鱼熟练度(0-100)。钓鱼时累积。影响钓鱼速度和稀有鱼获概率。累积型(Cumulative)。",
+        "min": 0,
+        "max": 100,
+        "defaultValue": 0
+      },
+      {
+        "id": "ButcheringProf",
+        "description": "屠宰熟练度(0-100)。屠宰动物时累积。影响肉产量和副产品概率。累积型(Cumulative)。",
+        "min": 0,
+        "max": 100,
+        "defaultValue": 0
       },
       {
         "id": "Morale",
@@ -281,7 +302,7 @@
         "description": "困意值。持续累积(0.008/s)，>50效率惩罚 >80强制休息。睡眠时快速恢复(3/s)。消耗型(Consumable)。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "Comfort",
@@ -302,91 +323,196 @@
         "description": "无聊度。重复工作累积(0.005/s)，娱乐活动降低(5/s)。影响NPC工作效率。消耗型(Consumable)。A测暂不启用。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
+      },
+      {
+        "id": "Hygiene",
+        "description": "卫生度(0-100)。0=肮脏(易感染/士气惩罚) 100=洁净。受洗澡/肥皂/净水影响。",
+        "min": 0,
+        "max": 100,
+        "defaultValue": 50
       },
       {
         "id": "CarryWeight",
-        "description": "负重上限(kg)。公式: 50 + Strength×10 + 背包加成。超出后移速惩罚递增。Actor/Human属性，同时被BodyArmor和Container引用加成。",
+        "description": "负重上限(kg)。公式: 50 + Strength×10 + 背包加成。超出后移速惩罚递增。Actor/Human属性，同时被Backpack引用加成。",
         "min": 10,
         "max": 200,
         "defaultValue": 50
+      },
+      {
+        "id": "Acceleration",
+        "description": "移动加速度 (m/s²)。影响角色从静止达到目标速度的速率。Human基础属性。",
+        "min": 1,
+        "max": 20,
+        "defaultValue": 5
+      },
+      {
+        "id": "MaxSlopeAngle",
+        "description": "最大可行走坡度角 (度)。超过此角度的斜面无法行走。人=55°, 蜘蛛=90°。Human基础属性。",
+        "min": 0,
+        "max": 89,
+        "defaultValue": 55
+      },
+      {
+        "id": "Height",
+        "description": "角色身高 (米)。影响障碍物翻越上限、视线高度。成年男性=1.8m。Human体型属性。",
+        "min": 0.5,
+        "max": 5,
+        "defaultValue": 1.8
+      },
+      {
+        "id": "ObstacleProbeVertical",
+        "description": "障碍物探测垂直偏移 (米)。从脚底向上的射线起点，约胸腔高度。Human体型属性。",
+        "min": 0,
+        "max": 2,
+        "defaultValue": 0.15
+      },
+      {
+        "id": "ObstacleProbeDistance",
+        "description": "障碍物探测距离 (米)。前方障碍判定射线长度，约臂长。Human体型属性。",
+        "min": 0,
+        "max": 3,
+        "defaultValue": 0.75
+      },
+      {
+        "id": "ObstacleMinClimb",
+        "description": "最小翻越高度 (米)。低于此高度可跨过，约小腿长。Human体型属性。",
+        "min": 0,
+        "max": 1,
+        "defaultValue": 0.3
+      },
+      {
+        "id": "ObstacleMaxClimb",
+        "description": "最大翻越高度 (米)。高于此高度无法攀爬。默认同身高1.8m。Human体型属性。",
+        "min": 0.1,
+        "max": 5,
+        "defaultValue": 1.8
+      },
+      {
+        "id": "MaxHeadYaw",
+        "description": "头部最大水平转动角 (度)。人=±75°, 猫头鹰=±180°。Human生理属性。",
+        "min": 0,
+        "max": 180,
+        "defaultValue": 75
+      },
+      {
+        "id": "MaxHeadPitch",
+        "description": "头部最大垂直转动角 (度)。人=±75°。Human生理属性。",
+        "min": 0,
+        "max": 90,
+        "defaultValue": 75
       },
       {
         "id": "BleedResist",
         "description": "流血抗性(0-100)。降低割伤(Laceration)的流血速率。受护甲、体质影响。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
-        "id": "InfectionResist",
-        "description": "感染抗性(0-100)。降低咬伤(Bite)的感染累积速率。受护甲、体质影响。",
+        "id": "SlashResist",
+        "description": "斩击抗性(0-100)。降低斩击伤害。对应Damage.Physical.Slash。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
+      },
+      {
+        "id": "PierceResist",
+        "description": "穿刺抗性(0-100)。降低穿刺伤害。对应Damage.Physical.Pierce。",
+        "min": 0,
+        "max": 100,
+        "defaultValue": 0
+      },
+      {
+        "id": "BiteResist",
+        "description": "咬伤抗性(0-100)。降低咬伤物理伤害。区别于InfectionResist管感染累积。对应Damage.Physical.Bite。",
+        "min": 0,
+        "max": 100,
+        "defaultValue": 0
       },
       {
         "id": "BluntResist",
         "description": "钝器抗性(0-100)。降低钝器伤(Blunt)的击倒概率和体力上限惩罚。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "FractureResist",
         "description": "骨折抗性(0-100)。降低重击/跌落时的骨折概率。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "FireResist",
         "description": "火焰抗性(0-100)。降低烧伤(Burn)伤害。受护甲、防具影响。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "PoisonResist",
         "description": "中毒抗性(0-100)。降低毒素伤害和DoT累积速率。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "ColdResist",
         "description": "寒冷抗性(0-100)。减缓体温(BodyTemp)下降速率。受衣物、护甲影响。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
-        "id": "ElectricResist",
-        "description": "电击抗性(0-100)。降低电击伤害。",
+        "id": "ShockResist",
+        "description": "电击抗性(0-100)。降低电击伤害。对齐Damage.Elemental.Shock。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
+      },
+      {
+        "id": "AcidResist",
+        "description": "酸蚀抗性(0-100)。降低酸蚀伤害。对应Damage.Elemental.Acid。",
+        "min": 0,
+        "max": 100,
+        "defaultValue": 0
       },
       {
         "id": "RadiationResist",
         "description": "辐射抗性(0-100)。减缓辐射累积速率。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
+      },
+      {
+        "id": "DiseaseResist",
+        "description": "疾病抗性(0-100)。降低疾病感染概率和严重程度。对应Damage.Biological.Disease。",
+        "min": 0,
+        "max": 100,
+        "defaultValue": 0
+      },
+      {
+        "id": "InfectionResist",
+        "description": "感染抗性(0-100)。降低咬伤(Bite)的感染累积速率。受护甲、体质影响。",
+        "min": 0,
+        "max": 100,
+        "defaultValue": 0
       },
       {
         "id": "PainResist",
         "description": "疼痛抗性(0-100)。减缓受伤时疼痛(Pain)累积速率。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "KnockdownResist",
         "description": "击倒抗性(0-100)。降低被击倒概率。受BodyArmor护甲加成，同时被Human Resistance和Armor Bonus引用。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "SightRange",
@@ -400,14 +526,14 @@
         "description": "夜视能力(0-100)。Human专用百分比标度。0=无夜视 100=全彩夜视。注意：装备族NightVision使用0~1倍率标度，此为独立Def。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "FlashResist_Human",
         "description": "闪光抗性(0-100)。Human专用百分比标度。降低闪光弹致盲时间。注意：装备族FlashResist使用0~1倍率标度，此为独立Def。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "Loyalty",
@@ -439,15 +565,8 @@
       },
       {
         "id": "Durability",
-        "description": "当前耐久度。0=物品损坏/不可用。跨族共用(Weapon/Armor/Tool/Container)。低耐久触发性能惩罚(50%以下×0.8, 20%以下×0.5)。",
+        "description": "当前耐久度。0=物品损坏/不可用。跨族共用(Weapon/Armor/Tool/Backpack)。低耐久触发性能惩罚(50%以下×0.8, 20%以下×0.5)。",
         "min": 0,
-        "max": 9999,
-        "defaultValue": 100
-      },
-      {
-        "id": "MaxDurability",
-        "description": "最大耐久度。跨族共用(Weapon/Armor/Tool/Container/Building)。新物品Durability=MaxDurability。",
-        "min": 1,
         "max": 9999,
         "defaultValue": 100
       },
@@ -466,39 +585,18 @@
         "defaultValue": 1
       },
       {
-        "id": "CritMulti",
-        "description": "近战暴击伤害倍率。1.5=150%伤害。不同武器类型差异: Blade=2.0 Staff=1.5 Axe=1.8。",
-        "min": 1,
-        "max": 5,
+        "id": "AttackRange",
+        "description": "攻击距离（米）。统一近战/远程/投掷。替代原有Reach。",
+        "min": 0.5,
+        "max": 50,
         "defaultValue": 1.5
       },
       {
-        "id": "StunChance",
-        "description": "近战眩晕概率(0-1)。触发后目标短暂硬直。Staff类武器眩晕概率较高(0.15)。",
-        "min": 0,
-        "max": 1,
-        "defaultValue": 0.1
-      },
-      {
-        "id": "Knockback",
-        "description": "近战击退距离(米)。0=无击退 10=大幅击退。Staff=4 Blade=1 Axe=3。",
-        "min": 0,
-        "max": 10,
-        "defaultValue": 2
-      },
-      {
-        "id": "Reach",
-        "description": "近战攻击距离(米)。匕首=0.6 剑=1.2 矛=2.5 棍=2.0 斧=1.0。",
-        "min": 0.5,
-        "max": 3,
-        "defaultValue": 1.2
-      },
-      {
-        "id": "StaminaCost",
-        "description": "近战每次挥击消耗体力。轻击=3 重击=8 特殊技=15。",
-        "min": 1,
-        "max": 30,
-        "defaultValue": 5
+        "id": "NoiseRadius",
+        "description": "噪音半径(米)。武器/弹药击发时产生的噪音传播范围。5级(手枪)=40m 6级(步枪/霰弹)=80m。与噪音系统联动。",
+        "min": 5,
+        "max": 500,
+        "defaultValue": 50
       },
       {
         "id": "Accuracy",
@@ -515,32 +613,11 @@
         "defaultValue": 1
       },
       {
-        "id": "NoiseRadius",
-        "description": "噪音半径(米)。武器/弹药击发时产生的噪音传播范围。5级(手枪)=40m 6级(步枪/霰弹)=80m。与噪音系统联动。",
-        "min": 5,
-        "max": 500,
-        "defaultValue": 50
-      },
-      {
-        "id": "Recoil",
-        "description": "远程武器后坐力(0-100)。影响连续射击精度。手枪=20 步枪=35 霰弹=50。",
-        "min": 0,
-        "max": 100,
-        "defaultValue": 30
-      },
-      {
         "id": "FireRate",
         "description": "枪械射速(发/秒)。0.5=2秒1发 12=全自动高速。手枪=4 步枪=3 霰弹=1。",
         "min": 0.5,
         "max": 12,
         "defaultValue": 5
-      },
-      {
-        "id": "MuzzleVelocity",
-        "description": "枪口初速(m/s)。弹药BaseVelocity × 枪管系数 → 最终初速。影响伤害和弹道。手枪=350 步枪=900。",
-        "min": 100,
-        "max": 2000,
-        "defaultValue": 400
       },
       {
         "id": "BarrelLength",
@@ -557,6 +634,13 @@
         "defaultValue": 0.95
       },
       {
+        "id": "RecoilModifier",
+        "description": "枪械后坐力削减系数。枪设计固有特性，好的设计可降低后坐力。0.5=半后座, 1.0=标准。Firearm属性。",
+        "min": 0.3,
+        "max": 1.5,
+        "defaultValue": 1.0
+      },
+      {
         "id": "HolsterSpeed",
         "description": "拔枪/收枪速度倍率。>1快 <1慢。手枪专属属性，手枪通常较快(1.5)。",
         "min": 0.5,
@@ -571,25 +655,11 @@
         "defaultValue": 0.15
       },
       {
-        "id": "ScopeZoom",
-        "description": "瞄准镜倍率(×)。1=铁瞄 4=ACOG 12=高倍狙击镜。步枪专属属性。",
-        "min": 1,
-        "max": 20,
-        "defaultValue": 4
-      },
-      {
         "id": "AimTime",
         "description": "瞄准时间(秒)。从腰射切换到精确瞄准的耗时。步枪专属，受ScopeZoom影响(倍率越高越慢)。",
         "min": 0.3,
         "max": 3,
         "defaultValue": 0.8
-      },
-      {
-        "id": "Spread",
-        "description": "霰弹枪散布角(度)。影响弹丸分布范围。角度越大散布越宽。",
-        "min": 2,
-        "max": 30,
-        "defaultValue": 12
       },
       {
         "id": "DrawSpeed",
@@ -676,6 +746,27 @@
         "defaultValue": 1
       },
       {
+        "id": "MuzzleVelocity",
+        "description": "弹药初速(m/s)。弹药装药量决定基准初速。枪管长度做乘数修正。AmmoBase核心属性。",
+        "min": 100,
+        "max": 2000,
+        "defaultValue": 400
+      },
+      {
+        "id": "BleedChance",
+        "description": "近战武器流血概率(0-1)。Blade 类武器专属。每击概率对目标造成流血(Bleeding)状态，持续失血。默认 0（斧/棍/矛无流血）。",
+        "min": 0,
+        "max": 1,
+        "defaultValue": 0
+      },
+      {
+        "id": "ArmorPierce",
+        "description": "近战破甲比例(0-1)。Axe类武器专属。统一命名为Penetration系列（近战ratio/远程absolute）。",
+        "min": 0,
+        "max": 1,
+        "defaultValue": 0
+      },
+      {
         "id": "DEF",
         "description": "护甲基础防御值。减伤公式: 最终减伤 = DEF × (1 + Endurance×0.03)。ArmorBase核心属性。",
         "min": 0,
@@ -715,39 +806,46 @@
         "description": "闪光抗性倍率(0-1)。装备族用倍率标度。降低闪光弹致盲时间。HeadArmor专属。注意: Actor族用0-100标度的独立Def(FlashResist_Human)。",
         "min": 0,
         "max": 1,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "NightVision",
         "description": "夜视能力倍率(0-1)。装备族用倍率标度。0=无夜视 1=全彩夜视。HeadArmor专属。注意: Actor族用0-100标度的独立Def(NightVision_Human)。",
         "min": 0,
         "max": 1,
-        "defaultValue": 100
+        "defaultValue": 0
+      },
+      {
+        "id": "StanceStability",
+        "description": "站姿稳定性(0-100)。影响被击退/击倒时的恢复速度。BodyArmor专属。",
+        "min": 0,
+        "max": 100,
+        "defaultValue": 0
       },
       {
         "id": "MoveSpeed",
         "description": "移动速度加成倍率(-1到2)。负值=减速 正值=加速。LegArmor专属Bonus属性(移速加成)。",
         "min": -1,
         "max": 2,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "SneakSpeed",
         "description": "潜行速度加成倍率(-1到2)。负值=更慢潜行 正值=更快潜行。LegArmor专属Bonus属性。",
         "min": -1,
         "max": 2,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "CarryWeightBonus",
-        "description": "负重上限加成(kg)。背包/容器核心属性。直接增加CarryWeight。登山包=30kg 小背包=10kg。ContainerBase核心属性。",
+        "description": "负重上限加成(kg)。背包核心属性。直接增加CarryWeight。登山包=30kg 小背包=10kg。Backpack属性。",
         "min": 5,
         "max": 200,
         "defaultValue": 20
       },
       {
         "id": "MoveSpeedPenalty_Container",
-        "description": "背包移速惩罚比例(0-0.3)。背包越重/越大惩罚越高。ContainerBase属性。注意: 独立于ArmorBase的MoveSpeedPenalty，两者叠加。",
+        "description": "背包移速惩罚比例(0-0.3)。背包越重/越大惩罚越高。Backpack属性。注意: 独立于ArmorBase的MoveSpeedPenalty，两者叠加。",
         "min": 0,
         "max": 0.3,
         "defaultValue": 0.05
@@ -785,21 +883,35 @@
         "description": "饮料/食物口渴恢复值。水=30 汤=15 干粮=0。Food专属属性。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "MoraleBonus",
         "description": "食用/使用后士气加成。高级料理=20 普通食物=0。Food/Medical共用属性。",
         "min": -50,
         "max": 50,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
-        "id": "SpoilageTime",
-        "description": "食物变质时间(小时)。0=不会坏(罐头/干粮) 48=新鲜食材 168=腌制食品。过期后Nutrition和MoraleBonus归零甚至变负。Food专属属性。",
+        "id": "ShelfLife",
+        "description": "保质期(小时)。0=永久(罐头/干粮) 48=新鲜食材 168=腌制食品。过期后Nutrition和MoraleBonus归零甚至变负。Food专属属性。",
         "min": 0,
         "max": 720,
         "defaultValue": 48
+      },
+      {
+        "id": "ContaminationRisk",
+        "description": "污染风险(0-100)。0=安全 >0触发感染概率。生肉=30 腐肉=100 熟食=0。Food专属属性。",
+        "min": 0,
+        "max": 100,
+        "defaultValue": 0
+      },
+      {
+        "id": "TemperatureBonus",
+        "description": "温度加成(-50~50)。负值=降温(冷冻食品) 正值=升温(热汤)。影响BodyTemp。Food专属属性。",
+        "min": -50,
+        "max": 50,
+        "defaultValue": 0
       },
       {
         "id": "HealAmount",
@@ -809,7 +921,7 @@
         "defaultValue": 20
       },
       {
-        "id": "BleedStop",
+        "id": "BleedReduction",
         "description": "止血效果(0-1)。1.0=完全止血。绷带=0.5 止血带=1.0。Medical专属属性。",
         "min": 0,
         "max": 1,
@@ -820,14 +932,70 @@
         "description": "感染值降低量。消毒剂=30 抗生素=50(延缓)。Medical专属属性。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "PainRelief",
         "description": "疼痛值降低量。止痛药=30 吗啡=80。Medical专属属性。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
+      },
+      {
+        "id": "FractureHeal",
+        "description": "骨折治疗效果(0-100)。0=无效 100=完全治愈。夹板=40 手术=100。Medical专属属性。",
+        "min": 0,
+        "max": 100,
+        "defaultValue": 0
+      },
+      {
+        "id": "ConsciousnessRestore",
+        "description": "意识恢复量(0-100)。嗅盐=30 肾上腺素=60。Medical专属属性。",
+        "min": 0,
+        "max": 100,
+        "defaultValue": 0
+      },
+      {
+        "id": "StaminaRestore",
+        "description": "体力恢复量(0-100)。能量饮料=30 兴奋剂=50。Medical专属属性。",
+        "min": 0,
+        "max": 100,
+        "defaultValue": 0
+      },
+      {
+        "id": "HealDuration",
+        "description": "持续治疗时长(秒)。0=即时生效 >0=持续治疗(DOT Heal)。手术=5s。Medical专属属性。",
+        "min": 0,
+        "max": 30,
+        "defaultValue": 0
+      },
+      {
+        "id": "GrowthTime",
+        "description": "生长时间(小时)。种子播种到成熟的时间。小麦=72 玉米=120。Seed专属属性。",
+        "min": 0,
+        "max": 720,
+        "defaultValue": 72
+      },
+      {
+        "id": "Yield",
+        "description": "产量。单株作物产出数量。基础=5 改良种子=10。Seed专属属性。",
+        "min": 0,
+        "max": 100,
+        "defaultValue": 5
+      },
+      {
+        "id": "SeedReturnRate",
+        "description": "种子回收率(0-1)。成熟时回收种子的概率。0.5=回收一半。Seed专属属性。",
+        "min": 0,
+        "max": 1,
+        "defaultValue": 0.5
+      },
+      {
+        "id": "RepairAmount",
+        "description": "修复量。每次修理恢复的耐久值。基础修理工具=20 高级修理箱=100。RepairKit专属属性。",
+        "min": 0,
+        "max": 100,
+        "defaultValue": 20
       },
       {
         "id": "DEF_Building",
@@ -872,17 +1040,24 @@
         "defaultValue": 20
       },
       {
+        "id": "Insulation",
+        "description": "隔热性(0-100)。0=无保温 100=完美隔热。影响建筑内外温差和BodyTemp漂移速率。Building属性。",
+        "min": 0,
+        "max": 100,
+        "defaultValue": 0
+      },
+      {
         "id": "FogDensity",
         "description": "雾浓度(0-100)。0=晴天 100=浓雾(大幅降低SightRange)。Environment全局单例属性(远期)。由WeatherService驱动。",
         "min": 0,
         "max": 100,
-        "defaultValue": 100
+        "defaultValue": 0
       },
       {
         "id": "Temperature_Env",
-        "description": "环境气温(°C)。-30=极寒 20=舒适 50=酷热。影响BodyTemp漂移方向。Environment全局单例属性(远期)。由TimeService/WeatherService驱动。",
-        "min": -30,
-        "max": 50,
+        "description": "环境气温(°C)。-50=极寒 20=舒适 70=酷热。影响BodyTemp漂移方向。Environment全局单例属性(远期)。由TimeService/WeatherService驱动。",
+        "min": -50,
+        "max": 70,
         "defaultValue": 20
       },
       {
@@ -900,81 +1075,46 @@
         "defaultValue": 8
       },
       {
-        "id": "Acceleration",
-        "description": "移动加速度 (m/s²)。影响角色从静止达到目标速度的速率。Human基础属性。",
-        "min": 1,
-        "max": 20,
+        "id": "RadiationLevel",
+        "description": "环境辐射等级(0-100)。0=背景辐射 100=致命辐射区。影响RadiationResist消耗速率。Environment全局单例属性(远期)。",
+        "min": 0,
+        "max": 100,
+        "defaultValue": 0
+      },
+      {
+        "id": "WindSpeed",
+        "description": "风速(m/s)。0=无风 30=飓风。影响弹道、噪音传播、体温流失速率。Environment全局单例属性(远期)。",
+        "min": 0,
+        "max": 100,
+        "defaultValue": 0
+      },
+      {
+        "id": "WindDirection",
+        "description": "风向(度, 0-360)。0=北风 90=东风。影响噪音传播方向和毒气扩散。Environment全局单例属性(远期)。",
+        "min": 0,
+        "max": 360,
+        "defaultValue": 0
+      },
+      {
+        "id": "Precipitation",
+        "description": "降水量/强度(0-100)。0=无降水 100=暴雨/暴雪。影响Visibility和地面状况。Environment全局单例属性(远期)。",
+        "min": 0,
+        "max": 100,
+        "defaultValue": 0
+      },
+      {
+        "id": "VisibilityReduction",
+        "description": "能见度降低(%)。0=清晰 100=完全遮蔽。受雾/降水/沙尘暴叠加影响。Environment全局单例属性(远期)。",
+        "min": 0,
+        "max": 100,
+        "defaultValue": 0
+      },
+      {
+        "id": "Spread",
+        "description": "霰弹散布角度(度)。弹丸出膛后的散布锥角。标准=5 喉缩=3。ShotgunShell专属属性。",
+        "min": 0,
+        "max": 30,
         "defaultValue": 5
-      },
-      {
-        "id": "MaxSlopeAngle",
-        "description": "最大可行走坡度角 (度)。超过此角度的斜面无法行走。人=55°, 蜘蛛=90°。Human基础属性。",
-        "min": 0,
-        "max": 89,
-        "defaultValue": 55
-      },
-      {
-        "id": "Height",
-        "description": "角色身高 (米)。影响障碍物翻越上限、视线高度。成年男性=1.8m。Human体型属性。",
-        "min": 0.5,
-        "max": 5,
-        "defaultValue": 1.8
-      },
-      {
-        "id": "ObstacleProbeVertical",
-        "description": "障碍物探测垂直偏移 (米)。从脚底向上的射线起点，约胸腔高度。Human体型属性。",
-        "min": 0,
-        "max": 2,
-        "defaultValue": 0.15
-      },
-      {
-        "id": "ObstacleProbeDistance",
-        "description": "障碍物探测距离 (米)。前方障碍判定射线长度，约臂长。Human体型属性。",
-        "min": 0,
-        "max": 3,
-        "defaultValue": 0.75
-      },
-      {
-        "id": "ObstacleMinClimb",
-        "description": "最小翻越高度 (米)。低于此高度可跨过，约小腿长。Human体型属性。",
-        "min": 0,
-        "max": 1,
-        "defaultValue": 0.3
-      },
-      {
-        "id": "ObstacleMaxClimb",
-        "description": "最大翻越高度 (米)。高于此高度无法攀爬。默认同身高1.8m。Human体型属性。",
-        "min": 0.1,
-        "max": 5,
-        "defaultValue": 1.8
-      },
-      {
-        "id": "MaxHeadYaw",
-        "description": "头部最大水平转动角 (度)。人=±75°, 猫头鹰=±180°。Human生理属性。",
-        "min": 0,
-        "max": 180,
-        "defaultValue": 75
-      },
-      {
-        "id": "MaxHeadPitch",
-        "description": "头部最大垂直转动角 (度)。人=±75°。Human生理属性。",
-        "min": 0,
-        "max": 90,
-        "defaultValue": 75
-      },
-      {
-        "id": "BleedChance",
-        "description": "近战武器流血概率(0-1)。Blade 类武器专属。每击概率对目标造成流血(Bleeding)状态，持续失血。默认 0（斧/棍/矛无流血）。",
-        "min": 0,
-        "max": 1,
-        "defaultValue": 100
-      },
-      {
-        "id": "ArmorPierce",
-        "description": "近战护甲穿透比例(0-1)。Axe 类武器专属。1.0=完全无视护甲。默认 0（剑/棍/矛无破甲）。",
-        "min": 0,
-        "max": 1,
-        "defaultValue": 100
       }
     ],
     "_int": [
@@ -993,15 +1133,8 @@
         "defaultValue": 10
       },
       {
-        "id": "PelletCount",
-        "description": "霰弹枪弹丸数量。每次击发射出多个弹丸，每个独立判定命中和伤害。标准=8。",
-        "min": 0,
-        "max": 100,
-        "defaultValue": 8
-      },
-      {
         "id": "SlotCount",
-        "description": "背包内部格子数。决定可携带物品数量。小背包=10 大登山包=50。ContainerBase属性。",
+        "description": "背包内部格子数。决定可携带物品数量。小背包=10 大登山包=50。Backpack属性。",
         "min": 0,
         "max": 100,
         "defaultValue": 10
@@ -1009,8 +1142,8 @@
       {
         "id": "MaterialTier",
         "description": "工具/材料等级(1-6)。1=石 2=铜 3=铁 4=钢 5=合金 6=碳化物。影响效率乘数和可采集资源等级。ToolBase属性。",
-        "min": 0,
-        "max": 100,
+        "min": 1,
+        "max": 6,
         "defaultValue": 1
       },
       {
@@ -1042,18 +1175,25 @@
         "defaultValue": 20
       },
       {
-        "id": "Rarity",
-        "description": "物品稀有度(1-5)。1=普通(随处可见) 2=罕见 3=稀有 4=史诗 5=传说(唯一)。影响搜刮概率和交易价值。Material专属属性。",
-        "min": 0,
-        "max": 100,
+        "id": "ScarcityTier",
+        "description": "物品稀缺等级(1-5)。1=Abundant(随处可见) 2=Common 3=Uncommon 4=Scarce 5=Rare。影响搜刮概率和交易价值。Material专属属性。",
+        "min": 1,
+        "max": 5,
         "defaultValue": 1
       },
       {
         "id": "MaterialType_Building",
         "description": "建筑材料类型(0-4)。0=木 1=石 2=金属 3=混凝土 4=复合。决定耐久曲线、修理方式和Flammability。Building专属属性。",
         "min": 0,
-        "max": 100,
+        "max": 4,
         "defaultValue": 0
+      },
+      {
+        "id": "PelletCount",
+        "description": "弹丸数量。霰弹每次击发的弹丸数。00Buck=9 #4Buck=27 Slug=1。ShotgunShell专属属性。",
+        "min": 0,
+        "max": 50,
+        "defaultValue": 9
       }
     ],
     "_bool": [
@@ -1076,11 +1216,82 @@
       },
       {
         "id": "Description",
-        "description": "物品/实体详细描述文本。用于UI Tooltip详情展开。"
+        "description": "物品/实体详细描述文本。用于UI Tooltip详情展开。",
+        "defaultValue": ""
       }
     ],
-    "_rTag": [],
-    "_rTagList": [],
+    "_rdTag": [
+      {
+        "id": "DamageType",
+        "description": "伤害类型标签。路由到防御公式（Damage.Physical.Slash→斩抗, Damage.Elemental.Fire→火抗）。AmmoBase使用。"
+      },
+      {
+        "id": "GearType",
+        "description": "装备类型标签。引用Equipment.Part.*标签。决定装备部位和配件兼容性。Firearm专属。"
+      },
+      {
+        "id": "ConsumableType",
+        "description": "消耗品类型标签。Food/Drink/Medical/Material/Seed/RepairKit。ConsumableBase使用。"
+      },
+      {
+        "id": "ToolType",
+        "description": "工具类型标签。Axe/Pickaxe/Hammer/Saw/Hoe/Kitchen。ToolBase使用。"
+      },
+      {
+        "id": "Platform",
+        "description": "平台兼容标签。引用平台标签(Glock/AR15/AK/Remington)。AmmoBase使用。"
+      },
+      {
+        "id": "MaterialType",
+        "description": "材料类型标签。Wood/Stone/Metal/Fabric/Chemical。Material使用。"
+      },
+      {
+        "id": "FoodQuality",
+        "description": "食物品质标签。Raw/Cooked/Burnt/Preserved/Canned。Food使用。"
+      },
+      {
+        "id": "FoodType",
+        "description": "食物类型标签。Meat/Vegetable/Grain/Dairy/Drink/Preserved/Foraged。Food使用。"
+      },
+      {
+        "id": "MedicalType",
+        "description": "药品类型标签。Bandage/Pill/Injection/Herbal/Stimulant/Splint。Medical使用。"
+      },
+      {
+        "id": "CropType",
+        "description": "作物类型标签。Wheat/Corn/Potato/Tomato/Herb。Seed使用。"
+      },
+      {
+        "id": "PrecipitationType",
+        "description": "降水类型标签。Rain/Snow/Hail/Drizzle。Environment/Weather使用。"
+      },
+      {
+        "id": "Season",
+        "description": "季节标签。Spring/Summer/Autumn/Winter。Environment/Time使用。"
+      },
+      {
+        "id": "GroundCondition",
+        "description": "地面状况标签。Dry/Muddy/Flooded/Frozen/Snowy。Movement/Environment使用。"
+      },
+      {
+        "id": "CompatibleToolType",
+        "description": "兼容工具类型标签。Axe/Hammer/Wrench。RepairKit使用。"
+      }
+    ],
+    "_rdTagList": [
+      {
+        "id": "Tags",
+        "description": "实体分类标签。回答\"这个实体是什么类型\"(Weapon/Armor.Head/Backpack/Magazine)，供Container槽位AcceptTags过滤匹配。默认空数组。"
+      },
+      {
+        "id": "CompatibleAmmo",
+        "description": "兼容弹药口径标签列表。引用Caliber.*标签(Caliber.9mm)。决定武器可用弹药类型。RangedWeapon使用。"
+      },
+      {
+        "id": "ResistTypes",
+        "description": "抗性类型标签列表。决定护甲能对抗的伤害类型(Slash/Blunt/Fire等)。ArmorBase使用。"
+      }
+    ],
     "_assetRef": [
       {
         "id": "Icon",
@@ -1106,7 +1317,7 @@
     "_assetRefList": [
       {
         "id": "ATK",
-        "description": "近战武器攻击力——DamageEffectSO[]数组。每个元素引用一个Damage Effect资产(如Damage_Physical_Slash)。MeleeWeapon使用；RangedWeapon的ATK为空/不使用(远程伤害地基在Ammo.BaseDamage)。"
+        "description": "武器自身伤害效果——DamageEffectSO[]数组。所有武器都有（近战用、枪托砸、投掷爆炸等）。远程武器的主伤害由弹药提供。"
       }
     ],
     "_struct": [
@@ -1231,6 +1442,11 @@
           "nodeId": "Tags",
           "parentId": "Common",
           "defId": "Tags"
+        },
+        {
+          "nodeId": "Description",
+          "parentId": "Common",
+          "defId": "Description"
         },
         {
           "nodeId": "Slots",
@@ -1400,6 +1616,11 @@
           "defId": "DefensiveProf"
         },
         {
+          "nodeId": "BowProf",
+          "parentId": "Combat",
+          "defId": "BowProf"
+        },
+        {
           "nodeId": "Work",
           "parentId": "",
           "defId": ""
@@ -1465,6 +1686,16 @@
           "defId": "TrapProf"
         },
         {
+          "nodeId": "FishingProf",
+          "parentId": "Work",
+          "defId": "FishingProf"
+        },
+        {
+          "nodeId": "ButcheringProf",
+          "parentId": "Work",
+          "defId": "ButcheringProf"
+        },
+        {
           "nodeId": "Needs",
           "parentId": "",
           "defId": ""
@@ -1493,6 +1724,11 @@
           "nodeId": "Boredom",
           "parentId": "Needs",
           "defId": "Boredom"
+        },
+        {
+          "nodeId": "Hygiene",
+          "parentId": "Needs",
+          "defId": "Hygiene"
         },
         {
           "nodeId": "Movement",
@@ -1565,9 +1801,19 @@
           "defId": "BleedResist"
         },
         {
-          "nodeId": "InfectionResist",
+          "nodeId": "SlashResist",
           "parentId": "Resistance",
-          "defId": "InfectionResist"
+          "defId": "SlashResist"
+        },
+        {
+          "nodeId": "PierceResist",
+          "parentId": "Resistance",
+          "defId": "PierceResist"
+        },
+        {
+          "nodeId": "BiteResist",
+          "parentId": "Resistance",
+          "defId": "BiteResist"
         },
         {
           "nodeId": "BluntResist",
@@ -1595,14 +1841,29 @@
           "defId": "ColdResist"
         },
         {
-          "nodeId": "ElectricResist",
+          "nodeId": "ShockResist",
           "parentId": "Resistance",
-          "defId": "ElectricResist"
+          "defId": "ShockResist"
+        },
+        {
+          "nodeId": "AcidResist",
+          "parentId": "Resistance",
+          "defId": "AcidResist"
         },
         {
           "nodeId": "RadiationResist",
           "parentId": "Resistance",
           "defId": "RadiationResist"
+        },
+        {
+          "nodeId": "DiseaseResist",
+          "parentId": "Resistance",
+          "defId": "DiseaseResist"
+        },
+        {
+          "nodeId": "InfectionResist",
+          "parentId": "Resistance",
+          "defId": "InfectionResist"
         },
         {
           "nodeId": "PainResist",
@@ -1738,84 +1999,18 @@
       ]
     },
     {
-      "treeName": "WeaponBase",
+      "treeName": "Equipment",
       "inheritsFrom": "Entity",
       "nodes": [
         {
-          "nodeId": "Base",
+          "nodeId": "Equipment",
           "parentId": "",
           "defId": ""
         },
         {
           "nodeId": "Durability",
-          "parentId": "Base",
+          "parentId": "Equipment",
           "defId": "Durability"
-        },
-        {
-          "nodeId": "MaxDurability",
-          "parentId": "Base",
-          "defId": "MaxDurability"
-        }
-      ]
-    },
-    {
-      "treeName": "MeleeWeapon",
-      "inheritsFrom": "WeaponBase",
-      "nodes": [
-        {
-          "nodeId": "Combat",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "ATK",
-          "parentId": "Combat",
-          "defId": "ATK"
-        },
-        {
-          "nodeId": "AttackSpeed",
-          "parentId": "Combat",
-          "defId": "AttackSpeed"
-        },
-        {
-          "nodeId": "CritMulti",
-          "parentId": "Combat",
-          "defId": "CritMulti"
-        },
-        {
-          "nodeId": "StunChance",
-          "parentId": "Combat",
-          "defId": "StunChance"
-        },
-        {
-          "nodeId": "Knockback",
-          "parentId": "Combat",
-          "defId": "Knockback"
-        },
-        {
-          "nodeId": "Reach",
-          "parentId": "Combat",
-          "defId": "Reach"
-        },
-        {
-          "nodeId": "StaminaCost",
-          "parentId": "Combat",
-          "defId": "StaminaCost"
-        },
-        {
-          "nodeId": "Tags",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "DamageType",
-          "parentId": "Tags",
-          "defId": "DamageType"
-        },
-        {
-          "nodeId": "IsTwoHanded",
-          "parentId": "Tags",
-          "defId": "IsTwoHanded"
         },
         {
           "nodeId": "Presentation",
@@ -1843,6 +2038,47 @@
           "defId": "AudioProfile"
         }
       ]
+    },
+    {
+      "treeName": "WeaponBase",
+      "inheritsFrom": "Equipment",
+      "nodes": [
+        {
+          "nodeId": "Weapon",
+          "parentId": "",
+          "defId": ""
+        },
+        {
+          "nodeId": "ATK",
+          "parentId": "Weapon",
+          "defId": "ATK"
+        },
+        {
+          "nodeId": "AttackSpeed",
+          "parentId": "Weapon",
+          "defId": "AttackSpeed"
+        },
+        {
+          "nodeId": "AttackRange",
+          "parentId": "Weapon",
+          "defId": "AttackRange"
+        },
+        {
+          "nodeId": "NoiseRadius",
+          "parentId": "Weapon",
+          "defId": "NoiseRadius"
+        },
+        {
+          "nodeId": "IsTwoHanded",
+          "parentId": "Weapon",
+          "defId": "IsTwoHanded"
+        }
+      ]
+    },
+    {
+      "treeName": "MeleeWeapon",
+      "inheritsFrom": "WeaponBase",
+      "nodes": []
     },
     {
       "treeName": "Blade",
@@ -1882,7 +2118,7 @@
       "nodes": []
     },
     {
-      "treeName": "Spear",
+      "treeName": "Polearm",
       "inheritsFrom": "MeleeWeapon",
       "nodes": []
     },
@@ -1894,11 +2130,6 @@
           "nodeId": "Combat",
           "parentId": "",
           "defId": ""
-        },
-        {
-          "nodeId": "ATK",
-          "parentId": "Combat",
-          "defId": "ATK"
         },
         {
           "nodeId": "Accuracy",
@@ -1921,23 +2152,13 @@
           "defId": "AmmoCount"
         },
         {
-          "nodeId": "NoiseRadius",
-          "parentId": "Combat",
-          "defId": "NoiseRadius"
-        },
-        {
-          "nodeId": "Recoil",
-          "parentId": "Combat",
-          "defId": "Recoil"
-        },
-        {
-          "nodeId": "Compat",
+          "nodeId": "Tags",
           "parentId": "",
           "defId": ""
         },
         {
           "nodeId": "CompatibleAmmo",
-          "parentId": "Compat",
+          "parentId": "Tags",
           "defId": "CompatibleAmmo"
         }
       ]
@@ -1957,14 +2178,14 @@
           "defId": "FireRate"
         },
         {
-          "nodeId": "MuzzleVelocity",
-          "parentId": "Combat",
-          "defId": "MuzzleVelocity"
-        },
-        {
           "nodeId": "BarrelLength",
           "parentId": "Combat",
           "defId": "BarrelLength"
+        },
+        {
+          "nodeId": "RecoilModifier",
+          "parentId": "Combat",
+          "defId": "RecoilModifier"
         },
         {
           "nodeId": "Reliability",
@@ -1972,18 +2193,18 @@
           "defId": "Reliability"
         },
         {
-          "nodeId": "Tags",
+          "nodeId": "Firearm",
           "parentId": "",
           "defId": ""
         },
         {
           "nodeId": "IsAutomatic",
-          "parentId": "Tags",
+          "parentId": "Firearm",
           "defId": "IsAutomatic"
         },
         {
           "nodeId": "GearType",
-          "parentId": "Tags",
+          "parentId": "Firearm",
           "defId": "GearType"
         },
         {
@@ -2008,44 +2229,19 @@
       "inheritsFrom": "Firearm",
       "nodes": [
         {
-          "nodeId": "Combat",
+          "nodeId": "Pistol",
           "parentId": "",
           "defId": ""
         },
         {
           "nodeId": "HolsterSpeed",
-          "parentId": "Combat",
+          "parentId": "Pistol",
           "defId": "HolsterSpeed"
         },
         {
           "nodeId": "HipFirePenalty",
-          "parentId": "Combat",
+          "parentId": "Pistol",
           "defId": "HipFirePenalty"
-        },
-        {
-          "nodeId": "Presentation",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "VisualPrefab",
-          "parentId": "Presentation",
-          "defId": "VisualPrefab"
-        },
-        {
-          "nodeId": "Behavior",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "AnimationProfile",
-          "parentId": "Behavior",
-          "defId": "AnimationProfile"
-        },
-        {
-          "nodeId": "AudioProfile",
-          "parentId": "Behavior",
-          "defId": "AudioProfile"
         }
       ]
     },
@@ -2054,151 +2250,45 @@
       "inheritsFrom": "Firearm",
       "nodes": [
         {
-          "nodeId": "Combat",
+          "nodeId": "Rifle",
           "parentId": "",
           "defId": ""
-        },
-        {
-          "nodeId": "ScopeZoom",
-          "parentId": "Combat",
-          "defId": "ScopeZoom"
         },
         {
           "nodeId": "AimTime",
-          "parentId": "Combat",
+          "parentId": "Rifle",
           "defId": "AimTime"
-        },
-        {
-          "nodeId": "Presentation",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "VisualPrefab",
-          "parentId": "Presentation",
-          "defId": "VisualPrefab"
-        },
-        {
-          "nodeId": "Description",
-          "parentId": "Presentation",
-          "defId": "Description"
-        },
-        {
-          "nodeId": "Behavior",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "AnimationProfile",
-          "parentId": "Behavior",
-          "defId": "AnimationProfile"
-        },
-        {
-          "nodeId": "AudioProfile",
-          "parentId": "Behavior",
-          "defId": "AudioProfile"
         }
       ]
     },
     {
       "treeName": "Shotgun",
       "inheritsFrom": "Firearm",
-      "nodes": [
-        {
-          "nodeId": "Combat",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "PelletCount",
-          "parentId": "Combat",
-          "defId": "PelletCount"
-        },
-        {
-          "nodeId": "Spread",
-          "parentId": "Combat",
-          "defId": "Spread"
-        },
-        {
-          "nodeId": "Presentation",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "VisualPrefab",
-          "parentId": "Presentation",
-          "defId": "VisualPrefab"
-        },
-        {
-          "nodeId": "Description",
-          "parentId": "Presentation",
-          "defId": "Description"
-        },
-        {
-          "nodeId": "Behavior",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "AnimationProfile",
-          "parentId": "Behavior",
-          "defId": "AnimationProfile"
-        },
-        {
-          "nodeId": "AudioProfile",
-          "parentId": "Behavior",
-          "defId": "AudioProfile"
-        }
-      ]
+      "nodes": []
     },
     {
       "treeName": "Bow",
       "inheritsFrom": "RangedWeapon",
       "nodes": [
         {
-          "nodeId": "Combat",
+          "nodeId": "Bow",
           "parentId": "",
           "defId": ""
         },
         {
           "nodeId": "DrawSpeed",
-          "parentId": "Combat",
+          "parentId": "Bow",
           "defId": "DrawSpeed"
         },
         {
           "nodeId": "ArrowVelocity",
-          "parentId": "Combat",
+          "parentId": "Bow",
           "defId": "ArrowVelocity"
         },
         {
           "nodeId": "HoldStamina",
-          "parentId": "Combat",
+          "parentId": "Bow",
           "defId": "HoldStamina"
-        },
-        {
-          "nodeId": "Presentation",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "VisualPrefab",
-          "parentId": "Presentation",
-          "defId": "VisualPrefab"
-        },
-        {
-          "nodeId": "Behavior",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "AnimationProfile",
-          "parentId": "Behavior",
-          "defId": "AnimationProfile"
-        },
-        {
-          "nodeId": "AudioProfile",
-          "parentId": "Behavior",
-          "defId": "AudioProfile"
         }
       ]
     },
@@ -2207,177 +2297,26 @@
       "inheritsFrom": "WeaponBase",
       "nodes": [
         {
-          "nodeId": "Combat",
+          "nodeId": "Throwable",
           "parentId": "",
           "defId": ""
         },
         {
           "nodeId": "BlastRadius",
-          "parentId": "Combat",
+          "parentId": "Throwable",
           "defId": "BlastRadius"
         },
         {
           "nodeId": "FuseTime",
-          "parentId": "Combat",
+          "parentId": "Throwable",
           "defId": "FuseTime"
-        },
-        {
-          "nodeId": "Presentation",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "VisualPrefab",
-          "parentId": "Presentation",
-          "defId": "VisualPrefab"
-        },
-        {
-          "nodeId": "Behavior",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "AnimationProfile",
-          "parentId": "Behavior",
-          "defId": "AnimationProfile"
-        },
-        {
-          "nodeId": "AudioProfile",
-          "parentId": "Behavior",
-          "defId": "AudioProfile"
         }
       ]
-    },
-    {
-      "treeName": "AmmoBase",
-      "inheritsFrom": "Entity",
-      "nodes": [
-        {
-          "nodeId": "Base",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "Ammo",
-          "parentId": "Base",
-          "defId": "Ammo"
-        },
-        {
-          "nodeId": "Combat",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "BaseDamage",
-          "parentId": "Combat",
-          "defId": "BaseDamage"
-        },
-        {
-          "nodeId": "Penetration",
-          "parentId": "Combat",
-          "defId": "Penetration"
-        },
-        {
-          "nodeId": "NoiseRadius",
-          "parentId": "Combat",
-          "defId": "NoiseRadius"
-        },
-        {
-          "nodeId": "BulletWeight",
-          "parentId": "Combat",
-          "defId": "BulletWeight"
-        },
-        {
-          "nodeId": "OverPenetration",
-          "parentId": "Combat",
-          "defId": "OverPenetration"
-        },
-        {
-          "nodeId": "AmmoReliability",
-          "parentId": "Combat",
-          "defId": "AmmoReliability"
-        },
-        {
-          "nodeId": "FoulingRate",
-          "parentId": "Combat",
-          "defId": "FoulingRate"
-        },
-        {
-          "nodeId": "Recoil",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "RecoilFactor",
-          "parentId": "Recoil",
-          "defId": "RecoilFactor"
-        },
-        {
-          "nodeId": "Tags",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "DamageType",
-          "parentId": "Tags",
-          "defId": "DamageType"
-        },
-        {
-          "nodeId": "Compat",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "Platform",
-          "parentId": "Compat",
-          "defId": "Platform"
-        }
-      ]
-    },
-    {
-      "treeName": "PistolAmmo",
-      "inheritsFrom": "AmmoBase",
-      "nodes": []
-    },
-    {
-      "treeName": "RifleAmmo",
-      "inheritsFrom": "AmmoBase",
-      "nodes": []
-    },
-    {
-      "treeName": "ShotgunShell",
-      "inheritsFrom": "AmmoBase",
-      "nodes": []
     },
     {
       "treeName": "ArmorBase",
-      "inheritsFrom": "Entity",
+      "inheritsFrom": "Equipment",
       "nodes": [
-        {
-          "nodeId": "Base",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "Durability",
-          "parentId": "Base",
-          "defId": "Durability"
-        },
-        {
-          "nodeId": "MaxDurability",
-          "parentId": "Base",
-          "defId": "MaxDurability"
-        },
-        {
-          "nodeId": "Resist",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "ResistTypes",
-          "parentId": "Resist",
-          "defId": "ResistTypes"
-        },
         {
           "nodeId": "Combat",
           "parentId": "",
@@ -2397,6 +2336,11 @@
           "nodeId": "TraumaTransfer",
           "parentId": "Combat",
           "defId": "TraumaTransfer"
+        },
+        {
+          "nodeId": "ResistTypes",
+          "parentId": "Combat",
+          "defId": "ResistTypes"
         },
         {
           "nodeId": "Penalty",
@@ -2451,24 +2395,9 @@
           "defId": "KnockdownResist"
         },
         {
-          "nodeId": "CarryWeight",
+          "nodeId": "StanceStability",
           "parentId": "Combat",
-          "defId": "CarryWeight"
-        },
-        {
-          "nodeId": "Pouch1",
-          "parentId": "Slots",
-          "defId": "Pouch"
-        },
-        {
-          "nodeId": "Pouch2",
-          "parentId": "Slots",
-          "defId": "Pouch"
-        },
-        {
-          "nodeId": "Pouch3",
-          "parentId": "Slots",
-          "defId": "Pouch"
+          "defId": "StanceStability"
         }
       ]
     },
@@ -2494,106 +2423,9 @@
       ]
     },
     {
-      "treeName": "ContainerBase",
-      "inheritsFrom": "Entity",
-      "nodes": [
-        {
-          "nodeId": "Base",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "Durability",
-          "parentId": "Base",
-          "defId": "Durability"
-        },
-        {
-          "nodeId": "MaxDurability",
-          "parentId": "Base",
-          "defId": "MaxDurability"
-        },
-        {
-          "nodeId": "Capacity",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "CarryWeightBonus",
-          "parentId": "Capacity",
-          "defId": "CarryWeightBonus"
-        },
-        {
-          "nodeId": "SlotCount",
-          "parentId": "Capacity",
-          "defId": "SlotCount"
-        },
-        {
-          "nodeId": "Penalty",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "MoveSpeedPenalty_Container",
-          "parentId": "Penalty",
-          "defId": "MoveSpeedPenalty_Container"
-        },
-        {
-          "nodeId": "Presentation",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "VisualPrefab",
-          "parentId": "Presentation",
-          "defId": "VisualPrefab"
-        }
-      ]
-    },
-    {
-      "treeName": "Backpack",
-      "inheritsFrom": "ContainerBase",
-      "nodes": [
-        {
-          "nodeId": "Slots",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "ContainerSlot",
-          "parentId": "Slots",
-          "defId": "ContainerSlot"
-        }
-      ]
-    },
-    {
       "treeName": "ToolBase",
-      "inheritsFrom": "Entity",
+      "inheritsFrom": "Equipment",
       "nodes": [
-        {
-          "nodeId": "Base",
-          "parentId": "",
-          "defId": ""
-        },
-        {
-          "nodeId": "Durability",
-          "parentId": "Base",
-          "defId": "Durability"
-        },
-        {
-          "nodeId": "MaxDurability",
-          "parentId": "Base",
-          "defId": "MaxDurability"
-        },
-        {
-          "nodeId": "Fuel",
-          "parentId": "Base",
-          "defId": "Fuel"
-        },
-        {
-          "nodeId": "Charge",
-          "parentId": "Base",
-          "defId": "Charge"
-        },
         {
           "nodeId": "Work",
           "parentId": "",
@@ -2615,6 +2447,21 @@
           "defId": "StaminaCostPerUse"
         },
         {
+          "nodeId": "Resource",
+          "parentId": "",
+          "defId": ""
+        },
+        {
+          "nodeId": "Fuel",
+          "parentId": "Resource",
+          "defId": "Fuel"
+        },
+        {
+          "nodeId": "Charge",
+          "parentId": "Resource",
+          "defId": "Charge"
+        },
+        {
           "nodeId": "Tags",
           "parentId": "",
           "defId": ""
@@ -2623,6 +2470,139 @@
           "nodeId": "ToolType",
           "parentId": "Tags",
           "defId": "ToolType"
+        }
+      ]
+    },
+    {
+      "treeName": "Backpack",
+      "inheritsFrom": "Equipment",
+      "nodes": [
+        {
+          "nodeId": "Backpack",
+          "parentId": "",
+          "defId": ""
+        },
+        {
+          "nodeId": "CarryWeightBonus",
+          "parentId": "Backpack",
+          "defId": "CarryWeightBonus"
+        },
+        {
+          "nodeId": "ContainerSlot",
+          "parentId": "Slots",
+          "defId": "ContainerSlot"
+        }
+      ]
+    },
+    {
+      "treeName": "AmmoBase",
+      "inheritsFrom": "Entity",
+      "nodes": [
+        {
+          "nodeId": "Base",
+          "parentId": "",
+          "defId": ""
+        },
+        {
+          "nodeId": "Ammo",
+          "parentId": "Base",
+          "defId": "Ammo"
+        },
+        {
+          "nodeId": "Combat",
+          "parentId": "",
+          "defId": ""
+        },
+        {
+          "nodeId": "BaseDamage",
+          "parentId": "Combat",
+          "defId": "BaseDamage"
+        },
+        {
+          "nodeId": "Penetration",
+          "parentId": "Combat",
+          "defId": "Penetration"
+        },
+        {
+          "nodeId": "BulletWeight",
+          "parentId": "Combat",
+          "defId": "BulletWeight"
+        },
+        {
+          "nodeId": "OverPenetration",
+          "parentId": "Combat",
+          "defId": "OverPenetration"
+        },
+        {
+          "nodeId": "NoiseRadius",
+          "parentId": "Combat",
+          "defId": "NoiseRadius"
+        },
+        {
+          "nodeId": "MuzzleVelocity",
+          "parentId": "Combat",
+          "defId": "MuzzleVelocity"
+        },
+        {
+          "nodeId": "RecoilFactor",
+          "parentId": "Combat",
+          "defId": "RecoilFactor"
+        },
+        {
+          "nodeId": "AmmoReliability",
+          "parentId": "Combat",
+          "defId": "AmmoReliability"
+        },
+        {
+          "nodeId": "FoulingRate",
+          "parentId": "Combat",
+          "defId": "FoulingRate"
+        },
+        {
+          "nodeId": "Tags",
+          "parentId": "",
+          "defId": ""
+        },
+        {
+          "nodeId": "DamageType",
+          "parentId": "Tags",
+          "defId": "DamageType"
+        },
+        {
+          "nodeId": "Platform",
+          "parentId": "Tags",
+          "defId": "Platform"
+        }
+      ]
+    },
+    {
+      "treeName": "PistolAmmo",
+      "inheritsFrom": "AmmoBase",
+      "nodes": []
+    },
+    {
+      "treeName": "RifleAmmo",
+      "inheritsFrom": "AmmoBase",
+      "nodes": []
+    },
+    {
+      "treeName": "ShotgunShell",
+      "inheritsFrom": "AmmoBase",
+      "nodes": [
+        {
+          "nodeId": "Combat",
+          "parentId": "",
+          "defId": ""
+        },
+        {
+          "nodeId": "PelletCount",
+          "parentId": "Combat",
+          "defId": "PelletCount"
+        },
+        {
+          "nodeId": "Spread",
+          "parentId": "Combat",
+          "defId": "Spread"
         }
       ]
     },
@@ -2662,6 +2642,16 @@
       "inheritsFrom": "ConsumableBase",
       "nodes": [
         {
+          "nodeId": "Tags",
+          "parentId": "",
+          "defId": ""
+        },
+        {
+          "nodeId": "FoodType",
+          "parentId": "Tags",
+          "defId": "FoodType"
+        },
+        {
           "nodeId": "Nutrition",
           "parentId": "",
           "defId": ""
@@ -2687,9 +2677,24 @@
           "defId": "MoraleBonus"
         },
         {
-          "nodeId": "SpoilageTime",
+          "nodeId": "ShelfLife",
           "parentId": "Quality",
-          "defId": "SpoilageTime"
+          "defId": "ShelfLife"
+        },
+        {
+          "nodeId": "FoodQuality",
+          "parentId": "Quality",
+          "defId": "FoodQuality"
+        },
+        {
+          "nodeId": "ContaminationRisk",
+          "parentId": "Quality",
+          "defId": "ContaminationRisk"
+        },
+        {
+          "nodeId": "TemperatureBonus",
+          "parentId": "Quality",
+          "defId": "TemperatureBonus"
         }
       ]
     },
@@ -2697,6 +2702,16 @@
       "treeName": "Medical",
       "inheritsFrom": "ConsumableBase",
       "nodes": [
+        {
+          "nodeId": "Tags",
+          "parentId": "",
+          "defId": ""
+        },
+        {
+          "nodeId": "MedicalType",
+          "parentId": "Tags",
+          "defId": "MedicalType"
+        },
         {
           "nodeId": "Heal",
           "parentId": "",
@@ -2708,9 +2723,9 @@
           "defId": "HealAmount"
         },
         {
-          "nodeId": "BleedStop",
+          "nodeId": "BleedReduction",
           "parentId": "Heal",
-          "defId": "BleedStop"
+          "defId": "BleedReduction"
         },
         {
           "nodeId": "InfectionCleanse",
@@ -2723,12 +2738,32 @@
           "defId": "PainRelief"
         },
         {
+          "nodeId": "FractureHeal",
+          "parentId": "Heal",
+          "defId": "FractureHeal"
+        },
+        {
+          "nodeId": "ConsciousnessRestore",
+          "parentId": "Heal",
+          "defId": "ConsciousnessRestore"
+        },
+        {
+          "nodeId": "StaminaRestore",
+          "parentId": "Heal",
+          "defId": "StaminaRestore"
+        },
+        {
+          "nodeId": "HealDuration",
+          "parentId": "Heal",
+          "defId": "HealDuration"
+        },
+        {
           "nodeId": "Quality",
           "parentId": "",
           "defId": ""
         },
         {
-          "nodeId": "MoraleBonus",
+          "nodeId": "MoraleBonus_Med",
           "parentId": "Quality",
           "defId": "MoraleBonus"
         }
@@ -2744,14 +2779,66 @@
           "defId": ""
         },
         {
-          "nodeId": "Rarity",
+          "nodeId": "ScarcityTier",
           "parentId": "Quality",
-          "defId": "Rarity"
+          "defId": "ScarcityTier"
         },
         {
-          "nodeId": "MaterialType_Tag",
+          "nodeId": "MaterialType",
           "parentId": "Quality",
-          "defId": "MaterialType_Tag"
+          "defId": "MaterialType"
+        }
+      ]
+    },
+    {
+      "treeName": "Seed",
+      "inheritsFrom": "ConsumableBase",
+      "nodes": [
+        {
+          "nodeId": "Crop",
+          "parentId": "",
+          "defId": ""
+        },
+        {
+          "nodeId": "CropType",
+          "parentId": "Crop",
+          "defId": "CropType"
+        },
+        {
+          "nodeId": "GrowthTime",
+          "parentId": "Crop",
+          "defId": "GrowthTime"
+        },
+        {
+          "nodeId": "Yield",
+          "parentId": "Crop",
+          "defId": "Yield"
+        },
+        {
+          "nodeId": "SeedReturnRate",
+          "parentId": "Crop",
+          "defId": "SeedReturnRate"
+        }
+      ]
+    },
+    {
+      "treeName": "RepairKit",
+      "inheritsFrom": "ConsumableBase",
+      "nodes": [
+        {
+          "nodeId": "Repair",
+          "parentId": "",
+          "defId": ""
+        },
+        {
+          "nodeId": "RepairAmount",
+          "parentId": "Repair",
+          "defId": "RepairAmount"
+        },
+        {
+          "nodeId": "CompatibleToolType",
+          "parentId": "Repair",
+          "defId": "CompatibleToolType"
         }
       ]
     },
@@ -2765,19 +2852,19 @@
           "defId": ""
         },
         {
-          "nodeId": "Durability",
+          "nodeId": "Durability_Bld",
           "parentId": "Vitals",
           "defId": "Durability"
-        },
-        {
-          "nodeId": "MaxDurability",
-          "parentId": "Vitals",
-          "defId": "MaxDurability"
         },
         {
           "nodeId": "WeatherResist",
           "parentId": "Vitals",
           "defId": "WeatherResist"
+        },
+        {
+          "nodeId": "Insulation",
+          "parentId": "Vitals",
+          "defId": "Insulation"
         },
         {
           "nodeId": "Combat",
@@ -2846,6 +2933,41 @@
           "defId": "Humidity"
         },
         {
+          "nodeId": "RadiationLevel",
+          "parentId": "Atmosphere",
+          "defId": "RadiationLevel"
+        },
+        {
+          "nodeId": "VisibilityReduction",
+          "parentId": "Atmosphere",
+          "defId": "VisibilityReduction"
+        },
+        {
+          "nodeId": "Weather",
+          "parentId": "",
+          "defId": ""
+        },
+        {
+          "nodeId": "WindSpeed",
+          "parentId": "Weather",
+          "defId": "WindSpeed"
+        },
+        {
+          "nodeId": "WindDirection",
+          "parentId": "Weather",
+          "defId": "WindDirection"
+        },
+        {
+          "nodeId": "Precipitation",
+          "parentId": "Weather",
+          "defId": "Precipitation"
+        },
+        {
+          "nodeId": "PrecipitationType",
+          "parentId": "Weather",
+          "defId": "PrecipitationType"
+        },
+        {
           "nodeId": "Time",
           "parentId": "",
           "defId": ""
@@ -2854,6 +2976,11 @@
           "nodeId": "TimeOfDay",
           "parentId": "Time",
           "defId": "TimeOfDay"
+        },
+        {
+          "nodeId": "Season",
+          "parentId": "Time",
+          "defId": "Season"
         }
       ]
     }

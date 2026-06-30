@@ -30,8 +30,8 @@ namespace RedDust.Properties.Editor
             public List<IntPropertyDefSO.JsonData> _int;
             public List<BoolPropertyDefSO.JsonData> _bool;
             public List<StringPropertyDefSO.JsonData> _string;
-            public List<RTagPropertyDefSO.JsonData> _rTag;
-            public List<RTagListPropertyDefSO.JsonData> _rTagList;
+            public List<RdTagPropertyDefSO.JsonData> _rdTag;
+            public List<RdTagListPropertyDefSO.JsonData> _rdTagList;
             public List<AssetRefPropertyDefSO.JsonData> _assetRef;
             public List<AssetRefListPropertyDefSO.JsonData> _assetRefList;
             public List<StructPropertyDefSO.JsonData> _struct;
@@ -76,8 +76,8 @@ namespace RedDust.Properties.Editor
             if (root.definitions._int != null) foreach (var d in root.definitions._int) { var def = (IntPropertyDefSO)PropertyDefSO.Create(PropertyType.Int); def.Id = d.id; def.Description = d.description; def.IsDeprecated = d.isDeprecated; def.Min = d.min; def.Max = d.max; def.DefaultValue = d.defaultValue; AddDef(def, PropertyType.Int); }
             if (root.definitions._bool != null) foreach (var d in root.definitions._bool) { var def = (BoolPropertyDefSO)PropertyDefSO.Create(PropertyType.Bool); def.Id = d.id; def.Description = d.description; def.IsDeprecated = d.isDeprecated; def.DefaultValue = d.defaultValue; AddDef(def, PropertyType.Bool); }
             if (root.definitions._string != null) foreach (var d in root.definitions._string) { var def = (StringPropertyDefSO)PropertyDefSO.Create(PropertyType.String); def.Id = d.id; def.Description = d.description; def.IsDeprecated = d.isDeprecated; def.DefaultValue = d.defaultValue; AddDef(def, PropertyType.String); }
-            if (root.definitions._rTag != null) foreach (var d in root.definitions._rTag) { var def = (RTagPropertyDefSO)PropertyDefSO.Create(PropertyType.rTag); def.Id = d.id; def.Description = d.description; def.IsDeprecated = d.isDeprecated; def.DefaultValue = d.defaultValue; AddDef(def, PropertyType.rTag); }
-            if (root.definitions._rTagList != null) foreach (var d in root.definitions._rTagList) { var def = (RTagListPropertyDefSO)PropertyDefSO.Create(PropertyType.rTagList); def.Id = d.id; def.Description = d.description; def.IsDeprecated = d.isDeprecated; AddDef(def, PropertyType.rTagList); }
+            if (root.definitions._rdTag != null) foreach (var d in root.definitions._rdTag) { var def = (RdTagPropertyDefSO)PropertyDefSO.Create(PropertyType.RdTag); def.Id = d.id; def.Description = d.description; def.IsDeprecated = d.isDeprecated; def.DefaultValue = d.defaultValue; AddDef(def, PropertyType.RdTag); }
+            if (root.definitions._rdTagList != null) foreach (var d in root.definitions._rdTagList) { var def = (RdTagListPropertyDefSO)PropertyDefSO.Create(PropertyType.RdTagList); def.Id = d.id; def.Description = d.description; def.IsDeprecated = d.isDeprecated; AddDef(def, PropertyType.RdTagList); }
             if (root.definitions._assetRef != null) foreach (var d in root.definitions._assetRef) { var def = (AssetRefPropertyDefSO)PropertyDefSO.Create(PropertyType.AssetRef); def.Id = d.id; def.Description = d.description; def.IsDeprecated = d.isDeprecated; def.DefaultAssetGUID = d.defaultAssetGUID; def.AssetTypeConstraint = d.assetTypeConstraint; AddDef(def, PropertyType.AssetRef); }
             if (root.definitions._assetRefList != null) foreach (var d in root.definitions._assetRefList) { var def = (AssetRefListPropertyDefSO)PropertyDefSO.Create(PropertyType.AssetRefList); def.Id = d.id; def.Description = d.description; def.IsDeprecated = d.isDeprecated; def.AssetTypeConstraint = d.assetTypeConstraint; AddDef(def, PropertyType.AssetRefList); }
             if (root.definitions._struct != null) foreach (var d in root.definitions._struct) { var def = (StructPropertyDefSO)PropertyDefSO.Create(PropertyType.Struct); def.Id = d.id; def.Description = d.description; def.IsDeprecated = d.isDeprecated; def.StructTypeName = d.structTypeName; def.DefaultJson = d.defaultJson ?? "[]"; AddDef(def, PropertyType.Struct); }
@@ -134,8 +134,8 @@ namespace RedDust.Properties.Editor
                 else if (def is IntPropertyDefSO id) Add(ref root.definitions._int, new IntPropertyDefSO.JsonData { id=id.Id,description=id.Description,isDeprecated=id.IsDeprecated,min=id.Min,max=id.Max,defaultValue=id.DefaultValue });
                 else if (def is BoolPropertyDefSO bd) Add(ref root.definitions._bool, new BoolPropertyDefSO.JsonData { id=bd.Id,description=bd.Description,isDeprecated=bd.IsDeprecated,defaultValue=bd.DefaultValue });
                 else if (def is StringPropertyDefSO sd) Add(ref root.definitions._string, new StringPropertyDefSO.JsonData { id=sd.Id,description=sd.Description,isDeprecated=sd.IsDeprecated,defaultValue=sd.DefaultValue });
-                else if (def is RTagPropertyDefSO rd) Add(ref root.definitions._rTag, new RTagPropertyDefSO.JsonData { id=rd.Id,description=rd.Description,isDeprecated=rd.IsDeprecated,defaultValue=rd.DefaultValue });
-                else if (def is RTagListPropertyDefSO td) Add(ref root.definitions._rTagList, new RTagListPropertyDefSO.JsonData { id=td.Id,description=td.Description,isDeprecated=td.IsDeprecated });
+                else if (def is RdTagPropertyDefSO rd) Add(ref root.definitions._rdTag, new RdTagPropertyDefSO.JsonData { id=rd.Id,description=rd.Description,isDeprecated=rd.IsDeprecated,defaultValue=rd.DefaultValue });
+                else if (def is RdTagListPropertyDefSO td) Add(ref root.definitions._rdTagList, new RdTagListPropertyDefSO.JsonData { id=td.Id,description=td.Description,isDeprecated=td.IsDeprecated });
                 else if (def is AssetRefPropertyDefSO ad) Add(ref root.definitions._assetRef, new AssetRefPropertyDefSO.JsonData { id=ad.Id,description=ad.Description,isDeprecated=ad.IsDeprecated,defaultAssetGUID=ad.DefaultAssetGUID,assetTypeConstraint=ad.AssetTypeConstraint });
                 else if (def is AssetRefListPropertyDefSO ald) Add(ref root.definitions._assetRefList, new AssetRefListPropertyDefSO.JsonData { id=ald.Id,description=ald.Description,isDeprecated=ald.IsDeprecated,assetTypeConstraint=ald.AssetTypeConstraint });
                 else if (def is StructPropertyDefSO std) Add(ref root.definitions._struct, new StructPropertyDefSO.JsonData { id=std.Id,description=std.Description,isDeprecated=std.IsDeprecated,structTypeName=std.StructTypeName,defaultJson=std.DefaultJson });
@@ -258,8 +258,8 @@ namespace RedDust.Properties.Editor
                 Count(root.definitions._int,          PropertyType.Int,          d => d.id);
                 Count(root.definitions._bool,         PropertyType.Bool,         d => d.id);
                 Count(root.definitions._string,       PropertyType.String,       d => d.id);
-                Count(root.definitions._rTag,         PropertyType.rTag,         d => d.id);
-                Count(root.definitions._rTagList,     PropertyType.rTagList,     d => d.id);
+                Count(root.definitions._rdTag,         PropertyType.RdTag,         d => d.id);
+                Count(root.definitions._rdTagList,     PropertyType.RdTagList,     d => d.id);
                 Count(root.definitions._assetRef,     PropertyType.AssetRef,     d => d.id);
                 Count(root.definitions._assetRefList, PropertyType.AssetRefList, d => d.id);
                 Count(root.definitions._struct,       PropertyType.Struct,       d => d.id);

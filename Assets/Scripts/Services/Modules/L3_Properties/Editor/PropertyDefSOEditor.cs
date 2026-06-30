@@ -62,16 +62,16 @@ namespace RedDust.Properties.Editor
                     }
                     break;
 
-                case PropertyType.rTag:
-                    if (def is RTagPropertyDefSO)
+                case PropertyType.RdTag:
+                    if (def is RdTagPropertyDefSO)
                     {
-                        EditorGUILayout.LabelField("rTag", EditorStyles.boldLabel);
+                        EditorGUILayout.LabelField("RdTag", EditorStyles.boldLabel);
                         EditorGUILayout.PropertyField(serializedObject.FindProperty("DefaultValue"));
                     }
                     break;
 
-                case PropertyType.rTagList:
-                    EditorGUILayout.HelpBox("rTag List — no default value (always empty array).", MessageType.None);
+                case PropertyType.RdTagList:
+                    EditorGUILayout.HelpBox("RdTag List — no default value (always empty array).", MessageType.None);
                     break;
 
                 case PropertyType.AssetRef:

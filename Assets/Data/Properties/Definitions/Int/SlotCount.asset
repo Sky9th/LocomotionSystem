@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: SlotCount
   Description: "\u80CC\u5305\u5185\u90E8\u683C\u5B50\u6570\u3002\u51B3\u5B9A\u53EF\u643A\u5E26\u7269\u54C1\u6570\u91CF\u3002\u5C0F\u80CC\u5305=10
-    \u5927\u767B\u5C71\u5305=50\u3002ContainerBase\u5C5E\u6027\u3002"
+    \u5927\u767B\u5C71\u5305=50\u3002Backpack\u5C5E\u6027\u3002"
   Type: 1
   IsDeprecated: 0
   Min: 0

@@ -16,16 +16,16 @@ MonoBehaviour:
   treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"Combat\",\n           
     \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
     \"NodeId\": \"FireRate\",\n            \"ParentId\": \"Combat\",\n           
-    \"DefId\": \"FireRate\"\n        },\n        {\n            \"NodeId\": \"MuzzleVelocity\",\n           
-    \"ParentId\": \"Combat\",\n            \"DefId\": \"MuzzleVelocity\"\n       
-    },\n        {\n            \"NodeId\": \"BarrelLength\",\n            \"ParentId\":
-    \"Combat\",\n            \"DefId\": \"BarrelLength\"\n        },\n        {\n           
-    \"NodeId\": \"Reliability\",\n            \"ParentId\": \"Combat\",\n           
-    \"DefId\": \"Reliability\"\n        },\n        {\n            \"NodeId\": \"Tags\",\n           
+    \"DefId\": \"FireRate\"\n        },\n        {\n            \"NodeId\": \"BarrelLength\",\n           
+    \"ParentId\": \"Combat\",\n            \"DefId\": \"BarrelLength\"\n        },\n       
+    {\n            \"NodeId\": \"RecoilModifier\",\n            \"ParentId\": \"Combat\",\n           
+    \"DefId\": \"RecoilModifier\"\n        },\n        {\n            \"NodeId\":
+    \"Reliability\",\n            \"ParentId\": \"Combat\",\n            \"DefId\":
+    \"Reliability\"\n        },\n        {\n            \"NodeId\": \"Firearm\",\n           
     \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
-    \"NodeId\": \"IsAutomatic\",\n            \"ParentId\": \"Tags\",\n           
+    \"NodeId\": \"IsAutomatic\",\n            \"ParentId\": \"Firearm\",\n           
     \"DefId\": \"IsAutomatic\"\n        },\n        {\n            \"NodeId\": \"GearType\",\n           
-    \"ParentId\": \"Tags\",\n            \"DefId\": \"GearType\"\n        },\n       
+    \"ParentId\": \"Firearm\",\n            \"DefId\": \"GearType\"\n        },\n       
     {\n            \"NodeId\": \"Scope\",\n            \"ParentId\": \"Slots\",\n           
     \"DefId\": \"Scope\"\n        },\n        {\n            \"NodeId\": \"Magazine\",\n           
     \"ParentId\": \"Slots\",\n            \"DefId\": \"Magazine\"\n        },\n       

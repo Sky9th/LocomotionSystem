@@ -1,7 +1,7 @@
 # PropertyDefSO 子类体系
 
 > `L3_Properties/Definition/` — 9 个子类 + PropertyDefSO 基类 · 技术文档 · 2026-06-30
-> **Last Verified**: 2026-06-30 | **Verification**: All 9 subclass files exist. OnEnable sets Type. ComputeWriteValue overrides verified.
+> **Last Verified**: 2026-06-30 | **Verification**: All 9 subclass files exist. rTag→RdTag rename complete. OnEnable sets Type. ComputeWriteValue overrides verified.
 
 ## 层级定位
 

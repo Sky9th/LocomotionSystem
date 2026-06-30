@@ -13,7 +13,10 @@ MonoBehaviour:
   m_Name: Food
   m_EditorClassIdentifier: 
   InheritsFrom: {fileID: 11400000, guid: f63ab8fb0f234dd4f95c1b69993e1f4c, type: 2}
-  treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"Nutrition\",\n           
+  treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"Tags\",\n           
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
+    \"NodeId\": \"FoodType\",\n            \"ParentId\": \"Tags\",\n            \"DefId\":
+    \"FoodType\"\n        },\n        {\n            \"NodeId\": \"Nutrition\",\n           
     \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
     \"NodeId\": \"Nutrition_Val\",\n            \"ParentId\": \"Nutrition\",\n           
     \"DefId\": \"Nutrition\"\n        },\n        {\n            \"NodeId\": \"Hydration\",\n           
@@ -21,5 +24,10 @@ MonoBehaviour:
     {\n            \"NodeId\": \"Quality\",\n            \"ParentId\": \"\",\n           
     \"DefId\": \"\"\n        },\n        {\n            \"NodeId\": \"MoraleBonus\",\n           
     \"ParentId\": \"Quality\",\n            \"DefId\": \"MoraleBonus\"\n        },\n       
-    {\n            \"NodeId\": \"SpoilageTime\",\n            \"ParentId\": \"Quality\",\n           
-    \"DefId\": \"SpoilageTime\"\n        }\n    ]\n}"
+    {\n            \"NodeId\": \"ShelfLife\",\n            \"ParentId\": \"Quality\",\n           
+    \"DefId\": \"ShelfLife\"\n        },\n        {\n            \"NodeId\": \"FoodQuality\",\n           
+    \"ParentId\": \"Quality\",\n            \"DefId\": \"FoodQuality\"\n        },\n       
+    {\n            \"NodeId\": \"ContaminationRisk\",\n            \"ParentId\":
+    \"Quality\",\n            \"DefId\": \"ContaminationRisk\"\n        },\n       
+    {\n            \"NodeId\": \"TemperatureBonus\",\n            \"ParentId\": \"Quality\",\n           
+    \"DefId\": \"TemperatureBonus\"\n        }\n    ]\n}"

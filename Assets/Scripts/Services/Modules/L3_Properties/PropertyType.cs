@@ -6,8 +6,8 @@ namespace RedDust.Properties
         Int,
         Bool,
         String,
-        rTag,
-        rTagList,
+        RdTag,
+        RdTagList,
         AssetRef,
         AssetRefList,
         Struct

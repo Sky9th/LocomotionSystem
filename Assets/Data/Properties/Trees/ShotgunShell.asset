@@ -13,4 +13,9 @@ MonoBehaviour:
   m_Name: ShotgunShell
   m_EditorClassIdentifier: 
   InheritsFrom: {fileID: 11400000, guid: bf1fcbacd1bcb3145ae7c50785f374c3, type: 2}
-  treeJson: "{\n    \"Nodes\": []\n}"
+  treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"Combat\",\n           
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
+    \"NodeId\": \"PelletCount\",\n            \"ParentId\": \"Combat\",\n           
+    \"DefId\": \"PelletCount\"\n        },\n        {\n            \"NodeId\": \"Spread\",\n           
+    \"ParentId\": \"Combat\",\n            \"DefId\": \"Spread\"\n        }\n   
+    ]\n}"

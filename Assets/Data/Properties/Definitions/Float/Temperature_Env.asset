@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Temperature_Env
   m_EditorClassIdentifier: 
   Id: Temperature_Env
-  Description: "\u73AF\u5883\u6C14\u6E29(\xB0C)\u3002-30=\u6781\u5BD2 20=\u8212\u9002
-    50=\u9177\u70ED\u3002\u5F71\u54CDBodyTemp\u6F02\u79FB\u65B9\u5411\u3002Environment\u5168\u5C40\u5355\u4F8B\u5C5E\u6027(\u8FDC\u671F)\u3002\u7531TimeService/WeatherService\u9A71\u52A8\u3002"
+  Description: "\u73AF\u5883\u6C14\u6E29(\xB0C)\u3002-50=\u6781\u5BD2 20=\u8212\u9002
+    70=\u9177\u70ED\u3002\u5F71\u54CDBodyTemp\u6F02\u79FB\u65B9\u5411\u3002Environment\u5168\u5C40\u5355\u4F8B\u5C5E\u6027(\u8FDC\u671F)\u3002\u7531TimeService/WeatherService\u9A71\u52A8\u3002"
   Type: 0
   IsDeprecated: 0
-  Min: -30
-  Max: 50
+  Min: -50
+  Max: 70
   DefaultValue: 20

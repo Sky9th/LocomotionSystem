@@ -20,7 +20,20 @@ MonoBehaviour:
     \"ParentId\": \"Atmosphere\",\n            \"DefId\": \"Temperature_Env\"\n       
     },\n        {\n            \"NodeId\": \"Humidity\",\n            \"ParentId\":
     \"Atmosphere\",\n            \"DefId\": \"Humidity\"\n        },\n        {\n           
-    \"NodeId\": \"Time\",\n            \"ParentId\": \"\",\n            \"DefId\":
-    \"\"\n        },\n        {\n            \"NodeId\": \"TimeOfDay\",\n           
-    \"ParentId\": \"Time\",\n            \"DefId\": \"TimeOfDay\"\n        }\n   
-    ]\n}"
+    \"NodeId\": \"RadiationLevel\",\n            \"ParentId\": \"Atmosphere\",\n           
+    \"DefId\": \"RadiationLevel\"\n        },\n        {\n            \"NodeId\":
+    \"VisibilityReduction\",\n            \"ParentId\": \"Atmosphere\",\n           
+    \"DefId\": \"VisibilityReduction\"\n        },\n        {\n            \"NodeId\":
+    \"Weather\",\n            \"ParentId\": \"\",\n            \"DefId\": \"\"\n       
+    },\n        {\n            \"NodeId\": \"WindSpeed\",\n            \"ParentId\":
+    \"Weather\",\n            \"DefId\": \"WindSpeed\"\n        },\n        {\n           
+    \"NodeId\": \"WindDirection\",\n            \"ParentId\": \"Weather\",\n           
+    \"DefId\": \"WindDirection\"\n        },\n        {\n            \"NodeId\":
+    \"Precipitation\",\n            \"ParentId\": \"Weather\",\n            \"DefId\":
+    \"Precipitation\"\n        },\n        {\n            \"NodeId\": \"PrecipitationType\",\n           
+    \"ParentId\": \"Weather\",\n            \"DefId\": \"PrecipitationType\"\n       
+    },\n        {\n            \"NodeId\": \"Time\",\n            \"ParentId\": \"\",\n           
+    \"DefId\": \"\"\n        },\n        {\n            \"NodeId\": \"TimeOfDay\",\n           
+    \"ParentId\": \"Time\",\n            \"DefId\": \"TimeOfDay\"\n        },\n       
+    {\n            \"NodeId\": \"Season\",\n            \"ParentId\": \"Time\",\n           
+    \"DefId\": \"Season\"\n        }\n    ]\n}"

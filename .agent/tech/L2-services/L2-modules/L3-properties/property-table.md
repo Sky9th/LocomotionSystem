@@ -1,6 +1,7 @@
 # PropertyTable — 运行时属性平表
 
-> `L3_Properties/Instance/PropertyTable.cs` · 技术文档 · 2026-06-26
+> `L3_Properties/Instance/PropertyTable.cs` · 技术文档 · 2026-06-30
+> **Last Verified**: 2026-06-30 | **Verification**: WriteSimpleTyped + Min/Max overrides + RdTag rename all verified in code.
 > **Last Verified**: 2026-06-30 | **Verification**: DoWrite refactored (ComputeWriteValue dispatch); OnFloatChanged removed; Min/Max override system added; 6 helpers moved to SO subclasses. All referenced files exist, signatures match.
 
 ## 层级定位

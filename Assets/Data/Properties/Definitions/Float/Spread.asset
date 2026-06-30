@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Spread
   m_EditorClassIdentifier: 
   Id: Spread
-  Description: "\u9730\u5F39\u67AA\u6563\u5E03\u89D2(\u5EA6)\u3002\u5F71\u54CD\u5F39\u4E38\u5206\u5E03\u8303\u56F4\u3002\u89D2\u5EA6\u8D8A\u5927\u6563\u5E03\u8D8A\u5BBD\u3002"
+  Description: "\u9730\u5F39\u6563\u5E03\u89D2\u5EA6(\u5EA6)\u3002\u5F39\u4E38\u51FA\u819B\u540E\u7684\u6563\u5E03\u9525\u89D2\u3002\u6807\u51C6=5
+    \u5589\u7F29=3\u3002ShotgunShell\u4E13\u5C5E\u5C5E\u6027\u3002"
   Type: 0
   IsDeprecated: 0
-  Min: 2
+  Min: 0
   Max: 30
-  DefaultValue: 12
+  DefaultValue: 5
