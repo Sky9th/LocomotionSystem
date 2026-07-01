@@ -12,7 +12,7 @@ namespace RedDust.Character.Animation.Drivers
         public abstract int ChannelMask { get; }
         public abstract void Evaluate(in CharacterFrameContext ctx, float dt);
         public abstract void Drive(in CharacterFrameContext ctx, float dt);
-        public abstract void OnStarted();
+        public abstract void OnStarted(AnimationRequest request);
         public abstract void OnCompleted();
         public abstract void OnInterrupted(AnimationRequest by);
         public abstract void OnResumed();

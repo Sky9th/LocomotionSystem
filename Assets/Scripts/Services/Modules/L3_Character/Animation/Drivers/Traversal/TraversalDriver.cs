@@ -21,7 +21,7 @@ namespace RedDust.Character.Animation.Drivers.Traversal
 
         public override void Drive(in CharacterFrameContext ctx, float dt) { }
 
-        public override void OnStarted()
+        public override void OnStarted(AnimationRequest request)
         {
             brain?.CharacterRig?.SetSuppressGroundLock(true);
             brain?.CharacterRig?.IgnoreCollisionWith(obstacleCollider, true);

@@ -38,7 +38,12 @@ namespace RedDust.Character.Animation
         public void UnregisterDriver(ICharacterAnimationDriver driver)
         {
             drivers.Remove(driver);
-            if (driver == activeDriver) { activeRequest = null; activeCompleted = true; }
+            if (driver == activeDriver)
+            {
+                activeRequest = null;
+                activeDriver = null;
+                activeCompleted = true;
+            }
             if (driver == defaultDriver) defaultDriver = drivers.Count > 0 ? drivers[0] : null;
         }
 
@@ -59,6 +64,7 @@ namespace RedDust.Character.Animation
         {
             if (driver == activeDriver)
             {
+                activeDriver.OnInterrupted(null);
                 activeRequest = null;
                 activeDriver = defaultDriver;
                 defaultDriver?.OnResumed();
@@ -86,35 +92,61 @@ namespace RedDust.Character.Animation
         {
             if (queue.Count == 0) return;
 
-            queue.Sort((a, b) => b.request.Resistance.CompareTo(a.request.Resistance));
+            // H2: 稳定排序 — 先 Resistance 降序，再按类型名保证确定性
+            var sorted = new List<(ICharacterAnimationDriver, AnimationRequest)>(queue);
+            sorted.Sort((a, b) =>
+            {
+                int cmp = b.Item2.Resistance.CompareTo(a.Item2.Resistance);
+                if (cmp != 0) return cmp;
+                return string.CompareOrdinal(a.Item1.GetType().Name, b.Item1.GetType().Name);
+            });
 
-            foreach (var (driver, request) in queue)
+            // H3: snapshot 防止 OnStarted 内 SubmitRequest 并发修改
+            foreach (var (driver, request) in sorted)
             {
                 if (activeRequest == null)
                 {
+                    // H1: 默认驱动被抢占时通知
+                    if (activeDriver != null && activeDriver != driver)
+                        activeDriver.OnInterrupted(request);
                     AcceptRequest(driver, request);
                 }
-                else if (request.Resistance >= activeRequest.Resistance && driver != activeDriver)
+                else if (request.Resistance >= activeRequest.Resistance && CanInterrupt(activeDriver, driver))
                 {
-                    activeDriver?.OnInterrupted(request);
+                    activeDriver.OnInterrupted(request);
                     AcceptRequest(driver, request);
+                }
+                else
+                {
+                    Debug.LogWarning($"[DriverArbiter] Request skipped — " +
+                        $"incoming={driver.GetType().Name} (R={request.Resistance}) vs " +
+                        $"active={activeDriver?.GetType().Name} (R={activeRequest.Resistance}) — " +
+                        $"resistance too low or cannot interrupt");
                 }
             }
             queue.Clear();
         }
 
+        /// <summary>
+        /// 同类 Driver 可互相打断，异类互斥（Ability ↔ Traversal 不可打断）。
+        /// Locomotion（默认驱动，无 activeRequest）不在此检查——已在 activeRequest==null 分支处理。
+        /// </summary>
+        private static bool CanInterrupt(ICharacterAnimationDriver active, ICharacterAnimationDriver incoming)
+        {
+            if (active.GetType() == incoming.GetType()) return true;
+            // 默认驱动（LocomotionDriver）不提交 Request，不会出现在 active 位置
+            // 异类（Ability vs Traversal）：互不可打断
+            return false;
+        }
+
         private void AcceptRequest(ICharacterAnimationDriver driver, AnimationRequest request)
         {
-            if (activeDriver != null && activeDriver != driver)
-                activeDriver.OnInterrupted(request);
-
             activeDriver = driver;
             activeRequest = request;
             activeCompleted = false;
-            driver.OnStarted();
-
-            if (request.HasClip) layer.Play(request.Clip, request.FadeIn);
-            else if (request.HasAlias) layer.TryPlay(request.Alias);
+            driver.OnStarted(request);
+            // 不播放 — Driver 在 OnStarted() 中自行处理 layer。
+            // OnInterrupted 由 ProcessQueue 在调用 AcceptRequest 前统一处理。
         }
 
         private void CheckCompletion()
@@ -123,13 +155,16 @@ namespace RedDust.Character.Animation
             float t = layer.CurrentState?.NormalizedTime ?? 0f;
             if (t >= 0.99f)
             {
+                activeDriver?.OnCompleted();
+
                 if (activeRequest.OnComplete == OnCompleteBehavior.Resume)
                 {
-                    activeDriver.OnCompleted();
                     activeRequest = null;
                     activeDriver = defaultDriver;
                     defaultDriver?.OnResumed();
                 }
+                // Stay: activeRequest/activeDriver 保持，同 Driver 新请求可替换，外部 Release 可归还
+
                 activeCompleted = true;
             }
         }

@@ -4,6 +4,7 @@ using RedDust.Core;
 using RedDust.Character.Animation.Drivers;
 using RedDust.Character.Animation.Drivers.Locomotion;
 using RedDust.Character.Animation.Drivers.Traversal;
+using RedDust.Character.Animation.Drivers.Ability;
 using RedDust.Character.Animation;
 using RedDust.Character;
 
@@ -71,6 +72,7 @@ namespace RedDust.Character.Animation
             // 装配 Drivers。AddComponent 立即触发其 Awake，之后 base.Awake() 扫描发现。
             gameObject.AddComponent<LocomotionDriver>();
             gameObject.AddComponent<TraversalDriver>();
+            gameObject.AddComponent<AbilityDriver>();
 
             base.Awake();  // 扫描 ModuleChildMono → Register → OnAssembleAll
         }

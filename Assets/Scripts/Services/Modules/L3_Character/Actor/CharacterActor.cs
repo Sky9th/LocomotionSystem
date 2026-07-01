@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using RedDust.Core;
 using UnityEngine;
 using RedDust.Character.Animation;
+using RedDust.Character.Animation.Drivers.Ability;
 using RedDust.Character.Director;
 using RedDust.Character.Kinematic;
 using RedDust.Character.Pathfinding;
@@ -33,6 +34,9 @@ namespace RedDust.Character
 
         [Header("Ability")]
         [SerializeField] private AbilityTreeSO[] innateTrees;
+
+        [Header("Test")]
+        [SerializeField] private AnimationClip testAnimationClip;
 
         [Header("Audio")]
         [SerializeField] private CharacterAudioConfigSO characterAudioConfig;
@@ -208,6 +212,22 @@ namespace RedDust.Character
 
         private void Update()
         {
+            // TODO: 临时 T 键测试 AbilityDriver — 验证后删除
+            if (Input.GetKeyDown(KeyCode.T) && characterAnimation != null)
+            {
+                var driver = characterAnimation.GetComponent<AbilityDriver>();
+                if (driver != null && testAnimationClip != null)
+                {
+                    characterAnimation.SubmitRequest(driver, new AnimationRequest
+                    {
+                        Clip = testAnimationClip,
+                        FadeIn = 0.15f,
+                        Resistance = 100,
+                        OnComplete = OnCompleteBehavior.Resume,
+                    });
+                }
+            }
+
             float deltaTime = Time.deltaTime;
             if (deltaTime <= Mathf.Epsilon) return;
 

@@ -3,6 +3,7 @@ using Animancer.FSM;
 using UnityEngine;
 using RedDust.Character;
 using RedDust.Character.Animation;
+using RedDust.Character.Locomotion;
 
 namespace RedDust.Character.Animation.Drivers.Locomotion
 {
@@ -10,14 +11,20 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
     {
         private readonly StateMachine<BaseStateKey, LocomotionLayerFsmState<BaseLayer>> fsm;
         private readonly CharacterBuildContext _buildContext;
+        private readonly LocomotionAnimationSetSO _defaultAnimSet;
+        private LocomotionAnimationSetSO _lastAnimSet;
+        private bool _lastWasIdle;
         private CharacterFrameContext ctx;
         private float deltaTime;
         private ITransition lastPlayedTransition;
         private AnimancerState currentAnimState;
 
-        internal LocomotionAnimationSetSO AnimSet { get; set; }
+        internal LocomotionAnimationSetSO AnimSet { get; private set; }
+
+        /// <summary>非 null 时 IdleState 使用此 clip，忽略 AnimSet.idleL。Partial grip 静止时使用。</summary>
+        internal ITransition IdleOverride { get; private set; }
         internal LocomotionAnimationConfigSO AnimProfile { get; }
-        internal CharacterRig Rig => _buildContext?.Rig;  // 实时读取，Model 替换自动更新
+        internal CharacterRig Rig => _buildContext?.Rig;
         internal CharacterFrameContext Ctx => ctx;
         internal float DeltaTime => deltaTime;
         internal AnimancerLayer Layer { get; }
@@ -28,12 +35,13 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         internal System.Action FootstepCallback;
         private AnimancerState injectedMixer;
 
-        internal BaseLayer(AnimancerLayer layer, LocomotionAnimationSetSO animSet, LocomotionAnimationConfigSO animProfile,
-            CharacterBuildContext buildContext)
+        internal BaseLayer(AnimancerLayer layer, LocomotionAnimationSetSO defaultAnimSet,
+            LocomotionAnimationConfigSO animProfile, CharacterBuildContext buildContext)
         {
             _buildContext = buildContext;
             Layer = layer;
-            AnimSet = animSet;
+            _defaultAnimSet = defaultAnimSet;
+            AnimSet = defaultAnimSet;
             AnimProfile = animProfile;
             fsm = new StateMachine<BaseStateKey, LocomotionLayerFsmState<BaseLayer>>();
             fsm.Dictionary[BaseStateKey.Idle] = new BaseIdleState(this);
@@ -47,10 +55,38 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         {
             this.ctx = ctx;
             deltaTime = dt;
+
+            // 每帧自决：根据 grip/gait 切换 AnimSet 和 IdleOverride
+            EvaluateAnimSet();
+
             if (fsm.CurrentState == null) fsm.ForceSetState(BaseStateKey.Idle);
             if (Rig == null)
                 Debug.LogError($"[BaseLayer] Rig null during Update — buildContext not set.");
             fsm.CurrentState?.Tick();
+        }
+
+        // TODO: Gait vs Phase 时序不一致——Gait 松手立刻变 Idle，Phase 等 velocity 归零才变。
+        // Partial grip 减速期间 Arm 淡出 + FullBody 未切 idle，导致武器姿态短暂消失。
+        private void EvaluateAnimSet()
+        {
+            var animSet = _buildContext?.ResolvedLocoAnimSet ?? _defaultAnimSet;
+            if (animSet == null) return;
+            bool isIdle = ctx.Discrete.Gait == EMovementGait.Idle;
+
+            if (animSet == _lastAnimSet && isIdle == _lastWasIdle) return;
+            _lastAnimSet = animSet;
+            _lastWasIdle = isIdle;
+
+            if (animSet.HasFullLocomotion)
+            {
+                AnimSet = animSet;
+                IdleOverride = null;
+            }
+            else
+            {
+                AnimSet = _defaultAnimSet;
+                IdleOverride = isIdle ? animSet?.idleL : null;
+            }
         }
 
         internal bool TrySetState(BaseStateKey key)
