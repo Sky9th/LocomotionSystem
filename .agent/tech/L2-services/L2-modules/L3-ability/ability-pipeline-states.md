@@ -20,30 +20,27 @@ AbilityExecutor.Update()
                       └─ Transition(next, ref ctx)
                            └─ OnExit(current, ref ctx) → OnEnter(next, ref ctx)
 
-GatingState.OnTick         → SearchState / RejectedState
-SearchState.OnTick         → CostState                   （Fire 窗口每帧采样，TODO: fireWindowDuration）
-CostState.OnTick           → ActivationState / RejectedState
-ActivationState.OnTick     → CooldownState               （Windup 前摇，TODO: windupDuration 计时）
-CooldownState.OnTick       → ExecutionState              （冷却从 commit 点开始，与 Fire+Recovery 重叠）
-ExecutionState.OnTick      → RecoveryState
-RecoveryState.OnTick       → CompletedState              （后摇等待，TODO: animationSpeed 除法）
-CompletedState / RejectedState / IdleState               （终态，永远返回自身）
+GatingState.OnTick         → CostState / RejectedState       （② 门控：冷却/互斥/外部条件）
+CostState.OnTick           → WindupState / RejectedState （④ 资源：预检+扣除）
+WindupState.OnTick     → CooldownState                   （③ 前摇：windupDuration / animationSpeed 计时，canCancelWindup 打断控制）
+CooldownState.OnTick       → ExecutionState                  （冷却施加：独立 + 联动双锁，MinCooldown=0.05s 防连发）
+ExecutionState.OnTick      → RecoveryState                   （④ Fire 物理查询 + ⑤ 效果载荷含 EffectCallback 修正 + 逐 hit Reactor.Resolve）
+RecoveryState.OnTick       → CompletedState                  （③ 后摇：recoveryDuration / animationSpeed 计时，canCancelRecovery 打断控制）
+CompletedState / RejectedState                                （终态，永远返回自身）
 ```
 
 ## State 流转表
 
 | State | Id | OnTick 返回 | 条件 |
 |-------|-----|------------|------|
-| `GatingState` | 1 | `SearchState` | 冷却/互斥/外部条件全通过 |
+| `GatingState` | 1 | `CostState` | 冷却/互斥/外部条件全通过 |
 | | | `RejectedState` | 任一闸门失败 |
-| `SearchState` | 3 | `CostState` | Fire 窗口每帧采样完毕 |
-| `CostState` | 4 | `ActivationState` | 资源预检+扣除通过 |
+| `CostState` | 4 | `WindupState` | 资源预检+扣除通过 |
 | | | `RejectedState` | 资源不足或回调缺失 |
-| `ActivationState` | 2 | `CooldownState` | Windup 前摇结束（TODO: 计时） |
+| `WindupState` | 2 | `CooldownState` | Windup 前摇结束（windupDuration / animationSpeed） |
 | `CooldownState` | 6 | `ExecutionState` | 冷却施加完成 |
-| `ExecutionState` | 5 | `RecoveryState` | 效果施加完毕 |
-| `RecoveryState` | 7 | `CompletedState` | 后摇结束（TODO: animationSpeed） |
-| `IdleState` | 0 | 自身 | 终态 |
+| `ExecutionState` | 5 | `RecoveryState` | ④ 物理查询 + ⑤ 效果载荷（含 EffectCallback）+ 逐 hit 结算 |
+| `RecoveryState` | 7 | `CompletedState` | 后摇结束（recoveryDuration / animationSpeed） |
 | `RejectedState` | 9 | 自身 | 终态 |
 | `CompletedState` | 8 | 自身 | 终态 |
 
@@ -123,26 +120,55 @@ public abstract class AbilityPipelineState : IState<SActiveAbilityContext>
 - **公开方法**: `internal static string ResolveCooldownKey(AbilitySO)` — 供 CooldownState 复用
 - **拒绝时输出** `Debug.LogWarning` 含具体原因
 
-### SearchState（③ 搜索命中）
+### SearchState ⛔ DEPRECATED
 
 - **文件**: `Executor/State/SearchState.cs`
-- **逻辑**: 首帧执行物理查询（Cone / Ray / Circle 分发），填充 `ctx.Targets`
-- **最小停留**: 0.5s — 给 Debug 可视化观察窗口
-- **Debug 绘制**: 每帧 `Debug.DrawRay/Line`（duration 0.5s），颜色按形状区分（黄=锥，红=射线，青=圆），白色原点球体始终可见
-- **内联**: `AbilitySearch` 的 4 个方法内联为 `private static`
+- **状态**: 物理查询已内联至 `ExecutionState`。Debug Draw 保留供参考。不再是管道链中的一环。
 
 ### CostState（④ 资源消耗）
 
 - **文件**: `Executor/State/CostState.cs`
 - **逻辑**: Phase 1 预检（全部可负担？）→ Phase 2 扣除
+- **两条路径互斥**（相位级排他，不混合）:
+  - A. `PropertyTable` 存在 → 循环逐 Effect 内建 `GetFloat` / `Modify`（覆盖 90% 常规消耗）
+  - B. PropertyTable 不存在 + 回调有接线 → 整批 `CostEffectSO[]` 交给 `PeekStatCallback`（null=通过）/ `ModifyStatCallback`
+  - C. 两条路都走不通 → `RejectedState`
+- **回调签名变更**（2026-07-01）:
+  - `PeekStatCallback`: `Func<PropertyDefSO, float>` → `Func<CostEffectSO[], string>` — 相位级预检，null=全部通过
+  - `ModifyStatCallback`: `Action<PropertyDefSO, float>` → `Action<CostEffectSO[]>` — 相位级整批扣除
+- **PropertyTable 来源**: `AbilityExecutor.PropertyTable` → 惰性从 `GetComponent<Identity>().Properties` 取，null = 实体无属性系统
+- **PeekStatCallback 现在是可选的**：有 PropertyTable 时走内建路径，不需要接线
 - **预检失败** → `RejectedState`
-- **注意**: 不再挂 abilityTag — 冷却互斥由 CooldownState 统一管理
 
-### ExecutionState（⑤ 效果载荷）
+### WindupState（③ 前摇计时）
+
+- **文件**: `Executor/State/WindupState.cs`
+- **逻辑**: OnEnter 计算 `_windupDuration = windupDuration / animationSpeed`，OnTick 累时穿透
+- **计时公式**: 实际前摇 = 原始值 / animationSpeed（speed=1.0 为基准，防御除零）
+- **无前摇时**（windupDuration ≤ 0）→ 单帧透传 `CooldownState`
+- **打断控制**: `CanBeInterrupted` 看 `canCancelWindup`，false 时前摇霸体
+
+### CooldownState（⑦ 冷却施加）
+
+- **文件**: `Executor/State/CooldownState.cs`
+- **逻辑**: 独立冷却（key=`abilityTag.FullTag`）+ 联动冷却（`sharedCooldownTag`），`MinCooldown=0.05s` 防帧级连发
+- **注入**: 调 `executor.StartCooldown()` + `executor.AddCooldown()`，`CleanupExpiredCooldowns` 自动清理（0.5s 间隔）
+- **cooldownAbilityTags**: 已移除 — 旧 identity 映射（key==value）冗余，NEW 代码不再需要
+
+### ExecutionState（④⑤ 物理查询 + 效果载荷）
 
 - **文件**: `Executor/State/ExecutionState.cs`
-- **逻辑**: `AbilityEffects.ApplySelf()` → `BuildDamageInfo()` → 逐 hit `AbilityReactor.Resolve()`
-- **当前终点**: `CompletedState`（TODO: → CooldownState）
+- **逻辑**: Fire 帧物理查询（Cone/Ray/Circle → `ctx.Targets`）→ `ApplySelf()` → `BuildDamageInfo()` → 逐 hit `AbilityReactor.Resolve()`
+- **EffectCallback**: `BuildDamageInfo` 计算武器基底后调用 `executor.EffectCallback(effect, target, damage)`，外部（力量/熟练度）修正
+- **内联**: `AbilitySearch` 的搜索方法 + `AbilityEffects` 的效果方法均已内联为 `private static`
+
+### RecoveryState（⑧ 动画后摇）
+
+- **文件**: `Executor/State/RecoveryState.cs`
+- **逻辑**: OnEnter 计算 `_recoveryDuration = recoveryDuration / animationSpeed`，OnTick 累时穿透
+- **计时公式**: 实际后摇 = 原始值 / animationSpeed（与 Activation 一致，防御除零）
+- **无后摇时**（recoveryDuration ≤ 0）→ 单帧透传 `CompletedState`
+- **打断控制**: `CanBeInterrupted` 看 `canCancelRecovery`，false 时后摇霸体
 
 ### TerminalStates（终态）
 
@@ -158,17 +184,21 @@ public abstract class AbilityPipelineState : IState<SActiveAbilityContext>
 |----------|--------|
 | ref TContext 而非 class | struct + ref = 零 GC 零拷贝，泛型 FSM 的正解 |
 | OnTick 返回自身 = 停留 | 最轻量语义，StateMachine 只做 `next != current` 比较 |
-| Search 和 Cost 顺序：Search 在前 | 动作游戏范式——先确认目标再决定是否消耗 |
+| Search 从独立 State 退化为 Execution 内联 | 目标不是管道搜出来的——Director 外部指定。物理碰撞（流弹/散射/扇形）是 Execution 的职责 |
 | State 内 `new` 下一站 | State 自组装，Pipeline 不持有链式结构 |
 | `AbilityPipelineState` 命名 | 点名归属 Ability Pipeline，比 `AbilityState` 更精准 |
 | SearchState 内联 AbilitySearch | 4 个无状态方法，自包含优于外部依赖 |
+| Windup/Recovery 计时 ÷ animationSpeed | animationSpeed 是唯一调参旋钮。speed=1.0 时 phase marker = 实际秒数，speed=2.0 时全体快一倍。防御除零 |
+| cooldownAbilityTags 移除 | 旧 identity 映射（key==value）永远冗余。独立冷却 key=`abilityTag`，联动冷却走 `AddCooldown` 直插 |
 
 ## Future Plans
 
 | Plan | Status | Source |
 |------|--------|--------|
-| CooldownState | TODO — 冷却施加 + cooldownAbilityTags 映射 + CleanupExpiredCooldowns 自动清理 | short-term plan |
-| RecoveryState | TODO — 后摇计时，canCancelRecovery 打断控制 | short-term plan |
-| SearchState MinDuration 移除 | 正式版改为 0（单帧穿透） | 调试阶段临时 |
+| WindupState windup 计时 | ✅ Done 2026-07-01 — windupDuration / animationSpeed + canCancelWindup | this session |
+| RecoveryState animationSpeed 除法 | ✅ Done 2026-07-01 — recoveryDuration / animationSpeed | this session |
+| ExecutionState EffectCallback 接入 | ✅ Done 2026-07-01 — BuildDamageInfo 构建后调用外部修正 | this session |
+| CooldownState cooldownAbilityTags 清理 | ✅ Done 2026-07-01 — 移除冗余 identity 映射 + 重复 AddTag | this session |
 | AbilitySearch.cs 删除 | Pipeline 完全接管后，旧 TryActivate 删除时一并清理 | DEPRECATED 标注 |
-| AbilityEffects.cs 内联至 ExecutionState | 与 SearchState 同等对待 | 远期 |
+| SearchState 正式删除 | 等待旧 TryActivate 清除后 | ⛔ DEPRECATED 标注中 |
+| AbilityDriver 阶段机 + 动画驱动 | Activation/Recovery State 当前用计时占位，AbilityDriver 实现后接管 | Slice 3 |

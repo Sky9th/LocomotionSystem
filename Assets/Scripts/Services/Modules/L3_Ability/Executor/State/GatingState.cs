@@ -4,7 +4,7 @@ namespace RedDust.Ability
 {
     /// <summary>
     /// ② 门控检查。冷却 → 互斥 → 外部条件，三道闸门串联。
-    /// 通过 → CostState；失败 → RejectedState。
+    /// 通过 → CostState；失败 → RejectedState。Search 已并入 Execution。
     /// </summary>
     public class GatingState : AbilityPipelineState
     {
@@ -15,11 +15,17 @@ namespace RedDust.Ability
             var a = ctx.Ability;
             var e = ctx.Executor;
 
-            // ── 1. 冷却 ──
-            var cdKey = ResolveCooldownKey(a);
-            if (cdKey != null && e.IsOnCooldown(cdKey))
+            // ── 1. 独立冷却 ──
+            if (a.cooldownDuration > 0f && a.abilityTag != null && e.IsOnCooldown(a.abilityTag.FullTag))
             {
-                Debug.LogWarning($"[Gating] Rejected: {a.internalName} — on cooldown ({cdKey})");
+                Debug.LogWarning($"[Gating] Rejected: {a.internalName} — on cooldown");
+                return new RejectedState();
+            }
+
+            // ── 2. 联动冷却 — sharedCooldownTag 或其父级任一在冷却中即拒绝 ──
+            if (e.IsBlockedBySharedCooldown(a.sharedCooldownTag))
+            {
+                Debug.LogWarning($"[Gating] Rejected: {a.internalName} — shared cooldown active ({a.sharedCooldownTag?.FullTag})");
                 return new RejectedState();
             }
 
@@ -56,16 +62,9 @@ namespace RedDust.Ability
                 }
             }
 
-            Debug.Log($"[Gating] Passed: {a.internalName} → Search");
-            return new SearchState();
+            Debug.Log($"[Gating] Passed: {a.internalName} → Cost");
+            return new CostState();
         }
 
-        internal static string ResolveCooldownKey(AbilitySO ability)
-        {
-            if (ability == null || ability.cooldownDuration <= 0f) return null;
-            return ability.sharedCooldownTag != null
-                ? ability.sharedCooldownTag.FullTag
-                : $"Ability.Cooldown.{ability.internalName}";
-        }
     }
 }

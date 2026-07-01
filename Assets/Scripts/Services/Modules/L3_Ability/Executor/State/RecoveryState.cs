@@ -4,10 +4,7 @@ namespace RedDust.Ability
 {
     /// <summary>
     /// ⑧ 后摇等待。动画收尾段——刀收回/枪回落/手势收拢。
-    /// 计时 = recoveryDuration / animationSpeed，与 Windup/Fire 同步播放速率。
-    ///
-    /// TODO: recoveryDuration / animationSpeed
-    /// 当前: 裸读 recoveryDuration，未除 animationSpeed。
+    /// 公式：实际后摇 = recoveryDuration / animationSpeed（speed=1.0 为基准）。
     /// canCancelRecovery=false 时 CanBeInterrupted 返回 false（后摇霸体）。
     /// 通过 → CompletedState。
     /// </summary>
@@ -20,11 +17,20 @@ namespace RedDust.Ability
 
         public override void OnEnter(ref SActiveAbilityContext ctx)
         {
-            _recoveryDuration = ctx.Ability.activation?.recoveryDuration ?? 0f;
+            var activation = ctx.Ability.activation;
+            if (activation != null && activation.recoveryDuration > 0f)
+            {
+                float speed = activation.animationSpeed > 0f ? activation.animationSpeed : 1f;
+                _recoveryDuration = activation.recoveryDuration / speed;
+            }
+            else
+            {
+                _recoveryDuration = 0f;
+            }
             _elapsed = 0f;
 
             if (_recoveryDuration > 0f)
-                Debug.Log($"[Recovery] Enter: {ctx.Ability.internalName} duration={_recoveryDuration:F1}s");
+                Debug.Log($"[Recovery] Enter: {ctx.Ability.internalName} duration={_recoveryDuration:F2}s (raw={activation.recoveryDuration:F2}s / speed={activation.animationSpeed:F2})");
         }
 
         public override IState<SActiveAbilityContext> OnTick(ref SActiveAbilityContext ctx, float dt)

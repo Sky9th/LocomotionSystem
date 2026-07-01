@@ -16,13 +16,17 @@ namespace RedDust.Ability
         public override IState<SActiveAbilityContext> OnTick(ref SActiveAbilityContext ctx, float dt)
         {
             var a = ctx.Ability;
+            var e = ctx.Executor;
 
-            if (a.cooldownDuration > 0f)
-                ctx.Executor.StartCooldown(a);
-            else
-                ctx.Executor.StartCooldown(a, MinCooldown);
+            // 独立冷却
+            float duration = a.cooldownDuration > 0f ? a.cooldownDuration : MinCooldown;
+            e.StartCooldown(a, duration);
 
-            Debug.Log($"[Cooldown] {a.internalName} → Execution");
+            // 联动冷却
+            if (a.sharedCooldownTag != null)
+                e.AddCooldown(a.sharedCooldownTag.FullTag, duration);
+
+            Debug.Log($"[Cooldown] {a.internalName} cd={duration:F2}s shared={a.sharedCooldownTag?.name ?? "none"} → Execution");
             return new ExecutionState();
         }
     }

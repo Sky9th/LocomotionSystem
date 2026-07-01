@@ -6,9 +6,9 @@ using UnityEngine;
 namespace RedDust.Ability
 {
     /// <summary>
-    /// ⑤ 效果载荷 + 逐 hit 结算。从 ctx.Targets（SearchState 已填充）构造伤害并调用 AbilityReactor 落地。
-    /// AbilityEffects 已内联为本类 private static 方法。
-    /// 通过 → CooldownState。
+    /// ⑤ 效果载荷 + 逐 hit 结算。Fire 帧物理查询（Cone/Ray/Circle → ctx.Targets）→ 构造伤害 → Reactor 落地。
+    /// AbilitySearch 和 AbilityEffects 均已内联。SearchState ⛔ DEPRECATED。
+    /// 通过 → RecoveryState。
     /// </summary>
     public class ExecutionState : AbilityPipelineState
     {
@@ -19,6 +19,10 @@ namespace RedDust.Ability
             var a = ctx.Ability;
             var e = ctx.Executor;
             var caster = e.gameObject;
+
+            // ── Fire 帧物理查询（内联自 SearchState ⛔ DEPRECATED）──
+            ctx.Targets = ExecuteSearch(a.search, caster, ctx.Origin, ctx.Direction);
+            Debug.Log($"[Execution] ④ Search: {a.internalName} type={a.search?.GetType().Name} hits={ctx.Targets?.Count ?? 0}");
 
             // ── ⑤ Self Effects ──
             ApplySelf(a, caster, e);
@@ -101,6 +105,10 @@ namespace RedDust.Ability
                             if (sourceEffect != null)
                                 finalDamage = (sourceEffect.baseValue + dmg.modAdd) * dmg.modMult;
 
+                            // ⑤ EffectCallback: 外部伤害修正（力量/熟练度/被动）
+                            if (executor.EffectCallback != null)
+                                finalDamage = executor.EffectCallback(dmg, target, finalDamage);
+
                             var hit = new SDamageInfo(
                                 caster, target, finalDamage,
                                 sourceEffect?.effectTag ?? default,
@@ -165,6 +173,79 @@ namespace RedDust.Ability
                 executor.OwnedTags.AddTag(effect.effectTag.FullTag);
             else
                 target.GetComponent<Identity>()?.Tags.AddTag(effect.effectTag.FullTag);
+        }
+
+        #endregion
+
+        #region Search (inlined from SearchState ⛔ DEPRECATED)
+
+        private static List<GameObject> ExecuteSearch(AbilitySearchSO search, GameObject caster, Vector3 origin, Vector3 direction)
+        {
+            if (search == null || caster == null) return new List<GameObject>();
+
+            return search switch
+            {
+                ConeSearchSO cone     => SearchCone(cone, caster, origin, direction),
+                RaySearchSO ray       => SearchRay(ray, caster, origin, direction),
+                CircleSearchSO circle => SearchCircle(circle, caster, origin),
+                _                     => new List<GameObject>()
+            };
+        }
+
+        private static List<GameObject> SearchCone(ConeSearchSO cone, GameObject caster, Vector3 origin, Vector3 direction)
+        {
+            var results = new List<GameObject>();
+            int max = cone.maxTargets > 0 ? cone.maxTargets : int.MaxValue;
+            var hits = Physics.OverlapSphere(origin, cone.range, cone.targetMask);
+            float halfAngle = cone.angle * 0.5f;
+
+            for (int i = 0; i < hits.Length && results.Count < max; i++)
+            {
+                var go = hits[i].gameObject;
+                if (go == caster) continue;
+                if (go.GetComponent<Identity>() == null) continue;
+
+                var toTarget = hits[i].transform.position - origin;
+                if (Vector3.Angle(direction, toTarget) > halfAngle) continue;
+
+                if (!results.Contains(go))
+                    results.Add(go);
+            }
+
+            return results;
+        }
+
+        private static List<GameObject> SearchRay(RaySearchSO ray, GameObject caster, Vector3 origin, Vector3 direction)
+        {
+            var results = new List<GameObject>();
+
+            if (Physics.Raycast(origin, direction, out var hit, ray.range, ray.targetMask))
+            {
+                var go = hit.collider.gameObject;
+                if (go != caster && go.GetComponent<Identity>() != null)
+                    results.Add(go);
+            }
+
+            return results;
+        }
+
+        private static List<GameObject> SearchCircle(CircleSearchSO circle, GameObject caster, Vector3 origin)
+        {
+            var results = new List<GameObject>();
+            int max = circle.maxTargets > 0 ? circle.maxTargets : int.MaxValue;
+            var hits = Physics.OverlapSphere(origin, circle.range, circle.targetMask);
+
+            for (int i = 0; i < hits.Length && results.Count < max; i++)
+            {
+                var go = hits[i].gameObject;
+                if (go == caster) continue;
+                if (go.GetComponent<Identity>() == null) continue;
+
+                if (!results.Contains(go))
+                    results.Add(go);
+            }
+
+            return results;
         }
 
         #endregion

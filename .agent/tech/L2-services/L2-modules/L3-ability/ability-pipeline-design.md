@@ -1,6 +1,35 @@
-# Ability Pipeline — 技能管道设计
+# ⛔ DEPRECATED — Ability Pipeline 八维度概念设计
 
-> `L3_Ability/` · 设计文档 · 2026-06-06
+> `L3_Ability/` · 设计文档 · 2026-06-06 · **已废弃 2026-07-01**
+>
+> **此文档保留八维度概念模型（①②③④⑤⑥⑦⑧）和回调模式的设计理由，所有实现细节已过时。**
+> 实现文档 → [ability-pipeline-states.md](ability-pipeline-states.md)
+
+## 过时内容汇总
+
+| 旧内容 | 当前实际情况 |
+|--------|------------|
+| `AbilityComponent` / `HitReactionComponent` | `AbilityExecutor` / `AbilityReactor` |
+| `SResolvedHit` / `AbilityPipelineContext` | `SDamageInfo` / `SActiveAbilityContext` |
+| 单块 `TryActivate` 执行流 | 8 State 状态机 (`Gating → Search → Cost → Activation → Cooldown → Execution → Recovery`) |
+| `AbilityDefSO` | `ActiveAbilitySO` |
+| `GameplayTag` | `rTag` |
+| AbilityDriver 作为独立 Phase | 尚未实现，Activation/Recovery State 暂用占位计时 |
+| Phase 状态 Slice 2/3 | Exe 侧全 8 State 已落地 |
+
+## 仍然成立的概念
+
+- **八维度** ①②③④⑤⑥⑦⑧ 分工仍然正确
+- **Caster/Target/世界** 三域模型仍然正确
+- **回调模式**（组件不持有修改器数组）仍然是设计原则
+- **Exe 侧状态机 + React 侧函数调用** 是当前架构
+- **④→⑥ 直接调用不走事件** 仍然成立
+
+---
+
+以下为原始内容（2026-06-06），仅供概念参考：
+
+---
 
 ## 定位
 

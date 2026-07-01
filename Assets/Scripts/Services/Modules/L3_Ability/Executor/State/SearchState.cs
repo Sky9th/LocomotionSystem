@@ -5,13 +5,8 @@ using UnityEngine;
 namespace RedDust.Ability
 {
     /// <summary>
-    /// ④ 搜索命中。Fire 窗口内每帧物理查询 + 累加去重。
-    /// 窗口时长 = activation.fireWindowDuration / activation.animationSpeed。
-    ///
-    /// TODO: 去 _searched flag，每帧 ExecuteSearch + 合并去重到 ctx.Targets
-    /// TODO: MinDuration → fireWindowDuration / animationSpeed
-    /// 当前: 仅首帧搜一次，硬编码 0.5s 调试窗口。
-    /// 通过 → CostState。
+    /// ⛔ DEPRECATED — 物理查询已内联至 ExecutionState（Fire 帧碰撞）。
+    ///   链变更为 Gating → Cost → Activation → Execution。保留供参考。
     /// </summary>
     public class SearchState : AbilityPipelineState
     {

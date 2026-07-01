@@ -16,6 +16,41 @@ namespace RedDust.Ability
         private readonly ActiveAbilityPipeline _pipeline = new();
         private readonly Queue<SQueuedSkill> _queue = new();
 
+        private PropertyTable _propertyTable;
+        private bool _propertyTableResolved;
+
+        /// <summary>
+        /// 同 GameObject 的 PropertyTable（来自 Identity）。惰性初始化。
+        /// null = 该实体无属性系统。
+        /// </summary>
+        public PropertyTable PropertyTable
+        {
+            get
+            {
+                if (!_propertyTableResolved)
+                {
+                    var identity = GetComponent<Identity>();
+                    _propertyTable = identity != null ? identity.Properties : null;
+                    _propertyTableResolved = true;
+                }
+                return _propertyTable;
+            }
+        }
+
+        /// <summary>
+        /// 联动冷却层级检查——技能 sharedCooldownTag 或其父级是否在冷却中。
+        /// </summary>
+        public bool IsBlockedBySharedCooldown(rTagDefSO tag)
+        {
+            if (tag == null) return false;
+            var t = tag.FullTag;
+            foreach (var key in cooldownEndTimes.Keys)
+            {
+                if (t == key || t.StartsWith(key + ".")) return true;
+            }
+            return false;
+        }
+
         /// <summary>
         /// 将主动技能加入释放队列。Pipeline 空闲时立即启动；运行中则替换排队位（只保留最新一个待释放技能）。
         /// 队列结构保留供后续预指令扩展。
@@ -77,8 +112,10 @@ namespace RedDust.Ability
         public System.Func<PassiveAbilitySO, GameObject, string> TargetFilterCallback;
         public System.Func<EffectSO, GameObject, float, float> EffectCallback;
         public System.Func<ActiveAbilitySO, string> ConditionCallback;
-        public System.Func<PropertyDefSO, float> PeekStatCallback;
-        public System.Action<PropertyDefSO, float> ModifyStatCallback;
+        /// <summary>相位级预检回调。PropertyTable 不存在时接管 Phase 1。null=全部通过, 非null=拒绝原因。</summary>
+        public System.Func<CostEffectSO[], string> PeekStatCallback;
+        /// <summary>相位级扣除回调。PropertyTable 不存在时接管 Phase 2。</summary>
+        public System.Action<CostEffectSO[]> ModifyStatCallback;
 
         private readonly Dictionary<string, float> cooldownEndTimes = new();
         private readonly List<string> cooldownExpiredBuffer = new();
@@ -326,30 +363,29 @@ namespace RedDust.Ability
             // ── ③ Cost ──
             if (ability.selfEffects != null)
             {
+                var costs = new List<CostEffectSO>();
                 foreach (var effect in ability.selfEffects)
                 {
                     if (effect is CostEffectSO cost && cost.def != null)
-                    {
-                        if (PeekStatCallback == null)
-                        {
-                            Debug.LogError($"[Ability] PeekStatCallback is null");
-                            return false;
-                        }
-                        var current = PeekStatCallback.Invoke(cost.def);
-                        if (current < cost.amount)
-                        {
-                            Debug.Log($"[Ability] ③ Cost fail: {ability.internalName} needs {cost.def.Id}={cost.amount}, current={current:F1}");
-                            return false;
-                        }
-                    }
+                        costs.Add(cost);
                 }
 
-                foreach (var effect in ability.selfEffects)
+                if (costs.Count > 0)
                 {
-                    if (effect is CostEffectSO cost && cost.def != null)
+                    var costArray = costs.ToArray();
+                    if (PeekStatCallback == null)
                     {
-                        ModifyStatCallback?.Invoke(cost.def, -cost.amount);
+                        Debug.LogError($"[Ability] PeekStatCallback is null");
+                        return false;
                     }
+                    var rejectReason = PeekStatCallback(costArray);
+                    if (rejectReason != null)
+                    {
+                        Debug.Log($"[Ability] ③ Cost fail: {ability.internalName} — {rejectReason}");
+                        return false;
+                    }
+
+                    ModifyStatCallback?.Invoke(costArray);
                 }
             }
 

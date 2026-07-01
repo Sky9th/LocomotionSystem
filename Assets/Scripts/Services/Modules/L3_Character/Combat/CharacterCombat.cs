@@ -22,8 +22,6 @@ namespace RedDust.Character.Combat
             if (ctx.Ability != null)
             {
                 ctx.Ability.EffectCallback = OnEffectModify;
-                ctx.Ability.PeekStatCallback = OnPeekStat;
-                ctx.Ability.ModifyStatCallback = OnModifyStat;
             }
 
             if (ctx.Reactor != null)
@@ -45,16 +43,6 @@ namespace RedDust.Character.Combat
         private void OnHitEvent(SDamageInfo hit) { }
 
         #region 修改器占位
-
-        private float OnPeekStat(PropertyDefSO def)
-        {
-            return ctx.Properties.GetFloat(def.Id);
-        }
-
-        private void OnModifyStat(PropertyDefSO def, float delta)
-        {
-            ctx.Properties.Modify(def.Id, delta);
-        }
 
         private float OnEffectModify(EffectSO effect, GameObject target, float baseDamage)
         {
