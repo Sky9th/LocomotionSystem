@@ -28,10 +28,14 @@ MonoBehaviour:
       _NormalizedTimes: []
       _Callbacks: []
       _Names: []
-    _Animations: []
+    _Animations:
+    - {fileID: 7400000, guid: 2919f55d17458b84cac9483d3c5d983f, type: 3}
+    - {fileID: 7400000, guid: 79350dc6e16f9734ea6983abd3442005, type: 3}
     _Speeds: []
     _SynchronizeChildren: 
-    _Thresholds: []
+    _Thresholds:
+    - {x: 0, y: 1}
+    - {x: 0, y: 0}
     _DefaultParameter: {x: 0, y: 0}
     _Type: 0
     _ParameterNameX: {fileID: 0}
@@ -43,10 +47,14 @@ MonoBehaviour:
       _NormalizedTimes: []
       _Callbacks: []
       _Names: []
-    _Animations: []
+    _Animations:
+    - {fileID: 7400000, guid: 6e920298644ab9c47934f771028f7918, type: 3}
+    - {fileID: 7400000, guid: 79350dc6e16f9734ea6983abd3442005, type: 3}
     _Speeds: []
     _SynchronizeChildren: 
-    _Thresholds: []
+    _Thresholds:
+    - {x: 0, y: 1}
+    - {x: 0, y: 0}
     _DefaultParameter: {x: 0, y: 0}
     _Type: 0
     _ParameterNameX: {fileID: 0}

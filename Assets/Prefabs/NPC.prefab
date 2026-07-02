@@ -73,6 +73,7 @@ MonoBehaviour:
   characterAnimationProfile: {fileID: 11400000, guid: f7103b380a142f6469bb5f283a8ee979,
     type: 2}
   innateTrees: []
+  testAnimationClip: {fileID: 0}
   characterAudioConfig: {fileID: 11400000, guid: d1bb8260fedfef848a12a32d3f139759,
     type: 2}
   modelPrefab: {fileID: 1187010538823314, guid: b87cb604b959698428935c5d56bd97c0,
@@ -101,8 +102,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2149d263bb253db4eb5ec19ecac9dc0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  channels:
-  - {fileID: 11400000, guid: e9174a438bfeb664daebe77fe8ff89f8, type: 2}
+  gameStateEvents: []
+  sceneEvents: []
+  playerEvents: []
+  inputEvents: []
+  abilityEvents:
+  - {fileID: 11400000, guid: 5c626b5fce7a4d6d86ea9252cc7b5148, type: 2}
 --- !u!114 &-2784309485338590956
 MonoBehaviour:
   m_ObjectHideFlags: 0

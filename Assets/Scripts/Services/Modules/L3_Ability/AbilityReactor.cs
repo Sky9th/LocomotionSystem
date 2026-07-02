@@ -1,4 +1,5 @@
 using RedDust.Core;
+using RedDust.Core.Events;
 using UnityEngine;
 
 namespace RedDust.Ability
@@ -10,7 +11,7 @@ namespace RedDust.Ability
     [DisallowMultipleComponent]
     public sealed class AbilityReactor : ModuleChildMono
     {
-        private HitEventSO hitEvent;
+        private HitEvent hitEvent;
 
         /// <summary>⑥ 结算回调。外部修改器介入 Avoidance → Mitigation → Absorption，返回结算后伤害。0 = 完全回避。</summary>
         public System.Func<SDamageInfo, float> ResolutionCallback;
@@ -26,7 +27,7 @@ namespace RedDust.Ability
 
         public override void OnWire()
         {
-            hitEvent = GetComponent<EventHub>()?.Get<HitEventSO>();
+            hitEvent = GetComponent<EventHub>()?.Get<HitEvent>();
         }
 
         /// <summary>

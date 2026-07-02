@@ -11,17 +11,38 @@ namespace RedDust.Core
     [DisallowMultipleComponent]
     public sealed class EventHub : ModuleChildMono
     {
-        [SerializeField] private GameEvent[] channels = Array.Empty<GameEvent>();
+        [SerializeField] private GameEvent[] gameStateEvents = Array.Empty<GameEvent>();
+        [SerializeField] private GameEvent[] sceneEvents = Array.Empty<GameEvent>();
+        [SerializeField] private GameEvent[] playerEvents = Array.Empty<GameEvent>();
+        [SerializeField] private GameEvent[] inputEvents = Array.Empty<GameEvent>();
+        [SerializeField] private GameEvent[] abilityEvents = Array.Empty<GameEvent>();
 
         private readonly Dictionary<Type, GameEvent> lookup = new();
 
         protected override void Awake()
         {
             base.Awake();
-            foreach (var ch in channels)
+            Collect(gameStateEvents);
+            Collect(sceneEvents);
+            Collect(playerEvents);
+            Collect(inputEvents);
+            Collect(abilityEvents);
+        }
+
+        private void Collect(GameEvent[] events)
+        {
+            if (events == null) return;
+            foreach (var ch in events)
             {
-                if (ch != null)
-                    lookup[ch.GetType()] = ch;
+                if (ch == null) continue;
+                var type = ch.GetType();
+                if (lookup.ContainsKey(type))
+                {
+                    Debug.LogError($"[EventHub] Duplicate channel '{type.Name}' in {gameObject.name}."
+                        + $" Existing: {lookup[type].name}, Duplicate: {ch.name}. Remove one.");
+                    continue;
+                }
+                lookup[type] = ch;
             }
         }
 

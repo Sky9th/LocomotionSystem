@@ -109,22 +109,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2149d263bb253db4eb5ec19ecac9dc0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  channels:
-  - {fileID: 11400000, guid: d0d3ac9b9bdf44bbac2667ed1041fbf2, type: 2}
-  - {fileID: 11400000, guid: 80553aad924041999bde74f43bdbe781, type: 2}
-  - {fileID: 11400000, guid: 2bf987305cc2882459a6ffea299b799d, type: 2}
-  - {fileID: 11400000, guid: 7805687382c94a90843a7b187704a80b, type: 2}
-  - {fileID: 11400000, guid: 9fa5a4f3d5a14fd1935985d9a320ad30, type: 2}
-  - {fileID: 11400000, guid: dc1477752c0c0e644afe2f3da5eb5b82, type: 2}
-  - {fileID: 11400000, guid: 9b58987416fd4fa59ac5b8a9a9a7b378, type: 2}
-  - {fileID: 11400000, guid: 835f06731ab2460981e8dd2a29da3d32, type: 2}
-  - {fileID: 11400000, guid: ab69fe0e38bf4211a0b57a96e315e3a5, type: 2}
-  - {fileID: 11400000, guid: cd4e0a32a7514219a977ca3a13bf107e, type: 2}
-  - {fileID: 11400000, guid: 85042818654c41028886f0b3ca14434d, type: 2}
-  - {fileID: 11400000, guid: 2af41ecde8ae4f33bf84bde3f6c9069d, type: 2}
-  - {fileID: 11400000, guid: 57202d83d53448ebb099161365bbfa46, type: 2}
-  - {fileID: 11400000, guid: d659ac31c88d422e882d1fe722501be4, type: 2}
-  - {fileID: 11400000, guid: e9174a438bfeb664daebe77fe8ff89f8, type: 2}
+  gameStateEvents: []
+  sceneEvents:
+  - {fileID: 11400000, guid: 6d319b60e5e04cc4a438698f0a1cbab4, type: 2}
+  playerEvents: []
+  inputEvents:
+  - {fileID: 11400000, guid: b7ba05e031fe4cfb933c443a9124fb00, type: 2}
+  - {fileID: 11400000, guid: cc72bcbb0b2f4931be90df345ddd24c5, type: 2}
+  - {fileID: 11400000, guid: af1d24da3b3f480d9e5b94ac825f18e8, type: 2}
+  - {fileID: 11400000, guid: 7201e9e4c13440ff881a29a2c67ccef9, type: 2}
+  - {fileID: 11400000, guid: 6333df8873b844498b312eee1850d966, type: 2}
+  - {fileID: 11400000, guid: a330b00c7b0043478e2eb4325a57c49b, type: 2}
+  - {fileID: 11400000, guid: 04b7df11065d42338f1adf2d5e0fd04a, type: 2}
+  - {fileID: 11400000, guid: 0e3b38569a444691bb60fd18a046fb2f, type: 2}
+  - {fileID: 11400000, guid: b9782037569a46c499539459927e76a4, type: 2}
+  - {fileID: 11400000, guid: e0c64378e7e544db8c1f439a44bf1a86, type: 2}
+  - {fileID: 11400000, guid: 4f7520b217004721b091921f7b766dca, type: 2}
+  - {fileID: 11400000, guid: bed9c2bbdcdf4d579b5ba7177a8675f1, type: 2}
+  - {fileID: 11400000, guid: bfd4aac6eb624aaa879211ce343e47e8, type: 2}
+  - {fileID: 11400000, guid: 626538b1f38c4c83ba1c405ce7074618, type: 2}
+  - {fileID: 11400000, guid: 3e5579baf9d44c29b6a157a0067df1da, type: 2}
+  - {fileID: 11400000, guid: 934281ce9514406a8388ad815797eae6, type: 2}
+  - {fileID: 11400000, guid: f25fddae02f741249787a48ebd17ab99, type: 2}
+  - {fileID: 11400000, guid: 750f8b8cf8614bd990066cd3b5526d30, type: 2}
+  abilityEvents:
+  - {fileID: 11400000, guid: 5c626b5fce7a4d6d86ea9252cc7b5148, type: 2}
 --- !u!114 &4110265966624315599
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -409,7 +418,7 @@ MonoBehaviour:
     sensitivity: 10
     maximumPeriod: 2
     visualizeSensitivity: 0
-  maxAcceleration: -2.5
+  maxAcceleration: 10
   rotationSpeed: 360
   slowdownDistance: 0.6
   pickNextWaypointDist: 0.5

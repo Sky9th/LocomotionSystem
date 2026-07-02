@@ -1,5 +1,6 @@
 using RedDust.Ability;
 using RedDust.Core;
+using RedDust.Core.Events;
 using RedDust.Properties;
 using UnityEngine;
 
@@ -32,12 +33,12 @@ namespace RedDust.Character.Combat
                 ctx.Reactor.OnDamagedCallback = OnDamaged;
             }
 
-            ctx.EventHub?.Get<HitEventSO>()?.Register(OnHitEvent);
+            ctx.EventHub?.Get<HitEvent>()?.Register(OnHitEvent);
         }
 
         public void UnsubscribeEvents()
         {
-            ctx.EventHub?.Get<HitEventSO>()?.Unregister(OnHitEvent);
+            ctx.EventHub?.Get<HitEvent>()?.Unregister(OnHitEvent);
         }
 
         private void OnHitEvent(SDamageInfo hit) { }

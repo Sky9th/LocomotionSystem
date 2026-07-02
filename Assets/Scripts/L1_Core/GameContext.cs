@@ -99,6 +99,13 @@ namespace RedDust.Core
             return false;
         }
 
+        /// <summary>检查服务是否已注册，用于避免重复注册（first-come-first-served）。</summary>
+        public bool HasService<TService>()
+            where TService : class
+        {
+            return serviceRegistry.ContainsKey(typeof(TService));
+        }
+
         public void RegisterService<TService>(TService service)
             where TService : class
         {

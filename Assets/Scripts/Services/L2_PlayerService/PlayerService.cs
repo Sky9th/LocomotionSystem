@@ -1,5 +1,6 @@
 using RedDust.Character;
 using RedDust.Core;
+using RedDust.Core.Events;
 using RedDust.Entities;
 using RedDust.GameScene;
 using RedDust.Items;
@@ -28,7 +29,7 @@ namespace RedDust.Player
         [SerializeField] private EntitySpawnedEvent spawnedEvent;
         [SerializeField] private EntityDespawnRequestEvent despawnRequestEvent;
 
-        private EventDispatcherService _dispatcher;
+        private EventHub _eventHub;
         private GameObject playerInstance;
         private string playerEntityId;
 
@@ -48,20 +49,20 @@ namespace RedDust.Player
 
         public override void OnWire()
         {
-            GameContext.Instance.TryResolveService(out _dispatcher);
-            _dispatcher.Subscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
+            if (!GameContext.Instance.TryResolveService(out _eventHub)) return;
+            _eventHub.Get<SceneLoadCompleteEvent>().Register(HandleSceneLoadComplete);
 
             if (spawnedEvent != null) spawnedEvent.Register(OnPlayerSpawned);
         }
 
         private void OnDestroy()
         {
-            if (_dispatcher != null)
-                _dispatcher.Unsubscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
+            if (_eventHub != null)
+                _eventHub.Get<SceneLoadCompleteEvent>().Unregister(HandleSceneLoadComplete);
             if (spawnedEvent != null) spawnedEvent.Unregister(OnPlayerSpawned);
         }
 
-        private void HandleSceneLoadComplete(SSceneLoadComplete evt, MetaStruct meta)
+        private void HandleSceneLoadComplete(SSceneLoadComplete evt)
         {
             if (evt.SceneName != "Core")
                 CreatePlayer();
@@ -103,7 +104,7 @@ namespace RedDust.Player
 
             GameContext.Instance.UpdateSnapshot(
                 SPlayer.FromTransform(playerInstance.transform, isLocalPlayer: true));
-            _dispatcher.Publish(new SPlayerSpawnedEvent(playerInstance.transform, isLocalPlayer: true));
+            _eventHub.Get<PlayerSpawnedEvent>().Raise(new SPlayerSpawnedEvent(playerInstance.transform, isLocalPlayer: true));
 
             StartCoroutine(SpawnTestEntitiesNextFrame());
         }

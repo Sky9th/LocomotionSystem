@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using RedDust.Character;
 using RedDust.Core;
+using RedDust.Core.Events;
 using RedDust.GameState;
 using RedDust.Properties;
 using RedDust.GameScene;
@@ -19,7 +20,7 @@ namespace RedDust.UI
         [SerializeField] private Transform modalContainer;
         [SerializeField] private CanvasGroup loadingCanvasGroup;
 
-        private EventDispatcherService _dispatcher; // TODO: 替换为 EventHub — EventDispatcher 即将废弃
+        private EventHub _eventHub;
         private readonly Dictionary<UIScreenId, PanelState> screenStates = new();
         private readonly Dictionary<UIOverlayId, PanelState> overlayStates = new();
         private UIScreen currentScreen;
@@ -40,21 +41,20 @@ namespace RedDust.UI
 
         public override void OnWire()
         {
-            GameContext.Instance.TryResolveService(out _dispatcher);
-            if (_dispatcher == null) return;
-            _dispatcher.Subscribe<SGameState>(HandleGameState);
-            _dispatcher.Subscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
-            _dispatcher.Subscribe<SSceneLoadStart>(HandleSceneLoadStart);
-            _dispatcher.Subscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
+            if (!GameContext.Instance.TryResolveService(out _eventHub)) return;
+            _eventHub.Get<GameStateChangedEvent>().Register(HandleGameState);
+            _eventHub.Get<PlayerSpawnedEvent>().Register(HandlePlayerSpawned);
+            _eventHub.Get<SceneLoadStartEvent>().Register(HandleSceneLoadStart);
+            _eventHub.Get<SceneLoadCompleteEvent>().Register(HandleSceneLoadComplete);
         }
 
         private void OnDestroy()
         {
-            if (_dispatcher == null) return;
-            _dispatcher.Unsubscribe<SGameState>(HandleGameState);
-            _dispatcher.Unsubscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
-            _dispatcher.Unsubscribe<SSceneLoadStart>(HandleSceneLoadStart);
-            _dispatcher.Unsubscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
+            if (_eventHub == null) return;
+            _eventHub.Get<GameStateChangedEvent>().Unregister(HandleGameState);
+            _eventHub.Get<PlayerSpawnedEvent>().Unregister(HandlePlayerSpawned);
+            _eventHub.Get<SceneLoadStartEvent>().Unregister(HandleSceneLoadStart);
+            _eventHub.Get<SceneLoadCompleteEvent>().Unregister(HandleSceneLoadComplete);
         }
 
         // ---- Public API ----
@@ -195,7 +195,7 @@ namespace RedDust.UI
                         screenStates.Remove(currentScreenId);
                         currentScreen = null;
                         hasCurrentScreen = false;
-                        _dispatcher.Publish(new SUnloadSceneRequest(null));
+                        _eventHub.Get<SceneUnloadRequestEvent>().Raise(new SUnloadSceneRequest(null));
                     });
                     return;
                 }
@@ -205,12 +205,12 @@ namespace RedDust.UI
                 hasCurrentScreen = false;
             }
 
-            _dispatcher.Publish(new SUnloadSceneRequest(null));
+            _eventHub.Get<SceneUnloadRequestEvent>().Raise(new SUnloadSceneRequest(null));
         }
 
         public void RequestResume()
         {
-            _dispatcher.Publish(new SGameStateRequest(EGameState.Playing));
+            _eventHub.Get<GameStateChangeRequestEvent>().Raise(new SGameStateRequest(EGameState.Playing));
         }
 
         public void RequestQuit()
@@ -237,7 +237,7 @@ namespace RedDust.UI
                         screenStates.Remove(currentScreenId);
                         currentScreen = null;
                         hasCurrentScreen = false;
-                        _dispatcher.Publish(new SLoadSceneRequest(sceneName));
+                        _eventHub.Get<SceneLoadRequestEvent>().Raise(new SLoadSceneRequest(sceneName));
                     });
                     return;
                 }
@@ -247,20 +247,20 @@ namespace RedDust.UI
                 hasCurrentScreen = false;
             }
 
-            _dispatcher.Publish(new SLoadSceneRequest(sceneName));
+            _eventHub.Get<SceneLoadRequestEvent>().Raise(new SLoadSceneRequest(sceneName));
         }
 
-        private void HandleSceneLoadStart(SSceneLoadStart _, MetaStruct __)
+        private void HandleSceneLoadStart(SSceneLoadStart _)
         {
             loadingCanvasGroup.alpha = 1f;
         }
 
-        private void HandleSceneLoadComplete(SSceneLoadComplete evt, MetaStruct __)
+        private void HandleSceneLoadComplete(SSceneLoadComplete evt)
         {
             loadingCanvasGroup.alpha = 0f;
 
             if (pendingTargetState != EGameState.Initializing)
-                _dispatcher.Publish(new SGameStateRequest(pendingTargetState));
+                _eventHub.Get<GameStateChangeRequestEvent>().Raise(new SGameStateRequest(pendingTargetState));
 
             IsInputBlocked = false;
         }
@@ -339,13 +339,13 @@ namespace RedDust.UI
             return true;
         }
 
-        private void HandlePlayerSpawned(SPlayerSpawnedEvent evt, MetaStruct _)
+        private void HandlePlayerSpawned(SPlayerSpawnedEvent evt)
         {
             if (!evt.IsLocalPlayer) return;
             _playerActor = evt.Root != null ? evt.Root.GetComponent<CharacterActor>() : null;
         }
 
-        private void HandleGameState(SGameState state, MetaStruct meta = default)
+        private void HandleGameState(SGameState state)
         {
             switch (state.CurrentState)
             {

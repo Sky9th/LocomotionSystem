@@ -1,8 +1,7 @@
 namespace RedDust.GameScene
 {
     /// <summary>
-    /// Published via EventDispatcher when a scene transition finishes.
-    /// Subscribe in OnSubscriptionsActivated to react immediately.
+    /// Published via SceneLoadCompleteEvent when a scene transition finishes.
     /// </summary>
     public readonly struct SSceneLoadComplete
     {

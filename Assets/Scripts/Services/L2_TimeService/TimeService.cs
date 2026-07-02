@@ -1,4 +1,6 @@
 using RedDust.Core;
+using RedDust.Core.Events;
+using RedDust.GameInput;
 using RedDust.GameState;
 using RedDust.GameScene;
 using UnityEngine;
@@ -10,7 +12,7 @@ namespace RedDust.GameTime
         [SerializeField, Min(0.1f)] private float minScale = 0.2f;
         [SerializeField, Min(0.1f)] private float maxScale = 1f;
 
-        private EventDispatcherService _dispatcher; // TODO: 替换为 EventHub — EventDispatcher 即将废弃
+        private EventHub _eventHub;
         private float defaultScale = 1f;
         private bool isSceneLoading;
         private bool isGamePaused;
@@ -24,26 +26,48 @@ namespace RedDust.GameTime
 
         public override void OnWire()
         {
-            GameContext.Instance.TryResolveService(out _dispatcher);
-            _dispatcher.Subscribe<SIActionWorldSpeed>(HandleTimeScaleRequested);
-            _dispatcher.Subscribe<SSceneLoadStart>(HandleSceneLoadStart);
-            _dispatcher.Subscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
-            _dispatcher.Subscribe<SGameState>(HandleGameStateChanged);
+            if (!GameContext.Instance.TryResolveService(out _eventHub)) return;
+
+            _eventHub.Get<SceneLoadStartEvent>().Register(HandleSceneLoadStart);
+            _eventHub.Get<SceneLoadCompleteEvent>().Register(HandleSceneLoadComplete);
+            _eventHub.Get<GameStateChangedEvent>().Register(HandleGameStateChanged);
+            _eventHub.Get<InputTimeSlowEvent>().Register(HandleTimeSlow);
+            _eventHub.Get<InputTimeResumeEvent>().Register(HandleTimeResume);
         }
 
-        private void HandleSceneLoadStart(SSceneLoadStart _, MetaStruct __)
+        // ── Time Events (EventHub) ──
+
+        private void HandleTimeSlow(SButtonInputPayload payload)
+        {
+            if (!payload.IsRequested) return;
+            if (isSceneLoading || isGamePaused) return;
+            defaultScale = minScale;
+            Time.timeScale = defaultScale;
+        }
+
+        private void HandleTimeResume(SButtonInputPayload payload)
+        {
+            if (!payload.IsRequested) return;
+            if (isSceneLoading || isGamePaused) return;
+            defaultScale = maxScale;
+            Time.timeScale = defaultScale;
+        }
+
+        // ── Scene / GameState Events ──
+
+        private void HandleSceneLoadStart(SSceneLoadStart _)
         {
             isSceneLoading = true;
             ApplyFreeze();
         }
 
-        private void HandleSceneLoadComplete(SSceneLoadComplete _, MetaStruct __)
+        private void HandleSceneLoadComplete(SSceneLoadComplete _)
         {
             isSceneLoading = false;
             ApplyFreeze();
         }
 
-        private void HandleGameStateChanged(SGameState state, MetaStruct meta)
+        private void HandleGameStateChanged(SGameState state)
         {
             isGamePaused = state.CurrentState == EGameState.Paused;
             ApplyFreeze();
@@ -54,12 +78,7 @@ namespace RedDust.GameTime
             Time.timeScale = (isSceneLoading || isGamePaused) ? 0f : defaultScale;
         }
 
-        private void HandleTimeScaleRequested(SIActionWorldSpeed action, MetaStruct meta)
-        {
-            if (isSceneLoading || isGamePaused) return;
-            defaultScale = Mathf.Clamp(action.TargetScale, minScale, maxScale);
-            Time.timeScale = defaultScale;
-        }
+        // ── Lifecycle ──
 
         private void OnDisable()
         {
@@ -68,13 +87,15 @@ namespace RedDust.GameTime
 
         private void OnDestroy()
         {
-            if (_dispatcher != null)
+            if (_eventHub != null)
             {
-                _dispatcher.Unsubscribe<SIActionWorldSpeed>(HandleTimeScaleRequested);
-                _dispatcher.Unsubscribe<SSceneLoadStart>(HandleSceneLoadStart);
-                _dispatcher.Unsubscribe<SSceneLoadComplete>(HandleSceneLoadComplete);
-                _dispatcher.Unsubscribe<SGameState>(HandleGameStateChanged);
+                _eventHub.Get<SceneLoadStartEvent>().Unregister(HandleSceneLoadStart);
+                _eventHub.Get<SceneLoadCompleteEvent>().Unregister(HandleSceneLoadComplete);
+                _eventHub.Get<GameStateChangedEvent>().Unregister(HandleGameStateChanged);
+                _eventHub.Get<InputTimeSlowEvent>().Unregister(HandleTimeSlow);
+                _eventHub.Get<InputTimeResumeEvent>().Unregister(HandleTimeResume);
             }
+
             RestoreDefaultScale();
         }
 

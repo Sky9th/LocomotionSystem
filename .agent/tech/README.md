@@ -47,12 +47,17 @@ tech/
 │   ├── gameplay-tag-runtime.md         # GameplayTag struct — 运行时值类型
 │   ├── gameplay-tag-container.md       # GameplayTagContainer — 标签集合
 │   ├── gameplay-tag-editor.md          # TagEditor — 可视化标签管理 + TagPicker
-│   └── events/                         # SO Event Channel 基础设施
+│   └── events/                         # SO Event Channel — 所有 EventSO 统一入口
 │       ├── README.md
 │       ├── event-channel-base.md       # EventChannelBase — 抽象根
 │       ├── game-event.md               # GameEvent<T> — 通用事件通道
 │       ├── event-channels.md           # EventHub — 引用集中 + 驱动 IEventListener
-│       └── i-event-listener.md         # IEventListener — 订阅约定接口
+│       ├── i-event-listener.md         # IEventListener — 订阅约定接口
+│       ├── game-state-events.md        # GameStateEvent, GameStateRequestEvent
+│       ├── scene-events.md             # LoadSceneRequestEvent, SceneLoadStartEvent 等
+│       ├── player-events.md            # PlayerSpawnedEvent
+│       ├── input-events.md             # Input 全部 button/axis Event（← 从 L2-input/events/ 移入）
+│       └── ability-events.md           # HitEvent
 │
 ├── L2-services/                        # 占位容器: 所有 L2 Service
 │   ├── README.md
@@ -84,14 +89,10 @@ tech/
 │   │   ├── Data/                       # AudioChannel, AudioSetSO
 │   │   └── Structs/                    # AudioRequest, AudioResponse
 │   │
-│   ├── L2-input/                       # L2 Service (自身代码: Events/ Structs/)
+│   ├── L2-input/                       # L2 Service (自身代码: Structs/)
 │   │   ├── README.md
 │   │   ├── input-service.md
-│   │   ├── events/                     # SO Event Channel 输入事件
-│   │   │   ├── README.md
-│   │   │   ├── i-input-event.md       # IInputEvent — 生命周期接口
-│   │   │   ├── input-event.md         # InputEvent<T> — 泛型输入通道
-│   │   │   └── button-input-events.md # 具体按钮事件 ×6
+│   │   ├── events/                     # → EventSO 已迁移至 L1-core/events/
 │   │   └── Structs/
 │   │       ├── SIActionUIEscape.cs
 │   │       └── Control/               # SIActionMove, SIActionLook + Button/

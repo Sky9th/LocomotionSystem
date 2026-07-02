@@ -1,4 +1,5 @@
 using RedDust.Core;
+using RedDust.Core.Events;
 using RedDust.GameInput;
 using UnityEngine;
 using RedDust.Shared;
@@ -19,8 +20,8 @@ namespace RedDust.GameState
 		private bool hasInitialized;
 		[SerializeField] private EGameState currentState;
 		[SerializeField] private EGameState previousState;
-		[SerializeField] private EscapeInputEventSO escapeEvent;
-		private EventDispatcherService _dispatcher; // TODO: 替换为 EventHub — EventDispatcher 即将废弃
+		[SerializeField] private InputEscapeEvent escapeEvent;
+		private EventHub _eventHub;
 		private LogChannel _log;
 
 		public EGameState CurrentState => currentState;
@@ -55,12 +56,12 @@ namespace RedDust.GameState
 
 		public override void OnWire()
 		{
-			GameContext.Instance.TryResolveService(out _dispatcher);
+			GameContext.Instance.TryResolveService(out _eventHub);
 			hasInitialized = true;
 
-			if (_dispatcher != null)
+			if (_eventHub != null)
 			{
-				_dispatcher.Subscribe<SGameStateRequest>(HandleStateRequest);
+				_eventHub.Get<GameStateChangeRequestEvent>().Register(HandleStateRequest);
 			}
 
 			if (escapeEvent != null) escapeEvent.Register(OnEscape);
@@ -103,7 +104,7 @@ namespace RedDust.GameState
 
 			var snapshot = new SGameState(currentState, previousState);
 			GameContext.Instance.UpdateSnapshot(snapshot);
-			_dispatcher?.Publish(snapshot);
+			_eventHub?.Get<GameStateChangedEvent>()?.Raise(snapshot);
 
 			if (logTransitions)
 				Debug.Log($"[GameState] {previousState} -> {currentState}", this);
@@ -114,13 +115,13 @@ namespace RedDust.GameState
 		private void OnDestroy()
 		{
 		if (escapeEvent != null) escapeEvent.Unregister(OnEscape);
-			if (_dispatcher != null)
+			if (_eventHub != null)
 			{
-				_dispatcher.Unsubscribe<SGameStateRequest>(HandleStateRequest);
+				_eventHub.Get<GameStateChangeRequestEvent>().Unregister(HandleStateRequest);
 			}
 		}
 
-		private void HandleStateRequest(SGameStateRequest evt, MetaStruct _)
+		private void HandleStateRequest(SGameStateRequest evt)
 		{
 			RequestState(evt.TargetState);
 		}

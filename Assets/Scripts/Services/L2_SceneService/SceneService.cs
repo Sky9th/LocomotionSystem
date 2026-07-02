@@ -1,5 +1,6 @@
 using System.Collections;
 using RedDust.Core;
+using RedDust.Core.Events;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,7 +10,7 @@ namespace RedDust.GameScene
     {
         [SerializeField, Min(0.1f)] private float minLoadingDisplayTime = 0.5f;
 
-        private EventDispatcherService _dispatcher; // TODO: 替换为 EventHub — EventDispatcher 即将废弃
+        private EventHub _eventHub;
         private string currentContentScene;
 
         public string CurrentContentScene => currentContentScene;
@@ -26,39 +27,38 @@ namespace RedDust.GameScene
 
         public override void OnWire()
         {
-            GameContext.Instance.TryResolveService(out _dispatcher);
-            _dispatcher.Subscribe<SLoadSceneRequest>(HandleLoadSceneRequest);
-            _dispatcher.Subscribe<SReloadSceneRequest>(HandleReloadSceneRequest);
-            _dispatcher.Subscribe<SUnloadSceneRequest>(HandleUnloadSceneRequest);
+            if (!GameContext.Instance.TryResolveService(out _eventHub)) return;
+            _eventHub.Get<SceneLoadRequestEvent>().Register(HandleLoadSceneRequest);
+            _eventHub.Get<SceneReloadRequestEvent>().Register(HandleReloadSceneRequest);
+            _eventHub.Get<SceneUnloadRequestEvent>().Register(HandleUnloadSceneRequest);
         }
 
         private void PublishSnapshot<TSnapshot>(TSnapshot snapshot) where TSnapshot : struct
         {
             GameContext.Instance.UpdateSnapshot(snapshot);
-            _dispatcher.Publish(snapshot);
         }
 
         private void OnDestroy()
         {
-            if (_dispatcher != null)
+            if (_eventHub != null)
             {
-                _dispatcher.Unsubscribe<SLoadSceneRequest>(HandleLoadSceneRequest);
-                _dispatcher.Unsubscribe<SReloadSceneRequest>(HandleReloadSceneRequest);
-                _dispatcher.Unsubscribe<SUnloadSceneRequest>(HandleUnloadSceneRequest);
+                _eventHub.Get<SceneLoadRequestEvent>().Unregister(HandleLoadSceneRequest);
+                _eventHub.Get<SceneReloadRequestEvent>().Unregister(HandleReloadSceneRequest);
+                _eventHub.Get<SceneUnloadRequestEvent>().Unregister(HandleUnloadSceneRequest);
             }
         }
 
-        private void HandleLoadSceneRequest(SLoadSceneRequest request, MetaStruct meta)
+        private void HandleLoadSceneRequest(SLoadSceneRequest request)
         {
             StartCoroutine(LoadContentScene(request.SceneName));
         }
 
-        private void HandleReloadSceneRequest(SReloadSceneRequest request, MetaStruct meta)
+        private void HandleReloadSceneRequest(SReloadSceneRequest request)
         {
             StartCoroutine(ReloadContentScene(request.SceneName));
         }
 
-        private void HandleUnloadSceneRequest(SUnloadSceneRequest request, MetaStruct meta)
+        private void HandleUnloadSceneRequest(SUnloadSceneRequest request)
         {
             var sceneName = string.IsNullOrEmpty(request.SceneName) ? currentContentScene : request.SceneName;
             if (string.IsNullOrEmpty(sceneName)) return;
@@ -72,11 +72,11 @@ namespace RedDust.GameScene
             if (SceneManager.GetSceneByName(sceneName).isLoaded)
             {
                 currentContentScene = sceneName;
-                _dispatcher.Publish(new SSceneLoadComplete(sceneName, previousScene));
+                _eventHub.Get<SceneLoadCompleteEvent>().Raise(new SSceneLoadComplete(sceneName, previousScene));
                 yield break;
             }
 
-            _dispatcher.Publish(new SSceneLoadStart(sceneName));
+            _eventHub.Get<SceneLoadStartEvent>().Raise(new SSceneLoadStart(sceneName));
 
             PublishSnapshot(new SSceneTransition(sceneName, previousScene, true));
 
@@ -100,14 +100,14 @@ namespace RedDust.GameScene
             }
 
             PublishSnapshot(new SSceneTransition(sceneName, previousScene, false));
-            _dispatcher.Publish(new SSceneLoadComplete(sceneName, previousScene));
+            _eventHub.Get<SceneLoadCompleteEvent>().Raise(new SSceneLoadComplete(sceneName, previousScene));
         }
 
         private IEnumerator ReloadContentScene(string sceneName)
         {
             var previousScene = currentContentScene;
 
-            _dispatcher.Publish(new SSceneLoadStart(sceneName));
+            _eventHub.Get<SceneLoadStartEvent>().Raise(new SSceneLoadStart(sceneName));
 
             PublishSnapshot(new SSceneTransition(sceneName, previousScene, true));
 
@@ -131,12 +131,12 @@ namespace RedDust.GameScene
             }
 
             PublishSnapshot(new SSceneTransition(sceneName, previousScene, false));
-            _dispatcher.Publish(new SSceneLoadComplete(sceneName, previousScene));
+            _eventHub.Get<SceneLoadCompleteEvent>().Raise(new SSceneLoadComplete(sceneName, previousScene));
         }
 
         private IEnumerator UnloadContentScene(string sceneName)
         {
-            _dispatcher.Publish(new SSceneLoadStart(sceneName));
+            _eventHub.Get<SceneLoadStartEvent>().Raise(new SSceneLoadStart(sceneName));
 
             PublishSnapshot(new SSceneTransition(null, sceneName, true));
 
@@ -154,7 +154,7 @@ namespace RedDust.GameScene
             }
 
             PublishSnapshot(new SSceneTransition(null, sceneName, false));
-            _dispatcher.Publish(new SSceneLoadComplete(null, sceneName));
+            _eventHub.Get<SceneLoadCompleteEvent>().Raise(new SSceneLoadComplete(null, sceneName));
         }
 
 

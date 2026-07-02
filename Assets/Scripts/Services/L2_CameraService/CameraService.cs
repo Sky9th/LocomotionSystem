@@ -1,5 +1,6 @@
 using Cinemachine;
 using RedDust.Core;
+using RedDust.Core.Events;
 using RedDust.Shared;
 using UnityEngine;
 
@@ -19,7 +20,7 @@ namespace RedDust.GameCamera
 
         [SerializeField] private GameObject anchorPrefab;
 
-        private EventDispatcherService _dispatcher; // TODO: 替换为 EventHub — EventDispatcher 即将废弃
+        private EventHub _eventHub;
         private LogChannel _log;
         private Transform cameraPivot;
         private bool isFollowingPlayer;
@@ -53,22 +54,20 @@ namespace RedDust.GameCamera
 
         public override void OnWire()
         {
-            GameContext.Instance.TryResolveService(out _dispatcher);
-            if (_dispatcher != null)
-                _dispatcher.Subscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
+            if (!GameContext.Instance.TryResolveService(out _eventHub)) return;
+            _eventHub.Get<PlayerSpawnedEvent>().Register(HandlePlayerSpawned);
         }
 
-        private void PublishSnapshot<TSnapshot>(TSnapshot snapshot) where TSnapshot : struct
+        private void UpdateSnapshot<TSnapshot>(TSnapshot snapshot) where TSnapshot : struct
         {
             GameContext.Instance.UpdateSnapshot(snapshot);
-            _dispatcher.Publish(snapshot);
         }
 
         private void OnDestroy()
         {
-            if (_dispatcher != null)
+            if (_eventHub != null)
             {
-                _dispatcher.Unsubscribe<SPlayerSpawnedEvent>(HandlePlayerSpawned);
+                _eventHub.Get<PlayerSpawnedEvent>().Unregister(HandlePlayerSpawned);
             }
         }
 
@@ -87,7 +86,7 @@ namespace RedDust.GameCamera
             }
         }
 
-        private void HandlePlayerSpawned(SPlayerSpawnedEvent evt, MetaStruct meta)
+        private void HandlePlayerSpawned(SPlayerSpawnedEvent evt)
         {
             if (!evt.IsLocalPlayer) return;
             if (cameraPivot == null)
@@ -228,9 +227,11 @@ namespace RedDust.GameCamera
             anchorPos = cameraPivot.position;
             anchorRot = cameraPivot.rotation;
 
-            PublishSnapshot(new SCameraSnapshot(
+            var snapshot = new SCameraSnapshot(
                 camPos, camRot, anchorPos, anchorRot,
-                Vector2.zero, mouseGround.WorldPosition, mouseGround.IsValid));
+                Vector2.zero, mouseGround.WorldPosition, mouseGround.IsValid);
+            UpdateSnapshot(snapshot);
+            _eventHub.Get<CameraSnapshotEvent>().Raise(snapshot);
         }
 
         private (Vector3 WorldPosition, bool IsValid) ComputeMouseGroundPosition()

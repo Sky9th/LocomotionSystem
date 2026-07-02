@@ -1,4 +1,5 @@
 using RedDust.Core;
+using RedDust.Core.Events;
 using RedDust.GameInput;
 using UnityEngine;
 
@@ -25,19 +26,18 @@ namespace RedDust.Character.Director
         internal bool Equip3Requested { get; set; }
 
         // ── 事件通道 ──
-        private CrouchInputEventSO crouchEvent;
-        private SprintInputEventSO sprintEvent;
-        private ProneInputEventSO proneEvent;
-        private StandInputEventSO standEvent;
-        private SecondaryInteractInputEventSO secondaryInteractEvent;
-        private Skill1InputEventSO firstSkillEvent;
-        private Skill2InputEventSO secondSkillEvent;
-        private Equip1InputEventSO equip1Event;
-        private Equip2InputEventSO equip2Event;
-        private Equip3InputEventSO equip3Event;
+        private InputCrouchEvent crouchEvent;
+        private InputSprintEvent sprintEvent;
+        private InputProneEvent proneEvent;
+        private InputStandEvent standEvent;
+        private InputSecondaryInteractEvent secondaryInteractEvent;
+        private InputSkill1Event firstSkillEvent;
+        private InputSkill2Event secondSkillEvent;
+        private InputEquip1Event equip1Event;
+        private InputEquip2Event equip2Event;
+        private InputEquip3Event equip3Event;
 
         // ── TEMP ──
-        private EventDispatcherService dispatcher;
         private Vector3 mouseGroundPosition;
         private bool hasMouseGround;
         internal Vector3 MouseGroundPosition => mouseGroundPosition;
@@ -50,16 +50,16 @@ namespace RedDust.Character.Director
 
         public void BindEvents()
         {
-            crouchEvent = eventHub.Get<CrouchInputEventSO>();
-            sprintEvent = eventHub.Get<SprintInputEventSO>();
-            proneEvent = eventHub.Get<ProneInputEventSO>();
-            standEvent = eventHub.Get<StandInputEventSO>();
-            secondaryInteractEvent = eventHub.Get<SecondaryInteractInputEventSO>();
-            firstSkillEvent = eventHub.Get<Skill1InputEventSO>();
-            secondSkillEvent = eventHub.Get<Skill2InputEventSO>();
-            equip1Event = eventHub.Get<Equip1InputEventSO>();
-            equip2Event = eventHub.Get<Equip2InputEventSO>();
-            equip3Event = eventHub.Get<Equip3InputEventSO>();
+            crouchEvent = eventHub.Get<InputCrouchEvent>();
+            sprintEvent = eventHub.Get<InputSprintEvent>();
+            proneEvent = eventHub.Get<InputProneEvent>();
+            standEvent = eventHub.Get<InputStandEvent>();
+            secondaryInteractEvent = eventHub.Get<InputSecondaryInteractEvent>();
+            firstSkillEvent = eventHub.Get<InputSkill1Event>();
+            secondSkillEvent = eventHub.Get<InputSkill2Event>();
+            equip1Event = eventHub.Get<InputEquip1Event>();
+            equip2Event = eventHub.Get<InputEquip2Event>();
+            equip3Event = eventHub.Get<InputEquip3Event>();
 
             crouchEvent.Register(OnCrouch);
             sprintEvent.Register(OnSprint);
@@ -72,10 +72,7 @@ namespace RedDust.Character.Director
             equip2Event.Register(OnEquip2);
             equip3Event.Register(OnEquip3);
 
-            // TODO: migrate to EventHub
-            if (GameContext.Instance != null &&
-                GameContext.Instance.TryResolveService(out dispatcher))
-                dispatcher.Subscribe<SCameraSnapshot>(OnCameraSnapshot);
+            eventHub?.Get<CameraSnapshotEvent>()?.Register(OnCameraSnapshot);
         }
 
         public void UnbindEvents()
@@ -91,8 +88,7 @@ namespace RedDust.Character.Director
             equip2Event.Unregister(OnEquip2);
             equip3Event.Unregister(OnEquip3);
 
-            dispatcher?.Unsubscribe<SCameraSnapshot>(OnCameraSnapshot);
-            dispatcher = null;
+            eventHub?.Get<CameraSnapshotEvent>()?.Unregister(OnCameraSnapshot);
         }
 
         // ── Handlers ──
@@ -109,7 +105,7 @@ namespace RedDust.Character.Director
         private void OnEquip3(SButtonInputPayload p) => Equip3Requested = p.IsRequested;
 
         // TEMP
-        private void OnCameraSnapshot(SCameraSnapshot snapshot, MetaStruct _)
+        private void OnCameraSnapshot(SCameraSnapshot snapshot)
         {
             mouseGroundPosition = snapshot.MouseGroundPosition;
             hasMouseGround = snapshot.IsMouseGroundValid;

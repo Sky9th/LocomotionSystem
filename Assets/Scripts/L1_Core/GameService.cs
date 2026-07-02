@@ -1,3 +1,4 @@
+using RedDust.Core.Events;
 using RedDust.GameState;
 using RedDust.GameScene;
 using RedDust.Shared;
@@ -16,7 +17,7 @@ namespace RedDust.Core
         public static GameService Instance { get; private set; }
 
         private GameContext _gameContext;
-        private EventDispatcherService _dispatcher; // TODO: 替换为 EventHub — EventDispatcher 即将废弃
+        private EventHub _eventHub;
         private bool _sessionWasActive;
         private LogChannel _log;
 
@@ -51,12 +52,12 @@ namespace RedDust.Core
 
         protected override void Start()
         {
-            // All services self-registered during OnAssemble. Resolve Dispatcher, subscribe.
-            if (_gameContext.TryResolveService(out EventDispatcherService dispatcher))
+            // 服务级 EventHub 显式注册，角色级不碰 GameContext
+            _eventHub = GetComponentInChildren<EventHub>();
+            if (_eventHub != null)
             {
-                _dispatcher = dispatcher;
-                _dispatcher.Subscribe<SGameState>(HandleSessionStateChange);
-                _log.Info("EventDispatcher resolved; SGameState subscription active for Teardown priority.");
+                _gameContext.RegisterService(_eventHub);
+                _eventHub.Get<GameStateChangedEvent>().Register(HandleSessionStateChange);
             }
 
             // Wire all child services.
@@ -65,15 +66,15 @@ namespace RedDust.Core
 #if UNITY_EDITOR
             var activeScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
             if (activeScene.name != "Core")
-                _dispatcher?.Publish(new SLoadSceneRequest(activeScene.name));
+                _eventHub?.Get<SceneLoadRequestEvent>()?.Raise(new SLoadSceneRequest(activeScene.name));
 #endif
             _log.Info($"Bootstrap complete. {Registry.Count} services assembled and wired.");
         }
 
         private void OnDestroy()
         {
-            if (_dispatcher != null)
-                _dispatcher.Unsubscribe<SGameState>(HandleSessionStateChange);
+            if (_eventHub != null)
+                _eventHub.Get<GameStateChangedEvent>().Unregister(HandleSessionStateChange);
 
             if (Instance == this)
                 Instance = null;
@@ -81,7 +82,7 @@ namespace RedDust.Core
 
         // ── Session teardown ──
 
-        private void HandleSessionStateChange(SGameState state, MetaStruct meta)
+        private void HandleSessionStateChange(SGameState state)
         {
             if (state.CurrentState == EGameState.Playing)
             {

@@ -9,8 +9,6 @@ namespace RedDust.Pathfinding
     {
         private AstarPath graph;
         private LogChannel _log;
-        private EventDispatcherService _dispatcher; // TODO: 替换为 EventHub — EventDispatcher 即将废弃
-
         public override void OnAssemble()
         {
             _log = LogManager.GetChannel(GetType().Name);
@@ -28,10 +26,7 @@ namespace RedDust.Pathfinding
             GameContext.Instance.RegisterService(this);
         }
 
-        public override void OnWire()
-        {
-            GameContext.Instance.TryResolveService(out _dispatcher);
-        }
+        public override void OnWire() { }
 
         private void OnDestroy()
         {

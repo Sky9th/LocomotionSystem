@@ -1139,7 +1139,7 @@
                 {
                     "name": "",
                     "id": "60275444-8af8-466e-9c2f-7a1d818cddbb",
-                    "path": "<Keyboard>/q",
+                    "path": "<Keyboard>/backquote",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
@@ -1150,7 +1150,7 @@
                 {
                     "name": "",
                     "id": "c425d0cf-3a94-480f-b3d4-d58f8f72435b",
-                    "path": "<Keyboard>/e",
+                    "path": "<Keyboard>/tab",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
