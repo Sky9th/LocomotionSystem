@@ -31,15 +31,15 @@ namespace RedDust.Character.Kinematic
         /// </summary>
         public static CharacterPhysique From(PropertyTable props) => new()
         {
-            Acceleration          = props.GetFloat("Movement/Acceleration"),
-            MaxSlopeAngle         = props.GetFloat("Movement/MaxSlopeAngle"),
-            Height                = props.GetFloat("Body/Height"),
-            ObstacleProbeVertical = props.GetFloat("Body/ObstacleProbeVertical"),
-            ObstacleProbeDistance = props.GetFloat("Body/ObstacleProbeDistance"),
-            ObstacleMinClimb      = props.GetFloat("Body/ObstacleMinClimb"),
-            ObstacleMaxClimb      = props.GetFloat("Body/ObstacleMaxClimb"),
-            MaxHeadYaw            = props.GetFloat("Body/MaxHeadYaw"),
-            MaxHeadPitch          = props.GetFloat("Body/MaxHeadPitch"),
+            Acceleration          = props.GetFloat(CharacterConst.PropertyPath.Movement.Acceleration),
+            MaxSlopeAngle         = props.GetFloat(CharacterConst.PropertyPath.Movement.MaxSlopeAngle),
+            Height                = props.GetFloat(CharacterConst.PropertyPath.Body.Height),
+            ObstacleProbeVertical = props.GetFloat(CharacterConst.PropertyPath.Body.ObstacleProbeVertical),
+            ObstacleProbeDistance = props.GetFloat(CharacterConst.PropertyPath.Body.ObstacleProbeDistance),
+            ObstacleMinClimb      = props.GetFloat(CharacterConst.PropertyPath.Body.ObstacleMinClimb),
+            ObstacleMaxClimb      = props.GetFloat(CharacterConst.PropertyPath.Body.ObstacleMaxClimb),
+            MaxHeadYaw            = props.GetFloat(CharacterConst.PropertyPath.Body.MaxHeadYaw),
+            MaxHeadPitch          = props.GetFloat(CharacterConst.PropertyPath.Body.MaxHeadPitch),
         };
     }
 }

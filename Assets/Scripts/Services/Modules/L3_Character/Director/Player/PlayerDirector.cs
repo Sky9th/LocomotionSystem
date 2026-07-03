@@ -89,7 +89,7 @@ namespace RedDust.Character.Director
             var bodyContainer = ctx.CharacterContainer?.BodyContainer;
             if (bodyContainer == null) return;
 
-            var currentEquipped = bodyContainer.GetItem("RightHand");
+            var currentEquipped = bodyContainer.GetItem(CharacterConst.Slot.RightHand);
             string targetId = EquipMap[equipIndex];
 
             // 已在手上 或 空手→空手 → 跳过
@@ -102,7 +102,7 @@ namespace RedDust.Character.Director
             Entity target = null;
             if (targetId != null)
             {
-                target = bpContainer.FindItem("ContainerSlot", targetId);
+                target = bpContainer.FindItem(CharacterConst.Slot.ContainerSlot, targetId);
                 if (target == null) { Debug.Log($"[ProcessEquipInput] {targetId} not in backpack."); return; }
             }
 
@@ -111,21 +111,21 @@ namespace RedDust.Character.Director
             // 卸当前手持 → 背包
             if (currentEquipped != null)
             {
-                bodyContainer.Remove("RightHand", currentEquipped);
-                bpContainer.Place("ContainerSlot", currentEquipped);
+                bodyContainer.Remove(CharacterConst.Slot.RightHand, currentEquipped);
+                bpContainer.Place(CharacterConst.Slot.ContainerSlot, currentEquipped);
             }
 
             // 装目标 → RightHand
             if (target != null)
             {
-                bpContainer.Remove("ContainerSlot", target);
-                bodyContainer.Place("RightHand", target);
+                bpContainer.Remove(CharacterConst.Slot.ContainerSlot, target);
+                bodyContainer.Place(CharacterConst.Slot.RightHand, target);
             }
         }
 
         private Container.Container GetBackpackContainer()
         {
-            return ctx.CharacterContainer?.BodyContainer?.GetItem("Back")?.NestedContainer;
+            return ctx.CharacterContainer?.BodyContainer?.GetItem(CharacterConst.Slot.Back)?.NestedContainer;
         }
 
         private void ProcessClickToMove()
@@ -211,7 +211,7 @@ namespace RedDust.Character.Director
                 return;
             }
 
-            var weapon = ctx.CharacterContainer?.BodyContainer?.GetItem("RightHand");
+            var weapon = ctx.CharacterContainer?.BodyContainer?.GetItem(CharacterConst.Slot.RightHand);
             Debug.Log($"[PlayerDirector] Enqueue {slotName}: {def.internalName}" +
                       (weapon != null ? $" | weapon={weapon.Preset.name}" : ""));
             ability.Enqueue(def, ctx.ModelRoot.position, ctx.ModelRoot.forward, weapon);

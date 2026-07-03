@@ -112,6 +112,7 @@ CharacterActor.Update()
 | [character-actor.md](L4-actor/character-actor.md) | CharacterActor — 组合根，Update 调用链入口 |
 | [character-actor-debug.md](L4-actor/character-actor-debug.md) | CharacterActor.Debug — Gizmo 可视化 |
 | [character-rig.md](L4-actor/character-rig.md) | CharacterRig — 物理实体统一写入入口 |
+| [character-const.md](L4-actor/character-const.md) | CharacterConst — PropertyTree 路径/rTag/槽位 ID 全局常量 |
 | [character-frame-context.md](L4-actor/character-frame-context.md) | CharacterFrameContext — 帧内数据总线 |
 
 ### config/

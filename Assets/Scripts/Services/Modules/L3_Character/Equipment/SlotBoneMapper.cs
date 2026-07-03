@@ -13,14 +13,14 @@ namespace RedDust.Character
     {
         private static readonly Dictionary<string, HumanBodyBones> _map = new()
         {
-            { "RightHand", HumanBodyBones.RightHand },
-            { "LeftHand",  HumanBodyBones.LeftHand },
-            { "Head",      HumanBodyBones.Head },
-            { "Chest",     HumanBodyBones.Chest },
-            { "RightLeg",  HumanBodyBones.RightUpperLeg },
-            { "LeftLeg",   HumanBodyBones.LeftUpperLeg },
-            { "RightFoot", HumanBodyBones.RightFoot },
-            { "LeftFoot",  HumanBodyBones.LeftFoot },
+            { CharacterConst.Slot.RightHand, HumanBodyBones.RightHand },
+            { CharacterConst.Slot.LeftHand,  HumanBodyBones.LeftHand },
+            { CharacterConst.Slot.Head,      HumanBodyBones.Head },
+            { CharacterConst.Slot.Chest,     HumanBodyBones.Chest },
+            { CharacterConst.Slot.RightLeg,  HumanBodyBones.RightUpperLeg },
+            { CharacterConst.Slot.LeftLeg,   HumanBodyBones.LeftUpperLeg },
+            { CharacterConst.Slot.RightFoot, HumanBodyBones.RightFoot },
+            { CharacterConst.Slot.LeftFoot,  HumanBodyBones.LeftFoot },
         };
 
         /// <summary>

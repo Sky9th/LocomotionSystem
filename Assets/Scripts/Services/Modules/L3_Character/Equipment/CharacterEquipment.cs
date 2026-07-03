@@ -129,27 +129,12 @@ namespace RedDust.Character
                 return;
             }
 
-            var attachPoint = GetAttachPoint(bone, slotKey);
-            var go = Object.Instantiate(entity.Preset.Prefab, attachPoint, worldPositionStays: false);
+            var socket = WeaponAttachPoint.GetOrCreateSocket(bone, slotKey, entity.Properties?.GetTagList(CharacterConst.PropertyPath.CommonTags));
+            var go = Object.Instantiate(entity.Preset.Prefab, socket, worldPositionStays: false);
             go.name = $"{entity.Preset.name}_{entity.Id}";
             _spawnedViews[slotKey] = go;
 
             Debug.Log($"[CharacterEquipment] {ctx.Root.name}: spawned {go.name} → {slotKey}");
-        }
-
-        /// <summary>
-        /// 获取骨骼下方的装备挂点。先在骨骼子节点中查找 _EquipSocket_{slotKey}，
-        /// 找不到则回退到骨骼本身。
-        /// 挂点需在角色模型 Prefab 中预先放置并调好位置/朝向。
-        /// </summary>
-        private static Transform GetAttachPoint(Transform bone, string slotKey)
-        {
-            var socketName = $"_EquipSocket_{slotKey}";
-            var socket = bone.Find(socketName);
-            if (socket != null) return socket;
-
-            Debug.LogWarning($"[CharacterEquipment] Socket '{socketName}' not found under '{bone.name}' — falling back to bone. Add an empty GameObject named '{socketName}' to the character model prefab and adjust its transform.");
-            return bone;
         }
 
         private void DespawnView(string slotKey)
@@ -183,7 +168,7 @@ namespace RedDust.Character
             ctx.OwnedGripTags.Clear();
             foreach (var entity in container.AllItems())
             {
-                var tags = entity.Properties?.GetTagList("Common/Tags");
+                var tags = entity.Properties?.GetTagList(CharacterConst.PropertyPath.CommonTags);
                 if (tags == null) continue;
 
                 foreach (var tag in tags)

@@ -35,9 +35,6 @@ namespace RedDust.Character
         [Header("Ability")]
         [SerializeField] private AbilityTreeSO[] innateTrees;
 
-        [Header("Test")]
-        [SerializeField] private AnimationClip testAnimationClip;
-
         [Header("Audio")]
         [SerializeField] private CharacterAudioConfigSO characterAudioConfig;
 
@@ -150,7 +147,7 @@ namespace RedDust.Character
             base.Start();  // Registry.OnWireAll() → CharacterContainer.OnWire 读取 ctx.Properties
             buildCtx.Physique = CharacterPhysique.From(buildCtx.Properties);
             // TODO: 饥饿消耗是测试代码。Actor 不应内联属性变化逻辑。
-            buildCtx.Properties.AddModifier(new FloatModifier { Owner = this, TargetPath = "Vitals/Hunger", Frequency = ModifierFrequency.PerSecond, Delta = -0.01f });
+            buildCtx.Properties.AddModifier(new FloatModifier { Owner = this, TargetPath = CharacterConst.PropertyPath.Vitals.Hunger, Frequency = ModifierFrequency.PerSecond, Delta = -0.01f });
         }
 
         private void SetupModel()
@@ -212,22 +209,6 @@ namespace RedDust.Character
 
         private void Update()
         {
-            // TODO: 临时 T 键测试 AbilityDriver — 验证后删除
-            if (Input.GetKeyDown(KeyCode.T) && characterAnimation != null)
-            {
-                var driver = characterAnimation.GetComponent<AbilityDriver>();
-                if (driver != null && testAnimationClip != null)
-                {
-                    characterAnimation.SubmitRequest(driver, new AnimationRequest
-                    {
-                        Clip = testAnimationClip,
-                        FadeIn = 0.15f,
-                        Resistance = 100,
-                        OnComplete = OnCompleteBehavior.Resume,
-                    });
-                }
-            }
-
             float deltaTime = Time.deltaTime;
             if (deltaTime <= Mathf.Epsilon) return;
 

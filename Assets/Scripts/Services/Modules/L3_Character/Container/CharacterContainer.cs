@@ -34,7 +34,7 @@ namespace RedDust.Character
         public override void OnWire()
         {
             var slotDefs = new List<SlotDef>();
-            foreach (var path in ctx.Properties.GetChildren("Slots"))
+            foreach (var path in ctx.Properties.GetChildren(CharacterConst.PropertyPath.Slots))
             {
                 var def = ctx.Properties.GetStruct<SlotDef>(path);
                 def.SlotId = path.Substring(path.LastIndexOf('/') + 1);
