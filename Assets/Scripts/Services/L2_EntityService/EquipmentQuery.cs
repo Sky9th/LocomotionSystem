@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using RedDust.Character;
 
 namespace RedDust.Entities
 {
@@ -18,21 +19,6 @@ namespace RedDust.Entities
         public Entity GetEquipped(string slotId)
         {
             return _bodyContainer?.GetItem(slotId);
-        }
-
-        /// <summary>获取所有已装备的 (槽位, 物品) 列表</summary>
-        public IReadOnlyList<(string slotId, Entity item)> GetAllEquipped()
-        {
-            if (_bodyContainer == null) return System.Array.Empty<(string, Entity)>();
-
-            var result = new List<(string, Entity)>();
-            foreach (var slot in _bodyContainer.SlotsOrdered)
-            {
-                if (slot.IsEmpty) continue;
-                foreach (var entity in slot.Items)
-                    result.Add((slot.Def.SlotId, entity));
-            }
-            return result;
         }
 
         /// <summary>指定槽位是否有装备</summary>

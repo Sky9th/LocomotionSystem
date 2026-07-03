@@ -42,7 +42,7 @@ namespace RedDust.Entities
         public bool HasView => _view != null;
 
         /// <summary>嵌套容器。容器类实体（背包等）Register 时由 EntityService 自动创建。</summary>
-        public Container.RdContainer NestedContainer { get; internal set; }
+        public RdContainer NestedContainer { get; internal set; }
 
         /// <summary>命令门面——外部系统通过此模块向此实体下达命令。</summary>
         public EntityCommandModule Command { get; }

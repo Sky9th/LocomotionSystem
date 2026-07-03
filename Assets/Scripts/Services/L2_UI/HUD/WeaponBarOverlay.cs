@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using RedDust.Character;
 using RedDust.Entities;
 using UnityEngine;
 
@@ -30,7 +31,8 @@ namespace RedDust.UI
             var entity = uiService.PlayerEntity;
             if (entity == null) return;
 
-            var equipped = entity.Query.Equipment?.GetAllEquipped();
+            var bp = entity.Query.Equipment.GetEquipped(CharacterConst.Slot.Back);
+            var equipped = bp.Query.Inventory.AllItems;
             if (equipped == null) return;
 
             EnsureSlots(equipped.Count);
@@ -48,17 +50,18 @@ namespace RedDust.UI
                 slot.SetKeybind($"{_slots.Count + 1}");
                 _slots.Add(slot);
             }
+        
 
             for (int i = 0; i < _slots.Count; i++)
                 _slots[i].gameObject.SetActive(i < count);
         }
 
-        private void RefreshSlots(IReadOnlyList<(string slotId, Entity item)> equipped)
+        private void RefreshSlots(IReadOnlyList<Entity> equipped)
         {
-            for (int i = 0; i < equipped.Count && i < _slots.Count; i++)
+            for (int i = 0; i < equipped.Count; i++)
             {
                 var slot = _slots[i];
-                var (slotId, entity) = equipped[i];
+                var entity = equipped[i];
                 if (entity == null)
                 {
                     slot.SetEmpty();
@@ -67,11 +70,7 @@ namespace RedDust.UI
 
                 slot.SetIcon(null); // TODO: ItemDefSO 暂无 icon 字段
                 var name = entity.Query.Preset != null ? entity.Query.Preset.name : "???";
-                var tags = entity.Query.Properties?.GetTagList(Entity.CommonTagsPath);
-                if (tags != null && tags.Length > 0)
-                    slot.SetSlotLabel($"{slotId}: {name} [{string.Join(", ", tags)}]");
-                else
-                    slot.SetSlotLabel($"{slotId}: {name}");
+                slot.SetSlotLabel($"{name}");
             }
         }
     }

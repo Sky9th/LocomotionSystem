@@ -26,4 +26,10 @@ MonoBehaviour:
   - id: 2
     prefab: {fileID: 9000000000000000001, guid: a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6,
       type: 3}
+  - id: 3
+    prefab: {fileID: 2356675199504078111, guid: f4a7b22dc2b94e843a3df55b6f572d36,
+      type: 3}
+  - id: 4
+    prefab: {fileID: 2356675199504078111, guid: 061da42a4d52f944b96908d8200f9a2f,
+      type: 3}
   modals: []
