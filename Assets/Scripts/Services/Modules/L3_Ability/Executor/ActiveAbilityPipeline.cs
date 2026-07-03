@@ -23,6 +23,11 @@ namespace RedDust.Ability
         public SActiveAbilityContext Context => _ctx;
         public float StateTime => _fsm.StateTime;
 
+        // TODO: UI 查询 API — 仅服务于 UI 层轮询管道状态，后续提取到只读接口。
+        /// <summary>当前管道状态枚举。管道空闲时返回 Completed。</summary>
+        public EActiveAbilityState CurrentState =>
+            (_fsm.Current as AbilityPipelineState)?.Id ?? EActiveAbilityState.Completed;
+
         /// <summary>
         /// 启动管道。从 Gating 状态开始。
         /// </summary>

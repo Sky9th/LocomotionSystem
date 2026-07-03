@@ -32,6 +32,10 @@ namespace RedDust.UI
 
         public bool IsInputBlocked { get; private set; }
 
+        // TODO: BuildContext 外部引用 — CharacterActor 的暴露让 UI 层可以穿透到 L3 Character 内部。
+        // 后续应设计面向外部的只读接口（如 IAbilityStateProvider），由 CharacterActor 实现，UIService 暴露接口而非具体类型。
+        internal CharacterActor PlayerActor => _playerActor;
+
         public override void OnAssemble()
         {
             if (panelConfig != null) panelConfig.BuildLookup();
@@ -359,7 +363,11 @@ namespace RedDust.UI
                     if (hasCurrentScreen)
                         HideScreen(currentScreenId);
                     if (state.PreviousState != EGameState.Paused)
+                    {
                         ShowOverlay(UIOverlayId.VitalsOverlay);
+                        ShowOverlay(UIOverlayId.AbilityBarOverlay);
+                        ShowOverlay(UIOverlayId.WeaponBarOverlay);
+                    }
                     break;
             }
         }

@@ -5,5 +5,8 @@ namespace RedDust.UI
         VitalsOverlay,
         StatusOverlay,
         LoadingOverlay,
+        AbilityBarOverlay,
+        WeaponBarOverlay,
+        DebugOverlay,
     }
 }

@@ -91,6 +91,7 @@ UI 组件主题驱动:
 | 文件 | 内容 |
 |------|------|
 | [ui-service.md](ui-service.md) | UIService — Screen/Overlay 生命周期、场景过渡、导航 |
+| [ui-communication-architecture.md](ui-communication-architecture.md) | **决策记录** — UI ↔ L3 通信架构（Query/Event/Input/Command 边界） |
 | [L4-core/ui-screen.md](L4-core/ui-screen.md) | UIScreen — 全屏面板基类、Enter/Exit/Pause/Resume |
 | [L4-core/ui-overlay.md](L4-core/ui-overlay.md) | UIOverlay — 叠加层基类、Enter/Exit |
 | [L4-core/ui-screen-id.md](L4-core/ui-screen-id.md) | UIScreenId 枚举 |

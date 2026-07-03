@@ -51,6 +51,37 @@ namespace RedDust.Ability
             return false;
         }
 
+        // ═══════════════════════════════════════════════════════════════
+        // TODO: UI 查询 API — 以下三个成员仅服务于 UI 层轮询，不属于 Executor 核心职责。
+        // 后续应提取到只读接口（如 IAbilityStateProvider），由 Executor 实现，UI 通过 UIService 消费接口而非 Executor 具体类型。
+        // ═══════════════════════════════════════════════════════════════
+
+        /// <summary>主动技能管道。外部只读。</summary>
+        public ActiveAbilityPipeline Pipeline => _pipeline;
+
+        /// <summary>获取指定冷却标签的剩余时间（秒）。不在冷却中返回 0。</summary>
+        public float GetCooldownRemaining(string tag)
+        {
+            if (string.IsNullOrEmpty(tag)) return 0f;
+            if (cooldownEndTimes.TryGetValue(tag, out var end) && Time.time < end)
+                return end - Time.time;
+            return 0f;
+        }
+
+        /// <summary>获取技能的冷却剩余时间（秒）。自动解析 sharedCooldownTag 和默认冷却键。</summary>
+        public float GetAbilityCooldownRemaining(ActiveAbilitySO ability)
+        {
+            if (ability == null || ability.cooldownDuration <= 0f) return 0f;
+            var key = ability.sharedCooldownTag != null
+                ? ability.sharedCooldownTag.FullTag
+                : $"Ability.Cooldown.{ability.internalName}";
+            return GetCooldownRemaining(key);
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // ▲ END UI 查询 API
+        // ═══════════════════════════════════════════════════════════════
+
         /// <summary>
         /// 将主动技能加入释放队列。Pipeline 空闲时立即启动；运行中则替换排队位（只保留最新一个待释放技能）。
         /// 队列结构保留供后续预指令扩展。
