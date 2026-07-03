@@ -22,7 +22,7 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
             _buildCtx = buildCtx;
         }
 
-        internal void Update(in CharacterFrameContext ctx)
+        internal void Update(in SCharacterFrameContext ctx)
         {
             if (_layer == null) return;
             var animSet = _buildCtx?.ResolvedLocoAnimSet;

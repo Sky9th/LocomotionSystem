@@ -3,7 +3,6 @@ using RedDust.Core;
 using UnityEngine;
 using RedDust.Character.Animation;
 using RedDust.Character.Animation.Drivers.Ability;
-using RedDust.Character.Director;
 using RedDust.Character.Kinematic;
 using RedDust.Character.Pathfinding;
 using RedDust.Character.Locomotion;
@@ -77,29 +76,35 @@ namespace RedDust.Character
         internal AvatarMask HeadMask => headMask;
         internal AvatarMask FootMask => footMask;
 
-        // ── Runtime ──
+        // ── Runtime State ──
         internal CharacterBuildContext BuildContext => buildCtx;
         internal CharacterRig CharacterRig => characterRig;
         internal SCharacterKinematic LastKinematic { get; private set; }
         internal SCharacterMotor LastMotor { get; private set; }
         internal SCharacterDiscrete LastDiscrete { get; private set; }
-        private CharacterContainer container;
-        private CharacterEquipment equipment;
 
-        private CharacterBuildContext buildCtx;
-        private ICharacterDirector director;
-        private PathfindingAgent pathfindingAgent;
+        // ── Module Access（Command/Query 直接调用）──
+        internal PathfindingAgent Pathfinding => pathfindingAgent;
+        internal AbilityExecutor Ability => ability;
+        internal CharacterContainer Container => container;
+
+        // ── Input ──
+        internal SCharacterInputState InputState { get; set; } = SCharacterInputState.Default;
+
+        // ── Private Fields ──
         private CharacterRig characterRig;
+        private CharacterBuildContext buildCtx;
+        private PathfindingAgent pathfindingAgent;
         private CharacterKinematic characterKinematic;
         private ILocomotionSimulator locomotionSimulator;
         private AnimationBrain characterAnimation;
         private AbilityExecutor ability;
         private AbilityReactor reactor;
         private CharacterCombat combat;
+        private CharacterContainer container;
+        private CharacterEquipment equipment;
         private EventHub eventHub;
         private Identity identity;
-
-        // ── Ability ──
         private AbilityForest abilityForest;
 
         protected override void Awake()
@@ -130,8 +135,6 @@ namespace RedDust.Character
                 abilityForest: abilityForest
             );
 
-            if (isPlayer) director = new PlayerDirector(buildCtx, Registry);
-            else          director = new NpcDirector(buildCtx, Registry);
             characterKinematic = new CharacterKinematic(buildCtx, Registry);
             locomotionSimulator = new GroundLocomotion(Registry);
             combat = new CharacterCombat(buildCtx, Registry);
@@ -212,27 +215,24 @@ namespace RedDust.Character
             float deltaTime = Time.deltaTime;
             if (deltaTime <= Mathf.Epsilon) return;
 
-            var frameCtx = new CharacterFrameContext();
+            var frameCtx = new SCharacterFrameContext();
 
             try
             {
-                var intent = director.Evaluate();
-                frameCtx.Intent = intent;
-                frameCtx.Kinematic = characterKinematic.Evaluate(intent.LocomotionHeading,
-                    intent.AimDirection, deltaTime);
+                frameCtx.Kinematic = characterKinematic.Evaluate(InputState, deltaTime);
 
                 // 装备同步：以 Container 为数据源，diff 管理 GO + GripTag
                 equipment.SyncEquipment();
 
                 var ownedTags = buildCtx.OwnedGripTags;
-                buildCtx.BodyForm = intent.DesiredBodyForm;
+                buildCtx.BodyForm = EBodyForm.Relax; // TODO: 装备系统决定 BodyForm
                 buildCtx.ResolvedLocoAnimSet = buildCtx.GripTable?.Resolve(ownedTags, buildCtx.BodyForm)
                     ?? buildCtx.DefaultLocomotionSet;
 
                 // 装备变化 → 技能重解析（武器树 × 兼容标签）
                 buildCtx.AbilityForest?.SetWeaponTags(ownedTags);
 
-                locomotionSimulator.Simulate(ref frameCtx, intent, buildCtx, deltaTime);
+                locomotionSimulator.Simulate(ref frameCtx, InputState, buildCtx, deltaTime);
 
                 LastKinematic = frameCtx.Kinematic;
                 LastMotor = frameCtx.Motor;
@@ -249,5 +249,6 @@ namespace RedDust.Character
 
             buildCtx.Properties.Tick(deltaTime);
         }
+
     }
 }

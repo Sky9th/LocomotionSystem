@@ -8,12 +8,12 @@ namespace RedDust.Character.Animation.Drivers.Ability
     ///
     /// 使用：brain.SubmitRequest(abilityDriver, request) → Arbiter 仲裁 → OnStarted 自播 → 播完自动归还。
     /// </summary>
-    public sealed class AbilityDriver : BaseAnimationDriver
+    internal sealed class AbilityDriver : BaseAnimationDriver
     {
         public override int ChannelMask => 1 << 0; // FullBody
 
-        public override void Evaluate(in CharacterFrameContext ctx, float dt) { }
-        public override void Drive(in CharacterFrameContext ctx, float dt) { }
+        public override void Evaluate(in SCharacterFrameContext ctx, float dt) { }
+        public override void Drive(in SCharacterFrameContext ctx, float dt) { }
 
         public override void OnStarted(AnimationRequest request)
         {

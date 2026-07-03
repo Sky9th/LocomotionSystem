@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.Character
+namespace RedDust.Character.Kinematic
 {
     internal sealed class CharacterRig
     {

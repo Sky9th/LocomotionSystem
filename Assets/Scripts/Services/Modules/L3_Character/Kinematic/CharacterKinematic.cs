@@ -22,15 +22,29 @@ namespace RedDust.Character.Kinematic
             previousGroundContact = SGroundContact.None;
         }
 
-        internal SCharacterKinematic Evaluate(Vector3 locomotionHeading,
-            Vector3 aimDirection, float deltaTime)
+        internal SCharacterKinematic Evaluate(in SCharacterInputState input, float deltaTime)
         {
             var physique = ctx.Physique;
             var groundSystem = ctx.GroundSystemConfig;
-
             var rig = ctx.Rig;
             var position = ctx.Root.position;
             var bodyForward = ctx.Root.forward;
+
+            // 朝向：路径优先 → 模型朝向
+            var pf = ctx.Pathfinding;
+            bool hasActivePath = pf != null && pf.HasActivePath;
+            var locomotionHeading = hasActivePath && pf.DesiredVelocity.sqrMagnitude > Mathf.Epsilon
+                ? pf.DesiredVelocity.normalized : ctx.ModelRoot.forward;
+
+            // 瞄准：从 InputState（PlayerService/AIService 写入）
+            Vector3 aimDirection;
+            if (input.HasAimPoint)
+            {
+                var dir = input.AimPoint - ctx.ModelRoot.position;
+                dir.y = 0f;
+                aimDirection = dir.sqrMagnitude > Mathf.Epsilon ? dir.normalized : ctx.ModelRoot.forward;
+            }
+            else aimDirection = ctx.ModelRoot.forward;
 
             var lookDirection = CharacterHeadLook.Evaluate(aimDirection, ctx.ModelRoot, ctx.Root,
                 physique.MaxHeadYaw, physique.MaxHeadPitch);

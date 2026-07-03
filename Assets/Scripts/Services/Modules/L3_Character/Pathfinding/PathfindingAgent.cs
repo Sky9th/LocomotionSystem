@@ -26,6 +26,7 @@ namespace RedDust.Character.Pathfinding
 
         public bool HasPath => ai != null && ai.hasPath;
         public bool HasReachedDestination => ai != null && ai.reachedEndOfPath;
+        public bool HasActivePath => HasPath && !HasReachedDestination;
 
         public Vector3 DesiredVelocity => ai != null ? ai.desiredVelocity : Vector3.zero;
 

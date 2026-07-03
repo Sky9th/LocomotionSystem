@@ -1,7 +1,6 @@
 using UnityEngine;
 using RedDust.Character;
 using RedDust.Character.Animation;
-using RedDust.Character.Director;
 using RedDust.Character.Kinematic;
 
 namespace RedDust.Character.Locomotion
@@ -16,28 +15,17 @@ namespace RedDust.Character.Locomotion
 
         private bool isTurning;
 
-        // TODO: 姿势/步态缓存 —— 后续 posture-aware speed 接入 Properties 后，
-        // motionSpeedScale 仅在 gait/posture 变化时重算，避免每帧查 Properties。
-        private float cachedMotionSpeedScale = 1f;
-        private EMovementGait cachedGait;
-        private EPosture cachedPosture;
-
         internal SCharacterDiscrete Evaluate(
             in SCharacterMotor motor, in SCharacterKinematic kin,
-            in SCharacterIntent intent, LocomotionAnimationSetSO animSet, float dt)
+            in SCharacterInputState input, EMovementGait gait,
+            LocomotionAnimationSetSO animSet, float dt)
         {
             var phase = EvaluatePhase(in kin, in motor);
-            var gait = intent.DesiredGait;
-            var posture = intent.DesiredPosture;
+            var posture = input.DesiredPosture;
             var turning = EvaluateTurning(in motor, in kin, dt, phase);
 
-            var nativeSpeed = animSet != null ? animSet.GetNativeSpeed(gait) : 0f;
+            var nativeSpeed = animSet?.GetNativeSpeed(gait) ?? 0f;
             var motionSpeedScale = 1f; // TODO: Properties 敏捷/负重/姿势/地形修正
-
-            // TODO: 恢复条件守卫 —— gait/posture 变化时重算 motionSpeedScale
-            cachedGait = gait;
-            cachedPosture = posture;
-            cachedMotionSpeedScale = motionSpeedScale;
 
             var effectiveMaxSpeed = nativeSpeed * motionSpeedScale;
             return new SCharacterDiscrete(phase, posture, gait, turning, motionSpeedScale, effectiveMaxSpeed);

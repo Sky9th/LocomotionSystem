@@ -41,11 +41,19 @@ namespace RedDust.Entities
         /// <summary>嵌套容器。容器类实体（背包等）Register 时由 EntityService 自动创建。</summary>
         public Container.Container NestedContainer { get; internal set; }
 
+        /// <summary>命令门面——外部系统通过此模块向此实体下达命令。</summary>
+        public EntityCommandModule Command { get; }
+
+        /// <summary>查询门面——外部系统通过此模块读取此实体数据（无需 GO）。</summary>
+        public EntityQueryModule Query { get; }
+
         public Entity(string id, PropertyPresetSO preset)
         {
             Id = id ?? System.Guid.NewGuid().ToString();
             Preset = preset;
             Properties = PropertyTable.FromPreset(preset);
+            Command = new EntityCommandModule(this);
+            Query = new EntityQueryModule(this);
         }
 
         /// <summary>每帧驱动属性变化（modifier 衰减等）。由 EntityService 或持有者驱动。</summary>

@@ -3,6 +3,7 @@ using Animancer.FSM;
 using UnityEngine;
 using RedDust.Character;
 using RedDust.Character.Animation;
+using RedDust.Character.Kinematic;
 using RedDust.Character.Locomotion;
 
 namespace RedDust.Character.Animation.Drivers.Locomotion
@@ -14,7 +15,7 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         private readonly LocomotionAnimationSetSO _defaultAnimSet;
         private LocomotionAnimationSetSO _lastAnimSet;
         private bool _lastWasIdle;
-        private CharacterFrameContext ctx;
+        private SCharacterFrameContext ctx;
         private float deltaTime;
         private ITransition lastPlayedTransition;
         private AnimancerState currentAnimState;
@@ -25,7 +26,7 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         internal ITransition IdleOverride { get; private set; }
         internal LocomotionAnimationConfigSO AnimProfile { get; }
         internal CharacterRig Rig => _buildContext?.Rig;
-        internal CharacterFrameContext Ctx => ctx;
+        internal SCharacterFrameContext Ctx => ctx;
         internal float DeltaTime => deltaTime;
         internal AnimancerLayer Layer { get; }
 
@@ -51,7 +52,7 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
             fsm.Dictionary[BaseStateKey.AirLand] = new BaseAirLandState(this);
         }
 
-        internal void Update(CharacterFrameContext ctx, float dt)
+        internal void Update(SCharacterFrameContext ctx, float dt)
         {
             this.ctx = ctx;
             deltaTime = dt;

@@ -231,7 +231,6 @@ namespace RedDust.GameCamera
                 camPos, camRot, anchorPos, anchorRot,
                 Vector2.zero, mouseGround.WorldPosition, mouseGround.IsValid);
             UpdateSnapshot(snapshot);
-            _eventHub.Get<CameraSnapshotEvent>().Raise(snapshot);
         }
 
         private (Vector3 WorldPosition, bool IsValid) ComputeMouseGroundPosition()

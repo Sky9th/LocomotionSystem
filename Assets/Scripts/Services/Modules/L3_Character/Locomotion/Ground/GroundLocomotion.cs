@@ -1,6 +1,6 @@
 using RedDust.Character;
 using RedDust.Character.Animation;
-using RedDust.Character.Director;
+using RedDust.Character.Pathfinding;
 using RedDust.Core;
 
 namespace RedDust.Character.Locomotion
@@ -12,17 +12,26 @@ namespace RedDust.Character.Locomotion
 
         internal GroundLocomotion(ModuleRegistry registry) : base(registry) { }
 
-        public void Simulate(ref CharacterFrameContext frameCtx, in SCharacterIntent intent,
+        public void Simulate(ref SCharacterFrameContext frameCtx, in SCharacterInputState input,
             CharacterBuildContext buildCtx, float dt)
         {
             var physique = buildCtx.Physique;
-            // TODO: posture-aware speed — gait 速度 × posture 系数 (源自 Properties.Body/xxx 或 posture-specific animSet)
             var animSet = buildCtx.ResolvedLocoAnimSet;
-            var desiredSpeed = intent.HasMovement ? (animSet != null ? animSet.GetNativeSpeed(intent.DesiredGait) : 0f) : 0f;
+            var pf = buildCtx.Pathfinding;
+            bool hasActivePath = pf != null && pf.HasActivePath;
+
+            // Gait: 从 InputState + pathfinding 推导
+            var gait = hasActivePath
+                ? (input.WantsSprint ? EMovementGait.Sprint : EMovementGait.Run)
+                : EMovementGait.Idle;
+
+            var desiredSpeed = gait != EMovementGait.Idle
+                ? animSet?.GetNativeSpeed(gait) ?? 0f : 0f;
             var acceleration = physique.Acceleration;
 
-            frameCtx.Motor = motor.Evaluate(in frameCtx.Kinematic, in intent, desiredSpeed, acceleration, dt);
-            frameCtx.Discrete = stance.Evaluate(in frameCtx.Motor, in frameCtx.Kinematic, in intent, animSet, dt);
+            frameCtx.Motor = motor.Evaluate(in frameCtx.Kinematic, pf, desiredSpeed, acceleration, dt);
+            frameCtx.Discrete = stance.Evaluate(in frameCtx.Motor, in frameCtx.Kinematic,
+                in input, gait, animSet, dt);
         }
     }
 }

@@ -2,10 +2,11 @@ using UnityEngine;
 using Animancer;
 using RedDust.Character.Animation;
 using RedDust.Character;
+using RedDust.Character.Kinematic;
 
 namespace RedDust.Character.Animation.Drivers.Traversal
 {
-    public sealed class TraversalDriver : BaseAnimationDriver
+    internal sealed class TraversalDriver : BaseAnimationDriver
     {
         private Collider obstacleCollider;
         private Vector3 topPoint;
@@ -13,13 +14,13 @@ namespace RedDust.Character.Animation.Drivers.Traversal
         public override int ChannelMask => 1 << 0; // FullBody
 
         // TODO: migrated to LocomotionAnimationSetSO traversal fields
-        public override void Evaluate(in CharacterFrameContext ctx, float dt)
+        public override void Evaluate(in SCharacterFrameContext ctx, float dt)
         {
             // var aliasProfile = brain?.BuildContext?.AnimationAlias;
             // ...
         }
 
-        public override void Drive(in CharacterFrameContext ctx, float dt) { }
+        public override void Drive(in SCharacterFrameContext ctx, float dt) { }
 
         public override void OnStarted(AnimationRequest request)
         {

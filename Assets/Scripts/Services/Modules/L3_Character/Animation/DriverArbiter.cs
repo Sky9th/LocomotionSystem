@@ -73,7 +73,7 @@ namespace RedDust.Character.Animation
 
         // ── 每帧调度 ──
 
-        public void Resolve(in CharacterFrameContext ctx, float dt)
+        public void Resolve(in SCharacterFrameContext ctx, float dt)
         {
             EvaluateDrivers(ctx, dt);
             ProcessQueue();
@@ -82,7 +82,7 @@ namespace RedDust.Character.Animation
             ActivateDefaultIfNeeded();
         }
 
-        private void EvaluateDrivers(in CharacterFrameContext ctx, float dt)
+        private void EvaluateDrivers(in SCharacterFrameContext ctx, float dt)
         {
             foreach (var driver in drivers)
                 driver.Evaluate(ctx, dt);

@@ -5,7 +5,7 @@ using RedDust.Character;
 
 namespace RedDust.Character.Animation.Drivers.Locomotion
 {
-    public sealed class LocomotionDriver : BaseAnimationDriver
+    internal sealed class LocomotionDriver : BaseAnimationDriver
     {
         private BaseLayer baseLayer;
         private ArmPoseLayer armPoseLayer;
@@ -24,11 +24,11 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
             armPoseLayer = new ArmPoseLayer(brain?.ArmLayer, buildCtx);
         }
 
-        public override void Evaluate(in CharacterFrameContext ctx, float dt) { }
+        public override void Evaluate(in SCharacterFrameContext ctx, float dt) { }
         public override void OnStarted(AnimationRequest request) { }
         public override void OnCompleted() { }
 
-        public override void Drive(in CharacterFrameContext ctx, float dt)
+        public override void Drive(in SCharacterFrameContext ctx, float dt)
         {
             baseLayer.Update(ctx, dt);
             armPoseLayer.Update(ctx);

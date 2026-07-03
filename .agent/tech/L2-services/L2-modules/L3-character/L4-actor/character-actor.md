@@ -1,61 +1,63 @@
 # CharacterActor · 角色主控
 
-> **Last Verified**: 2026-06-27 | **Verification**: Field renames (agent→propertyAgent), access modifiers (Physique/Container→private), Physique extraction moved to Start, TODOs added
+> **Last Verified**: 2026-07-03 | **Verification**: Director 消除、字段重组、子模块暴露、InputState 新增、EvaluateCharacterIntent 删除
 
 > `Character/Actor/CharacterActor.cs` — ModuleHub，角色组合根，每帧流水线入口
 
-## 调用链
+## Layer Position
+
+L4 — Actor 层，L3_Character 的组合根。装配所有子模块，驱动每帧流水线。
+
+## Call Chain
 
 ```
-被谁调:
-  Unity 生命周期 → Awake / Start / Update / OnDisable
-
-调谁:
-  Awake:
-    SetupModel() → Instantiate(modelPrefab) → AddComponent AnimationBrain
-    ResolveComponents() → GetComponent 收集引用
-    pre-assemble: new CharacterRig → new CharacterBuildContext → new 所有 C# 子模块(Registry)
-    base.Awake() → ModuleHub.Awake → 扫描 MB 子节点 → Register → OnAssembleAll
-
-  Start:
-    base.Start() → Registry.OnWireAll (递归)
-    buildCtx.Physique = CharacterPhysique.From(Properties) (所有 Awake 已跑完，安全读取)
-    Properties.AddModifier (TODO: 饥饿消耗硬编码 — 应由生理系统/预设 Modifier 驱动)
-
-  Update:
-    director.Evaluate() → characterKinematic.Evaluate() → locomotionSimulator.Simulate()
-    → characterAnimation.Apply() → pathfindingAgent.SyncLocomotion()
+CharacterActor.Update()
+  ├── characterKinematic.Evaluate(InputState, deltaTime)
+  │     └── 内部: pathfinding → heading, InputState → aim
+  ├── equipment.SyncEquipment()
+  ├── locomotionSimulator.Simulate(ref frameCtx, InputState, buildCtx, deltaTime)
+  │     ├── motor.Evaluate(kinematic, pathfinding, desiredSpeed, accel, dt)
+  │     └── stance.Evaluate(motor, kinematic, InputState, gait, animSet, dt)
+  ├── characterAnimation.Apply(in frameCtx)
+  └── buildCtx.Properties.Tick(deltaTime)
 ```
 
-## 耦合模块
+## Coupled Modules
 
 | 方向 | 模块 | 关系 |
 |------|------|------|
-| 继承 | ModuleHub | 树形生命周期 |
-| 持有 | CharacterBuildContext | 子模块统一依赖入口 |
-| 构造 | PlayerDirector / NpcDirector | C# 子模块 (ModuleChild) |
-| 构造 | CharacterKinematic | C# 子模块 (ModuleChild) |
-| 构造 | GroundLocomotion | C# 子模块 (ModuleChild) |
-| 构造 | CharacterCombat | C# 子模块 (ModuleChild) |
-| 依赖 | AnimationBrain | Model 子节点，独立 ModuleHub |
-| 依赖 | PathfindingAgent | MB 子模块 (ModuleChildMono) |
-| 依赖 | CharacterAudio | MB 子模块 (ModuleChildMono) |
+| → | CharacterKinematic | 每帧调用 Evaluate |
+| → | ILocomotionSimulator | 每帧调用 Simulate |
+| → | CharacterEquipment | 每帧调用 SyncEquipment |
+| → | AnimationBrain | 每帧调用 Apply |
+| ← | EntityCommandModule | 通过 internal 属性调用子模块 |
+| ← | PlayerService | 写入 InputState |
 
-## 设计决策
+## Public Properties
 
-| 决策 | 原因 |
-|------|------|
-| 继承 ModuleHub | 统一树形生命周期，pre/base/post 三段式 |
-| BuildContext 统一依赖 | 消除构造参数各自为政，Model 替换自动更新 |
-| AnimationBrain 独立为 ModuleHub | Drivers 是其子模块，生命周期独立于 CharacterActor |
-| C# 子模块在 base.Awake 之前构造 | 构造自注册 → base.Awake 扫描 MB 子节点 → OnAssembleAll 包含全部子模块 |
-| OnWire 只加 Modifier | 子模块 OnWire 由 base.Start 自动递归 |
+- `IsPlayer` — 是否玩家角色
+- CharacterAnimationProfile / CharacterAudioConfig — Config SO
+- ForwardRootMotion / ApplyRootMotionRotation / AutoMatchAnimationSpeed — Animation flags
+- UpperBodyMask ~ FootMask — Avatar masks
 
-## 未来规划
+## Internal Properties
 
-| 规划 | 状态 | 来源 |
+- `BuildContext` / `CharacterRig` / `LastKinematic` / `LastMotor` / `LastDiscrete` — Runtime state
+- `Pathfinding` / `Ability` / `Container` — Module access (Command/Query 直接调用)
+- `InputState` — 外部写入的连续输入（PlayerService/AIService）
+
+## Methods
+
+### Update()
+每帧流水线入口。不再有 Director 或 Intent 评估——子模块各自从 InputState + pathfinding + camera 推算所需数据。
+
+### ReplaceModel(GameObject)
+TODO Phase 3: 完整模型替换（装备系统依赖）。
+
+## Future Plans
+
+| 计划 | 状态 | 来源 |
 |------|------|------|
-| ReplaceModel 完整实现 | TODO Phase 3 | 装备系统 |
-| AI Director 替代 NpcDirector | TODO Phase 4 | Director/AI/ |
-| AbilitySlotManager 替代 skillSlot1/2 | TODO | 技能树系统 |
-| Prefab 移除根节点 LocomotionDriver/TraversalDriver | TODO | 已由 Brain 代码挂载 |
+| BodyForm 由装备系统决定 | TODO 标记 | CharacterActor.Update() |
+| 饥饿消耗测试代码移除 | TODO 标记 | CharacterActor.Start() |
+| EvaluateCharacterIntent 已删除 | ✅ Done | v0.35.0 |

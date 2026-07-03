@@ -1,7 +1,7 @@
 using UnityEngine;
 using RedDust.Character;
-using RedDust.Character.Director;
 using RedDust.Character.Kinematic;
+using RedDust.Character.Pathfinding;
 
 namespace RedDust.Character.Locomotion
 {
@@ -10,23 +10,21 @@ namespace RedDust.Character.Locomotion
         private Vector2 currentLocalVelocity;
 
         internal SCharacterMotor Evaluate(
-            in SCharacterKinematic kin, in SCharacterIntent intent,
+            in SCharacterKinematic kin, PathfindingAgent pf,
             float desiredSpeed, float acceleration, float dt)
         {
             var turnAngle = SignedAngle(kin.BodyForward, kin.LocomotionHeading);
 
-            if (intent.OverrideMovementVelocity)
+            if (pf != null && pf.HasActivePath)
             {
-                var externalVel = intent.ExternalMovementVelocity;
+                var externalVel = pf.DesiredVelocity;
                 externalVel.y = 0f;
                 var localVel = ConvertToLocal(externalVel, kin.LocomotionHeading);
                 currentLocalVelocity = localVel;
                 return new SCharacterMotor(localVel, localVel, externalVel, turnAngle);
             }
 
-            var speed = intent.HasMovement ? desiredSpeed : 0f;
-
-            var desired = new Vector2(0f, speed);
+            var desired = new Vector2(0f, desiredSpeed);
             currentLocalVelocity = Smooth(currentLocalVelocity, desired, acceleration, dt);
             var planar = ConvertToWorld(currentLocalVelocity, kin.LocomotionHeading);
             return new SCharacterMotor(desired, currentLocalVelocity, planar, turnAngle);

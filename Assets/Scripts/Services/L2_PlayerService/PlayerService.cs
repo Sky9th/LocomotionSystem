@@ -1,7 +1,9 @@
+using System;
 using RedDust.Character;
 using RedDust.Core;
 using RedDust.Core.Events;
 using RedDust.Entities;
+using RedDust.GameInput;
 using RedDust.GameScene;
 using RedDust.Items;
 using RedDust.Properties;
@@ -32,6 +34,12 @@ namespace RedDust.Player
         private EventHub _eventHub;
         private GameObject playerInstance;
         private string playerEntityId;
+        private Entity _playerEntity;
+        private CharacterActor _playerActor;
+
+        // ── 持久输入状态 ──
+        private EPosture _currentPosture = EPosture.Standing;
+        private bool _wantsSprint;
 
         public Transform CurrentPlayerTransform =>
             playerInstance != null ? playerInstance.transform : null;
@@ -53,6 +61,23 @@ namespace RedDust.Player
             _eventHub.Get<SceneLoadCompleteEvent>().Register(HandleSceneLoadComplete);
 
             if (spawnedEvent != null) spawnedEvent.Register(OnPlayerSpawned);
+
+            // ── 输入绑定 ──
+            BindInput<InputSecondaryInteractEvent>(_ =>
+            {
+                if (!TryGetMouseGround(out var pos)) return;
+                _playerEntity?.Command?.MoveTo(pos);
+            });
+            BindInput<InputSkill1Event>(_ => _playerEntity?.Command?.UseActiveAbility(0));
+            BindInput<InputSkill2Event>(_ => _playerEntity?.Command?.UseActiveAbility(1));
+            BindInput<InputEquip1Event>(_ => _playerEntity?.Command?.CycleEquip(0));
+            BindInput<InputEquip2Event>(_ => _playerEntity?.Command?.CycleEquip(1));
+            BindInput<InputEquip3Event>(_ => _playerEntity?.Command?.CycleEquip(2));
+            BindInput<InputCrouchEvent>(_ => SetPosture(EPosture.Crouching));
+            BindInput<InputProneEvent>(_ => SetPosture(EPosture.Prone));
+            BindInput<InputStandEvent>(_ => SetPosture(EPosture.Standing));
+            BindInput<InputSprintEvent>(_ => ToggleSprint());
+
         }
 
         private void OnDestroy()
@@ -102,6 +127,10 @@ namespace RedDust.Player
             playerInstance = e.View;
             playerEntityId = e.EntityId;
 
+            if (GameContext.Instance.TryResolveService<EntityService>(out var es))
+                _playerEntity = es.Get(e.EntityId);
+            _playerActor = e.View?.GetComponent<CharacterActor>();
+
             GameContext.Instance.UpdateSnapshot(
                 SPlayer.FromTransform(playerInstance.transform, isLocalPlayer: true));
             _eventHub.Get<PlayerSpawnedEvent>().Raise(new SPlayerSpawnedEvent(playerInstance.transform, isLocalPlayer: true));
@@ -123,14 +152,13 @@ namespace RedDust.Player
                 return;
             }
 
-            var actor = playerInstance != null ? playerInstance.GetComponent<CharacterActor>() : null;
-            if (actor == null)
+            if (_playerActor == null)
             {
                 Debug.LogError("[PlayerService] CharacterActor not found on player instance.");
                 return;
             }
 
-            var container = actor.BuildContext?.CharacterContainer?.BodyContainer;
+            var container = _playerActor.BuildContext?.CharacterContainer?.BodyContainer;
             if (container == null)
             {
                 Debug.LogError("[PlayerService] BodyContainer is null.");
@@ -195,6 +223,47 @@ namespace RedDust.Player
 
             playerInstance = null;
             playerEntityId = null;
+            _playerEntity = null;
+            _playerActor = null;
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 输入绑定
+        // ═══════════════════════════════════════════════════════════════
+
+        private void BindInput<T>(Action<SButtonInputPayload> onPressed)
+            where T : GameEvent<SButtonInputPayload>
+        {
+            _eventHub.Get<T>().Register(p =>
+            {
+                if (!p.IsRequested) return;
+                onPressed(p);
+            });
+        }
+
+        private static bool TryGetMouseGround(out Vector3 pos)
+        {
+            pos = default;
+            if (GameContext.Instance == null) return false;
+            if (!GameContext.Instance.TryGetSnapshot(out SCameraSnapshot cam) || !cam.IsMouseGroundValid) return false;
+            pos = cam.MouseGroundPosition;
+            return true;
+        }
+
+        private void SetPosture(EPosture posture) { _currentPosture = posture; WriteInputState(); }
+        private void ToggleSprint() { _wantsSprint = !_wantsSprint; WriteInputState(); }
+
+        private void WriteInputState()
+        {
+            if (_playerActor == null) return;
+            bool hasAim = TryGetMouseGround(out var aimPoint);
+            _playerActor.InputState = new SCharacterInputState
+            {
+                AimPoint = aimPoint,
+                HasAimPoint = hasAim,
+                DesiredPosture = _currentPosture,
+                WantsSprint = _wantsSprint,
+            };
         }
     }
 }

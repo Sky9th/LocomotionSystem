@@ -426,13 +426,32 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1182a8630c9d4515a4a8ac36a7a2d4a7, type: 2}
   - {fileID: 11400000, guid: 140ed33495e9d6440b3e0ba865a02de2, type: 2}
   - {fileID: 11400000, guid: 24aa1b79966eeb9408503b9a6fe8f819, type: 2}
-  - {fileID: 11400000, guid: 6d319b60e5e04cc4a438698f0a1cbab4, type: 2}
   playerEvents:
   - {fileID: 11400000, guid: 1b3e3f142f7c44e8af2869e4846dcc28, type: 2}
   inputEvents:
   - {fileID: 11400000, guid: a7d7a5554f79408ca197c38452e14500, type: 2}
   - {fileID: 11400000, guid: 90a8e1117e084470a1960b9b78f8d33a, type: 2}
+  - {fileID: 11400000, guid: 04b7df11065d42338f1adf2d5e0fd04a, type: 2}
+  - {fileID: 11400000, guid: 0e3b38569a444691bb60fd18a046fb2f, type: 2}
+  - {fileID: 11400000, guid: b7ba05e031fe4cfb933c443a9124fb00, type: 2}
+  - {fileID: 11400000, guid: cc72bcbb0b2f4931be90df345ddd24c5, type: 2}
+  - {fileID: 11400000, guid: af1d24da3b3f480d9e5b94ac825f18e8, type: 2}
   - {fileID: 11400000, guid: 62052299e95e46cea1f03303c9ede8ea, type: 2}
+  - {fileID: 11400000, guid: b9782037569a46c499539459927e76a4, type: 2}
+  - {fileID: 11400000, guid: e0c64378e7e544db8c1f439a44bf1a86, type: 2}
+  - {fileID: 11400000, guid: 4f7520b217004721b091921f7b766dca, type: 2}
+  - {fileID: 11400000, guid: e1d864620aa54973935095ba8aafbb76, type: 2}
+  - {fileID: 11400000, guid: 317ace1eeac5493087a9791b933fb160, type: 2}
+  - {fileID: 11400000, guid: bed9c2bbdcdf4d579b5ba7177a8675f1, type: 2}
+  - {fileID: 11400000, guid: bfd4aac6eb624aaa879211ce343e47e8, type: 2}
+  - {fileID: 11400000, guid: 626538b1f38c4c83ba1c405ce7074618, type: 2}
+  - {fileID: 11400000, guid: 7201e9e4c13440ff881a29a2c67ccef9, type: 2}
+  - {fileID: 11400000, guid: 6333df8873b844498b312eee1850d966, type: 2}
+  - {fileID: 11400000, guid: a330b00c7b0043478e2eb4325a57c49b, type: 2}
+  - {fileID: 11400000, guid: 3e5579baf9d44c29b6a157a0067df1da, type: 2}
+  - {fileID: 11400000, guid: 934281ce9514406a8388ad815797eae6, type: 2}
+  - {fileID: 11400000, guid: f25fddae02f741249787a48ebd17ab99, type: 2}
+  - {fileID: 11400000, guid: 750f8b8cf8614bd990066cd3b5526d30, type: 2}
   abilityEvents: []
 --- !u!1 &2434817937819614488
 GameObject:
@@ -720,7 +739,7 @@ Transform:
   m_GameObject: {fileID: 4898776649688329902}
   serializedVersion: 2
   m_LocalRotation: {x: 0.03506042, y: -0.95769334, z: 0.13282423, w: -0.25288728}
-  m_LocalPosition: {x: -1.9219575, y: -4.313678, z: 10.718569}
+  m_LocalPosition: {x: -1.9218841, y: -4.3137083, z: 10.718472}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

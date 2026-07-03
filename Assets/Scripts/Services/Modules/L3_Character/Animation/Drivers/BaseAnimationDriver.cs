@@ -5,13 +5,13 @@ using RedDust.Character;
 
 namespace RedDust.Character.Animation.Drivers
 {
-    public abstract class BaseAnimationDriver : ModuleChildMono, ICharacterAnimationDriver
+    internal abstract class BaseAnimationDriver : ModuleChildMono, ICharacterAnimationDriver
     {
         protected AnimationBrain brain;
 
         public abstract int ChannelMask { get; }
-        public abstract void Evaluate(in CharacterFrameContext ctx, float dt);
-        public abstract void Drive(in CharacterFrameContext ctx, float dt);
+        public abstract void Evaluate(in SCharacterFrameContext ctx, float dt);
+        public abstract void Drive(in SCharacterFrameContext ctx, float dt);
         public abstract void OnStarted(AnimationRequest request);
         public abstract void OnCompleted();
         public abstract void OnInterrupted(AnimationRequest by);

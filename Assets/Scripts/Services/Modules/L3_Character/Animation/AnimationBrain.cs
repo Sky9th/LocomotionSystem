@@ -7,6 +7,7 @@ using RedDust.Character.Animation.Drivers.Traversal;
 using RedDust.Character.Animation.Drivers.Ability;
 using RedDust.Character.Animation;
 using RedDust.Character;
+using RedDust.Character.Kinematic;
 
 namespace RedDust.Character.Animation
 {
@@ -130,7 +131,7 @@ namespace RedDust.Character.Animation
 
         // ── Core API ──
 
-        internal void Apply(in CharacterFrameContext ctx)
+        internal void Apply(in SCharacterFrameContext ctx)
         {
             fullBodyArbiter.Resolve(ctx, Time.deltaTime);
             UpdateHeadLook(ctx);
@@ -139,7 +140,7 @@ namespace RedDust.Character.Animation
 
         // ── Head Look ──
 
-        private void UpdateHeadLook(in CharacterFrameContext ctx)
+        private void UpdateHeadLook(in SCharacterFrameContext ctx)
         {
             if (headLookMixer == null) return;
 
@@ -172,7 +173,7 @@ namespace RedDust.Character.Animation
 
         // ── Root Motion Speed Matching ──
 
-        private void ApplySpeedMultiplier(in CharacterFrameContext ctx)
+        private void ApplySpeedMultiplier(in SCharacterFrameContext ctx)
         {
             if (!buildCtx.AutoMatchAnimationSpeed || fullBodyLayer?.CurrentState == null) return;
 
