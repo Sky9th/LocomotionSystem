@@ -13,9 +13,7 @@
 子类:
   BaseIdleState
   BaseMovingState
-  BaseIdleToMovingState
   BaseTurnInPlaceState
-  BaseTurnInMovingState
   BaseAirLoopState
   BaseAirLandState
 ```

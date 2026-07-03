@@ -1,6 +1,6 @@
 # GameplayTag — Identity 模块产出 Tag 域
 
-> `L1_Core/GameplayTag/` · 2026-06-29 · L3_Identity 模块产出
+> `L1_Core/RdTag/` · 2026-06-29 · L3_Identity 模块产出
 >
 > 回答"这个 GameObject 在游戏世界里是谁"。四个正交维度。
 

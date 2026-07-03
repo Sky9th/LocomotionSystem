@@ -1,30 +1,30 @@
 # UIService
-> **源文件**: `Assets/Scripts/UI/UIService.cs`
+> **源文件**: `Assets/Scripts/Services/L2_UI/UIService.cs`
 
-继承 BaseService + IGameplaySessionHandler。Screen/Overlay/Modal 生命周期管理、场景过渡、导航路由。
+继承 ModuleChildMono + IGameplaySessionHandler。Screen/Overlay/Modal 生命周期管理、场景过渡、导航路由。
 
 ## 调用链
 
 ```
-OnRegister → context.RegisterService(this) + panelConfig.BuildLookup()
-OnSubscriptionsActivated → Dispatcher.Subscribe<SGameState, SSceneLoadStart, SSceneLoadComplete>
-OnServicesReady → 读 SGameState → HandleGameState
+OnAssemble → GameContext.Instance.RegisterService(this) + panelConfig.BuildLookup()
+OnWire → EventHub 订阅 GameStateChangedEvent / PlayerSpawnedEvent / SceneLoadStartEvent / SceneLoadCompleteEvent
 
 外部调用:
   ├── MainMenuScreen.HandleNewGame() → uiService.RequestNewGame()
   │   └── StartSceneTransition("NewGame", Playing)
-  │       └── 淡出 Screen → Destroy → Dispatcher.Publish(SLoadSceneRequest)
+  │       └── 淡出 Screen → Destroy → EventHub.Raise(SceneLoadRequestEvent)
   │
   ├── MainMenuScreen.HandleQuit() → uiService.RequestQuit()
   │   └── Application.Quit()
   │
   ├── PauseMenuScreen.HandleContinue() → uiService.RequestResume()
-  │   └── GameStateService.RequestState(Playing)
+  │   └── EventHub.Raise(GameStateChangeRequestEvent)
   │
   ├── PauseMenuScreen.HandleMainMenu() → uiService.RequestMainMenu()
-  │   └── 淡出 Screen → Destroy → Dispatcher.Publish(SUnloadSceneRequest)
+  │   └── 淡出 Screen → Destroy → EventHub.Raise(SceneUnloadRequestEvent)
   │
-  └── VitalsOverlay.Update() → uiService.TryGetPlayerStats()
+  └── VitalsOverlay.Update() → uiService.TryGetPlayerProps()
+  └── AbilityBarOverlay / WeaponBarOverlay → uiService.PlayerEntity
 
 事件回调:
   ├── HandleGameState → ShowScreen/HideScreen/ShowOverlay
@@ -36,9 +36,9 @@ OnServicesReady → 读 SGameState → HandleGameState
 
 | 方向 | 模块 | 关系 |
 |------|------|------|
-| 依赖 | EventDispatcherService | 订阅 SGameState / SSceneLoadStart / SSceneLoadComplete |
-| 依赖 | PlayerService | TryGetPlayerStats 查询角色数值 |
-| 依赖 | GameStateService | RequestState 切换游戏状态 |
+| 依赖 | EventHub | 订阅 GameStateChanged / PlayerSpawned / SceneLoadStart / SceneLoadComplete |
+| 依赖 | EntityService | 获取玩家 Entity，通过 Query.Properties 查询属性 |
+| 依赖 | GameStateService | 通过 EventHub 发布 GameStateChangeRequestEvent |
 | 依赖 | UIPanelConfigSO | id→Prefab 查找 |
 | 持有 | UIScreen | 创建、管理、销毁 |
 | 持有 | UIOverlay | 创建、管理、销毁 |
@@ -49,6 +49,7 @@ OnServicesReady → 读 SGameState → HandleGameState
 | 属性 | 类型 | 用途 |
 |------|------|------|
 | `IsInputBlocked` | bool (get) | 场景过渡期间是否锁定输入 |
+| `PlayerEntity` | Entity (get) | 玩家 Entity，供 UI 通过 Query.Properties 读写数据 |
 
 ## 方法
 
@@ -93,14 +94,14 @@ public bool TryGetSnapshot<T>(out T snapshot) where T : struct
 - **调用者**: 各 Overlay/Screen 的数据查询
 - **备注**: 方便 UI 层读取游戏状态
 
-### TryGetPlayerStats()
+### TryGetPlayerProps()
 ```csharp
-public bool TryGetPlayerStats(out Dictionary<string, (float current, float max)> stats)
+public bool TryGetPlayerProps(out PropertyTable props)
 ```
-- **用途**: 查询玩家角色数值
+- **用途**: 查询玩家 Entity 的 PropertyTable
 - **返回**: 是否成功获取
 - **调用者**: VitalsOverlay.Update()
-- **备注**: 委托 PlayerService.TryGetPlayerStats
+- **备注**: 通过 Entity.Query.Properties 获取
 
 ### RequestNewGame()
 ```csharp
@@ -186,11 +187,11 @@ private bool TryGetOverlay(UIOverlayId id, out UIOverlay overlay)
 
 ### HandleGameState()
 ```csharp
-private void HandleGameState(SGameState state, MetaStruct meta = default)
+private void HandleGameState(SGameState state)
 ```
 - **用途**: 游戏状态切换 → 显示/隐藏对应 UI
-- **调用者**: EventDispatcherService + OnServicesReady
-- **备注**: 支持 Playing 分支非暂停恢复时不重复显示 Overlay
+- **调用者**: EventHub (GameStateChangedEvent)
+- **备注**: Playing 分支显示 VitalsOverlay / AbilityBarOverlay / WeaponBarOverlay；非暂停恢复时跳过
 
 ### HideAllOverlays()
 ```csharp
@@ -205,8 +206,10 @@ private void HideAllOverlays()
 - **Screen 互斥**: 通过 `currentScreen` 字段保证同时只有一个 Screen
 - **Overlay 并存**: 通过 `activeOverlays` List 维护，可多个同时显示
 - **输入锁定**: `IsInputBlocked` 防止场景过渡期间的重复点击
-- **DOTween 清理**: OnDestroy 中退订事件，防止残留回调
+- **事件退订**: OnDestroy 中退订 EventHub 事件，防止残留回调
 - **非暂停保护**: Playing 分支判断 `state.PreviousState != EGameState.Paused`，暂停状态下恢复时不重复 ShowOverlay
+- **Playing Overlays**: VitalsOverlay（属性条）、AbilityBarOverlay（技能槽）、WeaponBarOverlay（武器槽）
+- **PlayerEntity**: UIService 通过 PlayerSpawnedEvent 捕获玩家 Entity，UI 层通过 PlayerEntity.Query.Properties 读取属性
 
 ## 未来规划
 

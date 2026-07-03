@@ -1,4 +1,12 @@
-# AbilityComponent — 能力执行中枢
+# ⛔ DEPRECATED — AbilityComponent → AbilityExecutor / AbilityReactor
+
+> **Status**: 本文档描述的 `AbilityComponent` / `HitReactionComponent` 已不再存在。
+> **替换类**: `AbilityExecutor`（发送面）、`AbilityReactor`（接收面）。
+> **最后更新**: 本文档不再维护，保留作历史参考。以代码为准。
+
+---
+
+# AbilityComponent — 能力执行中枢 (历史)
 
 > `L3_Ability/AbilityComponent.cs` · `namespace RedDust.Ability`
 

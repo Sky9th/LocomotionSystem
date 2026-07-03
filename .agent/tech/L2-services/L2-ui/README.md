@@ -32,8 +32,10 @@ UIService.HandleGameState()
   │
   └── Playing → HideScreen(current)
                  └── ShowOverlay(VitalsOverlay)  (非暂停恢复时跳过)
-                      ├── VitalsOverlay (HP/Hunger/Thirst/Stamina ←── PlayerService)
-                      └── StatusOverlay (Buff/Debuff — 骨架)
+                      ├── VitalsOverlay (HP/Hunger/Thirst/Stamina ←── PlayerEntity.Query.Properties)
+                      ├── AbilityBarOverlay (主动技能槽位 Q/E/R/F — UIIconSlot ×4)
+                      ├── WeaponBarOverlay (武器槽位 — UIIconSlot ×2)
+                      └── DebugOverlay (调试信息显示)
 
 场景加载:
   SSceneLoadStart ──→ UIService ──→ LoadingOverlay alpha=1
@@ -51,11 +53,13 @@ UI 组件主题驱动:
 | UIService | EventDispatcherService | 订阅 SGameState / SSceneLoadStart / SSceneLoadComplete |
 | UIService | GameStateService | 通过 RequestResume / RequestNewGame 发布状态 |
 | UIService | SceneService | 发布 SLoadSceneRequest / SUnloadSceneRequest |
-| UIService | PlayerService | TryGetPlayerStats 查询游戏内数值 |
+| UIService | EntityService | 通过 PlayerSpawnedEvent 获取玩家 Entity |
 | UIScreen / UIOverlay | UIService | Service 统一创建和管理 |
 | UIButton / UILabel / UIPanel | UIThemeSO | Awake 时从 Theme 读取颜色/字体配置 |
 | UIStatBar | UIThemeSO | 读取颜色阈值和 StatBar 配置 |
-| VitalsOverlay | PlayerService | 每帧拉取角色数值（通过 UIService 代理） |
+| VitalsOverlay | UIService.PlayerEntity | 每帧拉取角色属性（通过 Entity.Query.Properties） |
+| AbilityBarOverlay | UIService.PlayerEntity | 技能槽位显示和冷却刷新 |
+| WeaponBarOverlay | UIService.PlayerEntity | 武器槽位显示 |
 
 ## 设计决策
 
@@ -102,10 +106,14 @@ UI 组件主题驱动:
 | [L4-components/ui-label.md](L4-components/ui-label.md) | UILabel — 字体/字号/颜色的主题驱动 |
 | [L4-components/ui-panel.md](L4-components/ui-panel.md) | UIPanel — 面板背景容器 |
 | [L4-components/ui-stat-bar.md](L4-components/ui-stat-bar.md) | UIStatBar — 填充条、三色阈值、DOTween 平滑 |
+| [L4-components/ui-icon-slot.md](L4-components/ui-icon-slot.md) | UIIconSlot — 通用槽位（图标 + 冷却覆层 + 选中边框 + 快捷键标签） |
 | [L4-config/ui-panel-config-so.md](L4-config/ui-panel-config-so.md) | UIPanelConfigSO — id→Prefab 映射配置 |
 | [L4-config/ui-theme-so.md](L4-config/ui-theme-so.md) | UIThemeSO — 颜色/字体/间距/动画参数集中管理 |
 | [L4-hud/vitals-overlay.md](L4-hud/vitals-overlay.md) | VitalsOverlay — HP/Hunger/Thirst/Stamina 实时显示 |
 | [L4-hud/status-overlay.md](L4-hud/status-overlay.md) | StatusOverlay — 状态效果显示（骨架） |
 | [L4-hud/loading-overlay.md](L4-hud/loading-overlay.md) | LoadingOverlay — 场景加载过渡遮罩 |
+| [L4-hud/ability-bar-overlay.md](L4-hud/ability-bar-overlay.md) | AbilityBarOverlay — 主动技能槽位 Q/E/R/F（UIIconSlot ×4） |
+| [L4-hud/weapon-bar-overlay.md](L4-hud/weapon-bar-overlay.md) | WeaponBarOverlay — 武器槽位（UIIconSlot ×2） |
+| [L4-hud/debug-overlay.md](L4-hud/debug-overlay.md) | DebugOverlay — 调试信息显示 |
 | [L4-main-menu/main-menu-screen.md](L4-main-menu/main-menu-screen.md) | MainMenuScreen — 主菜单（新游戏/加载/设置/退出） |
 | [L4-main-menu/pause-menu-screen.md](L4-main-menu/pause-menu-screen.md) | PauseMenuScreen — 暂停菜单（继续/设置/保存/返回） |

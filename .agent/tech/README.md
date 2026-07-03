@@ -49,21 +49,14 @@ tech/
 │   ├── gameplay-tag-editor.md          # TagEditor — 可视化标签管理 + TagPicker
 │   └── events/                         # SO Event Channel — 所有 EventSO 统一入口
 │       ├── README.md
-│       ├── event-channel-base.md       # EventChannelBase — 抽象根
-│       ├── game-event.md               # GameEvent<T> — 通用事件通道
-│       ├── event-channels.md           # EventHub — 引用集中 + 驱动 IEventListener
-│       ├── i-event-listener.md         # IEventListener — 订阅约定接口
-│       ├── game-state-events.md        # GameStateEvent, GameStateRequestEvent
-│       ├── scene-events.md             # LoadSceneRequestEvent, SceneLoadStartEvent 等
-│       ├── player-events.md            # PlayerSpawnedEvent
-│       ├── input-events.md             # Input 全部 button/axis Event（← 从 L2-input/events/ 移入）
-│       └── ability-events.md           # HitEvent
+│       ├── game-event.md               # GameEvent<T> — 通用事件通道 (base: GameEvent non-generic)
+│       ├── event-hub.md                # EventHub — GameEvent[] 分类数组 + Get<T>() 查找
+│       └── i-event-listener.md         # IEventListener — 订阅约定接口 (当前无实现者)
 │
 ├── L2-services/                        # 占位容器: 所有 L2 Service
 │   ├── README.md
 │   │
-│   ├── L2-event-dispatcher/            # L2: 简单 Service ×6
-│   │   └── event-dispatcher.md
+│   ├── L2-event-dispatcher/            # ⛔ ARCHIVED — EventDispatcher 已退役，EventHub 接管
 │   ├── L2-scene-service/
 │   │   └── scene-service.md
 │   ├── L2-time-service/
@@ -109,8 +102,7 @@ tech/
 │   └── L2-modules/                     # 占位容器: L3 独立模块
 │       ├── L3-character/               # L3: 角色系统
 │       │   ├── README.md
-│       │   ├── character-container.md   # 身体槽位适配器 — 角色身体作为容器
-│       │   ├── Actor/                  # CharacterActor, CharacterRig, CharacterFrameContext [自身组件]
+│       │   ├── Actor/                  # CharacterActor, CharacterRig, SCharacterFrameContext [自身组件]
 │       │   ├── Config/                 # CharacterProfile, LocomotionEnums [代码结构]
 │       │   ├── Input/                  # CharacterEventReceiver, SCharacterInputActions [代码结构]
 │       │   │
@@ -121,7 +113,7 @@ tech/
 │       │   │   ├── AnimationBrain.cs
 │       │   │   ├── DriverArbiter.cs
 │       │   │   ├── protofactor-fbx-assets.md  # PROTOFACTOR FBX 资产目录与映射
-│       │   │   ├── Config/             # AnimationAliasProfile, LocomotionAnimationProfile, LocomotionModeProfile
+│       │   │   ├── Config/             # LocomotionAnimationSetSO, LocomotionAnimationConfigSO
 │       │   │   ├── Requests/           # AnimationRequest, OnCompleteBehavior, OnInterruptedBehavior
 │       │   │   └── drivers/            # L5: 驱动子系统
 │       │   │       ├── i-character-animation-driver.md
@@ -169,8 +161,8 @@ tech/
 │       ├── L3-item/                   # L3: 物品系统 — 数据定义 + 运行时实例 + 身份索引
 │       │   └── README.md               # 模块总览 — ItemDefSO / ItemInstance / ItemRegistry
 │       │
-│       ├── L3-identity/               # L3: 实体身份 — GO 侧数据锚点（EntityId + 标签）
-│       │   └── README.md               # 模块总览 — Identity（EntityId + Tags + BindEntity）
+│       ├── L3-identity/               # L3: 实体身份 — GO 侧数据锚点（EntityId + Tags）
+│       │   └── README.md               # ⚠️ 待创建 — Identity.cs 已实现 (BindEntity + Tags)
 │       │
 │       ├── L3-container/              # L3: 容器系统 — 泛型容器抽象
 │       │   ├── README.md               # 模块总览 — Container<T> / 嵌套 / 容器所有者 Tick
@@ -238,7 +230,7 @@ tech/
 | 规则 | 说明 |
 |------|------|
 | L1 只有一个入口 | GameService 是唯一根 |
-| L2 Service 不直接互相引用 | 通过 GameContext 或 EventDispatcher |
+| L2 Service 不直接互相引用 | 通过 GameContext 或 EventHub (GameEvent SO channels) |
 | L3 不依赖特定 L2 | Character 不 import PlayerService |
 | L3 可被多个 L2 共用 | Character ← PlayerService + AIService |
 | L4 是 L3 的领域子系统 | Animation, Kinematic, Locomotion, Audio 各自承担独立功能 |

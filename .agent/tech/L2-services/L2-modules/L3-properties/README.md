@@ -1,10 +1,11 @@
 # Property System — 通用属性系统
 
-> 2026-06-09 · 设计文档 · 替代 Stats 体系，承载所有实体类型的属性定义、模板继承、实例覆写
+> 2026-06-09 · 设计文档 · **最后验证: 2026-07-03** — 多处细节已过时（见文内标记），以代码为准。
+> PropertyDefSO 已改为子类架构（9 子类），PropertyType 用 `RdTag`/`RdTagList`，`ResolvedPropertyBag` 不存在（由 `PropertyTable` 替代）。
 
 ## 依赖
 
-- 标签体系 → `L1-core/gameplay-tag.md` — PropertyDefSO 的 GameplayTag 类型依赖 Tag 系统做校验
+- 标签体系 → `L1-core/gameplay-tag.md` — PropertyDefSO 的 RdTag/RdTagList 类型依赖 Tag 系统做校验（Tag 系统已从 `GameplayTag` 改名为 `RdTag`）
 - 伤害地基 → [damage-source-model.md](damage-source-model.md) — ATK 是 DamageEffectSO[]，不依赖属性系统，但属性系统需支持 AssetRefList 类型
 - 物品系统 → [L3_Item](../L3-item/README.md) — ItemDefSO : PropertyPresetSO，所有数据进 PropertyTree
 - 容器系统 → [L3_Container](../L3-container/README.md) — SlotDef[] 通过 PropertyType.Struct 存储

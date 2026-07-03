@@ -1,6 +1,6 @@
 # GameplayTag — Grip 标签域
 
-> `L1_Core/GameplayTag/` · 2026-06-29 · Character/动画域，GripAnimationTableSO 消费
+> `L1_Core/RdTag/` · 2026-06-29 · Character/动画域，GripAnimationTableSO 消费
 >
 > 纯握法。HasTagExact 精确匹配。
 

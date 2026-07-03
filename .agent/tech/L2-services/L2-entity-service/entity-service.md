@@ -1,3 +1,12 @@
+# ⛔ API 章节过时 — Spawn/Despawn 已改为事件驱动
+
+> **Status**: 本文档 API 章节描述的 `Register()`, `Spawn()`, `Despawn()` 公开方法已不存在。
+> 当前架构：`Register()` 变为 private，Spawn/Despawn 通过 `SEntitySpawnRequest` / `SEntityDespawnRequest` 事件通道驱动。
+> **以 `L2_EntityService/EntityService.cs` 代码为准。**
+> **最后验证**: 2026-07-03
+
+---
+
 # EntityService — 实体管理服务
 
 > `L2_EntityService/EntityService.cs` · L2 服务
@@ -48,16 +57,27 @@ GO / Container / 地面物品:
 ## 调用链
 
 ```
-被谁调:
-  创建者                  → entityService.Register(entity)
-  PlayerService          → entityService.RequestSpawn(entityId, position, rotation)
-  场景管理器             → entityService.RequestSpawn(…) / RequestDespawn(id)
-  SaveService            → foreach entity in entityService.All → 序列化
-  未来 NetworkService    → entityService.All → 同步状态
+被谁调（数据层 — 公开 API）:
+  SaveService            → entityService.All → 遍历序列化
+  Container / UI         → entityService.Get(id) → 读取实体
+  各系统                 → entityService.GetByPreset<T>() → 类型筛选
+  实体销毁方             → entityService.Unregister(id) → 注销实体
 
-调谁:
-  内部 Dictionary         → _entities: Dictionary<string, Entity>
-  Spawn 策略             → EntityType → Prefab 映射（SO 或字典配置）
+被谁调（GO 层 — 事件驱动）:
+  调用方                 → spawnRequestEvent.Raise(SEntitySpawnRequest)
+  调用方                 → despawnRequestEvent.Raise(SEntityDespawnRequest)
+  EntityService          → OnWire 中订阅 spawnRequestEvent / despawnRequestEvent
+
+EntityService 发布:
+  spawnedEvent.Raise     → SEntitySpawned (生成完成通知)
+  despawnedEvent.Raise   → SEntityDespawned (销毁完成通知)
+
+内部持有:
+  _entities: Dictionary<string, Entity>      → 数据注册表（唯一本体）
+  Event Channel SO:
+    spawnRequestEvent                        → 序列化字段，Inspector 连线
+    despawnRequestEvent                      → 序列化字段，Inspector 连线
+    spawnedEvent / despawnedEvent            → 序列化字段，Inspector 连线
 ```
 
 ## 数据流
@@ -94,23 +114,27 @@ GO / Container / 地面物品:
     → 当前场景的 Spawn，不在场景的只保留数据
 ```
 
+> ⛔ **以下 API 已过时** — 当前公开 API 为 `Get(string)`, `All`, `GetByPreset<T>()`, `Unregister(string)`, `GetSpawnedEntities()`。
+> Spawn/Despawn 全部走事件通道。
+
 ## API
 
 ```csharp
 public class EntityService : ModuleChildMono
 {
-    // ── 数据管理 ──
-    public void Register(Entity entity);
-    public void Unregister(string id);
-    public Entity Get(string id);
-    public T Get<T>(string id) where T : Entity;
-    public IEnumerable<Entity> All { get; }
-    public IEnumerable<Entity> GetByType(string entityType);
+    // ── 数据管理（公开 API）──
+    public Entity Get(string id);                    // 按 Id 检索，未找到返回 null
+    public IEnumerable<Entity> All { get; }          // 所有已注册实体
+    public IEnumerable<Entity> GetByPreset<T>()      // 按 Preset 类型筛选
+        where T : PropertyPresetSO;
+    public void Unregister(string id);               // 注销实体（级联清理嵌套容器）
+    public IEnumerable<Entity> GetSpawnedEntities(); // 所有已生成 GO 的实体
 
-    // ── GO 生命周期 ──
-    public GameObject Spawn(string entityId, Vector3? position = null, Quaternion? rotation = null);
-    public void Despawn(string entityId);
-    public bool IsSpawned(string entityId);
+    // ── GO 生命周期 ── 不暴露公开方法 ──
+    // Spawn/Despawn 通过 Event Channel 驱动：
+    //   调用方 Raise SEntitySpawnRequest   → EntityService.OnSpawnRequest
+    //   调用方 Raise SEntityDespawnRequest → EntityService.OnDespawnRequest
+    // EntityService 在 OnWire 中订阅这两个事件通道。
 }
 ```
 
@@ -159,9 +183,27 @@ PlayerService:     "玩家离线/死亡" → EntityService.Despawn(id)
 ```csharp
 public class Entity
 {
-    public string Id { get; }           // 持久标识（Guid 或指定名）
-    public string EntityType { get; }   // "Character" / "Item" / …
-    public PropertyTable Properties { get; }  // 全量属性数据
+    // ── 身份数据 ──
+    public string Id { get; }                    // 持久标识（Guid 或指定名）
+    public PropertyPresetSO Preset { get; }      // 属性预设资产（EntityType 角色）
+    public PropertyTable Properties { get; }     // 全量运行时属性数据
+
+    // ── 堆叠 ──
+    public int StackCount { get; set; }          // 堆叠数量（1=独件，>1=合并堆叠）
+    public int MaxStackSize { get; }             // 最大堆叠数（读 Properties）
+    public bool CanStack { get; }                // 堆叠未满
+
+    // ── GO 载体 ──
+    public GameObject View { get; }              // 场景中的 GO 载体（无 GO 时为 null）
+    public bool HasView { get; }                 // 是否有活跃的 GO
+
+    // ── 命令/查询门面 ──
+    public EntityCommandModule Command { get; }  // 命令门面（外部向此实体下达命令）
+    public EntityQueryModule Query { get; }      // 查询门面（外部读取此实体数据）
+
+    // ── 嵌套容器 ──
+    public RdContainer NestedContainer { get; }  // 容器类实体（背包等），Register 时自动创建
+
     public void Tick(float dt) => Properties?.Tick(dt);
 }
 ```

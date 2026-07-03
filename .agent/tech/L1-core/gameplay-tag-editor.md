@@ -1,6 +1,6 @@
 # GameplayTag Editor — 标签编辑器
 
-> `L1_Core/GameplayTag/Editor/` · `namespace RedDust.Core.Editor` · `#if UNITY_EDITOR`
+> `L1_Core/RdTag/Editor/` · `namespace RedDust.Core.Editor` · `#if UNITY_EDITOR`
 >
 > 可视化标签管理工具，提供独立管理窗口 + 可嵌入选择器。
 
@@ -9,11 +9,11 @@
 | 文件 | 职责 |
 |------|------|
 | `TagEditorWindow.cs` | 独立管理窗口，Header + Toolbar + Search + 左 Tree/右 Inspector + StatusBar |
-| `TagTreeView.cs` | 共享树渲染器（静态），折叠/展开/选中/右键菜单 |
+| `TagTreeView.cs` | ⛔ 不存在 — 使用共享 `EditorTreeView` |
 | `TagPicker.cs` | 可嵌入 PopupWindowContent，搜索 + 树浏览 + 一键创建 |
 | `TagTreeModel.cs` | AssetDatabase 扫描真实标签，parent 引用建树，Search/MissingAncestors |
 | `TagCreator.cs` | 事务式链创建，目录/残留清理，失败回滚 |
-| `TagNode.cs` | 独立节点类，模型和渲染器共用 |
+| `TagNode.cs` | ⛔ 不存在 — 使用共享 `EditorTreeNode` |
 
 ## 入口
 

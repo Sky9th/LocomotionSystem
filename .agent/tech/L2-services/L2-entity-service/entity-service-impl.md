@@ -1,3 +1,12 @@
+# ⛔ 实现细节过时 — 事件驱动架构未体现
+
+> **Status**: 本文档描述的内部实现（`_views Dictionary`, `Register()`, `Spawn()`, `Despawn()` 公开方法）已过时。
+> 当前实现：`OnSpawnRequest(SEntitySpawnRequest)` / `OnDespawnRequest(SEntityDespawnRequest)` 事件驱动，View 追踪移至 `Entity.View` / `Entity.HasView`。
+> **以 `L2_EntityService/EntityService.cs` 代码为准。**
+> **最后验证**: 2026-07-03
+
+---
+
 # EntityService — 实现
 
 > `L2_EntityService/EntityService.cs` · L2 服务，MonoBehaviour
@@ -5,24 +14,41 @@
 
 ## 内部机制
 
-继承 `ModuleChildMono`。`OnAssemble` 时注册到 `GameContext`。
+继承 `ModuleChildMono`。`OnAssemble` 时注册到 `GameContext`。`OnWire` 时订阅事件通道。
 
-两个内部字典：
-- `_entities: Dictionary<string, Entity>` — 数据注册表
-- `_views: Dictionary<string, GameObject>` — Spawn 生成的 GO 追踪
+### 内部数据结构
+
+- `_entities: Dictionary<string, Entity>` — 数据注册表（唯一本体）
+- View 追踪不在 EntityService 层，而是在 `Entity.View` / `Entity.HasView` 属性上
+
+### Event Channel（序列化字段，Inspector 连线）
+
+```csharp
+[SerializeField] private EntitySpawnRequestEvent spawnRequestEvent;
+[SerializeField] private EntitySpawnedEvent spawnedEvent;
+[SerializeField] private EntityDespawnRequestEvent despawnRequestEvent;
+[SerializeField] private EntityDespawnedEvent despawnedEvent;
+```
 
 ## 调用链
 
 ```
-调用方:
-  PlayerService (未来)        → entityService.Spawn(playerId, pos)
-  场景管理器 (未来)            → entityService.Spawn / Despawn
-  创建者                       → entityService.Register(entity)
-  SaveService (未来)           → entityService.All → 遍历序列化
+GO 层 — 事件驱动:
+  调用方 → spawnRequestEvent.Raise(SEntitySpawnRequest)     → OnSpawnRequest
+  调用方 → despawnRequestEvent.Raise(SEntityDespawnRequest) → OnDespawnRequest
+  OnSpawnRequest → Instantiate(Preset.Prefab) → Identity.BindEntity + Entity.View 赋值
+  OnSpawnRequest → spawnedEvent.Raise(SEntitySpawned)        → 通知外部
+  OnDespawnRequest → Destroy(go) → Entity.View = null
+  OnDespawnRequest → despawnedEvent.Raise(SEntityDespawned)  → 通知外部
 
-调谁:
-  Instantiate(Preset.Prefab)  → 生成 GO
-  Identity.BindEntity(Id)     → 绑定 GO 到 Entity
+数据层 — 公开 API:
+  SaveService / 遍历方 → entityService.All / GetByPreset<T>()
+  读取方               → entityService.Get(id)
+  销毁                 → entityService.Unregister(id)  （级联清理嵌套容器子实体）
+  有 GO 实体列表       → entityService.GetSpawnedEntities()
+
+内部:
+  Register(entity) → _entities[id] = entity （private，仅 OnSpawnRequest 调用）
 ```
 
 ## 公开属性
@@ -31,73 +57,84 @@
 
 ## 方法
 
-### Register()
-```csharp
-public bool Register(Entity entity)
-```
-- **Purpose**: 注册实体到数据表。Id 重复 → LogError + 返回 false
-- **Params**: `entity` — 不可为 null
-- **Returns**: 成功 true
+### 生命周期
 
-### Unregister()
+#### OnWire()
 ```csharp
-public void Unregister(string id)
+public override void OnWire()
 ```
-- **Purpose**: 注销实体。同时 Despawn（如果有 GO）
-- **Callers**: 实体彻底销毁时
+- **Purpose**: 订阅事件通道。`spawnRequestEvent.Register(OnSpawnRequest)` / `despawnRequestEvent.Register(OnDespawnRequest)`
+- **Notes**: `OnDestroy` 中 Unregister 取消订阅
 
-### Get()
+### GO 生命周期（事件驱动，private）
+
+#### OnSpawnRequest()
+```csharp
+private void OnSpawnRequest(SEntitySpawnRequest req)
+```
+- **Purpose**: 响应 Spawn 请求事件。分两条路径：
+  1. **新 Entity（Preset != null）**：`new Entity(id, Preset)` → `Register(entity)` → 如果 `Position.HasValue` 则 `Instantiate(prefab)` → `Identity.BindEntity` → 设置 `Identity.Entity` + `Identity.SetProperties` → `entity.View = go` → `spawnedEvent.Raise`
+  2. **已有 Entity（仅 Preset 为 null，EntityId 指定）**：从注册表取已有 Entity → 校验无 View → `Instantiate` → 绑定 → `spawnedEvent.Raise`
+- **Params**: `req.Preset` — 新建时用；`req.EntityId` — 已有实体 Id；`req.Position/req.Rotation` — GO 位置
+- **Notes**: 位置为空且无 Prefab 时报错；已有 View 时报错不允许重复 Spawn
+
+#### OnDespawnRequest()
+```csharp
+private void OnDespawnRequest(SEntityDespawnRequest req)
+```
+- **Purpose**: 响应 Despawn 请求事件。取 Entity → 取 View → `entity.View = null` → `Destroy(go)` → `despawnedEvent.Raise`
+- **Notes**: Entity 不存在或无 View 时静默跳过（no-op）
+
+### 数据层（公开 API）
+
+#### Get()
 ```csharp
 public Entity Get(string id)
 ```
 - **Purpose**: 按 Id 检索实体。未找到返回 null
 - **Notes**: 热路径用 `_entityCache = Get(id)` 后直接引用，不走字典
 
-### All
+#### All
 ```csharp
 public IEnumerable<Entity> All
 ```
 - **Purpose**: 所有已注册实体。存档/联机遍历用
 
-### GetByPreset\<T\>()
+#### GetByPreset\<T\>()
 ```csharp
 public IEnumerable<Entity> GetByPreset<T>() where T : PropertyPresetSO
 ```
 - **Purpose**: 按 Preset 类型筛选。如 `GetByPreset<CharacterDefSO>()` 取所有角色
 - **Notes**: 类型检查是 `entity.Preset is T`
 
-### Spawn()
+#### GetSpawnedEntities()
 ```csharp
-public GameObject Spawn(string id, Vector3? position = null, Quaternion? rotation = null)
+public IEnumerable<Entity> GetSpawnedEntities()
 ```
-- **Purpose**: 为实体生成 GO 载体。从 `entity.Preset.Prefab` Instantiate → `Identity.BindEntity(id)`
-- **Params**: `id` — 实体 Id；`position/rotation` — 可选 Transform
-- **Returns**: 生成的 GO，失败返回 null
-- **Notes**: 已存在 GO 时先 Despawn 旧 GO 再实例化新 GO
+- **Purpose**: 所有已生成 GO 的实体。筛选 `entity.HasView`
 
-### Despawn()
+#### Unregister()
 ```csharp
-public void Despawn(string id)
+public void Unregister(string id)
 ```
-- **Purpose**: 销毁实体 GO。Entity 数据保留
-- **Notes**: 无 GO 时 no-op
+- **Purpose**: 注销实体。级联清理嵌套容器子实体；有 View 时 `Destroy(View)` 并清空 View
+- **Callers**: 实体彻底销毁时
 
-### IsSpawned()
-```csharp
-public bool IsSpawned(string id)
-```
-- **Purpose**: 实体是否有活跃的 GO
+### 内部（private）
 
-### GetView()
+#### Register()
 ```csharp
-public GameObject GetView(string id)
+private bool Register(Entity entity)
 ```
-- **Purpose**: 获取实体对应的 GO。未生成返回 null
+- **Purpose**: 注册实体到数据表。Id 重复 → LogError + 返回 false。注册后调用 `TryCreateNestedContainer` 创建嵌套容器
+- **Params**: `entity` — 不可为 null
+- **Returns**: 成功 true
+- **Notes**: 仅供 `OnSpawnRequest` 内部调用，不对外暴露
 
 ## 未来规划
 
 | 计划 | 状态 | 来源 |
 |------|------|------|
-| 事件订阅 | 待实现 | 订阅 `SEntitySpawnRequest`/`SEntityDespawnRequest`，移除直接 Spawn/Despawn 公开方法 |
+| 事件订阅 | 已实现 | OnWire 订阅 spawnRequestEvent/despawnRequestEvent，Spawn/Despawn 全部事件驱动 |
 | Prefab 缓存 | 待定 | Preset.Prefab 重复加载优化 |
 | 批量 Spawn/Despawn | 待定 | 读档时批量实例化 |

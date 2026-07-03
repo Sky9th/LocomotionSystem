@@ -1,6 +1,6 @@
 # GameplayTag — Entity 系统产出 Tag 域
 
-> `L1_Core/GameplayTag/` · 2026-06-29 · Entity 系统产出
+> `L1_Core/RdTag/` · 2026-06-29 · Entity 系统产出
 >
 > 武器类型（Weapon）+ 物品分类（Item），通过 PropertyPreset → Common/Tags 定义。
 

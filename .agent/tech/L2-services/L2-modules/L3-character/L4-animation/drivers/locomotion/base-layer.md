@@ -1,6 +1,14 @@
+# ⛔ CRITICALLY OUTDATED — 需完全重写
+
+> **Status**: 本文档几乎所有技术细节与代码不符。构造函数、依赖、状态数量、方法签名全错。
+> **以 `Animation/Drivers/Locomotion/BaseLayer.cs` 代码为准。**
+> **最后验证**: 2026-07-03 — 保留作架构参考，技术细节不可信。
+
+---
+
 # BaseLayer · 基础层 FSM
 
-> `Character/Animation/Drivers/Locomotion/BaseLayer.cs` — 纯 C# 类，7 状态 FSM，Base 层动画控制核心
+> `Character/Animation/Drivers/Locomotion/BaseLayer.cs` — 纯 C# 类，5 状态 FSM，Base 层动画控制核心
 
 ## 调用链
 
@@ -16,10 +24,10 @@
     → ForceSetState / TrySetState
     → CurrentState.Tick()
   State 内部:
-    → Owner.Play(alias) / PlayIfChanged / PlayFromStart / HasCompleted
+    → Owner.Play(transition) / PlayIfChanged(transition) / HasCompleted
     → Owner.ApplyTurnStepRotation()
   Animancer:
-    → Layer.TryPlay(alias)
+    → Layer.Play(transition)
   CharacterRig:
     → ApplyRotation (通过 ApplyTurnStepRotation)
 ```
@@ -29,22 +37,22 @@
 | 方向 | 模块 | 关系 |
 |------|------|------|
 | 被依赖 | LocomotionDriver | 唯一调用者 |
-| 依赖 | AnimationAliasProfile | 动画别名 |
-| 依赖 | LocomotionAnimationProfile | 动画参数 |
-| 依赖 | LocomotionProfile | 移动参数 |
-| 依赖 | CharacterRig | 程序化转身旋转 |
+| 依赖 | LocomotionAnimationSetSO | 动画集（默认 + 武器集 swap） |
+| 依赖 | LocomotionAnimationConfigSO | 转身速度等动画参数 |
+| 依赖 | CharacterBuildContext | 提供 Rig、ResolvedLocoAnimSet |
+| 依赖 | CharacterRig | 程序化转身旋转（通过 BuildContext） |
 | 依赖 | AnimancerLayer | 播放动画 |
 | 依赖 | StateMachine<BaseStateKey, ...> | Animancer FSM |
-| 内部包含 | 7 个 State 实例 | Idle/Moving/TurnInPlace/IdleToMoving/TurnInMoving/AirLoop/AirLand |
+| 内部包含 | 5 个 State 实例 | Idle/Moving/TurnInPlace/AirLoop/AirLand |
 
 ## 公开属性
 
 ```csharp
-internal AnimationAliasProfile Alias { get; }                 // 动画别名
-internal LocomotionAnimationProfile AnimProfile { get; }      // 动画参数
-internal LocomotionProfile LocoProfile { get; }               // 移动参数
-internal CharacterRig Rig { get; }                           // 物理实体
-internal CharacterFrameContext Ctx => ctx;                    // 当前帧上下文
+internal LocomotionAnimationSetSO AnimSet { get; }            // 当前动画集（可被 EvaluateAnimSet 切换）
+internal ITransition IdleOverride { get; }                    // 非 null 时 Idle 使用此 clip 替代 AnimSet.idleL
+internal LocomotionAnimationConfigSO AnimProfile { get; }     // 动画参数（转身速度等）
+internal CharacterRig Rig { get; }                           // 物理实体（通过 BuildContext）
+internal SCharacterFrameContext Ctx => ctx;                   // 当前帧上下文
 internal float DeltaTime => deltaTime;                        // 当前帧时间
 internal AnimancerLayer Layer { get; }                        // Animancer 层
 
@@ -57,17 +65,17 @@ internal System.Action FootstepCallback;  // 脚步事件回调
 
 ### BaseLayer()
 ```csharp
-internal BaseLayer(AnimancerLayer layer, AnimationAliasProfile alias, LocomotionAnimationProfile animProfile,
-    LocomotionProfile locoProfile, CharacterRig rig)
+internal BaseLayer(AnimancerLayer layer, LocomotionAnimationSetSO defaultAnimSet,
+    LocomotionAnimationConfigSO animProfile, CharacterBuildContext buildContext)
 ```
-- **用途**: 构造，创建 7 个 State 实例并注册到 StateMachine
-- **调用者**: `LocomotionDriver.OnEnable()`
+- **用途**: 构造，创建 5 个 State 实例并注册到 StateMachine
+- **调用者**: `LocomotionDriver.OnWire()`
 
 ### Update()
 ```csharp
-internal void Update(CharacterFrameContext ctx, float dt)
+internal void Update(SCharacterFrameContext ctx, float dt)
 ```
-- **用途**: 缓存帧上下文 → 确保有初始状态 → 当前状态 Tick
+- **用途**: 缓存帧上下文 → EvaluateAnimSet 自决 AnimSet/IdleOverride → 确保有初始状态 → 当前状态 Tick
 - **调用者**: `LocomotionDriver.Drive()`
 
 ### TrySetState() / ForceSetState()
@@ -78,12 +86,13 @@ internal bool ForceSetState(BaseStateKey key)
 - **用途**: FSM 状态切换
 - **调用者**: 各 State 的 Tick() 方法
 
-### PlayFromStart()
+### EvaluateAnimSet()
 ```csharp
-internal void PlayFromStart(AnimationClip clip)
+private void EvaluateAnimSet()
 ```
-- **用途**: 播放动画并重置到第 0 帧
-- **备注**: 用于一次性过渡动画（IdleToMoving、TurnInMoving）
+- **用途**: 每帧根据 grip/gait 自动切换 AnimSet 和 IdleOverride
+- **细节**: 从 BuildContext.ResolvedLocoAnimSet 读取当前武器动画集；HasFullLocomotion 时全量 swap + 清空 IdleOverride；否则 BaseLayer 保持 defaultSet + IdleOverride 设为武器 idle 供 IdleState 使用
+- **调用者**: `Update()` 每帧
 
 ### HasCompleted()
 ```csharp
@@ -96,25 +105,25 @@ internal bool HasCompleted()
 internal bool ApplyTurnStepRotation()
 ```
 - **用途**: 程序化转身 — 读取 TurnAngle 和动画转身速度，每帧逐步旋转模型
-- **调用者**: TurnInPlace/TurnInMoving/Moving 状态的 Tick
+- **调用者**: TurnInPlace/Moving 状态的 Tick
 
 ### InvalidateAnimationCache()
 ```csharp
 internal void InvalidateAnimationCache()
 ```
-- **用途**: 清空 lastPlayedAlias（被中断后恢复时强制重播）
+- **用途**: 清空 lastPlayedTransition（被中断后恢复时强制重播）
 
 ### Play()
 ```csharp
-internal void Play(AnimationClip clip)
+internal void Play(ITransition transition)
 ```
 - **用途**: 播放动画 + 注入脚步事件
 
 ### PlayIfChanged()
 ```csharp
-internal void PlayIfChanged(AnimationClip clip)
+internal void PlayIfChanged(ITransition transition)
 ```
-- **用途**: 仅当 clip 变化时播放（避免重复设置）
+- **用途**: 仅当 transition 变化时播放（避免重复设置）
 
 ### InjectFootstepEvents()
 ```csharp
@@ -130,15 +139,15 @@ private void InjectFootstepEvents()
              ┌──────────┐
      ┌──────→│   Idle   │←──────┐
      │       └────┬─────┘       │
-     │   ┌────────┼──────┐      │
-     │   ▼        ▼      ▼      │
-     │ TurnIn   IdleTo  Moving  │
-     │ Place    Moving  /TurnIn │
-     │   │        │     Moving  │
-     │   └────────┼──────┘      │
-     │            ▼             │
-     │        AirLoop→AirLand   │
-     └──────────────────────────┘
+     │            │             │
+     │       ┌────┼────┐        │
+     │       ▼    ▼    ▼        │
+     │   TurnIn Moving AirLoop  │
+     │   Place  │       │       │
+     │     │    │       ▼       │
+     │     │    │    AirLand    │
+     │     └────┼──────┘        │
+     └──────────┘───────────────┘
 ```
 
 ### ApplyTurnStepRotation 逻辑

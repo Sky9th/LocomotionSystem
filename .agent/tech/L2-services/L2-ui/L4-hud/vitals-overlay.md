@@ -1,5 +1,5 @@
 # VitalsOverlay
-> **源文件**: `Assets/Scripts/UI/HUD/VitalsOverlay.cs`
+> **源文件**: `Assets/Scripts/Services/L2_UI/HUD/VitalsOverlay.cs`
 
 继承 UIOverlay。每帧拉取 PlayerService 的角色数值，实时刷新 HP/Hunger/Thirst/Stamina 进度条。
 
@@ -13,13 +13,12 @@ UIService.HandleGameState(Playing)
 每帧 Update()
   └── refreshTimer += DeltaTime
   └── if (timer >= refreshRate)
-      └── uiService.TryGetPlayerStats(out stats)
-          └── PlayerService.TryGetPlayerStats()
-              └── CharacterStats 读取
-      └── TryUpdateBar(hpBar, "Vitals/HP", stats)
-      └── TryUpdateBar(hungerBar, "Vitals/Hunger", stats)
-      └── TryUpdateBar(thirstBar, "Vitals/Thirst", stats)
-      └── TryUpdateBar(staminaBar, "Vitals/Stamina", stats)
+      └── uiService.TryGetPlayerProps(out props)
+          └── Entity.Query.Properties 读取
+      └── TryUpdateBar(hpBar, "Vitals/HP", props)
+      └── TryUpdateBar(hungerBar, "Vitals/Hunger", props)
+      └── TryUpdateBar(thirstBar, "Vitals/Thirst", props)
+      └── TryUpdateBar(staminaBar, "Vitals/Stamina", props)
           └── bar.SetValue(current, max)
 ```
 
@@ -28,9 +27,9 @@ UIService.HandleGameState(Playing)
 | 方向 | 模块 | 关系 |
 |------|------|------|
 | 依赖 | UIOverlay | 基类 |
-| 依赖 | UIService | TryGetPlayerStats |
+| 依赖 | UIService | TryGetPlayerProps（通过 PlayerEntity.Query.Properties） |
 | 依赖 | UIStatBar | 4 条 StatBar 组件 |
-| 依赖 | PlayerService | 间接，通过 UIService 代理 |
+| 依赖 | PropertyTable | 间接，通过 PlayerEntity.Query.Properties 读取 |
 
 ## 公开属性
 
@@ -55,10 +54,10 @@ private void Update()
 
 ### TryUpdateBar()
 ```csharp
-private void TryUpdateBar(UIStatBar bar, string path, Dictionary<string, (float current, float max)> stats)
+private void TryUpdateBar(UIStatBar bar, string propertyPath, PropertyTable props)
 ```
-- **用途**: 按 stat path 从字典取值更新 StatBar
-- **参数**: `bar` — StatBar 组件；`path` — 数值路径如 "Vitals/HP"；`stats` — 数值字典
+- **用途**: 按 property path 从 PropertyTable 取值更新 StatBar
+- **参数**: `bar` — StatBar 组件；`propertyPath` — 属性路径如 "Vitals/HP"；`props` — 玩家 PropertyTable
 - **调用者**: Update()
 
 ## 内部机制

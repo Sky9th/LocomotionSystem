@@ -6,7 +6,7 @@
 
 > 纯数据资产。运行时管理见 [ability-forest.md](ability-forest.md)。
 >
-> **Last Verified**: 2026-06-25 | **Verification**: CODE LANDED — AbilityTreeSO.cs + Import/Export 完成
+> **Last Verified**: 2026-07-04 | **Verification**: SAbilityTreeNode.ability → ActiveAbilitySO. GameplayTagDefinitionSO → RdTagDefSO. compatibleGripTags added.
 
 ## 层级定位
 
@@ -25,18 +25,29 @@ weapon.ItemTags ∩ compatibleWeaponTags → unlockedNodes中筛选ability[]
 public struct SAbilityTreeNode
 {
     public string nodeId;              // "ironBones_1"
-    public AbilityDefSO ability;       // 主动技能（Q/E/R/F）——可选
+    public ActiveAbilitySO ability;    // 主动技能（Q/E/R/F）——可选
     public PassiveAbilitySO passive;   // 被动效果——可选
     public string[] prerequisites;     // 前置节点 ID。空 = 根节点（初始解锁）
 }
 
 public class AbilityTreeSO : ScriptableObject
 {
+    // Identity
     public string treeId;                          // "ironBones"
-    public GameplayTagDefinitionSO[] treeTags;     // 类别标签
-    public GameplayTagDefinitionSO[] compatibleWeaponTags;  // 武器过滤。空 = 不限
-    public SAbilityTreeNode[] nodes;                // 所有节点
+    public string displayName;                     // 显示名称
+    public string description;                     // 描述文本
+    public Sprite icon;                            // 图标
+
+    // Classification
+    public RdTagDefSO[] treeTags;                  // 类别标签（AbilityTree.Innate / Talent / Routine）
+    public RdTagDefSO[] compatibleWeaponTags;      // 武器兼容。空 = 不限
+    public RdTagDefSO[] compatibleGripTags;        // 握持兼容。空 = 不限握法
+
+    // Mutual Exclusion
     public string exclusiveGroup;                  // 互斥分组。"" = 无互斥
+
+    // Nodes
+    public SAbilityTreeNode[] nodes;                // 所有节点
 }
 ```
 
@@ -50,7 +61,7 @@ public class AbilityTreeSO : ScriptableObject
 | **和武器求交** | ✅ 过滤 | ✗ 不过滤（仅 passive 生效，ability 留空） | ✅ 过滤 |
 | **互斥** | ✗ | ✅ via exclusiveGroup | 容器级（技能槽容量=1） |
 
-> 和 Weapon.Blade、ItemTags 一致——用 GameplayTag 不用 Enum。未来可加 `AbilityTree.Mutation`、`AbilityTree.BossSkill` 等不修改代码。
+> 和 Weapon.Blade、ItemTags 一致——用 RdTag 不用 Enum。未来可加 `AbilityTree.Mutation`、`AbilityTree.BossSkill` 等不修改代码。
 
 ## 互斥机制
 
@@ -100,9 +111,9 @@ allPassives = unlockedNodes 中所有 node.passive（全部生效）
 角色主动技能 = Innate.abilities(过滤后) ∪ Routine.abilities(过滤后)
 角色被动效果 = Innate.passives ∪ Talent.passives ∪ Routine.passives
 
-Layer 1: Innate  → 出生全解锁，和武器求交
+Layer 1: Innate  → 出生全解锁，武器兼容 + 握持兼容 双过滤
 Layer 2: Talent  → 创建时选，互斥分组，逐节点解锁
-Layer 3: Routine → 装备切换，和武器求交
+Layer 3: Routine → 装备切换，武器兼容 + 握持兼容 双过滤
 ```
 
 ## 目录结构
@@ -144,8 +155,9 @@ Assets/Data/Ability/
 
 | 本模块 | 依赖/消费方 | 关系 |
 |--------|-----------|------|
-| AbilityTreeSO | L3_Ability（AbilityDefSO, PassiveAbilitySO） | 持有技能/被动引用 |
+| AbilityTreeSO | L3_Ability（ActiveAbilitySO, PassiveAbilitySO） | 持有技能/被动引用 |
 | AbilityTreeSO | ItemDefSO（ItemTags） | compatibleWeaponTags ∩ ItemTags 求交 |
+| AbilityTreeSO | AbilityForest | compatibleGripTags 用于握法兼容过滤 |
 | AbilityTreeSO | Container（技能槽） | Routine 装备到技能槽容器，过滤后主动技能填入 Q/E/R/F |
 
 ## 已知缺口

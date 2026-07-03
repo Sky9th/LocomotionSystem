@@ -1,6 +1,6 @@
 # GameplayTag — Noise 标签域
 
-> `L1_Core/GameplayTag/` · 2026-06-29 · L3_Ability 产出，AI 听觉系统消费
+> `L1_Core/RdTag/` · 2026-06-29 · L3_Ability 产出，AI 听觉系统消费
 >
 > 噪音事件类型。NoiseEventSO.noiseType → SNoiseEvent → AI 行为路由。
 

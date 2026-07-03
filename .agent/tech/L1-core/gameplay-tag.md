@@ -3,20 +3,20 @@
 > **此文档已过时。** 2026-06-29 起 Tag 架构按模块产出域重构。
 > 新文档：[gameplay-tag-ability.md](gameplay-tag-ability.md) — Ability 模块产出 Tag 域
 >
-> 保留此文档仅作历史参考。
+> 保留此文档仅作历史参考。Superseded by commits `6b0c59bc` (RdTag rename) and `801eecc9` (Grip layering).
 
 ## 两层架构
 
 ```
 设计时 (Unity Editor)              运行时 (C#)
 ━━━━━━━━━━━━━━━━━━━━━          ━━━━━━━━━━━━━━━
-GameplayTagDefinitionSO  ─隐式转换→  GameplayTag struct
+RdTagDefSO  ─隐式转换→  RdTag struct
  ├ leafName                        ├ Tag: string
  ├ parent (SO ref)                 ├ Depth: int
  └ FullTag (缓存 getter)           └ Matches/IsAncestorOf/IsDescendantOf
 
-SO 资产: Assets/Data/Core/Tags/   GameplayTagContainer
-  按根标签分目录                        └ HashSet<GameplayTag> — O(1) 查询
+SO 资产: Assets/Data/Tags/   RdTagContainer
+  按根标签分目录                        └ HashSet<RdTag> — O(1) 查询
 ```
 
 ## 10 处代码消费者
@@ -36,7 +36,7 @@ SO 资产: Assets/Data/Core/Tags/   GameplayTagContainer
 
 ## 完整资产树（144 叶标签，8 根）
 
-> 目录根：`Assets/Data/Core/Tags/`
+> 目录根：`Assets/Data/Tags/`
 >
 > 命名规则：文件 `Tag_{leafName}.asset`；目录用 PascalCase，与标签名一致；子分支 ≥4 叶时建子目录。
 

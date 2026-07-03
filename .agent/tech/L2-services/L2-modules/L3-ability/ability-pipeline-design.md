@@ -3,6 +3,7 @@
 > `L3_Ability/` · 设计文档 · 2026-06-06 · **已废弃 2026-07-01**
 >
 > **此文档保留八维度概念模型（①②③④⑤⑥⑦⑧）和回调模式的设计理由，所有实现细节已过时。**
+> **Superseded by commits**: `5d47f0b8`, `ccbcb01b`, `4c9392c8`, `e1aabe55` — Pipeline 全 8 State 就位，ref TContext 零拷贝重构。
 > 实现文档 → [ability-pipeline-states.md](ability-pipeline-states.md)
 
 ## 过时内容汇总

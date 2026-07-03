@@ -1,5 +1,5 @@
 # StatusOverlay
-> **源文件**: `Assets/Scripts/UI/HUD/StatusOverlay.cs`
+> **源文件**: `Assets/Scripts/Services/L2_UI/HUD/StatusOverlay.cs`
 
 继承 UIOverlay。显示 Buff/Debuff 图标列表（当前为骨架实现，等待 Stats 系统就绪）。
 

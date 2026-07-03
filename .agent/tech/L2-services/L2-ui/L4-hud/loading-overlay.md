@@ -1,5 +1,5 @@
 # LoadingOverlay
-> **源文件**: `Assets/Scripts/UI/HUD/LoadingOverlay.cs`
+> **源文件**: `Assets/Scripts/Services/L2_UI/HUD/LoadingOverlay.cs`
 
 继承 UIOverlay。场景切换时的渐入渐出遮罩，挂载在独立 LoadingCanvas 上。
 

@@ -1,6 +1,6 @@
 # GameplayTag — Ability 模块产出 Tag 域
 
-> `L1_Core/GameplayTag/` · 2026-06-29 · 动画包驱动重构
+> `L1_Core/RdTag/` · 2026-06-29 · 动画包驱动重构
 >
 > 流派 = 动画包。abilityTag 路径编码：`{Melee|Ranged}.{流派}.{武器}.{技能}`
 
@@ -71,8 +71,8 @@ Ability
 武器实体持有 Type + Grip 两个标签。AbilityTreeSO 双重过滤：
 
 ```
-compatibleWeaponTags = [Equipment.Type.Blade]
-compatibleGripTags   = [Equipment.Grip.OneHanded]
+compatibleWeaponTags = [Entity.Weapon.Melee.Blade]
+compatibleGripTags   = [Grip.Melee.OneHanded]
 ```
 
 abilityTag 层级编码流派+武器：

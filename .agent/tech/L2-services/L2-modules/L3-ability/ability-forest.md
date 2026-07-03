@@ -2,11 +2,11 @@
 
 > `L3_Ability/AbilityForest.cs` · `namespace RedDust.Ability` · 纯 C# 类，无 MonoBehaviour
 >
-> **Last Verified**: 2026-06-27 | **Verification**: Moved from L3_Character/Ability/ → L3_Ability/. Namespace changed to RedDust.Ability.
+> **Last Verified**: 2026-07-04 | **Verification**: Namespace RedDust.Ability. Constructor takes innateTrees. Resolve() private, SetWeaponTags() public. compatibleGripTags added.
 
 ## 定位
 
-AbilityTreeSO 是静态数据（`RedDust.Ability`）。AbilityForest 是角色的运行时技能库存（`RedDust.Character.Ability`）——管理活跃树集合、节点解锁状态、技能解析。
+AbilityTreeSO 是静态数据（`RedDust.Ability`）。AbilityForest 是角色的运行时技能库存（`RedDust.Ability`）——管理活跃树集合、节点解锁状态、技能解析。
 
 不是 L2，不是 MonoBehaviour。纯 C# 类，由 CharacterActor 在 Awake 创建，通过 BuildContext 暴露解析结果。
 
@@ -43,31 +43,48 @@ internal class ActiveTree
 internal class AbilityForest
 {
     private readonly List<ActiveTree> _activeTrees = new();
+    private RdTagContainer _weaponTags;
+
+    // ── 构造 ──
+    public AbilityForest(AbilityTreeSO[] innateTrees);
+
+    // ── 武器 ──
+    public void SetWeaponTags(RdTagContainer weaponTags);  // 更新武器标签 → 自动重解析
 
     // ── 树管理 ──
-    public void AddTree(AbilityTreeSO tree, HashSet<string> initialUnlocks, object source);
+    public void AddTrees(AbilityTreeSO[] trees, object source);        // 批量全解锁
+    public void AddTree(AbilityTreeSO tree, object source);            // 单棵全解锁
+    public void AddTree(AbilityTreeSO tree, HashSet<string> initialUnlocks, object source);  // 部分解锁
     public void RemoveBySource(object source);
 
     // ── 节点管理 ──
     public void UnlockNode(string treeId, string nodeId);
     public bool IsNodeUnlocked(string treeId, string nodeId);
 
-    // ── 技能解析 ──
-    public void Resolve(GameplayTagContainer weaponTags);
+    // ── 技能解析（内部） ──
+    // Resolve() 是 private，由 SetWeaponTags / AddTree / RemoveBySource 自动触发
     // 结果写入：
-    public AbilityDefSO[] ResolvedActives { get; private set; }   // Q/E/R/F
+    public ActiveAbilitySO[] ResolvedActives { get; private set; }   // Q/E/R/F
     public PassiveAbilitySO[] ResolvedPassives { get; private set; }
 }
 ```
 
 ## 树管理 API
 
-### AddTree
+### AddTree / AddTrees
+
+三种重载，自动触发 Resolve：
 
 ```csharp
+// 批量全解锁。null/空数组安全。
+public void AddTrees(AbilityTreeSO[] trees, object source);
+
+// 单棵全解锁。
+public void AddTree(AbilityTreeSO tree, object source);
+
+// 部分解锁——initialUnlocks 只取 this tree 的有效 nodeId
 public void AddTree(AbilityTreeSO tree, HashSet<string> initialUnlocks, object source)
 {
-    // initialUnlocks 只取 this tree 的有效 nodeId
     var valid = new HashSet<string>();
     foreach (var node in tree.nodes)
         if (initialUnlocks.Contains(node.nodeId))
@@ -82,7 +99,7 @@ public void AddTree(AbilityTreeSO tree, HashSet<string> initialUnlocks, object s
 }
 ```
 
-- Innate 树：`initialUnlocks` = 全部 nodeId（出生全解锁）
+- Innate 树：构造函数中自动注入，全解锁，source="innate"
 - Talent 树：`initialUnlocks` = 创建时选择的 nodeId（可能仅根节点）
 - 武器树：`initialUnlocks` = 全部 nodeId（武器自带技能无需逐节点解锁）
 - 习得树：`initialUnlocks` = 学习时解锁的 nodeId
@@ -100,26 +117,42 @@ O(n) 线性扫描——活跃树总量在个位数到十位数，零性能问题
 
 ## 技能解析
 
+`Resolve()` 是 **private**，由 `SetWeaponTags()` / `AddTree()` / `RemoveBySource()` 等公共 API 在状态变更后自动触发。外部不需要手动调用。
+
 ```csharp
-public void Resolve(GameplayTagContainer weaponTags)
+// 公共入口：武器切换时调用
+public void SetWeaponTags(RdTagContainer weaponTags)
 {
-    var actives = new List<AbilityDefSO>();
+    _weaponTags = weaponTags;
+    Resolve();
+}
+
+// 内部解析
+private void Resolve()
+{
+    var actives = new List<ActiveAbilitySO>();
     var passives = new List<PassiveAbilitySO>();
 
     foreach (var at in _activeTrees)
     {
         var tree = at.Tree;
+
+        // 武器兼容检查
+        if (!IsWeaponCompatible(tree.compatibleWeaponTags, _weaponTags))
+            continue;
+
+        // 握持兼容检查
+        if (!IsGripCompatible(tree.compatibleGripTags, _weaponTags))
+            continue;
+
         foreach (var node in tree.nodes)
         {
             if (!at.UnlockedNodeIds.Contains(node.nodeId))
                 continue;
 
-            // 主动技能：需要武器兼容检查
+            // 主动技能：需通过武器 + 握持两层过滤
             if (node.ability != null)
-            {
-                if (IsWeaponCompatible(tree.compatibleWeaponTags, weaponTags))
-                    actives.Add(node.ability);
-            }
+                actives.Add(node.ability);
 
             // 被动：无条件生效
             if (node.passive != null)
@@ -134,8 +167,8 @@ public void Resolve(GameplayTagContainer weaponTags)
 // compatibleWeaponTags 为空 → 不过滤（徒手/纯被动树）
 // compatibleWeaponTags 非空 → 必须和 weaponTags 有交集
 private static bool IsWeaponCompatible(
-    GameplayTagDefinitionSO[] compatibleTags,
-    GameplayTagContainer weaponTags)
+    RdTagDefSO[] compatibleTags,
+    RdTagContainer weaponTags)
 {
     if (compatibleTags == null || compatibleTags.Length == 0)
         return true;  // 无武器限制——徒手技能/纯被动树
@@ -146,9 +179,27 @@ private static bool IsWeaponCompatible(
             return true;
     return false;
 }
+
+// compatibleGripTags 为空 → 不过滤
+// compatibleGripTags 非空 → 必须和 equipmentTags 有交集（握法匹配）
+private static bool IsGripCompatible(
+    RdTagDefSO[] compatibleGripTags,
+    RdTagContainer equipmentTags)
+{
+    if (compatibleGripTags == null || compatibleGripTags.Length == 0)
+        return true;
+    if (equipmentTags == null)
+        return false;
+    foreach (var tag in compatibleGripTags)
+        if (equipmentTags.HasTag(tag.FullTag))
+            return true;
+    return false;
+}
 ```
 
 > **技能槽溢出处理（远期）**：过滤后 actives.Count > 4 时，按节点在树中的顺序取前 4 个。排序/优先级系统远期补充。
+>
+> **两层兼容过滤**：武器兼容 (`compatibleWeaponTags`) + 握持兼容 (`compatibleGripTags`) 双重过滤，两者都通过才生效。空数组 = 无条件通过。空数组同时用于徒手技能、纯被动天赋、不限握法的武器技能。
 
 ## 集成点
 
@@ -163,26 +214,24 @@ private static bool IsWeaponCompatible(
 // 运行时
 private AbilityForest abilityForest;
 
-// Awake() 中：
-abilityForest = new AbilityForest();
-foreach (var t in innateTrees)
-    abilityForest.AddTree(t, AllNodeIds(t), source: "innate");
+// Awake() 中：构造函数直接注入天生树，全解锁 source="innate"
+abilityForest = new AbilityForest(innateTrees);
 foreach (var t in initialTalents)
-    abilityForest.AddTree(t, AllNodeIds(t), source: "talent");
+    abilityForest.AddTree(t, source: "talent");
 ```
 
 ### 2. CharacterBuildContext — 传递解析结果
 
 ```csharp
 // 替代现有 SkillSlot1/SkillSlot2 临时字段
-public AbilityDefSO[] AbilitySlots { get; internal set; } = Array.Empty<AbilityDefSO>();
+public ActiveAbilitySO[] AbilitySlots { get; internal set; } = Array.Empty<ActiveAbilitySO>();
 public PassiveAbilitySO[] ActivePassives { get; internal set; } = Array.Empty<PassiveAbilitySO>();
 ```
 
-CharacterActor.Update() 中，每次武器变化后（或每帧）调用 `abilityForest.Resolve(weaponTags)`，写回 ctx：
+CharacterActor 中武器变化后调用 `abilityForest.SetWeaponTags(weaponTags)`，写回 ctx：
 
 ```csharp
-abilityForest.Resolve(currentWeaponTags);
+abilityForest.SetWeaponTags(currentWeaponTags);
 ctx.AbilitySlots = abilityForest.ResolvedActives;
 ctx.ActivePassives = abilityForest.ResolvedPassives;
 ```
@@ -193,9 +242,9 @@ ctx.ActivePassives = abilityForest.ResolvedPassives;
 // 替代硬编码的 ctx.SkillSlot1/SkillSlot2
 private void ProcessSkillInput()
 {
-    var slots = ctx.AbilitySlots;
-    if (input.FirstSkillRequested  && slots.Length > 0) TryActivateSkill(slots[0], "Q");
-    if (input.SecondSkillRequested && slots.Length > 1) TryActivateSkill(slots[1], "E");
+    var slots = ctx.AbilitySlots;  // ActiveAbilitySO[]
+    if (input.FirstSkillRequested  && slots.Length > 0) EnqueueAbility(slots[0], "Q");
+    if (input.SecondSkillRequested && slots.Length > 1) EnqueueAbility(slots[1], "E");
     // R, F 远期
 }
 ```
@@ -212,7 +261,7 @@ abilityExecutor.SyncPassives(ctx.ActivePassives);
 ```
 装备武器
   → itemInstance.Def.GrantedAbilityTrees  ← MVP: ItemDefSO 临时 C# 字段
-  → abilityForest.AddTree(tree, allNodes, source: itemInstance)
+  → abilityForest.AddTrees(trees, source: itemInstance)
 
 卸下武器
   → abilityForest.RemoveBySource(oldItemInstance)
@@ -278,26 +327,29 @@ CharacterActor.SwitchWeapon(primaryWeaponDef)
   ├── Container<ItemInstance>.Place("RightHand", itemInstance)
   │     └── 旧武器 → Container.Remove → abilityForest.RemoveBySource(oldItem)
   │
-  ├── abilityForest.AddTree(
+  ├── abilityForest.AddTrees(
   │       itemInstance.Def.GrantedAbilityTrees,
-  │       allNodes,
   │       source: itemInstance)
   │
-  └── abilityForest.Resolve(itemInstance.ItemTags)
+  └── abilityForest.SetWeaponTags(itemInstance.ItemTags)
         ├── ResolvedActives   → ctx.AbilitySlots[0..3]
         └── ResolvedPassives  → ctx.ActivePassives
 
 下一帧:
   PlayerDirector.ProcessSkillInput()
-    → TryActivateSkill(ctx.AbilitySlots[0])  // Q 键
-    → AbilityExecutor.TryActivate(...)       // ②→③→④→⑤→⑥→⑧
+    → AbilityExecutor.Enqueue(ctx.AbilitySlots[0])   // Q 键
+    → AbilityExecutor.Pipeline.Start(...)            // ②→③→④→⑤→⑥→⑧
 ```
 
 ## 目录结构
 
 ```
-L3_Character/Ability/
-└── AbilityForest.cs               ← 新增（纯 C# 运行时）
+L3_Ability/
+├── AbilityForest.cs               ← 纯 C# 运行时
+├── AbilityExecutor.cs             ← 技能释放管线
+├── AbilityReactor.cs              ← 技能反应器
+└── Config/
+    └── AbilityTreeSO.cs           ← 静态数据资产
 
 L3_Character/Actor/
 ├── CharacterActor.cs              ← 修改：创建 AbilityForest + SwitchWeapon
@@ -335,3 +387,6 @@ L3_Item/
 | Resolve 直接写 ctx | 遵循"数据由上至下参数传递"——Forest → ctx → PlayerDirector |
 | GrantedAbilityTrees 在 ItemDefSO | MVP 临时妥协。远期 PropertyType.Struct 承载 |
 | compatibleWeaponTags 空 = 不过滤 | 徒手技能树、纯被动天赋树不依赖武器 |
+| compatibleGripTags 空 = 不过滤 | 不限握法的技能树——双手/单手/双持通用 |
+| 两层兼容过滤 | 武器兼容 + 握持兼容双重过滤——两者都通过才生效，任一为空不限制 |
+| SetWeaponTags 作为公共入口 | Resolve 私有化，状态变更自动触发——不暴露内部解析，外部只需告知武器变化 |

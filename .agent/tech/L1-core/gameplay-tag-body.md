@@ -1,6 +1,6 @@
 # GameplayTag — Character 模块产出 Tag 域
 
-> `L1_Core/GameplayTag/` · 2026-06-29 · L3_Character 模块产出
+> `L1_Core/RdTag/` · 2026-06-29 · L3_Character 模块产出
 >
 > 角色的物理身体状态。每帧从枚举单向派生、全量刷新、外部只读。
 

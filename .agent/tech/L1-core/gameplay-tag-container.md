@@ -1,6 +1,6 @@
-# GameplayTagContainer — 标签集合
+# RdTagContainer — 标签集合
 
-> `L1_Core/GameplayTag/GameplayTagContainer.cs` · `namespace RedDust.Core`
+> `L1_Core/RdTag/RdTagContainer.cs` · `namespace RedDust.Core`
 
 ## 调用链
 
@@ -18,19 +18,19 @@
 ### AddTag()
 ```csharp
 public void AddTag(string tag)
-public void AddTag(GameplayTag tag)
+public void AddTag(RdTag tag)
 ```
 - **用途**: 添加标签。已存在则无操作。空字符串/无效标签忽略
-- **参数**: `tag` — 层级标签字符串或 GameplayTag 实例
+- **参数**: `tag` — 层级标签字符串或 RdTag 实例
 - **调用者**: `AbilityComponent`（技能激活时施加 abilityTags + 冷却 Effect 过期回调）
 
 ### RemoveTag()
 ```csharp
 public void RemoveTag(string tag)
-public void RemoveTag(GameplayTag tag)
+public void RemoveTag(RdTag tag)
 ```
 - **用途**: 移除标签。不存在则无操作
-- **参数**: `tag` — 精确匹配的标签字符串或 GameplayTag 实例
+- **参数**: `tag` — 精确匹配的标签字符串或 RdTag 实例
 - **调用者**: `AbilityComponent`（技能结束时清理 abilityTags；冷却 Effect 过期自动移除此标签）
 
 ### HasTag()
@@ -45,10 +45,10 @@ public bool HasTag(string query)
 ### HasTagExact()
 ```csharp
 public bool HasTagExact(string query)
-public bool HasTagExact(GameplayTag query)
+public bool HasTagExact(RdTag query)
 ```
 - **用途**: 精确匹配（不使用层级匹配）。`"Skill.Cooldown.Slash"` 不匹配 `"Skill.Cooldown.Slash.Extra"`
-- **参数**: `query` — 精确标签字符串或 GameplayTag 实例
+- **参数**: `query` — 精确标签字符串或 RdTag 实例
 - **返回**: 是否有标签字符串完全相等
 - **调用者**: `AbilityComponent.TryActivate()` 检查冷却标签（冷却标签必须精确匹配，不同技能冷却独立）
 
@@ -100,8 +100,8 @@ public void Clear()
 
 | 决策 | 原因 |
 |------|------|
-| `HashSet<GameplayTag>` 底层存储 | 自动去重，O(1) 查询 |
-| AddTag/RemoveTag 接受 string 非 GameplayTag | 简化调用侧，不需要手动构造 |
+| `HashSet<RdTag>` 底层存储 | 自动去重，O(1) 查询 |
+| AddTag/RemoveTag 接受 string 非 RdTag | 简化调用侧，不需要手动构造 |
 | 空字符串静默忽略 | 配置容错，不会因 SO 字段空白而异常 |
 
 ## 未来规划
