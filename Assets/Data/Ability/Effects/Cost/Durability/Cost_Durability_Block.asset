@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 141cf4e8366df5c47949c79fda63fae0, type: 3}
   m_Name: Cost_Durability_Block
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 0}
+  effectTag: {fileID: 11400000, guid: b347f906dd7e5354dabcfa959a0c2115, type: 2}
   description: "\u8010\u4E45\u6D88\u8017\xB7\u683C\u6321\u3002\u6263 3 \u8010\u4E45"
   duration: 0
   stackable: 0
   maxStacks: 1
   applicationBlockedTags: []
-  def: {fileID: 11400000, guid: 893a1adfff790f14eb15423508d8b181, type: 2}
+  def: {fileID: 11400000, guid: 8d48e1d247fe08a4eb6477f33d435687, type: 2}
   amount: 3

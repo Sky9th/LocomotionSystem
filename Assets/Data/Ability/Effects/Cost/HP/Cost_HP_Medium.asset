@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 141cf4e8366df5c47949c79fda63fae0, type: 3}
   m_Name: Cost_HP_Medium
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 0}
+  effectTag: {fileID: 11400000, guid: f130f4e29e04f32429db69f0045709f4, type: 2}
   description: "\u751F\u547D\u6D88\u8017\xB7\u4E2D\u3002\u7D27\u6025\u6280\u80FD\u4EE3\u4EF7\u3002\u6263
     25 HP"
   duration: 0
   stackable: 0
   maxStacks: 1
   applicationBlockedTags: []
-  def: {fileID: 11400000, guid: aad28c37c2010f04cb951533d5ecb3fa, type: 2}
+  def: {fileID: 11400000, guid: 1b922266c92a1014e92fa9fc7ce69bfc, type: 2}
   amount: 25

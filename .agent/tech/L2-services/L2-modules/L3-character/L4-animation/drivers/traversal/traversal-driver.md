@@ -69,10 +69,10 @@ public override void OnInterrupted(AnimationRequest by)
 
 ### ResolveClimbAlias()
 ```csharp
-private StringAsset ResolveClimbAlias(float obstacleHeight)
+private AnimationClip ResolveClimbClip(float obstacleHeight)
 ```
 - **用途**: 根据障碍物高度选择攀爬动画
-- **逻辑**: <=0.6m → ClimbUpHalfMeter；<=1.1m → ClimbUp1meter；>1.1m → ClimbUp2meter
+- **逻辑**: <=0.6m → ClimbUpHalfMeter；<=1.1m → ClimbUp1meter；>1.1m → ClimbUp2meter（AnimationClip 直引）
 - **调用者**: Evaluate
 
 ## 未来规划

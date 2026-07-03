@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc5d887e4581bc943a22e3f58f987fec, type: 3}
+  m_Name: Ability_Blade_2HitComboA
+  m_EditorClassIdentifier: 
+  internalName: Blade_2HitComboA
+  displayName: "\u5200\xB7\u4E8C\u8FDE\u65A9"
+  icon: {fileID: 0}
+  description: "\u9884\u8BBE\u4E8C\u8FDE\u51FB\uFF08\u6A2A\u626B\u2192\u53CD\u65A9\uFF09\u3002\u52A8\u753B:
+    2HitComboA1hMelee\u3002\uFF08Phase 4.1b multi-hit pipeline \u843D\u5730\u524D\u4E34\u65F6
+    activation\uFF09"
+  abilityTag: {fileID: 11400000, guid: 4cfbf692e94777f43800ea655b7ed52d, type: 2}
+  targetEffects:
+  - {fileID: 11400000, guid: 89b724ec839edd94d92ec037a1cb074a, type: 2}
+  - {fileID: 11400000, guid: 5a0be14c65472ee4789ed324eab46365, type: 2}
+  selfEffects:
+  - {fileID: 11400000, guid: 5daea6c8b6d7be3498b33df7eb1c55e5, type: 2}
+  cooldownDuration: 4
+  sharedCooldownTag: {fileID: 0}
+  activation: {fileID: 11400000, guid: 19093ab8ad955084ab6ccf2e8790dc9d, type: 2}
+  search: {fileID: 11400000, guid: 79b50f22d0c44a9458420c1287727032, type: 2}
+  overrideExclusion: 0
+  extraExclusionTags: []
+  noise: {fileID: 11400000, guid: 0d12565d238e1fb4b9e1888699f52c2f, type: 2}
+  comboLinks: []

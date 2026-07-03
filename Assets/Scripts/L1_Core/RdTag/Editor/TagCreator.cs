@@ -18,7 +18,7 @@ namespace RedDust.Core.Editor
         /// 创建完整标签链，返回叶节点 SO。
         /// "Damage.Elemental.Fire" → 确保 Damage, Damage.Elemental 存在，创建 Fire。
         /// </summary>
-        public static rTagDefSO CreateTagChain(string fullTag)
+        public static RdTagDefSO CreateTagChain(string fullTag)
         {
             if (string.IsNullOrEmpty(fullTag))
                 throw new ArgumentException("fullTag is required");
@@ -39,7 +39,7 @@ namespace RedDust.Core.Editor
 
                 // 删除残留资产（上次失败可能留下的）
                 var assetPath = $"{dir}/Tag_{segments[i]}.asset";
-                var stale = AssetDatabase.LoadAssetAtPath<rTagDefSO>(assetPath);
+                var stale = AssetDatabase.LoadAssetAtPath<RdTagDefSO>(assetPath);
                 if (stale != null)
                 {
                     AssetDatabase.DeleteAsset(assetPath);
@@ -47,7 +47,7 @@ namespace RedDust.Core.Editor
                 }
             }
 
-            rTagDefSO parent = null;
+            RdTagDefSO parent = null;
 
             AssetDatabase.StartAssetEditing();
             try
@@ -63,7 +63,7 @@ namespace RedDust.Core.Editor
                     }
 
                     var assetPath = $"{GetAssetDirectory(segments, i)}/Tag_{segments[i]}.asset";
-                    var newTag = ScriptableObject.CreateInstance<rTagDefSO>();
+                    var newTag = ScriptableObject.CreateInstance<RdTagDefSO>();
                     using (var serialized = new SerializedObject(newTag))
                     {
                         serialized.FindProperty("leafName").stringValue = segments[i];
@@ -99,13 +99,13 @@ namespace RedDust.Core.Editor
             return path;
         }
 
-        private static rTagDefSO FindExistingTag(string fullTag)
+        private static RdTagDefSO FindExistingTag(string fullTag)
         {
-            var guids = AssetDatabase.FindAssets("t:rTagDefSO");
+            var guids = AssetDatabase.FindAssets("t:RdTagDefSO");
             foreach (var guid in guids)
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
-                var tag = AssetDatabase.LoadAssetAtPath<rTagDefSO>(path);
+                var tag = AssetDatabase.LoadAssetAtPath<RdTagDefSO>(path);
                 if (tag != null && tag.FullTag == fullTag)
                     return tag;
             }

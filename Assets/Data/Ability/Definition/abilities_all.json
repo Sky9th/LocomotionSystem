@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "description": "Ability definitions — 7 base active skills (3 fist + 2 blade + 2 pistol)",
+  "description": "Ability definitions — 3 fist + 7 blade + 2 pistol (all with animation assets via activations)",
   "abilities": [
     {
       "abilityType": "Active",
@@ -64,8 +64,8 @@
       "abilityType": "Active",
       "name": "Ability_Blade_LightCut",
       "internalName": "Blade_LightCut",
-      "displayName": "刀·轻击",
-      "description": "基础横扫。扇形60° 2m，Slash伤害。",
+      "displayName": "刀·轻击 (AttackA)",
+      "description": "基础横扫。扇形60° 2m，Slash伤害。动画: AttackA1hMelee。",
       "abilityTag": "Ability.Definition.Active.Melee.OneHanded.Blade.LightCut",
       "cooldownDuration": 0.0,
       "targetEffects": ["Damage_Physical_Slash", "Impact_Light"],
@@ -73,22 +73,110 @@
       "activation": "Activation_Instant_LightMelee",
       "search": "Search_Cone_Melee_Blade_Light",
       "noise": "Noise_Lv3_MeleeSwing",
-      "overrideExclusion": false
+      "overrideExclusion": false,
+      "comboLinks": [
+        { "nextSkill": "Ability_Blade_SlashB", "windowStart": 0.3, "windowDuration": 0.5, "bypassCooldown": false }
+      ]
+    },
+    {
+      "abilityType": "Active",
+      "name": "Ability_Blade_SlashB",
+      "internalName": "Blade_SlashB",
+      "displayName": "刀·反手斩 (AttackB)",
+      "description": "反手横斩。扇形60° 2m，Slash伤害。轻击后可连招。动画: AttackB1hMelee。",
+      "abilityTag": "Ability.Definition.Active.Melee.OneHanded.Blade.SlashB",
+      "cooldownDuration": 0.4,
+      "targetEffects": ["Damage_Physical_Slash", "Impact_Light"],
+      "selfEffects": ["Cost_Stamina_Small"],
+      "activation": "Activation_Blade_AttackB",
+      "search": "Search_Cone_Melee_Blade_Light",
+      "noise": "Noise_Lv3_MeleeSwing",
+      "overrideExclusion": false,
+      "comboLinks": [
+        { "nextSkill": "Ability_Blade_HeavyChop", "windowStart": 0.3, "windowDuration": 0.5, "bypassCooldown": false }
+      ]
     },
     {
       "abilityType": "Active",
       "name": "Ability_Blade_HeavyChop",
       "internalName": "Blade_HeavyChop",
-      "displayName": "刀·重劈",
-      "description": "竖劈重击。直线2.5m，Slash 1.5×高伤。",
+      "displayName": "刀·重劈 (AttackC)",
+      "description": "竖劈重击。直线2.5m，Slash 1.5×高伤。动画: AttackC1hMelee。",
       "abilityTag": "Ability.Definition.Active.Melee.OneHanded.Blade.HeavyChop",
       "cooldownDuration": 3.0,
-      "targetEffects": ["Damage_Physical_Slash", "Impact_Light"],
+      "targetEffects": ["Damage_Physical_Slash", "Impact_Medium"],
       "selfEffects": ["Cost_Stamina_Medium"],
       "activation": "Activation_Instant_HeavyMelee",
       "search": "Search_Ray_Melee_Blade_Heavy",
       "noise": "Noise_Lv4_MeleeHeavy",
-      "overrideExclusion": false
+      "overrideExclusion": false,
+      "comboLinks": [
+        { "nextSkill": "Ability_Blade_Thrust", "windowStart": 0.4, "windowDuration": 0.5, "bypassCooldown": false }
+      ]
+    },
+    {
+      "abilityType": "Active",
+      "name": "Ability_Blade_Thrust",
+      "internalName": "Blade_Thrust",
+      "displayName": "刀·突刺 (AttackD)",
+      "description": "前冲刺击。直线3m，Pierce伤害 + 击退。带RootMotion。动画: AttackDForward_RM。",
+      "abilityTag": "Ability.Definition.Active.Melee.OneHanded.Blade.Thrust",
+      "cooldownDuration": 5.0,
+      "targetEffects": ["Damage_Physical_Pierce", "Impact_Heavy"],
+      "selfEffects": ["Cost_Stamina_Medium"],
+      "activation": "Activation_Blade_AttackD_Thrust",
+      "search": "Search_Ray_Melee_Blade_Heavy",
+      "noise": "Noise_Lv4_MeleeHeavy",
+      "overrideExclusion": false,
+      "comboLinks": []
+    },
+    {
+      "abilityType": "Active",
+      "name": "Ability_Blade_2HitComboA",
+      "internalName": "Blade_2HitComboA",
+      "displayName": "刀·二连斩",
+      "description": "预设二连击（横扫→反斩）。动画: 2HitComboA1hMelee。（Phase 4.1b multi-hit pipeline 落地前临时 activation）",
+      "abilityTag": "Ability.Definition.Active.Melee.OneHanded.Blade.Combo2A",
+      "cooldownDuration": 4.0,
+      "targetEffects": ["Damage_Physical_Slash", "Impact_Light"],
+      "selfEffects": ["Cost_Stamina_Medium"],
+      "activation": "Activation_Blade_2HitComboA",
+      "search": "Search_Cone_Melee_Blade_Light",
+      "noise": "Noise_Lv4_MeleeHeavy",
+      "overrideExclusion": false,
+      "comboLinks": []
+    },
+    {
+      "abilityType": "Active",
+      "name": "Ability_Blade_3HitComboA",
+      "internalName": "Blade_3HitComboA",
+      "displayName": "刀·三连斩A",
+      "description": "预设三连击A（前冲→横斩→重劈）。带RootMotion。动画: 3HitComboAForward_RM。",
+      "abilityTag": "Ability.Definition.Active.Melee.OneHanded.Blade.Combo3A",
+      "cooldownDuration": 6.0,
+      "targetEffects": ["Damage_Physical_Slash", "Impact_Medium"],
+      "selfEffects": ["Cost_Stamina_Large"],
+      "activation": "Activation_Blade_3HitComboA",
+      "search": "Search_Cone_Melee_Blade_Light",
+      "noise": "Noise_Lv4_MeleeHeavy",
+      "overrideExclusion": false,
+      "comboLinks": []
+    },
+    {
+      "abilityType": "Active",
+      "name": "Ability_Blade_3HitComboB",
+      "internalName": "Blade_3HitComboB",
+      "displayName": "刀·三连斩B",
+      "description": "预设三连击B（反斩→前冲→竖劈）。带RootMotion。动画: 3HitComboBForward_RM。",
+      "abilityTag": "Ability.Definition.Active.Melee.OneHanded.Blade.Combo3B",
+      "cooldownDuration": 6.0,
+      "targetEffects": ["Damage_Physical_Slash", "Impact_Medium"],
+      "selfEffects": ["Cost_Stamina_Large"],
+      "activation": "Activation_Blade_3HitComboB",
+      "search": "Search_Cone_Melee_Blade_Light",
+      "noise": "Noise_Lv4_MeleeHeavy",
+      "overrideExclusion": false,
+      "comboLinks": []
     },
     {
       "abilityType": "Active",

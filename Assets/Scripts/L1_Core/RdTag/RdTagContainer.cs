@@ -4,14 +4,14 @@ using System.Linq;
 namespace RedDust.Core
 {
     /// <summary>
-    /// rTag 集合，管理实体当前持有的所有标签。
+    /// RdTag 集合，管理实体当前持有的所有标签。
     /// 全系统通用基础设施。用于门控、冷却、状态查询、跨系统通信。
     ///
     /// HashSet 底层：自动去重，O(1) 查询。
     /// </summary>
-    public sealed class rTagContainer
+    public sealed class RdTagContainer
     {
-        private readonly HashSet<rTag> _tags = new();
+        private readonly HashSet<RdTag> _tags = new();
 
         /// <summary>当前标签数量。</summary>
         public int Count => _tags.Count;
@@ -22,11 +22,11 @@ namespace RedDust.Core
         public void AddTag(string tag)
         {
             if (string.IsNullOrEmpty(tag)) return;
-            _tags.Add(new rTag(tag));
+            _tags.Add(new RdTag(tag));
         }
 
         /// <summary>类型安全重载。无效标签或已存在则无操作。</summary>
-        public void AddTag(rTag tag)
+        public void AddTag(RdTag tag)
         {
             if (!tag.IsValid) return;
             _tags.Add(tag);
@@ -36,11 +36,11 @@ namespace RedDust.Core
         public void RemoveTag(string tag)
         {
             if (string.IsNullOrEmpty(tag)) return;
-            _tags.Remove(new rTag(tag));
+            _tags.Remove(new RdTag(tag));
         }
 
         /// <summary>类型安全重载。无效标签或不存在则无操作。</summary>
-        public void RemoveTag(rTag tag)
+        public void RemoveTag(RdTag tag)
         {
             if (!tag.IsValid) return;
             _tags.Remove(tag);
@@ -59,7 +59,7 @@ namespace RedDust.Core
         }
 
         /// <summary>类型安全重载。</summary>
-        public bool HasTag(rTag query) => HasTag(query.Tag);
+        public bool HasTag(RdTag query) => HasTag(query.Tag);
 
         // ── 精确查询（冷却管理专用）──
 
@@ -68,11 +68,11 @@ namespace RedDust.Core
         public bool HasTagExact(string query)
         {
             if (string.IsNullOrEmpty(query)) return false;
-            return _tags.Contains(new rTag(query));
+            return _tags.Contains(new RdTag(query));
         }
 
         /// <summary>类型安全重载。</summary>
-        public bool HasTagExact(rTag query) => HasTagExact(query.Tag);
+        public bool HasTagExact(RdTag query) => HasTagExact(query.Tag);
 
         // ── 深度查询 ──
 

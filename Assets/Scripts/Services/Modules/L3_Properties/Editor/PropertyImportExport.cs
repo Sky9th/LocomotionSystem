@@ -10,7 +10,7 @@ namespace RedDust.Properties.Editor
 {
     /// <summary>
     /// PropertyDefSO + PropertyTreeSO JSON 导入/导出。
-    /// 模式与 rTagImporter 完全一致。
+    /// 模式与 RdTagImporter 完全一致。
     /// </summary>
     public static class PropertyImporter
     {

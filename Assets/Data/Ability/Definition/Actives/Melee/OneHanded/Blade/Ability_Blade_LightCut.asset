@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Ability_Blade_LightCut
   m_EditorClassIdentifier: 
   internalName: Blade_LightCut
-  displayName: "\u5200\xB7\u8F7B\u51FB"
+  displayName: "\u5200\xB7\u8F7B\u51FB (AttackA)"
   icon: {fileID: 0}
-  description: "\u57FA\u7840\u6A2A\u626B\u3002\u6247\u5F6260\xB0 2m\uFF0CSlash\u4F24\u5BB3\u3002"
+  description: "\u57FA\u7840\u6A2A\u626B\u3002\u6247\u5F6260\xB0 2m\uFF0CSlash\u4F24\u5BB3\u3002\u52A8\u753B:
+    AttackA1hMelee\u3002"
   abilityTag: {fileID: 11400000, guid: 8113fa03e6cc72c4486fff5e2857a2fe, type: 2}
   targetEffects:
   - {fileID: 11400000, guid: 89b724ec839edd94d92ec037a1cb074a, type: 2}
@@ -29,4 +30,8 @@ MonoBehaviour:
   overrideExclusion: 0
   extraExclusionTags: []
   noise: {fileID: 11400000, guid: 75c51b68b5c7bc646bfc822e4934a020, type: 2}
-  comboLinks: []
+  comboLinks:
+  - NextSkill: {fileID: 0}
+    WindowStart: 0.3
+    WindowDuration: 0.5
+    BypassCooldown: 0

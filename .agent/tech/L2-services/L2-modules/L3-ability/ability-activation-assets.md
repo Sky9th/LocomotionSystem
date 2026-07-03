@@ -16,7 +16,7 @@
   "activationType": "Instant",
   "maxChargeTime": 0.0,
   "autoReleaseAtFullCharge": false,
-  "animationAsset": null,
+  "animationClip": null,
   "animationLayer": "FullBody",
   "animationSpeed": 1.0,
   "rootMotion": false,
@@ -32,7 +32,7 @@
 | `activationType` | enum | Instant=0, Charged=1, Channel=2, Toggle=3 |
 | `maxChargeTime` | float | 蓄力最大时长(s)。>0 且 Charged 型时有效。Phase 4.2+ |
 | `autoReleaseAtFullCharge` | bool | 蓄满自动释放。Phase 4.2+ |
-| `animationAsset` | ref | Animancer StringAsset 动画引用 (Phase 4.1b) |
+| `animationClip` | ref | AnimationClip 直引 — `{FBX_GUID}|{ClipName}` 格式，导入时按 GUID 加载 FBX 后按 name 匹配子资产 |
 | `animationLayer` | enum | FullBody=0 (锁移动), UpperBody=1 (不锁) |
 | `animationSpeed` | float | 动画播放倍率 (0.1-3.0)。唯一调参旋钮 |
 | `rootMotion` | bool | 是否使用动画根运动驱动位移 |

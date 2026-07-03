@@ -7,10 +7,10 @@ namespace RedDust.Character.Animation
     public struct GripAnimationEntry
     {
         [Tooltip("握持姿态标签（Grip.*），HasTagExact 精确匹配。必填。")]
-        public rTagDefSO gripTag;
+        public RdTagDefSO gripTag;
 
         [Tooltip("武器类型标签（Entity.Weapon.*），HasTag 前缀匹配。null=不限武器。")]
-        public rTagDefSO weaponTypeTag;
+        public RdTagDefSO weaponTypeTag;
 
         [Tooltip("默认（Relax）使用的 Locomotion 动画集")]
         public LocomotionAnimationSetSO animationSet;
@@ -34,7 +34,7 @@ namespace RedDust.Character.Animation
         [Tooltip("Grip × WeaponType → 动画集映射。按数组顺序，首个命中即返回。")]
         public GripAnimationEntry[] entries;
 
-        public LocomotionAnimationSetSO Resolve(rTagContainer ownedTags, EBodyForm bodyForm)
+        public LocomotionAnimationSetSO Resolve(RdTagContainer ownedTags, EBodyForm bodyForm)
         {
             bool inCombat = bodyForm == EBodyForm.Combat;
 
@@ -53,10 +53,14 @@ namespace RedDust.Character.Animation
                 {
                     if (e.combatSet != null)
                     {
+#if UNITY_EDITOR
                         Debug.Log($"[GripTable] Matched grip={e.gripTag.FullTag} weapon={e.weaponTypeTag?.FullTag} BodyForm=Combat → {e.combatSet.name}");
+#endif
                         return e.combatSet;
                     }
+#if UNITY_EDITOR
                     Debug.Log($"[GripTable] Matched grip={e.gripTag.FullTag} weapon={e.weaponTypeTag?.FullTag} BodyForm=Combat → combatSet is null, fallback");
+#endif
                 }
                 return e.animationSet;
             }

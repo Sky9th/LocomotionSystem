@@ -18,7 +18,7 @@ namespace RedDust.Ability
         public string description;
 
         [Tooltip("技能标签。激活时施加(冷却>0)，冷却结束移除。层级决定互斥粒度。必须是叶标签(无子节点)。")]
-        public rTagDefSO abilityTag;
+        public RdTagDefSO abilityTag;
 
         [Header("Effects")]
         [Tooltip("施加给目标的效果。")]
@@ -32,7 +32,7 @@ namespace RedDust.Ability
         public float cooldownDuration;
 
         [Tooltip("联动冷却标签。非 null=与其他技能共享冷却。")]
-        public rTagDefSO sharedCooldownTag;
+        public RdTagDefSO sharedCooldownTag;
 
 #if UNITY_EDITOR
         private void OnValidate()
@@ -40,11 +40,11 @@ namespace RedDust.Ability
             if (abilityTag == null) return;
 
             // 检查是否有任何 Tag 以此标签为 parent（即非叶标签）
-            var allTags = UnityEditor.AssetDatabase.FindAssets("t:rTagDefSO");
+            var allTags = UnityEditor.AssetDatabase.FindAssets("t:RdTagDefSO");
             foreach (var guid in allTags)
             {
                 var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
-                var tag = UnityEditor.AssetDatabase.LoadAssetAtPath<rTagDefSO>(path);
+                var tag = UnityEditor.AssetDatabase.LoadAssetAtPath<RdTagDefSO>(path);
                 if (tag != null && tag.Parent == abilityTag)
                 {
                     Debug.LogError($"[AbilitySO] {name}: abilityTag '{abilityTag.FullTag}' 有子标签 '{tag.FullTag}'，必须是叶标签！");

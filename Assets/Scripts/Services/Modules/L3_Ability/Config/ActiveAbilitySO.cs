@@ -26,7 +26,7 @@ namespace RedDust.Ability
         public bool overrideExclusion;
 
         [Tooltip("额外互斥标签。除了默认的 abilityTag.Parent 前缀匹配外，持有这些标签也会阻止激活。用于跨分类互斥。")]
-        public rTagDefSO[] extraExclusionTags;
+        public RdTagDefSO[] extraExclusionTags;
 
         [Header("Noise")]
         [Tooltip("噪音事件。激活时广播，AI 听觉系统消费。不在 effects 数组里。")]

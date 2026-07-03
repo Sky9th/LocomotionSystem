@@ -26,7 +26,7 @@ namespace RedDust.Ability
 
         [Header("Condition")]
         [Tooltip("目标需持有此标签才触发。null=无条件。简单的门控用标签，复杂逻辑用 TargetFilterCallback。")]
-        public rTagDefSO targetRequiredTag;
+        public RdTagDefSO targetRequiredTag;
 
     }
 }

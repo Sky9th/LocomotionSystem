@@ -29,7 +29,33 @@ MonoBehaviour:
     ability: {fileID: 11400000, guid: ddaef91dca5393e4abaf0a2cd8498d97, type: 2}
     passive: {fileID: 0}
     prerequisites: []
+  - nodeId: slashB
+    ability: {fileID: 11400000, guid: ed38fb434d80a1f4d9dd966f71f57538, type: 2}
+    passive: {fileID: 0}
+    prerequisites: []
   - nodeId: heavyChop
     ability: {fileID: 11400000, guid: 553084be4c2923a4692c2c5d3717fce5, type: 2}
     passive: {fileID: 0}
-    prerequisites: []
+    prerequisites:
+    - lightCut
+  - nodeId: thrust
+    ability: {fileID: 11400000, guid: 93c538926e350f7469af865b62863e16, type: 2}
+    passive: {fileID: 0}
+    prerequisites:
+    - heavyChop
+  - nodeId: combo2A
+    ability: {fileID: 11400000, guid: bae21b86559d80c43ae3c8aa6cfd8e5a, type: 2}
+    passive: {fileID: 0}
+    prerequisites:
+    - lightCut
+    - slashB
+  - nodeId: combo3A
+    ability: {fileID: 11400000, guid: 665e1f9596b8a4849970884d1a6bc029, type: 2}
+    passive: {fileID: 0}
+    prerequisites:
+    - combo2A
+  - nodeId: combo3B
+    ability: {fileID: 11400000, guid: 2a6fb3427e6764f40b0ac1107ed8eac4, type: 2}
+    passive: {fileID: 0}
+    prerequisites:
+    - combo2A

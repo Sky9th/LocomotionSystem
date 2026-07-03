@@ -54,7 +54,7 @@ namespace RedDust.Character
         /// 握持/装备标签缓存。TODO: 装备系统完成后由 GripSwitchEvent / EquipmentManager 接管，
         /// 当前 PlayerDirector.ProcessEquipInput 直接写入，Update 做动画集解析消费。
         /// </summary>
-        public rTagContainer OwnedGripTags { get; } = new();
+        public RdTagContainer OwnedGripTags { get; } = new();
 
         /// <summary>角色容器模块——持有身体装备 Container。CharacterContainer 构造后赋值。</summary>
         public CharacterContainer CharacterContainer { get; internal set; }

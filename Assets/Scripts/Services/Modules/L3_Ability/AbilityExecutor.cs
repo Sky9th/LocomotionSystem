@@ -40,7 +40,7 @@ namespace RedDust.Ability
         /// <summary>
         /// 联动冷却层级检查——技能 sharedCooldownTag 或其父级是否在冷却中。
         /// </summary>
-        public bool IsBlockedBySharedCooldown(rTagDefSO tag)
+        public bool IsBlockedBySharedCooldown(RdTagDefSO tag)
         {
             if (tag == null) return false;
             var t = tag.FullTag;
@@ -101,7 +101,7 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════════════════
         #region OLD_IMPLEMENTATION
 
-        public rTagContainer OwnedTags { get; } = new();
+        public RdTagContainer OwnedTags { get; } = new();
 
         [Header("Passives")]
         [SerializeField] private PassiveAbilitySO[] initialPassives;
@@ -205,7 +205,7 @@ namespace RedDust.Ability
             return !string.IsNullOrEmpty(tag) && cooldownEndTimes.TryGetValue(tag, out var end) && Time.time < end;
         }
 
-        public void AddBuffTags(rTagDefSO[] tags, float expiryTime)
+        public void AddBuffTags(RdTagDefSO[] tags, float expiryTime)
         {
             if (tags == null || expiryTime <= Time.time) return;
             foreach (var t in tags)

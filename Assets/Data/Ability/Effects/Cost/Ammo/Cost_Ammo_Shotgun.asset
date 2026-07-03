@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 141cf4e8366df5c47949c79fda63fae0, type: 3}
   m_Name: Cost_Ammo_Shotgun
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 0}
+  effectTag: {fileID: 11400000, guid: 358ffae246e4721469d90a098c76f714, type: 2}
   description: "\u5F39\u836F\u6D88\u8017\xB7\u9730\u5F39\u67AA\u3002\u6263 1 \u53D1"
   duration: 0
   stackable: 0
   maxStacks: 1
   applicationBlockedTags: []
-  def: {fileID: 11400000, guid: 4e065d730c76d6542bbea10d75627336, type: 2}
+  def: {fileID: 11400000, guid: 0ef347b706d6d8542bc7218c2c892f41, type: 2}
   amount: 1

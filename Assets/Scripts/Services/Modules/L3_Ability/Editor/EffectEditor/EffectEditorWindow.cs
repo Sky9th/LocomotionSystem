@@ -251,7 +251,7 @@ namespace RedDust.Ability
                     var effectTagFilter = e is DamageEffectSO ? TagDomainFilter.EFFECT_TAG_DAMAGE
                         : e is ImpactEffectSO ? TagDomainFilter.EFFECT_TAG_IMPACT
                         : TagDomainFilter.EFFECT_TAG_EFFECT;
-                    EditorFormItem.ObjectFieldWithTag<rTagDefSO>("effectTag",
+                    EditorFormItem.ObjectFieldWithTag<RdTagDefSO>("effectTag",
                         ref _effectTagButtonRect, rootFilter: effectTagFilter);
 
                     // 标准字段
@@ -264,15 +264,15 @@ namespace RedDust.Ability
                     form.OnChange += MarkDirty;
 
                     // Blocked Tags — tags that prevent this effect from applying
-                    EditorFormItem.ArrayField<rTagDefSO>(
+                    EditorFormItem.ArrayField<RdTagDefSO>(
                         "Blocked Tags",
                         getValue: () => e.applicationBlockedTags,
                         setValue: v => e.applicationBlockedTags = v,
                         drawRow: (i, tag) =>
                         {
                             var arr = e.applicationBlockedTags;
-                            var newTag = (rTagDefSO)EditorGUILayout.ObjectField(
-                                tag, typeof(rTagDefSO), false);
+                            var newTag = (RdTagDefSO)EditorGUILayout.ObjectField(
+                                tag, typeof(RdTagDefSO), false);
                             if (newTag != tag)
                             {
                                 arr[i] = newTag;
@@ -378,14 +378,14 @@ namespace RedDust.Ability
             EditorForm.Draw(b, form =>
             {
 
-                EditorFormItem.ArrayField<rTagDefSO>(
+                EditorFormItem.ArrayField<RdTagDefSO>(
                     "Granted Tags",
                     getValue: () => b.grantedTags,
                     setValue: v => b.grantedTags = v,
                     drawRow: (i, t) =>
                     {
-                        var tag = (rTagDefSO)EditorGUILayout.ObjectField(
-                            t, typeof(rTagDefSO), false);
+                        var tag = (RdTagDefSO)EditorGUILayout.ObjectField(
+                            t, typeof(RdTagDefSO), false);
                         if (tag != t) { b.grantedTags[i] = tag; MarkDirty(); }
                         if (EditorButton.Default("Tag", EditorButtonSize.Small, width: 35))
                         {
@@ -516,7 +516,7 @@ namespace RedDust.Ability
                     continue;
                 }
 
-                var tagChain = new List<rTagDefSO>();
+                var tagChain = new List<RdTagDefSO>();
                 var t = tag;
                 while (t != null)
                 {

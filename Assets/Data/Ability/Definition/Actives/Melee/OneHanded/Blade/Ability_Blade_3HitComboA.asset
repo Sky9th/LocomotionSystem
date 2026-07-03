@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc5d887e4581bc943a22e3f58f987fec, type: 3}
+  m_Name: Ability_Blade_3HitComboA
+  m_EditorClassIdentifier: 
+  internalName: Blade_3HitComboA
+  displayName: "\u5200\xB7\u4E09\u8FDE\u65A9A"
+  icon: {fileID: 0}
+  description: "\u9884\u8BBE\u4E09\u8FDE\u51FBA\uFF08\u524D\u51B2\u2192\u6A2A\u65A9\u2192\u91CD\u5288\uFF09\u3002\u5E26RootMotion\u3002\u52A8\u753B:
+    3HitComboAForward_RM\u3002"
+  abilityTag: {fileID: 11400000, guid: 0ad628298964b8043a1ac81255654821, type: 2}
+  targetEffects:
+  - {fileID: 11400000, guid: 89b724ec839edd94d92ec037a1cb074a, type: 2}
+  - {fileID: 11400000, guid: 9a4b128740a6d4449a7d53eecdbd3d88, type: 2}
+  selfEffects:
+  - {fileID: 11400000, guid: 70facfca473305a41b84fd38e444a598, type: 2}
+  cooldownDuration: 6
+  sharedCooldownTag: {fileID: 0}
+  activation: {fileID: 11400000, guid: 1a330bcb729786848862424e99d510a6, type: 2}
+  search: {fileID: 11400000, guid: 79b50f22d0c44a9458420c1287727032, type: 2}
+  overrideExclusion: 0
+  extraExclusionTags: []
+  noise: {fileID: 11400000, guid: 0d12565d238e1fb4b9e1888699f52c2f, type: 2}
+  comboLinks: []

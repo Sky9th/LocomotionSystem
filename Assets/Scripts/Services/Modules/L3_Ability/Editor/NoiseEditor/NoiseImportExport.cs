@@ -72,15 +72,7 @@ namespace RedDust.Ability
             { errors.Add("Empty or invalid JSON."); return (0, 0, errors); }
 
             // Build tag lookup by FullTag
-            var tagByFullTag = new Dictionary<string, rTagDefSO>();
-            var tagGuids = AssetDatabase.FindAssets("t:rTagDefSO");
-            foreach (var tg in tagGuids)
-            {
-                var tp = AssetDatabase.GUIDToAssetPath(tg);
-                var t = AssetDatabase.LoadAssetAtPath<rTagDefSO>(tp);
-                if (t != null && !string.IsNullOrEmpty(t.FullTag))
-                    tagByFullTag[t.FullTag] = t;
-            }
+            var tagByFullTag = RdTagLookup.Build();
 
             foreach (var entry in file.noises)
             {
@@ -115,7 +107,7 @@ namespace RedDust.Ability
         }
 
         private static void ApplyFields(NoiseEventSO n, NoiseEntry e,
-            Dictionary<string, rTagDefSO> tagByFullTag)
+            Dictionary<string, RdTagDefSO> tagByFullTag)
         {
             if (!string.IsNullOrEmpty(e.noiseType))
             {
@@ -130,7 +122,7 @@ namespace RedDust.Ability
     /// <summary>Noise Import/Export 窗口。使用共享 EditorImportExport 组件。</summary>
     public class NoiseImportWindow : EditorWindow
     {
-        private string _filePath;
+        private string _filePath = "Assets/Data/Ability/Noises/noises_all.json";
         private string _previewText;
         private (int created, int skipped, List<string> errors) _result;
 

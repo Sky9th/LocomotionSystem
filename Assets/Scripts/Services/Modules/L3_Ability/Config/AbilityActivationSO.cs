@@ -1,4 +1,3 @@
-using Animancer;
 using UnityEngine;
 
 namespace RedDust.Ability
@@ -27,8 +26,8 @@ namespace RedDust.Ability
         public bool autoReleaseAtFullCharge;
 
         [Header("Animation")]
-        [Tooltip("Animancer StringAsset 动画引用。动画本身就是技能阶段的时间轴。")]
-        public StringAsset animationAsset;
+        [Tooltip("技能动画。AnimationClip 直接引用 FBX 中的动画剪辑。动画本身就是技能阶段的时间轴。\nNOTE: 2026-07-03 从 StringAsset 改为 AnimationClip，已有 .asset 的旧 StringAsset 引用已失效，需通过 JSON 重新导入。")]
+        public AnimationClip animationClip;
 
         [Tooltip("动画播放层。FullBody 锁定移动（全身动画），UpperBody 不锁（上半身动画）。")]
         public EAbilityAnimationLayer animationLayer;

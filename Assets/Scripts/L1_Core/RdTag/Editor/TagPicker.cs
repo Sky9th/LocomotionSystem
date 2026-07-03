@@ -17,7 +17,7 @@ namespace RedDust.Core.Editor
         private readonly string _rootFilter;
         private readonly bool _allowCreate;
         private readonly string _currentFullTag;
-        private readonly Action<rTagDefSO> _onSelected;
+        private readonly Action<RdTagDefSO> _onSelected;
 
         // -- 数据 --
         private TagTreeModel _model;
@@ -33,13 +33,13 @@ namespace RedDust.Core.Editor
             string rootFilter = null,
             bool allowCreate = true,
             string currentFullTag = null,
-            Action<rTagDefSO> onSelected = null)
+            Action<RdTagDefSO> onSelected = null)
         {
             var popup = new TagPicker(rootFilter, allowCreate, currentFullTag, onSelected);
             PopupWindow.Show(activatorRect, popup);
         }
 
-        private TagPicker(string rootFilter, bool allowCreate, string currentFullTag, Action<rTagDefSO> onSelected)
+        private TagPicker(string rootFilter, bool allowCreate, string currentFullTag, Action<RdTagDefSO> onSelected)
         {
             _rootFilter = rootFilter;
             _allowCreate = allowCreate;
@@ -64,7 +64,7 @@ namespace RedDust.Core.Editor
             _treeView = new EditorTreeView();
             _treeView.SetData(roots, onSelect: node =>
             {
-                var tag = node?.UserData as rTagDefSO;
+                var tag = node?.UserData as RdTagDefSO;
                 if (tag != null)
                 {
                     _onSelected?.Invoke(tag);
@@ -173,7 +173,7 @@ namespace RedDust.Core.Editor
                 {
                     var node = _model.Find(_selectedFullTag);
                     if (node != null)
-                        _onSelected?.Invoke(node.UserData as rTagDefSO);
+                        _onSelected?.Invoke(node.UserData as RdTagDefSO);
                     editorWindow.Close();
                 }
 

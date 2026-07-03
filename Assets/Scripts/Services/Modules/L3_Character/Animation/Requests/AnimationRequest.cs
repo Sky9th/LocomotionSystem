@@ -1,5 +1,4 @@
 using UnityEngine;
-using Animancer;
 
 namespace RedDust.Character.Animation
 {
@@ -7,7 +6,6 @@ namespace RedDust.Character.Animation
     {
         // ── 播放 ──
         public AnimationClip Clip;
-        public StringAsset Alias;
         public float FadeIn;
         public float FadeOut;
 
@@ -23,6 +21,5 @@ namespace RedDust.Character.Animation
         public int ChannelMask;
 
         public bool HasClip => Clip != null;
-        public bool HasAlias => Alias != null;
     }
 }

@@ -1,5 +1,4 @@
 #if UNITY_EDITOR
-using Animancer;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -205,7 +204,7 @@ namespace RedDust.Ability
                 EditorFormItem.Enum<EActivationType>("activationType");
                 EditorFormItem.Float("maxChargeTime");
                 EditorFormItem.Toggle("autoReleaseAtFullCharge");
-                EditorFormItem.ObjectField<StringAsset>("animationAsset");
+                EditorFormItem.ObjectField<AnimationClip>("animationClip");
                 EditorFormItem.Enum<EAbilityAnimationLayer>("animationLayer");
                 EditorFormItem.Slider("animationSpeed", 0.1f, 3f);
                 EditorFormItem.Toggle("rootMotion");

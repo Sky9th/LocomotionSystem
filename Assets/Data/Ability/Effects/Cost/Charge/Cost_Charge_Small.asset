@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 141cf4e8366df5c47949c79fda63fae0, type: 3}
   m_Name: Cost_Charge_Small
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 0}
+  effectTag: {fileID: 11400000, guid: 41b854d36e1382c4e83360ccdf30e3bb, type: 2}
   description: "\u7535\u91CF\u6D88\u8017\u3002\u7535\u51FB\u9677\u9631/\u80FD\u91CF\u6B66\u5668\u3002\u6263
     5 \u7535\u91CF"
   duration: 0
   stackable: 0
   maxStacks: 1
   applicationBlockedTags: []
-  def: {fileID: 11400000, guid: 4f843d047a0d0694eb8c0d5e00e21403, type: 2}
+  def: {fileID: 11400000, guid: 39957d1d72955c443983ec901e052907, type: 2}
   amount: 5

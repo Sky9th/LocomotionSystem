@@ -35,7 +35,7 @@ namespace RedDust.Ability
     internal class AbilityForest
     {
         private readonly List<ActiveTree> _activeTrees = new();
-        private rTagContainer _weaponTags;
+        private RdTagContainer _weaponTags;
 
         /// <summary>创建技能森林，注入天生树（全解锁，source="innate"）。</summary>
         public AbilityForest(AbilityTreeSO[] innateTrees)
@@ -68,7 +68,7 @@ namespace RedDust.Ability
         /// 更新当前武器标签并触发技能重解析。
         /// 装备切换时由 CharacterActor.SwitchWeapon 调用。
         /// </summary>
-        public void SetWeaponTags(rTagContainer weaponTags)
+        public void SetWeaponTags(RdTagContainer weaponTags)
         {
             _weaponTags = weaponTags;
             Resolve();
@@ -208,8 +208,8 @@ namespace RedDust.Ability
         }
 
         private static bool IsWeaponCompatible(
-            rTagDefSO[] compatibleTags,
-            rTagContainer weaponTags)
+            RdTagDefSO[] compatibleTags,
+            RdTagContainer weaponTags)
         {
             if (compatibleTags == null || compatibleTags.Length == 0)
                 return true;
@@ -226,8 +226,8 @@ namespace RedDust.Ability
         }
 
         private static bool IsGripCompatible(
-            rTagDefSO[] compatibleGripTags,
-            rTagContainer equipmentTags)
+            RdTagDefSO[] compatibleGripTags,
+            RdTagContainer equipmentTags)
         {
             if (compatibleGripTags == null || compatibleGripTags.Length == 0)
                 return true;

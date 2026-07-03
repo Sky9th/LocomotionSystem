@@ -141,7 +141,7 @@ namespace RedDust.Ability
     /// <summary>Search Import/Export 窗口。使用共享 EditorImportExport 组件。</summary>
     public class SearchImportWindow : EditorWindow
     {
-        private string _filePath;
+        private string _filePath = "Assets/Data/Ability/Searches/searches_all.json";
         private string _previewText;
         private (int created, int skipped, List<string> errors) _result;
 

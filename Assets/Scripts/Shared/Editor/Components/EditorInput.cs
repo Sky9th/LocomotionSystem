@@ -88,7 +88,7 @@ namespace RedDust.Shared.EditorUI
 
             if (TagButton(ref tagBtnRect))
             {
-                var currentTag = value as rTagDefSO;
+                var currentTag = value as RdTagDefSO;
                 TagPicker.Show(tagBtnRect, rootFilter: rootFilter, allowCreate: true,
                     currentFullTag: currentTag?.FullTag,
                     onSelected: t => onTagSelected?.Invoke(t as T));

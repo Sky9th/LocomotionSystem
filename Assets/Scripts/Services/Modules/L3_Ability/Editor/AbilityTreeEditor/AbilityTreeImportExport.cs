@@ -234,18 +234,7 @@ namespace RedDust.Ability
                 Directory.CreateDirectory(path);
         }
 
-        private static Dictionary<string, rTagDefSO> BuildTagLookup()
-        {
-            var dict = new Dictionary<string, rTagDefSO>();
-            foreach (var guid in AssetDatabase.FindAssets("t:rTagDefSO"))
-            {
-                var path = AssetDatabase.GUIDToAssetPath(guid);
-                var tag = AssetDatabase.LoadAssetAtPath<rTagDefSO>(path);
-                if (tag != null && !dict.ContainsKey(tag.FullTag))
-                    dict[tag.FullTag] = tag;
-            }
-            return dict;
-        }
+        private static Dictionary<string, RdTagDefSO> BuildTagLookup() => RdTagLookup.Build();
 
         private static Dictionary<string, T> BuildAssetLookup<T>(string filter) where T : UnityEngine.Object
         {
@@ -260,12 +249,12 @@ namespace RedDust.Ability
             return dict;
         }
 
-        private static rTagDefSO[] ResolveTags(string[] fullTags,
-            Dictionary<string, rTagDefSO> lookup, List<string> errors, string treeId)
+        private static RdTagDefSO[] ResolveTags(string[] fullTags,
+            Dictionary<string, RdTagDefSO> lookup, List<string> errors, string treeId)
         {
-            if (fullTags == null || fullTags.Length == 0) return Array.Empty<rTagDefSO>();
+            if (fullTags == null || fullTags.Length == 0) return Array.Empty<RdTagDefSO>();
 
-            var result = new List<rTagDefSO>();
+            var result = new List<RdTagDefSO>();
             foreach (var ft in fullTags)
             {
                 if (string.IsNullOrEmpty(ft)) continue;

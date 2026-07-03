@@ -20,8 +20,6 @@ namespace RedDust.Character.Animation.Drivers.Ability
             var layer = brain.FullBodyLayer;
             if (request.HasClip)
                 layer.Play(request.Clip, request.FadeIn);
-            else if (request.HasAlias)
-                layer.TryPlay(request.Alias);
         }
 
         public override void OnCompleted() { }

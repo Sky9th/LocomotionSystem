@@ -163,8 +163,8 @@ namespace RedDust.Character.Animation
     [Serializable]
     public class GripEntryItem
     {
-        public string gripTag;                   // rTagDefSO.FullTag
-        public string weaponTypeTag;             // rTagDefSO.FullTag, null=不限
+        public string gripTag;                   // RdTagDefSO.FullTag
+        public string weaponTypeTag;             // RdTagDefSO.FullTag, null=不限
         public string animationSet;              // {directory}/{name} path  (Relax)
         public string combatSet;                 // {directory}/{name} path  (Combat, optional)
     }
@@ -823,7 +823,7 @@ namespace RedDust.Character.Animation
 
         private static bool ImportGripTable(GripTableEntry entry,
             Dictionary<string, Object> nameLookup, Dictionary<string, Object> createdThisSession,
-            Dictionary<string, rTagDefSO> tagLookup,
+            Dictionary<string, RdTagDefSO> tagLookup,
             out GripAnimationTableSO instance, out int skipped, List<string> errors)
         {
             instance = null;
@@ -853,7 +853,7 @@ namespace RedDust.Character.Animation
 
         private static void ApplyGripTable(GripAnimationTableSO table, GripTableEntry entry,
             Dictionary<string, Object> nameLookup, Dictionary<string, Object> createdThisSession,
-            Dictionary<string, rTagDefSO> tagLookup, List<string> errors)
+            Dictionary<string, RdTagDefSO> tagLookup, List<string> errors)
         {
             table.defaultSet = ResolveSORef<LocomotionAnimationSetSO>(entry.defaultSet,
                 nameLookup, createdThisSession, errors, entry.name);
@@ -1170,18 +1170,7 @@ namespace RedDust.Character.Animation
             }
         }
 
-        private static Dictionary<string, rTagDefSO> BuildTagLookup()
-        {
-            var dict = new Dictionary<string, rTagDefSO>();
-            foreach (var guid in AssetDatabase.FindAssets("t:rTagDefSO"))
-            {
-                var path = AssetDatabase.GUIDToAssetPath(guid);
-                var t = AssetDatabase.LoadAssetAtPath<rTagDefSO>(path);
-                if (t != null && !string.IsNullOrEmpty(t.FullTag))
-                    dict[t.FullTag] = t;
-            }
-            return dict;
-        }
+        private static Dictionary<string, RdTagDefSO> BuildTagLookup() => RdTagLookup.Build();
     }
 
     // ═══════════════════════════════════════════════════════════════

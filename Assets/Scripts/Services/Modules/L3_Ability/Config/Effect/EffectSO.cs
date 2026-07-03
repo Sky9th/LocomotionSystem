@@ -13,7 +13,7 @@ namespace RedDust.Ability
     {
         [Header("Identity")]
         [Tooltip("效果本身的身份标签。DamageEffect→Damage.Elemental.Fire, Impact→Impact.Launch。防御/AI/VFX 用此路由。")]
-        public rTagDefSO effectTag;
+        public RdTagDefSO effectTag;
 
         [Tooltip("效果描述。策划可读的说明文本。")]
         public string description;
@@ -31,6 +31,6 @@ namespace RedDust.Ability
 
         [Header("Gating (Phase 5+)")]
         [Tooltip("施加条件。任意一个匹配则拒绝施加。")]
-        public rTagDefSO[] applicationBlockedTags;
+        public RdTagDefSO[] applicationBlockedTags;
     }
 }

@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "description": "AbilityTree definitions — 3 innate skill trees (Human/Fist, Sword, Pistol)",
+  "description": "AbilityTree definitions — 3 innate skill trees (Human/Fist, Sword×7, Pistol×2)",
   "trees": [
     {
       "treeId": "Human_Innate",
@@ -47,10 +47,40 @@
           "prerequisites": []
         },
         {
+          "nodeId": "slashB",
+          "ability": "Ability_Blade_SlashB",
+          "passive": null,
+          "prerequisites": []
+        },
+        {
           "nodeId": "heavyChop",
           "ability": "Ability_Blade_HeavyChop",
           "passive": null,
-          "prerequisites": []
+          "prerequisites": ["lightCut"]
+        },
+        {
+          "nodeId": "thrust",
+          "ability": "Ability_Blade_Thrust",
+          "passive": null,
+          "prerequisites": ["heavyChop"]
+        },
+        {
+          "nodeId": "combo2A",
+          "ability": "Ability_Blade_2HitComboA",
+          "passive": null,
+          "prerequisites": ["lightCut", "slashB"]
+        },
+        {
+          "nodeId": "combo3A",
+          "ability": "Ability_Blade_3HitComboA",
+          "passive": null,
+          "prerequisites": ["combo2A"]
+        },
+        {
+          "nodeId": "combo3B",
+          "ability": "Ability_Blade_3HitComboB",
+          "passive": null,
+          "prerequisites": ["combo2A"]
         }
       ]
     },

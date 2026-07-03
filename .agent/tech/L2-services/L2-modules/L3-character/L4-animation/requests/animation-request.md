@@ -20,14 +20,12 @@
 | 被依赖 | DriverArbiter | 裁决和播放 |
 | 被依赖 | TraversalDriver | 请求提交 |
 | 依赖 | AnimationClip | 直接播放 Clip |
-| 依赖 | StringAsset | 通过别名播放 |
 
 ## 公开属性
 
 ```csharp
 // 播放参数
 public AnimationClip Clip;                        // 直接播放的 Clip
-public StringAsset Alias;                          // 通过别名声明的 Clip
 public float FadeIn;                               // 淡入时间
 public float FadeOut;                              // 淡出时间
 

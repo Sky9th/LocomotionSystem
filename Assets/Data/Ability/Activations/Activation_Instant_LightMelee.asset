@@ -15,11 +15,12 @@ MonoBehaviour:
   activationType: 0
   maxChargeTime: 0
   autoReleaseAtFullCharge: 0
-  animationAsset: {fileID: 0}
+  animationClip: {fileID: 7400000, guid: 864bb0c8d54292a48b61f2c1b3248f1e, type: 3}
   animationLayer: 0
   animationSpeed: 1.1
   rootMotion: 0
   windupDuration: 0.1
   fireWindowDuration: 0.15
   canCancelWindup: 1
+  recoveryDuration: 0
   canCancelRecovery: 1

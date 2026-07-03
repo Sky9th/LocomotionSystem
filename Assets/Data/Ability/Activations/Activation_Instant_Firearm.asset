@@ -15,11 +15,12 @@ MonoBehaviour:
   activationType: 0
   maxChargeTime: 0
   autoReleaseAtFullCharge: 0
-  animationAsset: {fileID: 0}
+  animationClip: {fileID: 0}
   animationLayer: 1
   animationSpeed: 1
   rootMotion: 0
   windupDuration: 0
   fireWindowDuration: 0.1
   canCancelWindup: 0
+  recoveryDuration: 0
   canCancelRecovery: 1

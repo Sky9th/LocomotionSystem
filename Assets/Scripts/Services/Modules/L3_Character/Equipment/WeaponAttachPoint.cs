@@ -21,8 +21,8 @@ namespace RedDust.Character
         {
             // RightHand — 单手剑
             { (CharacterConst.Slot.RightHand, CharacterConst.GripTag.OneHanded),
-                (new Vector3(0.0864999965f,0.0454999991f,-0.0335000008f),
-                 new Vector3(353.877686f,175.326904f,273.205292f)) },
+                (new Vector3(0.0865f, 0.0455f, -0.0335f),
+                 new Vector3(353.8777f, 175.3269f, 273.2053f)) },
 
             // RightHand — 手枪
             { (CharacterConst.Slot.RightHand, CharacterConst.GripTag.Pistol2H),

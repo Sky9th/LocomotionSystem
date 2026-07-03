@@ -217,9 +217,9 @@ namespace RedDust.Ability
         {
             EditorForm.Draw(a, form =>
             {
-                EditorFormItem.ObjectFieldWithTag<rTagDefSO>("abilityTag",
+                EditorFormItem.ObjectFieldWithTag<RdTagDefSO>("abilityTag",
                     ref _abilityTagButtonRect, label: "Ability", rootFilter: TagDomainFilter.ABILITY_TAG);
-                EditorFormItem.ObjectFieldWithTag<rTagDefSO>("sharedCooldownTag",
+                EditorFormItem.ObjectFieldWithTag<RdTagDefSO>("sharedCooldownTag",
                     ref _abilityTagButtonRect, label: "Shared CD", rootFilter: TagDomainFilter.SHARED_COOLDOWN_TAG);
                 form.OnChange += () => { EditorUtility.SetDirty(a); _onChanged?.Invoke(); };
             });
@@ -256,7 +256,7 @@ namespace RedDust.Ability
                 EditorFormItem.Enum<ETriggerEvent>("trigger");
                 EditorFormItem.Float("triggerValue", label: "Trigger Value");
                 EditorFormItem.ObjectField<GameEvent>("triggerChannel", label: "Channel");
-                EditorFormItem.ObjectFieldWithTag<rTagDefSO>("targetRequiredTag",
+                EditorFormItem.ObjectFieldWithTag<RdTagDefSO>("targetRequiredTag",
                     ref _abilityTagButtonRect, label: "Target Tag", rootFilter: TagDomainFilter.TARGET_REQUIRED_TAG);
                 form.OnChange += () => { EditorUtility.SetDirty(p); _onChanged?.Invoke(); };
             });

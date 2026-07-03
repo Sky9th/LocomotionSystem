@@ -207,7 +207,7 @@ namespace RedDust.Ability
                         },
                         drawFunc: v => EditorGUILayout.TextField((string)v),
                         equals: (x, y) => (string)x == (string)y);
-                    EditorFormItem.ObjectFieldWithTag<rTagDefSO>(
+                    EditorFormItem.ObjectFieldWithTag<RdTagDefSO>(
                         "noiseType", ref _noiseTagButtonRect, label: "Noise Type", rootFilter: TagDomainFilter.NOISE_TYPE);
                     EditorFormItem.Float("level");
                     EditorFormItem.Float("decayRadius");
@@ -274,7 +274,7 @@ namespace RedDust.Ability
 
                 if (tag != null)
                 {
-                    var tagChain = new List<rTagDefSO>();
+                    var tagChain = new List<RdTagDefSO>();
                     var t = tag;
                     while (t != null)
                     {

@@ -80,7 +80,7 @@ internal bool ForceSetState(BaseStateKey key)
 
 ### PlayFromStart()
 ```csharp
-internal void PlayFromStart(StringAsset alias)
+internal void PlayFromStart(AnimationClip clip)
 ```
 - **用途**: 播放动画并重置到第 0 帧
 - **备注**: 用于一次性过渡动画（IdleToMoving、TurnInMoving）
@@ -106,15 +106,15 @@ internal void InvalidateAnimationCache()
 
 ### Play()
 ```csharp
-internal void Play(StringAsset alias)
+internal void Play(AnimationClip clip)
 ```
 - **用途**: 播放动画 + 注入脚步事件
 
 ### PlayIfChanged()
 ```csharp
-internal void PlayIfChanged(StringAsset alias)
+internal void PlayIfChanged(AnimationClip clip)
 ```
-- **用途**: 仅当 alias 变化时播放（避免重复设置）
+- **用途**: 仅当 clip 变化时播放（避免重复设置）
 
 ### InjectFootstepEvents()
 ```csharp

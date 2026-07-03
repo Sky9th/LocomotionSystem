@@ -214,18 +214,7 @@ namespace RedDust.Ability
             return (created, skipped, errors);
         }
 
-        private static Dictionary<string, rTagDefSO> BuildTagLookup()
-        {
-            var dict = new Dictionary<string, rTagDefSO>();
-            foreach (var guid in AssetDatabase.FindAssets("t:rTagDefSO"))
-            {
-                var path = AssetDatabase.GUIDToAssetPath(guid);
-                var t = AssetDatabase.LoadAssetAtPath<rTagDefSO>(path);
-                if (t != null && !string.IsNullOrEmpty(t.FullTag))
-                    dict[t.FullTag] = t;
-            }
-            return dict;
-        }
+        private static Dictionary<string, RdTagDefSO> BuildTagLookup() => RdTagLookup.Build();
 
         private static Dictionary<string, T> BuildAssetLookup<T>(string filter) where T : UnityEngine.Object
         {
@@ -263,7 +252,7 @@ namespace RedDust.Ability
         }
 
         private static void ApplyFields(AbilitySO a, AbilityEntry entry,
-            Dictionary<string, rTagDefSO> tags,
+            Dictionary<string, RdTagDefSO> tags,
             Dictionary<string, AbilityActivationSO> activations,
             Dictionary<string, AbilitySearchSO> searches,
             Dictionary<string, EffectSO> effects,
@@ -346,7 +335,7 @@ namespace RedDust.Ability
     /// <summary>Ability Import/Export 窗口。使用共享 EditorImportExport 组件。</summary>
     public class AbilityImportWindow : EditorWindow
     {
-        private string _filePath;
+        private string _filePath = "Assets/Data/Ability/Definition/abilities_all.json";
         private string _previewText;
         private (int created, int skipped, List<string> errors) _result;
 

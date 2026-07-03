@@ -162,7 +162,6 @@ CharacterActor.Update()
 | [drivers/locomotion/L5-states/base-air-loop-state.md](L4-animation/drivers/locomotion/L5-states/base-air-loop-state.md) | 空中循环 |
 | [drivers/locomotion/L5-states/base-air-land-state.md](L4-animation/drivers/locomotion/L5-states/base-air-land-state.md) | 分级落地 |
 | [drivers/traversal/traversal-driver.md](L4-animation/drivers/traversal/traversal-driver.md) | TraversalDriver 攀爬 |
-| [config/animation-alias-profile.md](L4-animation/config/animation-alias-profile.md) | AnimationAliasProfile SO |
 | [config/locomotion-animation-profile.md](L4-animation/config/locomotion-animation-profile.md) | LocomotionAnimationProfile SO |
 | [config/locomotion-mode-profile.md](L4-animation/config/locomotion-mode-profile.md) | LocomotionModeProfile SO |
 | [requests/animation-request.md](L4-animation/requests/animation-request.md) | AnimationRequest |

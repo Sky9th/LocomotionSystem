@@ -19,12 +19,12 @@ namespace RedDust.Ability
         public readonly float Level;
 
         /// <summary>噪音类型标签。</summary>
-        public readonly rTag NoiseType;
+        public readonly RdTag NoiseType;
 
         /// <summary>噪音源 GameObject。便于 AI 区分玩家 / 环境。</summary>
         public readonly GameObject SourceObject;
 
-        public SNoiseEvent(Vector3 sourcePosition, float radius, float level, rTag noiseType, GameObject sourceObject)
+        public SNoiseEvent(Vector3 sourcePosition, float radius, float level, RdTag noiseType, GameObject sourceObject)
         {
             SourcePosition = sourcePosition;
             Radius = radius;

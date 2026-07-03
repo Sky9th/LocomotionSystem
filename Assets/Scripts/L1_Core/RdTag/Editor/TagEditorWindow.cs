@@ -71,7 +71,7 @@ namespace RedDust.Core.Editor
 
             EditorGUILayout.LabelField("Tag Editor", EditorStyles.largeLabel, GUILayout.ExpandWidth(true));
             var rightStyle = new GUIStyle(EditorStyles.label) { alignment = TextAnchor.MiddleRight };
-            EditorGUILayout.LabelField("L1_Core · rTag", rightStyle, GUILayout.Width(180));
+            EditorGUILayout.LabelField("L1_Core · RdTag", rightStyle, GUILayout.Width(180));
 
             GUILayout.Space(EditorTokens.Pad);
             EditorGUILayout.EndHorizontal();
@@ -254,7 +254,7 @@ namespace RedDust.Core.Editor
             EditorGUILayout.LabelField(node.Children.Count.ToString(), EditorStyles.label);
             EditorGUILayout.EndHorizontal();
 
-            var path = AssetDatabase.GetAssetPath(node.UserData as rTagDefSO);
+            var path = AssetDatabase.GetAssetPath(node.UserData as RdTagDefSO);
             if (!string.IsNullOrEmpty(path))
             {
                 EditorGUILayout.BeginHorizontal();
@@ -267,7 +267,7 @@ namespace RedDust.Core.Editor
 
             EditorGUILayout.BeginHorizontal();
             if (EditorButton.Draw("Ping Asset", size: EditorButtonSize.Small))
-                EditorGUIUtility.PingObject(node.UserData as rTagDefSO);
+                EditorGUIUtility.PingObject(node.UserData as RdTagDefSO);
 
             if (EditorButton.Draw("Delete", EditorButtonType.Danger, width: 80f))
                 DeleteTag(node);
@@ -371,9 +371,9 @@ namespace RedDust.Core.Editor
         // ── 删除 ──
         private void DeleteTag(EditorTreeNode node)
         {
-            if (node == null || node.UserData as rTagDefSO == null) return;
+            if (node == null || node.UserData as RdTagDefSO == null) return;
 
-            var tagPath = AssetDatabase.GetAssetPath(node.UserData as rTagDefSO);
+            var tagPath = AssetDatabase.GetAssetPath(node.UserData as RdTagDefSO);
 
             // 1. 检查外部引用
             var referencers = FindReferencers(tagPath);
@@ -386,7 +386,7 @@ namespace RedDust.Core.Editor
             }
 
             // 2. 收集子孙
-            var descendants = new List<rTagDefSO>();
+            var descendants = new List<RdTagDefSO>();
             CollectDescendants(node, descendants);
 
             // 3. 确认
@@ -428,11 +428,11 @@ namespace RedDust.Core.Editor
             return refs;
         }
 
-        private void CollectDescendants(EditorTreeNode node, List<rTagDefSO> result)
+        private void CollectDescendants(EditorTreeNode node, List<RdTagDefSO> result)
         {
             foreach (var child in node.Children)
             {
-                if (child.UserData as rTagDefSO != null) result.Add(child.UserData as rTagDefSO);
+                if (child.UserData as RdTagDefSO != null) result.Add(child.UserData as RdTagDefSO);
                 CollectDescendants(child, result);
             }
         }

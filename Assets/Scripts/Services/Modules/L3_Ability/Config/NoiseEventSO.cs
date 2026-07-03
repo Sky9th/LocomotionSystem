@@ -13,7 +13,7 @@ namespace RedDust.Ability
     {
         [Header("Noise")]
         [Tooltip("噪音类型。Noise.Combat.WeaponFire / Noise.World.Footstep / Noise.Alert.Voice。AI 行为路由。")]
-        public rTagDefSO noiseType;
+        public RdTagDefSO noiseType;
 
         [Tooltip("噪音等级。0=无声, 越大传播越远。")]
         public float level;

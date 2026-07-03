@@ -61,8 +61,10 @@ Ability
 ├── Tree / Innate, Talent, Routine, Learned, Boss, Mutation, Faction
 ├── Execute / Threshold
 ├── Damage / Physical, Elemental, Biological, True, Fall
+│   └── Physical / Slash, Blunt, Pierce, Bite, Crush, Explosive
 ├── Effect / Buff, Debuff, DoT, Status, Condition, Immunity, Functional
-└── Impact / Launch
+├── Impact / Light, Medium, Heavy, Launch, Pull
+└── Cost / Stamina, HP, Ammo, Durability, Fuel, Charge
 
 ## 装备过滤
 
@@ -94,3 +96,4 @@ Definition.Active.Melee.OneHanded.Blade.LightCut
 | `EffectSO.applicationBlockedTags` | `Effect.*` | HasTag 前缀 |
 | `ImpactEffectSO.effectTag` | `Impact.*` | HasTag 前缀 |
 | `ExecuteEffectSO.effectTag` | `Execute.*` | 精确匹配 |
+| `CostEffectSO.effectTag` | `Cost.*` | HasTag 前缀 |

@@ -16,6 +16,8 @@ namespace RedDust.Ability
         public string activationType;
         public float maxChargeTime;
         public bool autoReleaseAtFullCharge;
+        /// <summary>AnimationClip 引用。格式 "{FBX_GUID}|{ClipName}"，导入时按 GUID 加载 FBX 后按 name 匹配子资产。</summary>
+        public string animationClip;
         public string animationLayer;
         public float animationSpeed = 1f;
         public bool rootMotion;
@@ -37,6 +39,9 @@ namespace RedDust.Ability
     {
         internal const string Root = "Assets/Data/Ability/Activations";
 
+        /// <summary>FBX path → clips 缓存，避免同一 FBX 重复 LoadAllAssetsAtPath。</summary>
+        private static readonly Dictionary<string, AnimationClip[]> _fbxClipCache = new();
+
         public static string ExportToJson()
         {
             var entries = new List<ActivationEntry>();
@@ -53,6 +58,7 @@ namespace RedDust.Ability
                     activationType = a.activationType.ToString(),
                     maxChargeTime = a.maxChargeTime,
                     autoReleaseAtFullCharge = a.autoReleaseAtFullCharge,
+                    animationClip = ClipToJson(a.animationClip),
                     animationLayer = a.animationLayer.ToString(),
                     animationSpeed = a.animationSpeed,
                     rootMotion = a.rootMotion,
@@ -116,11 +122,60 @@ namespace RedDust.Ability
             return (created, skipped, errors);
         }
 
+        /// <summary>AnimationClip → "{FBX_GUID}|{ClipName}"</summary>
+        private static string ClipToJson(AnimationClip clip)
+        {
+            if (clip == null) return null;
+            var path = AssetDatabase.GetAssetPath(clip);
+            if (string.IsNullOrEmpty(path)) return null;
+            var guid = AssetDatabase.AssetPathToGUID(path);
+            return $"{guid}|{clip.name}";
+        }
+
+        /// <summary>"{FBX_GUID}|{ClipName}" → AnimationClip（GUID 固定 32 位 hex）</summary>
+        private static AnimationClip ClipFromJson(string refStr)
+        {
+            if (string.IsNullOrEmpty(refStr)) return null;
+            if (refStr.Length < 34 || refStr[32] != '|')
+            {
+                Debug.LogWarning($"[ActivationImporter] Invalid animationClip format: '{refStr}' — expected \"{{32-char GUID}}|{{clip name}}\"");
+                return null;
+            }
+            var guid = refStr.Substring(0, 32);
+            var clipName = refStr.Substring(33);
+            var fbxPath = AssetDatabase.GUIDToAssetPath(guid);
+            if (string.IsNullOrEmpty(fbxPath))
+            {
+                Debug.LogWarning($"[ActivationImporter] animationClip FBX not found: guid={guid}, clip={clipName}");
+                return null;
+            }
+            if (!_fbxClipCache.TryGetValue(fbxPath, out var clips))
+            {
+                var allAssets = AssetDatabase.LoadAllAssetsAtPath(fbxPath);
+                var clipList = new List<AnimationClip>();
+                foreach (var a in allAssets)
+                    if (a is AnimationClip ac2) clipList.Add(ac2);
+                clips = clipList.ToArray();
+                _fbxClipCache[fbxPath] = clips;
+            }
+            foreach (var ac in clips)
+            {
+                if (ac.name == clipName)
+                    return ac;
+            }
+            Debug.LogWarning($"[ActivationImporter] animationClip '{clipName}' not found in FBX: {fbxPath}");
+            return null;
+        }
+
         private static void ApplyFields(AbilityActivationSO a, ActivationEntry e)
         {
             if (Enum.TryParse<EActivationType>(e.activationType, out var at)) a.activationType = at;
             a.maxChargeTime = e.maxChargeTime;
             a.autoReleaseAtFullCharge = e.autoReleaseAtFullCharge;
+            if (!string.IsNullOrEmpty(e.animationClip))
+                a.animationClip = ClipFromJson(e.animationClip);
+            else
+                a.animationClip = null;
             if (Enum.TryParse<EAbilityAnimationLayer>(e.animationLayer, out var al)) a.animationLayer = al;
             a.animationSpeed = e.animationSpeed;
             a.rootMotion = e.rootMotion;
@@ -133,7 +188,7 @@ namespace RedDust.Ability
 
     public class ActivationImportWindow : EditorWindow
     {
-        private string _filePath;
+        private string _filePath = "Assets/Data/Ability/Activations/activations_all.json";
         private string _previewText;
         private (int created, int skipped, List<string> errors) _result;
 

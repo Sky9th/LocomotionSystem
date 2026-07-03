@@ -1,7 +1,7 @@
 namespace RedDust.Character
 {
     /// <summary>
-    /// Character 模块全局常量 — PropertyTree 路径 / rTag FullTag / 槽位 ID。
+    /// Character 模块全局常量 — PropertyTree 路径 / RdTag FullTag / 槽位 ID。
     ///
     /// 目的：消除散落在各子模块中的硬编码字符串，
     /// PropertyTree 结构调整时只需改这一个文件。
@@ -64,7 +64,7 @@ namespace RedDust.Character
         }
 
         /// <summary>
-        /// 握持标签 — 对齐 rTagDefSO 资产的 FullTag 值。
+        /// 握持标签 — 对齐 RdTagDefSO 资产的 FullTag 值。
         ///
         /// Tag 层级（证自 Assets/Data/Tags/）:
         ///   Grip (root)

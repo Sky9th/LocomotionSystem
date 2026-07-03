@@ -9,13 +9,13 @@ using UnityEngine;
 namespace RedDust.Core
 {
     /// <summary>
-    /// rTag JSON 导入工具。
-    /// 从 JSON 文件批量创建 rTagDefSO 资产。
+    /// RdTag JSON 导入工具。
+    /// 从 JSON 文件批量创建 RdTagDefSO 资产。
     /// 支持增量导入（已存在的 Tag 跳过）。
     ///
     /// 模组支持：玩家/模组作者编写 JSON → 导入 → Unity 自动生成 .asset 文件。
     /// </summary>
-    public static class rTagImporter
+    public static class RdTagImporter
     {
         private const string TagsRoot = "Assets/Data/Tags";
 
@@ -82,7 +82,7 @@ namespace RedDust.Core
 
                 var assetPath = Path.Combine(dir, $"{entry.name}.asset").Replace('\\', '/');
 
-                var existing = AssetDatabase.LoadAssetAtPath<rTagDefSO>(assetPath);
+                var existing = AssetDatabase.LoadAssetAtPath<RdTagDefSO>(assetPath);
                 if (existing != null)
                 {
                     skipped++;
@@ -95,21 +95,21 @@ namespace RedDust.Core
                 if (!string.IsNullOrEmpty(dirPath) && !Directory.Exists(dirPath))
                     Directory.CreateDirectory(dirPath);
 
-                var tag = ScriptableObject.CreateInstance<rTagDefSO>();
+                var tag = ScriptableObject.CreateInstance<RdTagDefSO>();
                 AssetDatabase.CreateAsset(tag, assetPath);
                 tag.name = entry.name; // CreateAsset 后必须显式再设一次 name，否则 leafName 推导失败
 
                 // 写入 description
-                var descField = typeof(rTagDefSO).GetField("description",
+                var descField = typeof(RdTagDefSO).GetField("description",
                     System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 if (descField != null && !string.IsNullOrEmpty(entry.description))
                     descField.SetValue(tag, entry.description);
 
                 // 强制刷新（OnEnable 不可靠，cachedFullTag 非序列化）
-                var rf = typeof(rTagDefSO).GetMethod("AutoDeriveLeafName",
+                var rf = typeof(RdTagDefSO).GetMethod("AutoDeriveLeafName",
                     System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 rf?.Invoke(tag, null);
-                rf = typeof(rTagDefSO).GetMethod("RefreshCache",
+                rf = typeof(RdTagDefSO).GetMethod("RefreshCache",
                     System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 rf?.Invoke(tag, null);
 
@@ -122,9 +122,9 @@ namespace RedDust.Core
             }
 
             // 第二轮：按依赖顺序设置 parent（多轮迭代，每轮只设置 parent 已就绪的）
-            var refreshMethod = typeof(rTagDefSO).GetMethod("RefreshCache",
+            var refreshMethod = typeof(RdTagDefSO).GetMethod("RefreshCache",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            var parentField = typeof(rTagDefSO).GetField("parent",
+            var parentField = typeof(RdTagDefSO).GetField("parent",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
             if (parentField == null || refreshMethod == null)
@@ -142,7 +142,7 @@ namespace RedDust.Core
             foreach (var assetPath in createdMap.Keys)
             {
                 var entry = pathToEntry[assetPath];
-                var tag = AssetDatabase.LoadAssetAtPath<rTagDefSO>(assetPath);
+                var tag = AssetDatabase.LoadAssetAtPath<RdTagDefSO>(assetPath);
                 if (tag == null) continue;
 
                 if (string.IsNullOrWhiteSpace(entry.parent))
@@ -178,16 +178,16 @@ namespace RedDust.Core
                 foreach (var assetPath in pending)
                 {
                     var entry = pathToEntry[assetPath];
-                    var tag = AssetDatabase.LoadAssetAtPath<rTagDefSO>(assetPath);
+                    var tag = AssetDatabase.LoadAssetAtPath<RdTagDefSO>(assetPath);
                     if (tag == null) { unresolved.Add(assetPath); continue; }
 
                     // 在缓存中查找 parent
                     var parentAssetPath = fullTagCache.TryGetValue(entry.parent, out var pap) ? pap : null;
-                    rTagDefSO parentSo = null;
+                    RdTagDefSO parentSo = null;
 
                     if (parentAssetPath != null)
                     {
-                        parentSo = AssetDatabase.LoadAssetAtPath<rTagDefSO>(parentAssetPath);
+                        parentSo = AssetDatabase.LoadAssetAtPath<RdTagDefSO>(parentAssetPath);
                     }
 
                     // fallback: 全局搜索（已有资产）
@@ -227,7 +227,7 @@ namespace RedDust.Core
         }
 
         /// <summary>
-        /// 导出所有 rTagDefSO 资产为 JSON 字符串。
+        /// 导出所有 RdTagDefSO 资产为 JSON 字符串。
         /// </summary>
         public static string ExportToJson()
         {
@@ -238,11 +238,11 @@ namespace RedDust.Core
                 tags = new List<TagEntry>()
             };
 
-            var guids = AssetDatabase.FindAssets("t:rTagDefSO");
+            var guids = AssetDatabase.FindAssets("t:RdTagDefSO");
             foreach (var guid in guids)
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
-                var tag = AssetDatabase.LoadAssetAtPath<rTagDefSO>(path);
+                var tag = AssetDatabase.LoadAssetAtPath<RdTagDefSO>(path);
                 if (tag == null) continue;
 
                 // 不走 cachedFullTag（非序列化，可能因加载顺序错误），直接遍历 parent 链
@@ -304,15 +304,15 @@ namespace RedDust.Core
         }
 
         /// <summary>
-        /// 在已加载的所有 rTagDefSO 中按 FullTag 查找。
+        /// 在已加载的所有 RdTagDefSO 中按 FullTag 查找。
         /// </summary>
-        private static rTagDefSO FindTagByFullTag(string fullTag)
+        private static RdTagDefSO FindTagByFullTag(string fullTag)
         {
-            var guids = AssetDatabase.FindAssets("t:rTagDefSO");
+            var guids = AssetDatabase.FindAssets("t:RdTagDefSO");
             foreach (var guid in guids)
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
-                var tag = AssetDatabase.LoadAssetAtPath<rTagDefSO>(path);
+                var tag = AssetDatabase.LoadAssetAtPath<RdTagDefSO>(path);
                 if (tag != null && tag.FullTag == fullTag)
                     return tag;
             }
@@ -321,9 +321,9 @@ namespace RedDust.Core
     }
 
     /// <summary>
-    /// rTag Import-Export 窗口。使用共享 EditorImportExport 组件。
+    /// RdTag Import-Export 窗口。使用共享 EditorImportExport 组件。
     /// </summary>
-    public class rTagImportWindow : EditorWindow
+    public class RdTagImportWindow : EditorWindow
     {
         private string _filePath = "Assets/Data/Tags/tags_all.json";
         private string _previewText;
@@ -332,7 +332,7 @@ namespace RedDust.Core
         [MenuItem("RedDust/Tag Import-Export", priority = 26)]
         public static void Open()
         {
-            var window = GetWindow<rTagImportWindow>("Tag Import-Export");
+            var window = GetWindow<RdTagImportWindow>("Tag Import-Export");
             window.minSize = new Vector2(520, 420);
             window.Show();
         }
@@ -341,7 +341,7 @@ namespace RedDust.Core
         {
             EditorImportExport.Draw(
                 title: "Tag Import-Export",
-                subtitle: "L1_Core · rTag · JSON ↔ .asset",
+                subtitle: "L1_Core · RdTag · JSON ↔ .asset",
                 defaultDir: "Assets/Data/Tags",
                 fileExtension: "json",
                 defaultFileName: "tags_export",
@@ -351,18 +351,18 @@ namespace RedDust.Core
                 buildPreview: BuildPreview,
                 onImport: path =>
                 {
-                    var (created, skipped, errors) = rTagImporter.ImportFromFile(path);
+                    var (created, skipped, errors) = RdTagImporter.ImportFromFile(path);
                     return (created, skipped, errors);
                 },
-                onExport: path => File.WriteAllText(path, rTagImporter.ExportToJson())
+                onExport: path => File.WriteAllText(path, RdTagImporter.ExportToJson())
             );
         }
 
         private static string BuildPreview(string filePath)
         {
             if (!File.Exists(filePath)) return null;
-            rTagImporter.TagImportFile preview;
-            try { preview = JsonUtility.FromJson<rTagImporter.TagImportFile>(File.ReadAllText(filePath)); }
+            RdTagImporter.TagImportFile preview;
+            try { preview = JsonUtility.FromJson<RdTagImporter.TagImportFile>(File.ReadAllText(filePath)); }
             catch { return null; }
             if (preview?.tags == null || preview.tags.Count == 0) return null;
 

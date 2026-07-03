@@ -136,7 +136,7 @@ namespace RedDust.Ability
                     continue;
                 }
 
-                var tagChain = new List<rTagDefSO>();
+                var tagChain = new List<RdTagDefSO>();
                 var t = aTag;
                 while (t != null)
                 {
@@ -236,7 +236,7 @@ namespace RedDust.Ability
                     continue;
                 }
 
-                var tagChain = new List<rTagDefSO>();
+                var tagChain = new List<RdTagDefSO>();
                 var t = tag;
                 while (t != null)
                 {

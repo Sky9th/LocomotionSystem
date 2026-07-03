@@ -15,6 +15,6 @@ namespace RedDust.Ability
     public sealed class TagMutualExclusionSO : ScriptableObject
     {
         [Tooltip("互斥根标签。每个父标签下的所有子标签互为排斥。")]
-        public rTagDefSO[] exclusionRoots;
+        public RdTagDefSO[] exclusionRoots;
     }
 }

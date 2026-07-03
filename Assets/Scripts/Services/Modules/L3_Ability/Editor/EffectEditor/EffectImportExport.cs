@@ -217,16 +217,8 @@ namespace RedDust.Ability
             }
 
             // ── Phase 3: Resolve references ──
-            // Build rTagDefSO lookup by FullTag
-            var tagByFullTag = new Dictionary<string, rTagDefSO>();
-            var tagGuids = AssetDatabase.FindAssets("t:rTagDefSO");
-            foreach (var tg in tagGuids)
-            {
-                var tp = AssetDatabase.GUIDToAssetPath(tg);
-                var t = AssetDatabase.LoadAssetAtPath<rTagDefSO>(tp);
-                if (t != null && !string.IsNullOrEmpty(t.FullTag))
-                    tagByFullTag[t.FullTag] = t;
-            }
+            // Build RdTagDefSO lookup by FullTag
+            var tagByFullTag = RdTagLookup.Build();
 
             // Build PropertyDefSO lookup by Id
             var defById = new Dictionary<string, PropertyDefSO>();
@@ -240,12 +232,12 @@ namespace RedDust.Ability
             }
 
             // Resolve per entry
-            var resolved = new List<(EffectEntry entry, rTagDefSO effectTag,
-                rTagDefSO[] blockedTags, PropertyDefSO def)>();
+            var resolved = new List<(EffectEntry entry, RdTagDefSO effectTag,
+                RdTagDefSO[] blockedTags, PropertyDefSO def)>();
             foreach (var entry in valid)
             {
                 // effectTag
-                rTagDefSO resolvedTag = null;
+                RdTagDefSO resolvedTag = null;
                 if (!string.IsNullOrEmpty(entry.effectTag))
                 {
                     if (!tagByFullTag.TryGetValue(entry.effectTag, out resolvedTag))
@@ -253,7 +245,7 @@ namespace RedDust.Ability
                 }
 
                 // applicationBlockedTags
-                var resolvedBlocked = new List<rTagDefSO>();
+                var resolvedBlocked = new List<RdTagDefSO>();
                 if (entry.applicationBlockedTags != null)
                 {
                     foreach (var bt in entry.applicationBlockedTags)
@@ -370,9 +362,9 @@ namespace RedDust.Ability
         };
 
         private static void ApplyFields(EffectSO instance, EffectEntry entry,
-            rTagDefSO effTag, rTagDefSO[] blockedTags,
+            RdTagDefSO effTag, RdTagDefSO[] blockedTags,
             PropertyDefSO def,
-            Dictionary<string, rTagDefSO> tagByFullTag,
+            Dictionary<string, RdTagDefSO> tagByFullTag,
             Dictionary<string, PropertyDefSO> defById)
         {
             instance.effectTag = effTag;
