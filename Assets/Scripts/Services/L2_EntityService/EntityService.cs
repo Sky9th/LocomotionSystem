@@ -73,6 +73,7 @@ namespace RedDust.Entities
                     go.name = entity.Id;
                     var identity = go.GetComponent<Identity>() ?? go.AddComponent<Identity>();
                     identity.BindEntity(entity.Id);
+                    identity.Entity = entity;
                     identity.SetProperties(entity.Properties);
                     entity.View = go;
                     spawnedEvent?.Raise(new SEntitySpawned(entity.Id, entity.Preset, go));
@@ -114,6 +115,7 @@ namespace RedDust.Entities
             go2.name = existing.Id;
             var id2 = go2.GetComponent<Identity>() ?? go2.AddComponent<Identity>();
             id2.BindEntity(existing.Id);
+            id2.Entity = existing;
             id2.SetProperties(existing.Properties);
             existing.View = go2;
             spawnedEvent?.Raise(new SEntitySpawned(existing.Id, existing.Preset, go2));
@@ -193,7 +195,7 @@ namespace RedDust.Entities
                 return;
             }
 
-            entity.NestedContainer = new Container.Container($"{entity.Id}/Storage", slotDefs.ToArray());
+            entity.NestedContainer = new Container.RdContainer($"{entity.Id}/Storage", slotDefs.ToArray());
         }
 
         /// <summary>按 Id 检索实体。未找到返回 null。</summary>

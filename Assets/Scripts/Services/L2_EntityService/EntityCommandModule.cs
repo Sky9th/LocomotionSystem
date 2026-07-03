@@ -35,54 +35,63 @@ namespace RedDust.Entities
             var def = actives[slotIndex];
             if (def == null || actor.Ability == null) return;
 
-            var weapon = actor.Container?.BodyContainer?.GetItem(
-                CharacterConst.Slot.RightHand);
+            var weapon = _entity.Query.Equipment?.GetEquipped(CharacterConst.Slot.RightHand);
             actor.Ability.Enqueue(def, ctx.ModelRoot.position,
                 ctx.ModelRoot.forward, weapon);
         }
 
-        // ── 装备（临时硬编码，后续迁移至装备系统）──
+        // ── 容器 ──
+
+        /// <summary>将物品放入自身指定槽位。</summary>
+        public void Place(string slotKey, Entity item)
+            => _entity.NestedContainer?.Place(slotKey, item);
+
+        /// <summary>从自身指定槽位移除物品。</summary>
+        public void Remove(string slotKey, Entity item)
+            => _entity.NestedContainer?.Remove(slotKey, item);
+
+        // ── 装备切换（临时硬编码，后续迁移至装备系统）──
 
         private static readonly string[] EquipMap = { null, "test_blade", "test_pistol" };
 
         public void CycleEquip(int equipIndex)
         {
             if (equipIndex < 0 || equipIndex >= EquipMap.Length) return;
-            var actor = Character;
-            if (actor == null) return;
 
-            var bodyContainer = actor.Container?.BodyContainer;
-            if (bodyContainer == null) return;
-
-            var currentEquipped = bodyContainer.GetItem(CharacterConst.Slot.RightHand);
+            var currentEquipped = _entity.Query.Equipment?.GetEquipped(CharacterConst.Slot.RightHand);
             string targetId = EquipMap[equipIndex];
 
             if (currentEquipped != null && currentEquipped.Id == targetId) return;
             if (currentEquipped == null && targetId == null) return;
 
-            var backpack = actor.Container?.BodyContainer
-                ?.GetItem(CharacterConst.Slot.Back)?.NestedContainer;
-            if (backpack == null) return;
+            var backpackEntity = _entity.Query.Equipment?.GetEquipped(CharacterConst.Slot.Back);
+            if (backpackEntity == null) return;
 
             Entity target = null;
             if (targetId != null)
             {
-                target = backpack.FindItem(CharacterConst.Slot.ContainerSlot, targetId);
+                target = backpackEntity.Query.Inventory.FindItem(targetId);
                 if (target == null) return;
             }
 
             if (currentEquipped != null)
             {
-                bodyContainer.Remove(CharacterConst.Slot.RightHand, currentEquipped);
-                backpack.Place(CharacterConst.Slot.ContainerSlot, currentEquipped);
+                Remove(CharacterConst.Slot.RightHand, currentEquipped);
+                backpackEntity.Command.Place(CharacterConst.Slot.ContainerSlot, currentEquipped);
             }
             if (target != null)
             {
-                backpack.Remove(CharacterConst.Slot.ContainerSlot, target);
-                bodyContainer.Place(CharacterConst.Slot.RightHand, target);
+                backpackEntity.Command.Remove(CharacterConst.Slot.ContainerSlot, target);
+                Place(CharacterConst.Slot.RightHand, target);
             }
         }
 
-        // Future: Container / Item commands
+        // ── 输入状态 ──
+
+        internal void SetInputState(SCharacterInputState state)
+        {
+            var actor = Character;
+            if (actor != null) actor.InputState = state;
+        }
     }
 }

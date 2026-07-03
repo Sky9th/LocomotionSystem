@@ -15,7 +15,7 @@ namespace RedDust.Entities
     /// </summary>
     public class InventoryQuery
     {
-        private readonly Container.Container _container;
+        private readonly Container.RdContainer _container;
 
         /// <summary>容器中的所有物品</summary>
         public IReadOnlyList<Entity> AllItems =>
@@ -44,7 +44,7 @@ namespace RedDust.Entities
         /// <summary>容器中物品总数（去重前）</summary>
         public int ItemCount => _container?.AllItems()?.Count() ?? 0;
 
-        internal InventoryQuery(Container.Container container)
+        internal InventoryQuery(Container.RdContainer container)
         {
             _container = container;
         }

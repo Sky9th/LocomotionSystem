@@ -1,18 +1,13 @@
 using System;
-using System.Collections.Generic;
 using RedDust.Ability;
-using RedDust.Character;
+using RedDust.Entities;
 using UnityEngine;
 
 namespace RedDust.UI
 {
     /// <summary>
-    /// 技能栏 Overlay。动态槽位（技能树给几个就几个）+ 事件驱动激活。
-    ///
-    /// 订阅玩家 EventHub 的 InputSkill1/2/3Event，按槽位索引触发对应技能。
-    /// 单一 OnSkill handler，lambda 闭包捕获 slotIndex。
-    ///
-    /// TODO: 玩家自定义槽位缓存 — 未来玩家可把不同技能放到不同槽位。
+    /// 技能栏 Overlay。动态槽位 + 事件驱动激活。
+    /// 纯 Entity.Query.Ability 读数据，不再穿透 Actor/BuildContext。
     /// </summary>
     public class AbilityBarOverlay : UIOverlay
     {
@@ -23,26 +18,9 @@ namespace RedDust.UI
         [Header("Refresh")]
         [SerializeField] private float refreshRate = 0.15f;
 
-        private readonly List<UIIconSlot> _slots = new();
+        private readonly System.Collections.Generic.List<UIIconSlot> _slots = new();
         private ActiveAbilitySO[] _actives = Array.Empty<ActiveAbilitySO>();
-
-        // ═══════════════════════════════════════════════════════════════
-        // TODO: Input 事件消费者归位 — 以下事件订阅已迁至 AbilityExecutor。
-        // UI 只保留显示逻辑。后续 UI 重构时彻底清理。
-        // ═══════════════════════════════════════════════════════════════
-        // private Action<SButtonInputPayload> _onSkill0, _onSkill1, _onSkill2;
-        // private EventHub _playerEventHub;
-        // private bool _eventsBound;
-
         private float _refreshTimer;
-
-        // ── Lifecycle ────────────────────────────────────────────────
-
-        // protected override void OnDestroy()
-        // {
-        //     base.OnDestroy();
-        //     UnbindEvents();
-        // }
 
         private void Update()
         {
@@ -50,64 +28,18 @@ namespace RedDust.UI
             if (_refreshTimer < refreshRate) return;
             _refreshTimer = 0f;
 
-            var ctx = GetBuildContext();
-            if (ctx == null) return;
+            if (uiService == null) return;
+            var entity = uiService.PlayerEntity;
+            if (entity == null) return;
 
-            // TODO: Input 事件已迁至 AbilityExecutor，此处不再订阅
-            // BindEventsOnce(ctx);
+            var ability = entity.Query.Ability;
+            if (ability == null) return;
 
-            var actives = ctx.AbilityForest?.ResolvedActives ?? Array.Empty<ActiveAbilitySO>();
+            var actives = ability.ActiveAbilities;
             _actives = actives;
             EnsureSlots(actives.Length);
-            RefreshSlots(ctx);
+            RefreshSlots(ability);
         }
-
-        // ═══════════════════════════════════════════════════════════════
-        // TODO: Input 事件消费者归位 — 以下已迁至 AbilityExecutor。
-        // ═══════════════════════════════════════════════════════════════
-        //
-        // private void BindEventsOnce(CharacterBuildContext ctx)
-        // {
-        //     if (_eventsBound) return;
-        //     var hub = ctx.EventHub;
-        //     if (hub == null) return;
-        //     _onSkill0 = p => OnSkill(p, 0);
-        //     _onSkill1 = p => OnSkill(p, 1);
-        //     _onSkill2 = p => OnSkill(p, 2);
-        //     hub.Get<InputSkill1Event>().Register(_onSkill0);
-        //     hub.Get<InputSkill2Event>().Register(_onSkill1);
-        //     hub.Get<InputSkill3Event>().Register(_onSkill2);
-        //     _playerEventHub = hub;
-        //     _eventsBound = true;
-        // }
-        //
-        // private void UnbindEvents()
-        // {
-        //     if (!_eventsBound || _playerEventHub == null) return;
-        //     _playerEventHub.Get<InputSkill1Event>().Unregister(_onSkill0);
-        //     _playerEventHub.Get<InputSkill2Event>().Unregister(_onSkill1);
-        //     _playerEventHub.Get<InputSkill3Event>().Unregister(_onSkill2);
-        //     _eventsBound = false;
-        //     _playerEventHub = null;
-        // }
-        //
-        // private void OnSkill(SButtonInputPayload p, int slotIndex)
-        // {
-        //     if (!p.IsRequested) return;
-        //     if (slotIndex >= _actives.Length) return;
-        //     var ability = _actives[slotIndex];
-        //     if (ability == null) return;
-        //     var ctx = GetBuildContext();
-        //     if (ctx == null) return;
-        //     var origin = ctx.ModelRoot != null ? ctx.ModelRoot.position : Vector3.zero;
-        //     var direction = ctx.ModelRoot != null ? ctx.ModelRoot.forward : Vector3.forward;
-        //     var weapon = ctx.CharacterContainer?.BodyContainer?.GetItem(CharacterConst.Slot.RightHand);
-        //     Debug.Log($"[AbilityBar] Slot {slotIndex}: {ability.internalName}" +
-        //               (weapon != null ? $" | weapon={weapon.Preset.name}" : ""));
-        //     ctx.Ability.Enqueue(ability, origin, direction, weapon);
-        // }
-
-        // ── Slot Refresh ─────────────────────────────────────────────
 
         private void EnsureSlots(int count)
         {
@@ -125,45 +57,25 @@ namespace RedDust.UI
                 _slots[i].gameObject.SetActive(i < count);
         }
 
-        private void RefreshSlots(CharacterBuildContext ctx)
+        private void RefreshSlots(AbilityQuery ability)
         {
-            var executor = ctx.Ability;
-            var pipeline = executor?.Pipeline;
-
             for (int i = 0; i < _actives.Length && i < _slots.Count; i++)
             {
                 var slot = _slots[i];
-                var ability = _actives[i];
-                if (ability == null)
+                var active = _actives[i];
+                if (active == null)
                 {
                     slot.SetEmpty();
                     continue;
                 }
 
-                slot.SetIcon(ability.icon);
-                slot.SetSlotLabel(ability.displayName ?? ability.internalName);
+                slot.SetIcon(active.icon);
+                slot.SetSlotLabel(active.displayName ?? active.internalName);
 
-                if (executor != null)
-                {
-                    float remaining = executor.GetAbilityCooldownRemaining(ability);
-                    slot.SetCooldown(remaining, ability.cooldownDuration);
-
-                    bool isActive = pipeline != null
-                        && !pipeline.IsIdle
-                        && pipeline.Context.Ability == ability;
-                    slot.SetSelected(isActive);
-                }
+                float remaining = ability.GetCooldownRemaining(active);
+                slot.SetCooldown(remaining, active.cooldownDuration);
+                slot.SetSelected(ability.IsActive(active));
             }
-        }
-
-        // ── Context ──────────────────────────────────────────────────
-
-        // TODO: BuildContext 外部引用 — UI 层不应直接依赖 L3 CharacterBuildContext。
-        // 后续设计面向外部的只读接口（如 IAbilityStateProvider），由 CharacterActor 实现，UIService 暴露。
-        private CharacterBuildContext GetBuildContext()
-        {
-            if (uiService == null) return null;
-            return uiService.PlayerActor?.BuildContext;
         }
     }
 }

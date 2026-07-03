@@ -86,7 +86,6 @@ namespace RedDust.Character
         // ── Module Access（Command/Query 直接调用）──
         internal PathfindingAgent Pathfinding => pathfindingAgent;
         internal AbilityExecutor Ability => ability;
-        internal CharacterContainer Container => container;
 
         // ── Input ──
         internal SCharacterInputState InputState { get; set; } = SCharacterInputState.Default;
@@ -101,7 +100,6 @@ namespace RedDust.Character
         private AbilityExecutor ability;
         private AbilityReactor reactor;
         private CharacterCombat combat;
-        private CharacterContainer container;
         private CharacterEquipment equipment;
         private EventHub eventHub;
         private Identity identity;
@@ -138,7 +136,6 @@ namespace RedDust.Character
             characterKinematic = new CharacterKinematic(buildCtx, Registry);
             locomotionSimulator = new GroundLocomotion(Registry);
             combat = new CharacterCombat(buildCtx, Registry);
-            container = new CharacterContainer(buildCtx, Registry);
             equipment = new CharacterEquipment(buildCtx, Registry);
 
             // ModuleHub.Awake: 扫描 ModuleChildMono → Register → OnAssembleAll
@@ -147,8 +144,9 @@ namespace RedDust.Character
 
         protected override void Start()
         {
-            base.Start();  // Registry.OnWireAll() → CharacterContainer.OnWire 读取 ctx.Properties
+            base.Start();  // Registry.OnWireAll() — 子模块完成初始化
             buildCtx.Physique = CharacterPhysique.From(buildCtx.Properties);
+            buildCtx.Container = identity.Entity?.NestedContainer;
             // TODO: 饥饿消耗是测试代码。Actor 不应内联属性变化逻辑。
             buildCtx.Properties.AddModifier(new FloatModifier { Owner = this, TargetPath = CharacterConst.PropertyPath.Vitals.Hunger, Frequency = ModifierFrequency.PerSecond, Delta = -0.01f });
         }

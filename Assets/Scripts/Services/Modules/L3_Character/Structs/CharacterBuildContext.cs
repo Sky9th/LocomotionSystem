@@ -56,8 +56,8 @@ namespace RedDust.Character
         /// </summary>
         public RdTagContainer OwnedGripTags { get; } = new();
 
-        /// <summary>角色容器模块——持有身体装备 Container。CharacterContainer 构造后赋值。</summary>
-        public CharacterContainer CharacterContainer { get; internal set; }
+        /// <summary>身体装备容器 — Entity.NestedContainer 的本地缓存。Start 后可用。</summary>
+        public Container.RdContainer Container { get; internal set; }
 
         // ── 系统级物理配置（世界定义，所有角色共享） ──
         public GroundSystemConfigSO GroundSystemConfig { get; }

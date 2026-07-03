@@ -35,7 +35,6 @@ namespace RedDust.Player
         private GameObject playerInstance;
         private string playerEntityId;
         private Entity _playerEntity;
-        private CharacterActor _playerActor;
 
         // ── 持久输入状态 ──
         private EPosture _currentPosture = EPosture.Standing;
@@ -129,11 +128,10 @@ namespace RedDust.Player
 
             if (GameContext.Instance.TryResolveService<EntityService>(out var es))
                 _playerEntity = es.Get(e.EntityId);
-            _playerActor = e.View?.GetComponent<CharacterActor>();
 
             GameContext.Instance.UpdateSnapshot(
                 SPlayer.FromTransform(playerInstance.transform, isLocalPlayer: true));
-            _eventHub.Get<PlayerSpawnedEvent>().Raise(new SPlayerSpawnedEvent(playerInstance.transform, isLocalPlayer: true));
+            _eventHub.Get<PlayerSpawnedEvent>().Raise(new SPlayerSpawnedEvent(playerInstance.transform, _playerEntity.Id, isLocalPlayer: true));
 
             StartCoroutine(SpawnTestEntitiesNextFrame());
         }
@@ -152,16 +150,9 @@ namespace RedDust.Player
                 return;
             }
 
-            if (_playerActor == null)
+            if (_playerEntity == null)
             {
-                Debug.LogError("[PlayerService] CharacterActor not found on player instance.");
-                return;
-            }
-
-            var container = _playerActor.BuildContext?.CharacterContainer?.BodyContainer;
-            if (container == null)
-            {
-                Debug.LogError("[PlayerService] BodyContainer is null.");
+                Debug.LogError("[PlayerService] Player entity not found.");
                 return;
             }
 
@@ -189,11 +180,11 @@ namespace RedDust.Player
             var bp = entityService.Get(backpackId);
             if (bp == null)
             {
-                Debug.LogError($"[PlayerService] Spawn backpack failed — entityService.Get(\"{backpackId}\") returned null.");
+                Debug.LogError($"[PlayerService] Spawn backpack failed.", this);
                 return;
             }
 
-            container.Place("Back", bp);
+            _playerEntity.Command.Place("Back", bp);
 
             // Blade → 背包
             if (bladeDef != null)
@@ -201,8 +192,8 @@ namespace RedDust.Player
                 const string bladeId = "test_blade";
                 spawnRequestEvent.Raise(new SEntitySpawnRequest(bladeDef, bladeId, null));
                 var blade = entityService.Get(bladeId);
-                if (blade != null && bp.NestedContainer != null)
-                    bp.NestedContainer.Place("ContainerSlot", blade);
+                if (blade != null)
+                    bp.Command.Place("ContainerSlot", blade);
             }
 
             // Pistol → 背包
@@ -211,8 +202,8 @@ namespace RedDust.Player
                 const string pistolId = "test_pistol";
                 spawnRequestEvent.Raise(new SEntitySpawnRequest(pistolDef, pistolId, null));
                 var pistol = entityService.Get(pistolId);
-                if (pistol != null && bp.NestedContainer != null)
-                    bp.NestedContainer.Place("ContainerSlot", pistol);
+                if (pistol != null)
+                    bp.Command.Place("ContainerSlot", pistol);
             }
         }
 
@@ -224,7 +215,6 @@ namespace RedDust.Player
             playerInstance = null;
             playerEntityId = null;
             _playerEntity = null;
-            _playerActor = null;
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -255,15 +245,15 @@ namespace RedDust.Player
 
         private void WriteInputState()
         {
-            if (_playerActor == null) return;
+            if (_playerEntity == null) return;
             bool hasAim = TryGetMouseGround(out var aimPoint);
-            _playerActor.InputState = new SCharacterInputState
+            _playerEntity.Command.SetInputState(new SCharacterInputState
             {
                 AimPoint = aimPoint,
                 HasAimPoint = hasAim,
                 DesiredPosture = _currentPosture,
                 WantsSprint = _wantsSprint,
-            };
+            });
         }
     }
 }

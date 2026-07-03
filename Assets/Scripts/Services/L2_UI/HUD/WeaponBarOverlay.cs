@@ -1,21 +1,12 @@
 using System.Collections.Generic;
-using System.Linq;
-using RedDust.Character;
 using RedDust.Entities;
 using UnityEngine;
 
 namespace RedDust.UI
 {
     /// <summary>
-    /// 武器栏 Overlay。动态槽位——背包里几个武器就几个槽位。
-    ///
-    /// TODO: BuildContext 外部引用 — 当前直接穿透 PlayerActor → BuildContext → CharacterContainer
-    /// → BodyContainer → GetItem("Back") → NestedContainer，四层链直达 L3 Character 内部。
-    /// UI 层不应知道 Back 槽位、NestedContainer 这些 L3 概念。
-    /// 后续武器槽位系统应提供只读的 IWeaponSlotProvider，由 CharacterActor 实现，UIService 暴露。
-    ///
-    /// 暂时裸读背包容器，后续会有专用武器槽位系统。
-    /// TODO: 专用武器槽位系统，不再是裸读背包。
+    /// 武器栏 Overlay。动态槽位——身体装备几个就几个槽位。
+    /// 纯数据驱动，通过 Entity.Query.Equipment 遍历身体槽位装备。
     /// </summary>
     public class WeaponBarOverlay : UIOverlay
     {
@@ -35,15 +26,16 @@ namespace RedDust.UI
             if (_refreshTimer < refreshRate) return;
             _refreshTimer = 0f;
 
-            var ctx = GetBuildContext();
-            if (ctx == null) return;
+            if (uiService == null) return;
+            var entity = uiService.PlayerEntity;
+            if (entity == null) return;
 
-            var items = GetBackpackItems(ctx);
-            EnsureSlots(items.Count);
-            RefreshSlots(items);
+            var equipped = entity.Query.Equipment?.GetAllEquipped();
+            if (equipped == null) return;
+
+            EnsureSlots(equipped.Count);
+            RefreshSlots(equipped);
         }
-
-        // ── Slot Refresh ─────────────────────────────────────────────
 
         private void EnsureSlots(int count)
         {
@@ -61,12 +53,12 @@ namespace RedDust.UI
                 _slots[i].gameObject.SetActive(i < count);
         }
 
-        private void RefreshSlots(List<Entity> items)
+        private void RefreshSlots(IReadOnlyList<(string slotId, Entity item)> equipped)
         {
-            for (int i = 0; i < items.Count && i < _slots.Count; i++)
+            for (int i = 0; i < equipped.Count && i < _slots.Count; i++)
             {
                 var slot = _slots[i];
-                var entity = items[i];
+                var (slotId, entity) = equipped[i];
                 if (entity == null)
                 {
                     slot.SetEmpty();
@@ -74,38 +66,13 @@ namespace RedDust.UI
                 }
 
                 slot.SetIcon(null); // TODO: ItemDefSO 暂无 icon 字段
-                slot.SetSlotLabel(entity.Preset != null ? entity.Preset.name : "???");
-
-                // 显示武器标签
-                var tags = entity.Properties?.GetTagList(CharacterConst.PropertyPath.CommonTags);
+                var name = entity.Query.Preset != null ? entity.Query.Preset.name : "???";
+                var tags = entity.Query.Properties?.GetTagList(Entity.CommonTagsPath);
                 if (tags != null && tags.Length > 0)
-                    slot.SetSlotLabel($"{entity.Preset?.name ?? "???"} [{string.Join(", ", tags)}]");
+                    slot.SetSlotLabel($"{slotId}: {name} [{string.Join(", ", tags)}]");
+                else
+                    slot.SetSlotLabel($"{slotId}: {name}");
             }
-        }
-
-        // ── Data ─────────────────────────────────────────────────────
-
-        // TODO: BuildContext 外部引用 — 4 层穿透直达 L3 Character 内部结构。
-        // ctx.CharacterContainer?.BodyContainer?.GetItem("Back")?.NestedContainer
-        // 后续收敛为只读外部接口，UI 层只拿武器列表，不知道来源是哪个身体槽位。
-        private static List<Entity> GetBackpackItems(CharacterBuildContext ctx)
-        {
-            var result = new List<Entity>();
-            var backpack = ctx.CharacterContainer?.BodyContainer
-                ?.GetItem(CharacterConst.Slot.Back)
-                ?.NestedContainer;
-
-            if (backpack == null) return result;
-
-            result.AddRange(backpack.AllItems().Where(e => e != null));
-            return result;
-        }
-
-        // TODO: BuildContext 外部引用 — 同上 AbilityBarOverlay，后续收敛到外部接口。
-        private CharacterBuildContext GetBuildContext()
-        {
-            if (uiService == null) return null;
-            return uiService.PlayerActor?.BuildContext;
         }
     }
 }

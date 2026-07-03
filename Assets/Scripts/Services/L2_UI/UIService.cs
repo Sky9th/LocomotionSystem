@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using DG.Tweening;
-using RedDust.Character;
 using RedDust.Core;
 using RedDust.Core.Events;
+using RedDust.Entities;
 using RedDust.GameState;
 using RedDust.Properties;
 using RedDust.GameScene;
@@ -28,13 +28,12 @@ namespace RedDust.UI
         private bool hasCurrentScreen;
         private readonly List<UIOverlay> activeOverlays = new();
         private EGameState pendingTargetState;
-        private CharacterActor _playerActor;
+        private Entity _playerEntity;
 
         public bool IsInputBlocked { get; private set; }
 
-        // TODO: BuildContext 外部引用 — CharacterActor 的暴露让 UI 层可以穿透到 L3 Character 内部。
-        // 后续应设计面向外部的只读接口（如 IAbilityStateProvider），由 CharacterActor 实现，UIService 暴露接口而非具体类型。
-        internal CharacterActor PlayerActor => _playerActor;
+        /// <summary>玩家 Entity — 供 UI 通过 Command/Query 读写数据。</summary>
+        public Entity PlayerEntity => _playerEntity;
 
         public override void OnAssemble()
         {
@@ -161,7 +160,7 @@ namespace RedDust.UI
 
         public void OnGameplaySessionEnd()
         {
-            _playerActor = null;
+            _playerEntity = null;
             HideAllOverlays();
         }
 
@@ -173,7 +172,7 @@ namespace RedDust.UI
 
         public bool TryGetPlayerProps(out PropertyTable props)
         {
-            props = _playerActor != null ? _playerActor.BuildContext.Properties : null;
+            props = _playerEntity?.Query.Properties;
             return props != null;
         }
 
@@ -346,7 +345,9 @@ namespace RedDust.UI
         private void HandlePlayerSpawned(SPlayerSpawnedEvent evt)
         {
             if (!evt.IsLocalPlayer) return;
-            _playerActor = evt.Root != null ? evt.Root.GetComponent<CharacterActor>() : null;
+            if (!string.IsNullOrEmpty(evt.EntityId)
+                && GameContext.Instance.TryResolveService<EntityService>(out var es))
+                _playerEntity = es.Get(evt.EntityId);
         }
 
         private void HandleGameState(SGameState state)

@@ -12,7 +12,7 @@ namespace RedDust.Entities
     /// </summary>
     public class EquipmentQuery
     {
-        private readonly Container.Container _bodyContainer;
+        private readonly Container.RdContainer _bodyContainer;
 
         /// <summary>获取指定槽位的装备（如 "RightHand", "Head"）</summary>
         public Entity GetEquipped(string slotId)
@@ -23,10 +23,16 @@ namespace RedDust.Entities
         /// <summary>获取所有已装备的 (槽位, 物品) 列表</summary>
         public IReadOnlyList<(string slotId, Entity item)> GetAllEquipped()
         {
-            // BodyContainer 的 slot 遍历方式取决于 Container 实现。
-            // MVP：外部调用者已知槽位名，逐槽查询。
-            // Future：Container 暴露 Slots 后可改为自动遍历。
-            return new List<(string, Entity)>();
+            if (_bodyContainer == null) return System.Array.Empty<(string, Entity)>();
+
+            var result = new List<(string, Entity)>();
+            foreach (var slot in _bodyContainer.SlotsOrdered)
+            {
+                if (slot.IsEmpty) continue;
+                foreach (var entity in slot.Items)
+                    result.Add((slot.Def.SlotId, entity));
+            }
+            return result;
         }
 
         /// <summary>指定槽位是否有装备</summary>
@@ -38,7 +44,7 @@ namespace RedDust.Entities
         /// <summary>右手武器（便捷属性）</summary>
         public Entity RightHand => GetEquipped("RightHand");
 
-        internal EquipmentQuery(Container.Container bodyContainer)
+        internal EquipmentQuery(Container.RdContainer bodyContainer)
         {
             _bodyContainer = bodyContainer;
         }

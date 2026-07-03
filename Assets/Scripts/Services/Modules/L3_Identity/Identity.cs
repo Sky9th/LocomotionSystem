@@ -1,4 +1,5 @@
 using RedDust.Core;
+using RedDust.Entities;
 using RedDust.Properties;
 using UnityEngine;
 
@@ -21,6 +22,9 @@ namespace RedDust
         public string EntityId => _entityId;
         [SerializeField] private string _entityId;
 
+        /// <summary>关联的 Entity 数据对象。由 EntityService.Spawn 在 BindEntity 后设置。</summary>
+        public Entity Entity { get; internal set; }
+
         /// <summary>实体持有的设计标签集合。物种、阵营、身份等。</summary>
         public RdTagContainer Tags { get; } = new();
 
@@ -41,7 +45,7 @@ namespace RedDust
         internal void SetProperties(PropertyTable properties)
         {
             Properties = properties;
-            var entityTags = properties?.GetTagList("Common/Tags");
+            var entityTags = properties?.GetTagList(Entity.CommonTagsPath);
             if (entityTags != null)
             {
                 foreach (var tag in entityTags)

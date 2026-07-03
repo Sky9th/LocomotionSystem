@@ -46,7 +46,7 @@ namespace RedDust.Character
         /// </summary>
         public void SyncEquipment()
         {
-            var bodyContainer = ctx.CharacterContainer?.BodyContainer;
+            var bodyContainer = ctx.Container;
             if (bodyContainer == null) return;
 
             // 1. 读当前 Container 状态
@@ -90,7 +90,7 @@ namespace RedDust.Character
 
         // ── Slot State ──
 
-        private static Dictionary<string, string> ReadSlotState(Container.Container container)
+        private static Dictionary<string, string> ReadSlotState(Container.RdContainer container)
         {
             var state = new Dictionary<string, string>();
             foreach (var slot in container.SlotsOrdered)
@@ -101,7 +101,7 @@ namespace RedDust.Character
             return state;
         }
 
-        private static Entity FindInSlot(Container.Container container, string slotKey, string entityId)
+        private static Entity FindInSlot(Container.RdContainer container, string slotKey, string entityId)
         {
             var slot = container.GetSlot(slotKey);
             if (slot == null) return null;
@@ -156,7 +156,7 @@ namespace RedDust.Character
         /// 动画系统用 Equip.Grip.* 选动画集，AbilityForest 用 Weapon.* 过滤技能树。
         /// Container 全空时跳过 —— 保留 PlayerDirector hack 可用。
         /// </summary>
-        private void SyncGripTags(Container.Container container)
+        private void SyncGripTags(Container.RdContainer container)
         {
             bool hasEquipment = false;
             foreach (var slot in container.SlotsOrdered)

@@ -79,7 +79,7 @@ namespace RedDust.Container
         private bool AcceptsTag(Entity entity)
         {
             if (Def.AcceptTags is not { Length: > 0 }) return true;
-            var tags = entity.Properties.GetTagList("Common/Tags");
+            var tags = entity.Properties.GetTagList(Entity.CommonTagsPath);
             if (tags == null || tags.Length == 0) return false;
             foreach (var acceptTag in Def.AcceptTags)
             {

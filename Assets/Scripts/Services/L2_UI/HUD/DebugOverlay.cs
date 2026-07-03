@@ -1,22 +1,18 @@
 using System.Text;
 using RedDust.Ability;
-using RedDust.Character;
 using TMPro;
 using UnityEngine;
 
 namespace RedDust.UI
 {
     /// <summary>
-    /// 技能管道调试 Overlay。开发工具——显示管道状态、冷却计时、当前技能。
-    ///
-    /// 独立 Overlay，右上角固定，可随时开关不影响 gameplay HUD。
-    /// 遵循 VitalsOverlay 模式：UIOverlay 子类 + refreshRate 轮询 + DeltaTime。
+    /// 技能管道调试 Overlay。右上角固定，开发工具。
+    /// 纯 Entity.Query.Ability 读数据。
     /// </summary>
     public class DebugOverlay : UIOverlay
     {
         [Header("Pipeline State")]
         [SerializeField] private TMP_Text stateLabel;
-        [SerializeField] private TMP_Text stateTimeLabel;
         [SerializeField] private TMP_Text currentAbilityLabel;
 
         [Header("Cooldowns")]
@@ -35,64 +31,53 @@ namespace RedDust.UI
             _refreshTimer = 0f;
 
             if (uiService == null) return;
-            // TODO: BuildContext 外部引用 — 同上，后续收敛到外部接口。
-            var ctx = uiService.PlayerActor?.BuildContext;
-            if (ctx == null) return;
+            var entity = uiService.PlayerEntity;
+            if (entity == null) return;
 
-            var ability = ctx.Ability;
+            var ability = entity.Query.Ability;
             if (ability == null) return;
 
-            var pipeline = ability.Pipeline;
-
-            // ── Pipeline State ──
-            if (stateLabel != null)
-            {
-                stateLabel.text = pipeline.IsIdle
-                    ? "Idle"
-                    : pipeline.CurrentState.ToString();
-            }
-
-            if (stateTimeLabel != null)
-            {
-                stateTimeLabel.text = pipeline.IsIdle
-                    ? ""
-                    : $"State Time: {pipeline.StateTime:F2}s";
-            }
-
-            if (currentAbilityLabel != null)
-            {
-                currentAbilityLabel.text = pipeline.IsIdle
-                    ? "--"
-                    : pipeline.Context.Ability?.internalName ?? "--";
-            }
+            var actives = ability.ActiveAbilities;
 
             // ── Cooldowns ──
             if (cooldownLabel != null)
             {
                 _sb.Clear();
-                var actives = ctx.AbilityForest?.ResolvedActives;
-                if (actives != null)
+                if (actives.Length > 0)
                 {
-                    bool hasAny = false;
                     foreach (var a in actives)
                     {
                         if (a == null) continue;
-                        var remaining = ability.GetAbilityCooldownRemaining(a);
+                        var remaining = ability.GetCooldownRemaining(a);
                         _sb.AppendLine(remaining > 0f
                             ? $"{a.internalName}: {remaining:F1}s / {a.cooldownDuration:F1}s"
                             : $"{a.internalName}: Ready");
-                        hasAny = true;
                     }
-                    if (!hasAny)
-                        _sb.AppendLine("No abilities resolved");
                 }
                 else
                 {
                     _sb.AppendLine("No abilities resolved");
                 }
-
                 cooldownLabel.text = _sb.ToString();
             }
+
+            // ── Active Ability ──
+            if (currentAbilityLabel != null)
+            {
+                string activeName = "--";
+                foreach (var a in actives)
+                {
+                    if (a != null && ability.IsActive(a))
+                    {
+                        activeName = a.internalName;
+                        break;
+                    }
+                }
+                currentAbilityLabel.text = activeName;
+            }
+
+            if (stateLabel != null)
+                stateLabel.text = actives.Length > 0 ? $"{actives.Length} abilities" : "Idle";
         }
     }
 }

@@ -12,7 +12,7 @@ namespace RedDust.Container
     /// 容器不负责 Tick——由容器所有者在 Update 中调用 Container.Tick(dt)。
     /// Entity 引用指向 EntityService 注册表中的同一对象。
     /// </summary>
-    public class Container
+    public class RdContainer
     {
         public string ContainerId { get; }
 
@@ -35,7 +35,7 @@ namespace RedDust.Container
         /// 从 SlotDef[] 构造容器。
         /// SlotId 重复 → Debug.LogError + skip，不抛异常。
         /// </summary>
-        public Container(string containerId, SlotDef[] slotDefs, float carryWeightMax = 0f)
+        public RdContainer(string containerId, SlotDef[] slotDefs, float carryWeightMax = 0f)
         {
             ContainerId = containerId;
             CarryWeightMax = carryWeightMax;
