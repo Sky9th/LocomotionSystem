@@ -19,6 +19,8 @@
 |------|------|------|
 | 被依赖 | DriverArbiter | 裁决和播放 |
 | 被依赖 | TraversalDriver | 请求提交 |
+| 被依赖 | AbilityDriver | 读取 CustomData、调回调 |
+| 被依赖 | AnimationBrain | 按 DriverType 路由 |
 | 依赖 | AnimationClip | 直接播放 Clip |
 
 ## 公开属性
@@ -37,16 +39,31 @@ public int Resistance;                             // 优先级 (数字越大越
 public OnCompleteBehavior OnComplete;              // 播完后的行为
 public OnInterruptedBehavior OnInterrupted;        // 被中断后的行为
 
-// 通道
+// 通道 + 路由
 public int ChannelMask;                            // 目标动画层通道
+public EDriverType DriverType;                     // Brain 据此路由请求到对应 Driver
 
-public bool HasClip => Clip != null;               // 是否有直接 Clip
-public bool HasAlias => Alias != null;             // 是否有别名
+// 载荷 + 回调
+public object CustomData;                          // 调用方附加数据（如 AbilityActivationSO）
+public System.Action OnMarker;                     // 内部标记事件（如激发帧）
+public System.Action OnCompleted;                  // 正常播完回调
+public System.Action OnInterrupt;                  // 被中断回调
+
+public bool HasClip => Clip != null;
 ```
+
+### EDriverType
+
+```csharp
+public enum EDriverType { Ability, Traversal }
+```
+
+Brain 的 `SubmitRequest(request)` 重载根据此字段解析对应 Driver，调用方无需持有 Driver 引用。
 
 ## 未来规划
 
 | 规划 | 状态 | 来源 |
 |------|------|------|
 | Tags 用于过滤 HeadLook（战斗/反应时关闭） | 待做 | 旧 animation-design.md |
-| OnStarted/OnCompleted/OnInterrupted 回调（class 暂未包含，TraversalDriver 通过 OnStarted 等实现） | 当前 | 接口方式实现 |
+| OnMarker/OnCompleted/OnInterrupt 回调 | ✅ Done 2026-07-04 | ability-driver-callback-refactor |
+| Tags 用于过滤 HeadLook（战斗/反应时关闭） | 待做 | 旧 animation-design.md |

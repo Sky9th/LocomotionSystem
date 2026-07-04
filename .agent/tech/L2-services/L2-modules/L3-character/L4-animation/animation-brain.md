@@ -124,13 +124,20 @@ internal void UnregisterDriver(ICharacterAnimationDriver driver)
 - **用途**: Driver 注册/注销 — 委托给 DriverArbiter
 - **调用者**: BaseCharacterAnimationDriver.OnEnable/OnDisable
 
-### SubmitRequest / Release
+### SubmitRequest(driver, request) / SubmitRequest(request)
 ```csharp
 internal void SubmitRequest(ICharacterAnimationDriver driver, AnimationRequest request)
-internal void Release(ICharacterAnimationDriver driver)
+internal void SubmitRequest(AnimationRequest request)
 ```
-- **用途**: Driver 动画请求提交/主动释放 — 委托给 DriverArbiter
-- **调用者**: Driver（如 TraversalDriver）
+- **用途**: 动画请求提交。带 driver 参数的重载由 Driver 内部调用；无 driver 参数的重载按 `request.DriverType` 解析对应 Driver，外部调用方无需持有 Driver 引用
+- **调用者**: Driver 内部 / 外部通过 Brain 门面
+
+### Release()
+```csharp
+internal void Release()
+```
+- **用途**: 释放当前活跃 Driver — 委托给 DriverArbiter.ReleaseActive()
+- **调用者**: 外部（不打断不需要指定 Driver，同一时间只有一个活跃）
 
 ### BindLayer()
 ```csharp

@@ -200,14 +200,22 @@ namespace RedDust.Character.Animation
             fullBodyArbiter?.UnregisterDriver(driver);
         }
 
-        internal void SubmitRequest(ICharacterAnimationDriver driver, AnimationRequest request)
+        /// <summary>提交 AnimationRequest。Brain 根据 DriverType 内部解析对应 Driver，调用方无需持有 Driver 引用。</summary>
+        internal void SubmitRequest(AnimationRequest request)
         {
-            fullBodyArbiter?.SubmitRequest(driver, request);
+            if (request == null) return;
+            var driver = request.DriverType switch
+            {
+                EDriverType.Ability => (ICharacterAnimationDriver)GetComponent<AbilityDriver>(),
+                EDriverType.Traversal => GetComponent<TraversalDriver>(),
+                _ => null
+            };
+            if (driver != null) fullBodyArbiter?.SubmitRequest(driver, request);
         }
 
-        internal void Release(ICharacterAnimationDriver driver)
+        internal void Release()
         {
-            fullBodyArbiter?.Release(driver);
+            fullBodyArbiter?.ReleaseActive();
         }
 
         // ── Helpers ──

@@ -60,15 +60,14 @@ namespace RedDust.Character.Animation
             queue.Add((driver, request));
         }
 
-        public void Release(ICharacterAnimationDriver driver)
+        /// <summary>释放当前活跃 Driver，归还默认 LocomotionDriver。</summary>
+        public void ReleaseActive()
         {
-            if (driver == activeDriver)
-            {
-                activeDriver.OnInterrupted(null);
-                activeRequest = null;
-                activeDriver = defaultDriver;
-                defaultDriver?.OnResumed();
-            }
+            if (activeRequest == null) return;
+            activeDriver?.OnInterrupted(null);
+            activeRequest = null;
+            activeDriver = defaultDriver;
+            defaultDriver?.OnResumed();
         }
 
         // ── 每帧调度 ──
@@ -111,11 +110,6 @@ namespace RedDust.Character.Animation
                         activeDriver.OnInterrupted(request);
                     AcceptRequest(driver, request);
                 }
-                else if (request.Resistance >= activeRequest.Resistance && CanInterrupt(activeDriver, driver))
-                {
-                    activeDriver.OnInterrupted(request);
-                    AcceptRequest(driver, request);
-                }
                 else
                 {
                     Debug.LogWarning($"[DriverArbiter] Request skipped — " +
@@ -127,26 +121,12 @@ namespace RedDust.Character.Animation
             queue.Clear();
         }
 
-        /// <summary>
-        /// 同类 Driver 可互相打断，异类互斥（Ability ↔ Traversal 不可打断）。
-        /// Locomotion（默认驱动，无 activeRequest）不在此检查——已在 activeRequest==null 分支处理。
-        /// </summary>
-        private static bool CanInterrupt(ICharacterAnimationDriver active, ICharacterAnimationDriver incoming)
-        {
-            if (active.GetType() == incoming.GetType()) return true;
-            // 默认驱动（LocomotionDriver）不提交 Request，不会出现在 active 位置
-            // 异类（Ability vs Traversal）：互不可打断
-            return false;
-        }
-
         private void AcceptRequest(ICharacterAnimationDriver driver, AnimationRequest request)
         {
             activeDriver = driver;
             activeRequest = request;
             activeCompleted = false;
             driver.OnStarted(request);
-            // 不播放 — Driver 在 OnStarted() 中自行处理 layer。
-            // OnInterrupted 由 ProcessQueue 在调用 AcceptRequest 前统一处理。
         }
 
         private void CheckCompletion()

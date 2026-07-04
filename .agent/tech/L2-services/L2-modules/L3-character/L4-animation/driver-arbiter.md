@@ -66,12 +66,13 @@ public void SubmitRequest(ICharacterAnimationDriver driver, AnimationRequest req
 - **调用者**: Driver 在 Evaluate() 中提交
 - **备注**: 同 Driver 重复提交 → 最后一次覆盖
 
-### Release()
+### ReleaseActive()
 ```csharp
-public void Release(ICharacterAnimationDriver driver)
+public void ReleaseActive()
 ```
-- **用途**: Driver 主动释放自己的 Active 状态（如 Dance 取消）
-- **调用者**: Driver
+- **用途**: 释放当前活跃 Driver，归还默认 LocomotionDriver
+- **调用者**: `AnimationBrain.Release()`
+- **备注**: 替代旧 `Release(ICharacterAnimationDriver driver)`（2026-07-04 移除，同一时间只有一个活跃 Driver）
 
 ### Resolve()
 ```csharp
