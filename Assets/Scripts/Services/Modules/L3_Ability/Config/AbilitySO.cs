@@ -31,8 +31,8 @@ namespace RedDust.Ability
         [Tooltip("冷却时长（秒）。0=无冷却。")]
         public float cooldownDuration;
 
-        [Tooltip("联动冷却标签。非 null=与其他技能共享冷却。")]
-        public RdTagDefSO sharedCooldownTag;
+        [Tooltip("联动冷却标签。与这些标签的其他技能共享冷却。")]
+        public RdTagDefSO[] sharedCooldownTags;
 
 #if UNITY_EDITOR
         private void OnValidate()

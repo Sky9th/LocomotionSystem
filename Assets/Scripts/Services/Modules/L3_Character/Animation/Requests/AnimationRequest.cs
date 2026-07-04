@@ -26,13 +26,13 @@ namespace RedDust.Character.Animation
         public object CustomData;
 
         /// <summary>Driver 内部标记事件触发时调用（如激发帧到达）。</summary>
-        public System.Action OnMarker;
+        public System.Action<AnimationRequest> OnMarker;
 
         /// <summary>动画正常播完时调用。</summary>
-        public System.Action OnCompleted;
+        public System.Action<AnimationRequest> OnCompleted;
 
         /// <summary>动画被中断时调用。</summary>
-        public System.Action OnInterrupt;
+        public System.Action<AnimationRequest> OnInterrupt;
 
         /// <summary>Brain 据此路由到对应的 Driver。</summary>
         public EDriverType DriverType;

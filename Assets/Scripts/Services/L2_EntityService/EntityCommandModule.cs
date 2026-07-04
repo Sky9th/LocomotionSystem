@@ -35,8 +35,9 @@ namespace RedDust.Entities
             var def = actives[slotIndex];
             if (def == null || actor.Ability == null) return;
 
+            actor.Pathfinding?.Stop();
             var weapon = _entity.Query.Equipment?.GetEquipped(CharacterConst.Slot.RightHand);
-            actor.Ability.Enqueue(def, ctx.ModelRoot.position,
+            actor.Ability.TryUse(def, ctx.ModelRoot.position,
                 ctx.ModelRoot.forward, weapon);
         }
 

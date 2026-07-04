@@ -15,10 +15,8 @@ namespace RedDust.Ability
 
         // State 链由每个 State 内部决定下一站，Pipeline 不组装。
 
-        /// <summary>管道空闲——未启动或已到达终态（Completed/Rejected）。</summary>
-        public bool IsIdle => _fsm.Current == null
-            || _fsm.Current is CompletedState
-            || _fsm.Current is RejectedState;
+        /// <summary>管道空闲——未启动或已完成。Rejected 不算空闲（避免被输入重试死循环）。</summary>
+        public bool IsIdle => _fsm.Current == null || _fsm.Current is CompletedState;
 
         public SActiveAbilityContext Context => _ctx;
         public float StateTime => _fsm.StateTime;
@@ -38,6 +36,9 @@ namespace RedDust.Ability
             Vector3 direction,
             Entity weaponEntity = null)
         {
+            if (!IsIdle && _fsm.Current is not RejectedState)
+                return false;
+
             _ctx = new SActiveAbilityContext
             {
                 Ability = ability,
@@ -46,9 +47,6 @@ namespace RedDust.Ability
                 Origin = origin,
                 Direction = direction,
             };
-
-            Debug.Log($"[ActivePipeline] Start: {ability.internalName} | origin={origin} dir={direction}" +
-                      (weaponEntity != null ? $" | weapon={weaponEntity.Preset.name}" : ""));
 
             return _fsm.Start(new GatingState(), ref _ctx);
         }
@@ -62,19 +60,6 @@ namespace RedDust.Ability
             _fsm.Tick(ref _ctx, dt);
 
             if (_fsm.Current == prev) return;
-
-            var id = (_fsm.Current as AbilityPipelineState)?.Id;
-            Debug.Log($"[ActivePipeline] {(prev as AbilityPipelineState)?.Id} → {id}");
-
-            switch (id)
-            {
-                case EActiveAbilityState.Completed:
-                    Debug.Log($"[ActivePipeline] ✅ Pipeline completed | targets={_ctx.Targets?.Count ?? 0} | hits={_ctx.Hits?.Count ?? 0}");
-                    break;
-                case EActiveAbilityState.Rejected:
-                    Debug.LogWarning($"[ActivePipeline] ❌ Pipeline rejected | ability={_ctx.Ability.internalName}");
-                    break;
-            }
         }
 
         /// <summary>

@@ -91,33 +91,17 @@ namespace RedDust.Character.Animation
         {
             if (queue.Count == 0) return;
 
-            // H2: 稳定排序 — 先 Resistance 降序，再按类型名保证确定性
-            var sorted = new List<(ICharacterAnimationDriver, AnimationRequest)>(queue);
-            sorted.Sort((a, b) =>
-            {
-                int cmp = b.Item2.Resistance.CompareTo(a.Item2.Resistance);
-                if (cmp != 0) return cmp;
-                return string.CompareOrdinal(a.Item1.GetType().Name, b.Item1.GetType().Name);
-            });
+            var (driver, request) = queue[0];
 
-            // H3: snapshot 防止 OnStarted 内 SubmitRequest 并发修改
-            foreach (var (driver, request) in sorted)
+            if (activeRequest == null)
             {
-                if (activeRequest == null)
-                {
-                    // H1: 默认驱动被抢占时通知
-                    if (activeDriver != null && activeDriver != driver)
-                        activeDriver.OnInterrupted(request);
-                    AcceptRequest(driver, request);
-                }
-                else
-                {
-                    Debug.LogWarning($"[DriverArbiter] Request skipped — " +
-                        $"incoming={driver.GetType().Name} (R={request.Resistance}) vs " +
-                        $"active={activeDriver?.GetType().Name} (R={activeRequest.Resistance}) — " +
-                        $"resistance too low or cannot interrupt");
-                }
+                // H1: 默认驱动被抢占时通知
+                if (activeDriver != null && activeDriver != driver)
+                    activeDriver.OnInterrupted(request);
+                AcceptRequest(driver, request);
             }
+            // TODO: 受击等强制打断 — activeRequest != null 时按 Resistance 比较决定是否抢占
+
             queue.Clear();
         }
 
@@ -136,15 +120,9 @@ namespace RedDust.Character.Animation
             if (t >= 0.99f)
             {
                 activeDriver?.OnCompleted();
-
-                if (activeRequest.OnComplete == OnCompleteBehavior.Resume)
-                {
-                    activeRequest = null;
-                    activeDriver = defaultDriver;
-                    defaultDriver?.OnResumed();
-                }
-                // Stay: activeRequest/activeDriver 保持，同 Driver 新请求可替换，外部 Release 可归还
-
+                activeRequest = null;
+                activeDriver = defaultDriver;
+                defaultDriver?.OnResumed();
                 activeCompleted = true;
             }
         }

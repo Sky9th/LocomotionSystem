@@ -25,10 +25,7 @@ namespace RedDust.Ability
             var e = ctx.Executor;
 
             if (a.selfEffects == null)
-            {
-                Debug.Log($"[Cost] No selfEffects — skip. → Activation");
                 return new WindupState();
-            }
 
             // 收集全部 CostEffectSO（正消耗 + 负恢复）
             var costs = new List<CostEffectSO>();
@@ -39,10 +36,7 @@ namespace RedDust.Ability
             }
 
             if (costs.Count == 0)
-            {
-                Debug.Log($"[Cost] No cost effects — skip. → Activation");
                 return new WindupState();
-            }
 
             var props = e.PropertyTable;
 
@@ -74,7 +68,6 @@ namespace RedDust.Ability
                 return new RejectedState();
             }
 
-            Debug.Log($"[Cost] Deducted: {a.internalName} → Activation");
             return new WindupState();
         }
 

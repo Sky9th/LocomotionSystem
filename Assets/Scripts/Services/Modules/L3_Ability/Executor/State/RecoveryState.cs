@@ -28,33 +28,29 @@ namespace RedDust.Ability
                 _recoveryDuration = 0f;
             }
             _elapsed = 0f;
-
-            if (_recoveryDuration > 0f)
-                Debug.Log($"[Recovery] Enter: {ctx.Ability.internalName} duration={_recoveryDuration:F2}s (raw={activation.recoveryDuration:F2}s / speed={activation.animationSpeed:F2})");
         }
 
         public override IState<SActiveAbilityContext> OnTick(ref SActiveAbilityContext ctx, float dt)
         {
+            if (ctx.Executor.IsAnimationActive)
+                return ctx.Executor.IsAnimationClipFinished() ? new CompletedState() : this;
+
             if (_recoveryDuration <= 0f)
-            {
-                Debug.Log($"[Recovery] No recovery → Completed");
                 return new CompletedState();
-            }
 
             _elapsed += dt;
             if (_elapsed < _recoveryDuration)
                 return this;
 
-            Debug.Log($"[Recovery] Done: {ctx.Ability.internalName} {_elapsed:F1}s → Completed");
             return new CompletedState();
         }
 
         public override bool CanBeInterrupted(ref SActiveAbilityContext ctx)
+            => ctx.Ability.activation?.canCancelRecovery ?? true;
+
+        public override void OnInterrupted(ref SActiveAbilityContext ctx)
         {
-            bool canCancel = ctx.Ability.activation?.canCancelRecovery ?? true;
-            if (!canCancel)
-                Debug.Log($"[Recovery] Interrupt denied: canCancelRecovery=false");
-            return canCancel;
+            ctx.Executor.ReleaseAbilityAnimation();
         }
     }
 }

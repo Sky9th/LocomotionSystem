@@ -27,37 +27,37 @@ namespace RedDust.Ability
             {
                 float speed = activation.animationSpeed > 0f ? activation.animationSpeed : 1f;
                 _windupDuration = activation.windupDuration / speed;
-                Debug.Log($"[Windup] ③ {ctx.Ability.internalName} windup={_windupDuration:F2}s (raw={activation.windupDuration:F2}s / speed={speed:F2})");
             }
             else
             {
                 _windupDuration = 0f;
             }
             _elapsed = 0f;
+
+            ctx.Executor.SubmitAbilityAnimation(activation);
         }
 
         public override IState<SActiveAbilityContext> OnTick(ref SActiveAbilityContext ctx, float dt)
         {
+            if (ctx.Executor.IsAnimationActive)
+                return ctx.Executor.IsAnimationFireMarkerReached() ? new CooldownState() : this;
+
             if (_windupDuration <= 0f)
-            {
-                Debug.Log($"[Windup] ③ {ctx.Ability.internalName} — no windup → Cooldown");
                 return new CooldownState();
-            }
 
             _elapsed += dt;
             if (_elapsed < _windupDuration)
                 return this;
 
-            Debug.Log($"[Windup] ③ {ctx.Ability.internalName} windup done ({_elapsed:F2}s) → Cooldown");
             return new CooldownState();
         }
 
         public override bool CanBeInterrupted(ref SActiveAbilityContext ctx)
+            => ctx.Ability.activation?.canCancelWindup ?? true;
+
+        public override void OnInterrupted(ref SActiveAbilityContext ctx)
         {
-            bool canCancel = ctx.Ability.activation?.canCancelWindup ?? true;
-            if (!canCancel)
-                Debug.Log($"[Windup] Interrupt denied: canCancelWindup=false");
-            return canCancel;
+            ctx.Executor.ReleaseAbilityAnimation();
         }
     }
 }

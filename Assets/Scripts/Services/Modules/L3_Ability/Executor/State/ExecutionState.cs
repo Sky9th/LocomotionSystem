@@ -9,6 +9,8 @@ namespace RedDust.Ability
     /// ⑤ 效果载荷 + 逐 hit 结算。Fire 帧物理查询（Cone/Ray/Circle → ctx.Targets）→ 构造伤害 → Reactor 落地。
     /// AbilitySearch 和 AbilityEffects 均已内联。SearchState ⛔ DEPRECATED。
     /// 通过 → RecoveryState。
+    ///
+    /// TODO Phase 4.2: fireWindowDuration 多帧命中窗口 — OnTick 循环在 fireWindowDuration 内每帧执行物理查询
     /// </summary>
     public class ExecutionState : AbilityPipelineState
     {
@@ -22,14 +24,12 @@ namespace RedDust.Ability
 
             // ── Fire 帧物理查询（内联自 SearchState ⛔ DEPRECATED）──
             ctx.Targets = ExecuteSearch(a.search, caster, ctx.Origin, ctx.Direction);
-            Debug.Log($"[Execution] ④ Search: {a.internalName} type={a.search?.GetType().Name} hits={ctx.Targets?.Count ?? 0}");
 
             // ── ⑤ Self Effects ──
             ApplySelf(a, caster, e);
 
             // ── ⑤ Target Effects → BuildDamageInfo ──
             ctx.Hits = BuildDamageInfo(a, caster, ctx.Targets, ctx.Origin, e, ctx.WeaponEntity);
-            Debug.Log($"[Execution] ⑤ Effects: {a.internalName} self+target, hits={ctx.Hits?.Count ?? 0}");
 
             // ── ⑥⑦⑧ Per-hit Resolve ──
             if (ctx.Hits != null)
@@ -40,12 +40,9 @@ namespace RedDust.Ability
                     var reactor = hit.Target.GetComponent<AbilityReactor>();
                     if (reactor != null)
                         reactor.Resolve(hit);
-                    else
-                        Debug.LogWarning($"[Execution] Target '{hit.Target.name}' has no AbilityReactor — hit not resolved.");
                 }
             }
 
-            Debug.Log($"[Execution] Done: {a.internalName} → Recovery");
             return new RecoveryState();
         }
 

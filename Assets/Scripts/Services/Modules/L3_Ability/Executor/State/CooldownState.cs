@@ -18,15 +18,9 @@ namespace RedDust.Ability
             var a = ctx.Ability;
             var e = ctx.Executor;
 
-            // 独立冷却
             float duration = a.cooldownDuration > 0f ? a.cooldownDuration : MinCooldown;
             e.StartCooldown(a, duration);
 
-            // 联动冷却
-            if (a.sharedCooldownTag != null)
-                e.AddCooldown(a.sharedCooldownTag.FullTag, duration);
-
-            Debug.Log($"[Cooldown] {a.internalName} cd={duration:F2}s shared={a.sharedCooldownTag?.name ?? "none"} → Execution");
             return new ExecutionState();
         }
     }

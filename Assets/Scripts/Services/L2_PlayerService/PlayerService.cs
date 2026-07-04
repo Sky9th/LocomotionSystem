@@ -67,8 +67,7 @@ namespace RedDust.Player
                 if (!TryGetMouseGround(out var pos)) return;
                 _playerEntity?.Command?.MoveTo(pos);
             });
-            BindInput<InputSkill1Event>(_ => _playerEntity?.Command?.UseActiveAbility(0));
-            BindInput<InputSkill2Event>(_ => _playerEntity?.Command?.UseActiveAbility(1));
+            BindInput<InputSkillEvent>(p => _playerEntity?.Command?.UseActiveAbility(p.BindingIndex));
             BindInput<InputEquip1Event>(_ => _playerEntity?.Command?.CycleEquip(0));
             BindInput<InputEquip2Event>(_ => _playerEntity?.Command?.CycleEquip(1));
             BindInput<InputEquip3Event>(_ => _playerEntity?.Command?.CycleEquip(2));

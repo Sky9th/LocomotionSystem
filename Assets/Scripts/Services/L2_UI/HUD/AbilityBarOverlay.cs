@@ -11,6 +11,9 @@ namespace RedDust.UI
     /// </summary>
     public class AbilityBarOverlay : UIOverlay
     {
+        // TODO: 快捷键配置化 — 目前硬编码 Q~U 七键
+        private static readonly string[] Keybinds = { "Q", "W", "E", "R", "T", "Y", "U" };
+
         [Header("Slot")]
         [SerializeField] private UIIconSlot slotPrefab;
         [SerializeField] private Transform slotContainer;
@@ -49,7 +52,8 @@ namespace RedDust.UI
                     ? Instantiate(slotPrefab, slotContainer)
                     : Instantiate(slotPrefab);
                 slot.name = $"SkillSlot_{_slots.Count}";
-                slot.SetKeybind($"{_slots.Count + 1}");
+                int idx = _slots.Count;
+                slot.SetKeybind(idx < Keybinds.Length ? Keybinds[idx] : $"{idx + 1}");
                 _slots.Add(slot);
             }
 

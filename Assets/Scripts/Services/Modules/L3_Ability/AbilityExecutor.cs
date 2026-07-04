@@ -3,21 +3,24 @@ using RedDust.Entities;
 using UnityEngine;
 using RedDust.Core;
 using RedDust.Properties;
+using RedDust.Character.Animation;
 
 namespace RedDust.Ability
 {
     [DisallowMultipleComponent]
     public sealed class AbilityExecutor : MonoBehaviour
     {
-        // ╔══════════════════════════════════════════════════════════════╗
-        // ║  NEW IMPLEMENTATION                                          ║
-        // ╚══════════════════════════════════════════════════════════════╝
-
         private readonly ActiveAbilityPipeline _pipeline = new();
-        private readonly Queue<SQueuedSkill> _queue = new();
 
         private PropertyTable _propertyTable;
         private bool _propertyTableResolved;
+
+        private AnimationBrain _brain;
+        private bool _brainResolved;
+        private bool _fireMarkerReached;
+        private bool _clipFinished;
+        private bool _isAnimationActive;
+        private AnimationRequest _currentAnimRequest;
 
         /// <summary>
         /// 同 GameObject 的 PropertyTable（来自 Identity）。惰性初始化。
@@ -38,15 +41,78 @@ namespace RedDust.Ability
         }
 
         /// <summary>
-        /// 联动冷却层级检查——技能 sharedCooldownTag 或其父级是否在冷却中。
+        /// 同 GameObject 的 AnimationBrain。惰性初始化。
+        /// null = 该实体无动画系统 → 纯计时器兜底。
         /// </summary>
-        public bool IsBlockedBySharedCooldown(RdTagDefSO tag)
+        public AnimationBrain Brain
         {
-            if (tag == null) return false;
-            var t = tag.FullTag;
-            foreach (var key in cooldownEndTimes.Keys)
+            get
             {
-                if (t == key || t.StartsWith(key + ".")) return true;
+                if (!_brainResolved)
+                {
+                    _brain = GetComponentInChildren<AnimationBrain>();
+                    _brainResolved = true;
+                }
+                return _brain;
+            }
+        }
+
+        // ── Animation Bridge ──
+
+        public bool SubmitAbilityAnimation(AbilityActivationSO activation)
+        {
+            var brain = Brain;
+            if (brain == null || activation?.animationClip == null)
+                return false;
+
+            _fireMarkerReached = false;
+            _clipFinished = false;
+            _isAnimationActive = true;
+
+            var request = new AnimationRequest
+            {
+                Clip = activation.animationClip,
+                FadeIn = 0.1f,
+                DriverType = EDriverType.Ability,
+                CustomData = activation,
+                OnMarker = (req) => { if (req != _currentAnimRequest) return; _fireMarkerReached = true; },
+                OnCompleted = (req) => { if (req != _currentAnimRequest) return; _clipFinished = true; },
+                OnInterrupt = (req) => { if (req != _currentAnimRequest) return; _fireMarkerReached = false; _clipFinished = false; },
+            };
+
+            _currentAnimRequest = request;
+            brain.SubmitRequest(request);
+            return true;
+        }
+
+        public void ReleaseAbilityAnimation()
+        {
+            _isAnimationActive = false;
+            Brain?.Release();
+        }
+
+        public bool IsAnimationFireMarkerReached() => _fireMarkerReached;
+        public bool IsAnimationClipFinished() => _clipFinished;
+        public bool IsAnimationActive => _isAnimationActive;
+
+        private void ResetAnimationFlags()
+        {
+            _fireMarkerReached = false;
+            _clipFinished = false;
+            _isAnimationActive = false;
+            _currentAnimRequest = null;
+        }
+
+        /// <summary>联动冷却层级检查——任一 sharedTag 或其父级在冷却中即返回 true。</summary>
+        public bool IsBlockedBySharedCooldown(RdTagDefSO[] tags)
+        {
+            if (tags == null || tags.Length == 0) return false;
+            foreach (var tag in tags)
+            {
+                if (tag == null) continue;
+                var t = tag.FullTag;
+                foreach (var key in cooldownEndTimes.Keys)
+                    if (t == key || t.StartsWith(key + ".")) return true;
             }
             return false;
         }
@@ -56,10 +122,8 @@ namespace RedDust.Ability
         // 后续应提取到只读接口（如 IAbilityStateProvider），由 Executor 实现，UI 通过 UIService 消费接口而非 Executor 具体类型。
         // ═══════════════════════════════════════════════════════════════
 
-        /// <summary>主动技能管道。外部只读。</summary>
         public ActiveAbilityPipeline Pipeline => _pipeline;
 
-        /// <summary>获取指定冷却标签的剩余时间（秒）。不在冷却中返回 0。</summary>
         public float GetCooldownRemaining(string tag)
         {
             if (string.IsNullOrEmpty(tag)) return 0f;
@@ -68,63 +132,29 @@ namespace RedDust.Ability
             return 0f;
         }
 
-        /// <summary>获取技能的冷却剩余时间（秒）。自动解析 sharedCooldownTag 和默认冷却键。</summary>
         public float GetAbilityCooldownRemaining(ActiveAbilitySO ability)
         {
-            if (ability == null || ability.cooldownDuration <= 0f) return 0f;
-            var key = ability.sharedCooldownTag != null
-                ? ability.sharedCooldownTag.FullTag
-                : $"Ability.Cooldown.{ability.internalName}";
-            return GetCooldownRemaining(key);
+            if (ability == null || ability.cooldownDuration <= 0f || ability.abilityTag == null) return 0f;
+            return GetCooldownRemaining(ability.abilityTag.FullTag);
         }
 
         // ═══════════════════════════════════════════════════════════════
         // ▲ END UI 查询 API
         // ═══════════════════════════════════════════════════════════════
 
-        /// <summary>
-        /// 将主动技能加入释放队列。Pipeline 空闲时立即启动；运行中则替换排队位（只保留最新一个待释放技能）。
-        /// 队列结构保留供后续预指令扩展。
-        /// </summary>
-        public void Enqueue(ActiveAbilitySO ability, Vector3 origin, Vector3 direction, Entity weaponEntity = null)
+        public void TryUse(ActiveAbilitySO ability, Vector3 origin, Vector3 direction, Entity weaponEntity = null)
         {
-            var skill = new SQueuedSkill
-            {
-                Ability = ability,
-                Origin = origin,
-                Direction = direction,
-                WeaponEntity = weaponEntity,
-            };
-
-            if (!_pipeline.IsIdle)
-            {
-                // 运行中：清掉上一个排队技能，只留最新的
-                while (_queue.Count > 0)
-                    _queue.Dequeue();
-            }
-
-            _queue.Enqueue(skill);
+            if (ability == null) return;
+            if (!_pipeline.IsIdle && _pipeline.CurrentState != EActiveAbilityState.Rejected)
+                return;
+            ResetAnimationFlags();
+            _pipeline.Start(ability, this, origin, direction, weaponEntity);
         }
 
         private void Update()
         {
             CleanupExpiredCooldowns();
             _pipeline.Tick(Time.deltaTime);
-
-            // 管道空闲且有排队技能 → 启动下一个
-            if (_queue.Count > 0 && _pipeline.IsIdle)
-            {
-                var next = _queue.Dequeue();
-                _pipeline.Start(next.Ability, this, next.Origin, next.Direction, next.WeaponEntity);
-            }
-        }
-
-        private struct SQueuedSkill
-        {
-            public ActiveAbilitySO Ability;
-            public Vector3 Origin;
-            public Vector3 Direction;
-            public Entity WeaponEntity;
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -151,7 +181,6 @@ namespace RedDust.Ability
         private readonly Dictionary<string, float> cooldownEndTimes = new();
         private readonly List<string> cooldownExpiredBuffer = new();
         private float cooldownCleanupAccum;
-        private readonly Dictionary<string, string> cooldownAbilityTags = new();
         private readonly List<(string tag, float expiryTime)> _buffTags = new();
 
         private void Awake()
@@ -182,11 +211,6 @@ namespace RedDust.Ability
             {
                 OwnedTags.RemoveTag(key);
                 cooldownEndTimes.Remove(key);
-                if (cooldownAbilityTags.TryGetValue(key, out var abilityTag))
-                {
-                    OwnedTags.RemoveTag(abilityTag);
-                    cooldownAbilityTags.Remove(key);
-                }
             }
 
             if (_buffTags.Count > 0)
@@ -218,17 +242,13 @@ namespace RedDust.Ability
             float duration = overrideDuration > 0f ? overrideDuration : ability.cooldownDuration;
             if (duration <= 0f) return;
 
-            var key = ability.sharedCooldownTag != null
-                ? ability.sharedCooldownTag.FullTag
-                : $"Ability.Cooldown.{ability.internalName}";
-
-            AddCooldown(key, duration);
-
             if (ability.abilityTag != null)
-            {
-                cooldownAbilityTags[key] = ability.abilityTag.FullTag;
-                OwnedTags.AddTag(ability.abilityTag.FullTag);
-            }
+                AddCooldown(ability.abilityTag.FullTag, duration);
+
+            if (ability.sharedCooldownTags != null)
+                foreach (var tag in ability.sharedCooldownTags)
+                    if (tag != null)
+                        AddCooldown(tag.FullTag, duration);
         }
 
         public bool IsOnCooldown(string tag)
@@ -288,23 +308,14 @@ namespace RedDust.Ability
 
         private bool PassCooldown(AbilitySO ability)
         {
-            if (ability.cooldownDuration <= 0f) return true;
-            var key = ability.sharedCooldownTag != null
-                ? ability.sharedCooldownTag.FullTag
-                : $"Ability.Cooldown.{ability.internalName}";
-            if (IsOnCooldown(key)) return false;
-            return true;
+            if (ability.cooldownDuration <= 0f || ability.abilityTag == null) return true;
+            return !IsOnCooldown(ability.abilityTag.FullTag);
         }
 
         private void ApplyCooldown(AbilitySO ability)
         {
-            if (ability.cooldownDuration <= 0f) return;
-            var key = ability.sharedCooldownTag != null
-                ? ability.sharedCooldownTag.FullTag
-                : $"Ability.Cooldown.{ability.internalName}";
-            AddCooldown(key, ability.cooldownDuration);
-            if (ability.abilityTag != null)
-                cooldownAbilityTags[key] = ability.abilityTag.FullTag;
+            if (ability.cooldownDuration <= 0f || ability.abilityTag == null) return;
+            AddCooldown(ability.abilityTag.FullTag, ability.cooldownDuration);
         }
 
         #endregion

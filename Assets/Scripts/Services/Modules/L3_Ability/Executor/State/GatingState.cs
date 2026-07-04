@@ -22,36 +22,27 @@ namespace RedDust.Ability
                 return new RejectedState();
             }
 
-            // ── 2. 联动冷却 — sharedCooldownTag 或其父级任一在冷却中即拒绝 ──
-            if (e.IsBlockedBySharedCooldown(a.sharedCooldownTag))
+            // ── 2. 联动冷却 ──
+            if (e.IsBlockedBySharedCooldown(a.sharedCooldownTags))
             {
-                Debug.LogWarning($"[Gating] Rejected: {a.internalName} — shared cooldown active ({a.sharedCooldownTag?.FullTag})");
+                Debug.LogWarning($"[Gating] Rejected: {a.internalName} — shared cooldown active");
                 return new RejectedState();
             }
 
-            // ── 2. 互斥 ──
-            if (!a.overrideExclusion)
+            // ── 3. 互斥 ──
+            if (!a.overrideExclusion && a.extraExclusionTags != null)
             {
-                if (a.abilityTag?.Parent != null && e.OwnedTags.HasTag(a.abilityTag.Parent.FullTag))
+                foreach (var tag in a.extraExclusionTags)
                 {
-                    Debug.LogWarning($"[Gating] Rejected: {a.internalName} — mutual exclusion ({a.abilityTag.Parent.FullTag})");
-                    return new RejectedState();
-                }
-
-                if (a.extraExclusionTags != null)
-                {
-                    foreach (var tag in a.extraExclusionTags)
+                    if (tag != null && e.OwnedTags.HasTag(tag.FullTag))
                     {
-                        if (tag != null && e.OwnedTags.HasTag(tag.FullTag))
-                        {
-                            Debug.LogWarning($"[Gating] Rejected: {a.internalName} — extra exclusion ({tag.FullTag})");
-                            return new RejectedState();
-                        }
+                        Debug.LogWarning($"[Gating] Rejected: {a.internalName} — extra exclusion ({tag.FullTag})");
+                        return new RejectedState();
                     }
                 }
             }
 
-            // ── 3. 外部条件 ──
+            // ── 4. 外部条件 ──
             if (e.ConditionCallback != null)
             {
                 var reason = e.ConditionCallback(a);
@@ -62,7 +53,6 @@ namespace RedDust.Ability
                 }
             }
 
-            Debug.Log($"[Gating] Passed: {a.internalName} → Cost");
             return new CostState();
         }
 

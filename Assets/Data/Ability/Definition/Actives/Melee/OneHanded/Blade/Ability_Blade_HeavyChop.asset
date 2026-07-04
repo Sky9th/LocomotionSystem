@@ -24,7 +24,7 @@ MonoBehaviour:
   selfEffects:
   - {fileID: 11400000, guid: 5daea6c8b6d7be3498b33df7eb1c55e5, type: 2}
   cooldownDuration: 3
-  sharedCooldownTag: {fileID: 0}
+  sharedCooldownTags: []
   activation: {fileID: 11400000, guid: 4af2587e17bfe2e479cb7daba3b2062b, type: 2}
   search: {fileID: 11400000, guid: 72fffa77a20bb214fb1f28192e2e61ad, type: 2}
   overrideExclusion: 0

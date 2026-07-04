@@ -106,15 +106,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: bed9c2bbdcdf4d579b5ba7177a8675f1, type: 2}
   - {fileID: 11400000, guid: bfd4aac6eb624aaa879211ce343e47e8, type: 2}
   - {fileID: 11400000, guid: 626538b1f38c4c83ba1c405ce7074618, type: 2}
-  - {fileID: 11400000, guid: 7201e9e4c13440ff881a29a2c67ccef9, type: 2}
-  - {fileID: 11400000, guid: 6333df8873b844498b312eee1850d966, type: 2}
-  - {fileID: 11400000, guid: a330b00c7b0043478e2eb4325a57c49b, type: 2}
   - {fileID: 11400000, guid: 3e5579baf9d44c29b6a157a0067df1da, type: 2}
   - {fileID: 11400000, guid: 934281ce9514406a8388ad815797eae6, type: 2}
   - {fileID: 11400000, guid: f25fddae02f741249787a48ebd17ab99, type: 2}
   - {fileID: 11400000, guid: a7d7a5554f79408ca197c38452e14500, type: 2}
   - {fileID: 11400000, guid: 90a8e1117e084470a1960b9b78f8d33a, type: 2}
   - {fileID: 11400000, guid: 750f8b8cf8614bd990066cd3b5526d30, type: 2}
+  - {fileID: 11400000, guid: 2ab3e6efa7ddfd448afc6ff0feddbeba, type: 2}
 --- !u!1 &1179361730580851819
 GameObject:
   m_ObjectHideFlags: 0
@@ -445,13 +443,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: bed9c2bbdcdf4d579b5ba7177a8675f1, type: 2}
   - {fileID: 11400000, guid: bfd4aac6eb624aaa879211ce343e47e8, type: 2}
   - {fileID: 11400000, guid: 626538b1f38c4c83ba1c405ce7074618, type: 2}
-  - {fileID: 11400000, guid: 7201e9e4c13440ff881a29a2c67ccef9, type: 2}
-  - {fileID: 11400000, guid: 6333df8873b844498b312eee1850d966, type: 2}
-  - {fileID: 11400000, guid: a330b00c7b0043478e2eb4325a57c49b, type: 2}
   - {fileID: 11400000, guid: 3e5579baf9d44c29b6a157a0067df1da, type: 2}
   - {fileID: 11400000, guid: 934281ce9514406a8388ad815797eae6, type: 2}
   - {fileID: 11400000, guid: f25fddae02f741249787a48ebd17ab99, type: 2}
   - {fileID: 11400000, guid: 750f8b8cf8614bd990066cd3b5526d30, type: 2}
+  - {fileID: 11400000, guid: 2ab3e6efa7ddfd448afc6ff0feddbeba, type: 2}
   abilityEvents: []
 --- !u!1 &2434817937819614488
 GameObject:
@@ -739,7 +735,7 @@ Transform:
   m_GameObject: {fileID: 4898776649688329902}
   serializedVersion: 2
   m_LocalRotation: {x: 0.03506042, y: -0.95769334, z: 0.13282423, w: -0.25288728}
-  m_LocalPosition: {x: -1.9218841, y: -4.3137083, z: 10.718472}
+  m_LocalPosition: {x: -5821.145, y: -7422.8457, z: 10554.391}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

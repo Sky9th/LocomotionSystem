@@ -1,5 +1,7 @@
 # AbilityDriver · 技能动画驱动
 
+> **Last Verified**: 2026-07-04 | **Verification**: All referenced files exist, signatures match code
+
 > `Character/Animation/Drivers/Ability/AbilityDriver.cs` — `internal sealed class`，继承 `BaseAnimationDriver`，一次性动画驱动。Arbiter 仲裁 → `OnStarted` 播放 clip + 注入 Animancer 事件 + 调回调。
 
 ## 调用链
@@ -10,13 +12,15 @@
 
 Arbiter 驱动:
   OnStarted(request)
+    → state.Time = 0f  // 重复播放同一 clip 从头开始
     → 从 CustomData 取 AbilityActivationSO
     → layer.Play(clip, fadeIn) + state.Speed = animationSpeed
-    → 注入 Animancer 事件在 windupDuration/clipLength 归一化位置
-      → 回调 request.OnMarker?.Invoke()
+    → 注入 Animancer 事件: Events(ref _fireSequence) + Add(fireNorm, callback)
+      → 回调 request.OnMarker?.Invoke(request)
+    → fireNorm >= 1f 或无 clip: 不触发 OnMarker（靠管道计时器兜底）
 
-  OnCompleted()                     → _currentRequest.OnCompleted?.Invoke()
-  OnInterrupted(by)                 → _currentRequest.OnInterrupt?.Invoke()
+  OnCompleted()                     → _currentRequest.OnCompleted?.Invoke(_currentRequest)
+  OnInterrupted(by)                 → _currentRequest.OnInterrupt?.Invoke(_currentRequest)
 ```
 
 ## 耦合模块
@@ -64,4 +68,4 @@ public override int ChannelMask => 1 << 0;  // FullBody
 | 不持有 `SubmitAbility` 方法 | 请求构建是谁调用谁负责；Driver 只管播放 |
 | `_currentRequest` 保存引用 | `OnCompleted/OnInterrupted` 时 Arbiter 可能已清理 `activeRequest` |
 | `CustomData` 传 AbilityActivationSO | AnimationRequest 在 L3_Character 域，不能硬依赖 L3_Ability 类型 |
-| Animancer 事件用 `this` 做 key | 与 `BaseLayer.InjectFootstepEvents` 同模式 |
+| Animancer 事件用 `Events(ref _fireSequence)` | `Events(this, ...)` 在 state 复用时触发 AssertOwnership 冲突。ref 重载是官方推荐方式——多个调用方轮流复用同一 state 时使用。`_fireSequence = null` 每次请求强制重建 |

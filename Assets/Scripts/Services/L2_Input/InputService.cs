@@ -82,10 +82,12 @@ namespace RedDust.GameInput
 
         private void BindButton(InputAction action, GameEvent<SButtonInputPayload> channel)
         {
-            Action<InputAction.CallbackContext> onPerformed = _ =>
-                channel.Raise(new SButtonInputPayload(true, true, false));
-            Action<InputAction.CallbackContext> onCanceled = _ =>
-                channel.Raise(new SButtonInputPayload(false, false, true));
+            Action<InputAction.CallbackContext> onPerformed = ctx =>
+                channel.Raise(new SButtonInputPayload(true, true, false,
+                    ctx.action.GetBindingIndexForControl(ctx.control)));
+            Action<InputAction.CallbackContext> onCanceled = ctx =>
+                channel.Raise(new SButtonInputPayload(false, false, true,
+                    ctx.action.GetBindingIndexForControl(ctx.control)));
             action.performed += onPerformed;
             action.canceled += onCanceled;
             _teardown.Add(() =>

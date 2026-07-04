@@ -32,7 +32,6 @@ namespace RedDust.Ability
                 _searched = true;
                 var caster = ctx.Executor.gameObject;
                 ctx.Targets = ExecuteSearch(a.search, caster, ctx.Origin, ctx.Direction);
-                Debug.Log($"[Search] ③ Search: {a.internalName} type={a.search?.GetType().Name} hits={ctx.Targets?.Count ?? 0}");
             }
 
             // ── 每帧绘制 Debug 形状 ──
@@ -43,7 +42,6 @@ namespace RedDust.Ability
             if (_elapsed < MinDuration)
                 return this;
 
-            Debug.Log($"[Search] Done: {a.internalName} → Cost ({_elapsed:F2}s)");
             return new CostState();
         }
 

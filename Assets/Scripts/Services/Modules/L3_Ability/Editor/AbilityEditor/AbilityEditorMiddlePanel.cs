@@ -219,8 +219,7 @@ namespace RedDust.Ability
             {
                 EditorFormItem.ObjectFieldWithTag<RdTagDefSO>("abilityTag",
                     ref _abilityTagButtonRect, label: "Ability", rootFilter: TagDomainFilter.ABILITY_TAG);
-                EditorFormItem.ObjectFieldWithTag<RdTagDefSO>("sharedCooldownTag",
-                    ref _abilityTagButtonRect, label: "Shared CD", rootFilter: TagDomainFilter.SHARED_COOLDOWN_TAG);
+                // sharedCooldownTags — Unity Inspector 原生数组编辑
                 form.OnChange += () => { EditorUtility.SetDirty(a); _onChanged?.Invoke(); };
             });
 

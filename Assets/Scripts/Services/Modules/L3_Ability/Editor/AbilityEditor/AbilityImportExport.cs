@@ -20,7 +20,7 @@ namespace RedDust.Ability
         public string displayName;
         public string description;
         public string abilityTag;          // FullTag
-        public string sharedCooldownTag;   // FullTag
+        public string[] sharedCooldownTags;  // FullTag[]
         public float cooldownDuration;
         public string[] targetEffects;     // asset names
         public string[] selfEffects;       // asset names
@@ -137,7 +137,7 @@ namespace RedDust.Ability
                 displayName = a.displayName,
                 description = a.description,
                 abilityTag = a.abilityTag?.FullTag,
-                sharedCooldownTag = a.sharedCooldownTag?.FullTag,
+                sharedCooldownTags = a.sharedCooldownTags?.Select(t => t?.FullTag).Where(n => n != null).ToArray(),
                 cooldownDuration = a.cooldownDuration,
                 targetEffects = a.targetEffects?.Select(e => e?.name).Where(n => n != null).ToArray(),
                 selfEffects = a.selfEffects?.Select(e => e?.name).Where(n => n != null).ToArray(),
@@ -268,8 +268,10 @@ namespace RedDust.Ability
 
             if (!string.IsNullOrEmpty(entry.abilityTag) && tags.TryGetValue(entry.abilityTag, out var at))
                 a.abilityTag = at;
-            if (!string.IsNullOrEmpty(entry.sharedCooldownTag) && tags.TryGetValue(entry.sharedCooldownTag, out var sct))
-                a.sharedCooldownTag = sct;
+            if (entry.sharedCooldownTags != null && entry.sharedCooldownTags.Length > 0)
+                a.sharedCooldownTags = entry.sharedCooldownTags
+                    .Select(t => tags.TryGetValue(t, out var sct) ? sct : null)
+                    .Where(t => t != null).ToArray();
 
             // Effects
             a.targetEffects = ResolveEffects(entry.targetEffects, effects);

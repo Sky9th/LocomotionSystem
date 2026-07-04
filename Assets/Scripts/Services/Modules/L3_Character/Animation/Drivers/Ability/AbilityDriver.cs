@@ -2,6 +2,7 @@ using RedDust.Ability;
 using RedDust.Character;
 using RedDust.Character.Animation;
 using Animancer;
+using UnityEngine;
 
 namespace RedDust.Character.Animation.Drivers.Ability
 {
@@ -14,6 +15,7 @@ namespace RedDust.Character.Animation.Drivers.Ability
         public override int ChannelMask => 1 << 0;
 
         private AnimationRequest _currentRequest;
+        private AnimancerEvent.Sequence _fireSequence;
 
         public override void Evaluate(in SCharacterFrameContext ctx, float dt) { }
         public override void Drive(in SCharacterFrameContext ctx, float dt) { }
@@ -26,6 +28,7 @@ namespace RedDust.Character.Animation.Drivers.Ability
 
             var activation = request.CustomData as AbilityActivationSO;
             var state = brain.FullBodyLayer.Play(request.Clip, request.FadeIn);
+            state.Time = 0f;  // 重复播放同一 clip 时从头开始
 
             if (activation != null)
                 state.Speed = activation.animationSpeed > 0f ? activation.animationSpeed : 1f;
@@ -34,26 +37,24 @@ namespace RedDust.Character.Animation.Drivers.Ability
             if (activation?.animationClip != null && activation.windupDuration > 0f)
             {
                 float fireNorm = activation.windupDuration / activation.animationClip.length;
-                if (fireNorm < 1f && state.Events(this, out var events))
-                    events.Add(fireNorm, () => request.OnMarker?.Invoke());
-                else
-                    request.OnMarker?.Invoke();
-            }
-            else
-            {
-                request.OnMarker?.Invoke(); // windupDuration=0 → 瞬发
+                if (fireNorm < 1f)
+                {
+                    _fireSequence = null;  // 强制重新初始化（state 复用场景）
+                    state.Events(ref _fireSequence);
+                    _fireSequence.Add(fireNorm, () => request.OnMarker?.Invoke(request));
+                }
             }
         }
 
         public override void OnCompleted()
         {
-            _currentRequest?.OnCompleted?.Invoke();
+            _currentRequest?.OnCompleted?.Invoke(_currentRequest);
             _currentRequest = null;
         }
 
         public override void OnInterrupted(AnimationRequest by)
         {
-            _currentRequest?.OnInterrupt?.Invoke();
+            _currentRequest?.OnInterrupt?.Invoke(_currentRequest);
             _currentRequest = null;
         }
 

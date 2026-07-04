@@ -65,5 +65,6 @@ Brain 的 `SubmitRequest(request)` 重载根据此字段解析对应 Driver，�
 | 规划 | 状态 | 来源 |
 |------|------|------|
 | Tags 用于过滤 HeadLook（战斗/反应时关闭） | 待做 | 旧 animation-design.md |
-| OnMarker/OnCompleted/OnInterrupt 回调 | ✅ Done 2026-07-04 | ability-driver-callback-refactor |
+| OnMarker/OnCompleted/OnInterrupt 回调 | ✅ Done 2026-07-04 — 签名改为 `Action<AnimationRequest>` 支持身份校验 | ability-driver-callback-refactor |
+| AnimationRequest 身份校验 | ✅ Done 2026-07-04 — Animancer state 复用导致误触发，回调带参自行校验 | ability-pipeline-animation |
 | Tags 用于过滤 HeadLook（战斗/反应时关闭） | 待做 | 旧 animation-design.md |
