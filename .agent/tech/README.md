@@ -96,7 +96,7 @@ tech/
 │   │   ├── Core/                       # UIScreen, UIOverlay, UIScreenId 等
 │   │   ├── Components/                 # UIButton, UILabel, UIPanel, UIStatBar
 │   │   ├── Config/                     # UIPanelConfigSO, UIThemeSO
-│   │   ├── HUD/                        # VitalsOverlay, StatusOverlay, LoadingOverlay
+│   │   ├── HUD/                        # VitalsOverlay, StatusOverlay, LoadingOverlay, DamageNumberOverlay, DamageNumberWidget
 │   │   └── MainMenu/                   # MainMenuScreen, PauseMenuScreen
 │   │
 │   └── L2-modules/                     # 占位容器: L3 独立模块

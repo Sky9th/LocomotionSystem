@@ -368,6 +368,7 @@ namespace RedDust.UI
                         ShowOverlay(UIOverlayId.VitalsOverlay);
                         ShowOverlay(UIOverlayId.AbilityBarOverlay);
                         ShowOverlay(UIOverlayId.WeaponBarOverlay);
+                        ShowOverlay(UIOverlayId.DamageNumberOverlay);
                     }
                     break;
             }

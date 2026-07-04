@@ -35,6 +35,7 @@ UIService.HandleGameState()
                       ├── VitalsOverlay (HP/Hunger/Thirst/Stamina ←── PlayerEntity.Query.Properties)
                       ├── AbilityBarOverlay (主动技能槽位 Q/E/R/F — UIIconSlot ×4)
                       ├── WeaponBarOverlay (武器槽位 — UIIconSlot ×2)
+                      ├── DamageNumberOverlay (伤害飘字 — 订阅 HitEvent, 对象池, WorldToScreenPoint)
                       └── DebugOverlay (调试信息显示)
 
 场景加载:
@@ -60,6 +61,8 @@ UI 组件主题驱动:
 | VitalsOverlay | UIService.PlayerEntity | 每帧拉取角色属性（通过 Entity.Query.Properties） |
 | AbilityBarOverlay | UIService.PlayerEntity | 技能槽位显示和冷却刷新 |
 | WeaponBarOverlay | UIService.PlayerEntity | 武器槽位显示 |
+| DamageNumberOverlay | EventHub (HitEvent) | 订阅伤害事件，WorldToScreenPoint 坐标转换 |
+| DamageNumberOverlay | DamageNumberWidget | 对象池管理，Play/Recycle |
 
 ## 设计决策
 
@@ -115,5 +118,7 @@ UI 组件主题驱动:
 | [L4-hud/ability-bar-overlay.md](L4-hud/ability-bar-overlay.md) | AbilityBarOverlay — 主动技能槽位 Q/E/R/F（UIIconSlot ×4） |
 | [L4-hud/weapon-bar-overlay.md](L4-hud/weapon-bar-overlay.md) | WeaponBarOverlay — 武器槽位（UIIconSlot ×2） |
 | [L4-hud/debug-overlay.md](L4-hud/debug-overlay.md) | DebugOverlay — 调试信息显示 |
+| [L4-hud/damage-number-overlay.md](L4-hud/damage-number-overlay.md) | DamageNumberOverlay — 伤害飘字管理，HitEvent 订阅 + 对象池 |
+| [L4-hud/damage-number-widget.md](L4-hud/damage-number-widget.md) | DamageNumberWidget — 单个飘字动画（DOAnchorPosY + DOFade） |
 | [L4-main-menu/main-menu-screen.md](L4-main-menu/main-menu-screen.md) | MainMenuScreen — 主菜单（新游戏/加载/设置/退出） |
 | [L4-main-menu/pause-menu-screen.md](L4-main-menu/pause-menu-screen.md) | PauseMenuScreen — 暂停菜单（继续/设置/保存/返回） |

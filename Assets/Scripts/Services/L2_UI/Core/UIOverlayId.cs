@@ -8,5 +8,6 @@ namespace RedDust.UI
         AbilityBarOverlay,
         WeaponBarOverlay,
         DebugOverlay,
+        DamageNumberOverlay,
     }
 }

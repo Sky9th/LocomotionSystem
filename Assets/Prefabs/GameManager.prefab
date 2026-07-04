@@ -448,7 +448,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f25fddae02f741249787a48ebd17ab99, type: 2}
   - {fileID: 11400000, guid: 750f8b8cf8614bd990066cd3b5526d30, type: 2}
   - {fileID: 11400000, guid: 2ab3e6efa7ddfd448afc6ff0feddbeba, type: 2}
-  abilityEvents: []
+  abilityEvents:
+  - {fileID: 11400000, guid: 5c626b5fce7a4d6d86ea9252cc7b5148, type: 2}
 --- !u!1 &2434817937819614488
 GameObject:
   m_ObjectHideFlags: 0

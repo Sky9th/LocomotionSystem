@@ -32,4 +32,7 @@ MonoBehaviour:
   - id: 4
     prefab: {fileID: 2356675199504078111, guid: 061da42a4d52f944b96908d8200f9a2f,
       type: 3}
+  - id: 6
+    prefab: {fileID: 9214893305087258163, guid: f52c550e1fbe8844fb287b98bec7fade,
+      type: 3}
   modals: []
