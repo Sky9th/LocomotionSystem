@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Damage_Elemental_Radiation
   m_EditorClassIdentifier: 
   effectTag: {fileID: 11400000, guid: ca6abfed3052ab54b8c6ccc4c0426625, type: 2}
-  description: "\u8F90\u5C04\u4F24\u5BB3\u3002\u8F90\u5C04\u533A/\u653E\u5C04\u6027\u5E9F\u7269\u300230
+  description: "\u8F90\u5C04\u4F24\u5BB3\u3002\u8F90\u5C04\u533A/\u653E\u5C04\u6027\u5E9F\u7269\u300212
     \u79D2\u6301\u7EED\u8F90\u7167"
-  duration: 30
+  duration: 12
   stackable: 0
   maxStacks: 1
   applicationBlockedTags: []
   baseValue: 0
   modAdd: 0
-  modMult: 1
+  modMult: 2
   priority: 0

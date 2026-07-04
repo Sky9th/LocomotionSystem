@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Damage_Biological_Bleed_Strong
   m_EditorClassIdentifier: 
   effectTag: {fileID: 11400000, guid: adb586111614a4b4392a067df4fd6744, type: 2}
-  description: "\u6D41\u8840\u4F24\u5BB3\xB7\u91CD\u3002\u500D\u7387 3.0\uFF0C10
+  description: "\u6D41\u8840\u4F24\u5BB3\xB7\u91CD\u3002\u500D\u7387 2.5\uFF0C10
     \u79D2\u3002\u52A8\u8109\u7834\u88C2/\u91CD\u4F24\u6495\u88C2"
   duration: 10
   stackable: 1
-  maxStacks: 1
+  maxStacks: 5
   applicationBlockedTags: []
-  baseValue: 0
+  baseValue: 5
   modAdd: 0
-  modMult: 3
+  modMult: 2.5
   priority: 0

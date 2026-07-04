@@ -179,10 +179,10 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════
         // Import
         // ═══════════════════════════════════════════════════
-        public static (int created, int skipped, List<string> errors) ImportFromJson(string jsonText)
+        public static (int created, int updated, int skipped, List<string> errors) ImportFromJson(string jsonText)
         {
             var errors = new List<string>();
-            int created = 0, skipped = 0;
+            int created = 0, updated = 0, skipped = 0;
 
             AssetDatabase.Refresh();
 
@@ -195,12 +195,12 @@ namespace RedDust.Ability
             catch (Exception e)
             {
                 errors.Add($"JSON parse failed: {e.Message}");
-                return (0, 0, errors);
+                return (0, 0, 0, errors);
             }
             if (importFile?.effects == null || importFile.effects.Length == 0)
             {
                 errors.Add("JSON is empty or has no effects array.");
-                return (0, 0, errors);
+                return (0, 0, 0, errors);
             }
 
             // ── Phase 2: Validate ──
@@ -291,7 +291,7 @@ namespace RedDust.Ability
                     }
                     ApplyFields(existing, entry, effTag, blockedTags, def, tagByFullTag, defById);
                     EditorUtility.SetDirty(existing);
-                    skipped++;
+                    updated++;
                     continue;
                 }
 
@@ -337,14 +337,14 @@ namespace RedDust.Ability
             // ── Phase 5: Persist ──
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log($"[EffectImporter] Done: created={created} skipped={skipped} errors={errors.Count}");
-            return (created, skipped, errors);
+            Debug.Log($"[EffectImporter] Done: created={created} updated={updated} skipped={skipped} errors={errors.Count}");
+            return (created, updated, skipped, errors);
         }
 
-        public static (int created, int skipped, List<string> errors) ImportFromFile(string jsonPath)
+        public static (int created, int updated, int skipped, List<string> errors) ImportFromFile(string jsonPath)
         {
             if (!File.Exists(jsonPath))
-                return (0, 0, new List<string> { $"File not found: {jsonPath}" });
+                return (0, 0, 0, new List<string> { $"File not found: {jsonPath}" });
             return ImportFromJson(File.ReadAllText(jsonPath));
         }
 
@@ -421,7 +421,7 @@ namespace RedDust.Ability
     {
         private string _filePath = "Assets/Data/Ability/Effects/effects_all.json";
         private string _previewText;
-        private (int created, int skipped, List<string> errors) _result;
+        private (int created, int updated, int skipped, List<string> errors) _result;
 
         [MenuItem("RedDust/Effect Import-Export", priority = 24)]
         public static void Open()
@@ -445,8 +445,7 @@ namespace RedDust.Ability
                 buildPreview: BuildPreview,
                 onImport: path =>
                 {
-                    var (created, skipped, errors) = EffectImporter.ImportFromFile(path);
-                    return (created, skipped, errors);
+                    return EffectImporter.ImportFromFile(path);
                 },
                 onExport: path => EffectImporter.ExportToFile(path)
             );

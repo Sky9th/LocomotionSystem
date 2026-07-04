@@ -31,7 +31,7 @@ MonoBehaviour:
   extraExclusionTags: []
   noise: {fileID: 11400000, guid: 75c51b68b5c7bc646bfc822e4934a020, type: 2}
   comboLinks:
-  - NextSkill: {fileID: 0}
+  - NextSkill: {fileID: 11400000, guid: 553084be4c2923a4692c2c5d3717fce5, type: 2}
     WindowStart: 0.3
     WindowDuration: 0.5
     BypassCooldown: 0

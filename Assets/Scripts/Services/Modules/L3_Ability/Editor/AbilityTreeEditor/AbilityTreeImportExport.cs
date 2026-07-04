@@ -111,16 +111,16 @@ namespace RedDust.Ability
         // Import
         // ═══════════════════════════════════════════════════
 
-        public static (int created, int skipped, List<string> errors) ImportFromJson(string jsonText)
+        public static (int created, int updated, int skipped, List<string> errors) ImportFromJson(string jsonText)
         {
             var errors = new List<string>();
-            int created = 0, skipped = 0;
+            int created = 0, updated = 0, skipped = 0;
 
             AbilityTreeExportFile file;
             try { file = JsonUtility.FromJson<AbilityTreeExportFile>(jsonText); }
-            catch (Exception e) { errors.Add($"Parse failed: {e.Message}"); return (0, 0, errors); }
+            catch (Exception e) { errors.Add($"Parse failed: {e.Message}"); return (0, 0, 0, errors); }
             if (file?.trees == null || file.trees.Length == 0)
-            { errors.Add("Empty or invalid JSON."); return (0, 0, errors); }
+            { errors.Add("Empty or invalid JSON."); return (0, 0, 0, errors); }
 
             // Build lookups
             var tagByFullTag = BuildTagLookup();
@@ -179,7 +179,7 @@ namespace RedDust.Ability
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            return (created, skipped, errors);
+            return (created, updated, skipped, errors);
         }
 
         private static SAbilityTreeNode ImportNode(TreeNodeEntry entry,

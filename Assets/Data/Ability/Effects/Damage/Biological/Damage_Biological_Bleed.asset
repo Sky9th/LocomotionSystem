@@ -17,9 +17,9 @@ MonoBehaviour:
     \u79D2\u53EF\u53E0\u52A0 DoT"
   duration: 5
   stackable: 1
-  maxStacks: 1
+  maxStacks: 5
   applicationBlockedTags: []
-  baseValue: 0
+  baseValue: 5
   modAdd: 0
   modMult: 1
   priority: 0

@@ -15,7 +15,7 @@ namespace RedDust.Ability
     {
         private string _filePath = "Assets/Data/Ability/AbilityTrees/abilityTrees_all.json";
         private string _previewText;
-        private (int created, int skipped, List<string> errors) _result;
+        private (int created, int updated, int skipped, List<string> errors) _result;
 
         [MenuItem("RedDust/Ability Tree Import-Export", priority = 21)]
         public static void Open()
@@ -40,7 +40,7 @@ namespace RedDust.Ability
                 onImport: path =>
                 {
                     if (!File.Exists(path))
-                        return (0, 0, new List<string> { $"File not found: {path}" });
+                        return (0, 0, 0, new List<string> { $"File not found: {path}" });
                     return AbilityTreeImporter.ImportFromJson(File.ReadAllText(path));
                 },
                 onExport: path => File.WriteAllText(path, AbilityTreeImporter.ExportToJson())

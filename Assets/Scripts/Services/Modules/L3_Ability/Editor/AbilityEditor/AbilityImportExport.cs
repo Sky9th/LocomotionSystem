@@ -147,16 +147,16 @@ namespace RedDust.Ability
         // ═══════════════════════════════════════════════════
         // Import
         // ═══════════════════════════════════════════════════
-        public static (int created, int skipped, List<string> errors) ImportFromJson(string jsonText)
+        public static (int created, int updated, int skipped, List<string> errors) ImportFromJson(string jsonText)
         {
             var errors = new List<string>();
-            int created = 0, skipped = 0;
+            int created = 0, updated = 0, skipped = 0;
 
             AbilityExportFile file;
             try { file = JsonUtility.FromJson<AbilityExportFile>(jsonText); }
-            catch (Exception e) { errors.Add($"Parse failed: {e.Message}"); return (0, 0, errors); }
+            catch (Exception e) { errors.Add($"Parse failed: {e.Message}"); return (0, 0, 0, errors); }
             if (file?.abilities == null || file.abilities.Length == 0)
-            { errors.Add("Empty or invalid JSON."); return (0, 0, errors); }
+            { errors.Add("Empty or invalid JSON."); return (0, 0, 0, errors); }
 
             // Build lookups
             var tagByFullTag = BuildTagLookup();
@@ -194,7 +194,7 @@ namespace RedDust.Ability
                     ApplyFields(existing, entry, tagByFullTag, activationByName, searchByName,
                         effectByName, noiseByName, abilityDefByName, eventChannelByName);
                     EditorUtility.SetDirty(existing);
-                    skipped++;
+                    updated++;
                     continue;
                 }
 
@@ -211,7 +211,7 @@ namespace RedDust.Ability
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            return (created, skipped, errors);
+            return (created, updated, skipped, errors);
         }
 
         private static Dictionary<string, RdTagDefSO> BuildTagLookup() => RdTagLookup.Build();
@@ -339,7 +339,7 @@ namespace RedDust.Ability
     {
         private string _filePath = "Assets/Data/Ability/Definition/abilities_all.json";
         private string _previewText;
-        private (int created, int skipped, List<string> errors) _result;
+        private (int created, int updated, int skipped, List<string> errors) _result;
 
         [MenuItem("RedDust/Ability Import-Export", priority = 20)]
         public static void Open()
@@ -363,8 +363,7 @@ namespace RedDust.Ability
                 buildPreview: BuildPreview,
                 onImport: path =>
                 {
-                    var (created, skipped, errors) = AbilityImporter.ImportFromJson(File.ReadAllText(path));
-                    return (created, skipped, errors);
+                    return AbilityImporter.ImportFromJson(File.ReadAllText(path));
                 },
                 onExport: path => File.WriteAllText(path, AbilityImporter.ExportToJson())
             );

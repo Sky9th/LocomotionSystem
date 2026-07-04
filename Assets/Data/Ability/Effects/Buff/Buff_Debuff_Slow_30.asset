@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d10d59d7d7d523140aac47aae123b37e, type: 3}
   m_Name: Buff_Debuff_Slow_30
   m_EditorClassIdentifier: 
-  effectTag: {fileID: 0}
-  description: "\u51CF\u901F30%\u6301\u7EED2s\u3002\u538B\u5236\u5C04\u51FB\u9644\u5E26\u6548\u679C\u3002"
-  duration: 2
+  effectTag: {fileID: 11400000, guid: c7640368a232409429e9688bcf4e6cc3, type: 2}
+  description: "\u51CF\u901F30%\u6301\u7EED3s\u3002\u538B\u5236\u5C04\u51FB\u9644\u5E26\u6548\u679C\u3002"
+  duration: 3
   stackable: 0
   maxStacks: 1
   applicationBlockedTags: []

@@ -58,7 +58,13 @@ namespace RedDust.Core.Editor
             if (!string.IsNullOrEmpty(_rootFilter))
             {
                 var filter = _rootFilter.TrimEnd('.');
-                roots = roots.Where(r => r.DisplayName == filter).ToList();
+                // 优先精确匹配 FullPath（支持多段路径如 "Ability.Effect"），
+                // 回退到根节点 DisplayName 匹配（单段如 "Ability"）
+                var targetNode = _model.Find(filter);
+                if (targetNode != null)
+                    roots = new System.Collections.Generic.List<EditorTreeNode> { targetNode };
+                else
+                    roots = roots.Where(r => r.DisplayName == filter).ToList();
             }
 
             _treeView = new EditorTreeView();

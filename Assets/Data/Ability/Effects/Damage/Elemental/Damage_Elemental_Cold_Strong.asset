@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Damage_Elemental_Cold_Strong
   m_EditorClassIdentifier: 
   effectTag: {fileID: 11400000, guid: cc36504e2563a694bacd810679d2d9ee, type: 2}
-  description: "\u5BD2\u51B7\u4F24\u5BB3\xB7\u5F3A\u3002\u500D\u7387 2.4\uFF0C4 \u79D2\u51B0\u51BB/\u51CF\u901F\u3002\u6DB2\u6C2E\u9677\u9631/\u9AD8\u7EA7\u51B0\u971C\u6B66\u5668"
-  duration: 4
+  description: "\u5BD2\u51B7\u4F24\u5BB3\xB7\u5F3A\u3002\u500D\u7387 2.5\uFF0C5 \u79D2\u51B0\u51BB/\u51CF\u901F\u3002\u6DB2\u6C2E\u9677\u9631/\u9AD8\u7EA7\u51B0\u971C\u6B66\u5668"
+  duration: 5
   stackable: 0
   maxStacks: 1
   applicationBlockedTags: []
   baseValue: 0
   modAdd: 0
-  modMult: 2.4
+  modMult: 2.5
   priority: 0

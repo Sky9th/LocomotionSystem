@@ -39,11 +39,11 @@ namespace RedDust.Ability
 
         public override IState<SActiveAbilityContext> OnTick(ref SActiveAbilityContext ctx, float dt)
         {
-            if (ctx.Executor.IsAnimationActive)
-                return ctx.Executor.IsAnimationFireMarkerReached() ? new CooldownState() : this;
-
             if (_windupDuration <= 0f)
                 return new CooldownState();
+
+            if (ctx.Executor.IsAnimationActive)
+                return ctx.Executor.IsAnimationFireMarkerReached() ? new CooldownState() : this;
 
             _elapsed += dt;
             if (_elapsed < _windupDuration)

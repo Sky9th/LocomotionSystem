@@ -50,15 +50,15 @@ namespace RedDust.Properties.Editor
         // Import
         // ============================================================
 
-        public static (int created, int skipped, List<string> errors) ImportFromJson(string jsonText)
+        public static (int created, int updated, int skipped, List<string> errors) ImportFromJson(string jsonText)
         {
             var errors = new List<string>();
-            int created = 0, skipped = 0;
+            int created = 0, updated = 0, skipped = 0;
 
             ImportRoot root;
             try { root = JsonUtility.FromJson<ImportRoot>(jsonText); }
-            catch (Exception e) { errors.Add($"JSON parse failed: {e.Message}"); return (0, 0, errors); }
-            if (root?.definitions == null) { errors.Add("JSON empty or missing definitions"); return (0, 0, errors); }
+            catch (Exception e) { errors.Add($"JSON parse failed: {e.Message}"); return (0, 0, 0, errors); }
+            if (root?.definitions == null) { errors.Add("JSON empty or missing definitions"); return (0, 0, 0, errors); }
 
             var defMap = new Dictionary<string, PropertyDefSO>();
             void AddDef(PropertyDefSO def, PropertyType type)
@@ -114,7 +114,7 @@ namespace RedDust.Properties.Editor
                 }
 
             AssetDatabase.SaveAssets(); AssetDatabase.Refresh();
-            return (created, skipped, errors);
+            return (created, updated, skipped, errors);
         }
 
         // ============================================================
@@ -173,9 +173,9 @@ namespace RedDust.Properties.Editor
             Debug.Log($"[PropertyImporter] Exported to {jsonPath}");
         }
 
-        public static (int created, int skipped, List<string> errors) ImportFromFile(string jsonPath)
+        public static (int created, int updated, int skipped, List<string> errors) ImportFromFile(string jsonPath)
         {
-            if (!File.Exists(jsonPath)) return (0, 0, new List<string> { $"File not found: {jsonPath}" });
+            if (!File.Exists(jsonPath)) return (0, 0, 0, new List<string> { $"File not found: {jsonPath}" });
             return ImportFromJson(File.ReadAllText(jsonPath));
         }
 
@@ -202,7 +202,7 @@ namespace RedDust.Properties.Editor
     {
         private string _filePath = "Assets/Data/Properties/properties_all.json";
         private string _previewText;
-        private (int created, int skipped, List<string> errors) _result;
+        private (int created, int updated, int skipped, List<string> errors) _result;
 
         [MenuItem("RedDust/Property Import-Export", priority = 27)]
         public static void Open()
@@ -226,9 +226,9 @@ namespace RedDust.Properties.Editor
                 buildPreview: BuildPreview,
                 onImport: path =>
                 {
-                    var (created, skipped, errors) = PropertyImporter.ImportFromFile(path);
+                    var result = PropertyImporter.ImportFromFile(path);
                     PropertyDefinitionRegistry.Invalidate();
-                    return (created, skipped, errors);
+                    return result;
                 },
                 onExport: path => File.WriteAllText(path, PropertyImporter.ExportToJson())
             );

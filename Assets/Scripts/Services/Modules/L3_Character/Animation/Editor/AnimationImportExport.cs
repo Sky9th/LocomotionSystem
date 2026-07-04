@@ -540,21 +540,21 @@ namespace RedDust.Character.Animation
         // Import
         // ═══════════════════════════════════════════════════
 
-        public static (int created, int skipped, List<string> errors) ImportFromJson(string jsonText)
+        public static (int created, int updated, int skipped, List<string> errors) ImportFromJson(string jsonText)
         {
             var errors = new List<string>();
-            int created = 0, skipped = 0;
+            int created = 0, updated = 0, skipped = 0;
 
             AnimationExportFile file;
             try { file = JsonUtility.FromJson<AnimationExportFile>(jsonText); }
-            catch (Exception e) { errors.Add($"Parse failed: {e.Message}"); return (0, 0, errors); }
-            if (file == null) { errors.Add("JSON deserialized to null."); return (0, 0, errors); }
+            catch (Exception e) { errors.Add($"Parse failed: {e.Message}"); return (0, 0, 0, errors); }
+            if (file == null) { errors.Add("JSON deserialized to null."); return (0, 0, 0, errors); }
 
             if (string.IsNullOrEmpty(file.version) || (file.version != "1.0" && file.version != "2.0"))
-            { errors.Add($"Unsupported version '{file.version}'. Only '1.0' / '2.0' is supported."); return (0, 0, errors); }
+            { errors.Add($"Unsupported version '{file.version}'. Only '1.0' / '2.0' is supported."); return (0, 0, 0, errors); }
 
             if (file.profiles == null || file.profiles.Length == 0)
-            { errors.Add("JSON contains no profiles."); return (0, 0, errors); }
+            { errors.Add("JSON contains no profiles."); return (0, 0, 0, errors); }
 
             // Build lookups
             var soLookupByName = BuildAssetLookupByName();
@@ -571,7 +571,7 @@ namespace RedDust.Character.Animation
                     var key = $"{entry.directory}/{entry.name}";
                     if (ImportModeConfig(entry, out var inst, out var skipped1, errors))
                     { createdThisSession[key] = inst; created++; }
-                    else skipped += skipped1;
+                    else updated += skipped1;
                 }
             }
 
@@ -584,7 +584,7 @@ namespace RedDust.Character.Animation
                     var key = $"{entry.directory}/{entry.name}";
                     if (ImportLocomotionSet(entry, assetLookupByGuid, out var inst, out var skipped1, errors))
                     { createdThisSession[key] = inst; created++; }
-                    else skipped += skipped1;
+                    else updated += skipped1;
                 }
             }
 
@@ -598,7 +598,7 @@ namespace RedDust.Character.Animation
                     if (ImportLocomotionConfig(cfg, soLookupByName, createdThisSession,
                             out var inst, out var skipped1, errors))
                     { createdThisSession[key] = inst; created++; }
-                    else skipped += skipped1;
+                    else updated += skipped1;
                 }
             }
             if (file.gripTables != null)
@@ -610,7 +610,7 @@ namespace RedDust.Character.Animation
                     if (ImportGripTable(gt, soLookupByName, createdThisSession, tagLookup,
                             out var inst, out var skipped1, errors))
                     { createdThisSession[key] = inst; created++; }
-                    else skipped += skipped1;
+                    else updated += skipped1;
                 }
             }
 
@@ -622,18 +622,18 @@ namespace RedDust.Character.Animation
                 if (ImportProfile(entry, soLookupByName, createdThisSession,
                         out _, out var skipped1, errors))
                     created++;
-                else skipped += skipped1;
+                else updated += skipped1;
             }
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            return (created, skipped, errors);
+            return (created, updated, skipped, errors);
         }
 
-        public static (int created, int skipped, List<string> errors) ImportFromFile(string jsonPath)
+        public static (int created, int updated, int skipped, List<string> errors) ImportFromFile(string jsonPath)
         {
             if (!File.Exists(jsonPath))
-                return (0, 0, new List<string> { $"File not found: {jsonPath}" });
+                return (0, 0, 0, new List<string> { $"File not found: {jsonPath}" });
             return ImportFromJson(File.ReadAllText(jsonPath));
         }
 
@@ -652,7 +652,7 @@ namespace RedDust.Character.Animation
             if (existing != null)
             {
                 if (existing is not AnimationModeConfigSO mode)
-                { errors.Add($"[ModeConfig] '{path}' exists but is not AnimationModeConfigSO (type mismatch)"); skipped = 1; return false; }
+                { errors.Add($"[ModeConfig] '{path}' exists but is not AnimationModeConfigSO (type mismatch)"); skipped = 0; return false; }
                 ApplyModeConfig(mode, entry, errors);
                 EditorUtility.SetDirty(mode);
                 instance = mode;
@@ -1181,7 +1181,7 @@ namespace RedDust.Character.Animation
     {
         private string _filePath;
         private string _previewText;
-        private (int created, int skipped, List<string> errors) _result;
+        private (int created, int updated, int skipped, List<string> errors) _result;
 
         [MenuItem("RedDust/Animation Import-Export", priority = 28)]
         public static void Open()
@@ -1205,8 +1205,7 @@ namespace RedDust.Character.Animation
                 buildPreview: BuildPreview,
                 onImport: path =>
                 {
-                    var (created, skipped, errors) = AnimationImporter.ImportFromFile(path);
-                    return (created, skipped, errors);
+                    return AnimationImporter.ImportFromFile(path);
                 },
                 onExport: path => File.WriteAllText(path, AnimationImporter.ExportToJson())
             );

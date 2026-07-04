@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Cost_Ammo_Pistol_Burst
   m_EditorClassIdentifier: 
   effectTag: {fileID: 11400000, guid: 358ffae246e4721469d90a098c76f714, type: 2}
-  description: "\u5F39\u836F\u6D88\u8017\xB7\u624B\u67AA\u8FDE\u53D1\u3002\u62635\u53D1"
+  description: "\u5F39\u836F\u6D88\u8017\xB7\u624B\u67AA\u8FDE\u53D1\u3002\u6263
+    5 \u53D1"
   duration: 0
   stackable: 0
   maxStacks: 1

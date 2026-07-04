@@ -254,6 +254,13 @@ namespace RedDust.Ability
                     EditorFormItem.ObjectFieldWithTag<RdTagDefSO>("effectTag",
                         ref _effectTagButtonRect, rootFilter: effectTagFilter);
 
+                    // description → TextArea
+                    EditorFormItem.RawField("description", null,
+                        getValue: () => e.description,
+                        setValue: v => e.description = (string)v,
+                        drawFunc: v => EditorGUILayout.TextArea((string)v ?? "", GUILayout.Height(40)),
+                        equals: (a, b) => string.Equals((string)a, (string)b, StringComparison.Ordinal));
+
                     // 标准字段
                     EditorFormItem.Float("duration");
                     EditorFormItem.Toggle("stackable");
@@ -525,12 +532,15 @@ namespace RedDust.Ability
                 }
                 tagChain.Reverse();
 
+                // 跳过根标签（如 "Ability"），直接从第二级开始显示
+                int start = tagChain.Count > 1 ? 1 : 0;
+
                 EditorTreeNode parentNode = null;
                 var accumPath = "";
-                for (int i = 0; i < tagChain.Count; i++)
+                for (int i = start; i < tagChain.Count; i++)
                 {
                     var ct = tagChain[i];
-                    accumPath = i == 0 ? ct.LeafName : $"{accumPath}.{ct.LeafName}";
+                    accumPath = i == start ? ct.LeafName : $"{accumPath}.{ct.LeafName}";
 
                     if (!_treeNodeIndex.TryGetValue(accumPath, out var folderNode))
                     {
@@ -538,7 +548,7 @@ namespace RedDust.Ability
                         {
                             DisplayName = ct.LeafName,
                             FullPath = accumPath,
-                            Depth = i + 1,
+                            Depth = i - start + 1,
                             IsFolder = true,
                             UserData = ct,
                             Parent = parentNode,

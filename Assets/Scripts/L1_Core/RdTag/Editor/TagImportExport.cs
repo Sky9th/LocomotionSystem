@@ -41,10 +41,10 @@ namespace RedDust.Core
         /// 从 JSON 文本导入 Tag 资产。
         /// </summary>
         /// <returns>(created, skipped, errors)</returns>
-        public static (int created, int skipped, List<string> errors) ImportFromJson(string jsonText)
+        public static (int created, int updated, int skipped, List<string> errors) ImportFromJson(string jsonText)
         {
             var errors = new List<string>();
-            int created = 0, skipped = 0;
+            int created = 0, updated = 0, skipped = 0;
 
             TagImportFile importFile;
             try
@@ -54,13 +54,13 @@ namespace RedDust.Core
             catch (Exception e)
             {
                 errors.Add($"JSON 解析失败: {e.Message}");
-                return (0, 0, errors);
+                return (0, 0, 0, errors);
             }
 
             if (importFile?.tags == null || importFile.tags.Count == 0)
             {
                 errors.Add("JSON 中没有 tags 数组或数组为空");
-                return (0, 0, errors);
+                return (0, 0, 0, errors);
             }
 
             // 第一轮：创建全部资产文件
@@ -132,7 +132,7 @@ namespace RedDust.Core
                 errors.Add("无法通过反射访问 parent 字段或 RefreshCache 方法");
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
-                return (created, skipped, errors);
+                return (created, updated, skipped, errors);
             }
 
             // 第二-1轮：先把已有资产（FullTag 已正确）注入缓存
@@ -223,7 +223,7 @@ namespace RedDust.Core
             AssetDatabase.Refresh();
 
             Debug.Log($"[TagImporter] Done: created={created}, skipped={skipped}, errors={errors.Count}");
-            return (created, skipped, errors);
+            return (created, updated, skipped, errors);
         }
 
         /// <summary>
@@ -294,10 +294,10 @@ namespace RedDust.Core
         /// <summary>
         /// 从 JSON 文件路径导入。
         /// </summary>
-        public static (int created, int skipped, List<string> errors) ImportFromFile(string jsonPath)
+        public static (int created, int updated, int skipped, List<string> errors) ImportFromFile(string jsonPath)
         {
             if (!File.Exists(jsonPath))
-                return (0, 0, new List<string> { $"文件不存在: {jsonPath}" });
+                return (0, 0, 0, new List<string> { $"文件不存在: {jsonPath}" });
 
             var jsonText = File.ReadAllText(jsonPath);
             return ImportFromJson(jsonText);
@@ -327,7 +327,7 @@ namespace RedDust.Core
     {
         private string _filePath = "Assets/Data/Tags/tags_all.json";
         private string _previewText;
-        private (int created, int skipped, List<string> errors) _result;
+        private (int created, int updated, int skipped, List<string> errors) _result;
 
         [MenuItem("RedDust/Tag Import-Export", priority = 26)]
         public static void Open()
@@ -351,8 +351,7 @@ namespace RedDust.Core
                 buildPreview: BuildPreview,
                 onImport: path =>
                 {
-                    var (created, skipped, errors) = RdTagImporter.ImportFromFile(path);
-                    return (created, skipped, errors);
+                    return RdTagImporter.ImportFromFile(path);
                 },
                 onExport: path => File.WriteAllText(path, RdTagImporter.ExportToJson())
             );

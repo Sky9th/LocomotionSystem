@@ -17,7 +17,7 @@ MonoBehaviour:
     \u79D2\u53EF\u53E0\u52A0\u3002\u519B\u7528\u795E\u7ECF\u6BD2\u6C14/\u5267\u6BD2"
   duration: 15
   stackable: 1
-  maxStacks: 1
+  maxStacks: 5
   applicationBlockedTags: []
   baseValue: 0
   modAdd: 0

@@ -21,9 +21,9 @@ namespace RedDust.Shared.EditorUI
             string defaultFileName,
             ref string filePath,
             ref string previewText,
-            ref (int created, int skipped, List<string> errors) result,
+            ref (int created, int updated, int skipped, List<string> errors) result,
             Func<string, string> buildPreview,
-            Func<string, (int created, int skipped, List<string> errors)> onImport,
+            Func<string, (int created, int updated, int skipped, List<string> errors)> onImport,
             Action<string> onExport)
         {
             var fp = filePath;
@@ -115,8 +115,8 @@ namespace RedDust.Shared.EditorUI
 
         private static void DrawButtons(
             string filePath, string defaultDir, string defaultFileName, string fileExtension,
-            ref (int created, int skipped, List<string> errors) result,
-            Func<string, (int created, int skipped, List<string> errors)> onImport,
+            ref (int created, int updated, int skipped, List<string> errors) result,
+            Func<string, (int created, int updated, int skipped, List<string> errors)> onImport,
             Action<string> onExport)
         {
             var hasFile = File.Exists(filePath);
@@ -157,10 +157,10 @@ namespace RedDust.Shared.EditorUI
         }
 
         private static void DrawResultSection(
-            (int created, int skipped, List<string> errors) result)
+            (int created, int updated, int skipped, List<string> errors) result)
         {
-            var (created, skipped, errors) = result;
-            if (created + skipped == 0 && (errors == null || errors.Count == 0)) return;
+            var (created, updated, skipped, errors) = result;
+            if (created + updated + skipped == 0 && (errors == null || errors.Count == 0)) return;
 
             var hasErrors = errors != null && errors.Count > 0;
 
@@ -172,7 +172,7 @@ namespace RedDust.Shared.EditorUI
                     { normal = { textColor = EditorTokens.ColorResultErr } };
 
                 EditorGUILayout.LabelField(
-                    $"Created: {created}  ·  Skipped: {skipped}" +
+                    $"Created: {created}  ·  Updated: {updated}  ·  Skipped: {skipped}" +
                     (hasErrors ? $"  |  Errors: {errors.Count}" : ""),
                     hasErrors ? errStyle : okStyle);
 

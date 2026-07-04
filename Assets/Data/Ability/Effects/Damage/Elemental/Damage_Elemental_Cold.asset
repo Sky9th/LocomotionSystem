@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Damage_Elemental_Cold
   m_EditorClassIdentifier: 
   effectTag: {fileID: 11400000, guid: cc36504e2563a694bacd810679d2d9ee, type: 2}
-  description: "\u5BD2\u51B7\u4F24\u5BB3\u3002\u6781\u5BD2\u73AF\u5883/\u51B0\u971C\u6B66\u5668\u30022
+  description: "\u5BD2\u51B7\u4F24\u5BB3\u3002\u6781\u5BD2\u73AF\u5883/\u51B0\u971C\u6B66\u5668\u30023
     \u79D2\u51CF\u901F\u9644\u5E26"
-  duration: 2
+  duration: 3
   stackable: 0
   maxStacks: 1
   applicationBlockedTags: []
   baseValue: 0
   modAdd: 0
-  modMult: 1
+  modMult: 1.2
   priority: 0

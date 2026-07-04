@@ -134,7 +134,24 @@ namespace RedDust.Character
             go.name = $"{entity.Preset.name}_{entity.Id}";
             _spawnedViews[slotKey] = go;
 
+            // 武器视图禁用物理——命中检测走 ExecutionState 的 Physics 查询，
+            // 武器上的 Collider 只会和敌人碰撞体产生物理推挤导致卡顿。
+            DisableViewPhysics(go);
+
             Debug.Log($"[CharacterEquipment] {ctx.Root.name}: spawned {go.name} → {slotKey}");
+        }
+
+        /// <summary>
+        /// 禁用武器视图的物理组件。
+        /// Collider 关闭（避免和敌人碰撞体推挤卡顿），Rigidbody 设 kinematic（避免动画骨骼子物体的物理模拟）。
+        /// </summary>
+        private static void DisableViewPhysics(GameObject go)
+        {
+            foreach (var col in go.GetComponentsInChildren<Collider>())
+                col.enabled = false;
+
+            foreach (var rb in go.GetComponentsInChildren<Rigidbody>())
+                rb.isKinematic = true;
         }
 
         private void DespawnView(string slotKey)

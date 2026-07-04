@@ -72,16 +72,16 @@ namespace RedDust.Ability
             return JsonUtility.ToJson(export, true);
         }
 
-        public static (int created, int skipped, List<string> errors) ImportFromJson(string jsonText)
+        public static (int created, int updated, int skipped, List<string> errors) ImportFromJson(string jsonText)
         {
             var errors = new List<string>();
-            int created = 0, skipped = 0;
+            int created = 0, updated = 0, skipped = 0;
 
             SearchExportFile file;
             try { file = JsonUtility.FromJson<SearchExportFile>(jsonText); }
-            catch (Exception e) { errors.Add($"Parse failed: {e.Message}"); return (0, 0, errors); }
+            catch (Exception e) { errors.Add($"Parse failed: {e.Message}"); return (0, 0, 0, errors); }
             if (file?.searches == null || file.searches.Length == 0)
-            { errors.Add("Empty or invalid JSON."); return (0, 0, errors); }
+            { errors.Add("Empty or invalid JSON."); return (0, 0, 0, errors); }
 
             var validTypes = new HashSet<string> { "Cone", "RayLine", "Circle" };
             foreach (var entry in file.searches)
@@ -103,7 +103,7 @@ namespace RedDust.Ability
                     { errors.Add($"'{entry.name}': type mismatch"); skipped++; continue; }
                     ApplyFields(existing, entry);
                     EditorUtility.SetDirty(existing);
-                    skipped++;
+                    updated++;
                 }
                 else
                 {
@@ -117,7 +117,7 @@ namespace RedDust.Ability
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            return (created, skipped, errors);
+            return (created, updated, skipped, errors);
         }
 
         private static AbilitySearchSO CreateInstance(SearchEntry e) => e.searchType switch
@@ -143,7 +143,7 @@ namespace RedDust.Ability
     {
         private string _filePath = "Assets/Data/Ability/Searches/searches_all.json";
         private string _previewText;
-        private (int created, int skipped, List<string> errors) _result;
+        private (int created, int updated, int skipped, List<string> errors) _result;
 
         [MenuItem("RedDust/Search Import-Export", priority = 23)]
         public static void Open()
@@ -167,8 +167,7 @@ namespace RedDust.Ability
                 buildPreview: BuildPreview,
                 onImport: path =>
                 {
-                    var (created, skipped, errors) = SearchImporter.ImportFromJson(File.ReadAllText(path));
-                    return (created, skipped, errors);
+                    return SearchImporter.ImportFromJson(File.ReadAllText(path));
                 },
                 onExport: path => File.WriteAllText(path, SearchImporter.ExportToJson())
             );

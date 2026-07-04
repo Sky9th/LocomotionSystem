@@ -21,5 +21,5 @@ MonoBehaviour:
   applicationBlockedTags: []
   baseValue: 0
   modAdd: 0
-  modMult: 1
+  modMult: 1.2
   priority: 0

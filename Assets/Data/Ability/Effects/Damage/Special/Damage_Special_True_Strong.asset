@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Damage_Special_True_Strong
   m_EditorClassIdentifier: 
   effectTag: {fileID: 11400000, guid: c9643f4c009d9eb4097b860e75723833, type: 2}
-  description: "\u771F\u5B9E\u4F24\u5BB3\xB7\u5F3A\u3002\u500D\u7387 5.0\u3002Boss
+  description: "\u771F\u5B9E\u4F24\u5BB3\xB7\u5F3A\u3002\u500D\u7387 3.0\u3002Boss
     \u7EC8\u7ED3\u6280/\u5267\u60C5\u4E8B\u4EF6"
   duration: 0
   stackable: 0
@@ -21,5 +21,5 @@ MonoBehaviour:
   applicationBlockedTags: []
   baseValue: 0
   modAdd: 0
-  modMult: 5
+  modMult: 3
   priority: 0

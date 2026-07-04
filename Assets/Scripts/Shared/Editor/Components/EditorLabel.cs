@@ -15,7 +15,7 @@ namespace RedDust.Shared.EditorUI
 
         private static GUIStyle CreateDefaultStyle()
         {
-            return new GUIStyle()
+            return new GUIStyle(EditorStyles.label)
             {
                 fontSize = EditorTokens.FontBase,
                 alignment = TextAnchor.MiddleLeft,
@@ -25,7 +25,7 @@ namespace RedDust.Shared.EditorUI
             };
         }
 
-        /// <summary>固定宽度标签。</summary>
+        /// <summary>固定宽度标签。GUILayout.Label 保证 tooltip 正确响应 hover。</summary>
         public static void Draw(string text, float width,
             string tooltip = null, float trailingGap = 0f,
             GUIStyle style = null)
@@ -33,7 +33,7 @@ namespace RedDust.Shared.EditorUI
             var guiContent = string.IsNullOrEmpty(tooltip)
                 ? new GUIContent(text)
                 : new GUIContent(text, tooltip);
-            EditorGUILayout.LabelField(guiContent,
+            GUILayout.Label(guiContent,
                 style ?? DefaultStyle,
                 GUILayout.Width(width));
             if (trailingGap > 0f) GUILayout.Space(trailingGap);
@@ -45,7 +45,7 @@ namespace RedDust.Shared.EditorUI
             var guiContent = string.IsNullOrEmpty(tooltip)
                 ? new GUIContent(text)
                 : new GUIContent(text, tooltip);
-            EditorGUILayout.LabelField(guiContent,
+            GUILayout.Label(guiContent,
                 style ?? DefaultStyle,
                 GUILayout.ExpandWidth(true));
         }

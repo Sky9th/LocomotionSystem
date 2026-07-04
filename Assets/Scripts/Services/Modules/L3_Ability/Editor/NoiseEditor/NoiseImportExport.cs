@@ -60,16 +60,16 @@ namespace RedDust.Ability
             return JsonUtility.ToJson(export, true);
         }
 
-        public static (int created, int skipped, List<string> errors) ImportFromJson(string jsonText)
+        public static (int created, int updated, int skipped, List<string> errors) ImportFromJson(string jsonText)
         {
             var errors = new List<string>();
-            int created = 0, skipped = 0;
+            int created = 0, updated = 0, skipped = 0;
 
             NoiseExportFile file;
             try { file = JsonUtility.FromJson<NoiseExportFile>(jsonText); }
-            catch (Exception e) { errors.Add($"Parse failed: {e.Message}"); return (0, 0, errors); }
+            catch (Exception e) { errors.Add($"Parse failed: {e.Message}"); return (0, 0, 0, errors); }
             if (file?.noises == null || file.noises.Length == 0)
-            { errors.Add("Empty or invalid JSON."); return (0, 0, errors); }
+            { errors.Add("Empty or invalid JSON."); return (0, 0, 0, errors); }
 
             // Build tag lookup by FullTag
             var tagByFullTag = RdTagLookup.Build();
@@ -89,7 +89,7 @@ namespace RedDust.Ability
                 {
                     ApplyFields(existing, entry, tagByFullTag);
                     EditorUtility.SetDirty(existing);
-                    skipped++;
+                    updated++;
                 }
                 else
                 {
@@ -103,7 +103,7 @@ namespace RedDust.Ability
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            return (created, skipped, errors);
+            return (created, updated, skipped, errors);
         }
 
         private static void ApplyFields(NoiseEventSO n, NoiseEntry e,
@@ -124,7 +124,7 @@ namespace RedDust.Ability
     {
         private string _filePath = "Assets/Data/Ability/Noises/noises_all.json";
         private string _previewText;
-        private (int created, int skipped, List<string> errors) _result;
+        private (int created, int updated, int skipped, List<string> errors) _result;
 
         [MenuItem("RedDust/Noise Import-Export", priority = 25)]
         public static void Open()
@@ -148,8 +148,7 @@ namespace RedDust.Ability
                 buildPreview: BuildPreview,
                 onImport: path =>
                 {
-                    var (created, skipped, errors) = NoiseImporter.ImportFromJson(File.ReadAllText(path));
-                    return (created, skipped, errors);
+                    return NoiseImporter.ImportFromJson(File.ReadAllText(path));
                 },
                 onExport: path => File.WriteAllText(path, NoiseImporter.ExportToJson())
             );
