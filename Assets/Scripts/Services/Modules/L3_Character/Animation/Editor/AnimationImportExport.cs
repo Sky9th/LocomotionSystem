@@ -93,6 +93,11 @@ namespace RedDust.Character.Animation
         public float walkAnimNativeSpeed = 1.5f;
         public float runAnimNativeSpeed = 5f;
         public float sprintAnimNativeSpeed = 7f;
+        // Hit Reaction (MixerTransition2D x4 — 4-directional blend)
+        public Mixer2DTransitionEntry hitReactionFlinch;
+        public Mixer2DTransitionEntry hitReactionStagger;
+        public Mixer2DTransitionEntry hitReactionKnockdown;
+        public Mixer2DTransitionEntry hitReactionGetUp;
         // Traversal
         public ClipTransitionEntry climbUpHalfMeter;
         public ClipTransitionEntry climbUp1meter;
@@ -372,6 +377,10 @@ namespace RedDust.Character.Animation
             entry.climbDown1meter = ExportClipTransition(set.climbDown1meter);
             entry.climbDown2meter = ExportClipTransition(set.climbDown2meter);
             entry.landFromWall = ExportClipTransition(set.landFromWall);
+            entry.hitReactionFlinch = ExportMixer2D(set.hitReactionFlinch);
+            entry.hitReactionStagger = ExportMixer2D(set.hitReactionStagger);
+            entry.hitReactionKnockdown = ExportMixer2D(set.hitReactionKnockdown);
+            entry.hitReactionGetUp = ExportMixer2D(set.hitReactionGetUp);
 
             sets.Add(entry);
         }
@@ -736,6 +745,10 @@ namespace RedDust.Character.Animation
             set.climbDown1meter ??= new ClipTransition();
             set.climbDown2meter ??= new ClipTransition();
             set.landFromWall ??= new ClipTransition();
+            set.hitReactionFlinch ??= new MixerTransition2D();
+            set.hitReactionStagger ??= new MixerTransition2D();
+            set.hitReactionKnockdown ??= new MixerTransition2D();
+            set.hitReactionGetUp ??= new MixerTransition2D();
         }
 
         private static void ApplyLocomotionSet(LocomotionAnimationSetSO set, LocomotionSetEntry entry,
@@ -768,6 +781,14 @@ namespace RedDust.Character.Animation
             ApplyClipTransitionToField(set.climbDown1meter, entry.climbDown1meter, guidLookup, errors, $"{entry.name}.climbDown1meter");
             ApplyClipTransitionToField(set.climbDown2meter, entry.climbDown2meter, guidLookup, errors, $"{entry.name}.climbDown2meter");
             ApplyClipTransitionToField(set.landFromWall, entry.landFromWall, guidLookup, errors, $"{entry.name}.landFromWall");
+            set.hitReactionFlinch ??= new MixerTransition2D();
+            set.hitReactionStagger ??= new MixerTransition2D();
+            set.hitReactionKnockdown ??= new MixerTransition2D();
+            set.hitReactionGetUp ??= new MixerTransition2D();
+            ApplyMixer2D(set.hitReactionFlinch, entry.hitReactionFlinch, guidLookup, errors, $"{entry.name}.hitReactionFlinch");
+            ApplyMixer2D(set.hitReactionStagger, entry.hitReactionStagger, guidLookup, errors, $"{entry.name}.hitReactionStagger");
+            ApplyMixer2D(set.hitReactionKnockdown, entry.hitReactionKnockdown, guidLookup, errors, $"{entry.name}.hitReactionKnockdown");
+            ApplyMixer2D(set.hitReactionGetUp, entry.hitReactionGetUp, guidLookup, errors, $"{entry.name}.hitReactionGetUp");
         }
 
         // ── Phase 3: LocomotionConfig ───────────────────────

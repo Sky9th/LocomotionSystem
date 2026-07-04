@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59eaf885c1e7a2044955fdba9b4c7dc8, type: 3}
-  m_Name: LocomotionSet_1H_Sidearm_Combat
+  m_Name: LocomotionSet_2H_Fist_Relax
   m_EditorClassIdentifier: 
   idleL:
     _FadeDuration: 0.25
@@ -19,7 +19,7 @@ MonoBehaviour:
       _NormalizedTimes: []
       _Callbacks: []
       _Names: []
-    _Clip: {fileID: 7400000, guid: 70ab545423b7525449cb24b369cc721d, type: 3}
+    _Clip: {fileID: 1827226128182048838, guid: dd79d46b35e0b7c43b55bcf6a4888f35, type: 3}
     _NormalizedStartTime: NaN
   walkMixer:
     _FadeDuration: 0.25
@@ -29,18 +29,26 @@ MonoBehaviour:
       _Callbacks: []
       _Names: []
     _Animations:
-    - {fileID: 7400000, guid: 982c51931e2e4c24c827c1bbdb4c5851, type: 3}
-    - {fileID: 7400000, guid: b8111b1061008dc459aec3af28c8a424, type: 3}
-    - {fileID: 7400000, guid: d3261266ea92ec94faf0df297cb350ff, type: 3}
-    - {fileID: 7400000, guid: b2488d7d52487044fad0dfd92bc40ff5, type: 3}
-    - {fileID: 7400000, guid: 70ab545423b7525449cb24b369cc721d, type: 3}
+    - {fileID: 1827226128182048838, guid: 4135c16ab45576f42bb1f3faabf35474, type: 3}
+    - {fileID: 1827226128182048838, guid: 0ae74e5d8d8154d4d9ee7110a1b0332c, type: 3}
+    - {fileID: 1827226128182048838, guid: de81a5517884ebf45be5aa5445e5967b, type: 3}
+    - {fileID: 1827226128182048838, guid: c0735ae4f8733c249a2a431be4807da1, type: 3}
+    - {fileID: 1827226128182048838, guid: 3ae0d71ace74c3c4fbc402081c7e7359, type: 3}
+    - {fileID: 1827226128182048838, guid: dc89382d067d25d48802b9e334756423, type: 3}
+    - {fileID: 1827226128182048838, guid: e0c6db2f4b84d4d4988dfcee7b9684cc, type: 3}
+    - {fileID: 1827226128182048838, guid: 2cac407aed14e1243b05cfeabfc5ba8a, type: 3}
+    - {fileID: 1827226128182048838, guid: dd79d46b35e0b7c43b55bcf6a4888f35, type: 3}
     _Speeds: []
     _SynchronizeChildren: 
     _Thresholds:
     - {x: 0, y: 1}
-    - {x: 0, y: -1}
-    - {x: -1, y: 0}
+    - {x: 0.5, y: 0.5}
     - {x: 1, y: 0}
+    - {x: 0.5, y: -0.5}
+    - {x: 0, y: -1}
+    - {x: -0.5, y: -0.5}
+    - {x: -1, y: 0}
+    - {x: -0.5, y: 0.5}
     - {x: 0, y: 0}
     _DefaultParameter: {x: 0, y: 0}
     _Type: 0
@@ -54,18 +62,26 @@ MonoBehaviour:
       _Callbacks: []
       _Names: []
     _Animations:
-    - {fileID: 7400000, guid: ba35a5e964f0b184d96680d65b2978c3, type: 3}
-    - {fileID: 7400000, guid: cfed701a2dc4acc4e8e86e4e9783806c, type: 3}
-    - {fileID: 7400000, guid: 71205674048fae44fb9ad7a37483feab, type: 3}
-    - {fileID: 7400000, guid: 87bf560a8ebeca048987cdbee9ade9bf, type: 3}
-    - {fileID: 7400000, guid: 70ab545423b7525449cb24b369cc721d, type: 3}
+    - {fileID: 1827226128182048838, guid: 9ef3ff83668953644a8fba73f5743064, type: 3}
+    - {fileID: 1827226128182048838, guid: fbb341d886f31e44681f679781827d39, type: 3}
+    - {fileID: 1827226128182048838, guid: 29ee5d8eb2335e04d82e48a204759f74, type: 3}
+    - {fileID: 1827226128182048838, guid: cbfa4fbd6848fbe449dd23dea5b241a0, type: 3}
+    - {fileID: 1827226128182048838, guid: 40ab0952a0d902342b1958501393fb85, type: 3}
+    - {fileID: 1827226128182048838, guid: 7375c8b8f475a9c4cb57de88c2d1b447, type: 3}
+    - {fileID: 1827226128182048838, guid: 5d9b18b8a3abfea4a9b2213bddab9260, type: 3}
+    - {fileID: 1827226128182048838, guid: d4dc070d38e631243a9fb09cb4d5d663, type: 3}
+    - {fileID: 1827226128182048838, guid: dd79d46b35e0b7c43b55bcf6a4888f35, type: 3}
     _Speeds: []
     _SynchronizeChildren: 
     _Thresholds:
     - {x: 0, y: 1}
-    - {x: 0, y: -1}
-    - {x: -1, y: 0}
+    - {x: 0.5, y: 0.5}
     - {x: 1, y: 0}
+    - {x: 0.5, y: -0.5}
+    - {x: 0, y: -1}
+    - {x: -0.5, y: -0.5}
+    - {x: -1, y: 0}
+    - {x: -0.5, y: 0.5}
     - {x: 0, y: 0}
     _DefaultParameter: {x: 0, y: 0}
     _Type: 1
@@ -78,7 +94,7 @@ MonoBehaviour:
       _NormalizedTimes: []
       _Callbacks: []
       _Names: []
-    _Clip: {fileID: 7400000, guid: c47655e7d96bb0045a25a173734ee935, type: 3}
+    _Clip: {fileID: 1827226128182048838, guid: 9855ce7b7dba5e94c834b01cbc44b783, type: 3}
     _NormalizedStartTime: NaN
   walkAnimNativeSpeed: 1.5
   runAnimNativeSpeed: 5
@@ -91,7 +107,7 @@ MonoBehaviour:
       _NormalizedTimes: []
       _Callbacks: []
       _Names: []
-    _Clip: {fileID: 0}
+    _Clip: {fileID: 1827226128182048838, guid: 0ef60e078f73f854894c7a668ff2555e, type: 3}
     _NormalizedStartTime: NaN
   turnInPlace90R:
     _FadeDuration: 0.25
@@ -100,7 +116,7 @@ MonoBehaviour:
       _NormalizedTimes: []
       _Callbacks: []
       _Names: []
-    _Clip: {fileID: 0}
+    _Clip: {fileID: 1827226128182048838, guid: 92ba5ef29751eb94e9eaf4cbd177df1a, type: 3}
     _NormalizedStartTime: NaN
   airLight:
     _FadeDuration: 0.25
@@ -110,11 +126,15 @@ MonoBehaviour:
       _Callbacks: []
       _Names: []
     _Animations:
-    - {fileID: 7400000, guid: ed2314cdf9b357f4f868d9d1b57ee9d3, type: 3}
+    - {fileID: 1827226128182048838, guid: 06a342c323699b74782e5c62266ec155, type: 3}
+    - {fileID: 1827226128182048838, guid: 7770a214a8709f34d8fd89f2b6d7c29d, type: 3}
+    - {fileID: 1827226128182048838, guid: 36ece2e2199374a44b7129665054e9fc, type: 3}
     _Speeds: []
     _SynchronizeChildren: 
     _Thresholds:
     - 0
+    - 1
+    - 2
     _DefaultParameter: 0
     _ExtrapolateSpeed: 1
     _ParameterName: {fileID: 0}
@@ -126,11 +146,15 @@ MonoBehaviour:
       _Callbacks: []
       _Names: []
     _Animations:
-    - {fileID: 7400000, guid: f92e003c167211f46b06181c498479d2, type: 3}
+    - {fileID: 1827226128182048838, guid: 4e10d2a660caf984f9352d5f7b9a748a, type: 3}
+    - {fileID: 1827226128182048838, guid: 4771310b4c51ab74e9f9984654239ee6, type: 3}
+    - {fileID: 1827226128182048838, guid: df817fd41309f8341be1934f45f028ed, type: 3}
     _Speeds: []
     _SynchronizeChildren: 
     _Thresholds:
     - 0
+    - 1
+    - 2
     _DefaultParameter: 0
     _ExtrapolateSpeed: 1
     _ParameterName: {fileID: 0}
@@ -142,11 +166,15 @@ MonoBehaviour:
       _Callbacks: []
       _Names: []
     _Animations:
-    - {fileID: 7400000, guid: 41ea04e928acd754a8a5837190a27cb2, type: 3}
+    - {fileID: 1827226128182048838, guid: d7bf9e7ebc9db1743ad064190ded240e, type: 3}
+    - {fileID: 1827226128182048838, guid: 00450c04c5ec4564d9048cc0d4f49d03, type: 3}
+    - {fileID: 1827226128182048838, guid: 339e38a9f8a579249b43ba03f30ae253, type: 3}
     _Speeds: []
     _SynchronizeChildren: 
     _Thresholds:
     - 0
+    - 1
+    - 2
     _DefaultParameter: 0
     _ExtrapolateSpeed: 1
     _ParameterName: {fileID: 0}
@@ -158,11 +186,15 @@ MonoBehaviour:
       _Callbacks: []
       _Names: []
     _Animations:
-    - {fileID: 7400000, guid: ed7a9878994fa614da1e9e7497506cce, type: 3}
+    - {fileID: 1827226128182048838, guid: bbebb4f4873b0114b96e0cc358e40f47, type: 3}
+    - {fileID: 1827226128182048838, guid: 6295b708fa5035a478b412049e5f2f15, type: 3}
+    - {fileID: 1827226128182048838, guid: 76237e8788f14f547a25ddd71de6bbf0, type: 3}
     _Speeds: []
     _SynchronizeChildren: 
     _Thresholds:
     - 0
+    - 1
+    - 2
     _DefaultParameter: 0
     _ExtrapolateSpeed: 1
     _ParameterName: {fileID: 0}
@@ -173,7 +205,7 @@ MonoBehaviour:
       _NormalizedTimes: []
       _Callbacks: []
       _Names: []
-    _Clip: {fileID: 0}
+    _Clip: {fileID: 7400000, guid: 61f51aa432263ea4bbc5edd30a78a64c, type: 3}
     _NormalizedStartTime: NaN
   climbUp1meter:
     _FadeDuration: 0.25
@@ -182,7 +214,7 @@ MonoBehaviour:
       _NormalizedTimes: []
       _Callbacks: []
       _Names: []
-    _Clip: {fileID: 0}
+    _Clip: {fileID: 7400000, guid: b0e4351f2cf7fed4baa2e50d6f15848c, type: 3}
     _NormalizedStartTime: NaN
   climbUp2meter:
     _FadeDuration: 0.25
@@ -191,7 +223,7 @@ MonoBehaviour:
       _NormalizedTimes: []
       _Callbacks: []
       _Names: []
-    _Clip: {fileID: 0}
+    _Clip: {fileID: 7400000, guid: 33ca24368a558b946a9fffb7598090bd, type: 3}
     _NormalizedStartTime: NaN
   climbDown1meter:
     _FadeDuration: 0.25
@@ -228,10 +260,10 @@ MonoBehaviour:
       _Callbacks: []
       _Names: []
     _Animations:
-    - {fileID: 7400000, guid: 76ff6cbdd13714b4a9a872fda0965bd3, type: 3}
-    - {fileID: 7400000, guid: 6795fa38bdae0174d801b6b55ca5ff0b, type: 3}
-    - {fileID: 7400000, guid: af52685049d41e24fbdaecd78349dcd3, type: 3}
-    - {fileID: 7400000, guid: 18ac7d4afefc01e4696ae3afdbc94e0f, type: 3}
+    - {fileID: 7400000, guid: 0a0c8bc9b38a806418a3d025c703bb35, type: 3}
+    - {fileID: 7400000, guid: 1a6c7779bbb3eda428c3e451968f581c, type: 3}
+    - {fileID: 7400000, guid: 2a877777924006e4d914c64c652b08ba, type: 3}
+    - {fileID: 7400000, guid: 2837bbdb7aea1a946b490ee09c2be033, type: 3}
     _Speeds: []
     _SynchronizeChildren: 
     _Thresholds:
@@ -251,10 +283,10 @@ MonoBehaviour:
       _Callbacks: []
       _Names: []
     _Animations:
-    - {fileID: 7400000, guid: 3f16665deccf57d44950603620b4abca, type: 3}
-    - {fileID: 7400000, guid: 6b9fc9a6271f6cd44a4e967e54ea2d26, type: 3}
-    - {fileID: 7400000, guid: 116880a3272694c4faf8bf0f1626fa9d, type: 3}
-    - {fileID: 7400000, guid: 026ccdeb6875a6e4b8e416664f9201ac, type: 3}
+    - {fileID: 7400000, guid: 06301a3f9a1c26e4aa7f0e52ce39bf52, type: 3}
+    - {fileID: 7400000, guid: d2646311bdf02d64d9d3687d06de347b, type: 3}
+    - {fileID: 7400000, guid: f4bc5b3a2e0743f418a8496390f6e79c, type: 3}
+    - {fileID: 7400000, guid: 4b8e5f22e96e8f54b8c3b95c7581e9f3, type: 3}
     _Speeds: []
     _SynchronizeChildren: 
     _Thresholds:
@@ -274,10 +306,10 @@ MonoBehaviour:
       _Callbacks: []
       _Names: []
     _Animations:
-    - {fileID: 7400000, guid: 941842e4bff74ae4a82a7bf79d6755a5, type: 3}
-    - {fileID: 7400000, guid: a1dcf1220218c3e43a153b6393880f3c, type: 3}
-    - {fileID: 7400000, guid: 3089c46cf92ed0e4d847a817c4cb5a30, type: 3}
-    - {fileID: 7400000, guid: 0721d0381f3ec6c468d3c11e21857738, type: 3}
+    - {fileID: 7400000, guid: 90b211d5855d93d45aeb42a5cc4d5df7, type: 3}
+    - {fileID: 7400000, guid: 7da9b9924c509e64a83c5f1d3c3f189e, type: 3}
+    - {fileID: 7400000, guid: 0d266341afc23ff4d9d1f46922cc5988, type: 3}
+    - {fileID: 7400000, guid: 0e2ac4d433926f84da69b5627a922a47, type: 3}
     _Speeds: []
     _SynchronizeChildren: 
     _Thresholds:
@@ -297,10 +329,10 @@ MonoBehaviour:
       _Callbacks: []
       _Names: []
     _Animations:
-    - {fileID: 7400000, guid: b0bd849c97302644ebd1d3ef43ac515c, type: 3}
-    - {fileID: 7400000, guid: 7fcc749ec7905be479f8384d5918f09d, type: 3}
-    - {fileID: 7400000, guid: 335b22b5ca4466a498217eae9eb4b1a1, type: 3}
-    - {fileID: 7400000, guid: d9749ecde95b0844080c4154ac3f569b, type: 3}
+    - {fileID: 7400000, guid: b19b29ab05a75fc4e85894bb4851aa81, type: 3}
+    - {fileID: 7400000, guid: 47b67092f62238a41a5dd1346ecd604a, type: 3}
+    - {fileID: 7400000, guid: 926389628b9bc784f936167d059f3dd1, type: 3}
+    - {fileID: 7400000, guid: 911d240645d9a4f46b084b8881007ffc, type: 3}
     _Speeds: []
     _SynchronizeChildren: 
     _Thresholds:

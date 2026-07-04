@@ -30,9 +30,11 @@ MonoBehaviour:
       _Names: []
     _Animations:
     - {fileID: 7400000, guid: da3b5bf338f6cdf44a30543fab4e5e08, type: 3}
+    - {fileID: 7400000, guid: e370a3d6d2beaa2469183ed771a97d46, type: 3}
     _Speeds: []
     _SynchronizeChildren: 
     _Thresholds:
+    - {x: 0, y: 1}
     - {x: 0, y: 1}
     _DefaultParameter: {x: 0, y: 0}
     _Type: 0
@@ -194,6 +196,82 @@ MonoBehaviour:
       _Names: []
     _Clip: {fileID: 0}
     _NormalizedStartTime: NaN
+  hitReactionFlinch:
+    _FadeDuration: 0.25
+    _Speed: 1
+    _Events:
+      _NormalizedTimes: []
+      _Callbacks: []
+      _Names: []
+    _Animations: []
+    _Speeds: []
+    _SynchronizeChildren: 
+    _Thresholds:
+    - {x: 0, y: 1}
+    - {x: 0, y: -1}
+    - {x: -1, y: 0}
+    - {x: 1, y: 0}
+    _DefaultParameter: {x: 0, y: 0}
+    _Type: 1
+    _ParameterNameX: {fileID: 0}
+    _ParameterNameY: {fileID: 0}
+  hitReactionStagger:
+    _FadeDuration: 0.25
+    _Speed: 1
+    _Events:
+      _NormalizedTimes: []
+      _Callbacks: []
+      _Names: []
+    _Animations: []
+    _Speeds: []
+    _SynchronizeChildren: 
+    _Thresholds:
+    - {x: 0, y: 1}
+    - {x: 0, y: -1}
+    - {x: -1, y: 0}
+    - {x: 1, y: 0}
+    _DefaultParameter: {x: 0, y: 0}
+    _Type: 1
+    _ParameterNameX: {fileID: 0}
+    _ParameterNameY: {fileID: 0}
+  hitReactionKnockdown:
+    _FadeDuration: 0.25
+    _Speed: 1
+    _Events:
+      _NormalizedTimes: []
+      _Callbacks: []
+      _Names: []
+    _Animations: []
+    _Speeds: []
+    _SynchronizeChildren: 
+    _Thresholds:
+    - {x: 0, y: 1}
+    - {x: 0, y: -1}
+    - {x: -1, y: 0}
+    - {x: 1, y: 0}
+    _DefaultParameter: {x: 0, y: 0}
+    _Type: 1
+    _ParameterNameX: {fileID: 0}
+    _ParameterNameY: {fileID: 0}
+  hitReactionGetUp:
+    _FadeDuration: 0.25
+    _Speed: 1
+    _Events:
+      _NormalizedTimes: []
+      _Callbacks: []
+      _Names: []
+    _Animations: []
+    _Speeds: []
+    _SynchronizeChildren: 
+    _Thresholds:
+    - {x: 0, y: 1}
+    - {x: 0, y: -1}
+    - {x: -1, y: 0}
+    - {x: 1, y: 0}
+    _DefaultParameter: {x: 0, y: 0}
+    _Type: 1
+    _ParameterNameX: {fileID: 0}
+    _ParameterNameY: {fileID: 0}
   references:
     version: 2
     RefIds: []

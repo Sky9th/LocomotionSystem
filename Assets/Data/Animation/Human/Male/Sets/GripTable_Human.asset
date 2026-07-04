@@ -17,7 +17,7 @@ MonoBehaviour:
   - gripTag: {fileID: 11400000, guid: ba0c8934bf862d84197b5957704273c1, type: 2}
     weaponTypeTag: {fileID: 0}
     animationSet: {fileID: 11400000, guid: 11f11b6d47e584c47a9f80461d84a0bd, type: 2}
-    combatSet: {fileID: 0}
+    combatSet: {fileID: 11400000, guid: b78ac8dbebd25e7469c529247ac00579, type: 2}
   - gripTag: {fileID: 11400000, guid: 084fd9735b6c6824083c01813a0bea8a, type: 2}
     weaponTypeTag: {fileID: 11400000, guid: 8fd15cc8d0571b143a0564f2c9dc1f3e, type: 2}
     animationSet: {fileID: 11400000, guid: c81796de84b39354ba6838e6c932ceff, type: 2}

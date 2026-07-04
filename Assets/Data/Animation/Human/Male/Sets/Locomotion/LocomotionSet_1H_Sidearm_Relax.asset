@@ -208,6 +208,98 @@ MonoBehaviour:
       _Names: []
     _Clip: {fileID: 0}
     _NormalizedStartTime: NaN
+  hitReactionFlinch:
+    _FadeDuration: 0.25
+    _Speed: 1
+    _Events:
+      _NormalizedTimes: []
+      _Callbacks: []
+      _Names: []
+    _Animations:
+    - {fileID: 7400000, guid: 76ff6cbdd13714b4a9a872fda0965bd3, type: 3}
+    - {fileID: 7400000, guid: 6795fa38bdae0174d801b6b55ca5ff0b, type: 3}
+    - {fileID: 7400000, guid: af52685049d41e24fbdaecd78349dcd3, type: 3}
+    - {fileID: 7400000, guid: 18ac7d4afefc01e4696ae3afdbc94e0f, type: 3}
+    _Speeds: []
+    _SynchronizeChildren: 
+    _Thresholds:
+    - {x: 0, y: 1}
+    - {x: 0, y: -1}
+    - {x: -1, y: 0}
+    - {x: 1, y: 0}
+    _DefaultParameter: {x: 0, y: 0}
+    _Type: 1
+    _ParameterNameX: {fileID: 0}
+    _ParameterNameY: {fileID: 0}
+  hitReactionStagger:
+    _FadeDuration: 0.25
+    _Speed: 1
+    _Events:
+      _NormalizedTimes: []
+      _Callbacks: []
+      _Names: []
+    _Animations:
+    - {fileID: 7400000, guid: 3f16665deccf57d44950603620b4abca, type: 3}
+    - {fileID: 7400000, guid: 6b9fc9a6271f6cd44a4e967e54ea2d26, type: 3}
+    - {fileID: 7400000, guid: 116880a3272694c4faf8bf0f1626fa9d, type: 3}
+    - {fileID: 7400000, guid: 026ccdeb6875a6e4b8e416664f9201ac, type: 3}
+    _Speeds: []
+    _SynchronizeChildren: 
+    _Thresholds:
+    - {x: 0, y: 1}
+    - {x: 0, y: -1}
+    - {x: -1, y: 0}
+    - {x: 1, y: 0}
+    _DefaultParameter: {x: 0, y: 0}
+    _Type: 1
+    _ParameterNameX: {fileID: 0}
+    _ParameterNameY: {fileID: 0}
+  hitReactionKnockdown:
+    _FadeDuration: 0.25
+    _Speed: 1
+    _Events:
+      _NormalizedTimes: []
+      _Callbacks: []
+      _Names: []
+    _Animations:
+    - {fileID: 7400000, guid: 941842e4bff74ae4a82a7bf79d6755a5, type: 3}
+    - {fileID: 7400000, guid: a1dcf1220218c3e43a153b6393880f3c, type: 3}
+    - {fileID: 7400000, guid: 3089c46cf92ed0e4d847a817c4cb5a30, type: 3}
+    - {fileID: 7400000, guid: 0721d0381f3ec6c468d3c11e21857738, type: 3}
+    _Speeds: []
+    _SynchronizeChildren: 
+    _Thresholds:
+    - {x: 0, y: 1}
+    - {x: 0, y: -1}
+    - {x: -1, y: 0}
+    - {x: 1, y: 0}
+    _DefaultParameter: {x: 0, y: 0}
+    _Type: 1
+    _ParameterNameX: {fileID: 0}
+    _ParameterNameY: {fileID: 0}
+  hitReactionGetUp:
+    _FadeDuration: 0.25
+    _Speed: 1
+    _Events:
+      _NormalizedTimes: []
+      _Callbacks: []
+      _Names: []
+    _Animations:
+    - {fileID: 7400000, guid: b0bd849c97302644ebd1d3ef43ac515c, type: 3}
+    - {fileID: 7400000, guid: 7fcc749ec7905be479f8384d5918f09d, type: 3}
+    - {fileID: 7400000, guid: 335b22b5ca4466a498217eae9eb4b1a1, type: 3}
+    - {fileID: 7400000, guid: d9749ecde95b0844080c4154ac3f569b, type: 3}
+    _Speeds: []
+    _SynchronizeChildren: 
+    _Thresholds:
+    - {x: 0, y: 1}
+    - {x: 0, y: -1}
+    - {x: -1, y: 0}
+    - {x: 1, y: 0}
+    _DefaultParameter: {x: 0, y: 0}
+    _Type: 1
+    _ParameterNameX: {fileID: 0}
+    _ParameterNameY: {fileID: 0}
   references:
     version: 2
     RefIds: []

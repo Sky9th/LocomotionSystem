@@ -63,6 +63,22 @@ namespace RedDust.Character.Animation
         [Header("Traversal - Land")]
         public ClipTransition landFromWall;
 
+        [Header("Hit Reaction — 轻受击")]
+        [Tooltip("轻受击 4 方向混合 (Flinch)。X=左右, Y=前后 (相对角色朝向)。")]
+        public MixerTransition2D hitReactionFlinch;
+
+        [Header("Hit Reaction — 重受击")]
+        [Tooltip("重受击 4 方向混合 (Stagger)。")]
+        public MixerTransition2D hitReactionStagger;
+
+        [Header("Hit Reaction — 击倒")]
+        [Tooltip("击倒倒地 4 方向混合。")]
+        public MixerTransition2D hitReactionKnockdown;
+
+        [Header("Hit Reaction — 起身")]
+        [Tooltip("倒地起身 4 方向混合。")]
+        public MixerTransition2D hitReactionGetUp;
+
         /// <summary>
         /// 是否具备完整 locomotion。animset 无 walk/run 时 BaseLayer 不 swap，仅用 idleL 做 UpperBody 覆盖。
         /// 注意：MixerTransition2D 是内联序列化对象，永远非 null，需检查内部是否实际分配了动画。
