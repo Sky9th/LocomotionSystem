@@ -58,10 +58,10 @@
             "defaultInPlaceTurnSpeed": 360.0,
             "defaultMovingTurnSpeed": 720.0,
             "landDistanceThreshold": 0.5,
-            "landMinFallDistance": 0.20000000298023224,
+            "landMinFallDistance": 0.20000000298023225,
             "landLightMaxFallDistance": 1.0,
             "landMediumMaxFallDistance": 3.0,
-            "landLightTriggerDistance": 0.30000001192092896,
+            "landLightTriggerDistance": 0.30000001192092898,
             "landMediumTriggerDistance": 0.6000000238418579,
             "landHardTriggerDistance": 1.0
         },
@@ -75,10 +75,10 @@
             "defaultInPlaceTurnSpeed": 360.0,
             "defaultMovingTurnSpeed": 720.0,
             "landDistanceThreshold": 0.5,
-            "landMinFallDistance": 0.20000000298023224,
+            "landMinFallDistance": 0.20000000298023225,
             "landLightMaxFallDistance": 1.0,
             "landMediumMaxFallDistance": 3.0,
-            "landLightTriggerDistance": 0.30000001192092896,
+            "landLightTriggerDistance": 0.30000001192092898,
             "landMediumTriggerDistance": 0.6000000238418579,
             "landHardTriggerDistance": 1.0
         },
@@ -92,10 +92,10 @@
             "defaultInPlaceTurnSpeed": 360.0,
             "defaultMovingTurnSpeed": 720.0,
             "landDistanceThreshold": 0.5,
-            "landMinFallDistance": 0.20000000298023224,
+            "landMinFallDistance": 0.20000000298023225,
             "landLightMaxFallDistance": 1.0,
             "landMediumMaxFallDistance": 3.0,
-            "landLightTriggerDistance": 0.30000001192092896,
+            "landLightTriggerDistance": 0.30000001192092898,
             "landMediumTriggerDistance": 0.6000000238418579,
             "landHardTriggerDistance": 1.0
         },
@@ -109,10 +109,10 @@
             "defaultInPlaceTurnSpeed": 360.0,
             "defaultMovingTurnSpeed": 720.0,
             "landDistanceThreshold": 0.5,
-            "landMinFallDistance": 0.20000000298023224,
+            "landMinFallDistance": 0.20000000298023225,
             "landLightMaxFallDistance": 1.0,
             "landMediumMaxFallDistance": 3.0,
-            "landLightTriggerDistance": 0.30000001192092896,
+            "landLightTriggerDistance": 0.30000001192092898,
             "landMediumTriggerDistance": 0.6000000238418579,
             "landHardTriggerDistance": 1.0
         }
@@ -454,6 +454,174 @@
             "walkAnimNativeSpeed": 1.5,
             "runAnimNativeSpeed": 5.0,
             "sprintAnimNativeSpeed": 7.0,
+            "hitReactionFlinch": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "0a0c8bc9b38a806418a3d025c703bb35",
+                    "1a6c7779bbb3eda428c3e451968f581c",
+                    "2a877777924006e4d914c64c652b08ba",
+                    "2837bbdb7aea1a946b490ee09c2be033"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionStagger": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "06301a3f9a1c26e4aa7f0e52ce39bf52",
+                    "d2646311bdf02d64d9d3687d06de347b",
+                    "f4bc5b3a2e0743f418a8496390f6e79c",
+                    "4b8e5f22e96e8f54b8c3b95c7581e9f3"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionKnockdown": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "90b211d5855d93d45aeb42a5cc4d5df7",
+                    "7da9b9924c509e64a83c5f1d3c3f189e",
+                    "0d266341afc23ff4d9d1f46922cc5988",
+                    "0e2ac4d433926f84da69b5627a922a47"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionGetUp": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "b19b29ab05a75fc4e85894bb4851aa81",
+                    "47b67092f62238a41a5dd1346ecd604a",
+                    "926389628b9bc784f936167d059f3dd1",
+                    "911d240645d9a4f46b084b8881007ffc"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
                 "_Speed": 1.0,
@@ -519,158 +687,6 @@
                 },
                 "_Clip": "",
                 "_NormalizedStartTime": "NaN"
-            },
-            "hitReactionFlinch": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitFrontLightCombat | GetHitBackLightCombat | GetHitLeftLightCombat | GetHitRightLightCombat"
-            },
-            "hitReactionStagger": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitFrontHeavyCombat_RM | GetHitBackHeavyCombat_RM | GetHitLeftHeavyCombat_RM | GetHitRightHeavyCombat_RM"
-            },
-            "hitReactionKnockdown": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "DeathFrontCombat | DeathBackCombat | DeathLeftCombat | DeathRightCombat"
-            },
-            "hitReactionGetUp": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetBackUpFrontCombat | GetBackUpBackCombat | GetBackUpLeftCombat | GetBackUpRightCombat"
             }
         },
         {
@@ -684,7 +700,7 @@
                     "_Callbacks": [],
                     "_Names": []
                 },
-                "_Clip": "dd79d46b35e0b7c43b55bcf6a4888f35",
+                "_Clip": "9046d342ad1c51148a0df79bcfc24b28",
                 "_NormalizedStartTime": "NaN"
             },
             "sprint": {
@@ -706,7 +722,7 @@
                     "_Callbacks": [],
                     "_Names": []
                 },
-                "_Clip": "0ef60e078f73f854894c7a668ff2555e",
+                "_Clip": "",
                 "_NormalizedStartTime": "NaN"
             },
             "turnInPlace90R": {
@@ -717,7 +733,7 @@
                     "_Callbacks": [],
                     "_Names": []
                 },
-                "_Clip": "92ba5ef29751eb94e9eaf4cbd177df1a",
+                "_Clip": "",
                 "_NormalizedStartTime": "NaN"
             },
             "walkMixer": {
@@ -729,15 +745,15 @@
                     "_Names": []
                 },
                 "_Animations": [
-                    "4135c16ab45576f42bb1f3faabf35474",
-                    "0ae74e5d8d8154d4d9ee7110a1b0332c",
-                    "de81a5517884ebf45be5aa5445e5967b",
-                    "c0735ae4f8733c249a2a431be4807da1",
-                    "3ae0d71ace74c3c4fbc402081c7e7359",
-                    "dc89382d067d25d48802b9e334756423",
-                    "e0c6db2f4b84d4d4988dfcee7b9684cc",
-                    "2cac407aed14e1243b05cfeabfc5ba8a",
-                    "dd79d46b35e0b7c43b55bcf6a4888f35"
+                    "0aa86b6f728cbc347942f9368e8b37cf",
+                    "8698a521fee606e4993d051104c5a7e0",
+                    "510743699e37b164f87749ed1527b5dc",
+                    "44ce409b183729f44a28c0577ca3d4a3",
+                    "44cbeaedf36d03d49be72c41b7d1b12e",
+                    "86a99c0f1a4b8d74d954255a67a3fadd",
+                    "fd249a466a708e244ae67e45754f294a",
+                    "35c9b9a40c413224bbbe676ac93be5ef",
+                    "9046d342ad1c51148a0df79bcfc24b28"
                 ],
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
@@ -796,15 +812,15 @@
                     "_Names": []
                 },
                 "_Animations": [
-                    "9ef3ff83668953644a8fba73f5743064",
-                    "fbb341d886f31e44681f679781827d39",
-                    "29ee5d8eb2335e04d82e48a204759f74",
-                    "cbfa4fbd6848fbe449dd23dea5b241a0",
-                    "40ab0952a0d902342b1958501393fb85",
-                    "7375c8b8f475a9c4cb57de88c2d1b447",
-                    "5d9b18b8a3abfea4a9b2213bddab9260",
-                    "d4dc070d38e631243a9fb09cb4d5d663",
-                    "dd79d46b35e0b7c43b55bcf6a4888f35"
+                    "61b4665adba6e304697a3651fb77e76f",
+                    "052e975802c860546bb0f86f0bcced14",
+                    "530d7504994e9194fb7c8da4ae9aea1c",
+                    "74884bf71806352448f1a26487723bcf",
+                    "b921c6e489a93a34da7ff4524351bff3",
+                    "6f2fd9265bd215645900d962d7cb3823",
+                    "df3ab7cfa15db5d47aa04c64e38539cc",
+                    "abb28722d234c3242aa37fe3641b55a0",
+                    "9046d342ad1c51148a0df79bcfc24b28"
                 ],
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
@@ -953,6 +969,174 @@
             "walkAnimNativeSpeed": 1.5,
             "runAnimNativeSpeed": 5.0,
             "sprintAnimNativeSpeed": 7.0,
+            "hitReactionFlinch": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "0a0c8bc9b38a806418a3d025c703bb35",
+                    "1a6c7779bbb3eda428c3e451968f581c",
+                    "2a877777924006e4d914c64c652b08ba",
+                    "2837bbdb7aea1a946b490ee09c2be033"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionStagger": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "06301a3f9a1c26e4aa7f0e52ce39bf52",
+                    "d2646311bdf02d64d9d3687d06de347b",
+                    "f4bc5b3a2e0743f418a8496390f6e79c",
+                    "4b8e5f22e96e8f54b8c3b95c7581e9f3"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionKnockdown": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "90b211d5855d93d45aeb42a5cc4d5df7",
+                    "7da9b9924c509e64a83c5f1d3c3f189e",
+                    "0d266341afc23ff4d9d1f46922cc5988",
+                    "0e2ac4d433926f84da69b5627a922a47"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionGetUp": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "b19b29ab05a75fc4e85894bb4851aa81",
+                    "47b67092f62238a41a5dd1346ecd604a",
+                    "926389628b9bc784f936167d059f3dd1",
+                    "911d240645d9a4f46b084b8881007ffc"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
                 "_Speed": 1.0,
@@ -1018,158 +1202,6 @@
                 },
                 "_Clip": "",
                 "_NormalizedStartTime": "NaN"
-            },
-            "hitReactionFlinch": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitFrontLightCombat | GetHitBackLightCombat | GetHitLeftLightCombat | GetHitRightLightCombat"
-            },
-            "hitReactionStagger": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitFrontHeavyCombat_RM | GetHitBackHeavyCombat_RM | GetHitLeftHeavyCombat_RM | GetHitRightHeavyCombat_RM"
-            },
-            "hitReactionKnockdown": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "DeathFrontCombat | DeathBackCombat | DeathLeftCombat | DeathRightCombat"
-            },
-            "hitReactionGetUp": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetBackUpFrontCombat | GetBackUpBackCombat | GetBackUpLeftCombat | GetBackUpRightCombat"
             }
         },
         {
@@ -1366,6 +1398,174 @@
             "walkAnimNativeSpeed": 1.5,
             "runAnimNativeSpeed": 5.0,
             "sprintAnimNativeSpeed": 7.0,
+            "hitReactionFlinch": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "76ff6cbdd13714b4a9a872fda0965bd3",
+                    "6795fa38bdae0174d801b6b55ca5ff0b",
+                    "af52685049d41e24fbdaecd78349dcd3",
+                    "18ac7d4afefc01e4696ae3afdbc94e0f"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionStagger": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "3f16665deccf57d44950603620b4abca",
+                    "6b9fc9a6271f6cd44a4e967e54ea2d26",
+                    "116880a3272694c4faf8bf0f1626fa9d",
+                    "026ccdeb6875a6e4b8e416664f9201ac"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionKnockdown": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "941842e4bff74ae4a82a7bf79d6755a5",
+                    "a1dcf1220218c3e43a153b6393880f3c",
+                    "3089c46cf92ed0e4d847a817c4cb5a30",
+                    "0721d0381f3ec6c468d3c11e21857738"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionGetUp": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "b0bd849c97302644ebd1d3ef43ac515c",
+                    "7fcc749ec7905be479f8384d5918f09d",
+                    "335b22b5ca4466a498217eae9eb4b1a1",
+                    "d9749ecde95b0844080c4154ac3f569b"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
                 "_Speed": 1.0,
@@ -1431,158 +1631,6 @@
                 },
                 "_Clip": "",
                 "_NormalizedStartTime": "NaN"
-            },
-            "hitReactionFlinch": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitFrontLight2HandedGun | GetHitBackLight2HandedGun | GetHitLeftLight2HandedGun | GetHitRightLight2HandedGun"
-            },
-            "hitReactionStagger": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitFrontHeavy2HandedGun_RM | GetHitBackHeavy2HandedGun_RM | GetHitLeftHeavy2HandedGun_RM | GetHitRightHeavy2HandedGun_RM"
-            },
-            "hitReactionKnockdown": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "DeadFront | DeadBack | DeadLeft | DeadRight"
-            },
-            "hitReactionGetUp": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetBackUpLeftUnarmed | GetBackUpLeftUnarmed | GetBackUpLeftUnarmed | GetBackUpRightUnarmed"
             }
         },
         {
@@ -1809,6 +1857,174 @@
             "walkAnimNativeSpeed": 1.5,
             "runAnimNativeSpeed": 5.0,
             "sprintAnimNativeSpeed": 7.0,
+            "hitReactionFlinch": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "76ff6cbdd13714b4a9a872fda0965bd3",
+                    "6795fa38bdae0174d801b6b55ca5ff0b",
+                    "af52685049d41e24fbdaecd78349dcd3",
+                    "18ac7d4afefc01e4696ae3afdbc94e0f"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionStagger": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "3f16665deccf57d44950603620b4abca",
+                    "6b9fc9a6271f6cd44a4e967e54ea2d26",
+                    "116880a3272694c4faf8bf0f1626fa9d",
+                    "026ccdeb6875a6e4b8e416664f9201ac"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionKnockdown": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "941842e4bff74ae4a82a7bf79d6755a5",
+                    "a1dcf1220218c3e43a153b6393880f3c",
+                    "3089c46cf92ed0e4d847a817c4cb5a30",
+                    "0721d0381f3ec6c468d3c11e21857738"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionGetUp": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "b0bd849c97302644ebd1d3ef43ac515c",
+                    "7fcc749ec7905be479f8384d5918f09d",
+                    "335b22b5ca4466a498217eae9eb4b1a1",
+                    "d9749ecde95b0844080c4154ac3f569b"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
                 "_Speed": 1.0,
@@ -1874,158 +2090,6 @@
                 },
                 "_Clip": "",
                 "_NormalizedStartTime": "NaN"
-            },
-            "hitReactionFlinch": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitFrontLight2HandedGun | GetHitBackLight2HandedGun | GetHitLeftLight2HandedGun | GetHitRightLight2HandedGun"
-            },
-            "hitReactionStagger": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitFrontHeavy2HandedGun_RM | GetHitBackHeavy2HandedGun_RM | GetHitLeftHeavy2HandedGun_RM | GetHitRightHeavy2HandedGun_RM"
-            },
-            "hitReactionKnockdown": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "DeadFront | DeadBack | DeadLeft | DeadRight"
-            },
-            "hitReactionGetUp": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetBackUpLeftUnarmed | GetBackUpLeftUnarmed | GetBackUpLeftUnarmed | GetBackUpRightUnarmed"
             }
         },
         {
@@ -2206,6 +2270,174 @@
             "walkAnimNativeSpeed": 1.5,
             "runAnimNativeSpeed": 5.0,
             "sprintAnimNativeSpeed": 7.0,
+            "hitReactionFlinch": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "13ea7d0156d89fc438c2921bd85060d4",
+                    "4f6438f73aa3a19409904e2cb75c0df1",
+                    "58d41f126e280654bb2290e7433c5079",
+                    "2d997aa761f2674429a5f33dfb4bb05a"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionStagger": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "db936215adae734419debf01551db389",
+                    "7a665dd63c8997747a07ddb9ed005e97",
+                    "560c1da1718e2ed498f2069f6ce4fb75",
+                    "809ac93f9bd498142a5670db1c5317b4"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionKnockdown": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "ccb08efdc7e581b41adad393bd4aa3be",
+                    "1c0250291610f9546ac946ca394308e1",
+                    "67b5520a92f011846915369958a001ae",
+                    "7e92aabcd653a974da404ce74a2926ff"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionGetUp": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "8b3240e79ebb7024d95d142b376d4b27",
+                    "8b8976170efb88649acde0fbf6c87b00",
+                    "eec5ab3792ff8e845b190b2b919ad106",
+                    "57fe0fe765753b5429df34b6f9f4ce29"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
                 "_Speed": 1.0,
@@ -2271,158 +2503,6 @@
                 },
                 "_Clip": "",
                 "_NormalizedStartTime": "NaN"
-            },
-            "hitReactionFlinch": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitLightFront1hMelee | GetHitLightBack1hMelee | GetHitLightLeft1hMelee | GetHitLightRight1hMelee"
-            },
-            "hitReactionStagger": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitHeavyFront1hMelee_RM | GetHitHeavyBack1hMelee_RM | GetHitHeavyLeft1hMelee_RM | GetHitHeavyRight1hMelee_RM"
-            },
-            "hitReactionKnockdown": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "DeathFront1hMelee | DeathBack1hMelee | DeathLeft1hMelee | DeathRight1hMelee"
-            },
-            "hitReactionGetUp": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetBackUpFront | GetBackUpBack | GetBackUpLeft | GetBackUpRight"
             }
         },
         {
@@ -2649,6 +2729,174 @@
             "walkAnimNativeSpeed": 1.5,
             "runAnimNativeSpeed": 5.0,
             "sprintAnimNativeSpeed": 7.0,
+            "hitReactionFlinch": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "13ea7d0156d89fc438c2921bd85060d4",
+                    "4f6438f73aa3a19409904e2cb75c0df1",
+                    "58d41f126e280654bb2290e7433c5079",
+                    "2d997aa761f2674429a5f33dfb4bb05a"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionStagger": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "db936215adae734419debf01551db389",
+                    "7a665dd63c8997747a07ddb9ed005e97",
+                    "560c1da1718e2ed498f2069f6ce4fb75",
+                    "809ac93f9bd498142a5670db1c5317b4"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionKnockdown": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "ccb08efdc7e581b41adad393bd4aa3be",
+                    "1c0250291610f9546ac946ca394308e1",
+                    "67b5520a92f011846915369958a001ae",
+                    "7e92aabcd653a974da404ce74a2926ff"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionGetUp": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "8b3240e79ebb7024d95d142b376d4b27",
+                    "8b8976170efb88649acde0fbf6c87b00",
+                    "eec5ab3792ff8e845b190b2b919ad106",
+                    "57fe0fe765753b5429df34b6f9f4ce29"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
                 "_Speed": 1.0,
@@ -2714,158 +2962,6 @@
                 },
                 "_Clip": "",
                 "_NormalizedStartTime": "NaN"
-            },
-            "hitReactionFlinch": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitLightFront1hMelee | GetHitLightBack1hMelee | GetHitLightLeft1hMelee | GetHitLightRight1hMelee"
-            },
-            "hitReactionStagger": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitHeavyFront1hMelee_RM | GetHitHeavyBack1hMelee_RM | GetHitHeavyLeft1hMelee_RM | GetHitHeavyRight1hMelee_RM"
-            },
-            "hitReactionKnockdown": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "DeathFront1hMelee | DeathBack1hMelee | DeathLeft1hMelee | DeathRight1hMelee"
-            },
-            "hitReactionGetUp": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetBackUpFront | GetBackUpBack | GetBackUpLeft | GetBackUpRight"
             }
         },
         {
@@ -2924,11 +3020,16 @@
                     "_Names": []
                 },
                 "_Animations": [
-                    "da3b5bf338f6cdf44a30543fab4e5e08"
+                    "da3b5bf338f6cdf44a30543fab4e5e08",
+                    "e370a3d6d2beaa2469183ed771a97d46"
                 ],
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
                     {
                         "x": 0.0,
                         "y": 1.0
@@ -3029,6 +3130,127 @@
             "walkAnimNativeSpeed": 0.800000011920929,
             "runAnimNativeSpeed": 0.0,
             "sprintAnimNativeSpeed": 0.0,
+            "hitReactionFlinch": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "1c5cd940b7755cf4cac4d2f88dd5afae",
+                    "19dfdc9355de94b43b67cf7967e58d09",
+                    "06ddeebf2b2573b47954b118171acf7e",
+                    "99ffb2f3c09497f46b121fce34505af0"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionStagger": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "4bfd85bc19e9ca94bbc8d9d4b564dc76",
+                    "ed10f09f45812f046911fba2d0d6da8c"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionKnockdown": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "479923e8ce34f93449b7c15a85680e08"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionGetUp": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
                 "_Speed": 1.0,
@@ -3094,158 +3316,6 @@
                 },
                 "_Clip": "",
                 "_NormalizedStartTime": "NaN"
-            },
-            "hitReactionFlinch": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitLightFront | GetHitLightBack | GetHitLightLeft | GetHitLightRight"
-            },
-            "hitReactionStagger": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitHeavyFront_RM | GetHitHeavyBack_RM | - | -"
-            },
-            "hitReactionKnockdown": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "Death_RM | Death_RM | Death_RM | Death_RM"
-            },
-            "hitReactionGetUp": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "- | - | - | -"
             }
         },
         {
@@ -3409,6 +3479,134 @@
             "walkAnimNativeSpeed": 1.7999999523162842,
             "runAnimNativeSpeed": 0.0,
             "sprintAnimNativeSpeed": 0.0,
+            "hitReactionFlinch": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "1c5cd940b7755cf4cac4d2f88dd5afae",
+                    "19dfdc9355de94b43b67cf7967e58d09",
+                    "06ddeebf2b2573b47954b118171acf7e",
+                    "99ffb2f3c09497f46b121fce34505af0"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionStagger": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "4bfd85bc19e9ca94bbc8d9d4b564dc76",
+                    "ed10f09f45812f046911fba2d0d6da8c"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionKnockdown": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "479923e8ce34f93449b7c15a85680e08"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionGetUp": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    ""
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
                 "_Speed": 1.0,
@@ -3474,158 +3672,6 @@
                 },
                 "_Clip": "",
                 "_NormalizedStartTime": "NaN"
-            },
-            "hitReactionFlinch": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitLightFront | GetHitLightBack | GetHitLightLeft | GetHitLightRight"
-            },
-            "hitReactionStagger": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitHeavyFront_RM | GetHitHeavyBack_RM | - | -"
-            },
-            "hitReactionKnockdown": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "Death_RM | Death_RM | Death_RM | Death_RM"
-            },
-            "hitReactionGetUp": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "- | - | - | -"
             }
         },
         {
@@ -3789,6 +3835,154 @@
             "walkAnimNativeSpeed": 0.699999988079071,
             "runAnimNativeSpeed": 0.0,
             "sprintAnimNativeSpeed": 0.0,
+            "hitReactionFlinch": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionStagger": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionKnockdown": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionGetUp": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
                 "_Speed": 1.0,
@@ -3854,158 +4048,6 @@
                 },
                 "_Clip": "",
                 "_NormalizedStartTime": "NaN"
-            },
-            "hitReactionFlinch": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitLightFront | GetHitLightBack | GetHitLightLeft | GetHitLightRight"
-            },
-            "hitReactionStagger": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitHeavyFront_RM | GetHitHeavyBack_RM | - | -"
-            },
-            "hitReactionKnockdown": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "Death_RM | Death_RM | Death_RM | Death_RM"
-            },
-            "hitReactionGetUp": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "- | - | - | -"
             }
         },
         {
@@ -4169,6 +4211,174 @@
             "walkAnimNativeSpeed": 1.600000023841858,
             "runAnimNativeSpeed": 0.0,
             "sprintAnimNativeSpeed": 0.0,
+            "hitReactionFlinch": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionStagger": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionKnockdown": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionGetUp": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
                 "_Speed": 1.0,
@@ -4234,158 +4444,6 @@
                 },
                 "_Clip": "",
                 "_NormalizedStartTime": "NaN"
-            },
-            "hitReactionFlinch": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitLightFront | GetHitLightBack | GetHitLightLeft | GetHitLightRight"
-            },
-            "hitReactionStagger": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitHeavyFront_RM | GetHitHeavyBack_RM | - | -"
-            },
-            "hitReactionKnockdown": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "Death_RM | Death_RM | Death_RM | Death_RM"
-            },
-            "hitReactionGetUp": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "- | - | - | -"
             }
         },
         {
@@ -4549,6 +4607,154 @@
             "walkAnimNativeSpeed": 0.800000011920929,
             "runAnimNativeSpeed": 0.0,
             "sprintAnimNativeSpeed": 0.0,
+            "hitReactionFlinch": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionStagger": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionKnockdown": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionGetUp": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
                 "_Speed": 1.0,
@@ -4614,158 +4820,6 @@
                 },
                 "_Clip": "",
                 "_NormalizedStartTime": "NaN"
-            },
-            "hitReactionFlinch": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitLightFront | GetHitLightBack | GetHitLightLeft | GetHitLightRight"
-            },
-            "hitReactionStagger": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitHeavyFront_RM | GetHitHeavyBack_RM | - | -"
-            },
-            "hitReactionKnockdown": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "Death_RM | Death_RM | Death_RM | Death_RM"
-            },
-            "hitReactionGetUp": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "- | - | - | -"
             }
         },
         {
@@ -4929,6 +4983,154 @@
             "walkAnimNativeSpeed": 1.7999999523162842,
             "runAnimNativeSpeed": 0.0,
             "sprintAnimNativeSpeed": 0.0,
+            "hitReactionFlinch": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionStagger": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionKnockdown": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "hitReactionGetUp": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1.0,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    {
+                        "x": 0.0,
+                        "y": -1.0
+                    },
+                    {
+                        "x": -1.0,
+                        "y": 0.0
+                    },
+                    {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "_Type": 1,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
                 "_Speed": 1.0,
@@ -4994,158 +5196,6 @@
                 },
                 "_Clip": "",
                 "_NormalizedStartTime": "NaN"
-            },
-            "hitReactionFlinch": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitLightFront | GetHitLightBack | GetHitLightLeft | GetHitLightRight"
-            },
-            "hitReactionStagger": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "GetHitHeavyFront_RM | GetHitHeavyBack_RM | - | -"
-            },
-            "hitReactionKnockdown": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "Death_RM | Death_RM | Death_RM | Death_RM"
-            },
-            "hitReactionGetUp": {
-                "_FadeDuration": 0.25,
-                "_Speed": 1.0,
-                "_Events": {
-                    "_NormalizedTimes": [],
-                    "_Callbacks": [],
-                    "_Names": []
-                },
-                "_Animations": null,
-                "_Speeds": [],
-                "_SynchronizeChildren": [],
-                "_Thresholds": [
-                    {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    {
-                        "x": 0.0,
-                        "y": -1.0
-                    },
-                    {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    {
-                        "x": 1.0,
-                        "y": 0.0
-                    }
-                ],
-                "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "_Type": 1,
-                "_ParameterNameX": "",
-                "_ParameterNameY": "",
-                "_comment": "- | - | - | -"
             }
         }
     ],

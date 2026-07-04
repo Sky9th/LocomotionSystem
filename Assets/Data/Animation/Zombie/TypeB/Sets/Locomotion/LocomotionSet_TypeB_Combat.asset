@@ -201,7 +201,11 @@ MonoBehaviour:
       _NormalizedTimes: []
       _Callbacks: []
       _Names: []
-    _Animations: []
+    _Animations:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
     _Speeds: []
     _SynchronizeChildren: 
     _Thresholds:
@@ -220,7 +224,11 @@ MonoBehaviour:
       _NormalizedTimes: []
       _Callbacks: []
       _Names: []
-    _Animations: []
+    _Animations:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
     _Speeds: []
     _SynchronizeChildren: 
     _Thresholds:
@@ -239,7 +247,11 @@ MonoBehaviour:
       _NormalizedTimes: []
       _Callbacks: []
       _Names: []
-    _Animations: []
+    _Animations:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
     _Speeds: []
     _SynchronizeChildren: 
     _Thresholds:
@@ -258,7 +270,11 @@ MonoBehaviour:
       _NormalizedTimes: []
       _Callbacks: []
       _Names: []
-    _Animations: []
+    _Animations:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
     _Speeds: []
     _SynchronizeChildren: 
     _Thresholds:
