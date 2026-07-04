@@ -21,6 +21,8 @@ namespace RedDust.UI
         private readonly List<UIIconSlot> _slots = new();
         private float _refreshTimer;
 
+        private static readonly string[] FallbackLabels = { "空手", "剑", "手枪" };
+
         private void Update()
         {
             _refreshTimer += DeltaTime;
@@ -31,12 +33,27 @@ namespace RedDust.UI
             var entity = uiService.PlayerEntity;
             if (entity == null) return;
 
-            var bp = entity.Query.Equipment.GetEquipped(CharacterConst.Slot.Back);
-            var equipped = bp.Query.Inventory.AllItems;
-            if (equipped == null) return;
+            var equip = entity.Query.Equipment;
+            var bp = equip?.GetEquipped(CharacterConst.Slot.Back);
+            var bpInv = bp?.Query.Inventory;
 
-            EnsureSlots(equipped.Count);
-            RefreshSlots(equipped);
+            // 固定三槽：空手 / 剑 / 手枪（可能在背包或装备槽中，两处都查）
+            var weapons = new List<Entity>
+            {
+                null,
+                ResolveWeapon(bpInv, equip, "test_blade"),
+                ResolveWeapon(bpInv, equip, "test_pistol"),
+            };
+
+            // 选中态：当前右手装备决定高亮哪个槽位
+            var rh = equip?.RightHand;
+            int selectedIndex = rh == null ? 0
+                : rh.Id == "test_blade" ? 1
+                : rh.Id == "test_pistol" ? 2
+                : -1;
+
+            EnsureSlots(weapons.Count);
+            RefreshSlots(weapons, selectedIndex);
         }
 
         private void EnsureSlots(int count)
@@ -56,21 +73,35 @@ namespace RedDust.UI
                 _slots[i].gameObject.SetActive(i < count);
         }
 
-        private void RefreshSlots(IReadOnlyList<Entity> equipped)
+        /// <summary>在背包和右手装备槽中查找武器实体。</summary>
+        private static Entity ResolveWeapon(InventoryQuery bpInv, EquipmentQuery equip, string entityId)
+        {
+            if (string.IsNullOrEmpty(entityId)) return null;
+            return bpInv?.FindItem(entityId)
+                ?? (equip?.RightHand?.Id == entityId ? equip.RightHand : null);
+        }
+
+        private void RefreshSlots(IReadOnlyList<Entity> equipped, int selectedIndex)
         {
             for (int i = 0; i < equipped.Count; i++)
             {
                 var slot = _slots[i];
                 var entity = equipped[i];
+
                 if (entity == null)
                 {
                     slot.SetEmpty();
-                    continue;
+                    slot.SetSlotLabel(FallbackLabels[i]);
+                }
+                else
+                {
+                    slot.SetIcon(null); // TODO: ItemDefSO 暂无 icon 字段
+                    var name = entity.Query.Preset != null ? entity.Query.Preset.name : FallbackLabels[i];
+                    slot.SetSlotLabel(name);
                 }
 
-                slot.SetIcon(null); // TODO: ItemDefSO 暂无 icon 字段
-                var name = entity.Query.Preset != null ? entity.Query.Preset.name : "???";
-                slot.SetSlotLabel($"{name}");
+                // SetSelected 必须在 SetEmpty 之后 —— SetEmpty 内部会 SetSelected(false)
+                slot.SetSelected(i == selectedIndex);
             }
         }
     }

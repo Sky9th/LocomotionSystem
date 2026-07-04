@@ -159,6 +159,24 @@ namespace RedDust.Properties
         /// <summary>该属性是否存在。</summary>
         public bool Has(string path) => _structure.ContainsKey(path);
 
+        // TODO: TryGetPath 当前是 O(n) 全表扫描。属性数增长到数百个时，Ability Cost 每帧调用会成为瓶颈。
+        // 方案：构造时建反向索引 Dictionary<PropertyDefSO, string> _pathByDef，TryGetPath 降为 O(1)。
+        // 注意 PropertyDefSO 可能被多个路径共享（同一 def 挂在不同节点）→ 用 List<string> 或只取第一个。
+        /// <summary>通过 PropertyDefSO 反查路径。用于 Ability Cost 等持有 def 但需要完整路径的场景。</summary>
+        public bool TryGetPath(PropertyDefSO def, out string path)
+        {
+            foreach (var kv in _structure)
+            {
+                if (kv.Value == def)
+                {
+                    path = kv.Key;
+                    return true;
+                }
+            }
+            path = null;
+            return false;
+        }
+
         /// <summary>内部取 Float Min——覆写优先，路径不存在返回 0（调用方保证路径合法）。</summary>
         private float EffectiveMin(string path)
         {

@@ -16,8 +16,9 @@ namespace RedDust.Character
 
             public static class Vitals
             {
-                public const string HP     = "Vitals/HP";
-                public const string Hunger = "Vitals/Hunger";
+                public const string HP      = "Vitals/HP";
+                public const string Hunger  = "Vitals/Hunger";
+                public const string Stamina = "Vitals/Stamina";
             }
 
             public static class Attributes

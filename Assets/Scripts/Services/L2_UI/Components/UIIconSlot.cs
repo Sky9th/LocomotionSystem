@@ -107,13 +107,22 @@ namespace RedDust.UI
                 return;
             }
 
+            bool justStarted = !_isOnCooldown;
             _isOnCooldown = true;
             _targetCooldownFill = Mathf.Clamp01(remaining / total);
 
             if (cooldownFill != null)
             {
                 if (Application.isPlaying)
-                    cooldownFill.DOFillAmount(_targetCooldownFill, cooldownFillDuration).SetEase(Ease.OutCubic);
+                {
+                    if (justStarted)
+                    {
+                        DOTween.Kill(cooldownFill); // 杀旧 tween，防止残留动画覆盖 snap 值
+                        cooldownFill.fillAmount = _targetCooldownFill;
+                    }
+                    else
+                        cooldownFill.DOFillAmount(_targetCooldownFill, cooldownFillDuration).SetEase(Ease.OutCubic);
+                }
                 else
                     cooldownFill.fillAmount = _targetCooldownFill;
             }

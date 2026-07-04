@@ -85,13 +85,13 @@ namespace RedDust.Ability
             {
                 if (cost.amount <= 0f) continue;
 
-                if (!props.Has(cost.def.Id))
+                if (!props.TryGetPath(cost.def, out var path))
                 {
                     Debug.LogError($"[Cost] Property '{cost.def.Id}' not in PropertyTable — rejected.");
                     return false;
                 }
 
-                var current = props.GetFloat(cost.def.Id);
+                var current = props.GetFloat(path);
                 if (current < cost.amount)
                 {
                     Debug.LogWarning($"[Cost] Rejected: {abilityName} — insufficient {cost.def.Id} (need {cost.amount}, have {current:F1})");
@@ -106,8 +106,8 @@ namespace RedDust.Ability
         {
             foreach (var cost in costs)
             {
-                if (props.Has(cost.def.Id))
-                    props.Modify(cost.def.Id, -cost.amount);
+                if (props.TryGetPath(cost.def, out var path))
+                    props.Modify(path, -cost.amount);
                 else
                     Debug.LogWarning($"[Cost] Property '{cost.def.Id}' not in PropertyTable — skipped.");
             }

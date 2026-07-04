@@ -147,8 +147,9 @@ namespace RedDust.Character
             base.Start();  // Registry.OnWireAll() — 子模块完成初始化
             buildCtx.Physique = CharacterPhysique.From(buildCtx.Properties);
             buildCtx.Container = identity.Entity?.NestedContainer;
-            // TODO: 饥饿消耗是测试代码。Actor 不应内联属性变化逻辑。
+            // TODO: 饥饿/体力是测试代码。Actor 不应内联属性变化逻辑。
             buildCtx.Properties.AddModifier(new FloatModifier { Owner = this, TargetPath = CharacterConst.PropertyPath.Vitals.Hunger, Frequency = ModifierFrequency.PerSecond, Delta = -0.01f });
+            buildCtx.Properties.AddModifier(new FloatModifier { Owner = this, TargetPath = CharacterConst.PropertyPath.Vitals.Stamina, Frequency = ModifierFrequency.PerSecond, Delta = 25f });
         }
 
         private void SetupModel()
