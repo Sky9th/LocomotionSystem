@@ -149,6 +149,9 @@ namespace RedDust.Character
             // TODO: 饥饿/体力是测试代码。Actor 不应内联属性变化逻辑。
             buildCtx.Properties.AddModifier(new FloatModifier { Owner = this, TargetPath = CharacterConst.PropertyPath.Vitals.Hunger, Frequency = ModifierFrequency.PerSecond, Delta = -0.01f });
             buildCtx.Properties.AddModifier(new FloatModifier { Owner = this, TargetPath = CharacterConst.PropertyPath.Vitals.Stamina, Frequency = ModifierFrequency.PerSecond, Delta = 25f });
+
+            // 被动技能初始同步：AbilityForest.ResolvedPassives → InstanceManager
+            SyncPassivesFromForest();
         }
 
         private void SetupModel()
@@ -248,5 +251,35 @@ namespace RedDust.Character
             buildCtx.Properties.Tick(deltaTime);
         }
 
+        /// <summary>
+        /// 将 AbilityForest.ResolvedPassives 同步到 InstanceManager。
+        /// OnEquip 被动在首次同步时触发 Pipeline 执行效果。
+        /// TODO: 武器/天赋变化时增量重同步，而非仅 Start 一次性。
+        /// </summary>
+        private void SyncPassivesFromForest()
+        {
+            if (ability == null || abilityForest == null) return;
+
+            var passives = abilityForest.ResolvedPassives;
+            Debug.Log($"[Passive] SyncPassivesFromForest: {passives?.Length ?? 0} passives resolved" +
+                (passives != null && passives.Length > 0
+                    ? $" — [{string.Join(", ", System.Array.ConvertAll(passives, p => p?.internalName ?? "null"))}]"
+                    : ""));
+
+            ability.SyncInstances(passives, "innate");
+
+            // OnEquip 被动：首次激活时执行一次 Pipeline FSM
+            if (passives != null)
+            {
+                foreach (var p in passives)
+                {
+                    if (p != null && p.trigger == ETriggerEvent.OnEquip)
+                    {
+                        Debug.Log($"[Passive] Triggering OnEquip for: {p.internalName}");
+                        ability.NotifyPassiveEvent(ETriggerEvent.OnEquip, gameObject);
+                    }
+                }
+            }
+        }
     }
 }

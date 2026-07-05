@@ -29,6 +29,8 @@ namespace RedDust.Ability
             public string propertyId;       // PropertyDefSO.Id
             public float valueAdd;
             public float valueMultiply = 1f;
+            public float maxAdd;
+            public float maxMultiply = 1f;
         }
 
         [System.Serializable]
@@ -152,6 +154,8 @@ namespace RedDust.Ability
                             propertyId = a.property?.Id,
                             valueAdd = a.valueAdd,
                             valueMultiply = a.valueMultiply,
+                            maxAdd = a.maxAdd,
+                            maxMultiply = a.maxMultiply,
                         }).ToArray();
                         break;
                     default:
@@ -420,6 +424,8 @@ namespace RedDust.Ability
                             property = !string.IsNullOrEmpty(a.propertyId) && defById.TryGetValue(a.propertyId, out var pd) ? pd : null,
                             valueAdd = a.valueAdd,
                             valueMultiply = a.valueMultiply,
+                            maxAdd = a.maxAdd,
+                            maxMultiply = a.maxMultiply,
                         }).ToArray();
                     }
                     break;

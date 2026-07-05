@@ -73,8 +73,8 @@ namespace RedDust.Ability
             if (targets == null || targets.Count == 0)
                 return hits;
 
-            // ── ① 收集实体伤害通道 ──
-            var entityChannels = CollectEntityChannels(weaponEntity, caster);
+            // ── ① 收集实体伤害通道（武器 + 身体 + 技能自身 targetEffects 中的 DamageEffectSO）──
+            var entityChannels = CollectEntityChannels(weaponEntity, caster, ability);
 
             // ── ② 收集技能伤害修正 ──
             var modifiers = CollectDamageModifiers(ability);
@@ -137,8 +137,8 @@ namespace RedDust.Ability
             return hits;
         }
 
-        /// <summary>从实体收集伤害通道。武器 + 身体（空手 fallback）。</summary>
-        private static DamageEffectSO[] CollectEntityChannels(Entity weaponEntity, GameObject caster)
+        /// <summary>从实体 + 技能收集伤害通道。武器 + 身体（空手 fallback）+ 技能 targetEffects 中的 DamageEffectSO。</summary>
+        private static DamageEffectSO[] CollectEntityChannels(Entity weaponEntity, GameObject caster, AbilitySO ability)
         {
             var channels = new List<DamageEffectSO>();
 
@@ -147,6 +147,15 @@ namespace RedDust.Ability
             if (weaponEffects != null)
             {
                 foreach (var e in weaponEffects)
+                    if (e is DamageEffectSO de)
+                        channels.Add(de);
+            }
+
+            // 技能 targetEffects 中的 DamageEffectSO（被动技能的主要伤害来源）
+            var abilityEffects = ability?.targetEffects;
+            if (abilityEffects != null)
+            {
+                foreach (var e in abilityEffects)
                     if (e is DamageEffectSO de)
                         channels.Add(de);
             }

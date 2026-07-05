@@ -23,6 +23,10 @@ MonoBehaviour:
   - property: {fileID: 11400000, guid: ff992f7f4c086714d86243fd9ee1e024, type: 2}
     valueAdd: 0
     valueMultiply: 1.5
+    maxAdd: 0
+    maxMultiply: 1
   - property: {fileID: 11400000, guid: d5b265046e79bc44a9fcec309d7afd0a, type: 2}
     valueAdd: 25
     valueMultiply: 0
+    maxAdd: 0
+    maxMultiply: 1

@@ -33,6 +33,7 @@ namespace RedDust.Ability
     /// <summary>
     /// Buff 的属性修正模板。对应一条 FloatAdjunct 实例。
     /// 堆叠规则：valueAdd 按层数线性叠加（×stackCount），valueMultiply 不随层数变化。
+    /// maxAdd/maxMultiply 用于扩展属性上界（如 +20% MaxHP）。
     /// </summary>
     [Serializable]
     public struct SBuffAdjunct
@@ -45,5 +46,11 @@ namespace RedDust.Ability
 
         [Tooltip("乘数。1=不变, 0.7=减速30%, 1.3=加速30%。不随层数叠加。")]
         public float valueMultiply;
+
+        [Tooltip("Max 固定偏移。正=扩容, 负=缩限。不随层数叠加。")]
+        public float maxAdd;
+
+        [Tooltip("Max 乘数。1=不变, 1.2=+20%上限。不随层数叠加。")]
+        public float maxMultiply;
     }
 }

@@ -20,9 +20,8 @@ MonoBehaviour:
   applicationBlockedTags: []
   grantedTags: []
   adjuncts:
-  - property: {fileID: 11400000, guid: a26529ea3c848a94ba9ef71f1a3fb70d, type: 2}
+  - property: {fileID: 11400000, guid: f7222a4af4964f24188e6f3bb9637726, type: 2}
     valueAdd: 0
-    valueMultiply: 1.15
-  - property: {fileID: 11400000, guid: d3455f38b17c83445b6984230a8bb1a4, type: 2}
-    valueAdd: 0
-    valueMultiply: 1.1
+    valueMultiply: 1.5
+    maxAdd: 0
+    maxMultiply: 1

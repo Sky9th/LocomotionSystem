@@ -243,7 +243,7 @@
       "name": "Passive_BerserkerBlood",
       "internalName": "BerserkerBlood",
       "displayName": "狂暴血脉",
-      "description": "击杀敌人后攻速+15%移速+10%，持续5秒。刷新不叠加。",
+      "description": "击杀敌人后敏捷+50%，持续5秒。刷新不叠加。",
       "abilityTag": "Ability.Definition.Passive.GrantBuff.BerserkerBlood",
       "sharedCooldownTags": [],
       "cooldownDuration": 0.0,

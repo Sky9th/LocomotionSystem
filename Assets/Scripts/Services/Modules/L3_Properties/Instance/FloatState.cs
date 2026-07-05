@@ -111,20 +111,23 @@ namespace RedDust.Properties
         public void RemoveAdjuncts(object owner) => _adjuncts.RemoveAll(a => a.Owner == owner);
 
         /// <summary>
-        /// 有效值 = clamp((Current + ΣValueAdd) × ΠValueMultiply, Min, Max)。
+        /// 有效值 = clamp((Current + ΣValueAdd) × ΠValueMultiply, Min, EffectiveMax)。
+        /// EffectiveMax = Max × ΠMaxMultiply + ΣMaxAdd。
         /// 不改 Current——修饰只在读取时叠加。
         /// </summary>
         public float Effective
         {
             get
             {
-                float addSum = 0f, multProd = 1f;
+                float addSum = 0f, multProd = 1f, maxAdd = 0f, maxMult = 1f;
                 foreach (var a in _adjuncts)
                 {
                     if (a.Owner is RedDust.Ability.AbilityInstance { IsActive: false }) continue;
                     addSum += a.ValueAdd; multProd *= a.ValueMultiply;
+                    maxAdd += a.MaxAdd; maxMult *= a.MaxMultiply;
                 }
-                return Mathf.Clamp((Current + addSum) * multProd, Min, Max);
+                float effMax = Max * maxMult + maxAdd;
+                return Mathf.Clamp((Current + addSum) * multProd, Min, effMax);
             }
         }
 

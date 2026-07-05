@@ -16,11 +16,23 @@ namespace RedDust.Entities
         public Ability.ActiveAbilitySO[] ActiveAbilities =>
             _forest?.ResolvedActives ?? System.Array.Empty<Ability.ActiveAbilitySO>();
 
+        /// <summary>当前生效的被动技能列表。</summary>
+        public Ability.PassiveAbilitySO[] PassiveAbilities =>
+            _forest?.ResolvedPassives ?? System.Array.Empty<Ability.PassiveAbilitySO>();
+
         /// <summary>获取技能的剩余冷却时间（秒）。不在冷却中返回 0。</summary>
         public float GetCooldownRemaining(Ability.ActiveAbilitySO ability)
         {
             if (_executor == null || ability == null) return 0f;
             return _executor.GetAbilityCooldownRemaining(ability);
+        }
+
+        /// <summary>获取被动技能的剩余冷却时间（秒）。不在冷却中返回 0。</summary>
+        public float GetPassiveCooldownRemaining(Ability.PassiveAbilitySO passive)
+        {
+            if (_executor == null || passive == null || passive.cooldownDuration <= 0f || passive.abilityTag == null)
+                return 0f;
+            return _executor.GetCooldownRemaining(passive.abilityTag.FullTag);
         }
 
         /// <summary>指定技能是否正在管道中执行。</summary>

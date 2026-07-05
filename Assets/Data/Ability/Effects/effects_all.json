@@ -18,7 +18,9 @@
                 {
                     "propertyId": "MoveSpeed",
                     "valueAdd": 0.0,
-                    "valueMultiply": 0.699999988079071
+                    "valueMultiply": 0.699999988079071,
+                    "maxAdd": 0.0,
+                    "maxMultiply": 1.0
                 }
             ]
         },
@@ -795,16 +797,18 @@
             "grantedTags": [],
             "adjuncts": [
                 {
-                    "propertyId": "MaxHP",
+                    "propertyId": "HP",
                     "valueAdd": 0.0,
-                    "valueMultiply": 1.2
+                    "valueMultiply": 1.0,
+                    "maxAdd": 0.0,
+                    "maxMultiply": 1.2
                 }
             ]
         },
         {
             "effectType": "Buff",
             "name": "Buff_BerserkerBlood",
-            "description": "攻速+15%移速+10%，持续5s。击杀触发——狂暴血脉。",
+            "description": "敏捷+50%，持续5s。击杀触发——狂暴血脉。",
             "directory": "Buff/GrantBuff",
             "effectTag": "Ability.Effect.Buff.Haste.BerserkerBlood",
             "duration": 5.0,
@@ -815,14 +819,11 @@
             "grantedTags": [],
             "adjuncts": [
                 {
-                    "propertyId": "AttackSpeed",
+                    "propertyId": "Agility",
                     "valueAdd": 0.0,
-                    "valueMultiply": 1.15
-                },
-                {
-                    "propertyId": "MoveSpeed",
-                    "valueAdd": 0.0,
-                    "valueMultiply": 1.1
+                    "valueMultiply": 1.5,
+                    "maxAdd": 0.0,
+                    "maxMultiply": 1.0
                 }
             ]
         },
@@ -842,7 +843,9 @@
                 {
                     "propertyId": "MoveSpeed",
                     "valueAdd": 0.0,
-                    "valueMultiply": 0.6
+                    "valueMultiply": 0.6,
+                    "maxAdd": 0.0,
+                    "maxMultiply": 1.0
                 }
             ]
         },
@@ -862,12 +865,16 @@
                 {
                     "propertyId": "Endurance",
                     "valueAdd": 0.0,
-                    "valueMultiply": 1.5
+                    "valueMultiply": 1.5,
+                    "maxAdd": 0.0,
+                    "maxMultiply": 1.0
                 },
                 {
                     "propertyId": "KnockdownResist",
                     "valueAdd": 25.0,
-                    "valueMultiply": 0.0
+                    "valueMultiply": 0.0,
+                    "maxAdd": 0.0,
+                    "maxMultiply": 1.0
                 }
             ]
         }

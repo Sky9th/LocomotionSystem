@@ -72,6 +72,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2011309339122524144}
   - component: {fileID: 567058136293471383}
+  - component: {fileID: 7124284278562187758}
   m_Layer: 0
   m_Name: PassiveBarOverlay
   m_TagString: Untagged
@@ -96,7 +97,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -62.5}
+  m_AnchoredPosition: {x: 0, y: -200.1}
   m_SizeDelta: {x: 460, y: 125}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &567058136293471383
@@ -108,9 +109,27 @@ CanvasGroup:
   m_GameObject: {fileID: 2356675199504078111}
   m_Enabled: 1
   m_Alpha: 0
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
+--- !u!114 &7124284278562187758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2356675199504078111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 795fea60e53e53c43aedffa321e93cdb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvasGroup: {fileID: 567058136293471383}
+  fadeDuration: 0.2
+  slotPrefab: {fileID: 1358455895071393329, guid: e624b7c7744d0c14eb6724d5efd5e03a,
+    type: 3}
+  slotContainer: {fileID: 8102647194829646907}
+  refreshRate: 0.15
 --- !u!1001 &5579505584452403143
 PrefabInstance:
   m_ObjectHideFlags: 0

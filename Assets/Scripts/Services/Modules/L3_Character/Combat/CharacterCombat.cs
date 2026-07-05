@@ -59,7 +59,7 @@ namespace RedDust.Character.Combat
 
         private void OnHitResolved(SDamageInfo hit, float finalAmount)
         {
-            if (finalAmount > 0f)
+            if (finalAmount > 0f && ctx.Ability != null)
                 ctx.Ability.NotifyPassiveEvent(ETriggerEvent.OnHit, hit.Target);
         }
 
@@ -90,6 +90,14 @@ namespace RedDust.Character.Combat
             var before = ctx.Properties.GetFloat(CharacterConst.PropertyPath.Vitals.HP);
             ctx.Properties.Modify(CharacterConst.PropertyPath.Vitals.HP, -finalAmount);
             Debug.Log($"[Combat] {hit.Target.name} HP: {before:F1} -{finalAmount:F1} → {ctx.Properties.GetFloat(CharacterConst.PropertyPath.Vitals.HP):F1}");
+
+            // OnKill 被动触发：受害者 HP 归零 → 通知击杀者的 AbilityExecutor
+            if (before > 0f && ctx.Properties.GetFloat(CharacterConst.PropertyPath.Vitals.HP) <= 0f)
+            {
+                var casterAbility = hit.Caster != null ? hit.Caster.GetComponent<AbilityExecutor>() : null;
+                if (casterAbility != null)
+                    casterAbility.NotifyPassiveEvent(ETriggerEvent.OnKill, hit.Target);
+            }
         }
 
         private void OnReaction(SDamageInfo hit, float finalAmount)
@@ -129,6 +137,10 @@ namespace RedDust.Character.Combat
 
         private void OnDamaged(SDamageInfo hit, float finalAmount)
         {
+            // OnDamaged 被动触发：承受方自身（仅当承受方有 AbilityExecutor 时）
+            if (ctx.Ability != null)
+                ctx.Ability.NotifyPassiveEvent(ETriggerEvent.OnDamaged, hit.Target);
+
             float hp = ctx.Properties.GetFloat(CharacterConst.PropertyPath.Vitals.HP);
             if (hp <= 0f)
             {

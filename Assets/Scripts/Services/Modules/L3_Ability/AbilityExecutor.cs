@@ -205,6 +205,7 @@ namespace RedDust.Ability
         public void NotifyPassiveEvent(ETriggerEvent trigger, GameObject subject)
         {
             var matches = _instances.GetByTrigger(trigger);
+            Debug.Log($"[Passive] NotifyPassiveEvent trigger={trigger} subject={subject?.name} matches={matches.Count}");
             foreach (var inst in matches)
                 _pendingPassiveStarts.Enqueue((inst, new List<GameObject> { subject }));
         }
@@ -213,6 +214,7 @@ namespace RedDust.Ability
         public void SyncInstances(PassiveAbilitySO[] passives, object source)
         {
             _instances.DeactivateBySource(source);
+            Debug.Log($"[Passive] SyncInstances source={source} count={passives?.Length ?? 0} totalActive={_instances.Count}");
             if (passives == null) return;
             foreach (var p in passives)
             {
@@ -343,28 +345,12 @@ namespace RedDust.Ability
 
         private void OnTriggerEnter(Collider other)
         {
-            for (int i = 0; i < runtimePassives.Count; i++)
-            {
-                var p = runtimePassives[i];
-                if (p == null || p.trigger != ETriggerEvent.OnEnterArea) continue;
-                if (!PassTargetRequiredTag(p, other.gameObject)) continue;
-                if (!PassCooldown(p)) continue;
-                if (TargetFilterCallback?.Invoke(p, other.gameObject) != null) continue;
-                ExecutePassive(p, other.gameObject);
-            }
+            NotifyPassiveEvent(ETriggerEvent.OnEnterArea, other.gameObject);
         }
 
         private void OnTriggerExit(Collider other)
         {
-            for (int i = 0; i < runtimePassives.Count; i++)
-            {
-                var p = runtimePassives[i];
-                if (p == null || p.trigger != ETriggerEvent.OnExitArea) continue;
-                if (!PassTargetRequiredTag(p, other.gameObject)) continue;
-                if (!PassCooldown(p)) continue;
-                if (TargetFilterCallback?.Invoke(p, other.gameObject) != null) continue;
-                ExecutePassive(p, other.gameObject);
-            }
+            NotifyPassiveEvent(ETriggerEvent.OnExitArea, other.gameObject);
         }
 
         #endregion

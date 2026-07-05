@@ -58,6 +58,13 @@ namespace RedDust.Ability
         {
             EnsureResolved();
 
+            // ── ② Non-damage Effects（Buff + Tag，无论是否造成伤害都施加）──
+            var effects = hit.Target == hit.Caster
+                ? hit.SourceAbility?.selfEffects
+                : hit.SourceAbility?.targetEffects;
+            ApplyEffects(effects, hit.SourceInstance);
+            Debug.Log($"[Passive] Reactor.Resolve target={hit.Target?.name} effects={effects?.Length ?? 0} sourceAbility={hit.SourceAbility?.internalName}");
+
             // ── ① Damage Resolution ──
             var damage = hit.Damage;
             if (damage == null || damage.Length == 0) return 0f;
@@ -75,12 +82,6 @@ namespace RedDust.Ability
 
             float finalAmount = ResolutionCallback?.Invoke(hit) ?? instantSum;
             // TODO: per-DamageEntry ResolutionCallback — 当前单回调处理 TotalAmount，后续按 tag 分 channel 路由抗性
-
-            // ── ② Non-damage Effects（Buff + Tag，无论是否造成伤害都施加）──
-            var effects = hit.Target == hit.Caster
-                ? hit.SourceAbility?.selfEffects
-                : hit.SourceAbility?.targetEffects;
-            ApplyEffects(effects, hit.SourceInstance);
 
             // ── ③ Damage + Reaction ──
             if (finalAmount > 0f)
@@ -136,12 +137,21 @@ namespace RedDust.Ability
                 foreach (var adj in buff.adjuncts)
                 {
                     if (adj.property == null) continue;
-                    _propertyTable?.AddAdjunct(new FloatAdjunct
+                    if (_propertyTable == null) continue;
+                    if (!_propertyTable.TryGetPath(adj.property, out var path))
+                    {
+                        Debug.LogWarning($"[Passive] ApplyBuff {buff.name}: property '{adj.property.Id}' not in PropertyTable structure, skipped");
+                        continue;
+                    }
+                    Debug.Log($"[Passive] ApplyBuff {buff.name} → {path} (id={adj.property.Id}) add={adj.valueAdd} mul={adj.valueMultiply} maxAdd={adj.maxAdd} maxMul={adj.maxMultiply} expiry={expiry}");
+                    _propertyTable.AddAdjunct(new FloatAdjunct
                     {
                         Owner = owner,
-                        TargetPath = adj.property.Id,
+                        TargetPath = path,
                         ValueAdd = adj.valueAdd,
                         ValueMultiply = adj.valueMultiply,
+                        MaxAdd = adj.maxAdd,
+                        MaxMultiply = adj.maxMultiply <= 0f ? 1f : adj.maxMultiply,
                         ExpiryTime = expiry,
                     });
                 }

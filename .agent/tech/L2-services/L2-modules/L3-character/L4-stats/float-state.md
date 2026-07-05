@@ -1,6 +1,7 @@
 # FloatState — Float 属性运行时状态
 
-> `L3_Character/Stats/FloatState.cs` · 技术文档 · 2026-06-10
+> **Last Verified**: 2026-07-06 | **Verification**: All referenced files exist, signatures match
+> `L3_Properties/Instance/FloatState.cs` · `L3_Properties/Instance/FloatAdjunct.cs`
 
 ## 层级定位
 
@@ -118,6 +119,26 @@ public event Action<string, float, float> OnChanged;  // path, old, new
 ```
 
 有 Interval 时使用累计 ticks 而非 dt，确保非每帧间隔的精度。
+
+### Effective（只读值）
+```csharp
+public float Effective
+```
+- **用途**: 叠加所有 FloatAdjunct 后的有效值
+- **公式**: `clamp((Current + ΣValueAdd) × ΠValueMultiply, Min, effectiveMax)`
+- **effectiveMax**: `Max × ΠMaxMultiply + ΣMaxAdd`（v0.38.3 新增，支持属性上限扩容）
+- **调用者**: PropertyTable.GetEffective / 外部读取
+- **备注**: 不修改 Current——修饰只在读取时叠加。过期或 Owner 失效的 adjunct 自动跳过
+
+### FloatAdjunct — 只读修正
+`FloatAdjunct.cs` 字段：
+| 字段 | 默认 | 用途 |
+|------|------|------|
+| ValueAdd | 0 | 固定偏移 |
+| ValueMultiply | 1 | 乘数（1=不变） |
+| MaxAdd | 0 | Max 固定扩展（v0.38.3） |
+| MaxMultiply | 1 | Max 乘数扩展（v0.38.3） |
+| ExpiryTime | -1 | 过期时间，-1 永续 |
 
 ## 设计决策
 
