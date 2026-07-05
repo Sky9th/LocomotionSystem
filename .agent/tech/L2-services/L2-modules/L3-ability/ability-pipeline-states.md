@@ -1,6 +1,6 @@
 # Ability Pipeline — 状态机实现
 
-> **Last Verified**: 2026-07-01 | **Verification**: All referenced files exist, signatures match code
+> **Last Verified**: 2026-07-05 | **Verification**: All referenced files exist, signatures match code
 
 ## Layer Position
 
@@ -13,7 +13,7 @@ L3 → L4（领域子系统的子系统）。位于 `L3_Ability/State/` 和 `L3_
 
 ```
 AbilityExecutor.Update()
-  └─ ActiveAbilityPipeline.Tick(ref _ctx, dt)
+  └─ AbilityPipeline.Tick(ref _ctx, dt)
        └─ StateMachine<SActiveAbilityContext>.Tick(ref ctx, dt)
             └─ current.OnTick(ref ctx, dt)          ← 返回自身=停留 / 返回新State=流转
                  └─ CanExit(current, ref ctx) + CanEnter(next, ref ctx) 双验证
@@ -49,11 +49,11 @@ CompletedState / RejectedState                                （终态，永远
 | 方向 | 模块 | 关系 |
 |------|------|------|
 | → 消费 | `AbilityExecutor` | 通过 `SActiveAbilityContext.Executor` 取回调（`IsOnCooldown`, `PeekStatCallback`, `ModifyStatCallback` 等） |
-| → 消费 | `AbilitySearchSO` | SearchState 内联物理查询分发（Cone / Ray / Circle） |
-| → 消费 | `AbilityEffects` | ExecutionState 调用 `ApplySelf()` + `BuildDamageInfo()` |
-| → 消费 | `AbilityReactor` | ExecutionState 逐 hit 调 `Resolve()` 落地伤害 |
-| ← 被调用 | `ActiveAbilityPipeline` | 持有 `StateMachine<SActiveAbilityContext>`，组装启动链 |
-| ← 被调用 | `AbilityExecutor` | `Update()` 中驱动 `_pipeline.Tick(ref _ctx, dt)` |
+| → 消费 | `AbilitySearchSO` | ExecutionState 内联物理查询分发（Cone / Ray / Circle） |
+| → 消费 | `AbilityReactor` | ExecutionState 逐 hit 调 `Resolve()` 落地伤害+Buff+Tag+事件 |
+| → 消费 | `AbilityInstance` | `SActiveAbilityContext.Instance` — Owner 溯源 |
+| ← 被调用 | `AbilityPipeline` | 持有 `StateMachine<SActiveAbilityContext>`，主动被动共用 |
+| ← 被调用 | `AbilityExecutor` | `Update()` 中驱动 `_activePipeline.Tick` + `_runningPassives` 列表 |
 
 ## Public API
 
@@ -158,9 +158,11 @@ public abstract class AbilityPipelineState : IState<SActiveAbilityContext>
 ### ExecutionState（④⑤ 物理查询 + 效果载荷）
 
 - **文件**: `Executor/State/ExecutionState.cs`
-- **逻辑**: Fire 帧物理查询（Cone/Ray/Circle → `ctx.Targets`）→ `ApplySelf()` → `BuildDamageInfo()` → 逐 hit `AbilityReactor.Resolve()`
-- **EffectCallback**: `BuildDamageInfo` 计算武器基底后调用 `executor.EffectCallback(effect, target, damage)`，外部（力量/熟练度）修正
-- **内联**: `AbilitySearch` 的搜索方法 + `AbilityEffects` 的效果方法均已内联为 `private static`
+- **逻辑**: Fire 帧物理查询 → caster 加入 targets（self 走标准路径）→ `BuildDamageInfo()`（每 target 一个 hit，纯伤害数据）→ 逐 hit `Reactor.Resolve(hit)`（内部完成伤害+Buff+Tag+事件）
+- **伤害公式**: `ComputeDamage` — 武器基底 × 技能修正 = `Σ (wd.baseValue + mod.modAdd) × mod.modMult`
+- **EffectCallback**: 被 `ComputeDamage` 内联调用，同为外部（力量/熟练度）修正
+- **Self-hit**: Amount=0，Reactor 通过 `hit.Target == hit.Caster` 选择 selfEffects
+- **ApplySelf 已删除**: Buff/Tag 全在 Reactor 落地，Exe 不再直接改目标 PT/Tag
 
 ### RecoveryState（⑧ 动画后摇）
 

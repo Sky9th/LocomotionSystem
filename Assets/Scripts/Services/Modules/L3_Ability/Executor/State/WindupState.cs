@@ -22,7 +22,8 @@ namespace RedDust.Ability
 
         public override void OnEnter(ref SActiveAbilityContext ctx)
         {
-            var activation = ctx.Ability.activation;
+            var active = ctx.Ability as ActiveAbilitySO;
+            var activation = active?.activation;
             if (activation != null && activation.windupDuration > 0f)
             {
                 float speed = activation.animationSpeed > 0f ? activation.animationSpeed : 1f;
@@ -39,7 +40,7 @@ namespace RedDust.Ability
 
         public override IState<SActiveAbilityContext> OnTick(ref SActiveAbilityContext ctx, float dt)
         {
-            if (_windupDuration <= 0f)
+            if (ctx.SkipAnim || _windupDuration <= 0f)
                 return new CooldownState();
 
             if (ctx.Executor.IsAnimationActive)
@@ -53,7 +54,7 @@ namespace RedDust.Ability
         }
 
         public override bool CanBeInterrupted(ref SActiveAbilityContext ctx)
-            => ctx.Ability.activation?.canCancelWindup ?? true;
+            => (ctx.Ability as ActiveAbilitySO)?.activation?.canCancelWindup ?? true;
 
         public override void OnInterrupted(ref SActiveAbilityContext ctx)
         {

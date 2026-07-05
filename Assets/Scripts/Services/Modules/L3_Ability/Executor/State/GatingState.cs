@@ -14,6 +14,7 @@ namespace RedDust.Ability
         {
             var a = ctx.Ability;
             var e = ctx.Executor;
+            var active = a as ActiveAbilitySO; // Passive 时 safe cast 返回 null
 
             // ── 1. 独立冷却 ──
             if (a.cooldownDuration > 0f && a.abilityTag != null && e.IsOnCooldown(a.abilityTag.FullTag))
@@ -29,10 +30,10 @@ namespace RedDust.Ability
                 return new RejectedState();
             }
 
-            // ── 3. 互斥 ──
-            if (!a.overrideExclusion && a.extraExclusionTags != null)
+            // ── 3. 互斥（仅 ActiveAbilitySO 有此字段）──
+            if (active != null && !active.overrideExclusion && active.extraExclusionTags != null)
             {
-                foreach (var tag in a.extraExclusionTags)
+                foreach (var tag in active.extraExclusionTags)
                 {
                     if (tag != null && e.OwnedTags.HasTag(tag.FullTag))
                     {

@@ -17,7 +17,8 @@ namespace RedDust.Ability
 
         public override void OnEnter(ref SActiveAbilityContext ctx)
         {
-            var activation = ctx.Ability.activation;
+            var active = ctx.Ability as ActiveAbilitySO;
+            var activation = active?.activation;
             if (activation != null && activation.recoveryDuration > 0f)
             {
                 float speed = activation.animationSpeed > 0f ? activation.animationSpeed : 1f;
@@ -32,11 +33,11 @@ namespace RedDust.Ability
 
         public override IState<SActiveAbilityContext> OnTick(ref SActiveAbilityContext ctx, float dt)
         {
+            if (ctx.SkipAnim || _recoveryDuration <= 0f)
+                return new CompletedState();
+
             if (ctx.Executor.IsAnimationActive)
                 return ctx.Executor.IsAnimationClipFinished() ? new CompletedState() : this;
-
-            if (_recoveryDuration <= 0f)
-                return new CompletedState();
 
             _elapsed += dt;
             if (_elapsed < _recoveryDuration)
@@ -46,7 +47,7 @@ namespace RedDust.Ability
         }
 
         public override bool CanBeInterrupted(ref SActiveAbilityContext ctx)
-            => ctx.Ability.activation?.canCancelRecovery ?? true;
+            => (ctx.Ability as ActiveAbilitySO)?.activation?.canCancelRecovery ?? true;
 
         public override void OnInterrupted(ref SActiveAbilityContext ctx)
         {

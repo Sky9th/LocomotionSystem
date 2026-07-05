@@ -74,7 +74,8 @@ namespace RedDust.Ability
                         case DamageEffectSO dmg:
                         {
                             float finalDamage = 0f;
-                            var sourceEffect = ResolveDamageEffect(weaponEntity);
+                            var sourceEffects = ResolveDamageEffects(weaponEntity);
+                            var sourceEffect = sourceEffects?.Length > 0 ? sourceEffects[0] as DamageEffectSO : null;
 
                             if (sourceEffect != null)
                             {
@@ -87,7 +88,7 @@ namespace RedDust.Ability
 
                             var hit = new SDamageInfo(
                                 caster, target, finalDamage,
-                                sourceEffect?.effectTag ?? default,
+                                sourceEffect != null ? new RdTag[] { new RdTag(sourceEffect.effectTag.FullTag) } : null,
                                 target.transform.position,
                                 target.transform.position - origin,
                                 ability
@@ -115,15 +116,9 @@ namespace RedDust.Ability
         /// 优先走 Preset.GetDamageEffect（武器子类自行决定伤害来源：近战读自身 ATK，远程沿容器链查弹药）。
         /// Fallback 从 PropertyTable 的 Weapon/ATK 路径直接取。
         /// </summary>
-        public DamageEffectSO ResolveDamageEffect(Entity weaponEntity)
+        public EffectSO[] ResolveDamageEffects(Entity weaponEntity)
         {
-            if (weaponEntity?.Preset == null) return null;
-
-            var dmg = weaponEntity.Preset.GetDamageEffect(weaponEntity);
-            if (dmg != null) return dmg;
-
-            var effects = weaponEntity.Properties?.GetAssetList<DamageEffectSO>("Weapon/ATK");
-            return effects?.Length > 0 ? effects[0] : null;
+            return weaponEntity?.Preset?.GetDamageEffects(weaponEntity);
         }
 
         #region Internal

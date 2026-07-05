@@ -21,25 +21,36 @@ namespace RedDust.Ability
             var a = ctx.Ability;
             var e = ctx.Executor;
             var caster = e.gameObject;
+            var instance = ctx.Instance;
 
-            // ── Fire 帧物理查询（内联自 SearchState ⛔ DEPRECATED）──
-            ctx.Targets = ExecuteSearch(a.search, caster, ctx.Origin, ctx.Direction);
+            // ── ④ Target Resolution: 保证目标 + 物理查询合并去重 ──
+            var active = a as ActiveAbilitySO;
+            ctx.Targets = ExecuteSearch(active?.search, caster, ctx.Origin, ctx.Direction);
 
-            // ── ⑤ Self Effects ──
-            ApplySelf(a, caster, e);
+            // caster 自己也是 target（self 走标准路径）
+            if (!ctx.Targets.Contains(caster))
+                ctx.Targets.Add(caster);
 
-            // ── ⑤ Target Effects → BuildDamageInfo ──
-            ctx.Hits = BuildDamageInfo(a, caster, ctx.Targets, ctx.Origin, e, ctx.WeaponEntity);
+            if (ctx.GuaranteedTargets != null)
+            {
+                foreach (var t in ctx.GuaranteedTargets)
+                {
+                    if (t != null && !ctx.Targets.Contains(t))
+                        ctx.Targets.Add(t);
+                }
+            }
 
-            // ── ⑥⑦⑧ Per-hit Resolve ──
+            // ── ⑤ BuildDamageInfo → SDamageInfo[]（纯伤害，Buff/Tag 由 Reactor 处理）──
+            ctx.Hits = BuildDamageInfo(a, caster, ctx.Targets, ctx.Origin, e, ctx.WeaponEntity, instance);
+
+            // ── ⑥⑦⑧ Per-hit: Resolve 内部完成伤害+Buff+Tag+事件 ──
             if (ctx.Hits != null)
             {
                 foreach (var hit in ctx.Hits)
                 {
                     if (hit.Target == null) continue;
-                    var reactor = hit.Target.GetComponent<AbilityReactor>();
-                    if (reactor != null)
-                        reactor.Resolve(hit);
+                    hit.Target.GetComponent<AbilityReactor>()?.Resolve(hit);
+                    // OnHit 被动：需等 Reactor→Caster 通知通路建立后，由命中判定方触发
                 }
             }
 
@@ -48,136 +59,81 @@ namespace RedDust.Ability
 
         #region Effects (inlined from AbilityEffects)
 
-        /// <summary>
-        /// 对施法者自身施加 selfEffects。CostEffectSO 已在 ③ 处理，此处跳过。
-        /// </summary>
-        private static void ApplySelf(ActiveAbilitySO ability, GameObject caster, AbilityExecutor executor)
-        {
-            if (ability?.selfEffects == null) return;
-
-            foreach (var effect in ability.selfEffects)
-            {
-                if (effect == null || effect is CostEffectSO) continue;
-
-                switch (effect)
-                {
-                    case BuffEffectSO buff:
-                        ApplyBuffInternal(buff, caster, executor);
-                        break;
-                    case DamageEffectSO:
-                        // TODO: 武器 Entity → GetDamageEffect → SDamageInfo → self Reactor
-                        break;
-                }
-
-                ApplyDurationTag(effect, caster, executor);
-            }
-        }
-
-        /// <summary>
-        /// 对目标施加 targetEffects → 构造 SDamageInfo[]。
-        /// </summary>
+        /// <summary>构造 SDamageInfo[]，每个 target 一个 hit。Buff/Tag 由 Reactor 处理。</summary>
+        // TODO: SDamageInfo 是否有必要存在？伤害公式（武器基底 × 技能修正）本质是 Reactor 的职责，
+        // Exe 侧只需要知道 "用哪个技能打了哪个目标"，具体伤害由 Reactor 自己算。
         private static List<SDamageInfo> BuildDamageInfo(
-            ActiveAbilitySO ability, GameObject caster, List<GameObject> targets,
-            Vector3 origin, AbilityExecutor executor, Entity weaponEntity)
+            AbilitySO ability, GameObject caster, List<GameObject> targets,
+            Vector3 origin, AbilityExecutor executor, Entity weaponEntity,
+            AbilityInstance sourceInstance)
         {
             var hits = new List<SDamageInfo>();
-            if (ability?.targetEffects == null || targets == null || targets.Count == 0)
+            if (targets == null || targets.Count == 0)
                 return hits;
 
-            // 提取 ImpactEffect（同一 ability 的 targetEffects 中最多一个 ImpactEffectSO）
+            // 武器伤害基底 & 标签（一次解析，所有 target 共用）
+            var weaponEffects = weaponEntity?.Preset?.GetDamageEffects(weaponEntity);
+            var damageTags = CollectDamageTags(weaponEffects);
+
+            // ImpactEffectSO（同一 ability 的 targetEffects 中最多一个）
             ImpactEffectSO impactEffect = null;
-            foreach (var e in ability.targetEffects)
-            {
-                if (e is ImpactEffectSO imp) { impactEffect = imp; break; }
-            }
+            var abilityEffects = ability?.targetEffects;
+            if (abilityEffects != null)
+                foreach (var e in abilityEffects)
+                    if (e is ImpactEffectSO imp) { impactEffect = imp; break; }
 
             foreach (var target in targets)
             {
                 if (target == null) continue;
 
-                foreach (var effect in ability.targetEffects)
-                {
-                    if (effect == null) continue;
+                float amount = target == caster
+                    ? 0f   // TODO: self-damage 公式
+                    : ComputeDamage(weaponEffects, abilityEffects, target, executor);
 
-                    switch (effect)
-                    {
-                        case DamageEffectSO dmg:
-                        {
-                            float finalDamage = 0f;
-                            var sourceEffect = ResolveDamageEffect(weaponEntity);
-
-                            if (sourceEffect != null)
-                                finalDamage = (sourceEffect.baseValue + dmg.modAdd) * dmg.modMult;
-
-                            // ⑤ EffectCallback: 外部伤害修正（力量/熟练度/被动）
-                            if (executor.EffectCallback != null)
-                                finalDamage = executor.EffectCallback(dmg, target, finalDamage);
-
-                            var hit = new SDamageInfo(
-                                caster, target, finalDamage,
-                                sourceEffect?.effectTag ?? default,
-                                target.transform.position,
-                                target.transform.position - origin,
-                                ability,
-                                impactEffect
-                            );
-                            hits.Add(hit);
-                            break;
-                        }
-
-                        case BuffEffectSO buff:
-                            ApplyBuffInternal(buff, target, executor);
-                            break;
-                    }
-
-                    ApplyDurationTag(effect, target, executor);
-                }
+                hits.Add(new SDamageInfo(
+                    caster, target, amount, damageTags,
+                    target.transform.position,
+                    target.transform.position - origin,
+                    ability,
+                    sourceInstance: sourceInstance,
+                    impactEffect: impactEffect
+                ));
             }
 
             return hits;
         }
 
-        /// <summary>
-        /// 从武器 Entity 解析 DamageEffectSO。
-        /// 优先走 Preset.GetDamageEffect，Fallback 从 PropertyTable Weapon/ATK 取。
-        /// </summary>
-        private static DamageEffectSO ResolveDamageEffect(Entity weaponEntity)
+        /// <summary>武器基底 × 技能修正 = 理想伤害。</summary>
+        private static float ComputeDamage(
+            EffectSO[] weaponEffects, EffectSO[] abilityEffects,
+            GameObject target, AbilityExecutor executor)
         {
-            if (weaponEntity?.Preset == null) return null;
+            if (weaponEffects == null || abilityEffects == null) return 0f;
 
-            var dmg = weaponEntity.Preset.GetDamageEffect(weaponEntity);
-            if (dmg != null) return dmg;
-
-            var effects = weaponEntity.Properties?.GetAssetList<DamageEffectSO>("Weapon/ATK");
-            return effects?.Length > 0 ? effects[0] : null;
-        }
-
-        private static void ApplyBuffInternal(BuffEffectSO buff, GameObject target, AbilityExecutor executor)
-        {
-            if (buff == null || target == null) return;
-
-            if (buff.grantedTags != null && buff.grantedTags.Length > 0)
+            float total = 0f;
+            foreach (var ae in abilityEffects)
             {
-                var targetExecutor = target.GetComponent<AbilityExecutor>();
-                if (targetExecutor != null)
+                if (ae is not DamageEffectSO mod) continue;
+                foreach (var we in weaponEffects)
                 {
-                    foreach (var tag in buff.grantedTags)
-                        targetExecutor.OwnedTags.AddTag(tag);
-
-                    if (buff.duration > 0f)
-                        targetExecutor.AddBuffTags(buff.grantedTags, Time.time + buff.duration);
+                    if (we is not DamageEffectSO wd) continue;
+                    float dmg = (wd.baseValue + mod.modAdd) * mod.modMult;
+                    if (executor?.EffectCallback != null)
+                        dmg = executor.EffectCallback(mod, target, dmg);
+                    total += dmg;
                 }
             }
+            return total;
         }
 
-        private static void ApplyDurationTag(EffectSO effect, GameObject target, AbilityExecutor executor)
+        private static RdTag[] CollectDamageTags(EffectSO[] weaponEffects)
         {
-            if (effect.duration <= 0f || effect.effectTag == null) return;
-
-            if (target == executor.gameObject)
-                executor.OwnedTags.AddTag(effect.effectTag.FullTag);
-            else
-                target.GetComponent<Identity>()?.Tags.AddTag(effect.effectTag.FullTag);
+            if (weaponEffects == null) return null;
+            var tags = new List<RdTag>();
+            foreach (var e in weaponEffects)
+                if (e is DamageEffectSO dmg && dmg.effectTag != null)
+                    tags.Add(dmg.effectTag);
+            return tags.ToArray();
         }
 
         #endregion

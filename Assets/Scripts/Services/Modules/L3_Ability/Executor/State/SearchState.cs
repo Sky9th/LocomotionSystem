@@ -25,17 +25,18 @@ namespace RedDust.Ability
         public override IState<SActiveAbilityContext> OnTick(ref SActiveAbilityContext ctx, float dt)
         {
             var a = ctx.Ability;
+            var active = a as ActiveAbilitySO;
 
             // ── 首帧：执行搜索 ──
             if (!_searched)
             {
                 _searched = true;
                 var caster = ctx.Executor.gameObject;
-                ctx.Targets = ExecuteSearch(a.search, caster, ctx.Origin, ctx.Direction);
+                ctx.Targets = ExecuteSearch(active?.search, caster, ctx.Origin, ctx.Direction);
             }
 
             // ── 每帧绘制 Debug 形状 ──
-            DrawDebugSearch(a.search, ctx.Origin, ctx.Direction, 0.5f);
+            DrawDebugSearch(active?.search, ctx.Origin, ctx.Direction, 0.5f);
 
             // ── 最少停留 MinDuration ──
             _elapsed += dt;

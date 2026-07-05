@@ -18,8 +18,8 @@ namespace RedDust.Ability
         /// <summary>最终伤害值。</summary>
         public readonly float Amount;
 
-        /// <summary>伤害类型标签。防御公式用此路由抗性。</summary>
-        public readonly RdTag EffectTag;
+        /// <summary>伤害类型标签。武器多伤害类型时并存，防御公式逐项路由抗性。</summary>
+        public readonly RdTag[] EffectTags;
 
         /// <summary>命中世界坐标。</summary>
         public readonly Vector3 HitPoint;
@@ -30,36 +30,27 @@ namespace RedDust.Ability
         /// <summary>伤害来源技能。ActiveAbilitySO 或 PassiveAbilitySO。</summary>
         public readonly AbilitySO SourceAbility;
 
+        /// <summary>施法者的技能实例。Reactor 侧施加 Buff/Tag 时用作 Owner。</summary>
+        public readonly AbilityInstance SourceInstance;
+
         /// <summary>冲击效果（硬直+击退）。null 表示纯伤害无冲击。</summary>
         public readonly ImpactEffectSO ImpactEffect;
 
-        /// <summary>向后兼容构造（无 ImpactEffect）。</summary>
-        public SDamageInfo(GameObject caster, GameObject target, float amount, RdTag effectTag,
+        /// <summary>完整构造。</summary>
+        public SDamageInfo(GameObject caster, GameObject target, float amount, RdTag[] effectTags,
             Vector3 hitPoint, Vector3 hitDirection,
-            AbilitySO sourceAbility = null)
+            AbilitySO sourceAbility = null,
+            AbilityInstance sourceInstance = null,
+            ImpactEffectSO impactEffect = null)
         {
             Caster = caster;
             Target = target;
             Amount = amount;
-            EffectTag = effectTag;
+            EffectTags = effectTags;
             HitPoint = hitPoint;
             HitDirection = hitDirection.normalized;
             SourceAbility = sourceAbility;
-            ImpactEffect = null;
-        }
-
-        /// <summary>完整构造（含 ImpactEffect）。</summary>
-        public SDamageInfo(GameObject caster, GameObject target, float amount, RdTag effectTag,
-            Vector3 hitPoint, Vector3 hitDirection,
-            AbilitySO sourceAbility, ImpactEffectSO impactEffect)
-        {
-            Caster = caster;
-            Target = target;
-            Amount = amount;
-            EffectTag = effectTag;
-            HitPoint = hitPoint;
-            HitDirection = hitDirection.normalized;
-            SourceAbility = sourceAbility;
+            SourceInstance = sourceInstance;
             ImpactEffect = impactEffect;
         }
 

@@ -14,14 +14,13 @@ namespace RedDust.Items
     [CreateAssetMenu(menuName = "RedDust/Entity/Ranged Weapon", fileName = "NewRangedWeapon")]
     public class RangedWeaponSO : ItemDefSO
     {
-        public override DamageEffectSO GetDamageEffect(Entity entity)
+        public override EffectSO[] GetDamageEffects(Entity entity)
         {
-            // TODO: 临时模拟——递归查弹药容器链拿到弹药 Entity 后，调 ammoEntity.Preset.GetDamageEffect。
-            // 正式实现：沿 NestedContainer 向下查 → 弹药 Entity → ammoEntity.Preset.GetDamageEffect(ammoEntity)
+            // TODO: 临时模拟——递归查弹药容器链拿到弹药 Entity 后，调 ammoEntity.Preset.GetDamageEffects。
             var fake = ScriptableObject.CreateInstance<DamageEffectSO>();
             fake.name = "TEMPORARY_RangedDamage";
             fake.baseValue = 10f;
-            return fake;
+            return new EffectSO[] { fake };
         }
     }
 }

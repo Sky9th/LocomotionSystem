@@ -12,7 +12,7 @@
 | 事项 | 说明 |
 |------|------|
 | Properties 系统全量落地 | 8 类型 / ~185 PropertyDef / 30 Trees / Editor 完整 |
-| Properties 接管角色物理 | `CharacterPhysique` + `GroundSystemConfigSO` 替代 3 个旧 SO |
+| Properties 接管角色物理 | PropertyTable + `GroundSystemConfigSO` 替代 3 个旧 SO（v0.36.11 Physique 已删除） |
 | Module 系统 + ctx 全链路 | BaseService 删除，Service 直接继承 ModuleComponent |
 | Animation 重构 | LinearMixer + In-line Transition + 废弃 State 清理 |
 | Ability 数据资产 | Search / Activation / Effect / Noise / Passive 全量 SO + Editor |
@@ -41,24 +41,23 @@
 | 伤害飘字系统 | DamageNumberOverlay + DamageNumberWidget — HP 变化时弹出浮动伤害数字 |
 | Ability Pipeline 8 State 全就位 | Gating→Cost→Windup→Cooldown→Execution→Recovery→Completed/Rejected，ref TContext 零拷贝 |
 | AbilityDriver ③ 释放动画 | 消费 AbilityActivationSO，Windup→Fire Animancer 事件注入 + animationSpeed 调速 |
+| **S1 Properties 深度接入** | 删除 Physique 缓存，GroundLocomotion 实现 motionSpeedScale 公式（Agility + CarryWeight）|
+| **Physique 删除** | 8 字段 struct 全量替换为 PropertyTable.GetFloat 按需读取，全代码库统一 |
 
 ---
 
-## S1 — Properties 深度接入 [~1天]
+## S1 — Properties 深度接入 [✅ 完成]
 
-> 背景: 物理属性已进 Properties，但速度系数层仍是占位。
-> `Stance.motionSpeedScale = 1f` 硬编码，姿势/负重/敏捷不参与速度计算。
-> S2/S3 不依赖 S1，可并行推进。
+> **实际实施**（2026-07-05）：
+> - 删除 `CharacterPhysique.cs`（8 字段缓存 struct），全量替换为 `PropertyTable.GetFloat(PropertyPath.X)` 按需读取
+> - `GroundLocomotion` 实现 `ComputeMotionSpeedScale()` 公式：`1 + Agility × agilitySpeedBonus − WeightPenalty`
+> - 公式系数由 `GroundSystemConfigSO.agilitySpeedBonus(0.03)` / `weightPenaltyRatio(0.2)` 全局配置驱动
+> - `Stance` 移除硬编码 `1f`，接受外部传入的 `motionSpeedScale`
+> - `BaseMovingState` blend 参数同步缩放
+> - `CharacterConst` 新增 `Agility`、`CarryWeight` 常量
+> - 姿势系数不参与速度计算——动画系统已通过 `GetNativeSpeed(gait)` 编码姿势差异
 
-| # | 任务 | 涉及 |
-|---|------|------|
-| S1.1 | Properties 定义补充 — `Movement/SpeedCrouch`, `Movement/SpeedCrawl`, `Attributes/Agility` | `properties_all.json` |
-| S1.2 | `Stance` — `motionSpeedScale` 接入 `Physique`，条件守卫恢复 | `Stance.cs` |
-| S1.3 | `GroundLocomotion` — posture-aware speed | `GroundLocomotion.cs` |
-| S1.4 | `CharacterPhysique` — 追加 Agility / SpeedCoefficient | `CharacterPhysique.cs` |
-| S1.5 | `BaseMovingState` — 动画速度接入姿势系数 | `BaseMovingState.cs` |
-
-**可验证增量**: 负重变化影响移速，冲刺/匍匐速度差异化。
+**可验证增量**: 负重变化影响移速（Container 有物品时 motionSpeedScale < 1.0），敏捷属性生效（默认 Agility=5 → 1.15x speed）。
 
 ---
 
@@ -177,13 +176,12 @@ S3.5 (~0.5天 — 闭环测试 + 旧代码清理) ──── 当前焦点
     │
     ├── S4 (~1天 — Combat 补完) ─────────── 下一站
     │
-    ├── S1 (~1天 — Properties 深度接入) ─── 可并行
-    │
     └── S5 (~2天 — 动画补完, S5.0 ✅) ──── 可并行
+
+S1 ✅ 完成（2026-07-05）
 ```
 
 **S3.5 → S4 直接依赖**：S4 的 OnEffectModify/OnResolveDamage 公式验证依赖闭环测试跑通。
-**S1 / S5 不依赖 S3.5**：可并行推进。
 
 ---
 

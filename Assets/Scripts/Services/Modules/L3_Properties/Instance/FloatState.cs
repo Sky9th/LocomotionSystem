@@ -119,7 +119,11 @@ namespace RedDust.Properties
             get
             {
                 float addSum = 0f, multProd = 1f;
-                foreach (var a in _adjuncts) { addSum += a.ValueAdd; multProd *= a.ValueMultiply; }
+                foreach (var a in _adjuncts)
+                {
+                    if (a.Owner is RedDust.Ability.AbilityInstance { IsActive: false }) continue;
+                    addSum += a.ValueAdd; multProd *= a.ValueMultiply;
+                }
                 return Mathf.Clamp((Current + addSum) * multProd, Min, Max);
             }
         }
@@ -206,9 +210,11 @@ namespace RedDust.Properties
                 _deltaCustom[i] = dc;
             }
 
-            // 7. Adjunct 过期清理（不改 Current，只读修正层）
+            // 7. Adjunct 清理：过期 或 Owner 失效
             if (_adjuncts.Count > 0)
-                _adjuncts.RemoveAll(a => a.ExpiryTime > 0f && a.ExpiryTime <= Time.time);
+                _adjuncts.RemoveAll(a =>
+                    (a.ExpiryTime > 0f && a.ExpiryTime <= Time.time)
+                    || (a.Owner is RedDust.Ability.AbilityInstance { IsActive: false }));
         }
 
         private void TickConsume(float dt)

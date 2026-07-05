@@ -1,5 +1,6 @@
 using RedDust.Core;
 using RedDust.Core.Events;
+using RedDust.Properties;
 using UnityEngine;
 
 namespace RedDust.Ability
@@ -7,11 +8,16 @@ namespace RedDust.Ability
     /// <summary>
     /// 技能反应器。挂载在 Target 侧，对应 AbilityExecutor 的发送端。
     /// 负责接收面 ⑥⑦⑧：结算 SDamageInfo → 落地伤害 → 触发反应 → 广播事件。
+    /// 也是 Buff/Tag 在目标侧的唯一起效入口。
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class AbilityReactor : ModuleChildMono
     {
         private HitEvent hitEvent;
+        private Identity _identity;
+        private AbilityExecutor _executor;
+        private PropertyTable _propertyTable;
+        private bool _resolved;
 
         /// <summary>⑥ 结算回调。外部修改器介入 Avoidance → Mitigation → Absorption，返回结算后伤害。0 = 完全回避。</summary>
         public System.Func<SDamageInfo, float> ResolutionCallback;
@@ -30,27 +36,120 @@ namespace RedDust.Ability
             hitEvent = GetComponent<EventHub>()?.Get<HitEvent>();
         }
 
+        private void EnsureResolved()
+        {
+            if (_resolved) return;
+            _identity = GetComponent<Identity>();
+            _executor = GetComponent<AbilityExecutor>();
+            _propertyTable = _identity?.Properties;
+            _resolved = true;
+        }
+
         /// <summary>
-        /// 结算单次命中。Caster.AbilityExecutor 直接调用。
+        /// 受击结算。目标侧唯一入口。
+        ///
+        /// 完整流程：
+        ///   ① Damage Resolution — Avoidance → Mitigation → Absorption → finalAmount
+        ///   ② Effect Application — Buff + Tag（伤害本身通过回调在①落地）
+        ///   ③ Reaction — 反伤 / 吸血 / 被动通知
+        ///   ④ Broadcast — hitEvent → VFX / Audio / UI 等不确定消费者
         /// </summary>
         public void Resolve(SDamageInfo hit)
         {
+            EnsureResolved();
+
+            // ── ① Damage Resolution ──
             float incoming = hit.Amount;
             float finalAmount = ResolutionCallback?.Invoke(hit) ?? incoming;
+            // TODO: 伤害类型转换（防弹衣穿刺→钝伤、元素克制改 multiplier）
+            // TODO: 分阶段的 Avoidance / Mitigation / Absorption 接口替代单回调
 
-            if (finalAmount <= 0f)
+            // ── ② Non-damage Effects（Buff + Tag，无论是否造成伤害都施加）──
+            var effects = hit.Target == hit.Caster
+                ? hit.SourceAbility?.selfEffects
+                : hit.SourceAbility?.targetEffects;
+            ApplyEffects(effects, hit.SourceInstance);
+
+            // ── ③ Damage + Reaction ──
+            if (finalAmount > 0f)
             {
-                Debug.Log($"[Reactor] {hit.Target.name} Resolve: incoming={incoming:F1} → avoided ({finalAmount:F1})");
-                OnDamagedCallback?.Invoke(hit, 0f);
-                hitEvent?.Raise(hit);
-                return;
+                ApplyDamageCallback?.Invoke(hit, finalAmount);
+                ReactionCallback?.Invoke(hit, finalAmount);
+                // TODO: OnHit 通知施法者（需等 Reactor→Caster 通路建立）
+            }
+            else
+            {
+                // TODO: OnDodge / OnBlock（需等 Avoidance 三阶段定稿后分事件）
             }
 
-            Debug.Log($"[Reactor] {hit.Target.name} Resolve: incoming={incoming:F1} → final={finalAmount:F1}");
-            ApplyDamageCallback?.Invoke(hit, finalAmount);
-            ReactionCallback?.Invoke(hit, finalAmount);
+            // ── ④ Broadcast ──
             OnDamagedCallback?.Invoke(hit, finalAmount);
             hitEvent?.Raise(hit);
+            // TODO: UI 伤害数字 / VFX / 受击动画 → hitEvent 订阅
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        //  Effect Application（目标侧效果统一入口）
+        // ═══════════════════════════════════════════════════════════════
+
+        /// <summary>对自身施加效果（Buff + Tag）。selfEffects / targetEffects 都走这里。</summary>
+        public void ApplyEffects(EffectSO[] effects, AbilityInstance owner)
+        {
+            if (effects == null) return;
+            EnsureResolved();
+
+            foreach (var effect in effects)
+            {
+                if (effect == null) continue;
+                if (effect is CostEffectSO) continue;
+                if (effect is DamageEffectSO) continue;   // 伤害由 Resolve 处理
+                if (effect is ImpactEffectSO) continue;   // 冲击由 Resolve 处理
+
+                if (effect is BuffEffectSO buff)
+                    ApplyBuff(buff, owner);
+
+                if (effect.duration > 0f && effect.effectTag != null)
+                    ApplyTag(effect.effectTag.FullTag, owner);
+            }
+        }
+
+        private void ApplyBuff(BuffEffectSO buff, AbilityInstance owner)
+        {
+            // ── FloatAdjunct ──
+            if (buff.adjuncts != null && buff.adjuncts.Length > 0)
+            {
+                float expiry = buff.duration > 0f ? Time.time + buff.duration : -1f;
+                foreach (var adj in buff.adjuncts)
+                {
+                    if (adj.property == null) continue;
+                    _propertyTable?.AddAdjunct(new FloatAdjunct
+                    {
+                        Owner = owner,
+                        TargetPath = adj.property.Id,
+                        ValueAdd = adj.valueAdd,
+                        ValueMultiply = adj.valueMultiply,
+                        ExpiryTime = expiry,
+                    });
+                }
+            }
+
+            // ── grantedTags（独立于 adjuncts）──
+            if (buff.grantedTags != null && buff.grantedTags.Length > 0)
+            {
+                foreach (var tag in buff.grantedTags)
+                    ApplyTag(tag.FullTag, owner);
+
+                if (buff.duration > 0f && _executor != null)
+                    _executor.AddBuffTags(buff.grantedTags, Time.time + buff.duration, owner);
+            }
+        }
+
+        private void ApplyTag(string tag, AbilityInstance owner)
+        {
+            if (_executor != null)
+                _executor.OwnedTags.AddTag(tag, owner);
+            else
+                _identity?.Tags.AddTag(tag, owner);
         }
     }
 }

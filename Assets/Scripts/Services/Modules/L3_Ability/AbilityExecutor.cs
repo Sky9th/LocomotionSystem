@@ -10,8 +10,10 @@ namespace RedDust.Ability
     [DisallowMultipleComponent]
     public sealed class AbilityExecutor : MonoBehaviour
     {
-        private readonly ActiveAbilityPipeline _pipeline = new();
-
+        private readonly AbilityPipeline _activePipeline = new();
+        private readonly InstanceManager _instances = new();
+        private readonly List<AbilityPipeline> _runningPassives = new();
+        private readonly Queue<(AbilityInstance instance, List<GameObject> targets)> _pendingPassiveStarts = new();
         private PropertyTable _propertyTable;
         private bool _propertyTableResolved;
 
@@ -122,7 +124,10 @@ namespace RedDust.Ability
         // 后续应提取到只读接口（如 IAbilityStateProvider），由 Executor 实现，UI 通过 UIService 消费接口而非 Executor 具体类型。
         // ═══════════════════════════════════════════════════════════════
 
-        public ActiveAbilityPipeline Pipeline => _pipeline;
+        public AbilityPipeline Pipeline => _activePipeline;
+
+        /// <summary>技能实例管理器。外部（CharacterActor）通过此接口同步卡片。</summary>
+        public InstanceManager Instances => _instances;
 
         public float GetCooldownRemaining(string tag)
         {
@@ -142,19 +147,78 @@ namespace RedDust.Ability
         // ▲ END UI 查询 API
         // ═══════════════════════════════════════════════════════════════
 
-        public void TryUse(ActiveAbilitySO ability, Vector3 origin, Vector3 direction, Entity weaponEntity = null)
+        public void TryUse(AbilitySO ability, Vector3 origin, Vector3 direction, Entity weaponEntity = null)
         {
             if (ability == null) return;
-            if (!_pipeline.IsIdle && _pipeline.CurrentState != EActiveAbilityState.Rejected)
-                return;
+            if (!_activePipeline.IsIdle) return;
+
             ResetAnimationFlags();
-            _pipeline.Start(ability, this, origin, direction, weaponEntity);
+            var instance = _instances.Activate(ability, "input", ELifecycle.OneShot);
+            _activePipeline.Start(instance, this, origin, direction, weaponEntity);
         }
+
+        // ── Update ──────────────────────────────────────────
 
         private void Update()
         {
+            TickActive(Time.deltaTime);
+            TickPassives(Time.deltaTime);
+            FlushPendingPassives();
             CleanupExpiredCooldowns();
-            _pipeline.Tick(Time.deltaTime);
+        }
+
+        private void TickActive(float dt)
+        {
+            _activePipeline.Tick(dt);
+            if (!_activePipeline.IsIdle) return;
+
+            var inst = _activePipeline.Context.Instance;
+            if (inst != null && inst.Lifecycle == ELifecycle.OneShot)
+                _instances.Deactivate(inst);
+        }
+
+        private void TickPassives(float dt)
+        {
+            for (int i = _runningPassives.Count - 1; i >= 0; i--)
+            {
+                _runningPassives[i].Tick(dt);
+                if (_runningPassives[i].IsIdle)
+                    _runningPassives.RemoveAt(i);
+            }
+        }
+
+        private void FlushPendingPassives()
+        {
+            while (_pendingPassiveStarts.Count > 0)
+            {
+                var (instance, targets) = _pendingPassiveStarts.Dequeue();
+                var pipeline = new AbilityPipeline();
+                pipeline.Start(instance, this, Vector3.zero, Vector3.zero,
+                    skipAnim: true, guaranteedTargets: targets);
+                _runningPassives.Add(pipeline);
+            }
+        }
+
+        // ── 公开 API ─────────────────────────────────────────
+
+        /// <summary>被动事件入口。匹配持有此触发事件的实例并排队启动 FSM。</summary>
+        public void NotifyPassiveEvent(ETriggerEvent trigger, GameObject subject)
+        {
+            var matches = _instances.GetByTrigger(trigger);
+            foreach (var inst in matches)
+                _pendingPassiveStarts.Enqueue((inst, new List<GameObject> { subject }));
+        }
+
+        /// <summary>从 AbilityForest 同步被动实例。先清旧 source 再激活新列表。</summary>
+        public void SyncInstances(PassiveAbilitySO[] passives, object source)
+        {
+            _instances.DeactivateBySource(source);
+            if (passives == null) return;
+            foreach (var p in passives)
+            {
+                if (p != null)
+                    _instances.Activate(p, source, ELifecycle.Persistent);
+            }
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -172,7 +236,7 @@ namespace RedDust.Ability
 
         public System.Func<PassiveAbilitySO, GameObject, string> TargetFilterCallback;
         public System.Func<EffectSO, GameObject, float, float> EffectCallback;
-        public System.Func<ActiveAbilitySO, string> ConditionCallback;
+        public System.Func<AbilitySO, string> ConditionCallback;
         /// <summary>相位级预检回调。PropertyTable 不存在时接管 Phase 1。null=全部通过, 非null=拒绝原因。</summary>
         public System.Func<CostEffectSO[], string> PeekStatCallback;
         /// <summary>相位级扣除回调。PropertyTable 不存在时接管 Phase 2。</summary>
@@ -181,7 +245,7 @@ namespace RedDust.Ability
         private readonly Dictionary<string, float> cooldownEndTimes = new();
         private readonly List<string> cooldownExpiredBuffer = new();
         private float cooldownCleanupAccum;
-        private readonly List<(string tag, float expiryTime)> _buffTags = new();
+        private readonly List<(string tag, float expiryTime, object owner)> _buffTags = new();
 
         private void Awake()
         {
@@ -213,11 +277,19 @@ namespace RedDust.Ability
                 cooldownEndTimes.Remove(key);
             }
 
+            // Pull: 清理 Owner 已失效的标签
+            OwnedTags.RemoveTagsWhere(o => o is AbilityInstance { IsActive: false });
+
             if (_buffTags.Count > 0)
             {
                 _buffTags.RemoveAll(t =>
                 {
-                    if (now >= t.expiryTime) { OwnedTags.RemoveTag(t.tag); return true; }
+                    if (now >= t.expiryTime
+                        || (t.owner is AbilityInstance { IsActive: false }))
+                    {
+                        OwnedTags.RemoveTag(t.tag);
+                        return true;
+                    }
                     return false;
                 });
             }
@@ -256,12 +328,12 @@ namespace RedDust.Ability
             return !string.IsNullOrEmpty(tag) && cooldownEndTimes.TryGetValue(tag, out var end) && Time.time < end;
         }
 
-        public void AddBuffTags(RdTagDefSO[] tags, float expiryTime)
+        public void AddBuffTags(RdTagDefSO[] tags, float expiryTime, object owner = null)
         {
             if (tags == null || expiryTime <= Time.time) return;
             foreach (var t in tags)
             {
-                if (t != null) _buffTags.Add((t.FullTag, expiryTime));
+                if (t != null) _buffTags.Add((t.FullTag, expiryTime, owner));
             }
         }
 

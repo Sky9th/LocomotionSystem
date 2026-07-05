@@ -22,9 +22,9 @@ namespace RedDust.Properties
 
         /// <summary>
         /// 从实体实例提取装备伤害效果。
-        /// 武器预设（MeleeWeaponSO / RangedWeaponSO 等）覆写，返回各自的 DamageEffectSO。
+        /// 武器预设（MeleeWeaponSO / RangedWeaponSO 等）覆写。
         /// 非武器预设返回 null。
         /// </summary>
-        public virtual DamageEffectSO GetDamageEffect(Entity entity) => null;
+        public virtual EffectSO[] GetDamageEffects(Entity entity) => null;
     }
 }

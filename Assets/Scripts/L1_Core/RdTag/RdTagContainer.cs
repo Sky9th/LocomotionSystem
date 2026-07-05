@@ -5,99 +5,126 @@ namespace RedDust.Core
 {
     /// <summary>
     /// RdTag 集合，管理实体当前持有的所有标签。
-    /// 全系统通用基础设施。用于门控、冷却、状态查询、跨系统通信。
-    ///
-    /// HashSet 底层：自动去重，O(1) 查询。
+    /// _tagsByOwner(owner → List&lt;RdTag&gt;) 是主数据结构，_activeTags 是去重查询缓存。
     /// </summary>
     public sealed class RdTagContainer
     {
-        private readonly HashSet<RdTag> _tags = new();
+        private readonly Dictionary<object, List<RdTag>> _tagsByOwner = new();
+        private readonly HashSet<RdTag> _activeTags = new();
 
-        /// <summary>当前标签数量。</summary>
-        public int Count => _tags.Count;
+        private static readonly object PermanentOwner = new();
 
-        // ── 写入 ──
+        public int Count => _activeTags.Count;
 
-        /// <summary>添加标签。已存在或空字符串则无操作。</summary>
-        public void AddTag(string tag)
-        {
-            if (string.IsNullOrEmpty(tag)) return;
-            _tags.Add(new RdTag(tag));
-        }
+        // ── 写入（无 owner，手动管理）──
 
-        /// <summary>类型安全重载。无效标签或已存在则无操作。</summary>
-        public void AddTag(RdTag tag)
-        {
-            if (!tag.IsValid) return;
-            _tags.Add(tag);
-        }
+        public void AddTag(string tag) => AddTag(tag, PermanentOwner);
 
-        /// <summary>移除标签。不存在或空字符串则无操作。</summary>
+        public void AddTag(RdTag tag) => AddTag(tag.Tag, PermanentOwner);
+
         public void RemoveTag(string tag)
         {
             if (string.IsNullOrEmpty(tag)) return;
-            _tags.Remove(new RdTag(tag));
+            var rdTag = new RdTag(tag);
+            _activeTags.Remove(rdTag);
+            foreach (var list in _tagsByOwner.Values)
+                list.Remove(rdTag);
         }
 
-        /// <summary>类型安全重载。无效标签或不存在则无操作。</summary>
         public void RemoveTag(RdTag tag)
         {
             if (!tag.IsValid) return;
-            _tags.Remove(tag);
+            _activeTags.Remove(tag);
+            foreach (var list in _tagsByOwner.Values)
+                list.Remove(tag);
         }
 
-        // ── 层级查询（前缀匹配）──
+        // ── 写入（带 owner 追踪）──
 
-        /// <summary>是否有匹配 query 层级的标签。query "State" 匹配 "State.Attacking"。</summary>
+        public void AddTag(string tag, object owner)
+        {
+            if (string.IsNullOrEmpty(tag) || owner == null) return;
+            var rdTag = new RdTag(tag);
+            if (!rdTag.IsValid) return;
+
+            _activeTags.Add(rdTag);
+
+            if (!_tagsByOwner.TryGetValue(owner, out var list))
+                _tagsByOwner[owner] = list = new List<RdTag>();
+            if (!list.Contains(rdTag))
+                list.Add(rdTag);
+        }
+
+        public void RemoveTagsByOwner(object owner)
+        {
+            if (owner == null || !_tagsByOwner.TryGetValue(owner, out var tags)) return;
+
+            // 检查每个 tag 是否还有其他 owner 持有
+            foreach (var tag in tags)
+            {
+                bool stillActive = false;
+                foreach (var kvp in _tagsByOwner)
+                {
+                    if (kvp.Key == owner) continue;
+                    if (kvp.Value.Contains(tag)) { stillActive = true; break; }
+                }
+                if (!stillActive)
+                    _activeTags.Remove(tag);
+            }
+
+            _tagsByOwner.Remove(owner);
+        }
+
+        /// <summary>清理 Owner 满足判定条件的标签。由 L3 层传入判定委托，避免 L1→L3 依赖。</summary>
+        public void RemoveTagsWhere(System.Func<object, bool> predicate)
+        {
+            var ownersToRemove = new List<object>();
+            foreach (var owner in _tagsByOwner.Keys)
+                if (predicate(owner))
+                    ownersToRemove.Add(owner);
+
+            foreach (var owner in ownersToRemove)
+                RemoveTagsByOwner(owner);
+        }
+
+        // ── 查询 ──
+
         public bool HasTag(string query)
         {
             if (string.IsNullOrEmpty(query)) return false;
-            foreach (var tag in _tags)
+            foreach (var tag in _activeTags)
                 if (tag.Matches(query))
                     return true;
             return false;
         }
 
-        /// <summary>类型安全重载。</summary>
         public bool HasTag(RdTag query) => HasTag(query.Tag);
 
-        // ── 精确查询（冷却管理专用）──
-
-        /// <summary>精确匹配（不使用层级匹配）。
-        /// "Skill.Cooldown.Slash" 不匹配 "Skill.Cooldown.Slash.Extra"。</summary>
         public bool HasTagExact(string query)
         {
             if (string.IsNullOrEmpty(query)) return false;
-            return _tags.Contains(new RdTag(query));
+            return _activeTags.Contains(new RdTag(query));
         }
 
-        /// <summary>类型安全重载。</summary>
         public bool HasTagExact(RdTag query) => HasTagExact(query.Tag);
 
-        // ── 深度查询 ──
-
-        /// <summary>是否有指定深度的标签。</summary>
         public bool HasTagAtDepth(int depth)
         {
-            foreach (var tag in _tags)
+            foreach (var tag in _activeTags)
                 if (tag.Depth == depth)
                     return true;
             return false;
         }
 
-        /// <summary>获取指定祖先层级下最深标签的深度。无匹配返回 0。</summary>
         public int MaxDepthUnder(string ancestor)
         {
             int max = 0;
-            foreach (var tag in _tags)
+            foreach (var tag in _activeTags)
                 if (tag.Matches(ancestor) && tag.Depth > max)
                     max = tag.Depth;
             return max;
         }
 
-        // ── 集合查询 ──
-
-        /// <summary>是否有任意一个匹配的标签。</summary>
         public bool HasAny(params string[] queries)
         {
             if (queries == null || queries.Length == 0) return false;
@@ -107,7 +134,6 @@ namespace RedDust.Core
             return false;
         }
 
-        /// <summary>是否全部匹配。</summary>
         public bool HasAll(params string[] queries)
         {
             if (queries == null || queries.Length == 0) return false;
@@ -117,13 +143,12 @@ namespace RedDust.Core
             return true;
         }
 
-        /// <summary>获取所有标签字符串数组（调试用）。</summary>
-        public string[] GetAll()
-        {
-            return _tags.Select(t => t.Tag).ToArray();
-        }
+        public string[] GetAll() => _activeTags.Select(t => t.Tag).ToArray();
 
-        /// <summary>清空所有标签。</summary>
-        public void Clear() => _tags.Clear();
+        public void Clear()
+        {
+            _tagsByOwner.Clear();
+            _activeTags.Clear();
+        }
     }
 }
