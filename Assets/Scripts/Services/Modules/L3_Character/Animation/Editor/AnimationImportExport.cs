@@ -76,14 +76,16 @@ namespace RedDust.Character.Animation
     {
         public string name;
         public string directory;
-        // Idle / Move / Turn (ClipTransition x4)
+        // Idle / Move / Turn (ClipTransition x5)
         public ClipTransitionEntry idleL;
+        public ClipTransitionEntry crouchIdle;
         public ClipTransitionEntry sprint;
         public ClipTransitionEntry turnInPlace90L;
         public ClipTransitionEntry turnInPlace90R;
-        // Move (MixerTransition2D x2)
+        // Move (MixerTransition2D x3)
         public Mixer2DTransitionEntry walkMixer;
         public Mixer2DTransitionEntry runMixer;
+        public Mixer2DTransitionEntry crouchMixer;
         // Air / Land (LinearMixerTransition x4)
         public LinearMixerTransitionEntry airLight;
         public LinearMixerTransitionEntry airHard;
@@ -93,6 +95,7 @@ namespace RedDust.Character.Animation
         public float walkAnimNativeSpeed = 1.5f;
         public float runAnimNativeSpeed = 5f;
         public float sprintAnimNativeSpeed = 7f;
+        public float crawlAnimNativeSpeed = 1f;
         // Hit Reaction (MixerTransition2D x4 — 4-directional blend)
         public Mixer2DTransitionEntry hitReactionFlinch;
         public Mixer2DTransitionEntry hitReactionStagger;
@@ -359,14 +362,17 @@ namespace RedDust.Character.Animation
                 walkAnimNativeSpeed = set.walkAnimNativeSpeed,
                 runAnimNativeSpeed = set.runAnimNativeSpeed,
                 sprintAnimNativeSpeed = set.sprintAnimNativeSpeed,
+                crawlAnimNativeSpeed = set.crawlAnimNativeSpeed,
             };
 
             entry.idleL = ExportClipTransition(set.idleL);
+            entry.crouchIdle = ExportClipTransition(set.crouchIdle);
             entry.sprint = ExportClipTransition(set.sprint);
             entry.turnInPlace90L = ExportClipTransition(set.turnInPlace90L);
             entry.turnInPlace90R = ExportClipTransition(set.turnInPlace90R);
             entry.walkMixer = ExportMixer2D(set.walkMixer);
             entry.runMixer = ExportMixer2D(set.runMixer);
+            entry.crouchMixer = ExportMixer2D(set.crouchMixer);
             entry.airLight = ExportLinearMixer(set.airLight);
             entry.airHard = ExportLinearMixer(set.airHard);
             entry.landLight = ExportLinearMixer(set.landLight);
@@ -755,11 +761,13 @@ namespace RedDust.Character.Animation
             Dictionary<string, Object> guidLookup, List<string> errors)
         {
             ApplyClipTransitionToField(set.idleL, entry.idleL, guidLookup, errors, $"{entry.name}.idleL");
+            ApplyClipTransitionToField(set.crouchIdle, entry.crouchIdle, guidLookup, errors, $"{entry.name}.crouchIdle");
             ApplyClipTransitionToField(set.sprint, entry.sprint, guidLookup, errors, $"{entry.name}.sprint");
             ApplyClipTransitionToField(set.turnInPlace90L, entry.turnInPlace90L, guidLookup, errors, $"{entry.name}.turnInPlace90L");
             ApplyClipTransitionToField(set.turnInPlace90R, entry.turnInPlace90R, guidLookup, errors, $"{entry.name}.turnInPlace90R");
             ApplyMixer2D(set.walkMixer, entry.walkMixer, guidLookup, errors, $"{entry.name}.walkMixer");
             ApplyMixer2D(set.runMixer, entry.runMixer, guidLookup, errors, $"{entry.name}.runMixer");
+            ApplyMixer2D(set.crouchMixer, entry.crouchMixer, guidLookup, errors, $"{entry.name}.crouchMixer");
             ApplyLinearMixer(set.airLight, entry.airLight, guidLookup, errors, $"{entry.name}.airLight");
             ApplyLinearMixer(set.airHard, entry.airHard, guidLookup, errors, $"{entry.name}.airHard");
             ApplyLinearMixer(set.landLight, entry.landLight, guidLookup, errors, $"{entry.name}.landLight");
@@ -768,6 +776,7 @@ namespace RedDust.Character.Animation
             set.walkAnimNativeSpeed = entry.walkAnimNativeSpeed;
             set.runAnimNativeSpeed = entry.runAnimNativeSpeed;
             set.sprintAnimNativeSpeed = entry.sprintAnimNativeSpeed;
+            set.crawlAnimNativeSpeed = entry.crawlAnimNativeSpeed;
 
             set.climbUpHalfMeter ??= new ClipTransition();
             set.climbUp1meter ??= new ClipTransition();

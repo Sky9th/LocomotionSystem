@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 08bb9fc952cdf66469eb0869171f2439
+guid: 12e46592ea9ae4944affed96e4cc0bc6
 ModelImporter:
   serializedVersion: 20300
   internalIDToNameTable:
@@ -353,7 +353,7 @@ ModelImporter:
     second: root
   - first:
       74: 7400000
-    second: SprintHold1hMelee_RM
+    second: CrouchIdleBreathe1Unarmed
   - first:
       95: 9500000
     second: //RootNode
@@ -377,7 +377,7 @@ ModelImporter:
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 3
+    animationCompression: 0
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -386,11 +386,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: SprintHold1hMelee_RM
+      name: CrouchIdleBreathe1Unarmed
       takeName: Take 001
       internalID: 0
       firstFrame: 0
-      lastFrame: 12
+      lastFrame: 70
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -401,7 +401,7 @@ ModelImporter:
       loopBlend: 0
       loopBlendOrientation: 1
       loopBlendPositionY: 1
-      loopBlendPositionXZ: 0
+      loopBlendPositionXZ: 1
       keepOriginalOrientation: 1
       keepOriginalPositionY: 1
       keepOriginalPositionXZ: 1

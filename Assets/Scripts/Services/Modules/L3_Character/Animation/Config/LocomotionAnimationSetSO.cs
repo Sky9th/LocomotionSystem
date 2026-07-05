@@ -21,6 +21,10 @@ namespace RedDust.Character.Animation
         public MixerTransition2D runMixer;
         public ClipTransition sprint;
 
+        [Header("Crouch")]
+        public ClipTransition crouchIdle;
+        public MixerTransition2D crouchMixer;
+
         [Header("Move Native Speed")]
         [Tooltip("Walk 动画在 Speed=1.0 时的实际位移速度 (m/s)")]
         [Min(0.01f)] public float walkAnimNativeSpeed = 1.5f;

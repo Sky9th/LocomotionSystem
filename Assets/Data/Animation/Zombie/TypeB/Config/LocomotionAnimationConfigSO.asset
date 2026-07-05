@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c173d6204f26699419f451fdf96fb9e4, type: 3}
   m_Name: LocomotionAnimationConfigSO
   m_EditorClassIdentifier: 
-  headLookSmoothingSpeed: 5
   modeProfiles:
   - {fileID: 11400000, guid: 8c890749473e0504e9c31e41f2182787, type: 2}
   defaultInPlaceTurnSpeed: 360

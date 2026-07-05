@@ -80,6 +80,40 @@ MonoBehaviour:
       _Names: []
     _Clip: {fileID: 7400000, guid: 0f4c60f213e56ea40a884822b456fb5d, type: 3}
     _NormalizedStartTime: NaN
+  crouchIdle:
+    _FadeDuration: 0.25
+    _Speed: 1
+    _Events:
+      _NormalizedTimes: []
+      _Callbacks: []
+      _Names: []
+    _Clip: {fileID: 7400000, guid: 8d72af30c30cbd442948616faafd9fcb, type: 3}
+    _NormalizedStartTime: NaN
+  crouchMixer:
+    _FadeDuration: 0.25
+    _Speed: 1
+    _Events:
+      _NormalizedTimes: []
+      _Callbacks: []
+      _Names: []
+    _Animations:
+    - {fileID: 7400000, guid: 3c87cf6ee5001974694310f413682a94, type: 3}
+    - {fileID: 7400000, guid: 5864f6520ef11cf468939d615e8b4254, type: 3}
+    - {fileID: 7400000, guid: c9e22452ebf891f49ad1510eb417335a, type: 3}
+    - {fileID: 7400000, guid: c43d71eb38efca3418ac163fbb01517e, type: 3}
+    - {fileID: 7400000, guid: 8d72af30c30cbd442948616faafd9fcb, type: 3}
+    _Speeds: []
+    _SynchronizeChildren: 
+    _Thresholds:
+    - {x: 0, y: 1}
+    - {x: 0, y: -1}
+    - {x: -1, y: 0}
+    - {x: 1, y: 0}
+    - {x: 0, y: 0}
+    _DefaultParameter: {x: 0, y: 0}
+    _Type: 0
+    _ParameterNameX: {fileID: 0}
+    _ParameterNameY: {fileID: 0}
   walkAnimNativeSpeed: 1.5
   runAnimNativeSpeed: 5
   sprintAnimNativeSpeed: 7

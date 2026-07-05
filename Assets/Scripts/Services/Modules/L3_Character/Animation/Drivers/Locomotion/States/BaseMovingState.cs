@@ -20,10 +20,13 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
                 EMovementGait.Walk => Owner.AnimSet?.walkMixer,
                 EMovementGait.Run  => Owner.AnimSet?.runMixer,
                 EMovementGait.Sprint => Owner.AnimSet?.sprint,
-                // TODO: Crawl mixer — 需在 LocomotionAnimationSetSO 中添加 crawlMixer 字段
+                EMovementGait.Crawl => Owner.AnimSet?.crouchMixer,
                 _ => null
             };
-            Owner.PlayIfChanged(transition ?? Owner.AnimSet?.walkMixer);
+            // 蹲姿减速到 Idle 时 phase 仍为 GroundedMoving，fallback 应用 crouchMixer 而非 walkMixer
+            var fallback = Owner.Ctx.Discrete.Posture == EPosture.Crouching
+                ? Owner.AnimSet?.crouchMixer : Owner.AnimSet?.walkMixer;
+            Owner.PlayIfChanged(transition ?? fallback);
 
             float nativeGaitSpeed = Owner.AnimSet?.GetNativeSpeed(Owner.Ctx.Discrete.Gait) ?? 0f;
             float motionScale = Owner.Ctx.Discrete.MotionSpeedScale;

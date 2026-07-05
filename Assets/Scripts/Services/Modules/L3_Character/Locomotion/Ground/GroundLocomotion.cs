@@ -23,9 +23,11 @@ namespace RedDust.Character.Locomotion
             var pf = buildCtx.Pathfinding;
             bool hasActivePath = pf != null && pf.HasActivePath;
 
-            var gait = hasActivePath
-                ? (input.WantsSprint ? EMovementGait.Sprint : EMovementGait.Run)
-                : EMovementGait.Idle;
+            var gait = input.DesiredPosture == EPosture.Crouching
+                ? (hasActivePath ? EMovementGait.Crawl : EMovementGait.Idle)
+                : hasActivePath
+                    ? (input.WantsSprint ? EMovementGait.Sprint : EMovementGait.Run)
+                    : EMovementGait.Idle;
 
             // ── Properties 速度系数 ──
             float agility          = props.GetFloat(CharacterConst.PropertyPath.Attributes.Agility);

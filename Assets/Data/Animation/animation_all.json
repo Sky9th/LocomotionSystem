@@ -54,16 +54,16 @@
                 "Human/Male/Config/ModeProfiles/Stand_Run",
                 "Human/Male/Config/ModeProfiles/Stand_Sprint"
             ],
-            "headLookSmoothingSpeed": 5.0,
-            "defaultInPlaceTurnSpeed": 360.0,
-            "defaultMovingTurnSpeed": 720.0,
+            "headLookSmoothingSpeed": 5,
+            "defaultInPlaceTurnSpeed": 360,
+            "defaultMovingTurnSpeed": 720,
             "landDistanceThreshold": 0.5,
-            "landMinFallDistance": 0.20000000298023225,
-            "landLightMaxFallDistance": 1.0,
-            "landMediumMaxFallDistance": 3.0,
-            "landLightTriggerDistance": 0.30000001192092898,
+            "landMinFallDistance": 0.20000000298023224,
+            "landLightMaxFallDistance": 1,
+            "landMediumMaxFallDistance": 3,
+            "landLightTriggerDistance": 0.30000001192092896,
             "landMediumTriggerDistance": 0.6000000238418579,
-            "landHardTriggerDistance": 1.0
+            "landHardTriggerDistance": 1
         },
         {
             "name": "LocomotionAnimationConfigSO",
@@ -71,16 +71,16 @@
             "modeProfiles": [
                 "Zombie/TypeA/Config/ModeProfiles/Stand_Walk"
             ],
-            "headLookSmoothingSpeed": 5.0,
-            "defaultInPlaceTurnSpeed": 360.0,
-            "defaultMovingTurnSpeed": 720.0,
+            "headLookSmoothingSpeed": 5,
+            "defaultInPlaceTurnSpeed": 360,
+            "defaultMovingTurnSpeed": 720,
             "landDistanceThreshold": 0.5,
-            "landMinFallDistance": 0.20000000298023225,
-            "landLightMaxFallDistance": 1.0,
-            "landMediumMaxFallDistance": 3.0,
-            "landLightTriggerDistance": 0.30000001192092898,
+            "landMinFallDistance": 0.20000000298023224,
+            "landLightMaxFallDistance": 1,
+            "landMediumMaxFallDistance": 3,
+            "landLightTriggerDistance": 0.30000001192092896,
             "landMediumTriggerDistance": 0.6000000238418579,
-            "landHardTriggerDistance": 1.0
+            "landHardTriggerDistance": 1
         },
         {
             "name": "LocomotionAnimationConfigSO",
@@ -88,16 +88,16 @@
             "modeProfiles": [
                 "Zombie/TypeB/Config/ModeProfiles/Stand_Walk"
             ],
-            "headLookSmoothingSpeed": 5.0,
-            "defaultInPlaceTurnSpeed": 360.0,
-            "defaultMovingTurnSpeed": 720.0,
+            "headLookSmoothingSpeed": 5,
+            "defaultInPlaceTurnSpeed": 360,
+            "defaultMovingTurnSpeed": 720,
             "landDistanceThreshold": 0.5,
-            "landMinFallDistance": 0.20000000298023225,
-            "landLightMaxFallDistance": 1.0,
-            "landMediumMaxFallDistance": 3.0,
-            "landLightTriggerDistance": 0.30000001192092898,
+            "landMinFallDistance": 0.20000000298023224,
+            "landLightMaxFallDistance": 1,
+            "landMediumMaxFallDistance": 3,
+            "landLightTriggerDistance": 0.30000001192092896,
             "landMediumTriggerDistance": 0.6000000238418579,
-            "landHardTriggerDistance": 1.0
+            "landHardTriggerDistance": 1
         },
         {
             "name": "LocomotionAnimationConfigSO",
@@ -105,16 +105,16 @@
             "modeProfiles": [
                 "Zombie/TypeE/Config/ModeProfiles/Stand_Walk"
             ],
-            "headLookSmoothingSpeed": 5.0,
-            "defaultInPlaceTurnSpeed": 360.0,
-            "defaultMovingTurnSpeed": 720.0,
+            "headLookSmoothingSpeed": 5,
+            "defaultInPlaceTurnSpeed": 360,
+            "defaultMovingTurnSpeed": 720,
             "landDistanceThreshold": 0.5,
-            "landMinFallDistance": 0.20000000298023225,
-            "landLightMaxFallDistance": 1.0,
-            "landMediumMaxFallDistance": 3.0,
-            "landLightTriggerDistance": 0.30000001192092898,
+            "landMinFallDistance": 0.20000000298023224,
+            "landLightMaxFallDistance": 1,
+            "landMediumMaxFallDistance": 3,
+            "landLightTriggerDistance": 0.30000001192092896,
             "landMediumTriggerDistance": 0.6000000238418579,
-            "landHardTriggerDistance": 1.0
+            "landHardTriggerDistance": 1
         }
     ],
     "modeProfiles": [
@@ -123,54 +123,54 @@
             "directory": "Human/Male/Config/ModeProfiles",
             "posture": "Standing",
             "gait": "Walk",
-            "movingTurnSpeed": 720.0,
-            "enterAngle": 90.0,
-            "exitAngle": 20.0
+            "movingTurnSpeed": 720,
+            "enterAngle": 90,
+            "exitAngle": 20
         },
         {
             "name": "Stand_Run",
             "directory": "Human/Male/Config/ModeProfiles",
             "posture": "Standing",
             "gait": "Run",
-            "movingTurnSpeed": 720.0,
-            "enterAngle": 90.0,
-            "exitAngle": 20.0
+            "movingTurnSpeed": 720,
+            "enterAngle": 90,
+            "exitAngle": 20
         },
         {
             "name": "Stand_Sprint",
             "directory": "Human/Male/Config/ModeProfiles",
             "posture": "Standing",
             "gait": "Sprint",
-            "movingTurnSpeed": 720.0,
-            "enterAngle": 90.0,
-            "exitAngle": 20.0
+            "movingTurnSpeed": 720,
+            "enterAngle": 90,
+            "exitAngle": 20
         },
         {
             "name": "Stand_Walk",
             "directory": "Zombie/TypeA/Config/ModeProfiles",
             "posture": "Standing",
             "gait": "Walk",
-            "movingTurnSpeed": 720.0,
-            "enterAngle": 90.0,
-            "exitAngle": 20.0
+            "movingTurnSpeed": 720,
+            "enterAngle": 90,
+            "exitAngle": 20
         },
         {
             "name": "Stand_Walk",
             "directory": "Zombie/TypeB/Config/ModeProfiles",
             "posture": "Standing",
             "gait": "Walk",
-            "movingTurnSpeed": 720.0,
-            "enterAngle": 90.0,
-            "exitAngle": 20.0
+            "movingTurnSpeed": 720,
+            "enterAngle": 90,
+            "exitAngle": 20
         },
         {
             "name": "Stand_Walk",
             "directory": "Zombie/TypeE/Config/ModeProfiles",
             "posture": "Standing",
             "gait": "Walk",
-            "movingTurnSpeed": 720.0,
-            "enterAngle": 90.0,
-            "exitAngle": 20.0
+            "movingTurnSpeed": 720,
+            "enterAngle": 90,
+            "exitAngle": 20
         }
     ],
     "locomotionSets": [
@@ -179,7 +179,7 @@
             "directory": "Human/Male/Sets/Locomotion",
             "idleL": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -190,7 +190,7 @@
             },
             "sprint": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -201,29 +201,29 @@
             },
             "turnInPlace90L": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
                     "_Names": []
                 },
-                "_Clip": "0ef60e078f73f854894c7a668ff2555e",
+                "_Clip": "02737b8c6f4764c4d9372d94ea192d09",
                 "_NormalizedStartTime": "NaN"
             },
             "turnInPlace90R": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
                     "_Names": []
                 },
-                "_Clip": "92ba5ef29751eb94e9eaf4cbd177df1a",
+                "_Clip": "d2ddec7ea8dc8e944a5bcae63e1e6bb0",
                 "_NormalizedStartTime": "NaN"
             },
             "walkMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -244,45 +244,45 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
                         "x": 0.5,
                         "y": 0.5
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     },
                     {
                         "x": 0.5,
                         "y": -0.5
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
                         "x": -0.5,
                         "y": -0.5
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
                         "x": -0.5,
                         "y": 0.5
                     },
                     {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": 0,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 0,
                 "_ParameterNameX": "",
@@ -290,7 +290,7 @@
             },
             "runMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -311,45 +311,45 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
                         "x": 0.5,
                         "y": 0.5
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     },
                     {
                         "x": 0.5,
                         "y": -0.5
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
                         "x": -0.5,
                         "y": -0.5
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
                         "x": -0.5,
                         "y": 0.5
                     },
                     {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": 0,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -357,106 +357,90 @@
             },
             "airLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
                     "_Names": []
                 },
                 "_Animations": [
-                    "06a342c323699b74782e5c62266ec155",
-                    "7770a214a8709f34d8fd89f2b6d7c29d",
-                    "36ece2e2199374a44b7129665054e9fc"
+                    "3ef3d95cfc3c45541942be22c65dec69"
                 ],
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
-                    0.0,
-                    1.0,
-                    2.0
+                    0
                 ],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "airHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
                     "_Names": []
                 },
                 "_Animations": [
-                    "4e10d2a660caf984f9352d5f7b9a748a",
-                    "4771310b4c51ab74e9f9984654239ee6",
-                    "df817fd41309f8341be1934f45f028ed"
+                    "38bd4a893323a2147a3fdca9f1cb7610"
                 ],
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
-                    0.0,
-                    1.0,
-                    2.0
+                    0
                 ],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
                     "_Names": []
                 },
                 "_Animations": [
-                    "d7bf9e7ebc9db1743ad064190ded240e",
-                    "00450c04c5ec4564d9048cc0d4f49d03",
-                    "339e38a9f8a579249b43ba03f30ae253"
+                    "f8c36efad44664f45b40c28052a5022f"
                 ],
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
-                    0.0,
-                    1.0,
-                    2.0
+                    0
                 ],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
                     "_Names": []
                 },
                 "_Animations": [
-                    "bbebb4f4873b0114b96e0cc358e40f47",
-                    "6295b708fa5035a478b412049e5f2f15",
-                    "76237e8788f14f547a25ddd71de6bbf0"
+                    "4dc1b6871677bce41bc5970c98dbdeb6"
                 ],
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
-                    0.0,
-                    1.0,
-                    2.0
+                    0
                 ],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "walkAnimNativeSpeed": 1.5,
-            "runAnimNativeSpeed": 5.0,
-            "sprintAnimNativeSpeed": 7.0,
+            "runAnimNativeSpeed": 5,
+            "sprintAnimNativeSpeed": 7,
             "hitReactionFlinch": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -472,25 +456,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -498,7 +482,7 @@
             },
             "hitReactionStagger": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -514,25 +498,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -540,7 +524,7 @@
             },
             "hitReactionKnockdown": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -556,25 +540,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -582,7 +566,7 @@
             },
             "hitReactionGetUp": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -598,25 +582,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -624,7 +608,7 @@
             },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -635,7 +619,7 @@
             },
             "climbUp1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -646,7 +630,7 @@
             },
             "climbUp2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -657,7 +641,7 @@
             },
             "climbDown1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -668,7 +652,7 @@
             },
             "climbDown2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -679,7 +663,7 @@
             },
             "landFromWall": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -694,7 +678,7 @@
             "directory": "Human/Male/Sets/Locomotion",
             "idleL": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -705,7 +689,7 @@
             },
             "sprint": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -716,29 +700,29 @@
             },
             "turnInPlace90L": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
                     "_Names": []
                 },
-                "_Clip": "",
+                "_Clip": "02737b8c6f4764c4d9372d94ea192d09",
                 "_NormalizedStartTime": "NaN"
             },
             "turnInPlace90R": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
                     "_Names": []
                 },
-                "_Clip": "",
+                "_Clip": "d2ddec7ea8dc8e944a5bcae63e1e6bb0",
                 "_NormalizedStartTime": "NaN"
             },
             "walkMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -759,45 +743,45 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
                         "x": 0.5,
                         "y": 0.5
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     },
                     {
                         "x": 0.5,
                         "y": -0.5
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
                         "x": -0.5,
                         "y": -0.5
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
                         "x": -0.5,
                         "y": 0.5
                     },
                     {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": 0,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 0,
                 "_ParameterNameX": "",
@@ -805,7 +789,7 @@
             },
             "runMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -826,45 +810,45 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
                         "x": 0.5,
                         "y": 0.5
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     },
                     {
                         "x": 0.5,
                         "y": -0.5
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
                         "x": -0.5,
                         "y": -0.5
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
                         "x": -0.5,
                         "y": 0.5
                     },
                     {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": 0,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -872,106 +856,90 @@
             },
             "airLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
                     "_Names": []
                 },
                 "_Animations": [
-                    "06a342c323699b74782e5c62266ec155",
-                    "7770a214a8709f34d8fd89f2b6d7c29d",
-                    "36ece2e2199374a44b7129665054e9fc"
+                    "3ef3d95cfc3c45541942be22c65dec69"
                 ],
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
-                    0.0,
-                    1.0,
-                    2.0
+                    0
                 ],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "airHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
                     "_Names": []
                 },
                 "_Animations": [
-                    "4e10d2a660caf984f9352d5f7b9a748a",
-                    "4771310b4c51ab74e9f9984654239ee6",
-                    "df817fd41309f8341be1934f45f028ed"
+                    "38bd4a893323a2147a3fdca9f1cb7610"
                 ],
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
-                    0.0,
-                    1.0,
-                    2.0
+                    0
                 ],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
                     "_Names": []
                 },
                 "_Animations": [
-                    "d7bf9e7ebc9db1743ad064190ded240e",
-                    "00450c04c5ec4564d9048cc0d4f49d03",
-                    "339e38a9f8a579249b43ba03f30ae253"
+                    "f8c36efad44664f45b40c28052a5022f"
                 ],
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
-                    0.0,
-                    1.0,
-                    2.0
+                    0
                 ],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
                     "_Names": []
                 },
                 "_Animations": [
-                    "bbebb4f4873b0114b96e0cc358e40f47",
-                    "6295b708fa5035a478b412049e5f2f15",
-                    "76237e8788f14f547a25ddd71de6bbf0"
+                    "4dc1b6871677bce41bc5970c98dbdeb6"
                 ],
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
-                    0.0,
-                    1.0,
-                    2.0
+                    0
                 ],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "walkAnimNativeSpeed": 1.5,
-            "runAnimNativeSpeed": 5.0,
-            "sprintAnimNativeSpeed": 7.0,
+            "runAnimNativeSpeed": 5,
+            "sprintAnimNativeSpeed": 7,
             "hitReactionFlinch": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -987,25 +955,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -1013,7 +981,7 @@
             },
             "hitReactionStagger": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1029,25 +997,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -1055,7 +1023,7 @@
             },
             "hitReactionKnockdown": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1071,25 +1039,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -1097,7 +1065,7 @@
             },
             "hitReactionGetUp": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1113,25 +1081,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -1139,7 +1107,7 @@
             },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1150,7 +1118,7 @@
             },
             "climbUp1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1161,7 +1129,7 @@
             },
             "climbUp2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1172,7 +1140,7 @@
             },
             "climbDown1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1183,7 +1151,7 @@
             },
             "climbDown2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1194,7 +1162,7 @@
             },
             "landFromWall": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1202,14 +1170,73 @@
                 },
                 "_Clip": "",
                 "_NormalizedStartTime": "NaN"
-            }
+            },
+            "crouchIdle": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Clip": "12e46592ea9ae4944affed96e4cc0bc6",
+                "_NormalizedStartTime": "NaN"
+            },
+            "crouchMixer": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "7209e862f82d3814c9961e287dcdace9",
+                    "7e1fdf30fe9b474419954550b102f66c",
+                    "fb11507f91035c84f836b71b2737db24",
+                    "176c564d34b644c419c42c0b0a2d941f",
+                    "12e46592ea9ae4944affed96e4cc0bc6"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0,
+                        "y": 1
+                    },
+                    {
+                        "x": 0,
+                        "y": -1
+                    },
+                    {
+                        "x": -1,
+                        "y": 0
+                    },
+                    {
+                        "x": 1,
+                        "y": 0
+                    },
+                    {
+                        "x": 0,
+                        "y": 0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0,
+                    "y": 0
+                },
+                "_Type": 0,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "crawlAnimNativeSpeed": 1
         },
         {
             "name": "LocomotionSet_1H_Sidearm_Relax",
             "directory": "Human/Male/Sets/Locomotion",
             "idleL": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1220,7 +1247,7 @@
             },
             "sprint": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1231,7 +1258,7 @@
             },
             "turnInPlace90L": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1242,7 +1269,7 @@
             },
             "turnInPlace90R": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1253,7 +1280,7 @@
             },
             "walkMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1267,17 +1294,17 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": 0,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 0,
                 "_ParameterNameX": "",
@@ -1285,7 +1312,7 @@
             },
             "runMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1299,17 +1326,17 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": 0,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 0,
                 "_ParameterNameX": "",
@@ -1317,7 +1344,7 @@
             },
             "airLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1329,15 +1356,15 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
-                    0.0
+                    0
                 ],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "airHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1349,15 +1376,15 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
-                    0.0
+                    0
                 ],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1369,15 +1396,15 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
-                    0.0
+                    0
                 ],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1389,18 +1416,18 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
-                    0.0
+                    0
                 ],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "walkAnimNativeSpeed": 1.5,
-            "runAnimNativeSpeed": 5.0,
-            "sprintAnimNativeSpeed": 7.0,
+            "runAnimNativeSpeed": 5,
+            "sprintAnimNativeSpeed": 7,
             "hitReactionFlinch": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1416,25 +1443,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -1442,7 +1469,7 @@
             },
             "hitReactionStagger": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1458,25 +1485,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -1484,7 +1511,7 @@
             },
             "hitReactionKnockdown": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1500,25 +1527,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -1526,7 +1553,7 @@
             },
             "hitReactionGetUp": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1542,25 +1569,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -1568,7 +1595,7 @@
             },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1579,7 +1606,7 @@
             },
             "climbUp1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1590,7 +1617,7 @@
             },
             "climbUp2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1601,7 +1628,7 @@
             },
             "climbDown1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1612,7 +1639,7 @@
             },
             "climbDown2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1623,7 +1650,7 @@
             },
             "landFromWall": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1631,14 +1658,73 @@
                 },
                 "_Clip": "",
                 "_NormalizedStartTime": "NaN"
-            }
+            },
+            "crouchIdle": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Clip": "fa0786bca0ebef94cb516cc4851cd8d0",
+                "_NormalizedStartTime": "NaN"
+            },
+            "crouchMixer": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "2c9d03633689ca048bd7a732ae528b2c",
+                    "75cc89149c87d7d428281a1cfdff5ea4",
+                    "09a021a292169424ba29b60b17125a02",
+                    "408d5d913aa1c734bae876c9330b7564",
+                    "fa0786bca0ebef94cb516cc4851cd8d0"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0,
+                        "y": 1
+                    },
+                    {
+                        "x": 0,
+                        "y": -1
+                    },
+                    {
+                        "x": -1,
+                        "y": 0
+                    },
+                    {
+                        "x": 1,
+                        "y": 0
+                    },
+                    {
+                        "x": 0,
+                        "y": 0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0,
+                    "y": 0
+                },
+                "_Type": 0,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "crawlAnimNativeSpeed": 1
         },
         {
             "name": "LocomotionSet_1H_Sidearm_Combat",
             "directory": "Human/Male/Sets/Locomotion",
             "idleL": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1649,7 +1735,7 @@
             },
             "sprint": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1660,7 +1746,7 @@
             },
             "turnInPlace90L": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1671,7 +1757,7 @@
             },
             "turnInPlace90R": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1682,7 +1768,7 @@
             },
             "walkMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1699,29 +1785,29 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     },
                     {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": 0,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 0,
                 "_ParameterNameX": "",
@@ -1729,7 +1815,7 @@
             },
             "runMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1746,29 +1832,29 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     },
                     {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": 0,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -1776,7 +1862,7 @@
             },
             "airLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1788,15 +1874,15 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
-                    0.0
+                    0
                 ],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "airHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1808,15 +1894,15 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
-                    0.0
+                    0
                 ],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1828,15 +1914,15 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
-                    0.0
+                    0
                 ],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1848,18 +1934,18 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
-                    0.0
+                    0
                 ],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "walkAnimNativeSpeed": 1.5,
-            "runAnimNativeSpeed": 5.0,
-            "sprintAnimNativeSpeed": 7.0,
+            "runAnimNativeSpeed": 5,
+            "sprintAnimNativeSpeed": 7,
             "hitReactionFlinch": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1875,25 +1961,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -1901,7 +1987,7 @@
             },
             "hitReactionStagger": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1917,25 +2003,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -1943,7 +2029,7 @@
             },
             "hitReactionKnockdown": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -1959,25 +2045,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -1985,7 +2071,7 @@
             },
             "hitReactionGetUp": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2001,25 +2087,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -2027,7 +2113,7 @@
             },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2038,7 +2124,7 @@
             },
             "climbUp1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2049,7 +2135,7 @@
             },
             "climbUp2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2060,7 +2146,7 @@
             },
             "climbDown1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2071,7 +2157,7 @@
             },
             "climbDown2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2082,7 +2168,7 @@
             },
             "landFromWall": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2090,14 +2176,73 @@
                 },
                 "_Clip": "",
                 "_NormalizedStartTime": "NaN"
-            }
+            },
+            "crouchIdle": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Clip": "3b8bbf69de8c01f43a069780630c9d3d",
+                "_NormalizedStartTime": "NaN"
+            },
+            "crouchMixer": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "a2e99f4df52588a4c8a4012fc21f0b6a",
+                    "81d8b37a0b24dbb428b43bb04618db3e",
+                    "a6def41f07589a9438f497325685f835",
+                    "101044bcfe07f7347bc7ca1037a1d56d",
+                    "3b8bbf69de8c01f43a069780630c9d3d"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0,
+                        "y": 1
+                    },
+                    {
+                        "x": 0,
+                        "y": -1
+                    },
+                    {
+                        "x": -1,
+                        "y": 0
+                    },
+                    {
+                        "x": 1,
+                        "y": 0
+                    },
+                    {
+                        "x": 0,
+                        "y": 0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0,
+                    "y": 0
+                },
+                "_Type": 0,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "crawlAnimNativeSpeed": 1
         },
         {
             "name": "LocomotionSet_1H_Blade_Relax",
             "directory": "Human/Male/Sets/Locomotion",
             "idleL": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2108,7 +2253,7 @@
             },
             "sprint": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2119,7 +2264,7 @@
             },
             "turnInPlace90L": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2130,7 +2275,7 @@
             },
             "turnInPlace90R": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2141,7 +2286,7 @@
             },
             "walkMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2155,17 +2300,17 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": 0,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 0,
                 "_ParameterNameX": "",
@@ -2173,7 +2318,7 @@
             },
             "runMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2187,17 +2332,17 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": 0,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 0,
                 "_ParameterNameX": "",
@@ -2205,74 +2350,90 @@
             },
             "airLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
                     "_Names": []
                 },
-                "_Animations": [],
+                "_Animations": [
+                    "4361a3fbf7e31ac47b691fbc0d016ed6"
+                ],
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
-                "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_Thresholds": [
+                    0
+                ],
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "airHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
                     "_Names": []
                 },
-                "_Animations": [],
+                "_Animations": [
+                    "8543fe55d8fec484d8cc595eb677f1f9"
+                ],
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
-                "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_Thresholds": [
+                    0
+                ],
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
                     "_Names": []
                 },
-                "_Animations": [],
+                "_Animations": [
+                    "d875b43d0aad0c740a8f80339aef98d7"
+                ],
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
-                "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_Thresholds": [
+                    0
+                ],
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
                     "_Names": []
                 },
-                "_Animations": [],
+                "_Animations": [
+                    "d355dc0bae97d3c47b4410c2011c3dd4"
+                ],
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
-                "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_Thresholds": [
+                    0
+                ],
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "walkAnimNativeSpeed": 1.5,
-            "runAnimNativeSpeed": 5.0,
-            "sprintAnimNativeSpeed": 7.0,
+            "runAnimNativeSpeed": 5,
+            "sprintAnimNativeSpeed": 7,
             "hitReactionFlinch": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2288,25 +2449,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -2314,7 +2475,7 @@
             },
             "hitReactionStagger": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2330,25 +2491,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -2356,7 +2517,7 @@
             },
             "hitReactionKnockdown": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2372,25 +2533,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -2398,7 +2559,7 @@
             },
             "hitReactionGetUp": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2414,25 +2575,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -2440,7 +2601,7 @@
             },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2451,7 +2612,7 @@
             },
             "climbUp1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2462,7 +2623,7 @@
             },
             "climbUp2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2473,7 +2634,7 @@
             },
             "climbDown1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2484,7 +2645,7 @@
             },
             "climbDown2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2495,7 +2656,7 @@
             },
             "landFromWall": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2503,14 +2664,73 @@
                 },
                 "_Clip": "",
                 "_NormalizedStartTime": "NaN"
-            }
+            },
+            "crouchIdle": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Clip": "1b6ce6fe3b13051499c169414bf6f26b",
+                "_NormalizedStartTime": "NaN"
+            },
+            "crouchMixer": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "d436bb4ac76660a4db4a1936fc419fd0",
+                    "6c34a32af4e91e646bd45acf101bc042",
+                    "60e37d99b1e2b0b4c90dfb4edf40cd77",
+                    "91934c522d44bf3479027b050206c684",
+                    "1b6ce6fe3b13051499c169414bf6f26b"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0,
+                        "y": 1
+                    },
+                    {
+                        "x": 0,
+                        "y": -1
+                    },
+                    {
+                        "x": -1,
+                        "y": 0
+                    },
+                    {
+                        "x": 1,
+                        "y": 0
+                    },
+                    {
+                        "x": 0,
+                        "y": 0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0,
+                    "y": 0
+                },
+                "_Type": 0,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "crawlAnimNativeSpeed": 1
         },
         {
             "name": "LocomotionSet_1H_Blade_Combat",
             "directory": "Human/Male/Sets/Locomotion",
             "idleL": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2521,7 +2741,7 @@
             },
             "sprint": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2532,7 +2752,7 @@
             },
             "turnInPlace90L": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2543,7 +2763,7 @@
             },
             "turnInPlace90R": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2554,7 +2774,7 @@
             },
             "walkMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2571,29 +2791,29 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     },
                     {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": 0,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 0,
                 "_ParameterNameX": "",
@@ -2601,7 +2821,7 @@
             },
             "runMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2618,29 +2838,29 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     },
                     {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": 0,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -2648,7 +2868,7 @@
             },
             "airLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2660,15 +2880,15 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
-                    0.0
+                    0
                 ],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "airHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2680,15 +2900,15 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
-                    0.0
+                    0
                 ],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2700,15 +2920,15 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
-                    0.0
+                    0
                 ],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2720,18 +2940,18 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
-                    0.0
+                    0
                 ],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "walkAnimNativeSpeed": 1.5,
-            "runAnimNativeSpeed": 5.0,
-            "sprintAnimNativeSpeed": 7.0,
+            "runAnimNativeSpeed": 5,
+            "sprintAnimNativeSpeed": 7,
             "hitReactionFlinch": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2747,25 +2967,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -2773,7 +2993,7 @@
             },
             "hitReactionStagger": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2789,25 +3009,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -2815,7 +3035,7 @@
             },
             "hitReactionKnockdown": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2831,25 +3051,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -2857,7 +3077,7 @@
             },
             "hitReactionGetUp": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2873,25 +3093,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -2899,7 +3119,7 @@
             },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2910,7 +3130,7 @@
             },
             "climbUp1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2921,7 +3141,7 @@
             },
             "climbUp2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2932,7 +3152,7 @@
             },
             "climbDown1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2943,7 +3163,7 @@
             },
             "climbDown2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2954,7 +3174,7 @@
             },
             "landFromWall": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2962,14 +3182,73 @@
                 },
                 "_Clip": "",
                 "_NormalizedStartTime": "NaN"
-            }
+            },
+            "crouchIdle": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Clip": "8d72af30c30cbd442948616faafd9fcb",
+                "_NormalizedStartTime": "NaN"
+            },
+            "crouchMixer": {
+                "_FadeDuration": 0.25,
+                "_Speed": 1,
+                "_Events": {
+                    "_NormalizedTimes": [],
+                    "_Callbacks": [],
+                    "_Names": []
+                },
+                "_Animations": [
+                    "3c87cf6ee5001974694310f413682a94",
+                    "5864f6520ef11cf468939d615e8b4254",
+                    "c9e22452ebf891f49ad1510eb417335a",
+                    "c43d71eb38efca3418ac163fbb01517e",
+                    "8d72af30c30cbd442948616faafd9fcb"
+                ],
+                "_Speeds": [],
+                "_SynchronizeChildren": [],
+                "_Thresholds": [
+                    {
+                        "x": 0,
+                        "y": 1
+                    },
+                    {
+                        "x": 0,
+                        "y": -1
+                    },
+                    {
+                        "x": -1,
+                        "y": 0
+                    },
+                    {
+                        "x": 1,
+                        "y": 0
+                    },
+                    {
+                        "x": 0,
+                        "y": 0
+                    }
+                ],
+                "_DefaultParameter": {
+                    "x": 0,
+                    "y": 0
+                },
+                "_Type": 0,
+                "_ParameterNameX": "",
+                "_ParameterNameY": ""
+            },
+            "crawlAnimNativeSpeed": 1
         },
         {
             "name": "LocomotionSet_TypeA_Relax",
             "directory": "Zombie/TypeA/Sets/Locomotion",
             "idleL": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2980,7 +3259,7 @@
             },
             "sprint": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -2991,7 +3270,7 @@
             },
             "turnInPlace90L": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3002,7 +3281,7 @@
             },
             "turnInPlace90R": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3013,7 +3292,7 @@
             },
             "walkMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3027,17 +3306,17 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 0,
                 "_ParameterNameX": "",
@@ -3045,7 +3324,7 @@
             },
             "runMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3056,8 +3335,8 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 0,
                 "_ParameterNameX": "",
@@ -3065,7 +3344,7 @@
             },
             "airLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3075,13 +3354,13 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "airHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3091,13 +3370,13 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3107,13 +3386,13 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3123,16 +3402,16 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "walkAnimNativeSpeed": 0.800000011920929,
-            "runAnimNativeSpeed": 0.0,
-            "sprintAnimNativeSpeed": 0.0,
+            "runAnimNativeSpeed": 0,
+            "sprintAnimNativeSpeed": 0,
             "hitReactionFlinch": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3148,25 +3427,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -3174,7 +3453,7 @@
             },
             "hitReactionStagger": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3188,17 +3467,17 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -3206,7 +3485,7 @@
             },
             "hitReactionKnockdown": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3219,13 +3498,13 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -3233,7 +3512,7 @@
             },
             "hitReactionGetUp": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3244,8 +3523,8 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -3253,7 +3532,7 @@
             },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3264,7 +3543,7 @@
             },
             "climbUp1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3275,7 +3554,7 @@
             },
             "climbUp2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3286,7 +3565,7 @@
             },
             "climbDown1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3297,7 +3576,7 @@
             },
             "climbDown2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3308,7 +3587,7 @@
             },
             "landFromWall": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3323,7 +3602,7 @@
             "directory": "Zombie/TypeA/Sets/Locomotion",
             "idleL": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3334,7 +3613,7 @@
             },
             "sprint": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3345,7 +3624,7 @@
             },
             "turnInPlace90L": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3356,7 +3635,7 @@
             },
             "turnInPlace90R": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3367,7 +3646,7 @@
             },
             "walkMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3380,13 +3659,13 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 0,
                 "_ParameterNameX": "",
@@ -3394,7 +3673,7 @@
             },
             "runMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3405,8 +3684,8 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 0,
                 "_ParameterNameX": "",
@@ -3414,7 +3693,7 @@
             },
             "airLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3424,13 +3703,13 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "airHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3440,13 +3719,13 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3456,13 +3735,13 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3472,16 +3751,16 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "walkAnimNativeSpeed": 1.7999999523162842,
-            "runAnimNativeSpeed": 0.0,
-            "sprintAnimNativeSpeed": 0.0,
+            "runAnimNativeSpeed": 0,
+            "sprintAnimNativeSpeed": 0,
             "hitReactionFlinch": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3497,25 +3776,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -3523,7 +3802,7 @@
             },
             "hitReactionStagger": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3537,17 +3816,17 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -3555,7 +3834,7 @@
             },
             "hitReactionKnockdown": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3568,13 +3847,13 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -3582,7 +3861,7 @@
             },
             "hitReactionGetUp": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3595,13 +3874,13 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": 0,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -3609,7 +3888,7 @@
             },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3620,7 +3899,7 @@
             },
             "climbUp1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3631,7 +3910,7 @@
             },
             "climbUp2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3642,7 +3921,7 @@
             },
             "climbDown1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3653,7 +3932,7 @@
             },
             "climbDown2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3664,7 +3943,7 @@
             },
             "landFromWall": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3679,7 +3958,7 @@
             "directory": "Zombie/TypeB/Sets/Locomotion",
             "idleL": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3690,7 +3969,7 @@
             },
             "sprint": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3701,7 +3980,7 @@
             },
             "turnInPlace90L": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3712,7 +3991,7 @@
             },
             "turnInPlace90R": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3723,7 +4002,7 @@
             },
             "walkMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3736,13 +4015,13 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 0,
                 "_ParameterNameX": "",
@@ -3750,7 +4029,7 @@
             },
             "runMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3761,8 +4040,8 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 0,
                 "_ParameterNameX": "",
@@ -3770,7 +4049,7 @@
             },
             "airLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3780,13 +4059,13 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "airHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3796,13 +4075,13 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3812,13 +4091,13 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3828,16 +4107,16 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "walkAnimNativeSpeed": 0.699999988079071,
-            "runAnimNativeSpeed": 0.0,
-            "sprintAnimNativeSpeed": 0.0,
+            "runAnimNativeSpeed": 0,
+            "sprintAnimNativeSpeed": 0,
             "hitReactionFlinch": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3848,25 +4127,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -3874,7 +4153,7 @@
             },
             "hitReactionStagger": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3885,25 +4164,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -3911,7 +4190,7 @@
             },
             "hitReactionKnockdown": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3922,25 +4201,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -3948,7 +4227,7 @@
             },
             "hitReactionGetUp": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3959,25 +4238,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -3985,7 +4264,7 @@
             },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -3996,7 +4275,7 @@
             },
             "climbUp1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4007,7 +4286,7 @@
             },
             "climbUp2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4018,7 +4297,7 @@
             },
             "climbDown1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4029,7 +4308,7 @@
             },
             "climbDown2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4040,7 +4319,7 @@
             },
             "landFromWall": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4055,7 +4334,7 @@
             "directory": "Zombie/TypeB/Sets/Locomotion",
             "idleL": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4066,7 +4345,7 @@
             },
             "sprint": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4077,7 +4356,7 @@
             },
             "turnInPlace90L": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4088,7 +4367,7 @@
             },
             "turnInPlace90R": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4099,7 +4378,7 @@
             },
             "walkMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4112,13 +4391,13 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 0,
                 "_ParameterNameX": "",
@@ -4126,7 +4405,7 @@
             },
             "runMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4137,8 +4416,8 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 0,
                 "_ParameterNameX": "",
@@ -4146,7 +4425,7 @@
             },
             "airLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4156,13 +4435,13 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "airHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4172,13 +4451,13 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4188,13 +4467,13 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4204,16 +4483,16 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "walkAnimNativeSpeed": 1.600000023841858,
-            "runAnimNativeSpeed": 0.0,
-            "sprintAnimNativeSpeed": 0.0,
+            "runAnimNativeSpeed": 0,
+            "sprintAnimNativeSpeed": 0,
             "hitReactionFlinch": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4229,25 +4508,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -4255,7 +4534,7 @@
             },
             "hitReactionStagger": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4271,25 +4550,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -4297,7 +4576,7 @@
             },
             "hitReactionKnockdown": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4313,25 +4592,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -4339,7 +4618,7 @@
             },
             "hitReactionGetUp": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4355,25 +4634,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -4381,7 +4660,7 @@
             },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4392,7 +4671,7 @@
             },
             "climbUp1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4403,7 +4682,7 @@
             },
             "climbUp2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4414,7 +4693,7 @@
             },
             "climbDown1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4425,7 +4704,7 @@
             },
             "climbDown2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4436,7 +4715,7 @@
             },
             "landFromWall": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4451,7 +4730,7 @@
             "directory": "Zombie/TypeE/Sets/Locomotion",
             "idleL": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4462,7 +4741,7 @@
             },
             "sprint": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4473,7 +4752,7 @@
             },
             "turnInPlace90L": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4484,7 +4763,7 @@
             },
             "turnInPlace90R": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4495,7 +4774,7 @@
             },
             "walkMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4508,13 +4787,13 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 0,
                 "_ParameterNameX": "",
@@ -4522,7 +4801,7 @@
             },
             "runMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4533,8 +4812,8 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 0,
                 "_ParameterNameX": "",
@@ -4542,7 +4821,7 @@
             },
             "airLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4552,13 +4831,13 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "airHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4568,13 +4847,13 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4584,13 +4863,13 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4600,16 +4879,16 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "walkAnimNativeSpeed": 0.800000011920929,
-            "runAnimNativeSpeed": 0.0,
-            "sprintAnimNativeSpeed": 0.0,
+            "runAnimNativeSpeed": 0,
+            "sprintAnimNativeSpeed": 0,
             "hitReactionFlinch": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4620,25 +4899,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -4646,7 +4925,7 @@
             },
             "hitReactionStagger": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4657,25 +4936,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -4683,7 +4962,7 @@
             },
             "hitReactionKnockdown": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4694,25 +4973,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -4720,7 +4999,7 @@
             },
             "hitReactionGetUp": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4731,25 +5010,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -4757,7 +5036,7 @@
             },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4768,7 +5047,7 @@
             },
             "climbUp1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4779,7 +5058,7 @@
             },
             "climbUp2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4790,7 +5069,7 @@
             },
             "climbDown1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4801,7 +5080,7 @@
             },
             "climbDown2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4812,7 +5091,7 @@
             },
             "landFromWall": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4827,7 +5106,7 @@
             "directory": "Zombie/TypeE/Sets/Locomotion",
             "idleL": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4838,7 +5117,7 @@
             },
             "sprint": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4849,7 +5128,7 @@
             },
             "turnInPlace90L": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4860,7 +5139,7 @@
             },
             "turnInPlace90R": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4871,7 +5150,7 @@
             },
             "walkMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4884,13 +5163,13 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 0,
                 "_ParameterNameX": "",
@@ -4898,7 +5177,7 @@
             },
             "runMixer": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4909,8 +5188,8 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 0,
                 "_ParameterNameX": "",
@@ -4918,7 +5197,7 @@
             },
             "airLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4928,13 +5207,13 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "airHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4944,13 +5223,13 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landLight": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4960,13 +5239,13 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "landHard": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4976,16 +5255,16 @@
                 "_Speeds": [],
                 "_SynchronizeChildren": [],
                 "_Thresholds": [],
-                "_DefaultParameter": 0.0,
+                "_DefaultParameter": 0,
                 "_ExtrapolateSpeed": true,
                 "_ParameterName": ""
             },
             "walkAnimNativeSpeed": 1.7999999523162842,
-            "runAnimNativeSpeed": 0.0,
-            "sprintAnimNativeSpeed": 0.0,
+            "runAnimNativeSpeed": 0,
+            "sprintAnimNativeSpeed": 0,
             "hitReactionFlinch": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -4996,25 +5275,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -5022,7 +5301,7 @@
             },
             "hitReactionStagger": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -5033,25 +5312,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -5059,7 +5338,7 @@
             },
             "hitReactionKnockdown": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -5070,25 +5349,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -5096,7 +5375,7 @@
             },
             "hitReactionGetUp": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -5107,25 +5386,25 @@
                 "_SynchronizeChildren": [],
                 "_Thresholds": [
                     {
-                        "x": 0.0,
-                        "y": 1.0
+                        "x": 0,
+                        "y": 1
                     },
                     {
-                        "x": 0.0,
-                        "y": -1.0
+                        "x": 0,
+                        "y": -1
                     },
                     {
-                        "x": -1.0,
-                        "y": 0.0
+                        "x": -1,
+                        "y": 0
                     },
                     {
-                        "x": 1.0,
-                        "y": 0.0
+                        "x": 1,
+                        "y": 0
                     }
                 ],
                 "_DefaultParameter": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 0,
+                    "y": 0
                 },
                 "_Type": 1,
                 "_ParameterNameX": "",
@@ -5133,7 +5412,7 @@
             },
             "climbUpHalfMeter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -5144,7 +5423,7 @@
             },
             "climbUp1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -5155,7 +5434,7 @@
             },
             "climbUp2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -5166,7 +5445,7 @@
             },
             "climbDown1meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -5177,7 +5456,7 @@
             },
             "climbDown2meter": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
@@ -5188,7 +5467,7 @@
             },
             "landFromWall": {
                 "_FadeDuration": 0.25,
-                "_Speed": 1.0,
+                "_Speed": 1,
                 "_Events": {
                     "_NormalizedTimes": [],
                     "_Callbacks": [],
