@@ -54,13 +54,13 @@ namespace RedDust.Ability
         ///   ③ Reaction — 反伤 / 吸血 / 被动通知
         ///   ④ Broadcast — hitEvent → VFX / Audio / UI 等不确定消费者
         /// </summary>
-        public void Resolve(SDamageInfo hit)
+        public float Resolve(SDamageInfo hit)
         {
             EnsureResolved();
 
             // ── ① Damage Resolution ──
             var damage = hit.Damage;
-            if (damage == null || damage.Length == 0) return;
+            if (damage == null || damage.Length == 0) return 0f;
 
             float instantSum = 0f;
             foreach (var entry in damage)
@@ -87,7 +87,7 @@ namespace RedDust.Ability
             {
                 ApplyDamageCallback?.Invoke(hit, finalAmount);
                 ReactionCallback?.Invoke(hit, finalAmount);
-                // TODO: OnHit 通知施法者 → Reactor→Caster 反馈通路
+                // OnHit 通知施法者 → 由 ExecutionState 通过 OnHitResolved 回调完成
             }
             else
             {
@@ -98,6 +98,8 @@ namespace RedDust.Ability
             OnDamagedCallback?.Invoke(hit, finalAmount);
             hitEvent?.Raise(hit);
             // TODO: 伤害类型转换（防弹衣穿刺→钝伤）— 阻塞：防弹衣系统未就位
+
+            return finalAmount;
         }
 
         // ═══════════════════════════════════════════════════════════════

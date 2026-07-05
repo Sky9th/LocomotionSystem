@@ -10,7 +10,7 @@ namespace RedDust.Ability
     ///
     /// 两条路径互斥（相位级排他，不混合）：
     ///   A. PropertyTable 存在 → 循环逐 Effect 内建查询/修改
-    ///   B. PropertyTable 不存在 + PeekStatCallback/ModifyStatCallback 有接线 → 整批 CostEffectSO[] 交给回调
+    ///   B. PropertyTable 不存在 + PreviewCostCallback/ApplyCostCallback 有接线 → 整批 CostEffectSO[] 交给回调
     ///   C. 两条路都走不通 → RejectedState
     ///
     /// 预检失败 → RejectedState；通过 → WindupState。
@@ -46,20 +46,20 @@ namespace RedDust.Ability
                 if (!PeekViaTable(costs, props, a.internalName)) return new RejectedState();
                 ModifyViaTable(costs, props);
             }
-            else if (e.PeekStatCallback != null || e.ModifyStatCallback != null)
+            else if (e.PreviewCostCallback != null || e.ApplyCostCallback != null)
             {
                 // ── 路径 B: 回调相位级接管 ──
                 var costArray = costs.ToArray();
-                if (e.PeekStatCallback != null)
+                if (e.PreviewCostCallback != null)
                 {
-                    var reject = e.PeekStatCallback(costArray);
+                    var reject = e.PreviewCostCallback(costArray);
                     if (reject != null)
                     {
-                        Debug.LogWarning($"[Cost] Rejected by PeekStatCallback: {a.internalName} — {reject}");
+                        Debug.LogWarning($"[Cost] Rejected by PreviewCostCallback: {a.internalName} — {reject}");
                         return new RejectedState();
                     }
                 }
-                e.ModifyStatCallback?.Invoke(costArray);
+                e.ApplyCostCallback?.Invoke(costArray);
             }
             else
             {

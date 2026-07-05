@@ -43,6 +43,7 @@
 | AbilityDriver ③ 释放动画 | 消费 AbilityActivationSO，Windup→Fire Animancer 事件注入 + animationSpeed 调速 |
 | **S1 Properties 深度接入** | 删除 Physique 缓存，GroundLocomotion 实现 motionSpeedScale 公式（Agility + CarryWeight）|
 | **Physique 删除** | 8 字段 struct 全量替换为 PropertyTable.GetFloat 按需读取，全代码库统一 |
+| **Damage 管线重构** | DamageEffectSO 类型拆分（实体通道 + DamageModifierEffectSO 技能修正）；SDamageInfo per-channel DamageEntry[]；公式 base×(1+Σ%)+Σadd；tag 层级匹配；删除 AbilityEffects.cs |
 
 ---
 
@@ -133,7 +134,8 @@
 ### S3.5 待完成
 
 - **闭环测试**: 按 Q → AbilityExecutor.TryActivate → 8 State 全链路 → AbilityReactor.Resolve → CharacterCombat → 伤害飘字
-- **旧代码清理**: AbilityExecutor 旧 `#region OLD_IMPLEMENTATION` 删除（TryActivate、ExecutePassive、OnTriggerEnter/Exit）；废弃文件 AbilityEffects.cs、SearchState.cs 删除
+- **旧代码清理**: AbilityExecutor 旧 `#region OLD_IMPLEMENTATION` 删除（TryActivate、ExecutePassive、OnTriggerEnter/Exit）；废弃文件 SearchState.cs 删除
+- **废弃文件删除**: AbilityEffects.cs ✅ 已删除（v0.38.0）
 - **被动技能物理回调迁移**: OnTriggerEnter/Exit 当前仍用 `runtimePassives`，未接入 InstanceManager → 迁移至 InstanceManager 统一管理
 - **AbilityForest 接入 InstanceManager**: SyncInstances 调用链打通，AbilityForest 从 InstanceManager 获取实例列表同步
 
@@ -148,11 +150,11 @@
 
 | # | 任务 | 涉及 | 状态 |
 |---|------|------|------|
-| S4.1 | 施展方属性修正 — 力量/穿透 (`IEffectModifier`) | `CharacterCombat.OnEffectModify` | ⏳ |
-| S4.2 | 字符串路径 → Properties 路径常量 | `CharacterCombat.cs` | ⏳ |
-| S4.3 | **Reactor→Caster OnHit 通知通路** — Exe 侧知道命中是否完成，Caster→Reactor 反馈 | `AbilityReactor` / `AbilityExecutor` | ⏳ |
-| S4.4 | **SDamageInfo 职责明确** — Exe 侧算伤害还是交给 Reactor 算？定论后统一 | `SDamageInfo` / `ExecutionState` | ⏳ |
-| S4.5 | **Self-damage Amount=0** — 血魔法等技能的自我伤害公式 | `AbilityReactor.Resolve` | ⏳ |
+| S4.1 | 施展方属性修正 — 力量/穿透 (`IEffectModifier`) | `CharacterCombat.OnEffectModify` | ✅ — Strength × strengthDamageBonus（GroundSystemConfigSO） |
+| S4.2 | 字符串路径 → Properties 路径常量 | `CharacterCombat.cs` | ✅ 已完成 — 全部使用 CharacterConst.PropertyPath |
+| S4.3 | **Reactor→Caster OnHit 通知通路** — Exe 侧知道命中是否完成，Caster→Reactor 反馈 | `AbilityReactor` / `AbilityExecutor` | ✅ — Resolve 返回 finalAmount → OnHitResolved → NotifyPassiveEvent(OnHit) |
+| S4.4 | **SDamageInfo 职责明确 + 类型拆分** — Exe 算 outgoing，Reactor 算 mitigation；DamageEffectSO 拆分为实体通道 + DamageModifierEffectSO 技能修正；SDamageInfo per-channel DamageEntry[]；公式 base×(1+Σ%)+Σadd；tag 层级匹配 | `SDamageInfo` / `ExecutionState` / `DamageEffectSO` | ✅ v0.38.0 |
+| S4.5 | **Self-damage Amount=0** — 狂暴针剂/脱臼修正等自伤技能的自我伤害公式 | `AbilityReactor.Resolve` | 🔒 延后 — 等有实际自伤技能需求时再做 |
 
 ---
 

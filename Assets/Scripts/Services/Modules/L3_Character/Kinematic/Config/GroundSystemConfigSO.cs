@@ -30,5 +30,12 @@ namespace RedDust.Character.Kinematic
         [Header("Movement Formula")]
         [Min(0f)] public float agilitySpeedBonus = 0.03f;
         [Range(0f, 1f)] public float weightPenaltyRatio = 0.2f;
+
+        [Header("Combat Formula")]
+        [Tooltip("每点力量增加伤害百分比。0.05 = +5%。")]
+        [Min(0f)] public float strengthDamageBonus = 0.05f;
+
+        // TODO: 世界规则类配置不应放 Character SO 中。当前暂存于此，
+        // 等地图/天气/难度等系统就位后统一迁移到世界级配置。
     }
 }

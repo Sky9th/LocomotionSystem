@@ -24,7 +24,8 @@ namespace RedDust.Character.Combat
         {
             if (ctx.Ability != null)
             {
-                ctx.Ability.EffectCallback = OnEffectModify;
+                ctx.Ability.OutgoingDamageCallback = OnModifyOutgoingDamage;
+                ctx.Ability.OnHitResolved = OnHitResolved;
             }
 
             if (ctx.Reactor != null)
@@ -47,10 +48,19 @@ namespace RedDust.Character.Combat
 
         #region 修改器占位
 
-        private float OnEffectModify(EffectSO effect, GameObject target, float baseDamage)
+        private float OnModifyOutgoingDamage(EffectSO effect, GameObject target, float outgoingDamage)
         {
-            // TODO: Phase 4.2 — 施展方属性修正（力量/穿透/暴击）
-            return baseDamage;
+            float strength = ctx.Properties.GetFloat(CharacterConst.PropertyPath.Attributes.Strength);
+            var config = ctx.GroundSystemConfig;
+            if (strength > 0f && config != null)
+                outgoingDamage *= 1f + strength * config.strengthDamageBonus;
+            return outgoingDamage;
+        }
+
+        private void OnHitResolved(SDamageInfo hit, float finalAmount)
+        {
+            if (finalAmount > 0f)
+                ctx.Ability.NotifyPassiveEvent(ETriggerEvent.OnHit, hit.Target);
         }
 
         /// <summary>承受方结算管线。Avoidance → Mitigation → Absorption。

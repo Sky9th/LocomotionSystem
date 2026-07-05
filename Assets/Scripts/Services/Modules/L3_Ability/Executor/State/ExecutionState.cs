@@ -49,8 +49,12 @@ namespace RedDust.Ability
                 foreach (var hit in ctx.Hits)
                 {
                     if (hit.Target == null) continue;
-                    hit.Target.GetComponent<AbilityReactor>()?.Resolve(hit);
-                    // OnHit 被动：需等 Reactor→Caster 通知通路建立后，由命中判定方触发
+                    var reactor = hit.Target.GetComponent<AbilityReactor>();
+                    if (reactor != null)
+                    {
+                        float finalAmount = reactor.Resolve(hit);
+                        e.OnHitResolved?.Invoke(hit, finalAmount);
+                    }
                 }
             }
 
@@ -104,6 +108,10 @@ namespace RedDust.Ability
                     }
 
                     float amount = baseVal * (1f + percentSum) + addSum;
+
+                    // ── caster-side 属性修正（力量/穿透等施展方属性）──
+                    if (executor?.OutgoingDamageCallback != null)
+                        amount = executor.OutgoingDamageCallback(null, target, amount);
 
                     // self-damage: 对自身伤害暂为 0
                     if (target == caster)

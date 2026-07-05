@@ -44,9 +44,9 @@ namespace RedDust.Ability
             }
 
             // ── 4. 外部条件 ──
-            if (e.ConditionCallback != null)
+            if (e.GatingConditionCallback != null)
             {
-                var reason = e.ConditionCallback(a);
+                var reason = e.GatingConditionCallback(a);
                 if (reason != null)
                 {
                     Debug.LogWarning($"[Gating] Rejected: {a.internalName} — condition: {reason}");

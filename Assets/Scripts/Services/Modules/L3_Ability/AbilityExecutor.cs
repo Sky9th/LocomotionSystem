@@ -235,12 +235,14 @@ namespace RedDust.Ability
         private readonly AbilitySearch _search = new();
 
         public System.Func<PassiveAbilitySO, GameObject, string> TargetFilterCallback;
-        public System.Func<EffectSO, GameObject, float, float> EffectCallback;
-        public System.Func<AbilitySO, string> ConditionCallback;
+        public System.Func<EffectSO, GameObject, float, float> OutgoingDamageCallback;
+        /// <summary>命中结算完成通知。caster 侧消费——触发 OnHit 被动、吸血、连招衔接等。</summary>
+        public System.Action<SDamageInfo, float> OnHitResolved;
+        public System.Func<AbilitySO, string> GatingConditionCallback;
         /// <summary>相位级预检回调。PropertyTable 不存在时接管 Phase 1。null=全部通过, 非null=拒绝原因。</summary>
-        public System.Func<CostEffectSO[], string> PeekStatCallback;
+        public System.Func<CostEffectSO[], string> PreviewCostCallback;
         /// <summary>相位级扣除回调。PropertyTable 不存在时接管 Phase 2。</summary>
-        public System.Action<CostEffectSO[]> ModifyStatCallback;
+        public System.Action<CostEffectSO[]> ApplyCostCallback;
 
         private readonly Dictionary<string, float> cooldownEndTimes = new();
         private readonly List<string> cooldownExpiredBuffer = new();
@@ -464,9 +466,9 @@ namespace RedDust.Ability
                 }
             }
 
-            if (ConditionCallback != null)
+            if (GatingConditionCallback != null)
             {
-                var reason = ConditionCallback(ability);
+                var reason = GatingConditionCallback(ability);
                 if (reason != null)
                 {
                     Debug.Log($"[Ability] ② Rejected: {ability.internalName} — condition: {reason}");
@@ -487,19 +489,19 @@ namespace RedDust.Ability
                 if (costs.Count > 0)
                 {
                     var costArray = costs.ToArray();
-                    if (PeekStatCallback == null)
+                    if (PreviewCostCallback == null)
                     {
-                        Debug.LogError($"[Ability] PeekStatCallback is null");
+                        Debug.LogError($"[Ability] PreviewCostCallback is null");
                         return false;
                     }
-                    var rejectReason = PeekStatCallback(costArray);
+                    var rejectReason = PreviewCostCallback(costArray);
                     if (rejectReason != null)
                     {
                         Debug.Log($"[Ability] ③ Cost fail: {ability.internalName} — {rejectReason}");
                         return false;
                     }
 
-                    ModifyStatCallback?.Invoke(costArray);
+                    ApplyCostCallback?.Invoke(costArray);
                 }
             }
 

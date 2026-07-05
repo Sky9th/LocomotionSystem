@@ -23,6 +23,7 @@ namespace RedDust.Character
 
             public static class Attributes
             {
+                public const string Strength  = "Attributes/Strength";
                 public const string Agility   = "Attributes/Agility";
                 public const string Endurance = "Attributes/Endurance";
             }

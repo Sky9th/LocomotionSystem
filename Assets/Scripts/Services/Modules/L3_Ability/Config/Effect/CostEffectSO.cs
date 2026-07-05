@@ -12,7 +12,7 @@ namespace RedDust.Ability
     ///   - 最大值百分比（消耗 20% 法力上限）
     ///   - 混合模式（固定 + 百分比）
     /// 需增加 ECostMode 枚举 (Absolute / PercentCurrent / PercentMax) 和 mode 字段。
-    /// 特殊/动态消耗仍走 ModifyStatCallback 回调处理。
+    /// 特殊/动态消耗仍走 ApplyCostCallback 回调处理。
     /// </summary>
     [CreateAssetMenu(menuName = "RedDust/Ability/Effect/Cost", fileName = "CostEffect_")]
     public sealed class CostEffectSO : EffectSO
