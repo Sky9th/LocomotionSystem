@@ -24,6 +24,8 @@ namespace RedDust.Character
 
         /// <summary>运行时属性数据。转发自 Identity.Properties。</summary>
         public PropertyTable Properties => Identity?.Properties;
+        /// <summary>动画中枢。由 CharacterActor.Start 注入。</summary>
+        public AnimationBrain Animation { get; internal set; }
         public AbilityExecutor Ability { get; }
         public AbilityReactor Reactor { get; }
         public PathfindingAgent Pathfinding { get; }

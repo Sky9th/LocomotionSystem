@@ -1,6 +1,8 @@
 # AnimationBrain · 动画总控
 
-> `Character/Animation/Components/AnimationBrain.cs` — MonoBehaviour [DefaultExecutionOrder(-10)]，6层 Animancer 管理 + HeadLook 混合 + RootMotion
+> **Last Verified**: 2026-07-05 | **Verification**: All referenced files exist, signatures match code
+
+> `Character/Animation/AnimationBrain.cs` — MonoBehaviour, 7层 Animancer 管理 + HeadLook 混合 + RootMotion。3 个 Driver（Locomotion, Traversal, Ability, HitReaction）。
 
 ## 调用链
 

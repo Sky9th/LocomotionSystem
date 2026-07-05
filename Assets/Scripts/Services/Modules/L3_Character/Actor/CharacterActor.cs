@@ -145,6 +145,7 @@ namespace RedDust.Character
         protected override void Start()
         {
             base.Start();  // Registry.OnWireAll() — 子模块完成初始化
+            buildCtx.Animation = characterAnimation;
             buildCtx.Physique = CharacterPhysique.From(buildCtx.Properties);
             buildCtx.Container = identity.Entity?.NestedContainer;
             // TODO: 饥饿/体力是测试代码。Actor 不应内联属性变化逻辑。

@@ -95,12 +95,20 @@ namespace RedDust.Character.Animation
 
             if (activeRequest == null)
             {
-                // H1: 默认驱动被抢占时通知
+                // H1: idle — 接受任意 Driver（Locomotion 被抢占 → 技能或受击）
                 if (activeDriver != null && activeDriver != driver)
                     activeDriver.OnInterrupted(request);
                 AcceptRequest(driver, request);
             }
-            // TODO: 受击等强制打断 — activeRequest != null 时按 Resistance 比较决定是否抢占
+            else if (request.DriverType == EDriverType.HitReaction)
+            {
+                // H2: HitReaction 抢占一切（包括其他 HitReaction — 连续受击互相打断）
+                // 后续 AbilityEffect 可赋予霸体值 → 阻止抢占
+                activeDriver?.OnInterrupted(request);
+                activeRequest.OnInterrupt?.Invoke(activeRequest);
+                AcceptRequest(driver, request);
+            }
+            // else: 拒绝 — Traversal↔Ability 互斥
 
             queue.Clear();
         }

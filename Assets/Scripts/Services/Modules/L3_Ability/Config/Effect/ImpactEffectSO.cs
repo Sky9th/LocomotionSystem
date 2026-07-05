@@ -8,6 +8,10 @@ namespace RedDust.Ability
     [CreateAssetMenu(menuName = "RedDust/Ability/Effect/Impact", fileName = "ImpactEffect_")]
     public sealed class ImpactEffectSO : EffectSO
     {
+        [Header("Reaction")]
+        [Tooltip("受击反应等级。决定播放 Flinch / Stagger / Knockdown 中的哪个动画。")]
+        public EHitReactionLevel reactionLevel = EHitReactionLevel.Flinch;
+
         [Header("Impact")]
         [Tooltip("冲击值。0=无硬直, 越大越难防。防御侧比较自身霸体阈值。")]
         public float staggerValue;

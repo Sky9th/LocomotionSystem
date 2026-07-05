@@ -84,6 +84,13 @@ namespace RedDust.Ability
             if (ability?.targetEffects == null || targets == null || targets.Count == 0)
                 return hits;
 
+            // 提取 ImpactEffect（同一 ability 的 targetEffects 中最多一个 ImpactEffectSO）
+            ImpactEffectSO impactEffect = null;
+            foreach (var e in ability.targetEffects)
+            {
+                if (e is ImpactEffectSO imp) { impactEffect = imp; break; }
+            }
+
             foreach (var target in targets)
             {
                 if (target == null) continue;
@@ -111,7 +118,8 @@ namespace RedDust.Ability
                                 sourceEffect?.effectTag ?? default,
                                 target.transform.position,
                                 target.transform.position - origin,
-                                ability
+                                ability,
+                                impactEffect
                             );
                             hits.Add(hit);
                             break;

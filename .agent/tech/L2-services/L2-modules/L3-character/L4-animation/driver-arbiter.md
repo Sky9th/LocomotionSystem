@@ -1,6 +1,8 @@
 # DriverArbiter · Driver 仲裁器
 
-> `Character/Animation/DriverArbiter.cs` — 纯 C# 类，动画驱动优先级仲裁 + 请求队列调度
+> **Last Verified**: 2026-07-05 | **Verification**: All referenced files exist, signatures match code
+
+> `Character/Animation/DriverArbiter.cs` — 纯 C# 类，动画驱动优先级仲裁 + 请求队列调度。v0.36.10: ProcessQueue 改为 DriverType 硬编码抢占规则。
 
 ## 调用链
 
@@ -92,7 +94,8 @@ private void EvaluateDrivers(in CharacterFrameContext ctx, float dt)
 ```csharp
 private void ProcessQueue()
 ```
-- **用途**: 按 Resistance 排序请求队列 → 裁决 → Accept/Reject
+- **用途**: DriverType 硬编码仲裁 → Accept/Reject
+- **规则**: H1 idle→接受任意；H2 HitReaction→抢占一切（含互打断）；else→拒绝（Traversal↔Ability 互斥）。Resistance 字段保留但不消费。
 - **调用者**: Resolve()
 
 ### AcceptRequest()
@@ -125,10 +128,11 @@ Resolve(ctx, dt):
   1. EvaluateDrivers: 遍历 drivers，调用 driver.Evaluate()
      → Driver 在此阶段检测条件并 SubmitRequest
   2. ProcessQueue:
-     → queue.Sort(Resistance 降序)
-     → 遍历，与 activeRequest 比较:
-       - 无 active → Accept
-       - request.Resistance >= active.Resistance → Interrupt active → Accept
+     → 取 queue[0]（FIFO，不排序）
+     → 硬编码 DriverType 抢占规则:
+       - H1: activeRequest==null → Accept（任意 Driver）
+       - H2: request.DriverType==HitReaction → Interrupt active → Accept（抢占一切）
+       - else: Reject（Traversal↔Ability 互斥）
   3. CheckCompletion:
      → NormalizedTime >= 0.99:
        - Resume → activeRequest=null, 恢复默认

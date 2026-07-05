@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace RedDust.Character.Animation
 {
-    public enum EDriverType { Ability, Traversal }
+    public enum EDriverType { Ability, Traversal, HitReaction }
 
     public class AnimationRequest
     {

@@ -5,6 +5,7 @@ using RedDust.Character.Animation.Drivers;
 using RedDust.Character.Animation.Drivers.Locomotion;
 using RedDust.Character.Animation.Drivers.Traversal;
 using RedDust.Character.Animation.Drivers.Ability;
+using RedDust.Character.Animation.Drivers.HitReaction;
 using RedDust.Character.Animation;
 using RedDust.Character;
 using RedDust.Character.Kinematic;
@@ -74,6 +75,7 @@ namespace RedDust.Character.Animation
             gameObject.AddComponent<LocomotionDriver>();
             gameObject.AddComponent<TraversalDriver>();
             gameObject.AddComponent<AbilityDriver>();
+            gameObject.AddComponent<HitReactionDriver>();
 
             base.Awake();  // 扫描 ModuleChildMono → Register → OnAssembleAll
         }
@@ -208,6 +210,7 @@ namespace RedDust.Character.Animation
             {
                 EDriverType.Ability => (ICharacterAnimationDriver)GetComponent<AbilityDriver>(),
                 EDriverType.Traversal => GetComponent<TraversalDriver>(),
+                EDriverType.HitReaction => (ICharacterAnimationDriver)GetComponent<HitReactionDriver>(),
                 _ => null
             };
             if (driver != null) fullBodyArbiter?.SubmitRequest(driver, request);

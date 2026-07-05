@@ -30,6 +30,10 @@ namespace RedDust.Ability
         /// <summary>伤害来源技能。ActiveAbilitySO 或 PassiveAbilitySO。</summary>
         public readonly AbilitySO SourceAbility;
 
+        /// <summary>冲击效果（硬直+击退）。null 表示纯伤害无冲击。</summary>
+        public readonly ImpactEffectSO ImpactEffect;
+
+        /// <summary>向后兼容构造（无 ImpactEffect）。</summary>
         public SDamageInfo(GameObject caster, GameObject target, float amount, RdTag effectTag,
             Vector3 hitPoint, Vector3 hitDirection,
             AbilitySO sourceAbility = null)
@@ -41,6 +45,22 @@ namespace RedDust.Ability
             HitPoint = hitPoint;
             HitDirection = hitDirection.normalized;
             SourceAbility = sourceAbility;
+            ImpactEffect = null;
+        }
+
+        /// <summary>完整构造（含 ImpactEffect）。</summary>
+        public SDamageInfo(GameObject caster, GameObject target, float amount, RdTag effectTag,
+            Vector3 hitPoint, Vector3 hitDirection,
+            AbilitySO sourceAbility, ImpactEffectSO impactEffect)
+        {
+            Caster = caster;
+            Target = target;
+            Amount = amount;
+            EffectTag = effectTag;
+            HitPoint = hitPoint;
+            HitDirection = hitDirection.normalized;
+            SourceAbility = sourceAbility;
+            ImpactEffect = impactEffect;
         }
 
         public static SDamageInfo None => default;

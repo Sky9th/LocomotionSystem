@@ -1,4 +1,6 @@
 using RedDust.Ability;
+using RedDust.Character.Animation;
+using RedDust.Character.Animation.Drivers.HitReaction;
 using RedDust.Core;
 using RedDust.Core.Events;
 using RedDust.Properties;
@@ -78,8 +80,94 @@ namespace RedDust.Character.Combat
             Debug.Log($"[Combat] {hit.Target.name} HP: {before:F1} -{finalAmount:F1} → {ctx.Properties.GetFloat(CharacterConst.PropertyPath.Vitals.HP):F1}");
         }
 
-        private void OnReaction(SDamageInfo hit, float finalAmount) { }
-        private void OnDamaged(SDamageInfo hit, float finalAmount) { }
+        private void OnReaction(SDamageInfo hit, float finalAmount)
+        {
+            var impact = hit.ImpactEffect;
+            if (impact == null) return;
+            // TODO: 霸体阈值判定 — 比较 staggerValue vs 自身霸体值，决定是否受击
+
+            var locoSet = ctx.ResolvedLocoAnimSet;
+            if (locoSet == null) return;
+
+            // 受击等级由 ImpactEffectSO 资产决定
+            var mixer = impact.reactionLevel switch
+            {
+                EHitReactionLevel.Stagger   => locoSet.hitReactionStagger,
+                EHitReactionLevel.Knockdown => locoSet.hitReactionKnockdown,
+                _                           => locoSet.hitReactionFlinch,  // Flinch default
+            };
+
+            // HitDirection → 本地空间
+            var (localX, localY) = WorldToLocalDirection(hit.HitDirection, ctx.Root);
+
+            var request = new AnimationRequest
+            {
+                DriverType = EDriverType.HitReaction,
+                Resistance = Mathf.CeilToInt(impact.staggerValue),
+                FadeIn = 0.1f,
+                CustomData = new SHitReactionData { Mixer = mixer, DirX = localX, DirY = localY },
+            };
+
+            // Knockdown → 击倒动画结束后链式提交起身
+            if (impact.reactionLevel == EHitReactionLevel.Knockdown)
+                request.OnCompleted = _ => ChainGetUp();
+
+            ctx.Animation?.SubmitRequest(request);
+        }
+
+        private void OnDamaged(SDamageInfo hit, float finalAmount)
+        {
+            float hp = ctx.Properties.GetFloat(CharacterConst.PropertyPath.Vitals.HP);
+            if (hp <= 0f)
+            {
+                var locoSet = ctx.ResolvedLocoAnimSet;
+                if (locoSet == null) return;
+
+                var request = new AnimationRequest
+                {
+                    DriverType = EDriverType.HitReaction,
+                    Resistance = int.MaxValue,  // 死亡不可打断
+                    FadeIn = 0.1f,
+                    CustomData = new SHitReactionData
+                    {
+                        Mixer = locoSet.hitReactionKnockdown,
+                        DirX = 0f,
+                        DirY = -1f
+                    },
+                    // 无 OnCompleted → 不起身，停在倒地 pose
+                };
+
+                ctx.Animation?.SubmitRequest(request);
+            }
+        }
+
+        private void ChainGetUp()
+        {
+            var locoSet = ctx.ResolvedLocoAnimSet;
+            if (locoSet == null) return;
+
+            var request = new AnimationRequest
+            {
+                DriverType = EDriverType.HitReaction,
+                Resistance = 0,  // 可被任何受击打断
+                FadeIn = 0.2f,
+                CustomData = new SHitReactionData
+                {
+                    Mixer = locoSet.hitReactionGetUp,
+                    DirX = 0f,
+                    DirY = 1f
+                },
+            };
+
+            ctx.Animation?.SubmitRequest(request);
+        }
+
+        /// <summary>世界空间方向 → 角色本地空间 (X=右, Y=前)。</summary>
+        private static (float x, float y) WorldToLocalDirection(Vector3 worldDir, Transform root)
+        {
+            Vector3 local = root.InverseTransformDirection(worldDir);
+            return (-local.x, -local.z);  // 反向：HitDirection 是伤害飞行方向，受击反应需要冲击来向
+        }
 
         #endregion
     }
