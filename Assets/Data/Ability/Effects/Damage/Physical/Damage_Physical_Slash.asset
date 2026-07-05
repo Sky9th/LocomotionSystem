@@ -13,13 +13,10 @@ MonoBehaviour:
   m_Name: Damage_Physical_Slash
   m_EditorClassIdentifier: 
   effectTag: {fileID: 11400000, guid: 7651a80b5cf07914396abc1d912c2d5f, type: 2}
-  description: "\u5207\u5272\u4F24\u5BB3\u57FA\u7C7B\u3002\u5203\u5668\u780D\u51FB\uFF08\u5200/\u5251/\u65A7\uFF09\u3002\u5339\u914D\u62A4\u7532\u516C\u5F0F
+  description: "\u5207\u5272\u4F24\u5BB3\u3002\u5203\u5668\u780D\u51FB\uFF08\u5200/\u5251/\u65A7\uFF09\u3002\u5339\u914D\u62A4\u7532\u516C\u5F0F
     Slash \u6297\u6027"
   duration: 0
   stackable: 0
   maxStacks: 1
   applicationBlockedTags: []
   baseValue: 15
-  modAdd: 0
-  modMult: 1
-  priority: 0

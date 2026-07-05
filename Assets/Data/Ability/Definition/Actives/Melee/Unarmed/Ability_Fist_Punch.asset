@@ -17,8 +17,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   description: "\u5FEB\u901F\u76F4\u62F3\u3002\u5F92\u624B\u57FA\u7840\u653B\u51FB\uFF0C\u4F4E\u6D88\u8017\u4F4E\u4F24\u5BB3\uFF0C\u53EF\u8FDE\u51FB\u3002"
   abilityTag: {fileID: 11400000, guid: fd7cdad92d326744cab299bb420e5d2b, type: 2}
-  targetEffects:
-  - {fileID: 11400000, guid: de87450416f65d2498da30674ab9e9ef, type: 2}
+  targetEffects: []
   selfEffects:
   - {fileID: 11400000, guid: 6aaaeb8895687ff4faff6a8a0f49daa9, type: 2}
   cooldownDuration: 0.6

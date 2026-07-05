@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f07d31e48a57bf42a1d71f7e76b0d90, type: 3}
+  m_Name: DamageMod_Special_True_Strong
+  m_EditorClassIdentifier: 
+  effectTag: {fileID: 11400000, guid: c9643f4c009d9eb4097b860e75723833, type: 2}
+  description: "\u771F\u5B9E\u4F24\u5BB3\u4FEE\u6B63\xB7\u5F3A +200%\u3002Boss \u7EC8\u7ED3\u6280/\u5267\u60C5\u4E8B\u4EF6"
+  duration: 0
+  stackable: 0
+  maxStacks: 1
+  applicationBlockedTags: []
+  targetTag: {fileID: 11400000, guid: c9643f4c009d9eb4097b860e75723833, type: 2}
+  modAdd: 0
+  modPercent: 2
+  priority: 0

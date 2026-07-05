@@ -14,12 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   effectTag: {fileID: 11400000, guid: 55b9eae78c65f1849af133ce27482d5e, type: 2}
   description: "\u5760\u843D\u4F24\u5BB3\u3002\u8DCC\u843D/\u51FB\u98DE\u843D\u5730\u3002baseValue=15
-    \u4E3A\u73AF\u5883\u56FA\u5B9A\u503C\uFF0C\u6309\u9AD8\u5EA6\u7F29\u653E"
+    \u4E3A\u73AF\u5883\u56FA\u5B9A\u503C"
   duration: 0
   stackable: 0
   maxStacks: 1
   applicationBlockedTags: []
   baseValue: 15
-  modAdd: 0
-  modMult: 1
-  priority: 0

@@ -13,13 +13,10 @@ MonoBehaviour:
   m_Name: Damage_Physical_Blunt
   m_EditorClassIdentifier: 
   effectTag: {fileID: 11400000, guid: 57e0ce184f310be46adfe880c17005d5, type: 2}
-  description: "\u949D\u51FB\u4F24\u5BB3\u57FA\u7C7B\u3002\u9524/\u68CD/\u62F3/\u76FE\u51FB\u3002\u5339\u914D\u62A4\u7532\u516C\u5F0F
+  description: "\u949D\u51FB\u4F24\u5BB3\u3002\u9524/\u68CD/\u62F3/\u76FE\u51FB\u3002\u5339\u914D\u62A4\u7532\u516C\u5F0F
     Blunt \u6297\u6027"
   duration: 0
   stackable: 0
   maxStacks: 1
   applicationBlockedTags: []
   baseValue: 12
-  modAdd: 0
-  modMult: 1
-  priority: 0

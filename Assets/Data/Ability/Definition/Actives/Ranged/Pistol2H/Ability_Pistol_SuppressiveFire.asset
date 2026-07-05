@@ -18,7 +18,6 @@ MonoBehaviour:
   description: "3s\u8FDE\u53D1\u538B\u5236\u3002\u76F4\u7EBF15m\uFF0C\u4F4E\u4F24+\u51CF\u901F2s\u3002\u6D88\u8017\u5F39\u836F5\u3002"
   abilityTag: {fileID: 11400000, guid: 6f4d05b4de8335a469fa32be238c5d15, type: 2}
   targetEffects:
-  - {fileID: 11400000, guid: c4fa017476fb6314e9a980916d01c93b, type: 2}
   - {fileID: 11400000, guid: 3b092e6f879d4e5459ce0e71253fab9b, type: 2}
   selfEffects:
   - {fileID: 11400000, guid: 973b1e5f634810d44b35ba6ba2e363dd, type: 2}

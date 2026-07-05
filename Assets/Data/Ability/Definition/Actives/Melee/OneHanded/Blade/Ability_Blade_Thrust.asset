@@ -19,7 +19,6 @@ MonoBehaviour:
     + \u51FB\u9000\u3002\u5E26RootMotion\u3002\u52A8\u753B: AttackDForward_RM\u3002"
   abilityTag: {fileID: 11400000, guid: 7a56637865b7dd44482b24880fad9305, type: 2}
   targetEffects:
-  - {fileID: 11400000, guid: c4fa017476fb6314e9a980916d01c93b, type: 2}
   - {fileID: 11400000, guid: 6e6b920217808dd4f9f831bf6586fc61, type: 2}
   selfEffects:
   - {fileID: 11400000, guid: 5daea6c8b6d7be3498b33df7eb1c55e5, type: 2}

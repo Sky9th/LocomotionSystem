@@ -15,11 +15,11 @@ MonoBehaviour:
   internalName: Blade_HeavyChop
   displayName: "\u5200\xB7\u91CD\u5288 (AttackC)"
   icon: {fileID: 0}
-  description: "\u7AD6\u5288\u91CD\u51FB\u3002\u76F4\u7EBF2.5m\uFF0CSlash 1.5\xD7\u9AD8\u4F24\u3002\u52A8\u753B:
+  description: "\u7AD6\u5288\u91CD\u51FB\u3002\u76F4\u7EBF2.5m\uFF0CSlash +50%\u9AD8\u4F24\u3002\u52A8\u753B:
     AttackC1hMelee\u3002"
   abilityTag: {fileID: 11400000, guid: 6f71942e0625c474b8ee5a9e0a6e7780, type: 2}
   targetEffects:
-  - {fileID: 11400000, guid: 89b724ec839edd94d92ec037a1cb074a, type: 2}
+  - {fileID: 11400000, guid: e069ed5561dddc14da6ec1deb8c3346f, type: 2}
   - {fileID: 11400000, guid: 9a4b128740a6d4449a7d53eecdbd3d88, type: 2}
   selfEffects:
   - {fileID: 11400000, guid: 5daea6c8b6d7be3498b33df7eb1c55e5, type: 2}

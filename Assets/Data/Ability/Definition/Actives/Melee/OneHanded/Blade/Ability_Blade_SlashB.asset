@@ -19,7 +19,6 @@ MonoBehaviour:
     AttackB1hMelee\u3002"
   abilityTag: {fileID: 11400000, guid: 9d93e93127c552348a240896b44f2fa6, type: 2}
   targetEffects:
-  - {fileID: 11400000, guid: 89b724ec839edd94d92ec037a1cb074a, type: 2}
   - {fileID: 11400000, guid: 5a0be14c65472ee4789ed324eab46365, type: 2}
   selfEffects:
   - {fileID: 11400000, guid: 6aaaeb8895687ff4faff6a8a0f49daa9, type: 2}

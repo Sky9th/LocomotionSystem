@@ -19,7 +19,6 @@ MonoBehaviour:
     3HitComboBForward_RM\u3002"
   abilityTag: {fileID: 11400000, guid: 4e312641db3005a409ac52c82928b502, type: 2}
   targetEffects:
-  - {fileID: 11400000, guid: 89b724ec839edd94d92ec037a1cb074a, type: 2}
   - {fileID: 11400000, guid: 9a4b128740a6d4449a7d53eecdbd3d88, type: 2}
   selfEffects:
   - {fileID: 11400000, guid: 70facfca473305a41b84fd38e444a598, type: 2}

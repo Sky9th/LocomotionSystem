@@ -13,13 +13,10 @@ MonoBehaviour:
   m_Name: Damage_Physical_Pierce
   m_EditorClassIdentifier: 
   effectTag: {fileID: 11400000, guid: 1f6b1aafde16dce4885fad33a9277602, type: 2}
-  description: "\u7A7F\u523A\u4F24\u5BB3\u57FA\u7C7B\u3002\u67AA\u68B0/\u5F13\u7BAD/\u523A\u5200/\u5C16\u523A\u9677\u9631\u3002\u5339\u914D\u62A4\u7532\u516C\u5F0F
+  description: "\u7A7F\u523A\u4F24\u5BB3\u3002\u67AA\u68B0/\u5F13\u7BAD/\u523A\u5200/\u5C16\u523A\u9677\u9631\u3002\u5339\u914D\u62A4\u7532\u516C\u5F0F
     Pierce \u6297\u6027"
   duration: 0
   stackable: 0
   maxStacks: 1
   applicationBlockedTags: []
   baseValue: 12
-  modAdd: 0
-  modMult: 1
-  priority: 0

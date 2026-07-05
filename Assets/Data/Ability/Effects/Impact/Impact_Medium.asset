@@ -19,6 +19,7 @@ MonoBehaviour:
   stackable: 0
   maxStacks: 1
   applicationBlockedTags: []
+  reactionLevel: 0
   staggerValue: 15
   knockbackForce: 1
   knockbackDir: 0

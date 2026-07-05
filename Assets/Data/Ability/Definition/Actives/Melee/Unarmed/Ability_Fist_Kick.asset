@@ -18,7 +18,6 @@ MonoBehaviour:
   description: "\u524D\u8E22\u3002\u4E2D\u7B49\u4F24\u5BB3\uFF0C\u5C0F\u5E45\u51FB\u9000\u76EE\u6807\u3002\u62F3\u51FB\u540E\u53EF\u8FDE\u62DB\u3002"
   abilityTag: {fileID: 11400000, guid: ea2d46a848b108c43872dbb96532e229, type: 2}
   targetEffects:
-  - {fileID: 11400000, guid: de87450416f65d2498da30674ab9e9ef, type: 2}
   - {fileID: 11400000, guid: 5a0be14c65472ee4789ed324eab46365, type: 2}
   selfEffects:
   - {fileID: 11400000, guid: 5daea6c8b6d7be3498b33df7eb1c55e5, type: 2}

@@ -20,6 +20,3 @@ MonoBehaviour:
   maxStacks: 1
   applicationBlockedTags: []
   baseValue: 5
-  modAdd: 0
-  modMult: 1
-  priority: 0
