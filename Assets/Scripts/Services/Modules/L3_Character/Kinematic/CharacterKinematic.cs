@@ -46,9 +46,8 @@ namespace RedDust.Character.Kinematic
             }
             else aimDirection = ctx.ModelRoot.forward;
 
-            var lookDirection = CharacterHeadLook.Evaluate(aimDirection, ctx.ModelRoot, ctx.Root,
-                props.GetFloat(CharacterConst.PropertyPath.Body.MaxHeadYaw),
-                props.GetFloat(CharacterConst.PropertyPath.Body.MaxHeadPitch));
+            // Head Look IK 延后（俯视角游戏优先级低）。将来用 Animation Rigging MultiAimConstraint 实现。
+            var lookDirection = Vector2.zero;
 
             var maxSlopeAngle = props.GetFloat(CharacterConst.PropertyPath.Movement.MaxSlopeAngle);
             var groundContact = EvaluateGroundContactAndApplyConstraints(maxSlopeAngle, groundSystem, deltaTime, ref position, rig);

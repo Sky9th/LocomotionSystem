@@ -13,8 +13,8 @@ namespace RedDust.Character.Animation
         menuName = "RedDust/Animation/Locomotion/Locomotion Animation Config")]
     public sealed class LocomotionAnimationConfigSO : ScriptableObject
     {
-        [Header("Head Look")]
-        [Min(0f)] public float headLookSmoothingSpeed = 5f;
+        // Head Look smoothing 已移除。Head Look IK 延后（俯视角游戏优先级低）。
+        // 将来用 Animation Rigging MultiAimConstraint 实现。
 
         [Header("Turn Speeds By Mode")]
         public AnimationModeConfigSO[] modeProfiles;

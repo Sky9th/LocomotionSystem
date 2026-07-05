@@ -22,14 +22,16 @@ namespace RedDust.Character.Audio
         public override void OnWire()
         {
             base.OnWire();
-            if (brain != null)
-                brain.OnFootstep += HandleFootstep;
+            // Footstep 音频延后（俯视角游戏脚步声优先级低，除非机器人等特殊角色）。
+            // if (brain != null)
+            //     brain.OnFootstep += HandleFootstep;
         }
 
         private void OnDestroy()
         {
-            if (brain != null)
-                brain.OnFootstep -= HandleFootstep;
+            // Footstep 音频延后。
+            // if (brain != null)
+            //     brain.OnFootstep -= HandleFootstep;
         }
 
         private void HandleFootstep()

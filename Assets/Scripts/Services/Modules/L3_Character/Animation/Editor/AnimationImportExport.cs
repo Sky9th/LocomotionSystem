@@ -47,7 +47,7 @@ namespace RedDust.Character.Animation
         public string name;
         public string directory;
         public string[] modeProfiles;              // {directory}/{name} paths
-        public float headLookSmoothingSpeed = 5f;
+        // headLookSmoothingSpeed — 已移除。Head Look IK 延后。
         public float defaultInPlaceTurnSpeed = 360f;
         public float defaultMovingTurnSpeed = 720f;
         public float landDistanceThreshold = 0.5f;
@@ -304,7 +304,7 @@ namespace RedDust.Character.Animation
                 name = config.name,
                 directory = SplitAssetPath(AssetDatabase.GetAssetPath(config)).dir,
             };
-            entry.headLookSmoothingSpeed = config.headLookSmoothingSpeed;
+            // entry.headLookSmoothingSpeed — Head Look IK 延后
             entry.defaultInPlaceTurnSpeed = config.defaultInPlaceTurnSpeed;
             entry.defaultMovingTurnSpeed = config.defaultMovingTurnSpeed;
             entry.landDistanceThreshold = config.landDistanceThreshold;
@@ -825,7 +825,7 @@ namespace RedDust.Character.Animation
         private static void ApplyLocomotionConfig(LocomotionAnimationConfigSO config, LocomotionConfigEntry entry,
             Dictionary<string, Object> nameLookup, Dictionary<string, Object> createdThisSession, List<string> errors)
         {
-            config.headLookSmoothingSpeed = entry.headLookSmoothingSpeed;
+            // config.headLookSmoothingSpeed — Head Look IK 延后
             config.defaultInPlaceTurnSpeed = entry.defaultInPlaceTurnSpeed;
             config.defaultMovingTurnSpeed = entry.defaultMovingTurnSpeed;
             config.landDistanceThreshold = entry.landDistanceThreshold;

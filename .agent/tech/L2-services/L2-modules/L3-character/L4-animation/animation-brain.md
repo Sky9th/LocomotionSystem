@@ -1,8 +1,8 @@
 # AnimationBrain · 动画总控
 
-> **Last Verified**: 2026-07-05 | **Verification**: All referenced files exist, signatures match code
+> **Last Verified**: 2026-07-06 | **Verification**: All referenced files exist, signatures match code. HeadLook layer + CharacterHeadLook.cs deleted v0.38.6. Footstep bridge deferred.
 
-> `Character/Animation/AnimationBrain.cs` — MonoBehaviour, 7层 Animancer 管理 + HeadLook 混合 + RootMotion。3 个 Driver（Locomotion, Traversal, Ability, HitReaction）。
+> `Character/Animation/AnimationBrain.cs` — MonoBehaviour, 6层 Animancer 管理 + RootMotion。4 个 Driver（Locomotion, Traversal, Ability, HitReaction）。Head Look IK 延后，Footstep 桥接延后。
 
 ## 调用链
 
@@ -17,8 +17,10 @@
 调谁:
   DriverArbiter.Resolve()         → 仲裁 + 驱动动画
   baseLayer.TryPlay()             → Animancer 播放
-  headLookMixer.Parameter         → HeadLook 混合参数
   characterRig.Apply*()           → 根运动转发
+
+注: HeadLook 层 + mixer 已删除 (v0.38.6)。Footstep 桥接已注释。
+    将来 IK 用 Animation Rigging MultiAimConstraint 实现。
 ```
 
 ## 耦合模块

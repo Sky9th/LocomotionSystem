@@ -97,7 +97,7 @@
 
 ---
 
-## S3 — Ability Pipeline 运行时 [~2天剩余]
+## S3 — Ability Pipeline 运行时 [✅ 完成]
 
 > 背景: S2 闭环用现有 AbilityExecutor 直接调用。S3 将管道正式化为 8 State 状态机（Gating → Cost → Windup → Cooldown → Execution → Recovery）。
 > 实现文档: [ability-pipeline-states.md](../tech/L2-services/L2-modules/L3-ability/ability-pipeline-states.md)
@@ -111,7 +111,7 @@
 | S3.2 | **`AbilityReactor` + `CharacterCombat`** | `Resolve(SDamageInfo)` + 回调桥接（Effect/Resolution/ApplyDamage/Reaction/OnDamaged） | ✅ 框架完成 |
 | S3.3 | **`AbilityDriver`** | ③ 释放动画 — 继承 `BaseAnimationDriver`，消费 `AbilityActivationSO` Windup→Fire→Recovery | ✅ 完成 |
 | S3.4 | **伤害飘字** | `DamageNumberOverlay` + `DamageNumberWidget` — HP 变化时弹出浮动数字 | ✅ 完成 |
-| S3.5 | **闭环测试 + 旧代码清理** | Q 键全链路验证 ✅；被动触发管线 ✅；`OLD_IMPLEMENTATION` 清理 | ⚠️ 旧代码待删 |
+| S3.5 | **闭环测试 + 旧代码清理** | Q 键全链路验证 ✅；被动触发管线 ✅；`OLD_IMPLEMENTATION` 清理 ✅ | ✅ 完成 |
 
 ### S3.1 已完成（全 8 State）
 
@@ -144,7 +144,7 @@
 - **AbilityForest 接入 InstanceManager**: ✅ SyncPassivesFromForest → SyncInstances 桥接（v0.38.3）
 - **被动触发 dispatch**: ✅ OnEquip/OnHit/OnKill/OnDamaged 全部就位（v0.38.3）
 - **管道动画卡死修复**: ✅ DriverArbiter + AbilityDriver + Activation recoveryDuration（v0.38.4）
-- **旧代码清理**: ⏳ AbilityExecutor 旧 `#region OLD_IMPLEMENTATION` 删除（TryActivate、ExecutePassive 等）
+- **旧代码清理**: ✅ AbilityExecutor `#region OLD_IMPLEMENTATION` 全量清理 + AbilitySearch.cs/SearchState.cs 删除（v0.38.5）
 - **废弃文件删除**: ✅ AbilityEffects.cs 已删除（v0.38.0）
 
 **可验证增量**: 按 Q → 门控 → AbilityDriver 播放横斩动画 → Fire 帧物理查询 → 命中结算扣血 → 伤害飘字 → 受击反应动画。
@@ -166,16 +166,17 @@
 
 ---
 
-## S5 — 动画系统补完 [~2天]
+## S5 — 动画系统补完 [~1天]
 
-> S5.0（受击动画管线）已完成。S5.2 替代旧方案：当前头部朝向通过 `Vector2MixerState` 混合动画 Pose 实现，
-> 改为安装 Unity Animation Rigging 包，用 `MultiAimConstraint` + `RigBuilder` 直接驱动头骨 IK 朝向目标点。
+> S5.0（受击动画管线）已完成。S5.2 Head Look IK 延后——俯视角游戏优先级非常低。
+> 旧 Vector2MixerState + CharacterHeadLook + headLookMixer 方案已全量删除（v0.38.5），
+> 将来用 Unity Animation Rigging 包 `MultiAimConstraint` + `RigBuilder` 实现。
 
 | # | 任务 | 说明 | 耗时 | 状态 |
 |---|------|------|------|------|
 | S5.0 | **受击动画管线** | HitReactionDriver + DriverArbiter 抢占 + LocomotionAnimationSetSO hitReaction 字段 | ~1天 | ✅ 完成 |
-| S5.1 | Footstep 事件桥接 | `BaseLayer.FootstepCallback → AnimationBrain.OnFootstep` | ~0.5天 | ⏳ |
-| S5.2 | **Head Look IK** | 安装 Animation Rigging 包 + 新建 `HeadLookIK` + 移除旧 headLookMixer | ~1天 | ⏳ |
+| S5.1 | Footstep 事件桥接 | `BaseLayer.FootstepCallback → AnimationBrain.OnFootstep → CharacterAudio` | 🔒 延后 — 俯视角脚步声优先级低，桥接代码已注释留占位 |
+| S5.2 | **Head Look IK** | 安装 Animation Rigging 包 + 新建 `HeadLookIK` | ~1天 | 🔒 延后 — 俯视角优先级低，旧代码已清除留占位 |
 | S5.3 | Crawl 动画 mixer | `BaseMovingState` + `LocomotionAnimationSetSO` + `crawlMixer` | ~0.5天 | ⏳ |
 | S5.4 | AirLand 分级落地 | Gait 参数混合 `landLight/landHard` LinearMixer | ~0.5天 | ⏳ |
 | S5.5 | Traversal 动画迁移 | `TraversalDriver` → `TraversalAnimationSetSO` | ~0.5天 | ⏳ |
@@ -203,9 +204,9 @@
 ## 优先级依赖
 
 ```
-S3.5 (闭环测试 ✅ · 被动管线 ✅ · 旧代码清理 ⏳) ──── 当前焦点
+S3.5 (闭环测试 ✅ · 被动管线 ✅ · 旧代码清理 ✅) ──── 完成
     │
-    ├── S4 (~1天 — Combat 补完) ──── 下一站
+    ├── S4 (~1天 — Combat 补完) ──── 当前焦点
     │
     └── S5 (~2天 — 动画补完, S5.0 ✅) ──── 可并行
 

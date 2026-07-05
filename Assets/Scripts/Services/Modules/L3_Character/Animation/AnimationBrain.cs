@@ -16,14 +16,14 @@ namespace RedDust.Character.Animation
     public sealed class AnimationBrain : ModuleHub, IModuleChild
     {
         // ── Constants ──
-        public const int TotalLayerCount = 7;
+        public const int TotalLayerCount = 6;
         public const int FullBody = 0;
         public const int UpperBody = 1;
         public const int Arm = 2;
         public const int Additive = 3;
         public const int Facial = 4;
-        public const int HeadLook = 5;
-        public const int Footstep = 6;
+        // HeadLook = 5 — 已移除。Head Look IK 延后（俯视角游戏优先级低），将来用 Animation Rigging MultiAimConstraint 实现。
+        public const int Footstep = 5;
 
         // ── Serialized ──
         [Header("Dependencies")]
@@ -37,7 +37,6 @@ namespace RedDust.Character.Animation
         private AnimancerLayer fullBodyLayer;
         private AnimancerLayer upperBodyLayer;
         private AnimancerLayer armLayer;
-        private AnimancerLayer headLookLayer;
 
         // ── Core State ──
         private CharacterBuildContext buildCtx;
@@ -47,12 +46,6 @@ namespace RedDust.Character.Animation
         public float SpeedMultiplier { get; private set; } = 1f;
         private EMovementGait lastAppliedGait = (EMovementGait)(-1);
         private object lastAppliedState;
-
-        // ── Head Look ──
-        private Vector2MixerState headLookMixer;
-        private bool headLookInitialized;
-        private float headLookSmoothedYaw;
-        private float headLookSmoothedPitch;
 
         // ── Events ──
         public event System.Action OnFootstep;
@@ -64,7 +57,8 @@ namespace RedDust.Character.Animation
         public AnimancerLayer FullBodyLayer => fullBodyLayer;
         public AnimancerLayer UpperBodyLayer => upperBodyLayer;
         public AnimancerLayer ArmLayer => armLayer;
-        public AnimancerLayer HeadLookLayer => headLookLayer;
+
+        // HeadLookLayer — 已移除。将来用 Animation Rigging MultiAimConstraint 实现 IK。
 
         protected override void Awake()
         {
@@ -101,7 +95,7 @@ namespace RedDust.Character.Animation
                 armLayer = BindLayer(Arm, buildCtx.ArmMask);
                 BindLayer(Additive, buildCtx.AdditiveMask);
                 BindLayer(Facial, buildCtx.FacialMask);
-                headLookLayer = BindLayer(HeadLook, buildCtx.HeadMask);
+                // HeadLook layer 已移除。将来用 Animation Rigging MultiAimConstraint 实现 IK。
                 BindLayer(Footstep, buildCtx.FootMask);
             }
         }
@@ -110,10 +104,11 @@ namespace RedDust.Character.Animation
         {
             base.Start();  // Registry.OnWireAll() → LocomotionDriver.OnWire 创建 BaseLayer
 
-            // 桥接 footstep 回调（依赖 Driver.OnWire 创建的 BaseLayer）
-            var locoDriver = GetComponent<LocomotionDriver>();
-            if (locoDriver?.BaseLayer != null)
-                locoDriver.BaseLayer.FootstepCallback = () => OnFootstep?.Invoke();
+            // Footstep 事件桥接延后（俯视角游戏脚步声优先级低，除非机器人等特殊角色）。
+            // 保留 OnFootstep 事件签名 + BaseLayer.FootstepCallback 基础设施，将来需要时重新接线。
+            // var locoDriver = GetComponent<LocomotionDriver>();
+            // if (locoDriver?.BaseLayer != null)
+            //     locoDriver.BaseLayer.FootstepCallback = () => OnFootstep?.Invoke();
         }
 
         private void OnAnimatorMove()
@@ -136,42 +131,13 @@ namespace RedDust.Character.Animation
         internal void Apply(in SCharacterFrameContext ctx)
         {
             fullBodyArbiter.Resolve(ctx, Time.deltaTime);
-            UpdateHeadLook(ctx);
+            // UpdateHeadLook(ctx); — Head Look IK 延后（俯视角游戏优先级低）
             ApplySpeedMultiplier(ctx);
         }
 
-        // ── Head Look ──
-
-        private void UpdateHeadLook(in SCharacterFrameContext ctx)
-        {
-            if (headLookMixer == null) return;
-
-            if (!headLookInitialized)
-            {
-                FreezeHeadLookChildren();
-                headLookInitialized = true;
-            }
-
-            Vector2 target = ctx.Kinematic.LookDirection;
-            float speed = buildCtx.LocomotionAnimConfig != null ? buildCtx.LocomotionAnimConfig.headLookSmoothingSpeed : 12f;
-            float step = speed * Time.deltaTime;
-
-            headLookSmoothedYaw = Mathf.MoveTowards(headLookSmoothedYaw, target.x, step);
-            headLookSmoothedPitch = Mathf.MoveTowards(headLookSmoothedPitch, target.y, step);
-            headLookMixer.Parameter = new Vector2(headLookSmoothedYaw, headLookSmoothedPitch);
-        }
-
-        private void FreezeHeadLookChildren()
-        {
-            if (headLookMixer == null) return;
-            for (int i = 0; i < headLookMixer.ChildCount; i++)
-            {
-                var child = headLookMixer.GetChild(i);
-                child.Speed = 0f;
-                child.Weight = 1f;
-                child.NormalizedTime = 1f;
-            }
-        }
+        // Head Look IK 延后（俯视角游戏优先级低）。
+        // 将来用 Unity Animation Rigging 包：MultiAimConstraint + RigBuilder 驱动头骨 IK。
+        // 旧 Vector2MixerState 方案已移除（UpdateHeadLook / FreezeHeadLookChildren）。
 
         // ── Root Motion Speed Matching ──
 

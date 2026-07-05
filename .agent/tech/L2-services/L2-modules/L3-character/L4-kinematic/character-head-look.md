@@ -1,6 +1,8 @@
-# CharacterHeadLook · 头部注视计算
+# CharacterHeadLook · 头部注视计算 ⛔ STALE
 
-> `Character/Kinematic/CharacterHeadLook.cs` — static 类，计算头部 yaw/pitch
+> **Last Verified**: 2026-07-06 | **Verification**: STALE — `CharacterHeadLook.cs` deleted in v0.38.6. Head Look IK 延后。
+>
+> `Character/Kinematic/CharacterHeadLook.cs` — static 类（已删除），计算头部 yaw/pitch。保留本文档供将来 IK 实现参考。
 
 ## 调用链
 
