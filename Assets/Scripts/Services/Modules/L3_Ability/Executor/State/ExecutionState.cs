@@ -7,7 +7,6 @@ namespace RedDust.Ability
 {
     /// <summary>
     /// ⑤ 效果载荷 + 逐 hit 结算。Fire 帧物理查询（Cone/Ray/Circle → ctx.Targets）→ 构造伤害 → Reactor 落地。
-    /// AbilitySearch 和 AbilityEffects 均已内联。SearchState ⛔ DEPRECATED。
     /// 通过 → RecoveryState。
     ///
     /// TODO Phase 4.2: fireWindowDuration 多帧命中窗口 — OnTick 循环在 fireWindowDuration 内每帧执行物理查询
@@ -214,7 +213,7 @@ namespace RedDust.Ability
 
         #endregion
 
-        #region Search (inlined from SearchState ⛔ DEPRECATED)
+        #region Search (内联物理查询 — Cone/Ray/Circle)
 
         private static List<GameObject> ExecuteSearch(AbilitySearchSO search, GameObject caster, Vector3 origin, Vector3 direction)
         {

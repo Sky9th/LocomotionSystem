@@ -221,20 +221,10 @@ namespace RedDust.Ability
             }
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // ▼ OLD IMPLEMENTATION — ⛔ 即将废弃，Pipeline 全量接管后删除
-        // ═══════════════════════════════════════════════════════════════
-        #region OLD_IMPLEMENTATION
+        // ── 公开状态（管道 States + 外部模块读取） ──
 
         public RdTagContainer OwnedTags { get; } = new();
 
-        [Header("Passives")]
-        [SerializeField] private PassiveAbilitySO[] initialPassives;
-
-        private readonly List<PassiveAbilitySO> runtimePassives = new();
-        private readonly AbilitySearch _search = new();
-
-        public System.Func<PassiveAbilitySO, GameObject, string> TargetFilterCallback;
         public System.Func<EffectSO, GameObject, float, float> OutgoingDamageCallback;
         /// <summary>命中结算完成通知。caster 侧消费——触发 OnHit 被动、吸血、连招衔接等。</summary>
         public System.Action<SDamageInfo, float> OnHitResolved;
@@ -244,21 +234,12 @@ namespace RedDust.Ability
         /// <summary>相位级扣除回调。PropertyTable 不存在时接管 Phase 2。</summary>
         public System.Action<CostEffectSO[]> ApplyCostCallback;
 
+        // ── 冷却系统 ──
+
         private readonly Dictionary<string, float> cooldownEndTimes = new();
         private readonly List<string> cooldownExpiredBuffer = new();
         private float cooldownCleanupAccum;
         private readonly List<(string tag, float expiryTime, object owner)> _buffTags = new();
-
-        private void Awake()
-        {
-            if (initialPassives == null) return;
-            foreach (var p in initialPassives)
-            {
-                if (p != null) runtimePassives.Add(p);
-            }
-        }
-
-        // private void Update() { CleanupExpiredCooldowns(); }  // ← moved to NEW
 
         private void CleanupExpiredCooldowns()
         {
@@ -339,7 +320,7 @@ namespace RedDust.Ability
             }
         }
 
-        #region Physics Callbacks
+        // ── Unity 物理回调 ──
 
         private void OnTriggerEnter(Collider other)
         {
@@ -350,205 +331,5 @@ namespace RedDust.Ability
         {
             NotifyPassiveEvent(ETriggerEvent.OnExitArea, other.gameObject);
         }
-
-        #endregion
-
-        #region Gates
-
-        private bool PassTargetRequiredTag(PassiveAbilitySO passive, GameObject target)
-        {
-            if (passive.targetRequiredTag == null) return true;
-            var identity = target.GetComponent<Identity>();
-            if (identity == null) return false;
-            if (!identity.Tags.HasTag(passive.targetRequiredTag.FullTag)) return false;
-            return true;
-        }
-
-        private bool PassCooldown(AbilitySO ability)
-        {
-            if (ability.cooldownDuration <= 0f || ability.abilityTag == null) return true;
-            return !IsOnCooldown(ability.abilityTag.FullTag);
-        }
-
-        private void ApplyCooldown(AbilitySO ability)
-        {
-            if (ability.cooldownDuration <= 0f || ability.abilityTag == null) return;
-            AddCooldown(ability.abilityTag.FullTag, ability.cooldownDuration);
-        }
-
-        #endregion
-
-        #region Passive
-
-        private void ExecutePassive(PassiveAbilitySO passive, GameObject target)
-        {
-            ApplyEffects(passive, passive.selfEffects, gameObject);
-            ApplyEffects(passive, passive.targetEffects, target);
-            ApplyCooldown(passive);
-        }
-
-        private void ApplyEffects(PassiveAbilitySO source, EffectSO[] effects, GameObject target)
-        {
-            if (effects == null) return;
-            foreach (var effect in effects)
-            {
-                if (effect == null) continue;
-
-                if (effect is DamageEffectSO dmg)
-                {
-                    // TODO: baseDamage 已改为 baseValue，装备系统填充。后续重写。
-                }
-
-                if (effect.duration > 0f && effect.effectTag != null)
-                {
-                    if (target == gameObject)
-                        OwnedTags.AddTag(effect.effectTag.FullTag);
-                    else
-                        target.GetComponent<Identity>()?.Tags.AddTag(effect.effectTag.FullTag);
-                }
-            }
-        }
-
-        public void AddPassive(PassiveAbilitySO passive) { /* TODO */ }
-        public void RemovePassive(PassiveAbilitySO passive) { /* TODO */ }
-
-        #endregion
-
-        #region Active
-
-        public bool TryActivate(ActiveAbilitySO ability, Vector3 origin, Vector3 direction)
-        {
-            if (ability == null) return false;
-
-            Debug.Log($"[Ability] TryActivate: {ability.internalName} | origin={origin} dir={direction}");
-
-            // ── ② Gating ──
-            if (!PassCooldown(ability))
-            {
-                Debug.Log($"[Ability] ② Rejected: {ability.internalName} — on cooldown");
-                return false;
-            }
-
-            if (!ability.overrideExclusion)
-            {
-                if (ability.abilityTag?.Parent != null && OwnedTags.HasTag(ability.abilityTag.Parent.FullTag))
-                {
-                    Debug.Log($"[Ability] ② Rejected: {ability.internalName} — mutual exclusion ({ability.abilityTag.Parent.FullTag})");
-                    return false;
-                }
-
-                if (ability.extraExclusionTags != null)
-                {
-                    foreach (var tag in ability.extraExclusionTags)
-                    {
-                        if (tag != null && OwnedTags.HasTag(tag.FullTag))
-                        {
-                            Debug.Log($"[Ability] ② Rejected: {ability.internalName} — extra exclusion ({tag.FullTag})");
-                            return false;
-                        }
-                    }
-                }
-            }
-
-            if (GatingConditionCallback != null)
-            {
-                var reason = GatingConditionCallback(ability);
-                if (reason != null)
-                {
-                    Debug.Log($"[Ability] ② Rejected: {ability.internalName} — condition: {reason}");
-                    return false;
-                }
-            }
-
-            // ── ③ Cost ──
-            if (ability.selfEffects != null)
-            {
-                var costs = new List<CostEffectSO>();
-                foreach (var effect in ability.selfEffects)
-                {
-                    if (effect is CostEffectSO cost && cost.def != null)
-                        costs.Add(cost);
-                }
-
-                if (costs.Count > 0)
-                {
-                    var costArray = costs.ToArray();
-                    if (PreviewCostCallback == null)
-                    {
-                        Debug.LogError($"[Ability] PreviewCostCallback is null");
-                        return false;
-                    }
-                    var rejectReason = PreviewCostCallback(costArray);
-                    if (rejectReason != null)
-                    {
-                        Debug.Log($"[Ability] ③ Cost fail: {ability.internalName} — {rejectReason}");
-                        return false;
-                    }
-
-                    ApplyCostCallback?.Invoke(costArray);
-                }
-            }
-
-            if (ability.cooldownDuration > 0f && ability.abilityTag != null)
-                OwnedTags.AddTag(ability.abilityTag.FullTag);
-
-            // ── ④ Search ──
-            var targets = ability.search != null
-                ? _search.Execute(ability.search, gameObject, origin, direction)
-                : new List<GameObject>();
-
-            Debug.Log($"[Ability] ④ Search: {ability.internalName} type={ability.search?.searchType} hits={targets.Count}");
-
-            // ── ⑤ Effects ──
-            if (ability.selfEffects != null)
-            {
-                foreach (var effect in ability.selfEffects)
-                {
-                    if (effect is CostEffectSO) continue;
-                    if (effect is BuffEffectSO buff) { ApplyBuff(buff, gameObject); continue; }
-                    if (effect.duration > 0f && effect.effectTag != null)
-                        OwnedTags.AddTag(effect.effectTag.FullTag);
-                }
-            }
-
-            if (ability.targetEffects != null && targets.Count > 0)
-            {
-                foreach (var target in targets)
-                {
-                    foreach (var effect in ability.targetEffects)
-                    {
-                        if (effect is BuffEffectSO buff) { ApplyBuff(buff, target); continue; }
-                        if (effect.duration > 0f && effect.effectTag != null)
-                            target.GetComponent<Identity>()?.Tags.AddTag(effect.effectTag.FullTag);
-                    }
-                }
-            }
-
-            ApplyCooldown(ability);
-
-            Debug.Log($"[Ability] ✅ Activated: {ability.internalName} | targets={targets.Count}");
-            return true;
-        }
-
-        private void ApplyBuff(BuffEffectSO buff, GameObject target)
-        {
-            if (buff == null || target == null) return;
-
-            if (buff.grantedTags != null && buff.grantedTags.Length > 0)
-            {
-                var targetAC = target.GetComponent<AbilityExecutor>();
-                if (targetAC != null)
-                {
-                    foreach (var tag in buff.grantedTags)
-                        targetAC.OwnedTags.AddTag(tag);
-                    if (buff.duration > 0f)
-                        targetAC.AddBuffTags(buff.grantedTags, Time.time + buff.duration);
-                }
-            }
-        }
-
-        #endregion
-
-        #endregion
     }
 }

@@ -53,10 +53,10 @@
 ┌─────────────────────────▼──────────────────────────────────────────┐
 │                   管理层 (AbilityComponent + HitReactionComponent)   │
 │                                                                     │
-│  AbilityComponent (发送中枢):                                        │
-│    主动 — TryActivate(ability) → ②③④⑤ → HitReactionComponent      │
-│    被动 — NotifyEvent(event, subject) → match PassiveAbilitySO     │
-│    内部 — OwnedTags / runtimePassives[] / cooldownEndTimes          │
+│  AbilityExecutor (发送中枢):                                           │
+│    主动 — TryUse(ability) → Pipeline 8 State → AbilityReactor        │
+│    被动 — NotifyPassiveEvent(event, subject) → match PassiveAbilitySO│
+│    内部 — OwnedTags / InstanceManager / cooldownEndTimes              │
 │                                                                     │
 │  HitReactionComponent (接收中枢, 同 GameObject):                     │
 │    主动命中 — Resolve(SResolvedHit[], caster) → ⑥⑦ → ⑧            │

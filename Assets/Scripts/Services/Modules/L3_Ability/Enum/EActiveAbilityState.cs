@@ -16,9 +16,6 @@ namespace RedDust.Ability
         /// <summary>③ 前摇计时。等待 windupDuration / animationSpeed — WindupState。</summary>
         Windup = 2,
 
-        /// <summary>⛔ DEPRECATED — 搜索已内联至 ExecutionState。SearchState 保留供参考。</summary>
-        Search = 3,
-
         /// <summary>⑤ 资源消耗。预检+扣除 — CostState。</summary>
         Cost = 4,
 

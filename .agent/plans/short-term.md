@@ -1,6 +1,6 @@
 # 短期开发计划
 
-> 更新: 2026-07-05
+> 更新: 2026-07-06
 > 分支: `feature/ability-pipeline`
 > 原则: 每步有可玩增量，先完成基础设施再铺玩法
 > 前置: Character 模块重构 ✅ · Properties 系统 ✅ · Animation 重构 ✅ · Ability 数据资产 ✅ · AbilityTreeSO ✅ · EntityService + Container ✅ · Tag 6 域 339 标签 ✅ · Equipment→技能闭环 ✅ · PropertyTree Equipment 层重构 ✅ · Ability Pipeline 8 State 全就位 ✅
@@ -44,6 +44,12 @@
 | **S1 Properties 深度接入** | 删除 Physique 缓存，GroundLocomotion 实现 motionSpeedScale 公式（Agility + CarryWeight）|
 | **Physique 删除** | 8 字段 struct 全量替换为 PropertyTable.GetFloat 按需读取，全代码库统一 |
 | **Damage 管线重构** | DamageEffectSO 类型拆分（实体通道 + DamageModifierEffectSO 技能修正）；SDamageInfo per-channel DamageEntry[]；公式 base×(1+Σ%)+Σadd；tag 层级匹配；删除 AbilityEffects.cs |
+| **S5 被动技能系统** | 5 个被动技能资产（ToughBody/DeepWound/BerserkerBlood/LastStand/Caltrop）+ 4 Buff Effect + 9 Tag + Human_InnatePassives 树 |
+| **被动管线运行时** | AbilityForest→SyncInstances 桥接；OnEquip/OnHit/OnKill/OnDamaged dispatch；OnTriggerEnter/Exit 迁移 |
+| **FloatAdjunct Max 扩容** | MaxAdd/MaxMultiply 支持属性上限扩容；FloatState.Effective 用 effectiveMax 钳制 |
+| **PassiveBarOverlay** | 被动技能栏 UI — 参考 AbilityBarOverlay，顶部居中，15Hz 轮询 |
+| **管道动画修复** | DriverArbiter 拒绝不清队列 + _skipCompletionThisFrame + AbilityDriver 事件 Clear |
+| **Activation 补全** | 10 个 Activation 资产补 recoveryDuration（clip 帧数推算）+ Import/Export 支持 |
 
 ---
 
@@ -105,7 +111,7 @@
 | S3.2 | **`AbilityReactor` + `CharacterCombat`** | `Resolve(SDamageInfo)` + 回调桥接（Effect/Resolution/ApplyDamage/Reaction/OnDamaged） | ✅ 框架完成 |
 | S3.3 | **`AbilityDriver`** | ③ 释放动画 — 继承 `BaseAnimationDriver`，消费 `AbilityActivationSO` Windup→Fire→Recovery | ✅ 完成 |
 | S3.4 | **伤害飘字** | `DamageNumberOverlay` + `DamageNumberWidget` — HP 变化时弹出浮动数字 | ✅ 完成 |
-| S3.5 | **闭环测试 + 旧代码清理** | Q 键全链路验证；AbilityExecutor 旧 `#region OLD` 清理 | ⏳ 待做 |
+| S3.5 | **闭环测试 + 旧代码清理** | Q 键全链路验证 ✅；被动触发管线 ✅；`OLD_IMPLEMENTATION` 清理 | ⚠️ 旧代码待删 |
 
 ### S3.1 已完成（全 8 State）
 
@@ -131,13 +137,15 @@
 - `CharacterCombat.OnResolveDamage()` — 基础 Mitigation（Endurance 减免），Avoidance/Absorption 占位
 - `CharacterCombat.OnApplyDamage()` — HP 直接写入 + 日志
 
-### S3.5 待完成
+### S3.5 进度
 
-- **闭环测试**: 按 Q → AbilityExecutor.TryActivate → 8 State 全链路 → AbilityReactor.Resolve → CharacterCombat → 伤害飘字
-- **旧代码清理**: AbilityExecutor 旧 `#region OLD_IMPLEMENTATION` 删除（TryActivate、ExecutePassive、OnTriggerEnter/Exit）；废弃文件 SearchState.cs 删除
-- **废弃文件删除**: AbilityEffects.cs ✅ 已删除（v0.38.0）
-- **被动技能物理回调迁移**: OnTriggerEnter/Exit 当前仍用 `runtimePassives`，未接入 InstanceManager → 迁移至 InstanceManager 统一管理
-- **AbilityForest 接入 InstanceManager**: SyncInstances 调用链打通，AbilityForest 从 InstanceManager 获取实例列表同步
+- **闭环测试**: ✅ 按 Q → TryUse → 8 State 全链路 → Reactor.Resolve → CharacterCombat → 伤害飘字
+- **被动技能物理回调迁移**: ✅ OnTriggerEnter/Exit 已迁移到 NotifyPassiveEvent（v0.38.3）
+- **AbilityForest 接入 InstanceManager**: ✅ SyncPassivesFromForest → SyncInstances 桥接（v0.38.3）
+- **被动触发 dispatch**: ✅ OnEquip/OnHit/OnKill/OnDamaged 全部就位（v0.38.3）
+- **管道动画卡死修复**: ✅ DriverArbiter + AbilityDriver + Activation recoveryDuration（v0.38.4）
+- **旧代码清理**: ⏳ AbilityExecutor 旧 `#region OLD_IMPLEMENTATION` 删除（TryActivate、ExecutePassive 等）
+- **废弃文件删除**: ✅ AbilityEffects.cs 已删除（v0.38.0）
 
 **可验证增量**: 按 Q → 门控 → AbilityDriver 播放横斩动画 → Fire 帧物理查询 → 命中结算扣血 → 伤害飘字 → 受击反应动画。
 
@@ -195,7 +203,7 @@
 ## 优先级依赖
 
 ```
-S3.5 (~1天 — 闭环测试 + 旧代码清理 + InstanceManager 集成) ──── 当前焦点
+S3.5 (闭环测试 ✅ · 被动管线 ✅ · 旧代码清理 ⏳) ──── 当前焦点
     │
     ├── S4 (~1天 — Combat 补完) ──── 下一站
     │

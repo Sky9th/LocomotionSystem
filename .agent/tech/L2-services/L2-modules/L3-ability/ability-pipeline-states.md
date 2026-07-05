@@ -1,6 +1,6 @@
 # Ability Pipeline — 状态机实现
 
-> **Last Verified**: 2026-07-05 | **Verification**: All referenced files exist, signatures match code
+> **Last Verified**: 2026-07-06 | **Verification**: All referenced files exist, signatures match code. SearchState + AbilitySearch deleted in v0.38.5.
 
 ## Layer Position
 
@@ -120,11 +120,6 @@ public abstract class AbilityPipelineState : IState<SActiveAbilityContext>
 - **公开方法**: `internal static string ResolveCooldownKey(AbilitySO)` — 供 CooldownState 复用
 - **拒绝时输出** `Debug.LogWarning` 含具体原因
 
-### SearchState ⛔ DEPRECATED
-
-- **文件**: `Executor/State/SearchState.cs`
-- **状态**: 物理查询已内联至 `ExecutionState`。Debug Draw 保留供参考。不再是管道链中的一环。
-
 ### CostState（④ 资源消耗）
 
 - **文件**: `Executor/State/CostState.cs`
@@ -201,6 +196,6 @@ public abstract class AbilityPipelineState : IState<SActiveAbilityContext>
 | RecoveryState animationSpeed 除法 | ✅ Done 2026-07-01 — recoveryDuration / animationSpeed | this session |
 | ExecutionState EffectCallback 接入 | ✅ Done 2026-07-01 — BuildDamageInfo 构建后调用外部修正 | this session |
 | CooldownState cooldownAbilityTags 清理 | ✅ Done 2026-07-01 — 移除冗余 identity 映射 + 重复 AddTag | this session |
-| AbilitySearch.cs 删除 | Pipeline 完全接管后，旧 TryActivate 删除时一并清理 | DEPRECATED 标注 |
-| SearchState 正式删除 | 等待旧 TryActivate 清除后 | ⛔ DEPRECATED 标注中 |
+| AbilitySearch.cs 删除 | ✅ Done 2026-07-06 — v0.38.5 已删除文件 | this session |
+| SearchState 正式删除 | ✅ Done 2026-07-06 — v0.38.5 已删除文件 | this session |
 | AbilityDriver 阶段机 + 动画驱动 | Activation/Recovery State 当前用计时占位，AbilityDriver 实现后接管 | Slice 3 |
