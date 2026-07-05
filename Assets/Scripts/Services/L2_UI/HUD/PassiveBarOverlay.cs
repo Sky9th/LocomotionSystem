@@ -36,8 +36,6 @@ namespace RedDust.UI
             if (ability == null) return;
 
             var passives = ability.PassiveAbilities;
-            if (passives.Length != _passives.Length)
-                Debug.Log($"[PassiveBar] Update: {passives.Length} passives (was {_passives.Length})");
             _passives = passives;
             EnsureSlots(passives.Length);
             RefreshSlots(ability);

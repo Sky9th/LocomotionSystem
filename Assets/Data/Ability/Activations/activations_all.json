@@ -13,6 +13,7 @@
       "rootMotion": false,
       "windupDuration": 0.1,
       "fireWindowDuration": 0.15,
+      "recoveryDuration": 0.75,
       "canCancelWindup": true,
       "canCancelRecovery": true
     },
@@ -27,6 +28,7 @@
       "rootMotion": false,
       "windupDuration": 0.4,
       "fireWindowDuration": 0.2,
+      "recoveryDuration": 0.57,
       "canCancelWindup": true,
       "canCancelRecovery": false
     },
@@ -41,6 +43,7 @@
       "rootMotion": false,
       "windupDuration": 0.15,
       "fireWindowDuration": 0.18,
+      "recoveryDuration": 0.67,
       "canCancelWindup": true,
       "canCancelRecovery": true
     },
@@ -55,6 +58,7 @@
       "rootMotion": true,
       "windupDuration": 0.2,
       "fireWindowDuration": 0.15,
+      "recoveryDuration": 1.12,
       "canCancelWindup": false,
       "canCancelRecovery": true
     },
@@ -69,6 +73,7 @@
       "rootMotion": false,
       "windupDuration": 0.0,
       "fireWindowDuration": 0.6,
+      "recoveryDuration": 0.6,
       "canCancelWindup": false,
       "canCancelRecovery": false
     },
@@ -83,6 +88,7 @@
       "rootMotion": true,
       "windupDuration": 0.0,
       "fireWindowDuration": 1.0,
+      "recoveryDuration": 1.07,
       "canCancelWindup": false,
       "canCancelRecovery": false
     },
@@ -97,6 +103,7 @@
       "rootMotion": true,
       "windupDuration": 0.0,
       "fireWindowDuration": 1.0,
+      "recoveryDuration": 0.83,
       "canCancelWindup": false,
       "canCancelRecovery": false
     },
@@ -111,6 +118,7 @@
       "rootMotion": false,
       "windupDuration": 0.3,
       "fireWindowDuration": 0.0,
+      "recoveryDuration": 1.2,
       "canCancelWindup": false,
       "canCancelRecovery": true
     },
@@ -125,6 +133,7 @@
       "rootMotion": false,
       "windupDuration": 0.0,
       "fireWindowDuration": 0.1,
+      "recoveryDuration": 0.0,
       "canCancelWindup": false,
       "canCancelRecovery": true
     },
@@ -139,6 +148,7 @@
       "rootMotion": false,
       "windupDuration": 0.0,
       "fireWindowDuration": 3.0,
+      "recoveryDuration": 0.0,
       "canCancelWindup": false,
       "canCancelRecovery": false
     }

@@ -205,7 +205,6 @@ namespace RedDust.Ability
         public void NotifyPassiveEvent(ETriggerEvent trigger, GameObject subject)
         {
             var matches = _instances.GetByTrigger(trigger);
-            Debug.Log($"[Passive] NotifyPassiveEvent trigger={trigger} subject={subject?.name} matches={matches.Count}");
             foreach (var inst in matches)
                 _pendingPassiveStarts.Enqueue((inst, new List<GameObject> { subject }));
         }
@@ -214,7 +213,6 @@ namespace RedDust.Ability
         public void SyncInstances(PassiveAbilitySO[] passives, object source)
         {
             _instances.DeactivateBySource(source);
-            Debug.Log($"[Passive] SyncInstances source={source} count={passives?.Length ?? 0} totalActive={_instances.Count}");
             if (passives == null) return;
             foreach (var p in passives)
             {

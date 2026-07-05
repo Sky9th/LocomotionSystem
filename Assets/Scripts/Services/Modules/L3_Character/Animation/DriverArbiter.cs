@@ -18,6 +18,7 @@ namespace RedDust.Character.Animation
         private AnimationRequest activeRequest;
         private ICharacterAnimationDriver activeDriver;
         private bool activeCompleted;
+        private bool _skipCompletionThisFrame;
 
         public AnimationRequest ActiveRequest => activeRequest;
 
@@ -108,7 +109,11 @@ namespace RedDust.Character.Animation
                 activeRequest.OnInterrupt?.Invoke(activeRequest);
                 AcceptRequest(driver, request);
             }
-            // else: 拒绝 — Traversal↔Ability 互斥
+            else
+            {
+                // 拒绝 — Traversal↔Ability 互斥。不清队列，下帧重试。
+                return;
+            }
 
             queue.Clear();
         }
@@ -118,11 +123,13 @@ namespace RedDust.Character.Animation
             activeDriver = driver;
             activeRequest = request;
             activeCompleted = false;
+            _skipCompletionThisFrame = true;
             driver.OnStarted(request);
         }
 
         private void CheckCompletion()
         {
+            if (_skipCompletionThisFrame) { _skipCompletionThisFrame = false; return; }
             if (activeRequest == null || activeCompleted) return;
             float t = layer.CurrentState?.NormalizedTime ?? 0f;
             if (t >= 0.99f)

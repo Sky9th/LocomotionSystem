@@ -32,10 +32,13 @@ namespace RedDust.Ability
             else
             {
                 _windupDuration = 0f;
+                if (activation == null && !ctx.SkipAnim)
+                    Debug.LogWarning($"[Windup] {ctx.Ability?.internalName}: activation is null, Pipeline will skip Windup immediately.");
             }
             _elapsed = 0f;
 
-            ctx.Executor.SubmitAbilityAnimation(activation);
+            if (!ctx.Executor.SubmitAbilityAnimation(activation) && !ctx.SkipAnim)
+                Debug.LogWarning($"[Windup] {ctx.Ability?.internalName}: SubmitAbilityAnimation failed — no brain or no animationClip on activation.");
         }
 
         public override IState<SActiveAbilityContext> OnTick(ref SActiveAbilityContext ctx, float dt)

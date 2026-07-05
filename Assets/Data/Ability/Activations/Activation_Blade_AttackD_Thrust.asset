@@ -22,5 +22,5 @@ MonoBehaviour:
   windupDuration: 0.2
   fireWindowDuration: 0.15
   canCancelWindup: 0
-  recoveryDuration: 0
+  recoveryDuration: 1.12
   canCancelRecovery: 1

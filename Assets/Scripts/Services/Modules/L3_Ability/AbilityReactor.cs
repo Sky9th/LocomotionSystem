@@ -63,7 +63,6 @@ namespace RedDust.Ability
                 ? hit.SourceAbility?.selfEffects
                 : hit.SourceAbility?.targetEffects;
             ApplyEffects(effects, hit.SourceInstance);
-            Debug.Log($"[Passive] Reactor.Resolve target={hit.Target?.name} effects={effects?.Length ?? 0} sourceAbility={hit.SourceAbility?.internalName}");
 
             // ── ① Damage Resolution ──
             var damage = hit.Damage;
@@ -143,7 +142,6 @@ namespace RedDust.Ability
                         Debug.LogWarning($"[Passive] ApplyBuff {buff.name}: property '{adj.property.Id}' not in PropertyTable structure, skipped");
                         continue;
                     }
-                    Debug.Log($"[Passive] ApplyBuff {buff.name} → {path} (id={adj.property.Id}) add={adj.valueAdd} mul={adj.valueMultiply} maxAdd={adj.maxAdd} maxMul={adj.maxMultiply} expiry={expiry}");
                     _propertyTable.AddAdjunct(new FloatAdjunct
                     {
                         Owner = owner,

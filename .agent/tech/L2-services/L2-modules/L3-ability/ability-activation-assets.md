@@ -1,8 +1,9 @@
 # Ability Activation — 激活方式资产树
 
+> **Last Verified**: 2026-07-06 | **Verification**: All referenced files exist, recoveryDuration now populated
 > `L3_Ability/` · 资产清单 · 2026-06-13
 >
-> 完整 AbilityActivationSO 资产树。每个资产定义技能「怎么放」——输入模型、动画阶段、取消策略。
+> 完整 AbilityActivationSO 资产树。每个资产定义技能「怎么放」——输入模型、动画阶段、取消策略。v0.38.4 补全了所有资产的 `recoveryDuration`（clip帧数/30FPS - windup - fire）。
 > 设计依据：[ability-pipeline-design.md](ability-pipeline-design.md) 维度③ + [ability-inventory.md](ability-inventory.md) 154 技能全量。
 
 ---

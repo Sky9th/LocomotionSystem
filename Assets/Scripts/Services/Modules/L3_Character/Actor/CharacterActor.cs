@@ -261,11 +261,6 @@ namespace RedDust.Character
             if (ability == null || abilityForest == null) return;
 
             var passives = abilityForest.ResolvedPassives;
-            Debug.Log($"[Passive] SyncPassivesFromForest: {passives?.Length ?? 0} passives resolved" +
-                (passives != null && passives.Length > 0
-                    ? $" — [{string.Join(", ", System.Array.ConvertAll(passives, p => p?.internalName ?? "null"))}]"
-                    : ""));
-
             ability.SyncInstances(passives, "innate");
 
             // OnEquip 被动：首次激活时执行一次 Pipeline FSM
@@ -274,10 +269,7 @@ namespace RedDust.Character
                 foreach (var p in passives)
                 {
                     if (p != null && p.trigger == ETriggerEvent.OnEquip)
-                    {
-                        Debug.Log($"[Passive] Triggering OnEquip for: {p.internalName}");
                         ability.NotifyPassiveEvent(ETriggerEvent.OnEquip, gameObject);
-                    }
                 }
             }
         }

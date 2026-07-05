@@ -18,6 +18,7 @@ namespace RedDust.Ability
 
         public SActiveAbilityContext Context => _ctx;
         public float StateTime => _fsm.StateTime;
+        public EActiveAbilityState? CurrentState => (_fsm.Current as AbilityPipelineState)?.Id;
 
         public bool Start(
             AbilityInstance instance,

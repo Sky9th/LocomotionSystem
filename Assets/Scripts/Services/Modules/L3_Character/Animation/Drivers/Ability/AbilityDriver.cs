@@ -39,8 +39,9 @@ namespace RedDust.Character.Animation.Drivers.Ability
                 float fireNorm = activation.windupDuration / activation.animationClip.length;
                 if (fireNorm < 1f)
                 {
-                    _fireSequence = null;  // 强制重新初始化（state 复用场景）
+                    _fireSequence = null;
                     state.Events(ref _fireSequence);
+                    _fireSequence.Clear();  // 清除旧 clip 复用残留的事件
                     _fireSequence.Add(fireNorm, () => request.OnMarker?.Invoke(request));
                 }
             }

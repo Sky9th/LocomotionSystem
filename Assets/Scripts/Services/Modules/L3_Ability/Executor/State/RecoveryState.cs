@@ -27,6 +27,8 @@ namespace RedDust.Ability
             else
             {
                 _recoveryDuration = 0f;
+                if (activation == null && !ctx.SkipAnim)
+                    Debug.LogWarning($"[Recovery] {ctx.Ability?.internalName}: activation is null, Pipeline will skip Recovery immediately.");
             }
             _elapsed = 0f;
         }

@@ -23,6 +23,7 @@ namespace RedDust.Ability
         public bool rootMotion;
         public float windupDuration;
         public float fireWindowDuration;
+        public float recoveryDuration;
         public bool canCancelWindup;
         public bool canCancelRecovery;
     }
@@ -64,6 +65,7 @@ namespace RedDust.Ability
                     rootMotion = a.rootMotion,
                     windupDuration = a.windupDuration,
                     fireWindowDuration = a.fireWindowDuration,
+                    recoveryDuration = a.recoveryDuration,
                     canCancelWindup = a.canCancelWindup,
                     canCancelRecovery = a.canCancelRecovery,
                 });
@@ -181,6 +183,7 @@ namespace RedDust.Ability
             a.rootMotion = e.rootMotion;
             a.windupDuration = e.windupDuration;
             a.fireWindowDuration = e.fireWindowDuration;
+            a.recoveryDuration = e.recoveryDuration;
             a.canCancelWindup = e.canCancelWindup;
             a.canCancelRecovery = e.canCancelRecovery;
         }
