@@ -34,7 +34,7 @@ namespace RedDust.Ability
         [System.Serializable]
         public class EffectEntry
         {
-            public string effectType;  // "Damage" | "Impact" | "Execute" | "Cost" | "Buff"
+            public string effectType;  // "Damage" | "DamageMod" | "Impact" | "Execute" | "Cost" | "Buff"
             public string name;        // asset name (without .asset)
             public string description;  // designer-readable text
             public string directory;   // relative to EffectsRoot, e.g. "Damage/Fire"
@@ -44,10 +44,13 @@ namespace RedDust.Ability
             public int maxStacks = 1;
             public string[] applicationBlockedTags; // FullTag strings, nullable
 
-            // Damage
+            // Damage (DamageEffectSO)
             public float baseValue;
+
+            // Damage Modifier (DamageModifierEffectSO)
+            public string targetTag;   // FullTag string
             public float modAdd;
-            public float modMult = 1f;
+            public float modPercent;
             public int priority;
 
             // Impact
@@ -118,9 +121,13 @@ namespace RedDust.Ability
                     case DamageEffectSO d:
                         entry.effectType = "Damage";
                         entry.baseValue = d.baseValue;
-                        entry.modAdd = d.modAdd;
-                        entry.modMult = d.modMult;
-                        entry.priority = d.priority;
+                        break;
+                    case DamageModifierEffectSO m:
+                        entry.effectType = "DamageMod";
+                        entry.targetTag = m.targetTag?.FullTag;
+                        entry.modAdd = m.modAdd;
+                        entry.modPercent = m.modPercent;
+                        entry.priority = m.priority;
                         break;
                     case ImpactEffectSO i:
                         entry.effectType = "Impact";
@@ -205,7 +212,7 @@ namespace RedDust.Ability
 
             // ── Phase 2: Validate ──
             var valid = new List<EffectEntry>();
-            var validTypes = new HashSet<string> { "Damage", "Impact", "Execute", "Cost", "Buff" };
+            var validTypes = new HashSet<string> { "Damage", "DamageMod", "Impact", "Execute", "Cost", "Buff" };
             foreach (var entry in importFile.effects)
             {
                 if (string.IsNullOrWhiteSpace(entry.name))
@@ -323,6 +330,7 @@ namespace RedDust.Ability
                     "Execute" => ScriptableObject.CreateInstance<ExecuteEffectSO>(),
                     "Cost" => ScriptableObject.CreateInstance<CostEffectSO>(),
                     "Buff" => ScriptableObject.CreateInstance<BuffEffectSO>(),
+                    "DamageMod" => ScriptableObject.CreateInstance<DamageModifierEffectSO>(),
                     _ => null,
                 };
                 if (instance == null) { errors.Add($"'{entry.name}': unknown type"); skipped++; continue; }
@@ -354,6 +362,7 @@ namespace RedDust.Ability
         private static string EffectTypeString(EffectSO e) => e switch
         {
             DamageEffectSO => "Damage",
+            DamageModifierEffectSO => "DamageMod",
             ImpactEffectSO => "Impact",
             ExecuteEffectSO => "Execute",
             CostEffectSO => "Cost",
@@ -378,9 +387,13 @@ namespace RedDust.Ability
             {
                 case DamageEffectSO d:
                     d.baseValue = entry.baseValue;
-                    d.modAdd = entry.modAdd;
-                    d.modMult = entry.modMult;
-                    d.priority = entry.priority;
+                    break;
+                case DamageModifierEffectSO m:
+                    tagByFullTag.TryGetValue(entry.targetTag ?? "", out var targetTag);
+                    m.targetTag = targetTag;
+                    m.modAdd = entry.modAdd;
+                    m.modPercent = entry.modPercent;
+                    m.priority = entry.priority;
                     break;
                 case ImpactEffectSO i:
                     i.staggerValue = entry.staggerValue;
@@ -468,7 +481,7 @@ namespace RedDust.Ability
             int nw = 0, exist = 0;
             foreach (var e in preview.effects)
             {
-                switch (e.effectType) { case "Damage": dmg++; break; case "Impact": imp++; break; case "Execute": exe++; break; case "Cost": cost++; break; case "Buff": buff++; break; }
+                switch (e.effectType) { case "Damage": dmg++; break; case "Impact": imp++; break; case "Execute": exe++; break; case "Cost": cost++; break; case "Buff": buff++; break; case "DamageMod": dmg++; break; }
                 var dirName = string.IsNullOrWhiteSpace(e.directory) ? "" : e.directory;
                 var assetDir = string.IsNullOrEmpty(dirName) ? EffectImporter.EffectsRoot : Path.Combine(EffectImporter.EffectsRoot, dirName).Replace('\\', '/');
                 var assetPath = Path.Combine(assetDir, $"{e.name}.asset").Replace('\\', '/');

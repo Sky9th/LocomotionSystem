@@ -27,7 +27,8 @@
 │    └── SComboLink[]                                                │
 │                                                                   │
 │  EffectSO (abstract) — 纯数据，无运行时方法                        │
-│    ├── DamageEffectSO   (baseDamage + 穿透/上下限)                 │
+│    ├── DamageEffectSO         (baseValue, 实体伤害通道)            │
+│    ├── DamageModifierEffectSO (targetTag+modAdd+modPercent, 技能修正)│
 │    ├── ImpactEffectSO   (staggerValue + knockback)                │
 │    ├── ExecuteEffectSO  (hpThreshold)                             │
 │    └── CostEffectSO     (statTag + amount)                        │
@@ -146,8 +147,8 @@ Ability 系统消费的标签用途：
 ### EffectSO 设计原则
 
 - **纯数据**：SO 不写 Execute/Apply 方法，逻辑全在管道层
-- **共享契约**：DamageEffectSO 的 `baseValue` 由装备填入，`modAdd/modMult/priority` 由 Ability 填入。详见 [damage-effect-so.md](damage-effect-so.md)
-- **运行时叠加**：`(baseValue + modAdd) × modMult`，同 effectTag 多 Effect 按 priority 排序叠算
+- **类型拆分**：DamageEffectSO 是实体伤害通道（baseValue），DamageModifierEffectSO 是技能修正（targetTag+modAdd+modPercent）。详见 [damage-effect-so.md](damage-effect-so.md) + [damage-modifier-effect-so.md](damage-modifier-effect-so.md)
+- **运行时叠加**：`baseValue × (1 + ΣmodPercent) + ΣmodAdd`，百分比加法叠加避免 ×3×4 爆炸
 - **无需 SEffectInstance**：要不同值就建不同资产
 
 ### 互斥模型
@@ -181,7 +182,9 @@ Ability 系统消费的标签用途：
 | [ability-component.md](ability-component.md) | AbilityComponent — 能力执行中枢，API + 调用链 |
 | [ability-editor.md](ability-editor.md) | Ability Editor — 编辑器架构 |
 | [effect-so.md](effect-so.md) | EffectSO — 效果抽象基类 |
-| [damage-effect-so.md](damage-effect-so.md) | DamageEffectSO — 伤害效果契约（装备/Ability 共享） |
+| [damage-effect-so.md](damage-effect-so.md) | DamageEffectSO — 实体伤害通道（baseValue） |
+| [damage-modifier-effect-so.md](damage-modifier-effect-so.md) | DamageModifierEffectSO — 技能伤害修正器（targetTag+modAdd+modPercent） |
+| [damage-entry.md](damage-entry.md) | DamageEntry — 单通道伤害数据 struct |
 | [ability-search-assets.md](ability-search-assets.md) | **Search 资产树** — 完整 SearchSO JSON 清单 (~45 资产, Cone/Ray/Circle/Line) |
 | [ability-activation-assets.md](ability-activation-assets.md) | **Activation 资产树** — 完整 ActivationSO JSON 清单 (~28 资产, Instant/Charged/Channel/Toggle) |
 | [ability-noise-assets.md](ability-noise-assets.md) | **Noise 资产树** — 完整 NoiseEventSO JSON 清单 (~44 资产) + Noise Tag 依赖树 (17) |

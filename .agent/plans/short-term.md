@@ -133,7 +133,9 @@
 ### S3.5 待完成
 
 - **闭环测试**: 按 Q → AbilityExecutor.TryActivate → 8 State 全链路 → AbilityReactor.Resolve → CharacterCombat → 伤害飘字
-- **旧代码清理**: AbilityExecutor 旧 `#region OLD` 删除；SearchState.cs ⛔ DEPRECATED 正式删除
+- **旧代码清理**: AbilityExecutor 旧 `#region OLD_IMPLEMENTATION` 删除（TryActivate、ExecutePassive、OnTriggerEnter/Exit）；废弃文件 AbilityEffects.cs、SearchState.cs 删除
+- **被动技能物理回调迁移**: OnTriggerEnter/Exit 当前仍用 `runtimePassives`，未接入 InstanceManager → 迁移至 InstanceManager 统一管理
+- **AbilityForest 接入 InstanceManager**: SyncInstances 调用链打通，AbilityForest 从 InstanceManager 获取实例列表同步
 
 **可验证增量**: 按 Q → 门控 → AbilityDriver 播放横斩动画 → Fire 帧物理查询 → 命中结算扣血 → 伤害飘字 → 受击反应动画。
 
@@ -142,14 +144,15 @@
 ## S4 — Combat 管线补完 [~1天]
 
 > `CharacterCombat.cs` 已有骨架，⑤/⑥ 修改器公式当前为占位/TODO。S3.5 闭环测试通过后开工。
+> 回避/护盾/霸体依赖其他系统（闪避率、护盾值、霸体值），延后到对应系统就位后再处理。
 
-| # | 任务 | 涉及 |
-|---|------|------|
-| S4.1 | 施展方属性修正 — 力量/穿透 (`IEffectModifier`) | `CharacterCombat.OnEffectModify` |
-| S4.2 | 回避判定 — 闪避率 + 短路 | `CharacterCombat.OnResolveDamage` |
-| S4.3 | 吸收结算 — 护盾伤害吸收 | `CharacterCombat.OnResolveDamage` |
-| S4.4 | 霸体阈值判定 — staggerValue vs 自身霸体值 | `CharacterCombat.OnReaction` |
-| S4.5 | 字符串路径 → Properties 路径常量 | `CharacterCombat.cs` |
+| # | 任务 | 涉及 | 状态 |
+|---|------|------|------|
+| S4.1 | 施展方属性修正 — 力量/穿透 (`IEffectModifier`) | `CharacterCombat.OnEffectModify` | ⏳ |
+| S4.2 | 字符串路径 → Properties 路径常量 | `CharacterCombat.cs` | ⏳ |
+| S4.3 | **Reactor→Caster OnHit 通知通路** — Exe 侧知道命中是否完成，Caster→Reactor 反馈 | `AbilityReactor` / `AbilityExecutor` | ⏳ |
+| S4.4 | **SDamageInfo 职责明确** — Exe 侧算伤害还是交给 Reactor 算？定论后统一 | `SDamageInfo` / `ExecutionState` | ⏳ |
+| S4.5 | **Self-damage Amount=0** — 血魔法等技能的自我伤害公式 | `AbilityReactor.Resolve` | ⏳ |
 
 ---
 
@@ -169,19 +172,38 @@
 
 ---
 
+## 低优先级 / 技术债
+
+> 不阻塞当前里程碑，在 S3-S5 施工中顺手修复或远期处理。
+
+| # | 事项 | 说明 | 阻塞原因 |
+|---|------|------|----------|
+| L1 | **Avoidance/Mitigation/Absorption 三阶段拆分** | 替换单 ResolutionCallback 为三段管线 | 回避/护盾系统未就位 |
+| L2 | **回避判定** — 闪避率 + 短路 | `CharacterCombat.OnResolveDamage` | 闪避属性/装备系统 |
+| L3 | **吸收结算** — 护盾伤害吸收 | `CharacterCombat.OnResolveDamage` | 护盾系统未设计 |
+| L4 | **霸体阈值判定** — staggerValue vs 自身霸体值 | `CharacterCombat.OnReaction` | 霸体值属性体系 |
+| L5 | **ComputeDamage 交叉乘积按 element tag 匹配** | 伤害计算中元素类型交叉匹配逻辑 | — |
+| L6 | **RangedWeaponSO 临时 SO 泄漏** | `ScriptableObject.CreateInstance` 未销毁 | — |
+| L7 | **AddBuffTags 默认 owner=null** | 潜在 footgun，调用方容易漏传 owner | — |
+| L8 | **Reactor ApplyEffects 确认 public/private** | 明确 API 边界 | — |
+| L9 | **伤害类型转换** | 防弹衣穿刺→钝伤等类型映射 | 防弹衣系统未就位 |
+
+---
+
 ## 优先级依赖
 
 ```
-S3.5 (~0.5天 — 闭环测试 + 旧代码清理) ──── 当前焦点
+S3.5 (~1天 — 闭环测试 + 旧代码清理 + InstanceManager 集成) ──── 当前焦点
     │
-    ├── S4 (~1天 — Combat 补完) ─────────── 下一站
+    ├── S4 (~1天 — Combat 补完) ──── 下一站
     │
     └── S5 (~2天 — 动画补完, S5.0 ✅) ──── 可并行
 
+低优先级 L1-L5 ──── 远期 / 顺手修复
 S1 ✅ 完成（2026-07-05）
 ```
 
-**S3.5 → S4 直接依赖**：S4 的 OnEffectModify/OnResolveDamage 公式验证依赖闭环测试跑通。
+**S3.5 → S4 直接依赖**：S4 的 OnEffectModify/OnResolveDamage 公式验证依赖闭环测试跑通。S3.5 被动迁移 + InstanceManager 集成为后续三阶段拆分打底。
 
 ---
 

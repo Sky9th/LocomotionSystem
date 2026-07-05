@@ -21,43 +21,40 @@ namespace RedDust.Ability
             var def = (PassiveAbilitySO)target;
             if (def.targetEffects == null || def.targetEffects.Length == 0) return;
 
-            var damages = new List<DamageEffectSO>();
-            float instantTotal = 0f, dotTotal = 0f;
+            var damageMods = new List<DamageModifierEffectSO>();
             foreach (var e in def.targetEffects)
             {
-                if (e is DamageEffectSO dmg) { damages.Add(dmg); instantTotal += dmg.duration <= 0 ? dmg.baseValue : 0; dotTotal += dmg.duration > 0 ? dmg.baseValue * dmg.duration : 0; }
+                if (e is DamageModifierEffectSO mod) { damageMods.Add(mod); }
             }
-            if (damages.Count == 0) return;
+            if (damageMods.Count == 0) return;
 
             EditorGUILayout.Space(6);
             damageFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(damageFoldout,
-                $"Damage Preview — {instantTotal:F1} pts{(dotTotal > 0 ? $" + {dotTotal:F1} DoT" : "")}  ({damages.Count})");
+                $"Damage Modifiers — ({damageMods.Count})");
 
             if (damageFoldout)
             {
                 EditorGUI.indentLevel++;
                 EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Type", EditorStyles.miniLabel, GUILayout.Width(56));
-                EditorGUILayout.LabelField("Base", EditorStyles.miniLabel, GUILayout.Width(50));
+                EditorGUILayout.LabelField("Duration", EditorStyles.miniLabel, GUILayout.Width(56));
+                EditorGUILayout.LabelField("Target", EditorStyles.miniLabel, GUILayout.Width(120));
                 EditorGUILayout.LabelField("+Add", EditorStyles.miniLabel, GUILayout.Width(46));
-                EditorGUILayout.LabelField("×Mult", EditorStyles.miniLabel, GUILayout.Width(46));
+                EditorGUILayout.LabelField("%", EditorStyles.miniLabel, GUILayout.Width(46));
                 EditorGUILayout.LabelField("Pri", EditorStyles.miniLabel, GUILayout.Width(24));
                 EditorGUILayout.LabelField("Tag", EditorStyles.miniLabel, GUILayout.Width(100));
-                EditorGUILayout.LabelField("Effective", EditorStyles.miniLabel);
+                EditorGUILayout.LabelField("Formula", EditorStyles.miniLabel);
                 EditorGUILayout.EndHorizontal();
 
-                foreach (var dmg in damages)
+                foreach (var mod in damageMods)
                 {
                     EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField(dmg.duration <= 0 ? "Instant" : $"DoT {dmg.duration}s", GUILayout.Width(56));
-                    EditorGUILayout.LabelField($"{dmg.baseValue:F1}", GUILayout.Width(50));
-                    EditorGUILayout.LabelField(dmg.modAdd != 0 ? $"{dmg.modAdd:+0.#;-0.#}" : "—", GUILayout.Width(46));
-                    EditorGUILayout.LabelField(Mathf.Abs(dmg.modMult - 1f) > 0.001f ? $"{dmg.modMult:F2}" : "—", GUILayout.Width(46));
-                    EditorGUILayout.LabelField($"{dmg.priority}", GUILayout.Width(24));
-                    EditorGUILayout.LabelField(dmg.effectTag != null ? dmg.effectTag.FullTag : "—", GUILayout.Width(100));
-                    var eff = dmg.baseValue + dmg.modAdd;
-                    if (Mathf.Abs(dmg.modMult - 1f) > 0.001f) eff *= dmg.modMult;
-                    EditorGUILayout.LabelField($"{eff:F1}");
+                    EditorGUILayout.LabelField(mod.duration <= 0 ? "Instant" : $"DoT {mod.duration}s", GUILayout.Width(56));
+                    EditorGUILayout.LabelField(mod.targetTag != null ? mod.targetTag.name : "—", GUILayout.Width(120));
+                    EditorGUILayout.LabelField(mod.modAdd != 0 ? $"{mod.modAdd:+0.#;-0.#}" : "—", GUILayout.Width(46));
+                    EditorGUILayout.LabelField(mod.modPercent != 0 ? $"{mod.modPercent:+0%}" : "—", GUILayout.Width(46));
+                    EditorGUILayout.LabelField($"{mod.priority}", GUILayout.Width(24));
+                    EditorGUILayout.LabelField(mod.effectTag != null ? mod.effectTag.FullTag : "—", GUILayout.Width(100));
+                    EditorGUILayout.LabelField($"base × (1 + {mod.modPercent:P0}) + {mod.modAdd}");
                     EditorGUILayout.EndHorizontal();
                 }
                 EditorGUI.indentLevel--;

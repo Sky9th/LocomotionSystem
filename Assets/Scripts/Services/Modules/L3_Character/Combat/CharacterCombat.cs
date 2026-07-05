@@ -53,10 +53,11 @@ namespace RedDust.Character.Combat
             return baseDamage;
         }
 
-        /// <summary>承受方结算管线。Avoidance → Mitigation → Absorption。</summary>
+        /// <summary>承受方结算管线。Avoidance → Mitigation → Absorption。
+        /// 当前对 TotalAmount 统一减免，后续改为 per-DamageEntry 按 tag 路由抗性。</summary>
         private float OnResolveDamage(SDamageInfo hit)
         {
-            float amount = hit.Amount;
+            float amount = hit.TotalAmount;
             float incoming = amount;
 
             var endurance = ctx.Properties.GetFloat(CharacterConst.PropertyPath.Attributes.Endurance);
@@ -66,8 +67,9 @@ namespace RedDust.Character.Combat
             if (amount != incoming)
                 Debug.Log($"[Combat] {hit.Target.name} Mitigation: {incoming:F1} → {amount:F1} (endurance={endurance:F1})");
 
-            // TODO: Phase 4.2 — 回避判定（闪避率）
-            // TODO: Phase 4.2 — 吸收结算（护盾）
+            // TODO: 回避判定（闪避率）— 阻塞：闪避属性/装备系统未就位
+            // TODO: 吸收结算（护盾）— 阻塞：护盾系统未设计
+            // TODO: per-DamageEntry.Tag 路由抗性 — 当前统一 Endurance 减免，后续按 Slash/Pierce/Fire 分别查抗性
 
             return amount;
         }
@@ -84,7 +86,7 @@ namespace RedDust.Character.Combat
         {
             var impact = hit.ImpactEffect;
             if (impact == null) return;
-            // TODO: 霸体阈值判定 — 比较 staggerValue vs 自身霸体值，决定是否受击
+            // TODO: 霸体阈值判定（staggerValue vs 自身霸体值）— 阻塞：霸体值属性体系未建立
 
             var locoSet = ctx.ResolvedLocoAnimSet;
             if (locoSet == null) return;

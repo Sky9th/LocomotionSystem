@@ -14,7 +14,7 @@ namespace RedDust.UI
     /// RectTransformUtility 返回的 localPos 以 overlay 中心为原点，
     /// widget 锚点也是中心 → anchoredPosition = localPos 直接对齐，数字居中于命中点上方。
     ///
-    /// Amount 语义：预减免原始伤害（SDamageInfo.Amount），由 AbilityExecutor 产出。
+    /// Amount 语义：瞬时伤害总和（SDamageInfo.TotalAmount），施展方 outgoing 伤害。
     /// </summary>
     public class DamageNumberWidget : MonoBehaviour
     {

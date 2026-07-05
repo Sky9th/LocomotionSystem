@@ -138,8 +138,9 @@ namespace RedDust.UI
 
         private void OnHitReceived(SDamageInfo hit)
         {
-            // 过滤零伤害 / 完全回避
-            if (hit.Amount <= 0f) return;
+            // 过滤零伤害 / 完全回避（只显示瞬时伤害总和）
+            float totalAmount = hit.TotalAmount;
+            if (totalAmount <= 0f) return;
 
             // World → Screen 像素
             Vector3 screenPos = worldCamera.WorldToScreenPoint(hit.HitPoint);
@@ -155,7 +156,7 @@ namespace RedDust.UI
             var widget = GetWidget();
             if (widget == null) return; // 池耗尽，丢弃
 
-            widget.Play(hit.Amount, localPos);
+            widget.Play(totalAmount, localPos);
             _active.Add(widget);
         }
 

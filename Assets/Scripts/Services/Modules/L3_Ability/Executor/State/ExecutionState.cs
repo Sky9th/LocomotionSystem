@@ -57,11 +57,9 @@ namespace RedDust.Ability
             return new RecoveryState();
         }
 
-        #region Effects (inlined from AbilityEffects)
+        #region Effects
 
-        /// <summary>构造 SDamageInfo[]，每个 target 一个 hit。Buff/Tag 由 Reactor 处理。</summary>
-        // TODO: SDamageInfo 是否有必要存在？伤害公式（武器基底 × 技能修正）本质是 Reactor 的职责，
-        // Exe 侧只需要知道 "用哪个技能打了哪个目标"，具体伤害由 Reactor 自己算。
+        /// <summary>构造 SDamageInfo，每个 target 一个 hit，Damage[] 按通道分解。</summary>
         private static List<SDamageInfo> BuildDamageInfo(
             AbilitySO ability, GameObject caster, List<GameObject> targets,
             Vector3 origin, AbilityExecutor executor, Entity weaponEntity,
@@ -71,11 +69,13 @@ namespace RedDust.Ability
             if (targets == null || targets.Count == 0)
                 return hits;
 
-            // 武器伤害基底 & 标签（一次解析，所有 target 共用）
-            var weaponEffects = weaponEntity?.Preset?.GetDamageEffects(weaponEntity);
-            var damageTags = CollectDamageTags(weaponEffects);
+            // ── ① 收集实体伤害通道 ──
+            var entityChannels = CollectEntityChannels(weaponEntity, caster);
 
-            // ImpactEffectSO（同一 ability 的 targetEffects 中最多一个）
+            // ── ② 收集技能伤害修正 ──
+            var modifiers = CollectDamageModifiers(ability);
+
+            // ── ③ ImpactEffectSO（targetEffects 中最多一个）──
             ImpactEffectSO impactEffect = null;
             var abilityEffects = ability?.targetEffects;
             if (abilityEffects != null)
@@ -86,12 +86,38 @@ namespace RedDust.Ability
             {
                 if (target == null) continue;
 
-                float amount = target == caster
-                    ? 0f   // TODO: self-damage 公式
-                    : ComputeDamage(weaponEffects, abilityEffects, target, executor);
+                // ── ④ 对每个实体通道，匹配技能修正 → DamageEntry[] ──
+                var entries = new List<DamageEntry>(entityChannels.Length);
+                foreach (var channel in entityChannels)
+                {
+                    float baseVal = channel.baseValue;
+                    float percentSum = 0f;
+                    float addSum = 0f;
+
+                    foreach (var mod in modifiers)
+                    {
+                        if (MatchTag(mod.targetTag, channel.effectTag))
+                        {
+                            percentSum += mod.modPercent;
+                            addSum += mod.modAdd;
+                        }
+                    }
+
+                    float amount = baseVal * (1f + percentSum) + addSum;
+
+                    // self-damage: 对自身伤害暂为 0
+                    if (target == caster)
+                        amount = 0f;
+
+                    entries.Add(new DamageEntry(
+                        channel.effectTag,
+                        amount,
+                        channel.duration,
+                        0f));
+                }
 
                 hits.Add(new SDamageInfo(
-                    caster, target, amount, damageTags,
+                    caster, target, entries.ToArray(),
                     target.transform.position,
                     target.transform.position - origin,
                     ability,
@@ -103,37 +129,70 @@ namespace RedDust.Ability
             return hits;
         }
 
-        /// <summary>武器基底 × 技能修正 = 理想伤害。</summary>
-        private static float ComputeDamage(
-            EffectSO[] weaponEffects, EffectSO[] abilityEffects,
-            GameObject target, AbilityExecutor executor)
+        /// <summary>从实体收集伤害通道。武器 + 身体（空手 fallback）。</summary>
+        private static DamageEffectSO[] CollectEntityChannels(Entity weaponEntity, GameObject caster)
         {
-            if (weaponEffects == null || abilityEffects == null) return 0f;
+            var channels = new List<DamageEffectSO>();
 
-            float total = 0f;
-            foreach (var ae in abilityEffects)
+            // 武器通道
+            var weaponEffects = weaponEntity?.Preset?.GetDamageEffects(weaponEntity);
+            if (weaponEffects != null)
             {
-                if (ae is not DamageEffectSO mod) continue;
-                foreach (var we in weaponEffects)
-                {
-                    if (we is not DamageEffectSO wd) continue;
-                    float dmg = (wd.baseValue + mod.modAdd) * mod.modMult;
-                    if (executor?.EffectCallback != null)
-                        dmg = executor.EffectCallback(mod, target, dmg);
-                    total += dmg;
-                }
+                foreach (var e in weaponEffects)
+                    if (e is DamageEffectSO de)
+                        channels.Add(de);
             }
-            return total;
+
+            // TODO: 身体通道 (Body/Unarmed) — 空手战斗
+            // caster.GetComponent<Identity>()?.Properties?.GetAssetList<DamageEffectSO>("Body/ATK")
+
+            return channels.ToArray();
         }
 
-        private static RdTag[] CollectDamageTags(EffectSO[] weaponEffects)
+        /// <summary>从技能 targetEffects 中收集 DamageModifierEffectSO。</summary>
+        private static List<DamageModifierEffectSO> CollectDamageModifiers(AbilitySO ability)
         {
-            if (weaponEffects == null) return null;
-            var tags = new List<RdTag>();
-            foreach (var e in weaponEffects)
-                if (e is DamageEffectSO dmg && dmg.effectTag != null)
-                    tags.Add(dmg.effectTag);
-            return tags.ToArray();
+            var modifiers = new List<DamageModifierEffectSO>();
+            var effects = ability?.targetEffects;
+            if (effects == null) return modifiers;
+
+            foreach (var e in effects)
+                if (e is DamageModifierEffectSO mod)
+                    modifiers.Add(mod);
+
+            return modifiers;
+        }
+
+        /// <summary>Tag 层级匹配。modifier 是 channel 的祖先（同级或上级）则匹配。
+        /// 例：modifier=Damage.Physical.Slash 匹配 channel=Damage.Physical.Slash.Heavy。</summary>
+        private static bool MatchTag(RdTagDefSO modifierTag, RdTagDefSO channelTag)
+        {
+            if (modifierTag == null || channelTag == null) return false;
+            if (modifierTag == channelTag) return true;
+            RdTag m = modifierTag;
+            RdTag c = channelTag;
+            return m.Equals(c) || m.IsAncestorOf(c);
+        }
+
+        /// <summary>实体通道 × 技能修正 = outgoing 伤害。
+        /// 公式：baseValue × (1 + ΣmodPercent) + ΣmodAdd
+        /// 百分比加法叠加，避免 ×3×4 爆炸。</summary>
+        private static float ComputeOutgoingDamage(DamageEffectSO channel, List<DamageModifierEffectSO> modifiers)
+        {
+            float baseVal = channel.baseValue;
+            float percentSum = 0f;
+            float addSum = 0f;
+
+            foreach (var mod in modifiers)
+            {
+                if (MatchTag(mod.targetTag, channel.effectTag))
+                {
+                    percentSum += mod.modPercent;
+                    addSum += mod.modAdd;
+                }
+            }
+
+            return baseVal * (1f + percentSum) + addSum;
         }
 
         #endregion

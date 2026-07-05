@@ -59,10 +59,22 @@ namespace RedDust.Ability
             EnsureResolved();
 
             // ── ① Damage Resolution ──
-            float incoming = hit.Amount;
-            float finalAmount = ResolutionCallback?.Invoke(hit) ?? incoming;
-            // TODO: 伤害类型转换（防弹衣穿刺→钝伤、元素克制改 multiplier）
-            // TODO: 分阶段的 Avoidance / Mitigation / Absorption 接口替代单回调
+            var damage = hit.Damage;
+            if (damage == null || damage.Length == 0) return;
+
+            float instantSum = 0f;
+            foreach (var entry in damage)
+            {
+                if (entry.IsDot)
+                {
+                    // TODO: DOT 落地 — FloatModifier Mode B PerSecond 挂到目标 HP，需 FloatModifier 加 ExpiryTime
+                    continue;
+                }
+                instantSum += entry.Amount;
+            }
+
+            float finalAmount = ResolutionCallback?.Invoke(hit) ?? instantSum;
+            // TODO: per-DamageEntry ResolutionCallback — 当前单回调处理 TotalAmount，后续按 tag 分 channel 路由抗性
 
             // ── ② Non-damage Effects（Buff + Tag，无论是否造成伤害都施加）──
             var effects = hit.Target == hit.Caster
@@ -75,17 +87,17 @@ namespace RedDust.Ability
             {
                 ApplyDamageCallback?.Invoke(hit, finalAmount);
                 ReactionCallback?.Invoke(hit, finalAmount);
-                // TODO: OnHit 通知施法者（需等 Reactor→Caster 通路建立）
+                // TODO: OnHit 通知施法者 → Reactor→Caster 反馈通路
             }
             else
             {
-                // TODO: OnDodge / OnBlock（需等 Avoidance 三阶段定稿后分事件）
+                // TODO: OnDodge / OnBlock 分事件 → 阻塞：回避判定未落地
             }
 
             // ── ④ Broadcast ──
             OnDamagedCallback?.Invoke(hit, finalAmount);
             hitEvent?.Raise(hit);
-            // TODO: UI 伤害数字 / VFX / 受击动画 → hitEvent 订阅
+            // TODO: 伤害类型转换（防弹衣穿刺→钝伤）— 阻塞：防弹衣系统未就位
         }
 
         // ═══════════════════════════════════════════════════════════════
