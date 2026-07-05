@@ -64,9 +64,6 @@ namespace RedDust.Character
         // ── 系统级物理配置（世界定义，所有角色共享） ──
         public GroundSystemConfigSO GroundSystemConfig { get; }
 
-        // TODO: Properties 接入更多属性后（负重、移速修正等）在此追加字段。
-        // 角色物理属性缓存——从 Properties 读取一次
-        public CharacterPhysique Physique { get; internal set; }
         public CharacterAudioConfigSO AudioConfig { get; }
         public AvatarMask UpperBodyMask { get; }
         public AvatarMask ArmMask { get; }
@@ -87,7 +84,6 @@ namespace RedDust.Character
             Transform modelRoot, CharacterRig rig,
             CharacterAnimationProfileSO animationProfile,
             GroundSystemConfigSO groundSystemConfig,
-            CharacterPhysique physique,
             CharacterAudioConfigSO audioConfig,
             AvatarMask upperBodyMask, AvatarMask armMask, AvatarMask additiveMask,
             AvatarMask facialMask, AvatarMask headMask, AvatarMask footMask,
@@ -105,7 +101,6 @@ namespace RedDust.Character
             Rig = rig;
             AnimationProfile = animationProfile;
             GroundSystemConfig = groundSystemConfig;
-            Physique = physique;
             AudioConfig = audioConfig;
             UpperBodyMask = upperBodyMask;
             ArmMask = armMask;

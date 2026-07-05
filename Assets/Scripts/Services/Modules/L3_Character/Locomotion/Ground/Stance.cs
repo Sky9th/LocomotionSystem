@@ -18,15 +18,13 @@ namespace RedDust.Character.Locomotion
         internal SCharacterDiscrete Evaluate(
             in SCharacterMotor motor, in SCharacterKinematic kin,
             in SCharacterInputState input, EMovementGait gait,
-            LocomotionAnimationSetSO animSet, float dt)
+            LocomotionAnimationSetSO animSet, float motionSpeedScale, float dt)
         {
             var phase = EvaluatePhase(in kin, in motor);
             var posture = input.DesiredPosture;
             var turning = EvaluateTurning(in motor, in kin, dt, phase);
 
             var nativeSpeed = animSet?.GetNativeSpeed(gait) ?? 0f;
-            var motionSpeedScale = 1f; // TODO: Properties 敏捷/负重/姿势/地形修正
-
             var effectiveMaxSpeed = nativeSpeed * motionSpeedScale;
             return new SCharacterDiscrete(phase, posture, gait, turning, motionSpeedScale, effectiveMaxSpeed);
         }

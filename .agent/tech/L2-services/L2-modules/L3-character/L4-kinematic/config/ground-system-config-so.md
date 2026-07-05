@@ -1,5 +1,7 @@
 # GroundSystemConfigSO
 
+> **Last Verified**: 2026-07-05 | **Verification**: All referenced files exist, signatures match code
+>
 > L4 Kinematic / Config — 世界级地面系统参数，所有角色共享。
 
 ## 职责
@@ -18,12 +20,15 @@
 | | `groundLockMaxDistance` | 0.15 | 锁地最大距离 |
 | | `groundLockVerticalOffset` | 0 | 锁地垂直偏移 |
 | Debounce | `groundReacquireDebounceDuration` | 0 | 离地后重新识别地面的防抖时间 |
+| Movement Formula | `agilitySpeedBonus` | 0.03 | 敏捷每点速度加成倍率 |
+| | `weightPenaltyRatio` | 0.2 | 满负重减速倍率 |
 
 ## 消费者
 
 - `CharacterKinematic` — 地面探测、障碍物检测、锁地逻辑
 - `CharacterGroundDetection` — 接收 `probeHeight`/`probeRadius`/`groundLayerMask`
 - `CharacterObstacleDetection` — 接收 `obstacleLayerMask`
+- `GroundLocomotion` — 接收 `agilitySpeedBonus` / `weightPenaltyRatio`（v0.36.11 新增）
 
 ## 来源
 

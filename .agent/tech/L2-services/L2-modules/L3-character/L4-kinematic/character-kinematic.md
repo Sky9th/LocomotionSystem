@@ -1,21 +1,26 @@
 # CharacterKinematic · 运动学入口
 
+> **Last Verified**: 2026-07-05 | **Verification**: All referenced files exist, signatures match code
+>
 > `Character/Kinematic/CharacterKinematic.cs` — 纯 C# 类，每帧评估位置/朝向/地面/障碍/HeadLook
+>
+> v0.36.11: 移除 Physique 缓存，改为直接读取 PropertyTable.GetFloat(PropertyPath.X)
 
 ## 调用链
 
 ```
 被谁调:
   CharacterActor.Update()
-    → characterKinematic.Evaluate(profile, locomotionHeading, aimDirection, dt)
+    → characterKinematic.Evaluate(input, dt)
 
 调谁:
-  CharacterHeadLook.Evaluate()              → 头部朝向计算
+  PropertyTable.GetFloat()               → 按需读取物理属性（8 路径）
+  CharacterHeadLook.Evaluate()           → 头部朝向计算
   CharacterGroundDetection.EvaluateGroundContact() → 地面接触检测
   CharacterObstacleDetection.TryDetectForwardObstacle() → 障碍检测
-  characterRig.FreezePositionY()            → 物理 Y 轴冻结
-  characterRig.SetGroundedY()               → 地面锁定
-  characterRig.ZeroVelocity()               → 速度置零
+  characterRig.FreezePositionY()         → 物理 Y 轴冻结
+  characterRig.SetGroundedY()            → 地面锁定
+  characterRig.ZeroVelocity()            → 速度置零
 ```
 
 ## 耦合模块
@@ -23,11 +28,11 @@
 | 方向 | 模块 | 关系 |
 |------|------|------|
 | 被依赖 | CharacterActor | 每帧 Evaluate() 调用者 |
+| 依赖 | PropertyTable | 运行时属性数据（ctx.Properties） |
 | 依赖 | CharacterHeadLook | 计算头部注视方向 |
 | 依赖 | CharacterGroundDetection | 地面接触检测 |
 | 依赖 | CharacterObstacleDetection | 障碍检测 |
 | 依赖 | CharacterRig | 地面锁定/物理约束 |
-| 依赖 | CharacterProfile | 配置参数 |
 | 输出 | SCharacterKinematic | struct 输出聚合 |
 | 输出 | SGroundContact | 地面接触中间结果 |
 

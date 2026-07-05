@@ -1,18 +1,23 @@
 # Stance · 离散状态判定 + MotionSpeedScale
 
-> `L4_Locomotion/Ground/Stance.cs` — 纯 C# 类，Phase/Gait/Posture/Turning + MotionSpeedScale 评估
+> **Last Verified**: 2026-07-05 | **Verification**: All referenced files exist, signatures match code
+>
+> `L3_Character/Locomotion/Ground/Stance.cs` — 纯 C# 类，Phase/Gait/Posture/Turning + MotionSpeedScale 评估
+>
+> v0.36.11: motionSpeedScale 从硬编码 1f 改为外部传入（由 GroundLocomotion 计算）。
 
 ## 调用链
 
 ```
 被谁调:
-  GroundLocomotion.Simulate() → stance.Evaluate(in motor, in kin, in intent, profile, animProfile, dt)
+  GroundLocomotion.Simulate() → stance.Evaluate(in motor, in kin, in input, gait, animSet, motionSpeedScale, dt)
 
 调谁:
-  ComputeBaseSpeedScale / EvaluatePhase / EvaluateTurning
+  EvaluatePhase / EvaluateTurning
+  LocomotionAnimationSetSO.GetNativeSpeed()
 
 输出:
-  SCharacterDiscrete (含 MotionSpeedScale + EffectiveMaxSpeed)
+  SCharacterDiscrete (motionSpeedScale 由外部注入，EffectiveMaxSpeed = nativeSpeed × motionSpeedScale)
 ```
 
 ## 耦合模块

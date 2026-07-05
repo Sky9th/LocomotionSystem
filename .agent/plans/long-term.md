@@ -1,6 +1,6 @@
 # 长期开发计划
 
-> 更新: 2026-06-30
+> 更新: 2026-07-05
 > 来源: `.agent/design/` GDD + 子系统设计文档
 > 原则: 每步有可玩增量，每个子系统先跑通基本闭环 → 全生态联通 → 数值统一规划
 >      **设计文档不设具体数值，所有数值在系统骨架完成后从上至下统一规划**
@@ -14,7 +14,8 @@
   前置: Character 模块重构 ✅  Properties 系统 ✅  Animation 重构 ✅
         PropertyTree Equipment 层重构 ✅  Container 系统 ✅
   目标: AbilityComponent + HitReactionComponent + AbilityDriver 落地
-  当前: StateMachine 框架 + GatingState + CostState 完工，Execution/Cooldown/Recovery 待做
+  当前: StateMachine 框架 + Gating/Cost/Execution 完成，Recovery 待做
+        HitReaction 管线完成 ✅（SDamageInfo→CharacterCombat→DriverArbiter→HitReactionDriver）
 
 已完成:
   角色运动 ✅    音效骨架 ✅    数值系统（Properties 替代旧 Stats SO）✅
@@ -26,11 +27,15 @@
   Animation LinearMixer 统一 + In-line Transition ✅
   PropertyTree Equipment 层 + 6 分支文档 ✅
   Container AcceptTags 层级匹配 ✅
+  受击反应管线 ✅ — SDamageInfo.ImpactEffect → HitReactionDriver
+  受击动画数据层 ✅ — LocomotionAnimationSetSO 4 hitReaction 字段
+  DriverArbiter 抢占规则 ✅
 
 设计完成:
   GDD ✅  伤病系统 ✅  噪音系统 ✅  负重/背包 ✅  死亡/存档 ✅
   Ability Pipeline 八维度管道 ✅ (2026-06-06)
   Properties 全量属性体系 ✅ (~185 PropertyDef / 30 Trees)
+  受击反应系统 ✅ (2026-07-05)
 
 ---
 
@@ -50,6 +55,8 @@
 | 6/18-19 | Animation 重构（废弃 State 清理 + SO 重构 + FSM In-line Transition） | 3 | 2天 |
 | 6/19 | PolygonApocalypse 武器导入 + Properties 接管角色物理 | 2 | 1天 |
 | 6/30 | Ability Pipeline StateMachine 框架 + Gating/Cost State + Container AcceptTags 修复 | 1 | 1天 |
+| 7/04 | 受击动画数据层 — LocomotionSet +4 Mixer2D + Importer 扩展 | 1 | 1天 |
+| 7/05 | 受击反应管线 — ImpactEffect→Combat→Animation→Driver 全链路 | 1 | 1天 |
 
 **节奏特征**:
 - 跨模块架构重构（Module 系统、Animation 重构）≈ **2 天**，约 3 个 commit
@@ -106,7 +113,7 @@ RedDust
 > 管道设计: [ability-pipeline-design.md](../tech/L2-services/L2-modules/L3-ability/ability-pipeline-design.md)
 > 施工计划: [short-term.md](short-term.md)
 
-**4.1 Ability Pipeline 运行时**：AbilityComponent（发送中枢 → ②③④⑤ 门控/释放/搜索/效果）+ HitReactionComponent（接收中枢 → ⑥⑦ 结算/反应）+ AbilityDriver（③ 阶段机 Windup→Fire→Recovery）+ ⑧ 事件广播。闭环：按键→AbilityComponent.TryActivate→门控检查→AbilityDriver 播放动画→搜索命中→HitReactionComponent 结算扣血→HitEvent 广播。
+**4.1 Ability Pipeline 运行时**：AbilityComponent（发送中枢 → ②③④⑤ 门控/释放/搜索/效果）+ HitReactionComponent（接收中枢 → ⑥⑦ 结算/反应）+ AbilityDriver（③ 阶段机 Windup→Fire→Recovery）+ ⑧ 事件广播。受击反应管线已完成（SDamageInfo.ImpactEffect → CharacterCombat → DriverArbiter → HitReactionDriver）。闭环剩余：搜索命中正编（ExecutionState ④）+ RecoveryState。
 
 **4.1a 日志格式规范化**（管道完成后立即执行）：详见 [log-format-standardization.md](log-format-standardization.md)。格式 `[L1][L2][L3][子模块] 消息`、等级开关 Error/Info/Debug（Debug 提交前必删）、模块开关 L1/L2/L3 粒度（L4/L5 不设）。逐个模块替换现有日志，清理遗留临时 Debug 日志。
 
@@ -232,7 +239,7 @@ RedDust
 
 此时所有子系统基本闭环跑通，进入扩展阶段：
 
-- **战斗扩展**: 连招系统（ComboWindow + 冷却豁免）、技能效果（击退/眩晕/流血）、HitReactDriver、投射物系统、完整四阶段判定管道（命中率/破防/暴击/格挡）
+- **战斗扩展**: 连招系统（ComboWindow + 冷却豁免）、技能效果（击退/眩晕/流血）、投射物系统、完整四阶段判定管道（命中率/破防/暴击/格挡）、死亡系统（Ragdoll + 复活）
 - **伤病扩展**: 医疗熟练度、粉碎性骨折永久惩罚、烧伤分级、丧尸化 4 阶段完整过程
 - **噪音扩展**: 噪音连锁反应（第 2 层）、障碍物衰减、昼夜倍率、环境噪音
 - **敌人扩展**: 视觉感知（光线影响）、尸群协调、特殊感染者

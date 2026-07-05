@@ -26,5 +26,9 @@ namespace RedDust.Character.Kinematic
 
         [Header("Debounce")]
         [Min(0f)] public float groundReacquireDebounceDuration;
+
+        [Header("Movement Formula")]
+        [Min(0f)] public float agilitySpeedBonus = 0.03f;
+        [Range(0f, 1f)] public float weightPenaltyRatio = 0.2f;
     }
 }

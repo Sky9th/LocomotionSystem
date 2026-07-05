@@ -25,11 +25,12 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
             };
             Owner.PlayIfChanged(transition ?? Owner.AnimSet?.walkMixer);
 
-            // TODO: posture-aware speed — 当前仅按 gait 查 animNativeSpeed，姿势系数由 Properties 叠加
-            float desiredGaitSpeed = Owner.AnimSet != null ? Owner.AnimSet.GetNativeSpeed(Owner.Ctx.Discrete.Gait) : 0f;
-            if (Owner.Layer.CurrentState is Vector2MixerState mixer && desiredGaitSpeed > 0f)
+            float nativeGaitSpeed = Owner.AnimSet?.GetNativeSpeed(Owner.Ctx.Discrete.Gait) ?? 0f;
+            float motionScale = Owner.Ctx.Discrete.MotionSpeedScale;
+            float scaledGaitSpeed = nativeGaitSpeed * motionScale;
+            if (Owner.Layer.CurrentState is Vector2MixerState mixer && scaledGaitSpeed > 0f)
             {
-                var parameter = Owner.Ctx.Motor.ActualLocalVelocity / desiredGaitSpeed;
+                var parameter = Owner.Ctx.Motor.ActualLocalVelocity / scaledGaitSpeed;
                 if (parameter.sqrMagnitude > 1f) parameter.Normalize();
                 mixer.Parameter = parameter;
             }

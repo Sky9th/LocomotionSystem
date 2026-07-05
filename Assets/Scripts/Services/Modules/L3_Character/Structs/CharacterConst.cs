@@ -23,12 +23,14 @@ namespace RedDust.Character
 
             public static class Attributes
             {
+                public const string Agility   = "Attributes/Agility";
                 public const string Endurance = "Attributes/Endurance";
             }
 
             public static class Movement
             {
                 public const string Acceleration  = "Movement/Acceleration";
+                public const string CarryWeight   = "Movement/CarryWeight";
                 public const string MaxSlopeAngle = "Movement/MaxSlopeAngle";
             }
 

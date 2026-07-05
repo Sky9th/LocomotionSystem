@@ -95,9 +95,9 @@ namespace RedDust.Character
             float groundY = kin.GroundContact.IsGrounded ? kin.GroundContact.ContactPoint.y : pos.y;
             var groundPoint = new Vector3(obs.Point.x, groundY, obs.Point.z);
             Gizmos.color = Color.yellow;
-            Gizmos.DrawLine(groundPoint, groundPoint + Vector3.up * BuildContext.Physique.ObstacleMaxClimb);
+            Gizmos.DrawLine(groundPoint, groundPoint + Vector3.up * BuildContext.Properties.GetFloat(CharacterConst.PropertyPath.Body.ObstacleMaxClimb));
 
-            var topOrigin = new Vector3(obs.Point.x, groundY + BuildContext.Physique.ObstacleMaxClimb, obs.Point.z);
+            var topOrigin = new Vector3(obs.Point.x, groundY + BuildContext.Properties.GetFloat(CharacterConst.PropertyPath.Body.ObstacleMaxClimb), obs.Point.z);
             GizmoDebugUtility.DrawArrowLine(topOrigin, obs.TopPoint, Color.white, "H Probe");
 
             GizmoDebugUtility.DrawSphere(obs.TopPoint, 0.05f, Color.green, "Top");

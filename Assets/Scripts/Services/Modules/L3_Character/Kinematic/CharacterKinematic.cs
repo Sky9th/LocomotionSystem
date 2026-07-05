@@ -24,7 +24,7 @@ namespace RedDust.Character.Kinematic
 
         internal SCharacterKinematic Evaluate(in SCharacterInputState input, float deltaTime)
         {
-            var physique = ctx.Physique;
+            var props = ctx.Properties;
             var groundSystem = ctx.GroundSystemConfig;
             var rig = ctx.Rig;
             var position = ctx.Root.position;
@@ -47,14 +47,19 @@ namespace RedDust.Character.Kinematic
             else aimDirection = ctx.ModelRoot.forward;
 
             var lookDirection = CharacterHeadLook.Evaluate(aimDirection, ctx.ModelRoot, ctx.Root,
-                physique.MaxHeadYaw, physique.MaxHeadPitch);
+                props.GetFloat(CharacterConst.PropertyPath.Body.MaxHeadYaw),
+                props.GetFloat(CharacterConst.PropertyPath.Body.MaxHeadPitch));
 
-            var groundContact = EvaluateGroundContactAndApplyConstraints(physique.MaxSlopeAngle, groundSystem, deltaTime, ref position, rig);
+            var maxSlopeAngle = props.GetFloat(CharacterConst.PropertyPath.Movement.MaxSlopeAngle);
+            var groundContact = EvaluateGroundContactAndApplyConstraints(maxSlopeAngle, groundSystem, deltaTime, ref position, rig);
             CharacterObstacleDetection.TryDetectForwardObstacle(
                 position, locomotionHeading,
-                physique.ObstacleProbeVertical, physique.ObstacleProbeDistance,
-                groundSystem.obstacleLayerMask, physique.ObstacleMinClimb, physique.ObstacleMaxClimb,
-                physique.MaxSlopeAngle, out var obstacle);
+                props.GetFloat(CharacterConst.PropertyPath.Body.ObstacleProbeVertical),
+                props.GetFloat(CharacterConst.PropertyPath.Body.ObstacleProbeDistance),
+                groundSystem.obstacleLayerMask,
+                props.GetFloat(CharacterConst.PropertyPath.Body.ObstacleMinClimb),
+                props.GetFloat(CharacterConst.PropertyPath.Body.ObstacleMaxClimb),
+                maxSlopeAngle, out var obstacle);
 
             return new SCharacterKinematic(position, bodyForward, locomotionHeading, lookDirection, groundContact, obstacle);
         }
