@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fd91655e679b334badbf81b6c99ff80, type: 3}
+  m_Name: Passive_DeepWound
+  m_EditorClassIdentifier: 
+  internalName: DeepWound
+  displayName: "\u6DF1\u521B"
+  icon: {fileID: 0}
+  description: "\u5203\u5668\u547D\u4E2D\u65F6\u9644\u52A05\u79D2\u6D41\u8840DoT\uFF0C\u53EF\u53E0\u52A05\u5C42\u3002"
+  abilityTag: {fileID: 11400000, guid: 3ac02f3acfeb63643a4c7245c12d5826, type: 2}
+  targetEffects:
+  - {fileID: 11400000, guid: 9938d7b8897aa7f4abb534c535b29553, type: 2}
+  selfEffects: []
+  cooldownDuration: 0
+  sharedCooldownTags: []
+  trigger: 2
+  triggerChannel: {fileID: 0}
+  triggerValue: 0
+  targetRequiredTag: {fileID: 0}

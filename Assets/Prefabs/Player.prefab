@@ -80,6 +80,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 31ef688da76e4a540bdf1b9b5ee9e47d, type: 2}
   - {fileID: 11400000, guid: 0b91c905aebb81141b28073496c30964, type: 2}
   - {fileID: 11400000, guid: 85edb77b8060b5340b8889ac2f3eda5b, type: 2}
+  - {fileID: 11400000, guid: 04ec5fd8ba09bd24a94a713d18dde0e8, type: 2}
   characterAudioConfig: {fileID: 11400000, guid: d1bb8260fedfef848a12a32d3f139759,
     type: 2}
   modelPrefab: {fileID: 1904041790429094, guid: 027cd57972e60824ca74f44e0d80ea9a,

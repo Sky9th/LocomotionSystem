@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d10d59d7d7d523140aac47aae123b37e, type: 3}
+  m_Name: Buff_LastStand_DR
+  m_EditorClassIdentifier: 
+  effectTag: {fileID: 11400000, guid: 851de01f7214c394e8a37c7a899a6789, type: 2}
+  description: "\u4F53\u8D28+50%\u5E76\u589E\u52A0\u51FB\u5012\u6297\u6027\u3002HP<30%\u89E6\u53D1\u2014\u2014\u7EDD\u5883\u6C42\u751F\u3002"
+  duration: 0
+  stackable: 0
+  maxStacks: 1
+  applicationBlockedTags: []
+  grantedTags: []
+  adjuncts:
+  - property: {fileID: 11400000, guid: ff992f7f4c086714d86243fd9ee1e024, type: 2}
+    valueAdd: 0
+    valueMultiply: 1.5
+  - property: {fileID: 11400000, guid: d5b265046e79bc44a9fcec309d7afd0a, type: 2}
+    valueAdd: 25
+    valueMultiply: 0

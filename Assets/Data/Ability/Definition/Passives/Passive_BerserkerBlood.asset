@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fd91655e679b334badbf81b6c99ff80, type: 3}
+  m_Name: Passive_BerserkerBlood
+  m_EditorClassIdentifier: 
+  internalName: BerserkerBlood
+  displayName: "\u72C2\u66B4\u8840\u8109"
+  icon: {fileID: 0}
+  description: "\u51FB\u6740\u654C\u4EBA\u540E\u653B\u901F+15%\u79FB\u901F+10%\uFF0C\u6301\u7EED5\u79D2\u3002\u5237\u65B0\u4E0D\u53E0\u52A0\u3002"
+  abilityTag: {fileID: 11400000, guid: 4faeb97e720e6a046a0666974d90ac64, type: 2}
+  targetEffects: []
+  selfEffects:
+  - {fileID: 11400000, guid: 0d8ffeac72b74e5409efdb3ceb99c1b2, type: 2}
+  cooldownDuration: 0
+  sharedCooldownTags: []
+  trigger: 1
+  triggerChannel: {fileID: 0}
+  triggerValue: 0
+  targetRequiredTag: {fileID: 0}

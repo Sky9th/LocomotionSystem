@@ -144,33 +144,15 @@ namespace RedDust.Ability
 
                 if (existing != null)
                 {
-                    errors.Add($"'{entry.treeId}': already exists at {assetPath}, skipped.");
-                    skipped++;
+                    ApplyTreeFields(existing, entry, tagByFullTag, abilityByName, passiveByName, errors);
+                    EditorUtility.SetDirty(existing);
+                    updated++;
                     continue;
                 }
 
                 var tree = ScriptableObject.CreateInstance<AbilityTreeSO>();
                 tree.treeId = entry.treeId;
-                tree.displayName = entry.displayName ?? entry.treeId;
-                tree.description = entry.description ?? "";
-                tree.exclusiveGroup = entry.exclusiveGroup ?? "";
-
-                // Resolve tags
-                tree.treeTags = ResolveTags(entry.treeTags, tagByFullTag, errors, entry.treeId);
-                tree.compatibleWeaponTags = ResolveTags(entry.compatibleWeaponTags, tagByFullTag, errors, entry.treeId);
-                tree.compatibleGripTags = ResolveTags(entry.compatibleGripTags, tagByFullTag, errors, entry.treeId);
-
-                // Resolve icon
-                if (!string.IsNullOrEmpty(entry.icon))
-                {
-                    tree.icon = AssetDatabase.LoadAssetAtPath<Sprite>(entry.icon);
-                    if (tree.icon == null)
-                        errors.Add($"'{entry.treeId}': icon not found at '{entry.icon}'");
-                }
-
-                // Resolve nodes
-                tree.nodes = entry.nodes?.Select(n => ImportNode(n, abilityByName, passiveByName, errors, entry.treeId)).ToArray()
-                             ?? Array.Empty<SAbilityTreeNode>();
+                ApplyTreeFields(tree, entry, tagByFullTag, abilityByName, passiveByName, errors);
 
                 AssetDatabase.CreateAsset(tree, assetPath);
                 EditorUtility.SetDirty(tree);
@@ -207,6 +189,34 @@ namespace RedDust.Ability
 
             node.prerequisites = entry.prerequisites ?? Array.Empty<string>();
             return node;
+        }
+
+        private static void ApplyTreeFields(AbilityTreeSO tree, AbilityTreeEntry entry,
+            Dictionary<string, RdTagDefSO> tagByFullTag,
+            Dictionary<string, ActiveAbilitySO> abilityByName,
+            Dictionary<string, PassiveAbilitySO> passiveByName,
+            List<string> errors)
+        {
+            tree.displayName = entry.displayName ?? entry.treeId;
+            tree.description = entry.description ?? "";
+            tree.exclusiveGroup = entry.exclusiveGroup ?? "";
+
+            // Resolve tags
+            tree.treeTags = ResolveTags(entry.treeTags, tagByFullTag, errors, entry.treeId);
+            tree.compatibleWeaponTags = ResolveTags(entry.compatibleWeaponTags, tagByFullTag, errors, entry.treeId);
+            tree.compatibleGripTags = ResolveTags(entry.compatibleGripTags, tagByFullTag, errors, entry.treeId);
+
+            // Resolve icon
+            if (!string.IsNullOrEmpty(entry.icon))
+            {
+                tree.icon = AssetDatabase.LoadAssetAtPath<Sprite>(entry.icon);
+                if (tree.icon == null)
+                    errors.Add($"'{entry.treeId}': icon not found at '{entry.icon}'");
+            }
+
+            // Resolve nodes
+            tree.nodes = entry.nodes?.Select(n => ImportNode(n, abilityByName, passiveByName, errors, entry.treeId)).ToArray()
+                         ?? Array.Empty<SAbilityTreeNode>();
         }
 
         // ═══════════════════════════════════════════════════

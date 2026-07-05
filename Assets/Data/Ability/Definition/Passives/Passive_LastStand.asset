@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fd91655e679b334badbf81b6c99ff80, type: 3}
+  m_Name: Passive_LastStand
+  m_EditorClassIdentifier: 
+  internalName: LastStand
+  displayName: "\u7EDD\u5883\u6C42\u751F"
+  icon: {fileID: 0}
+  description: "HP\u4F4E\u4E8E30%\u65F6\u4F53\u8D28\u5927\u5E45\u63D0\u5347\u5E76\u589E\u52A0\u51FB\u5012\u6297\u6027\u3002HP\u6062\u590D\u540E\u81EA\u52A8\u89E3\u9664\u3002"
+  abilityTag: {fileID: 11400000, guid: 109e6327b8e70d343970a429ea302996, type: 2}
+  targetEffects: []
+  selfEffects:
+  - {fileID: 11400000, guid: 0385128f4b2af3f4992d83d18b66ba4f, type: 2}
+  cooldownDuration: 0
+  sharedCooldownTags: []
+  trigger: 4
+  triggerChannel: {fileID: 0}
+  triggerValue: 0.3
+  targetRequiredTag: {fileID: 0}

@@ -780,6 +780,96 @@
             "staggerValue": 10.0,
             "knockbackForce": 5.0,
             "knockbackDir": "TowardCaster"
+        },
+        {
+            "effectType": "Buff",
+            "name": "Buff_ToughBody_MaxHP",
+            "description": "最大生命值+20%。天生被动——强壮体质。",
+            "directory": "Buff/StatModify",
+            "effectTag": "Ability.Effect.Buff.Strengthen.ToughBody",
+            "duration": 0.0,
+            "stackable": false,
+            "maxStacks": 1,
+            "applicationBlockedTags": [],
+            "baseValue": 0.0,
+            "grantedTags": [],
+            "adjuncts": [
+                {
+                    "propertyId": "MaxHP",
+                    "valueAdd": 0.0,
+                    "valueMultiply": 1.2
+                }
+            ]
+        },
+        {
+            "effectType": "Buff",
+            "name": "Buff_BerserkerBlood",
+            "description": "攻速+15%移速+10%，持续5s。击杀触发——狂暴血脉。",
+            "directory": "Buff/GrantBuff",
+            "effectTag": "Ability.Effect.Buff.Haste.BerserkerBlood",
+            "duration": 5.0,
+            "stackable": false,
+            "maxStacks": 1,
+            "applicationBlockedTags": [],
+            "baseValue": 0.0,
+            "grantedTags": [],
+            "adjuncts": [
+                {
+                    "propertyId": "AttackSpeed",
+                    "valueAdd": 0.0,
+                    "valueMultiply": 1.15
+                },
+                {
+                    "propertyId": "MoveSpeed",
+                    "valueAdd": 0.0,
+                    "valueMultiply": 1.1
+                }
+            ]
+        },
+        {
+            "effectType": "Buff",
+            "name": "Buff_Debuff_Slow_40",
+            "description": "减速40%持续3s。铁蒺藜陷阱附带效果。",
+            "directory": "Buff/Debuff",
+            "effectTag": "Ability.Effect.Debuff.Slow.Caltrop",
+            "duration": 3.0,
+            "stackable": false,
+            "maxStacks": 1,
+            "applicationBlockedTags": [],
+            "baseValue": 0.0,
+            "grantedTags": [],
+            "adjuncts": [
+                {
+                    "propertyId": "MoveSpeed",
+                    "valueAdd": 0.0,
+                    "valueMultiply": 0.6
+                }
+            ]
+        },
+        {
+            "effectType": "Buff",
+            "name": "Buff_LastStand_DR",
+            "description": "体质+50%并增加击倒抗性。HP<30%触发——绝境求生。",
+            "directory": "Buff/StatModify",
+            "effectTag": "Ability.Effect.Buff.Fortify.LastStand",
+            "duration": 0.0,
+            "stackable": false,
+            "maxStacks": 1,
+            "applicationBlockedTags": [],
+            "baseValue": 0.0,
+            "grantedTags": [],
+            "adjuncts": [
+                {
+                    "propertyId": "Endurance",
+                    "valueAdd": 0.0,
+                    "valueMultiply": 1.5
+                },
+                {
+                    "propertyId": "KnockdownResist",
+                    "valueAdd": 25.0,
+                    "valueMultiply": 0.0
+                }
+            ]
         }
     ]
 }

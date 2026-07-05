@@ -179,7 +179,7 @@ namespace RedDust.Ability
                 { errors.Add($"'{entry.name}': unknown abilityType '{type}'"); skipped++; continue; }
 
                 // Route by abilityTag: "Ability.Melee.Blade.LightCut" → Actives/Melee/
-                var subDir = isActive ? ResolveActiveDir(entry.abilityTag) : "Passives";
+                var subDir = isActive ? ResolveActiveDir(entry.abilityTag) : "Definition/Passives";
                 var assetPath = Path.Combine(AbilitiesDir, subDir, $"{entry.name}.asset").Replace('\\', '/');
 
                 var assetDir = Path.GetDirectoryName(assetPath);

@@ -1,5 +1,6 @@
 # Ability Editor — 编辑器架构
 
+> **Last Verified**: 2026-07-05 | **Verification**: All referenced files exist, signatures match code
 > 代码路径: `Assets/Scripts/Services/Modules/L3_Ability/Editor/`
 > 层级: Editor（非运行时 L 体系）
 
@@ -20,7 +21,7 @@ MenuItem "RedDust/{Type} Editor"   ← 独立编辑窗口
   └── NoiseEditorWindow
 
 MenuItem "RedDust/{Type} Import-Export"  ← 导入/导出
-  ├── EditorImportExport (共享面板)
+  ├── ImportExport (共享面板，类名 EditorImportExport)
   ├── EffectImportWindow
   ├── SearchImportWindow
   ├── ActivationImportWindow
@@ -82,6 +83,16 @@ Result Card: Created/Skipped/Errors 彩色输出
 ```
 
 每个 ImportWindow 提供：`buildPreview` (filePath→富文本)、`onImport` (filePath→统计元组)、`onExport` (filePath→无)。
+
+**AbilityImportExport 路径规则**：
+- Active: `abilityTag` 字段 → `ResolveActiveDir()` 解析为 `Definition/Actives/{Melee|Ranged}/...`
+- Passive: 固定 `Definition/Passives/`（与 Actives 同级目录约定一致）
+- Import 时自动创建目录，`ApplyFields()` 填充 Active/Passive 各自的专有字段
+
+**AbilityTreeImportExport 更新策略**：
+- 新树：`CreateInstance<AbilityTreeSO>` → `ApplyTreeFields` → `AssetDatabase.CreateAsset`
+- 已有树：`ApplyTreeFields` 覆盖更新（displayName / description / tags / nodes），不再 skip
+- `ApplyTreeFields` 是共享方法，解析 `treeTags` / `compatibleWeaponTags` / `compatibleGripTags` / `nodes`（含 ability 和 passive 引用）
 
 ### AbilityTreeView
 

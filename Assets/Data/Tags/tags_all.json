@@ -363,6 +363,15 @@
     {"name":"Tag_Death","parent":"Noise.Alert","description":"死亡"},
     {"name":"Tag_Alarm","parent":"Noise.Alert","description":"警报"},
     {"name":"Tag_TrapTrigger","parent":"Noise.Alert","description":"陷阱触发"},
-    {"name":"Tag_Distraction","parent":"Noise.Alert","description":"诱饵"}
+    {"name":"Tag_Distraction","parent":"Noise.Alert","description":"诱饵"},
+    {"name":"Tag_ToughBody","parent":"Ability.Definition.Passive.StatModify","description":"强壮体质被动"},
+    {"name":"Tag_DeepWound","parent":"Ability.Definition.Passive.TriggerAttack","description":"深创被动"},
+    {"name":"Tag_BerserkerBlood","parent":"Ability.Definition.Passive.GrantBuff","description":"狂暴血脉被动"},
+    {"name":"Tag_LastStand","parent":"Ability.Definition.Passive.StatModify","description":"绝境求生被动"},
+    {"name":"Tag_Caltrop","parent":"Ability.Definition.Passive.TriggerAttack","description":"铁蒺藜被动"},
+    {"name":"Tag_ToughBody","parent":"Ability.Effect.Buff.Strengthen","description":"强壮体质Buff效果"},
+    {"name":"Tag_BerserkerBlood","parent":"Ability.Effect.Buff.Haste","description":"狂暴血脉Buff效果"},
+    {"name":"Tag_LastStand","parent":"Ability.Effect.Buff.Fortify","description":"绝境求生Buff效果"},
+    {"name":"Tag_Caltrop","parent":"Ability.Effect.Debuff.Slow","description":"铁蒺藜减速效果"}
   ]
 }
