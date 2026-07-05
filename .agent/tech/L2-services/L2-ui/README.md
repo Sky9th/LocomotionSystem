@@ -59,7 +59,7 @@ UI 组件主题驱动:
 | UIButton / UILabel / UIPanel | UIThemeSO | Awake 时从 Theme 读取颜色/字体配置 |
 | UIStatBar | UIThemeSO | 读取颜色阈值和 StatBar 配置 |
 | VitalsOverlay | UIService.PlayerEntity | 每帧拉取角色属性（通过 Entity.Query.Properties） |
-| AbilityBarOverlay | UIService.PlayerEntity | 技能槽位显示和冷却刷新 |
+| AbilityBarOverlay | UIService.PlayerEntity | 技能槽位显示、冷却刷新、hover SkillCard |
 | WeaponBarOverlay | UIService.PlayerEntity | 武器槽位显示 |
 | DamageNumberOverlay | EventHub (HitEvent) | 订阅伤害事件，WorldToScreenPoint 坐标转换 |
 | DamageNumberOverlay | DamageNumberWidget | 对象池管理，Play/Recycle |
@@ -109,7 +109,9 @@ UI 组件主题驱动:
 | [L4-components/ui-label.md](L4-components/ui-label.md) | UILabel — 字体/字号/颜色的主题驱动 |
 | [L4-components/ui-panel.md](L4-components/ui-panel.md) | UIPanel — 面板背景容器 |
 | [L4-components/ui-stat-bar.md](L4-components/ui-stat-bar.md) | UIStatBar — 填充条、三色阈值、DOTween 平滑 |
-| [L4-components/ui-icon-slot.md](L4-components/ui-icon-slot.md) | UIIconSlot — 通用槽位（图标 + 冷却覆层 + 选中边框 + 快捷键标签） |
+| [L4-components/ui-icon-slot.md](L4-components/ui-icon-slot.md) | UIIconSlot — 通用槽位（图标 + 冷却覆层 + 选中边框 + 快捷键标签 + hover 事件） |
+| [L4-components/skill-card.md](L4-components/skill-card.md) | SkillCard — 技能详情卡片（15 字段，[ExecuteAlways]+Theme，DOTween fade） |
+| [L4-components/skill-card-data.md](L4-components/skill-card-data.md) | SkillCardData — struct + FromActiveAbility() 工厂，解耦 UI 与 Ability 层 |
 | [L4-config/ui-panel-config-so.md](L4-config/ui-panel-config-so.md) | UIPanelConfigSO — id→Prefab 映射配置 |
 | [L4-config/ui-theme-so.md](L4-config/ui-theme-so.md) | UIThemeSO — 颜色/字体/间距/动画参数集中管理 |
 | [L4-hud/vitals-overlay.md](L4-hud/vitals-overlay.md) | VitalsOverlay — HP/Hunger/Thirst/Stamina 实时显示 |

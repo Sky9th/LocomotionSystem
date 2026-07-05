@@ -129,6 +129,9 @@ MonoBehaviour:
   slotPrefab: {fileID: 1358455895071393329, guid: e624b7c7744d0c14eb6724d5efd5e03a,
     type: 3}
   slotContainer: {fileID: 8102647194829646907}
+  skillCardPrefab: {fileID: 5000153342881820560, guid: 3515b40072f2a2c4081e1298d9658034,
+    type: 3}
+  cardOffset: {x: 0, y: 300}
   refreshRate: 0.15
 --- !u!1001 &5579505584452403143
 PrefabInstance:

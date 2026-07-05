@@ -1,6 +1,7 @@
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace RedDust.UI
@@ -12,8 +13,10 @@ namespace RedDust.UI
     /// 遵循 UIStatBar 模式：[ExecuteAlways] + Theme SO + DOTween 动画 + Edit Mode 守卫。
     /// </summary>
     [ExecuteAlways]
-    public class UIIconSlot : MonoBehaviour
+    public class UIIconSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
+        /// <summary>hover 状态变化回调。参数: (slot, isHovered)</summary>
+        public System.Action<UIIconSlot, bool> onHoverChanged;
         [Header("Theme")]
         [SerializeField] private UIThemeSO theme;
 
@@ -185,6 +188,18 @@ namespace RedDust.UI
         {
             if (cooldownFill != null)
                 DOTween.Kill(cooldownFill);
+        }
+
+        // ── Hover ──────────────────────────────────────────────────
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            onHoverChanged?.Invoke(this, true);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            onHoverChanged?.Invoke(this, false);
         }
     }
 }

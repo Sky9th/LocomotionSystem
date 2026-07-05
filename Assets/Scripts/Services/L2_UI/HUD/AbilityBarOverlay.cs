@@ -6,7 +6,7 @@ using UnityEngine;
 namespace RedDust.UI
 {
     /// <summary>
-    /// 技能栏 Overlay。动态槽位 + 事件驱动激活。
+    /// 技能栏 Overlay。动态槽位 + 事件驱动激活 + hover 弹出 SkillCard。
     /// 纯 Entity.Query.Ability 读数据，不再穿透 Actor/BuildContext。
     /// </summary>
     public class AbilityBarOverlay : UIOverlay
@@ -18,12 +18,27 @@ namespace RedDust.UI
         [SerializeField] private UIIconSlot slotPrefab;
         [SerializeField] private Transform slotContainer;
 
+        [Header("Skill Card")]
+        [SerializeField] private SkillCard skillCardPrefab;
+        [SerializeField] private Vector2 cardOffset = new(0, 8);
+
         [Header("Refresh")]
         [SerializeField] private float refreshRate = 0.15f;
 
         private readonly System.Collections.Generic.List<UIIconSlot> _slots = new();
         private ActiveAbilitySO[] _actives = Array.Empty<ActiveAbilitySO>();
         private float _refreshTimer;
+        private SkillCard _skillCard;
+        private int _hoveredIndex = -1;
+
+        private void Start()
+        {
+            if (skillCardPrefab != null)
+            {
+                _skillCard = Instantiate(skillCardPrefab, transform);
+                _skillCard.SetVisible(false);
+            }
+        }
 
         private void Update()
         {
@@ -54,6 +69,11 @@ namespace RedDust.UI
                 slot.name = $"SkillSlot_{_slots.Count}";
                 int idx = _slots.Count;
                 slot.SetKeybind(idx < Keybinds.Length ? Keybinds[idx] : $"{idx + 1}");
+
+                // Subscribe hover
+                var capturedIdx = idx;
+                slot.onHoverChanged += (s, hovered) => OnSlotHover(capturedIdx, hovered);
+
                 _slots.Add(slot);
             }
 
@@ -79,6 +99,42 @@ namespace RedDust.UI
                 float remaining = ability.GetCooldownRemaining(active);
                 slot.SetCooldown(remaining, active.cooldownDuration);
                 slot.SetSelected(ability.IsActive(active));
+            }
+        }
+
+        // ── Hover Tooltip ───────────────────────────────────────────
+
+        private void OnSlotHover(int index, bool hovered)
+        {
+            if (_skillCard == null) return;
+
+            if (hovered)
+            {
+                _hoveredIndex = index;
+                if (index < _actives.Length && _actives[index] != null)
+                {
+                    var data = SkillCardData.FromActiveAbility(_actives[index]);
+                    _skillCard.SetData(data);
+
+                    // Position card above the slot
+                    var slotRT = _slots[index].GetComponent<RectTransform>();
+                    if (slotRT != null)
+                    {
+                        var cardRT = _skillCard.GetComponent<RectTransform>();
+                        cardRT.pivot = new Vector2(0.5f, 1f);
+                        cardRT.position = slotRT.position + new Vector3(cardOffset.x, cardOffset.y, 0);
+                    }
+
+                    _skillCard.SetVisible(true);
+                }
+            }
+            else
+            {
+                if (index == _hoveredIndex)
+                {
+                    _hoveredIndex = -1;
+                    _skillCard.SetVisible(false);
+                }
             }
         }
     }
