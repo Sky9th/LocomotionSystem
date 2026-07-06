@@ -3,6 +3,8 @@
 > `L2_SceneService/SceneService.cs` — ModuleChildMono，统一管理全部加载模式。
 >
 > **v2 — 2026-07-06。** 旧版文档：[scene-service.md](scene-service.md)（⛔ DEPRECATED）。
+>
+> **Last Verified**: 2026-07-06 | **Verification**: All referenced files exist, signatures match code. Structs 表已从 v1 7-separate-events 更新至 v2 3-unified-structs + SRuntimeSceneState。
 
 ## 状态标记
 
@@ -46,13 +48,10 @@ L2_SceneService/
 ├── Progress/
 │   └── LoadProgress.cs           # ✅ 发布 LoadingProgressEvent + 加权复合进度
 └── Structs/                      # ✅ 全部 struct
-    ├── SLoadSceneRequest.cs
-    ├── SReloadSceneRequest.cs
-    ├── SSceneLoadComplete.cs
-    ├── SSceneLoadStart.cs
-    ├── SSceneTransition.cs
-    ├── SUnloadSceneRequest.cs
-    └── SLoadingProgress.cs       # ✅ 从 LoadingProgressEvent.cs 提取
+    ├── SSceneRequest.cs           # ✅ 统一请求（Load/Reload/Unload + SceneRequestType enum）
+    ├── SSceneTransition.cs        # ✅ 统一事件（Started/Completed + SceneTransitionPhase enum）
+    ├── SLoadingProgress.cs        # ✅ 加载进度（PhaseName, Progress）
+    └── SRuntimeSceneState.cs      # ✅ 运行时场景状态（SceneName, ScenePath, AssetLabels）
 ```
 
 ## 调用链 ✅
@@ -342,13 +341,10 @@ GameService.Start()                                                        [L1]
 
 | Struct | 字段 |
 |--------|------|
-| `SLoadSceneRequest` | `string SceneName` |
-| `SReloadSceneRequest` | `string SceneName` |
-| `SSceneLoadStart` | `string SceneName` |
-| `SSceneLoadComplete` | `string SceneName, string PreviousScene` |
-| `SSceneTransition` | `string CurrentScene, string PreviousScene, bool IsLoading` |
-| `SUnloadSceneRequest` | `string SceneName` |
+| `SSceneRequest` | `string SceneName, SceneRequestType Type` |
+| `SSceneTransition` | `string SceneName, string PreviousScene, SceneTransitionPhase Phase` |
 | `SLoadingProgress` | `string PhaseName, float Progress` |
+| `SRuntimeSceneState` | `string SceneName, string ScenePath, SceneAssetLabel AssetLabels` |
 
 ## 延后项
 

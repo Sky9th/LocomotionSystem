@@ -12,20 +12,6 @@ namespace RedDust.GameScene
     /// </summary>
     public class SceneService : ModuleChildMono, IGameplaySessionHandler
     {
-        private readonly struct RuntimeSceneState
-        {
-            public readonly string SceneName;
-            public readonly string ScenePath;
-            public readonly SceneAssetLabel AssetLabels;
-
-            public RuntimeSceneState(string sceneName, string scenePath, SceneAssetLabel assetLabels)
-            {
-                SceneName = sceneName;
-                ScenePath = scenePath;
-                AssetLabels = assetLabels;
-            }
-        }
-
         [SerializeField] private SceneLoadConfigSO _firstSceneConfig;
         [SerializeField] private List<SceneLoadConfigSO> _configs = new();
 
@@ -34,7 +20,7 @@ namespace RedDust.GameScene
         private SceneLoader _loader;
         private TransitionGate _gate;
         private LoadProgress _progress;
-        private RuntimeSceneState? _currentState;
+        private SRuntimeSceneState? _currentState;
 
         public override void OnAssemble()
         {
@@ -89,7 +75,7 @@ namespace RedDust.GameScene
                     var config = _configs.Find(c => c.SceneName == sceneName);
                     if (config != null)
                     {
-                        RuntimeSceneState? previousState = _currentState;
+                        SRuntimeSceneState? previousState = _currentState;
                         _currentState = CreateRuntimeState(config);
                         StartCoroutine(_gate.Begin(
                             config,
@@ -131,9 +117,9 @@ namespace RedDust.GameScene
             return _firstSceneConfig;
         }
 
-        private static RuntimeSceneState CreateRuntimeState(SceneLoadConfigSO config)
+        private static SRuntimeSceneState CreateRuntimeState(SceneLoadConfigSO config)
         {
-            return new RuntimeSceneState(config.SceneName, config.ScenePath, config.AssetLabels);
+            return new SRuntimeSceneState(config.SceneName, config.ScenePath, config.AssetLabels);
         }
     }
 }
