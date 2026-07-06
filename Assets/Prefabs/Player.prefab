@@ -57,9 +57,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _entityId: 
-  initialTags:
-  - {fileID: 0}
-  - {fileID: 0}
+  initialTags: []
 --- !u!114 &8721387818594905132
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78,9 +76,9 @@ MonoBehaviour:
     type: 2}
   innateTrees:
   - {fileID: 11400000, guid: 31ef688da76e4a540bdf1b9b5ee9e47d, type: 2}
+  - {fileID: 11400000, guid: 04ec5fd8ba09bd24a94a713d18dde0e8, type: 2}
   - {fileID: 11400000, guid: 0b91c905aebb81141b28073496c30964, type: 2}
   - {fileID: 11400000, guid: 85edb77b8060b5340b8889ac2f3eda5b, type: 2}
-  - {fileID: 11400000, guid: 04ec5fd8ba09bd24a94a713d18dde0e8, type: 2}
   characterAudioConfig: {fileID: 11400000, guid: d1bb8260fedfef848a12a32d3f139759,
     type: 2}
   modelPrefab: {fileID: 1904041790429094, guid: 027cd57972e60824ca74f44e0d80ea9a,
@@ -127,7 +125,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43b75aec308392e499ac3d34d0511912, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialPassives: []
 --- !u!114 &-2784309485338590956
 MonoBehaviour:
   m_ObjectHideFlags: 0

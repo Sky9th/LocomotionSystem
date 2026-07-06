@@ -641,12 +641,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8dea381a9d2235d4ca49ab337e59acb2
-    m_Address: Assets/Data/Scene/PathfindingLoadConfig.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - boot
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8e1be4e2e55e5624fbc58f7e0acb6407
     m_Address: Assets/Data/Properties/Definitions/Float/ObstacleProbeVertical.asset
     m_ReadOnly: 0
@@ -1213,18 +1207,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f0b70f40d37c7824e9611a79d029d9fa
     m_Address: Assets/Data/Properties/Definitions/Float/ConsumeTime.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - boot
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f1c6cab3160282143a1067e5f9264f4d
-    m_Address: Assets/Data/Scene/MainMenuLoadConfig.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - boot
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f557dbeccdc5c5145b87a71fecf59428
-    m_Address: Assets/Data/Scene/NewGameLoadConfig.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot

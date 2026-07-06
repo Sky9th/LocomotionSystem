@@ -130,17 +130,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2968406210566419504, guid: c944287bd34c14149a516139d3693ed3,
-        type: 3}
-      propertyPath: _firstSceneConfig
-      value: 
-      objectReference: {fileID: 11400000, guid: 36224b1631aad0144a05690864688004,
-        type: 2}
-    - target: {fileID: 2968406210566419504, guid: c944287bd34c14149a516139d3693ed3,
-        type: 3}
-      propertyPath: _configs.Array.size
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 3894078953817663475, guid: c944287bd34c14149a516139d3693ed3,
         type: 3}
       propertyPath: m_LocalPosition.x

@@ -36,8 +36,15 @@ namespace RedDust.Addressables
             if (IsInitialized) yield break;
 
             var initOp = UnityAddressables.InitializeAsync();
-            while (!initOp.IsDone)
+            while (initOp.IsValid() && !initOp.IsDone)
                 yield return null;
+
+            if (!initOp.IsValid())
+            {
+                _log.Warning("Addressables init handle became invalid before completion.");
+                IsInitialized = true;
+                yield break;
+            }
 
             if (initOp.Status == AsyncOperationStatus.Succeeded)
             {
