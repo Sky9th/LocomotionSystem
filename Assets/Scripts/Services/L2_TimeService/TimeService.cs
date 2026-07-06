@@ -28,8 +28,7 @@ namespace RedDust.GameTime
         {
             if (!GameContext.Instance.TryResolveService(out _eventHub)) return;
 
-            _eventHub.Get<SceneLoadStartEvent>().Register(HandleSceneLoadStart);
-            _eventHub.Get<SceneLoadCompleteEvent>().Register(HandleSceneLoadComplete);
+            _eventHub.Get<SceneTransitionEvent>().Register(HandleSceneTransition);
             _eventHub.Get<GameStateChangedEvent>().Register(HandleGameStateChanged);
             _eventHub.Get<InputTimeSlowEvent>().Register(HandleTimeSlow);
             _eventHub.Get<InputTimeResumeEvent>().Register(HandleTimeResume);
@@ -55,15 +54,9 @@ namespace RedDust.GameTime
 
         // ── Scene / GameState Events ──
 
-        private void HandleSceneLoadStart(SSceneLoadStart _)
+        private void HandleSceneTransition(SSceneTransition evt)
         {
-            isSceneLoading = true;
-            ApplyFreeze();
-        }
-
-        private void HandleSceneLoadComplete(SSceneLoadComplete _)
-        {
-            isSceneLoading = false;
+            isSceneLoading = evt.Phase == SceneTransitionPhase.Started;
             ApplyFreeze();
         }
 
@@ -89,8 +82,7 @@ namespace RedDust.GameTime
         {
             if (_eventHub != null)
             {
-                _eventHub.Get<SceneLoadStartEvent>().Unregister(HandleSceneLoadStart);
-                _eventHub.Get<SceneLoadCompleteEvent>().Unregister(HandleSceneLoadComplete);
+                _eventHub.Get<SceneTransitionEvent>().Unregister(HandleSceneTransition);
                 _eventHub.Get<GameStateChangedEvent>().Unregister(HandleGameStateChanged);
                 _eventHub.Get<InputTimeSlowEvent>().Unregister(HandleTimeSlow);
                 _eventHub.Get<InputTimeResumeEvent>().Unregister(HandleTimeResume);

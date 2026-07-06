@@ -47,8 +47,7 @@ namespace RedDust.UI
             if (!GameContext.Instance.TryResolveService(out _eventHub)) return;
             _eventHub.Get<GameStateChangedEvent>().Register(HandleGameState);
             _eventHub.Get<PlayerSpawnedEvent>().Register(HandlePlayerSpawned);
-            _eventHub.Get<SceneLoadStartEvent>().Register(HandleSceneLoadStart);
-            _eventHub.Get<SceneLoadCompleteEvent>().Register(HandleSceneLoadComplete);
+            _eventHub.Get<SceneTransitionEvent>().Register(HandleSceneTransition);
         }
 
         private void OnDestroy()
@@ -56,8 +55,7 @@ namespace RedDust.UI
             if (_eventHub == null) return;
             _eventHub.Get<GameStateChangedEvent>().Unregister(HandleGameState);
             _eventHub.Get<PlayerSpawnedEvent>().Unregister(HandlePlayerSpawned);
-            _eventHub.Get<SceneLoadStartEvent>().Unregister(HandleSceneLoadStart);
-            _eventHub.Get<SceneLoadCompleteEvent>().Unregister(HandleSceneLoadComplete);
+            _eventHub.Get<SceneTransitionEvent>().Unregister(HandleSceneTransition);
         }
 
         // ---- Public API ----
@@ -178,7 +176,7 @@ namespace RedDust.UI
 
         public void RequestNewGame()
         {
-            StartSceneTransition("NewGame", EGameState.Playing);
+            StartSceneTransition("PathFinding", EGameState.Playing);
         }
 
         public void RequestMainMenu()
@@ -198,7 +196,7 @@ namespace RedDust.UI
                         screenStates.Remove(currentScreenId);
                         currentScreen = null;
                         hasCurrentScreen = false;
-                        _eventHub.Get<SceneUnloadRequestEvent>().Raise(new SUnloadSceneRequest(null));
+                        _eventHub.Get<SceneRequestEvent>().Raise(new SSceneRequest(null, SceneRequestType.Unload));
                     });
                     return;
                 }
@@ -208,7 +206,7 @@ namespace RedDust.UI
                 hasCurrentScreen = false;
             }
 
-            _eventHub.Get<SceneUnloadRequestEvent>().Raise(new SUnloadSceneRequest(null));
+            _eventHub.Get<SceneRequestEvent>().Raise(new SSceneRequest(null, SceneRequestType.Unload));
         }
 
         public void RequestResume()
@@ -240,7 +238,7 @@ namespace RedDust.UI
                         screenStates.Remove(currentScreenId);
                         currentScreen = null;
                         hasCurrentScreen = false;
-                        _eventHub.Get<SceneLoadRequestEvent>().Raise(new SLoadSceneRequest(sceneName));
+                        _eventHub.Get<SceneRequestEvent>().Raise(new SSceneRequest(sceneName, SceneRequestType.Load));
                     });
                     return;
                 }
@@ -250,22 +248,24 @@ namespace RedDust.UI
                 hasCurrentScreen = false;
             }
 
-            _eventHub.Get<SceneLoadRequestEvent>().Raise(new SLoadSceneRequest(sceneName));
+            _eventHub.Get<SceneRequestEvent>().Raise(new SSceneRequest(sceneName, SceneRequestType.Load));
         }
 
-        private void HandleSceneLoadStart(SSceneLoadStart _)
+        private void HandleSceneTransition(SSceneTransition evt)
         {
-            loadingCanvasGroup.alpha = 1f;
-        }
+            if (evt.Phase == SceneTransitionPhase.Started)
+            {
+                loadingCanvasGroup.alpha = 1f;
+            }
+            else
+            {
+                loadingCanvasGroup.alpha = 0f;
 
-        private void HandleSceneLoadComplete(SSceneLoadComplete evt)
-        {
-            loadingCanvasGroup.alpha = 0f;
+                if (pendingTargetState != EGameState.Initializing)
+                    _eventHub.Get<GameStateChangeRequestEvent>().Raise(new SGameStateRequest(pendingTargetState));
 
-            if (pendingTargetState != EGameState.Initializing)
-                _eventHub.Get<GameStateChangeRequestEvent>().Raise(new SGameStateRequest(pendingTargetState));
-
-            IsInputBlocked = false;
+                IsInputBlocked = false;
+            }
         }
 
         private bool TryGetScreen(UIScreenId id, out UIScreen screen)

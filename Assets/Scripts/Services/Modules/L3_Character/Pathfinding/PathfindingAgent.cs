@@ -62,6 +62,7 @@ namespace RedDust.Character.Pathfinding
         public void SetDestination(Vector3 worldPoint)
         {
             if (ai == null) return;
+
             ai.isStopped = false;
             ai.destination = worldPoint;
             ai.SearchPath();

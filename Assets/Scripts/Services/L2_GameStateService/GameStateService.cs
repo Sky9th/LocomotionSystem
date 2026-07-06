@@ -4,6 +4,10 @@ using RedDust.GameInput;
 using UnityEngine;
 using RedDust.Shared;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 namespace RedDust.GameState
 {
 	/// <summary>
@@ -14,6 +18,10 @@ namespace RedDust.GameState
 	[DisallowMultipleComponent]
 	public class GameStateService : ModuleChildMono
 	{
+		#if UNITY_EDITOR
+		private const string EditorStartupSceneNameKey = "RedDust.Editor.StartupSceneName";
+		#endif
+
 		[Header("State Options")]
 		[SerializeField] private EGameState initialState = EGameState.MainMenu;
 		[SerializeField] private bool logTransitions;
@@ -38,7 +46,7 @@ namespace RedDust.GameState
 
 			var state = initialState;
 #if UNITY_EDITOR
-			if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Core")
+			if (ShouldBootstrapPlayingInEditor())
 				state = EGameState.Playing;
 #endif
 
@@ -53,6 +61,17 @@ namespace RedDust.GameState
 
 			GameContext.Instance.RegisterService(this);
 		}
+
+		#if UNITY_EDITOR
+		private static bool ShouldBootstrapPlayingInEditor()
+		{
+			string startupSceneName = SessionState.GetString(EditorStartupSceneNameKey, string.Empty);
+			if (!string.IsNullOrEmpty(startupSceneName))
+				return startupSceneName != "MainMenu";
+
+			return UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Core";
+		}
+		#endif
 
 		public override void OnWire()
 		{

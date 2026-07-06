@@ -21,6 +21,7 @@ namespace RedDust.Entities
         // ── 移动 ──
 
         public void MoveTo(Vector3 target) => Character?.Pathfinding?.SetDestination(target);
+
         public void StopMoving() => Character?.Pathfinding?.Stop();
 
         // ── 技能 ──

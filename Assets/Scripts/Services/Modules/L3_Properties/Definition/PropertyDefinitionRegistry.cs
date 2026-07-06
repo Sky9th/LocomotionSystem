@@ -8,7 +8,8 @@ using UnityEditor;
 namespace RedDust.Properties
 {
     /// <summary>
-    /// 全局 PropertyDefinition 注册表。编辑器专有——运行时 Resolve 已完成，不需要它。
+    /// Global PropertyDefSO lookup. Populated by LoadingOrchestrator during boot preload
+    /// via <see cref="Initialize"/>. Callers receive null if not yet initialized.
     /// </summary>
     public static class PropertyDefinitionRegistry
     {
@@ -17,40 +18,42 @@ namespace RedDust.Properties
 
         public static PropertyDefSO FindById(string id)
         {
-            EnsureInitialized();
+            if (!_initialized)
+            {
+                Debug.LogWarning("[PropertyRegistry] Not initialized yet. Call Initialize() during preload first.");
+                return null;
+            }
             _dict.TryGetValue(id, out var def);
             return def;
         }
 
         public static bool Contains(string id)
         {
-            EnsureInitialized();
+            if (!_initialized) return false;
             return _dict.ContainsKey(id);
         }
 
-        private static void EnsureInitialized()
+        /// <summary>
+        /// Populate the registry at runtime. Called once by LoadingOrchestrator during preload.
+        /// Idempotent — clears and rebuilds on subsequent calls (safe for domain reload).
+        /// </summary>
+        public static void Initialize(List<PropertyDefSO> defs)
         {
-            if (_initialized) return;
-            _initialized = true;
             _dict = new Dictionary<string, PropertyDefSO>();
+            _initialized = true;
 
-#if UNITY_EDITOR
-            var guids = AssetDatabase.FindAssets("t:PropertyDefSO", new[] { "Assets/Data/Properties/Definitions" });
-            foreach (var guid in guids)
+            if (defs == null) return;
+
+            foreach (var def in defs)
             {
-                var path = AssetDatabase.GUIDToAssetPath(guid);
-                var def = AssetDatabase.LoadAssetAtPath<PropertyDefSO>(path);
-                if (def != null && !string.IsNullOrEmpty(def.Id))
+                if (def == null || string.IsNullOrEmpty(def.Id)) continue;
+                if (_dict.ContainsKey(def.Id))
                 {
-                    if (_dict.ContainsKey(def.Id))
-                    {
-                        Debug.LogWarning($"[PropertyRegistry] Duplicate Id: {def.Id} at {path}");
-                        continue;
-                    }
-                    _dict[def.Id] = def;
+                    Debug.LogWarning($"[PropertyRegistry] Duplicate Id: {def.Id} — skipping.");
+                    continue;
                 }
+                _dict[def.Id] = def;
             }
-#endif
         }
 
 #if UNITY_EDITOR

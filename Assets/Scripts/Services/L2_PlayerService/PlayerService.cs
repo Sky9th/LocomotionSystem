@@ -57,7 +57,7 @@ namespace RedDust.Player
         public override void OnWire()
         {
             if (!GameContext.Instance.TryResolveService(out _eventHub)) return;
-            _eventHub.Get<SceneLoadCompleteEvent>().Register(HandleSceneLoadComplete);
+            _eventHub.Get<SceneTransitionEvent>().Register(HandleSceneTransition);
 
             if (spawnedEvent != null) spawnedEvent.Register(OnPlayerSpawned);
 
@@ -81,13 +81,13 @@ namespace RedDust.Player
         private void OnDestroy()
         {
             if (_eventHub != null)
-                _eventHub.Get<SceneLoadCompleteEvent>().Unregister(HandleSceneLoadComplete);
+                _eventHub.Get<SceneTransitionEvent>().Unregister(HandleSceneTransition);
             if (spawnedEvent != null) spawnedEvent.Unregister(OnPlayerSpawned);
         }
 
-        private void HandleSceneLoadComplete(SSceneLoadComplete evt)
+        private void HandleSceneTransition(SSceneTransition evt)
         {
-            if (evt.SceneName != "Core")
+            if (evt.Phase == SceneTransitionPhase.Completed && evt.SceneName != "Core" && evt.SceneName != "MainMenu")
                 CreatePlayer();
         }
 

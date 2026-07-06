@@ -4,6 +4,10 @@ using RedDust.GameScene;
 using RedDust.Shared;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 namespace RedDust.Core
 {
     /// <summary>
@@ -14,6 +18,10 @@ namespace RedDust.Core
     [DisallowMultipleComponent]
     public class GameService : ModuleHub
     {
+#if UNITY_EDITOR
+        private const string EditorStartupSceneNameKey = "RedDust.Editor.StartupSceneName";
+#endif
+
         public static GameService Instance { get; private set; }
 
         private GameContext _gameContext;
@@ -63,13 +71,26 @@ namespace RedDust.Core
             // Wire all child services.
             base.Start();
 
-#if UNITY_EDITOR
-            var activeScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
-            if (activeScene.name != "Core")
-                _eventHub?.Get<SceneLoadRequestEvent>()?.Raise(new SLoadSceneRequest(activeScene.name));
-#endif
+            // Kick off the Addressables preload pipeline (boot assets, PropertyDefSOs).
+            // Scene loads are gated on this completing via SceneService's internal orchestrator.
+            if (_gameContext.TryResolveService(out SceneService sceneService))
+                sceneService.BeginPreload(GetEditorStartupSceneName());
+
             _log.Info($"Bootstrap complete. {Registry.Count} services assembled and wired.");
         }
+
+#if UNITY_EDITOR
+        private static string GetEditorStartupSceneName()
+        {
+            string startupSceneName = SessionState.GetString(EditorStartupSceneNameKey, string.Empty);
+            if (!string.IsNullOrEmpty(startupSceneName))
+                SessionState.EraseString(EditorStartupSceneNameKey);
+
+            return startupSceneName;
+        }
+#else
+        private static string GetEditorStartupSceneName() => null;
+#endif
 
         private void OnDestroy()
         {

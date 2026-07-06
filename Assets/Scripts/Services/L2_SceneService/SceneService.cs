@@ -1,162 +1,139 @@
-using System.Collections;
+using System.Collections.Generic;
+using RedDust.Addressables;
 using RedDust.Core;
 using RedDust.Core.Events;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace RedDust.GameScene
 {
-    public class SceneService : ModuleChildMono
+    /// <summary>
+    /// L2 loading hub. Owns all loading: boot preload, full scene transitions,
+    /// reload, unload, and (future) streaming / background preload.
+    /// </summary>
+    public class SceneService : ModuleChildMono, IGameplaySessionHandler
     {
-        [SerializeField, Min(0.1f)] private float minLoadingDisplayTime = 0.5f;
+        private readonly struct RuntimeSceneState
+        {
+            public readonly string SceneName;
+            public readonly string ScenePath;
+            public readonly SceneAssetLabel AssetLabels;
+
+            public RuntimeSceneState(string sceneName, string scenePath, SceneAssetLabel assetLabels)
+            {
+                SceneName = sceneName;
+                ScenePath = scenePath;
+                AssetLabels = assetLabels;
+            }
+        }
+
+        [SerializeField] private SceneLoadConfigSO _firstSceneConfig;
+        [SerializeField] private List<SceneLoadConfigSO> _configs = new();
 
         private EventHub _eventHub;
-        private string currentContentScene;
-
-        public string CurrentContentScene => currentContentScene;
-
-        public void SetCurrentContentScene(string sceneName)
-        {
-            currentContentScene = sceneName;
-        }
+        private BootPipeline _boot;
+        private SceneLoader _loader;
+        private TransitionGate _gate;
+        private LoadProgress _progress;
+        private RuntimeSceneState? _currentState;
 
         public override void OnAssemble()
         {
             GameContext.Instance.RegisterService(this);
+            _boot = new BootPipeline();
         }
 
         public override void OnWire()
         {
             if (!GameContext.Instance.TryResolveService(out _eventHub)) return;
-            _eventHub.Get<SceneLoadRequestEvent>().Register(HandleLoadSceneRequest);
-            _eventHub.Get<SceneReloadRequestEvent>().Register(HandleReloadSceneRequest);
-            _eventHub.Get<SceneUnloadRequestEvent>().Register(HandleUnloadSceneRequest);
-        }
+            GameContext.Instance.TryResolveService(out AddressablesService addressables);
 
-        private void PublishSnapshot<TSnapshot>(TSnapshot snapshot) where TSnapshot : struct
-        {
-            GameContext.Instance.UpdateSnapshot(snapshot);
+            _progress = new LoadProgress(_eventHub);
+            _loader = new SceneLoader(addressables, this);
+            _gate = new TransitionGate(_boot, _loader, _progress, _eventHub);
+            _boot.Initialize(addressables, _gate, _progress);
+            _boot.Register(new PropertyDefBootTask(addressables));
+
+            _eventHub.Get<SceneRequestEvent>().Register(HandleSceneRequest);
         }
 
         private void OnDestroy()
         {
-            if (_eventHub != null)
-            {
-                _eventHub.Get<SceneLoadRequestEvent>().Unregister(HandleLoadSceneRequest);
-                _eventHub.Get<SceneReloadRequestEvent>().Unregister(HandleReloadSceneRequest);
-                _eventHub.Get<SceneUnloadRequestEvent>().Unregister(HandleUnloadSceneRequest);
-            }
+            if (_eventHub == null) return;
+            _eventHub.Get<SceneRequestEvent>().Unregister(HandleSceneRequest);
         }
 
-        private void HandleLoadSceneRequest(SLoadSceneRequest request)
+        // ── Public API ──
+
+        public void BeginPreload(string preferredSceneName = null)
         {
-            StartCoroutine(LoadContentScene(request.SceneName));
+            var initialConfig = ResolveInitialConfig(preferredSceneName);
+            _currentState = CreateRuntimeState(initialConfig);
+            StartCoroutine(_boot.Run(initialConfig));
         }
 
-        private void HandleReloadSceneRequest(SReloadSceneRequest request)
+        public void RegisterBootTask(IBootTask task) => _boot.Register(task);
+
+        // ── Event handlers ──
+
+        private void HandleSceneRequest(SSceneRequest request)
         {
-            StartCoroutine(ReloadContentScene(request.SceneName));
+            var sceneName = string.IsNullOrEmpty(request.SceneName)
+                ? _currentState?.SceneName
+                : request.SceneName;
+
+            switch (request.Type)
+            {
+                case SceneRequestType.Load:
+                case SceneRequestType.Reload:
+                    if (string.IsNullOrEmpty(sceneName)) return;
+                    var config = _configs.Find(c => c.SceneName == sceneName);
+                    if (config != null)
+                    {
+                        RuntimeSceneState? previousState = _currentState;
+                        _currentState = CreateRuntimeState(config);
+                        StartCoroutine(_gate.Begin(
+                            config,
+                            previousState?.SceneName,
+                            previousState?.ScenePath,
+                            previousState?.AssetLabels ?? SceneAssetLabel.None));
+                    }
+                    else
+                        Debug.LogError($"[SceneService] No config for '{sceneName}'.");
+                    break;
+
+                case SceneRequestType.Unload:
+                    if (string.IsNullOrEmpty(sceneName)) return;
+                    StartCoroutine(_loader.UnloadSceneAsync(sceneName));
+                    _currentState = null;
+                    break;
+            }
         }
 
-        private void HandleUnloadSceneRequest(SUnloadSceneRequest request)
+        public void OnGameplaySessionEnd()
         {
-            var sceneName = string.IsNullOrEmpty(request.SceneName) ? currentContentScene : request.SceneName;
-            if (string.IsNullOrEmpty(sceneName)) return;
-            StartCoroutine(UnloadContentScene(sceneName));
+            _currentState = null;
+            _gate.OnGameplaySessionEnd();
         }
 
-        private IEnumerator LoadContentScene(string sceneName)
+        private SceneLoadConfigSO ResolveInitialConfig(string preferredSceneName)
         {
-            var previousScene = currentContentScene;
+            if (string.IsNullOrEmpty(preferredSceneName))
+                return _firstSceneConfig;
 
-            if (SceneManager.GetSceneByName(sceneName).isLoaded)
-            {
-                currentContentScene = sceneName;
-                _eventHub.Get<SceneLoadCompleteEvent>().Raise(new SSceneLoadComplete(sceneName, previousScene));
-                yield break;
-            }
+            if (_firstSceneConfig != null && _firstSceneConfig.SceneName == preferredSceneName)
+                return _firstSceneConfig;
 
-            _eventHub.Get<SceneLoadStartEvent>().Raise(new SSceneLoadStart(sceneName));
+            var config = _configs.Find(c => c.SceneName == preferredSceneName);
+            if (config != null)
+                return config;
 
-            PublishSnapshot(new SSceneTransition(sceneName, previousScene, true));
-
-            var op = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
-            while (!op.isDone)
-                yield return null;
-
-            if (!string.IsNullOrEmpty(previousScene))
-            {
-                var oldScene = SceneManager.GetSceneByName(previousScene);
-                if (oldScene.isLoaded)
-                    yield return SceneManager.UnloadSceneAsync(oldScene);
-            }
-            currentContentScene = sceneName;
-
-            var elapsed = 0f;
-            while (elapsed < minLoadingDisplayTime)
-            {
-                elapsed += Time.unscaledDeltaTime;
-                yield return null;
-            }
-
-            PublishSnapshot(new SSceneTransition(sceneName, previousScene, false));
-            _eventHub.Get<SceneLoadCompleteEvent>().Raise(new SSceneLoadComplete(sceneName, previousScene));
+            Debug.LogWarning($"[SceneService] Preferred startup scene '{preferredSceneName}' not found. Falling back to firstSceneConfig.");
+            return _firstSceneConfig;
         }
 
-        private IEnumerator ReloadContentScene(string sceneName)
+        private static RuntimeSceneState CreateRuntimeState(SceneLoadConfigSO config)
         {
-            var previousScene = currentContentScene;
-
-            _eventHub.Get<SceneLoadStartEvent>().Raise(new SSceneLoadStart(sceneName));
-
-            PublishSnapshot(new SSceneTransition(sceneName, previousScene, true));
-
-            var op = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
-            while (!op.isDone)
-                yield return null;
-
-            if (!string.IsNullOrEmpty(previousScene))
-            {
-                var oldScene = SceneManager.GetSceneByName(previousScene);
-                if (oldScene.isLoaded)
-                    yield return SceneManager.UnloadSceneAsync(oldScene);
-            }
-            currentContentScene = sceneName;
-
-            var elapsed = 0f;
-            while (elapsed < minLoadingDisplayTime)
-            {
-                elapsed += Time.unscaledDeltaTime;
-                yield return null;
-            }
-
-            PublishSnapshot(new SSceneTransition(sceneName, previousScene, false));
-            _eventHub.Get<SceneLoadCompleteEvent>().Raise(new SSceneLoadComplete(sceneName, previousScene));
+            return new RuntimeSceneState(config.SceneName, config.ScenePath, config.AssetLabels);
         }
-
-        private IEnumerator UnloadContentScene(string sceneName)
-        {
-            _eventHub.Get<SceneLoadStartEvent>().Raise(new SSceneLoadStart(sceneName));
-
-            PublishSnapshot(new SSceneTransition(null, sceneName, true));
-
-            var scene = SceneManager.GetSceneByName(sceneName);
-            if (scene.isLoaded)
-                yield return SceneManager.UnloadSceneAsync(scene);
-
-            currentContentScene = null;
-
-            var elapsed = 0f;
-            while (elapsed < minLoadingDisplayTime)
-            {
-                elapsed += Time.unscaledDeltaTime;
-                yield return null;
-            }
-
-            PublishSnapshot(new SSceneTransition(null, sceneName, false));
-            _eventHub.Get<SceneLoadCompleteEvent>().Raise(new SSceneLoadComplete(null, sceneName));
-        }
-
-
     }
 }

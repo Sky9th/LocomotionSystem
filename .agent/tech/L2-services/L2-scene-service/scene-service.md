@@ -1,3 +1,8 @@
+# ⛔ DEPRECATED — SceneService v1
+
+> 本文档已废弃，由 [scene-service-loading.md](scene-service-loading.md) 取代。
+> 保留供历史参考。2026-07-06。
+
 # SceneService · 场景管理
 
 > `Core/Scene/SceneService.cs` — Additive Loading 场景加载/卸载，继承 BaseService
