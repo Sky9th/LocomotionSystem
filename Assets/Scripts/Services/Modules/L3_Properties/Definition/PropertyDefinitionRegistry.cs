@@ -8,7 +8,7 @@ using UnityEditor;
 namespace RedDust.Properties
 {
     /// <summary>
-    /// Global PropertyDefSO lookup. Populated by LoadingOrchestrator during boot preload
+    /// Global PropertyDefSO lookup. Populated by PropertyBootTask during boot preload
     /// via <see cref="Initialize"/>. Callers receive null if not yet initialized.
     /// </summary>
     public static class PropertyDefinitionRegistry

@@ -52,15 +52,7 @@ namespace RedDust.Character.Animation
                 if (inCombat)
                 {
                     if (e.combatSet != null)
-                    {
-#if UNITY_EDITOR
-                        Debug.Log($"[GripTable] Matched grip={e.gripTag.FullTag} weapon={e.weaponTypeTag?.FullTag} BodyForm=Combat → {e.combatSet.name}");
-#endif
                         return e.combatSet;
-                    }
-#if UNITY_EDITOR
-                    Debug.Log($"[GripTable] Matched grip={e.gripTag.FullTag} weapon={e.weaponTypeTag?.FullTag} BodyForm=Combat → combatSet is null, fallback");
-#endif
                 }
                 return e.animationSet;
             }

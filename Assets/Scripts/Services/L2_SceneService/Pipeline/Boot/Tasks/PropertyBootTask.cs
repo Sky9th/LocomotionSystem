@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using RedDust.Addressables;
 using RedDust.Properties;
 using UnityEngine;
@@ -6,16 +7,15 @@ using UnityEngine;
 namespace RedDust.GameScene
 {
     /// <summary>
-    /// Boot task: loads all PropertyDefSO assets via Addressables label "boot"
-    /// and populates PropertyDefinitionRegistry before the first scene activates.
+    /// Boot task: loads all PropertyDefSO assets and initializes PropertyDefinitionRegistry.
     /// </summary>
-    public class PropertyDefBootTask : IBootTask
+    public class PropertyBootTask : IBootTask
     {
         private readonly AddressablesService _addressables;
 
         public string Description => "Loading property definitions...";
 
-        public PropertyDefBootTask(AddressablesService addressables)
+        public PropertyBootTask(AddressablesService addressables)
         {
             _addressables = addressables;
         }
@@ -23,10 +23,10 @@ namespace RedDust.GameScene
         public IEnumerator Execute()
         {
             bool done = false;
-            var bootLabel = SceneAssetLabel.Boot.ToLabelStrings()[0];
-            _addressables.LoadByLabel<PropertyDefSO>(bootLabel, defs =>
+            var label = SceneAssetLabel.Boot.ToLabelStrings()[0];
+            _addressables.LoadByLabel<PropertyDefSO>(label, defs =>
             {
-                Debug.Log($"[PropertyDefBootTask] Loaded {defs.Count} PropertyDefSOs from label '{bootLabel}'.");
+                Debug.Log($"[PropertyBootTask] Loaded {defs.Count} PropertyDefSOs.");
                 PropertyDefinitionRegistry.Initialize(defs);
                 done = true;
             });

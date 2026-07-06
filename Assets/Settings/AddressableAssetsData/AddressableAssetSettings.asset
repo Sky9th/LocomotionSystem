@@ -89,6 +89,7 @@ MonoBehaviour:
     - default
     - boot
     - scene-configs
+    - prototype-art
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 7b13e7125ff415f42b5ed0ce91d68ac1, type: 2}

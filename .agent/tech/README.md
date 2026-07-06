@@ -59,7 +59,7 @@ tech/
 │   ├── L2-event-dispatcher/            # ⛔ ARCHIVED — EventDispatcher 已退役，EventHub 接管
 │   ├── L2-scene-service/
 │   │   ├── scene-service.md              # ⛔ DEPRECATED — SceneService v1，由 scene-service-loading.md 取代
-│   │   └── scene-service-loading.md      # SceneService v2 — 加载管理中心 (Boot/Transition/Streaming/Background)
+│   │   └── scene-service-loading.md      # SceneService v3 — 加载管理中心 (Pipeline: Boot/Scene/Streaming)
 │   ├── L2-time-service/
 │   │   └── time-service.md
 │   ├── L2-game-state-service/

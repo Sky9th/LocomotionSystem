@@ -35,7 +35,7 @@ namespace RedDust.Core
         /// <summary>层级深度。根=1，"State.Attacking"=2。</summary>
         public int Depth { get; private set; }
 
-        /// <summary>隐式转换到运行时 struct。ActiveAbilitySO 等持有此 SO 的地方可直接当 RdTag 用。</summary>
+        /// <summary>隐式转换到运行时 struct。</summary>
         public static implicit operator RdTag(RdTagDefSO def)
             => def != null ? new RdTag(def.FullTag) : default;
 
@@ -47,9 +47,21 @@ namespace RedDust.Core
 
         private void OnValidate()
         {
-            // 编辑器修改 leafName/parent 后立即刷新
             AutoDeriveLeafName();
             RefreshCache();
+        }
+
+        /// <summary>
+        /// 重建 FullTag 缓存。TagBootTask 在 boot 加载后统一调用，
+        /// 以 BFS 根→叶顺序解决 Build 下 OnEnable 顺序不确定的问题。
+        /// </summary>
+        public void RefreshCache()
+        {
+            cachedFullTag = parent != null
+                ? $"{parent.FullTag}.{leafName}"
+                : leafName;
+
+            Depth = parent != null ? parent.Depth + 1 : 1;
         }
 
         private void AutoDeriveLeafName()
@@ -69,15 +81,6 @@ namespace RedDust.Core
             // 不匹配 → 修正（覆盖复制粘贴残留值）
             Debug.LogWarning($"[RdTag] leafName mismatch: file={assetName}, was=\"{leafName}\", corrected=\"{derived}\"");
             leafName = derived;
-        }
-
-        private void RefreshCache()
-        {
-            cachedFullTag = parent != null
-                ? $"{parent.FullTag}.{leafName}"
-                : leafName;
-
-            Depth = parent != null ? parent.Depth + 1 : 1;
         }
     }
 }

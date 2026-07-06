@@ -33,6 +33,12 @@ namespace RedDust.GameScene
 
         public void Register(IBootTask task) => _tasks.Add(task);
 
+        public void RegisterAll(List<IBootTask> tasks)
+        {
+            foreach (var t in tasks)
+                _tasks.Add(t);
+        }
+
         /// <summary>
         /// Run all boot tasks → load scene-configs → build config registry → load first scene.
         /// Called once by SceneService.BeginPreload.
