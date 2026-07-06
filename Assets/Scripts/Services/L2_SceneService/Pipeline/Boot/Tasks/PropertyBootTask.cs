@@ -26,7 +26,11 @@ namespace RedDust.GameScene
             var label = SceneAssetLabel.Boot.ToLabelStrings()[0];
             _addressables.LoadByLabel<PropertyDefSO>(label, defs =>
             {
-                Debug.Log($"[PropertyBootTask] Loaded {defs.Count} PropertyDefSOs.");
+                var sb = new System.Text.StringBuilder();
+                sb.AppendLine($"[PropertyBootTask] === {defs.Count} PropertyDefSOs ===");
+                foreach (var d in defs)
+                    sb.AppendLine($"  {d.name}  Type={d.Type}  Id={d.Id}");
+                Debug.Log(sb.ToString());
                 PropertyDefinitionRegistry.Initialize(defs);
                 done = true;
             });

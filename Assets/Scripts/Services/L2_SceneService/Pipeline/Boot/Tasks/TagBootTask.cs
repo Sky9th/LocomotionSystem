@@ -27,8 +27,12 @@ namespace RedDust.GameScene
             var label = SceneAssetLabel.Boot.ToLabelStrings()[0];
             _addressables.LoadByLabel<RdTagDefSO>(label, tags =>
             {
-                Debug.Log($"[TagBootTask] Loaded {tags.Count} RdTagDefSOs.");
                 RebuildAllCaches(tags);
+                var sb = new System.Text.StringBuilder();
+                sb.AppendLine($"[TagBootTask] === {tags.Count} RdTagDefSOs ===");
+                foreach (var t in tags)
+                    sb.AppendLine($"  {t.FullTag}  depth={t.Depth}  parent='{(t.Parent != null ? t.Parent.FullTag : "(root)")}'");
+                Debug.Log(sb.ToString());
                 done = true;
             });
 

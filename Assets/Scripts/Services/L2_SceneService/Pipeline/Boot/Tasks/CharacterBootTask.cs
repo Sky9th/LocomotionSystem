@@ -26,7 +26,11 @@ namespace RedDust.GameScene
             var label = SceneAssetLabel.Boot.ToLabelStrings()[0];
             _addressables.LoadByLabel<CharacterDefSO>(label, defs =>
             {
-                Debug.Log($"[CharacterBootTask] Loaded {defs.Count} character definitions.");
+                var sb = new System.Text.StringBuilder();
+                sb.AppendLine($"[CharacterBootTask] === {defs.Count} character definitions ===");
+                foreach (var c in defs)
+                    sb.AppendLine($"  [Character] {c.name}  prefab={(c.Prefab != null ? c.Prefab.name : "NULL")}  overrides={c.OverridesJson}");
+                Debug.Log(sb.ToString());
                 done = true;
             });
 

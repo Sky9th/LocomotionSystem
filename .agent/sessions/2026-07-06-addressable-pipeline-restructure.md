@@ -69,4 +69,11 @@
 - L1_Core/RdTag — 待 rd-tech-doc 更新 RdTagDefSO 文档
 
 ### Flag for Design Doc Creation
-- [x] No design doc needed — 纯加载架构重构，无设计面变更。
+### BootTask 日志完善（追加）
+- 5 个 BootTask 改为单条 Debug.Log（StringBuilder 拼接）
+- 每类资产逐行打印：Tag 的 FullTag/Depth/Parent、Property 的 Type/Id、Active 的引用链（activation→search→noise→effects）、Tree 的节点和兼容标签、Item/Character 的 prefab/overrides
+- 所有 Unity Object 空引用使用显式判空，避免 Build 下 UnassignedReferenceException
+- AddressableAssetsData 残留文件清理
+
+### Flag for Design Doc Creation
+- [x] No design doc needed — 纯加载架构重构 + 日志完善，无设计面变更。
