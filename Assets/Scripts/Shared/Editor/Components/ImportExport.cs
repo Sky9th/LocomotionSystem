@@ -125,7 +125,7 @@ namespace RedDust.Shared.EditorUI
 
             EditorGUI.BeginDisabledGroup(!hasFile);
             if (EditorButton.Draw("Import", EditorButtonType.Success,
-                    EditorButtonSize.Large, 120f))
+                    EditorButtonSize.Medium))
             {
                 result = onImport(filePath);
                 AssetDatabase.Refresh();
@@ -135,7 +135,7 @@ namespace RedDust.Shared.EditorUI
             GUILayout.FlexibleSpace();
 
             if (EditorButton.Draw("Export", EditorButtonType.Primary,
-                    EditorButtonSize.Large, 120f))
+                    EditorButtonSize.Medium))
             {
                 var outPath = EditorUtility.SaveFilePanel(
                     "Export JSON", defaultDir, defaultFileName, fileExtension);
@@ -179,8 +179,10 @@ namespace RedDust.Shared.EditorUI
                 if (hasErrors)
                 {
                     EditorCard.GapTight();
+                    var scrollPos = EditorGUILayout.BeginScrollView(Vector2.zero, GUILayout.MaxHeight(160));
                     EditorGUILayout.TextArea(string.Join("\n", errors),
-                        EditorStyles.miniLabel, GUILayout.MinHeight(40));
+                        EditorStyles.miniLabel, GUILayout.ExpandHeight(true));
+                    EditorGUILayout.EndScrollView();
                 }
                 else
                 {

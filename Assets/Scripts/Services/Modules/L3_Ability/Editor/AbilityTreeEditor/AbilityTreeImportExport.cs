@@ -155,6 +155,7 @@ namespace RedDust.Ability
                 ApplyTreeFields(tree, entry, tagByFullTag, abilityByName, passiveByName, errors);
 
                 AssetDatabase.CreateAsset(tree, assetPath);
+                DataLabelTools.EnsureBootLabel(assetPath);
                 EditorUtility.SetDirty(tree);
                 created++;
             }

@@ -342,6 +342,7 @@ namespace RedDust.Ability
                 instance.name = entry.name;
                 ApplyFields(instance, entry, effTag, blockedTags, def, tagByFullTag, defById);
                 AssetDatabase.CreateAsset(instance, assetPath);
+                DataLabelTools.EnsureBootLabel(assetPath);
                 created++;
                 Debug.Log($"[EffectImporter] Created: {assetPath}");
             }

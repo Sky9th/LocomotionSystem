@@ -4,7 +4,7 @@ using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
 using UnityEngine;
 
-namespace RedDust.GameScene.Editor
+namespace RedDust.Shared.EditorUI
 {
     public static class DataLabelTools
     {
@@ -47,6 +47,26 @@ namespace RedDust.GameScene.Editor
 
             AssetDatabase.SaveAssets();
             Debug.Log($"[DataLabelTools] Tagged {tagged} of {guids.Length} assets in '{folder}' with label '{label}'.");
+        }
+
+        /// <summary>
+        /// Ensure a single asset is registered in Addressables and tagged with "boot".
+        /// Called by importers after AssetDatabase.CreateAsset to make new assets available in builds.
+        /// </summary>
+        public static void EnsureBootLabel(string assetPath)
+        {
+            var settings = AddressableAssetSettingsDefaultObject.Settings;
+            if (settings == null) return;
+
+            var guid = AssetDatabase.AssetPathToGUID(assetPath);
+            if (string.IsNullOrEmpty(guid)) return;
+
+            var entry = settings.FindAssetEntry(guid);
+            if (entry == null)
+                entry = settings.CreateOrMoveEntry(guid, settings.DefaultGroup);
+
+            if (!entry.labels.Contains("boot"))
+                entry.SetLabel("boot", true, true);
         }
     }
 }

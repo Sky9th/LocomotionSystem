@@ -44,9 +44,10 @@ namespace RedDust.Shared.EditorUI
 			var style = new GUIStyle(EditorStyles.miniButton)
 			{
 				fontSize = GetFontSize(size),
+				fixedHeight = GetFixedHeight(size),
 				padding = GetPadding(size),
 				margin = new RectOffset(0, 0, EditorStyles.miniButton.margin.top, EditorStyles.miniButton.margin.bottom),
-				overflow = new RectOffset(0, 0, EditorStyles.miniButton.overflow.top, EditorStyles.miniButton.overflow.bottom),
+				overflow = new RectOffset(),
 			};
 
 			_styleCache[key] = style;
@@ -177,6 +178,13 @@ namespace RedDust.Shared.EditorUI
 			EditorButtonSize.Small  => EditorTokens.PaddingSmall,
 			EditorButtonSize.Large  => EditorTokens.PaddingLarge,
 			_                       => EditorTokens.PaddingMedium,   // Medium / Auto
+		};
+
+		private static float GetFixedHeight(EditorButtonSize size) => size switch
+		{
+			EditorButtonSize.Medium => 24f,
+			EditorButtonSize.Large  => 28f,
+			_                       => 0f,  // Small / Auto: miniButton 自适应
 		};
 
 	}

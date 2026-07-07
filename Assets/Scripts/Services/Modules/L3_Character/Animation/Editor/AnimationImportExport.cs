@@ -678,6 +678,7 @@ namespace RedDust.Character.Animation
             instance = ScriptableObject.CreateInstance<AnimationModeConfigSO>();
             ApplyModeConfig(instance, entry, errors);
             AssetDatabase.CreateAsset(instance, path);
+            DataLabelTools.EnsureBootLabel(path);
             instance.name = entry.name;
             return true;
         }
@@ -726,6 +727,7 @@ namespace RedDust.Character.Animation
             EnsureTransitionsInstantiated(instance);
             ApplyLocomotionSet(instance, entry, guidLookup, errors);
             AssetDatabase.CreateAsset(instance, path);
+            DataLabelTools.EnsureBootLabel(path);
             instance.name = entry.name;
             return true;
         }
@@ -827,6 +829,7 @@ namespace RedDust.Character.Animation
             instance = ScriptableObject.CreateInstance<LocomotionAnimationConfigSO>();
             ApplyLocomotionConfig(instance, entry, nameLookup, createdThisSession, errors);
             AssetDatabase.CreateAsset(instance, path);
+            DataLabelTools.EnsureBootLabel(path);
             instance.name = entry.name;
             return true;
         }
@@ -877,6 +880,7 @@ namespace RedDust.Character.Animation
             instance = ScriptableObject.CreateInstance<GripAnimationTableSO>();
             ApplyGripTable(instance, entry, nameLookup, createdThisSession, tagLookup, errors);
             AssetDatabase.CreateAsset(instance, path);
+            DataLabelTools.EnsureBootLabel(path);
             instance.name = entry.name;
             return true;
         }
@@ -943,6 +947,7 @@ namespace RedDust.Character.Animation
             instance = ScriptableObject.CreateInstance<CharacterAnimationProfileSO>();
             ApplyProfile(instance, entry, nameLookup, createdThisSession, errors);
             AssetDatabase.CreateAsset(instance, path);
+            DataLabelTools.EnsureBootLabel(path);
             instance.name = entry.name;
             return true;
         }

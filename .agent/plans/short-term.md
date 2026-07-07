@@ -1,230 +1,181 @@
 # 短期开发计划
 
-> 更新: 2026-07-06
+> 更新: 2026-07-07
 > 分支: `feature/ability-pipeline`
 > 原则: 每步有可玩增量，先完成基础设施再铺玩法
-> 前置: Character 模块重构 ✅ · Properties 系统 ✅ · Animation 重构 ✅ · Ability 数据资产 ✅ · AbilityTreeSO ✅ · EntityService + Container ✅ · Tag 6 域 339 标签 ✅ · Equipment→技能闭环 ✅ · PropertyTree Equipment 层重构 ✅ · Ability Pipeline 8 State 全就位 ✅
+> 前置: Character 模块重构 ✅ · Properties 系统 ✅ · Animation 重构 ✅ · Ability 数据资产 ✅ · AbilityTreeSO ✅ · EntityService + Container ✅ · Tag 6 域 339 标签 ✅ · Equipment→技能闭环 ✅ · PropertyTree Equipment 层重构 ✅ · Ability Pipeline 8 State 全就位 ✅ · S1-S5 全部完成 ✅
 
 ---
 
-## 近期完成（2026-06）
+## Phase 4 已完成（2026-06 ~ 2026-07-07）
 
-| 事项 | 说明 |
-|------|------|
-| Properties 系统全量落地 | 8 类型 / ~185 PropertyDef / 30 Trees / Editor 完整 |
-| Properties 接管角色物理 | PropertyTable + `GroundSystemConfigSO` 替代 3 个旧 SO（v0.36.11 Physique 已删除） |
-| Module 系统 + ctx 全链路 | BaseService 删除，Service 直接继承 ModuleComponent |
-| Animation 重构 | LinearMixer + In-line Transition + 废弃 State 清理 |
-| Ability 数据资产 | Search / Activation / Effect / Noise / Passive 全量 SO + Editor |
-| AbilityTreeSO | 代码 + Import/Export + 7 技能 + 3 天生树 + 9 Tag |
-| Event 系统统一 | `GameEvent<T>` 唯一推模式通道 |
-| EntityService + Entity 数据模型 | Id + Preset + Properties + StackCount + Tick + NestedContainer |
-| Container 系统 | 泛型 `Container<T>` + Place/Remove/CanAccept/FindSlotFor + 嵌套递归 |
-| AbilityForest | 多来源树集合 + Tag 兼容过滤 → ResolvedActives[] |
-| Entity→CharacterActor 数据管线 | Slots PropertyTree → BodyContainer + CharacterEquipment GO 同步 |
-| Tag 架构重构 | 6 域 339 标签（Ability/Identity/Body/Entity/Grip/Noise）+ GameplayTag→rTag 全局改名 |
-| CharacterCombat 骨架 | 回调绑定 + 伤害管线骨架 |
-| 武器模型 | PolygonApocalypse 武器模型 + 材质导入 |
-	
-	---
-	
-	## 近期完成（2026-07）
-	
-	| 事项 | 说明 |
-	|------|------|
-	| 受击反应管线 | SDamageInfo.ImpactEffect → ExecutionState → CharacterCombat → DriverArbiter → HitReactionDriver 全链路 |
-	| ImpactEffectSO + EHitReactionLevel | 资产驱动受击等级（Flinch/Stagger/Knockdown）+ 策划直接配置 |
-	| HitReactionDriver | 受击动画驱动 — 播放 MixerTransition2D + blend parameter + FadeIn 临时覆写 |
-	| DriverArbiter 抢占规则 | H1 idle→接受；H2 HitReaction 抢占一切；Traversal↔Ability 互斥 |
-	| CharacterCombat 受击+死亡 | OnReaction（资产驱动+Knockdown起身链）+ OnDamaged（HP≤0倒地不起） |
-	| 受击动画数据层 | LocomotionAnimationSetSO 4 个 hitReaction 字段 + ImportExport 序列化（v0.36.9） |
-| 伤害飘字系统 | DamageNumberOverlay + DamageNumberWidget — HP 变化时弹出浮动伤害数字 |
-| Ability Pipeline 8 State 全就位 | Gating→Cost→Windup→Cooldown→Execution→Recovery→Completed/Rejected，ref TContext 零拷贝 |
-| AbilityDriver ③ 释放动画 | 消费 AbilityActivationSO，Windup→Fire Animancer 事件注入 + animationSpeed 调速 |
-| **S1 Properties 深度接入** | 删除 Physique 缓存，GroundLocomotion 实现 motionSpeedScale 公式（Agility + CarryWeight）|
-| **Physique 删除** | 8 字段 struct 全量替换为 PropertyTable.GetFloat 按需读取，全代码库统一 |
-| **Damage 管线重构** | DamageEffectSO 类型拆分（实体通道 + DamageModifierEffectSO 技能修正）；SDamageInfo per-channel DamageEntry[]；公式 base×(1+Σ%)+Σadd；tag 层级匹配；删除 AbilityEffects.cs |
-| **S5 被动技能系统** | 5 个被动技能资产（ToughBody/DeepWound/BerserkerBlood/LastStand/Caltrop）+ 4 Buff Effect + 9 Tag + Human_InnatePassives 树 |
-| **被动管线运行时** | AbilityForest→SyncInstances 桥接；OnEquip/OnHit/OnKill/OnDamaged dispatch；OnTriggerEnter/Exit 迁移 |
-| **FloatAdjunct Max 扩容** | MaxAdd/MaxMultiply 支持属性上限扩容；FloatState.Effective 用 effectiveMax 钳制 |
-| **PassiveBarOverlay** | 被动技能栏 UI — 参考 AbilityBarOverlay，顶部居中，15Hz 轮询 |
-| **管道动画修复** | DriverArbiter 拒绝不清队列 + _skipCompletionThisFrame + AbilityDriver 事件 Clear |
-| **Activation 补全** | 10 个 Activation 资产补 recoveryDuration（clip 帧数推算）+ Import/Export 支持 |
+<details>
+<summary>S1-S5 全部完成，点击展开</summary>
 
----
+| # | 阶段 | 核心产出 |
+|---|------|---------|
+| S1 | Properties 深度接入 | Physique 删除，GroundLocomotion 公式化（Agility × bonus − WeightPenalty） |
+| S2 | 装备→技能闭环 | Entity→Container→GripTags→AbilityForest→ResolvedActives→PlayerDirector→Q 键释放 |
+| S3 | Ability Pipeline 8 State | Gating→Cost→Windup→Cooldown→Execution→Recovery→Completed/Rejected，ref TContext 零拷贝 |
+| S4 | Combat 管线补完 | 属性修正（Strength）、OnHit 通知通路、Damage 类型拆分（per-channel DamageEntry[] + 公式 base×(1+Σ%)+Σadd） |
+| S5.0 | 受击动画管线 | HitReactionDriver + DriverArbiter 抢占（H2 抢占一切）+ LocomotionAnimationSetSO 4 hitReaction 字段 |
+| S5.4 | AirLand 分级落地 | Gait 驱动 LinearMixer.State.Parameter（0=Idle, 1=Walk, 2=Run/Sprint） |
+| S5.5 | Traversal 动画迁移 | LocomotionAnimationSetSO traversal + DotProduct 方向验证（dot > 0.8 正面顶墙） |
+| — | 被动技能管线 | AbilityForest→SyncInstances + OnEquip/OnHit/OnKill/OnDamaged dispatch + PassiveBarOverlay |
+| — | 伤害飘字 | DamageNumberOverlay + DamageNumberWidget |
+| — | Pathfinding 缓存 | GraphCache.bytes 尊重，跳过冗余 Scan() |
 
-## S1 — Properties 深度接入 [✅ 完成]
+🔒 延后：S4.5 自伤、S5.1 Footstep、S5.2 HeadLook IK、S5.3 Crawl（俯视角优先级低）
 
-> **实际实施**（2026-07-05）：
-> - 删除 `CharacterPhysique.cs`（8 字段缓存 struct），全量替换为 `PropertyTable.GetFloat(PropertyPath.X)` 按需读取
-> - `GroundLocomotion` 实现 `ComputeMotionSpeedScale()` 公式：`1 + Agility × agilitySpeedBonus − WeightPenalty`
-> - 公式系数由 `GroundSystemConfigSO.agilitySpeedBonus(0.03)` / `weightPenaltyRatio(0.2)` 全局配置驱动
-> - `Stance` 移除硬编码 `1f`，接受外部传入的 `motionSpeedScale`
-> - `BaseMovingState` blend 参数同步缩放
-> - `CharacterConst` 新增 `Agility`、`CarryWeight` 常量
-> - 姿势系数不参与速度计算——动画系统已通过 `GetNativeSpeed(gait)` 编码姿势差异
-
-**可验证增量**: 负重变化影响移速（Container 有物品时 motionSpeedScale < 1.0），敏捷属性生效（默认 Agility=5 → 1.15x speed）。
-
----
-
-## S2 — 装备→技能闭环 [✅ 完成]
-
-> **目标**: 最小闭环——角色持有装备 → 切换装备触发技能切换 → 释放技能 → 扣血。
-> 不依赖 AbilityComponent/HitReactionComponent，直接通过现有 AbilityExecutor 跑通全链路。
->
-> 设计文档: [ability-forest.md](../tech/L2-services/L2-modules/L3-ability/ability-forest.md)
-
-```
-数据流: Entity → Container → CharacterEquipment.SyncEquipment → GripTags
-          → AbilityForest.SetWeaponTags() → ResolvedActives[]
-          → PlayerDirector → AbilityExecutor.TryActivate() → ②③④⑤⑥⑦⑧ ✅
-```
-
-| # | 任务 | 状态 | 说明 |
-|---|------|------|------|
-| S2.1 | **`ItemInstance.cs`** | ~~过时~~ | `Entity` 已全覆盖（Id/Preset/Properties/StackCount/Tick），不需另建类 |
-| S2.2 | **`Container.cs`** | ✅ 完成 | 泛型 `Container<T>` + Place/Remove/CanAccept/FindSlotFor |
-| S2.3 | **`AbilityForest.cs`** | ✅ 完成 | AddTree/RemoveBySource/Resolve → ResolvedActives[]/ResolvedPassives[] |
-| S2.4 | **`ItemDefSO` 扩展** | ~~过时~~ | 技能树来源是学习/天生，武器只做 Tag 过滤——不授予技能树 |
-| S2.5 | **`CharacterBuildContext` 改造** | ~~框架覆盖~~ | `AbilityForest.ResolvedActives[]` 直接提供，PlayerDirector 已消费 |
-| S2.6 | **`CharacterActor` 改造** | ⚠️ 变通 | 无 SwitchWeapon 方法，`CharacterEquipment.SyncEquipment()` 每帧 diff 等效实现 |
-| S2.7 | **`PlayerDirector` 改造** | ⚠️ Hack | 硬编码 EquipMap + 裸操作 Container，功能可用，远期装备栏 UI 清理 |
-| S2.8 | **`AbilityExecutor` 伤害管线** | ✅ 完成 | 已内含进 S3 — ExecutionState → AbilityReactor.Resolve → CharacterCombat → HP 写入 |
-
-**⚡ 装备→技能→输入→②③④⑤⑥⑦⑧ 全链路已跑通** ✅。
-伤害结算已在 S3 Pipeline 正编落地——ExecutionState 构造 SDamageInfo → AbilityReactor.Resolve → CharacterCombat 回调 → HP 写入 + 伤害飘字 + 受击反应动画。
-
----
-
-## S3 — Ability Pipeline 运行时 [✅ 完成]
-
-> 背景: S2 闭环用现有 AbilityExecutor 直接调用。S3 将管道正式化为 8 State 状态机（Gating → Cost → Windup → Cooldown → Execution → Recovery）。
-> 实现文档: [ability-pipeline-states.md](../tech/L2-services/L2-modules/L3-ability/ability-pipeline-states.md)
-> 设计概念: [ability-pipeline-design.md](../tech/L2-services/L2-modules/L3-ability/ability-pipeline-design.md) ⛔ DEPRECATED（概念保留，实现细节过时）
-
-**架构**: AbilityExecutor（发送中枢 → ②③④⑤）→ AbilityReactor（接收中枢 → ⑥⑦⑧）→ CharacterCombat（修改器回调桥接）
-
-| # | 任务 | 说明 | 状态 |
-|---|------|------|------|
-| S3.1 | **`AbilityExecutor` + 8 State 管线** | `TryActivate()` + `Enqueue()` + StateMachine 全链路 ②-⑧ | ✅ 完成 |
-| S3.2 | **`AbilityReactor` + `CharacterCombat`** | `Resolve(SDamageInfo)` + 回调桥接（Effect/Resolution/ApplyDamage/Reaction/OnDamaged） | ✅ 框架完成 |
-| S3.3 | **`AbilityDriver`** | ③ 释放动画 — 继承 `BaseAnimationDriver`，消费 `AbilityActivationSO` Windup→Fire→Recovery | ✅ 完成 |
-| S3.4 | **伤害飘字** | `DamageNumberOverlay` + `DamageNumberWidget` — HP 变化时弹出浮动数字 | ✅ 完成 |
-| S3.5 | **闭环测试 + 旧代码清理** | Q 键全链路验证 ✅；被动触发管线 ✅；`OLD_IMPLEMENTATION` 清理 ✅ | ✅ 完成 |
-
-### S3.1 已完成（全 8 State）
-
-- `IState<TContext>` + `StateMachine<TContext>` 泛型基础设施（零领域依赖，[MARK] 可提至 Shared/）
-- `ActiveAbilityPipeline` — 持有 `StateMachine<SActiveAbilityContext>`，`Start()` / `Tick()` / `Interrupt()`
-- `AbilityExecutor` — `Queue<SQueuedSkill>` + `Enqueue()` 队列接口
-- `GatingState` ② 门控落地 — 冷却/互斥/外部条件三闸门
-- `CostState` ③ 资源消耗 — 双阶段预检+扣除（PropertyTable 内建路径 + 回调兜底）
-- `WindupState` ③ 前摇计时 — windupDuration / animationSpeed + canCancelWindup 霸体控制
-- `CooldownState` 冷却施加 — 独立冷却 + 联动冷却 + MinCooldown=0.05s 防连发
-- `ExecutionState` ④⑤ 落地 — Fire 帧物理查询（Cone/Ray/Circle 内联）+ BuildDamageInfo + EffectCallback 修正 + 逐 hit Reactor.Resolve
-- `RecoveryState` ③ 后摇 — recoveryDuration / animationSpeed + canCancelRecovery 霸体控制 + 动画完成检测
-- `TerminalStates` — Idle / Completed / Rejected 终态
-- `PlayerDirector` 对接 — `TryActivate` → `Enqueue`，武器 Entity 传入管道
-- `SDamageInfo` — `ImpactEffect` 字段，双构造函数向后兼容
-
-### S3.2 已完成
-
-- `AbilityReactor` — `Resolve(SDamageInfo)` + 5 回调委托（Resolution / ApplyDamage / Reaction / OnDamaged / 事件发布）
-- `CharacterCombat.OnWire()` — 接线 5 回调：`EffectCallback` / `ResolutionCallback` / `ApplyDamageCallback` / `ReactionCallback` / `OnDamagedCallback`
-- `CharacterCombat.OnReaction()` — ImpactEffectSO 资产驱动受击等级 → AnimationRequest → HitReactionDriver
-- `CharacterCombat.OnDamaged()` — HP≤0 倒地不起（无 OnCompleted 起身链）
-- `CharacterCombat.OnResolveDamage()` — 基础 Mitigation（Endurance 减免），Avoidance/Absorption 占位
-- `CharacterCombat.OnApplyDamage()` — HP 直接写入 + 日志
-
-### S3.5 进度
-
-- **闭环测试**: ✅ 按 Q → TryUse → 8 State 全链路 → Reactor.Resolve → CharacterCombat → 伤害飘字
-- **被动技能物理回调迁移**: ✅ OnTriggerEnter/Exit 已迁移到 NotifyPassiveEvent（v0.38.3）
-- **AbilityForest 接入 InstanceManager**: ✅ SyncPassivesFromForest → SyncInstances 桥接（v0.38.3）
-- **被动触发 dispatch**: ✅ OnEquip/OnHit/OnKill/OnDamaged 全部就位（v0.38.3）
-- **管道动画卡死修复**: ✅ DriverArbiter + AbilityDriver + Activation recoveryDuration（v0.38.4）
-- **旧代码清理**: ✅ AbilityExecutor `#region OLD_IMPLEMENTATION` 全量清理 + AbilitySearch.cs/SearchState.cs 删除（v0.38.5）
-- **废弃文件删除**: ✅ AbilityEffects.cs 已删除（v0.38.0）
-
-**可验证增量**: 按 Q → 门控 → AbilityDriver 播放横斩动画 → Fire 帧物理查询 → 命中结算扣血 → 伤害飘字 → 受击反应动画。
-
----
-
-## S4 — Combat 管线补完 [~1天]
-
-> `CharacterCombat.cs` 已有骨架，⑤/⑥ 修改器公式当前为占位/TODO。S3.5 闭环测试通过后开工。
-> 回避/护盾/霸体依赖其他系统（闪避率、护盾值、霸体值），延后到对应系统就位后再处理。
-
-| # | 任务 | 涉及 | 状态 |
-|---|------|------|------|
-| S4.1 | 施展方属性修正 — 力量/穿透 (`IEffectModifier`) | `CharacterCombat.OnEffectModify` | ✅ — Strength × strengthDamageBonus（GroundSystemConfigSO） |
-| S4.2 | 字符串路径 → Properties 路径常量 | `CharacterCombat.cs` | ✅ 已完成 — 全部使用 CharacterConst.PropertyPath |
-| S4.3 | **Reactor→Caster OnHit 通知通路** — Exe 侧知道命中是否完成，Caster→Reactor 反馈 | `AbilityReactor` / `AbilityExecutor` | ✅ — Resolve 返回 finalAmount → OnHitResolved → NotifyPassiveEvent(OnHit) |
-| S4.4 | **SDamageInfo 职责明确 + 类型拆分** — Exe 算 outgoing，Reactor 算 mitigation；DamageEffectSO 拆分为实体通道 + DamageModifierEffectSO 技能修正；SDamageInfo per-channel DamageEntry[]；公式 base×(1+Σ%)+Σadd；tag 层级匹配 | `SDamageInfo` / `ExecutionState` / `DamageEffectSO` | ✅ v0.38.0 |
-| S4.5 | **Self-damage Amount=0** — 狂暴针剂/脱臼修正等自伤技能的自我伤害公式 | `AbilityReactor.Resolve` | 🔒 延后 — 等有实际自伤技能需求时再做 |
-
----
-
-## S5 — 动画系统补完 [~1天]
-
-> S5.0（受击动画管线）已完成。S5.2 Head Look IK 延后——俯视角游戏优先级非常低。
-> 旧 Vector2MixerState + CharacterHeadLook + headLookMixer 方案已全量删除（v0.38.5），
-> 将来用 Unity Animation Rigging 包 `MultiAimConstraint` + `RigBuilder` 实现。
-
-| # | 任务 | 说明 | 耗时 | 状态 |
-|---|------|------|------|------|
-| S5.0 | **受击动画管线** | HitReactionDriver + DriverArbiter 抢占 + LocomotionAnimationSetSO hitReaction 字段 | ~1天 | ✅ 完成 |
-| S5.1 | Footstep 事件桥接 | `BaseLayer.FootstepCallback → AnimationBrain.OnFootstep → CharacterAudio` | 🔒 延后 — 俯视角脚步声优先级低，桥接代码已注释留占位 |
-| S5.2 | **Head Look IK** | 安装 Animation Rigging 包 + 新建 `HeadLookIK` | ~1天 | 🔒 延后 — 俯视角优先级低，旧代码已清除留占位 |
-| S5.3 | Crawl 动画 mixer | `BaseMovingState` + `LocomotionAnimationSetSO` + `crawlMixer` | ~0.5天 | 🔒 延后 — 俯视角优先级低 |
-| S5.4 | AirLand 分级落地 | Gait 参数混合 `landLight/landHard` LinearMixer | ~0.5天 | ⏳ |
-| S5.5 | Traversal 动画迁移 | `TraversalDriver` → `TraversalAnimationSetSO` | ~0.5天 | ⏳ |
+</details>
 
 ---
 
 ## 低优先级 / 技术债
 
-> 不阻塞当前里程碑，在 S3-S5 施工中顺手修复或远期处理。
+> 不阻塞当前里程碑，远期处理。
 
-| # | 事项 | 说明 | 阻塞原因 |
-|---|------|------|----------|
-| L1 | **Avoidance/Mitigation/Absorption 三阶段拆分** | 替换单 ResolutionCallback 为三段管线 | 回避/护盾系统未就位 |
-| L2 | **回避判定** — 闪避率 + 短路 | `CharacterCombat.OnResolveDamage` | 闪避属性/装备系统 |
-| L3 | **吸收结算** — 护盾伤害吸收 | `CharacterCombat.OnResolveDamage` | 护盾系统未设计 |
-| L4 | **霸体阈值判定** — staggerValue vs 自身霸体值 | `CharacterCombat.OnReaction` | 霸体值属性体系 |
-| L5 | **ComputeDamage 交叉乘积按 element tag 匹配** | 伤害计算中元素类型交叉匹配逻辑 | — |
-| L6 | **RangedWeaponSO 临时 SO 泄漏** | `ScriptableObject.CreateInstance` 未销毁 | — |
-| L7 | **AddBuffTags 默认 owner=null** | 潜在 footgun，调用方容易漏传 owner | — |
-| L8 | **Reactor ApplyEffects 确认 public/private** | 明确 API 边界 | — |
-| L9 | **伤害类型转换** | 防弹衣穿刺→钝伤等类型映射 | 防弹衣系统未就位 |
+| # | 事项 | 阻塞原因 |
+|---|------|----------|
+| L1 | Avoidance/Mitigation/Absorption 三阶段拆分 | 回避/护盾系统未就位 |
+| L2 | 回避判定 — 闪避率 + 短路 | 闪避属性/装备系统 |
+| L3 | 吸收结算 — 护盾伤害吸收 | 护盾系统未设计 |
+| L4 | 霸体阈值判定 | 霸体值属性体系 |
+| L5 | ComputeDamage 交叉乘积按 element tag 匹配 | — |
+| L6 | RangedWeaponSO 临时 SO 泄漏 | — |
+| L7 | AddBuffTags 默认 owner=null | — |
+| L8 | Reactor ApplyEffects 确认 public/private | — |
+| L9 | 伤害类型转换 — 防弹衣穿刺→钝伤 | 防弹衣系统未就位 |
+
+---
+
+## 不纳入短期计划
+
+- 建造基础（Phase 6）
+- 时间日夜（Phase 7）
+- 农业烹饪 / NPC / 尸潮 / 科技树（Phase 8-11）
+- 扩展打磨 — 连招 / 投射物 / 噪音连锁 / 特殊感染者 / 丧尸化（Phase 12+）
+- 角色创建 UI
+- 技能槽溢出处理（actives > 4 排序）
+- PropertyType.Struct（GrantedAbilityTrees 远期迁移）
 
 ---
 
 ## 优先级依赖
 
 ```
-S3.5 (闭环测试 ✅ · 被动管线 ✅ · 旧代码清理 ✅) ──── 完成
+S1-S5 ✅ 全部完成 ──── Phase 4 封闭
     │
-    ├── S4 (~1天 — Combat 补完) ──── 当前焦点
-    │
-    └── S5 (~2天 — 动画补完, S5.0 ✅) ──── 可并行
-
-低优先级 L1-L5 ──── 远期 / 顺手修复
-S1 ✅ 完成（2026-07-05）
+    └── Phase 5 — 物品经济 ← 当前
+         ├── P5.1 物品能存在于世界上
+         ├── P5.2 玩家能拾取物品
+         ├── P5.3 玩家能看到背包
+         ├── P5.4 玩家能装备/卸下物品
+         ├── P5.5 玩家能使用消耗品
+         └── P5.6 游戏能存档/读档
 ```
-
-**S3.5 → S4 直接依赖**：S4 的 OnEffectModify/OnResolveDamage 公式验证依赖闭环测试跑通。S3.5 被动迁移 + InstanceManager 集成为后续三阶段拆分打底。
 
 ---
 
-## 不纳入短期计划
+## Phase 5 — 物品经济 [施工中]
 
-- 资源系统 / 背包 / 负重（Phase 5）
-- 建造基础（Phase 6）
-- 时间日夜（Phase 7）
-- 农业烹饪 / NPC / 尸潮 / 科技树（Phase 8-11）
-- 扩展打磨 — 连招 / 投射物 / 噪音连锁 / 特殊感染者 / 丧尸化（Phase 12+）
-- 角色创建 UI / 存档系统（SCharacterBuild 仅定义结构体，不使用）
-- 技能槽溢出处理（actives > 4 排序）
-- PropertyType.Struct（GrantedAbilityTrees 远期迁移）
+> 从玩家视角出发：这是一个俯视角生存游戏。玩家探索世界→发现物品→捡起来→装备/使用→管理负重→存档回家。
+
+### 玩家故事
+
+| # | 玩家能做什么 | 为什么重要 |
+|---|------------|----------|
+| P5.1 | 在地上看到物品 | 世界有东西可以交互——这是物品经济的第一步 |
+| P5.2 | 点击物品捡起来 | 从"看到"到"拥有"——最基本的采集循环 |
+| P5.3 | 打开背包看到所有物品 | 拥有感——"这是我的东西" |
+| P5.4 | 把武器装备到手上 / 卸下来 | 武器显示在角色手上——视觉反馈 |
+| P5.5 | 使用消耗品（食物/绷带） | 物品产生效果——闭环完成 |
+| P5.6 | 存档 / 读档 | 进度不丢失——这是游戏，不是 demo |
+
+---
+
+### P5.0 — 基础设施补完（前置）
+
+> S4 完成了 Addressables 加载管道重构（`AssetService` + `RunBootInit` + `AssetCatalog`），
+> 资产加载从 `AssetDatabase` 直引切换为 Addressables `boot` label。
+> 这带来两个前置问题：① 现有 Importer/Exporter 的资产引用可能断裂；
+> ② ItemDefSO 缺少 Editor 和 ImporterExporter——创建物品只能手动改 YAML 或 Inspector。
+
+| # | 任务 | 说明 |
+|---|------|------|
+| P5.0a | **ItemEditor 窗口** | 新建 `ItemEditorWindow`：左侧物品列表（按类型分组：Item/MeleeWeapon/RangedWeapon），右侧编辑 Template + OverridesJson + Prefab。参考 AbilityEditorWindow 三面板布局。ItemDefSO 零 C# 字段，编辑核心是 PropertyTree 覆写 |
+| P5.0b | **ItemImportExport** | 新建 `ItemImportExport.cs` + `ItemImportWindow`：JSON 导入/导出物品。字段：type（Item/MeleeWeapon/RangedWeapon）、name、templateId、overridesJson、prefabGuid。复用共享 `EditorImportExport` 组件 |
+| P5.0c | **Addressables 兼容验证** | 验证 PropertyImporter / AbilityImporter / TagImporter 等现有导入导出在 Addressables 迁移后仍正常——特别是 Template 引用（`templateId` vs GUID）和跨资产引用解析 |
+
+**已有基础**：`ItemDefSO : PropertyPresetSO`（Template/templateId/OverridesJson/Prefab）、`EditorImportExport` 共享 UI、`PropertyImportExport` / `AbilityImportExport` 参考模式、`AssetCatalog.InitItems()` 加载路径
+
+### 任务拆解
+
+#### P5.1 — 物品能存在于世界上
+
+> 玩家走进一个房间，地上有一把剑、三根绷带。它们有物理位置，能被看到。
+
+| # | 任务 | 说明 |
+|---|------|------|
+| P5.1a | **ItemService 创建** | L2 服务：物品身份索引（物品在哪）+ 物品生命周期 |
+| P5.1b | **世界物品容器** | 地面物品放进一个隐式的"世界容器"，统一管理世界上的所有物品 |
+| P5.1c | **首次物品创建** | 用已有 `ItemDefSO` + `EntityService` 创建物品 Entity，GO 显示在世界坐标 |
+
+**已有基础**：`ItemDefSO`（零字段 PropertyPresetSO）、`EntityService.Register/Spawn`（创建 GO 在世界上）、`Entity.NestedContainer`（物品自身容器）
+
+#### P5.2 — 玩家能拾取物品
+
+> 玩家右键点地上的剑→剑从地面消失→出现在背包里。
+
+| # | 任务 | 说明 |
+|---|------|------|
+| P5.2a | **拾取交互** | 检测玩家点击/靠近世界物品 → 触发拾取 |
+| P5.2b | **跨容器转移** | 物品从世界容器 → 角色背包容器（原子操作，失败回滚） |
+
+**已有基础**：`RdContainer.Place/Remove/CanAccept`、`CharacterBuildContext.Container`（角色身体容器）、`InventoryQuery`（背包读接口）
+
+#### P5.3 — 玩家能看到背包
+
+> 按 Tab 打开背包面板——看到物品图标、名称、数量、当前负重。
+
+| # | 任务 | 说明 |
+|---|------|------|
+| P5.3a | **背包面板 UI** | 新建 UIScreen，网格显示背包物品 |
+| P5.3b | **物品图标** | ItemDefSO 需要图标字段（PropertyTree 表达或 C# 字段） |
+| P5.3c | **负重显示** | 当前重量/负重上限 + 等级标签（轻/中/重/超载） |
+
+**已有基础**：`WeaponBarOverlay`（武器栏 HUD 参考）、`UIIconSlot` 组件、`RdContainer.CurrentWeight`
+
+#### P5.4 — 玩家能装备 / 卸下物品
+
+> 从背包拖武器到右手槽→武器出现在角色手上。拖回背包→武器从手上消失。
+
+| # | 任务 | 说明 |
+|---|------|------|
+| P5.4a | **装备槽 UI** | 背包面板旁显示装备槽（右手/左手/头/胸/腿/脚） |
+| P5.4b | **装备操作** | 背包槽↔装备槽 物品转移 |
+
+**已有基础**：`CharacterEquipment.SyncEquipment()`（Container diff → GO 生成/销毁 + GripTag 同步）、`SlotBoneMapper` + `WeaponAttachPoint`（武器挂载到骨骼）
+
+#### P5.5 — 玩家能使用消耗品
+
+> 背包里右键绷带→绷带消耗→HP 恢复。右键食物→食物消耗→饥饿恢复。
+
+| # | 任务 | 说明 |
+|---|------|------|
+| P5.5a | **消耗品使用** | 右键触发 Use → 读物品的 EffectSO[] → AbilityReactor 执行效果 |
+| P5.5b | **消耗后数量变化** | Count--，Count==0 时物品销毁 |
+
+**已有基础**：`PropertyPresetSO.GetDamageEffects()`（读物品效果）、`AbilityReactor.Resolve`（执行效果）、`Entity.StackCount`
+
+#### P5.6 — 游戏能存档 / 读档
+
+> 暂停菜单点"保存"→游戏状态写入磁盘。标题画面点"继续"→恢复上次状态。
+
+| # | 任务 | 说明 |
+|---|------|------|
+| P5.6a | **存档数据结构** | 定义 `SGameSave`：玩家位置/属性、物品列表+位置、世界物品列表 |
+| P5.6b | **序列化/反序列化** | PropertyTable → JSON、Entity 列表 → JSON |
+| P5.6c | **存档 UI** | 暂停菜单"保存"/"加载"按钮、标题画面"继续"按钮 |
+
+**已有基础**：`PropertyPresetSO.OverridesJson`（JSON 覆写模式）、`Entity.Id`（持久标识）

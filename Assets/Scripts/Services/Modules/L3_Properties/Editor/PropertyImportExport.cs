@@ -69,6 +69,7 @@ namespace RedDust.Properties.Editor
                 var assetPath = $"{dir}/{SanitizeFileName(def.Id)}.asset";
                 if (AssetDatabase.LoadAssetAtPath<PropertyDefSO>(assetPath) != null) { skipped++; defMap[def.Id] = def; return; }
                 AssetDatabase.CreateAsset(def, assetPath);
+                DataLabelTools.EnsureBootLabel(assetPath);
                 defMap[def.Id] = def; created++;
             }
 
@@ -97,6 +98,7 @@ namespace RedDust.Properties.Editor
                     var tree = ScriptableObject.CreateInstance<PropertyTreeSO>();
                     tree.treeJson = JsonUtility.ToJson(new PropertyTreeContainer { Nodes = entry.nodes?.ConvertAll(n => new PropertyNode { NodeId = n.nodeId, ParentId = n.parentId, DefId = n.defId }) ?? new() }, true);
                     AssetDatabase.CreateAsset(tree, assetPath);
+                    DataLabelTools.EnsureBootLabel(assetPath);
                     treeMap[entry.treeName] = tree;
                     created++;
                 }

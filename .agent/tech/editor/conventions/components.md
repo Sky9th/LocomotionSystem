@@ -51,6 +51,7 @@
 | `FormItemGroup` | 布局包装 | `Draw(Horizontal, () => {...})` 水平/垂直排列 |
 | `EditorSearchBar` | 搜索栏 | Label + TextField + 清除按钮 |
 | `EditorDivider` | 分隔线 | 细线 + 可选标题 |
+| `DataLabelTools` | Addressables 标记 | 批量/单资产 boot label 注册 |
 | `EditorImportExport` | 导入/导出 | 文件选择 + 预览 + 按钮 + 结果 |
 | `EditorTokens` | 设计令牌 | 布局/字号/内边距/颜色常量 |
 | `EditorUIUtility` | Helper | GreyPlaceholder 等工具样式 |
@@ -131,11 +132,11 @@ EditorButton.Draw(rect, text, type, tooltip?);
 | `Danger` | 红 #D32222 |
 | `Info` | 灰蓝 #A8B2BF |
 
-| EditorButtonSize | 说明 |
-|-----------------|------|
-| `Small` | miniButton |
-| `Medium` | 默认 |
-| `Large` | 大按钮 |
+| EditorButtonSize | font | padding | fixedHeight | 说明 |
+|-----------------|------|---------|-------------|------|
+| `Small` | 11 | (6,6,1,1) | 0 (auto) | 原生 miniButton |
+| `Medium` | 12 | (10,10,3,3) | 24 | 默认 |
+| `Large` | 14 | (14,14,5,5) | 28 | 大按钮 |
 
 ---
 
@@ -369,6 +370,32 @@ EditorDivider.Draw("Advanced Options");
 | 成员 | 说明 |
 |------|------|
 | `GreyPlaceholder` | 灰色居中空状态 GUIStyle |
+
+---
+
+## 14. DataLabelTools — Addressables 标记
+
+**文件**: `Shared/Editor/DataLabelTools.cs`
+
+Addressables label 注册工具。解决 Importer 创建新资产后 Build 中不可用的问题。
+
+### API
+
+```csharp
+// 批量：扫描目录下所有资产，标记指定 label
+DataLabelTools.TagAllData();        // "boot" → Assets/Data/
+DataLabelTools.TagPrototypeArt();   // "prototype-art" → Assets/Art/
+
+// 单个：Importer 创建资产后调用，确保 Build 不遗漏
+DataLabelTools.EnsureBootLabel(assetPath);
+```
+
+### 菜单
+
+| 菜单项 | 功能 |
+|--------|------|
+| `RedDust/Data/Tag All Data as 'boot'` | 批量标记 |
+| `RedDust/Data/Tag Prototype Art as 'prototype-art'` | 原型美术标记 |
 
 ---
 

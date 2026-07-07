@@ -16,8 +16,3 @@ MonoBehaviour:
   templateId: 
   OverridesJson: 
   Prefab: {fileID: 8667043660662020576, guid: 4c0627a5cad7b734c8c24cbdadfe712f, type: 3}
-  innateTreeIds:
-  - Human_Innate
-  - Human_InnatePassives
-  - Pistol_Innate
-  - Sword_Innate

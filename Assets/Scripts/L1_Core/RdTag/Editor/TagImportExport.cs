@@ -97,6 +97,7 @@ namespace RedDust.Core
 
                 var tag = ScriptableObject.CreateInstance<RdTagDefSO>();
                 AssetDatabase.CreateAsset(tag, assetPath);
+                DataLabelTools.EnsureBootLabel(assetPath);
                 tag.name = entry.name; // CreateAsset 后必须显式再设一次 name，否则 leafName 推导失败
 
                 // 写入 description
@@ -110,7 +111,7 @@ namespace RedDust.Core
                     System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 rf?.Invoke(tag, null);
                 rf = typeof(RdTagDefSO).GetMethod("RefreshCache",
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 rf?.Invoke(tag, null);
 
                 created++;
@@ -123,7 +124,7 @@ namespace RedDust.Core
 
             // 第二轮：按依赖顺序设置 parent（多轮迭代，每轮只设置 parent 已就绪的）
             var refreshMethod = typeof(RdTagDefSO).GetMethod("RefreshCache",
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             var parentField = typeof(RdTagDefSO).GetField("parent",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 

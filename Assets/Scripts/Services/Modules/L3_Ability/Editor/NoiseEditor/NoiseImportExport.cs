@@ -97,6 +97,7 @@ namespace RedDust.Ability
                     instance.name = entry.name;
                     ApplyFields(instance, entry, tagByFullTag);
                     AssetDatabase.CreateAsset(instance, assetPath);
+                    DataLabelTools.EnsureBootLabel(assetPath);
                     created++;
                 }
             }

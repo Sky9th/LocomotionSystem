@@ -206,6 +206,7 @@ namespace RedDust.Ability
                 ApplyFields(instance, entry, tagByFullTag, activationByName, searchByName,
                     effectByName, noiseByName, abilityDefByName, eventChannelByName);
                 AssetDatabase.CreateAsset(instance, assetPath);
+                DataLabelTools.EnsureBootLabel(assetPath);
                 created++;
             }
 

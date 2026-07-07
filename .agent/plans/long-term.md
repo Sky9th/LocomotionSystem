@@ -1,6 +1,6 @@
 # 长期开发计划
 
-> 更新: 2026-07-05
+> 更新: 2026-07-07
 > 来源: `.agent/design/` GDD + 子系统设计文档
 > 原则: 每步有可玩增量，每个子系统先跑通基本闭环 → 全生态联通 → 数值统一规划
 >      **设计文档不设具体数值，所有数值在系统骨架完成后从上至下统一规划**
@@ -10,12 +10,17 @@
 ## 当前进度
 
 ```
-短期:  Ability Pipeline 运行时 (feature/ability-pipeline 分支)
+短期:  Ability Pipeline 运行时 (feature/ability-pipeline 分支) — ✅ Phase 4 封闭
   前置: Character 模块重构 ✅  Properties 系统 ✅  Animation 重构 ✅
         PropertyTree Equipment 层重构 ✅  Container 系统 ✅
-  目标: AbilityComponent + HitReactionComponent + AbilityDriver 落地
-  当前: StateMachine 框架 + Gating/Cost/Execution 完成，Recovery 待做
-        HitReaction 管线完成 ✅（SDamageInfo→CharacterCombat→DriverArbiter→HitReactionDriver）
+  目标: Ability Pipeline 8 State + Combat 补完 + 动画补完 — 全部完成
+  已完成:
+    S1  Properties 深度接入 ✅（Physique 删除，GroundLocomotion 公式化）
+    S2  装备→技能闭环 ✅（Entity→Container→GripTags→AbilityForest→ResolvedActives）
+    S3  Ability Pipeline 8 State ✅（Gating→Cost→Windup→Cooldown→Execution→Recovery→Completed/Rejected）
+    S4  Combat 管线补完 ✅（属性修正 + 路径常量 + OnHit 通路 + Damage 类型拆分）
+    S5  动画系统补完 ✅（S5.0 受击动画 + S5.4 AirLand 分级 + S5.5 Traversal 迁移，S5.1-S5.3 延后）
+    Pathfinding 缓存修复 ✅（GraphCache.bytes 尊重，跳过冗余 Scan）
 
 已完成:
   角色运动 ✅    音效骨架 ✅    数值系统（Properties 替代旧 Stats SO）✅
@@ -30,6 +35,13 @@
   受击反应管线 ✅ — SDamageInfo.ImpactEffect → HitReactionDriver
   受击动画数据层 ✅ — LocomotionAnimationSetSO 4 hitReaction 字段
   DriverArbiter 抢占规则 ✅
+  被动技能管线 ✅ — AbilityForest→SyncInstances + OnEquip/OnHit/OnKill/OnDamaged dispatch
+  FloatAdjunct Max 扩容 ✅ — MaxAdd/MaxMultiply
+  PassiveBarOverlay ✅ — 15Hz 轮询被动技能栏
+
+延期:
+  S5.1 Footstep / S5.2 HeadLook IK / S5.3 Crawl — 俯视角优先级低
+  S4.5 自伤 Amount=0 — 等实际自伤技能需求
 
 设计完成:
   GDD ✅  伤病系统 ✅  噪音系统 ✅  负重/背包 ✅  死亡/存档 ✅
@@ -57,6 +69,8 @@
 | 6/30 | Ability Pipeline StateMachine 框架 + Gating/Cost State + Container AcceptTags 修复 | 1 | 1天 |
 | 7/04 | 受击动画数据层 — LocomotionSet +4 Mixer2D + Importer 扩展 | 1 | 1天 |
 | 7/05 | 受击反应管线 — ImpactEffect→Combat→Animation→Driver 全链路 | 1 | 1天 |
+| 7/06 | S1 Physique 删除 + GroundLocomotion 公式化 + S2 装备闭环 + S3 RecoveryState + S4 Combat 补完 | 4 | 1天 |
+| 7/07 | S5.4 AirLand 分级落地 + S5.5 Traversal 动画迁移 + Pathfinding 缓存修复 | 1 | 1天 |
 
 **节奏特征**:
 - 跨模块架构重构（Module 系统、Animation 重构）≈ **2 天**，约 3 个 commit
@@ -108,16 +122,16 @@ RedDust
 
 每个子系统分两阶段：**基本闭环**（能玩通的最小版本）→ **扩展**（丰富性与打磨）。
 
-### Phase 4: Ability Pipeline + 敌人 AI + 噪音骨架 ← 当前
+### Phase 4: Ability Pipeline + 敌人 AI + 噪音骨架 ✅ 已封闭
 
 > 管道设计: [ability-pipeline-design.md](../tech/L2-services/L2-modules/L3-ability/ability-pipeline-design.md)
-> 施工计划: [short-term.md](short-term.md)
+> 施工计划: [short-term.md](short-term.md) — S1-S5 全部完成
 
-**4.1 Ability Pipeline 运行时**：AbilityComponent（发送中枢 → ②③④⑤ 门控/释放/搜索/效果）+ HitReactionComponent（接收中枢 → ⑥⑦ 结算/反应）+ AbilityDriver（③ 阶段机 Windup→Fire→Recovery）+ ⑧ 事件广播。受击反应管线已完成（SDamageInfo.ImpactEffect → CharacterCombat → DriverArbiter → HitReactionDriver）。闭环剩余：搜索命中正编（ExecutionState ④）+ RecoveryState。
+**4.1 Ability Pipeline 运行时** ✅：AbilityExecutor（发送中枢 → ②③④⑤ 门控/释放/搜索/效果）+ AbilityReactor（接收中枢 → ⑥⑦ 结算/反应）+ AbilityDriver（③ Windup→Fire→Recovery 动画）+ ⑧ 事件广播。8 State 全就位，Q 键闭环测试通过，被动技能管线完整（OnEquip/OnHit/OnKill/OnDamaged dispatch）。受击反应全链路完成（SDamageInfo.ImpactEffect → CharacterCombat → DriverArbiter → HitReactionDriver）。
 
-**4.1a 日志格式规范化**（管道完成后立即执行）：详见 [log-format-standardization.md](log-format-standardization.md)。格式 `[L1][L2][L3][子模块] 消息`、等级开关 Error/Info/Debug（Debug 提交前必删）、模块开关 L1/L2/L3 粒度（L4/L5 不设）。逐个模块替换现有日志，清理遗留临时 Debug 日志。
+**4.1a 日志格式规范化** 🔒 延期 — 管道已完成，此项为独立 quality-of-life 改进，非阻塞。
 
-**4.2 敌人 AI 基础**：复用 AbilityComponent + HitReactionComponent（纯类，不绑 Player），行为 FSM，听觉感知（消费 SNoiseEvent）+ 视觉感知。
+**4.2 敌人 AI 基础** 🔒 延后到 Phase 5 — 复用 AbilityExecutor + AbilityReactor（纯类，不绑 Player），行为 FSM，听觉感知（消费 SNoiseEvent）+ 视觉感知。
 
 **移入 Phase 5 的能力扩展**（依赖资源/装备系统）：连招系统 ComboWindow、Buff/Debuff（BuffEffectSO 已定义）、多武器切换、熟练度、Circle 搜索落地。
 
@@ -285,8 +299,8 @@ Phase 4 (Ability Pipeline + 敌人 AI) ← 短期计划当前
 
 | 阶段 | 内容 | 状态 |
 |------|------|------|
-| Phase 4 | Ability Pipeline + 敌人 AI + 噪音 | 施工中 |
-| Phase 5 | 资源系统 + 装备落地 + 存档 | 下一站 |
+| Phase 4 | Ability Pipeline + Combat 补完 + 动画补完 | ✅ 完成 |
+| Phase 5 | 资源系统 + 装备落地 + 存档 | ← 下一站 |
 | Phase 6-7 | 建造 + 时间日夜 | 后续 |
 | Phase 8-9 | 农业烹饪 + NPC | 后续 |
 | Phase 10-11 | 尸潮 + 科技树 | 后续 |
