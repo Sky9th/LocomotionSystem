@@ -34,3 +34,4 @@ editor/
 | GameplayTag | [tools/L1_Core/GameplayTag/Editor/](tools/L1_Core/GameplayTag/Editor/) | `Assets/Scripts/L1_Core/GameplayTag/Editor/` |
 | Ability | [tools/L3_Ability/Editor/](tools/L3_Ability/Editor/) | `Assets/Scripts/Services/Modules/L3_Ability/Editor/` |
 | Properties | [tools/L3_Properties/Editor/](tools/L3_Properties/Editor/) | `Assets/Scripts/Services/Modules/L3_Properties/Editor/` |
+| Item | [tools/L3_Item/Editor/](tools/L3_Item/Editor/) | `Assets/Scripts/Services/Modules/L3_Item/Editor/` — ItemEditorWindow (v0.40.7) |

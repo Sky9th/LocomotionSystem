@@ -40,7 +40,7 @@ namespace RedDust.Properties
         public static PropertyTable FromPreset(PropertyPresetSO preset)
         {
             var tree = ResolveTree(preset);
-            if (tree == null) { Debug.LogError($"[PropertyTable] Cannot resolve PropertyTreeSO for preset '{preset?.name}' — both templateId and serialized Template are null."); return null; }
+            if (tree == null) { Debug.LogError($"[PropertyTable] Cannot resolve PropertyTreeSO for preset '{preset?.name}' — Template is null."); return null; }
             var props = new PropertyTable(tree.ResolveStructure());
             var overrides = ParseOverrides(preset.OverridesJson, props._minOverrides, props._maxOverrides);
 
@@ -61,20 +61,9 @@ namespace RedDust.Properties
             return props;
         }
 
-        /// <summary>
-        /// Resolve a PropertyTreeSO for the preset.
-        /// If preset.templateId is set → look up from PropertyTreeRegistry (Addressables path).
-        /// Otherwise fall back to preset.Template (serialized reference, backward compatible).
-        /// </summary>
+        /// <summary>Resolve the PropertyTreeSO from the preset's serialized Template reference.</summary>
         private static PropertyTreeSO ResolveTree(PropertyPresetSO preset)
         {
-            if (!string.IsNullOrEmpty(preset.templateId))
-            {
-                var fromRegistry = GameService.Instance.Assets.FindPropertyTree(preset.templateId);
-                if (fromRegistry != null)
-                    return fromRegistry;
-                Debug.LogWarning($"[PropertyTable] templateId='{preset.templateId}' not found in registry, falling back to serialized Template.");
-            }
             return preset.Template;
         }
 

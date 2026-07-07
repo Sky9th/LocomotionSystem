@@ -174,6 +174,15 @@ L3_Item/
 | 与 AbilityTreeSO 的技能树匹配 | 远期 | 容器 + ItemRegistry |
 | 多人服务端权威 | 远期 | ItemRegistry |
 
+## 编辑器工具
+
+| 工具 | 菜单 | 说明 |
+|------|------|------|
+| ItemEditorWindow | `RedDust/Item Editor` | 两栏编辑器：左侧物品列表（按 Template 分组）+ 右侧槽位表 + 属性覆写表单 |
+| ItemImportExport | `RedDust/Item Import-Export` | JSON 导入/导出，复用 EditorImportExport 骨架 |
+
+详见 → [tech/editor/tools/L3_Item/Editor/](../../../editor/tools/L3_Item/Editor/)
+
 ## 已知缺口
 
 | 缺口 | 状态 | 说明 |

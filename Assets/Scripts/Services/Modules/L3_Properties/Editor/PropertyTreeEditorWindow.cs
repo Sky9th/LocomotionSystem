@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using RedDust.Core;
 using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
@@ -1334,6 +1333,17 @@ namespace RedDust.Properties.Editor
                 if (!_localIds.Contains(nodeId) || ancestorConflicts.Contains(nodeId))
                     _inheritedNodeIds.Add(nodeId);
 
+            // Build def lookup from AssetDatabase — GameService.Instance is null in edit mode,
+            // so we resolve PropertyDefSOs directly from the asset database.
+            var defLookup = new Dictionary<string, PropertyDefSO>();
+            foreach (var guid in AssetDatabase.FindAssets("t:PropertyDefSO"))
+            {
+                var assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                var def = AssetDatabase.LoadAssetAtPath<PropertyDefSO>(assetPath);
+                if (def != null && !string.IsNullOrEmpty(def.Id))
+                    defLookup[def.Id] = def;
+            }
+
             // Create CenterTreeNodes for all merged nodes.
             // IsLocal = true ONLY when the node genuinely originates from this tree,
             // i.e. it is NOT shadowed by an inherited ancestor with the same NodeId.
@@ -1347,11 +1357,14 @@ namespace RedDust.Properties.Editor
                         "The ancestor's version is shown (non-editable). To override it, rename the local node to a unique NodeId.");
                 }
 
+                PropertyDefSO resolvedDef = null;
+                if (!string.IsNullOrEmpty(node.DefId))
+                    defLookup.TryGetValue(node.DefId, out resolvedDef);
+
                 var displayNode = new CenterTreeNode
                 {
                     NodeId = nodeId,
-                    Def = string.IsNullOrEmpty(node.DefId)
-                        ? null : GameService.Instance?.Assets.FindPropertyDef(node.DefId),
+                    Def = resolvedDef,
                     IsLocal = isLocal,
                 };
                 _centerNodeIndex[nodeId] = displayNode;
