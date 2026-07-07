@@ -1,125 +1,123 @@
+using System.Collections;
 using System.Collections.Generic;
-using RedDust.Addressables;
+using RedDust.Assets;
 using RedDust.Core;
 using RedDust.Core.Events;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 namespace RedDust.GameScene
 {
     /// <summary>
-    /// L2 loading hub. Owns all loading: boot preload, full scene transitions,
-    /// reload, unload, and (future) streaming / background preload.
+    /// L2 scene loading hub.
+    /// Public surface is a single <see cref="Load"/> method — everything else is private.
     /// </summary>
     public class SceneService : ModuleChildMono, IGameplaySessionHandler
     {
-        [SerializeField] private SceneLoadConfigSO _firstSceneConfig;
+#if UNITY_EDITOR
+        private const string EditorStartupSceneNameKey = "RedDust.Editor.StartupSceneName";
+#endif
+
         [SerializeField] private List<SceneLoadConfigSO> _configs = new();
 
         private EventHub _eventHub;
-        private BootPipeline _boot;
-        private SceneLoader _loader;
-        private TransitionGate _gate;
-        private LoadProgress _progress;
-        private SRuntimeSceneState? _currentState;
+        private AssetService _assetService;
+        private SceneTransition _gate;
+        private SceneLoadConfigSO _currentConfig;
 
         public override void OnAssemble()
         {
             GameContext.Instance.RegisterService(this);
-            _boot = new BootPipeline();
         }
 
         public override void OnWire()
         {
             if (!GameContext.Instance.TryResolveService(out _eventHub)) return;
-            GameContext.Instance.TryResolveService(out AddressablesService addressables);
+            if (!GameContext.Instance.TryResolveService(out _assetService)) return;
 
-            _progress = new LoadProgress(_eventHub);
-            _loader = new SceneLoader(addressables, this);
-            _gate = new TransitionGate(_boot, _loader, _progress, _eventHub);
-            _boot.Initialize(addressables, _gate, _progress);
-            _boot.RegisterAll(BootTaskComposer.CreateAll());
+            _gate = new SceneTransition(_assetService, _eventHub);
 
-            _eventHub.Get<SceneRequestEvent>().Register(HandleSceneRequest);
-        }
-
-        private void OnDestroy()
-        {
-            if (_eventHub == null) return;
-            _eventHub.Get<SceneRequestEvent>().Unregister(HandleSceneRequest);
         }
 
         // ── Public API ──
 
-        public void BeginPreload(string preferredSceneName = null)
+        /// <summary>
+        /// Load the default startup scene (MainMenu, or editor-preference override).
+        /// Called once by GameService after all services are wired.
+        /// </summary>
+        public void Load()
         {
-            var initialConfig = ResolveInitialConfig(preferredSceneName);
-            _currentState = CreateRuntimeState(initialConfig);
-            StartCoroutine(_boot.Run(initialConfig));
+#if UNITY_EDITOR
+            var preferred = ConsumeEditorScenePreference();
+            if (!string.IsNullOrEmpty(preferred) && System.Enum.TryParse<SceneId>(preferred, out var id))
+            {
+                Load(id);
+                return;
+            }
+#endif
+            Load(SceneId.MainMenu);
         }
 
-        public void RegisterBootTask(IBootTask task) => _boot.Register(task);
+        /// <summary>
+        /// Load or reload a scene by its fixed identifier.
+        /// </summary>
+        public void Load(SceneId sceneId) => StartCoroutine(LoadRoutine(sceneId));
 
-        // ── Event handlers ──
-
-        private void HandleSceneRequest(SSceneRequest request)
+        private IEnumerator LoadRoutine(SceneId sceneId)
         {
-            var sceneName = string.IsNullOrEmpty(request.SceneName)
-                ? _currentState?.SceneName
-                : request.SceneName;
-
-            switch (request.Type)
+            var config = _configs.Find(c => c.Scene == sceneId);
+            if (config == null)
             {
-                case SceneRequestType.Load:
-                case SceneRequestType.Reload:
-                    if (string.IsNullOrEmpty(sceneName)) return;
-                    var config = _configs.Find(c => c.SceneName == sceneName);
-                    if (config != null)
-                    {
-                        SRuntimeSceneState? previousState = _currentState;
-                        _currentState = CreateRuntimeState(config);
-                        StartCoroutine(_gate.Begin(
-                            config,
-                            previousState?.SceneName,
-                            previousState?.ScenePath,
-                            previousState?.AssetLabels ?? SceneAssetLabel.None));
-                    }
-                    else
-                        Debug.LogError($"[SceneService] No config for '{sceneName}'.");
-                    break;
-
-                case SceneRequestType.Unload:
-                    if (string.IsNullOrEmpty(sceneName)) return;
-                    StartCoroutine(_loader.UnloadSceneAsync(sceneName));
-                    _currentState = null;
-                    break;
+                Debug.LogError($"[SceneService] No config for '{sceneId}'.");
+                yield break;
             }
+
+            yield return _assetService.EnsureInitialized();
+            yield return EnsureBootReady();
+
+            var previous = _currentConfig;
+            _currentConfig = config;
+            yield return _gate.Transition(config, previous);
+        }
+
+        // ── Private ──
+
+        private IEnumerator EnsureBootReady()
+        {
+            if (_assetService.BootComplete) yield break;
+
+            bool done = false;
+            _assetService.LoadByLabels<Object>(
+                new List<string> { SceneAssetLabel.Boot.ToLabelStrings()[0] },
+                () => { done = true; });
+            while (!done) yield return null;
+
+            _assetService.RunBootInit();
         }
 
         public void OnGameplaySessionEnd()
         {
-            _currentState = null;
+            _currentConfig = null;
             _gate.OnGameplaySessionEnd();
         }
 
-        private SceneLoadConfigSO ResolveInitialConfig(string preferredSceneName)
+        /// <summary>
+        /// Read and immediately clear the editor scene preference key.
+        /// Returns the scene name set by a custom editor boot flow, or null.
+        /// </summary>
+        private static string ConsumeEditorScenePreference()
         {
-            if (string.IsNullOrEmpty(preferredSceneName))
-                return _firstSceneConfig;
-
-            if (_firstSceneConfig != null && _firstSceneConfig.SceneName == preferredSceneName)
-                return _firstSceneConfig;
-
-            var config = _configs.Find(c => c.SceneName == preferredSceneName);
-            if (config != null)
-                return config;
-
-            Debug.LogWarning($"[SceneService] Preferred startup scene '{preferredSceneName}' not found. Falling back to firstSceneConfig.");
-            return _firstSceneConfig;
-        }
-
-        private static SRuntimeSceneState CreateRuntimeState(SceneLoadConfigSO config)
-        {
-            return new SRuntimeSceneState(config.SceneName, config.ScenePath, config.AssetLabels);
+#if UNITY_EDITOR
+            string sceneName = SessionState.GetString(EditorStartupSceneNameKey, string.Empty);
+            if (!string.IsNullOrEmpty(sceneName))
+                SessionState.EraseString(EditorStartupSceneNameKey);
+            return sceneName;
+#else
+            return null;
+#endif
         }
     }
 }

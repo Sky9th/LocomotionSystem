@@ -52,8 +52,8 @@ namespace RedDust.Core
         }
 
         /// <summary>
-        /// 重建 FullTag 缓存。TagBootTask 在 boot 加载后统一调用，
-        /// 以 BFS 根→叶顺序解决 Build 下 OnEnable 顺序不确定的问题。
+        /// 重建 FullTag 缓存。AssetService 在 boot 加载后以 BFS 根→叶顺序统一调用，
+        /// 解决 Build 下 OnEnable 顺序不确定的问题。
         /// </summary>
         public void RefreshCache()
         {

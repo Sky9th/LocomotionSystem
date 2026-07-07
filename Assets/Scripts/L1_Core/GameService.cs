@@ -1,13 +1,9 @@
 using RedDust.Core.Events;
-using RedDust.Entities;
+using RedDust.Assets;
 using RedDust.GameState;
 using RedDust.GameScene;
 using RedDust.Shared;
 using UnityEngine;
-
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 namespace RedDust.Core
 {
@@ -19,14 +15,10 @@ namespace RedDust.Core
     [DisallowMultipleComponent]
     public class GameService : ModuleHub
     {
-#if UNITY_EDITOR
-        private const string EditorStartupSceneNameKey = "RedDust.Editor.StartupSceneName";
-#endif
-
         public static GameService Instance { get; private set; }
 
-        /// <summary>Centralized boot-asset registry. Populated by BootPipeline, consumed by all services.</summary>
-        public GameRegistry AssetRegistry { get; private set; }
+        /// <summary>Centralized asset catalog. Populated by AssetService during boot, queried by all services.</summary>
+        public AssetCatalog Assets { get; private set; }
 
         private GameContext _gameContext;
         private EventHub _eventHub;
@@ -45,7 +37,7 @@ namespace RedDust.Core
 
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            AssetRegistry = new GameRegistry();
+            Assets = new AssetCatalog();
 
             DG.Tweening.DOTween.defaultTimeScaleIndependent = true;
 
@@ -76,26 +68,12 @@ namespace RedDust.Core
             // Wire all child services.
             base.Start();
 
-            // Kick off the Addressables preload pipeline (boot assets, PropertyDefSOs).
-            // Scene loads are gated on this completing via SceneService's internal orchestrator.
+            // All services wired — trigger first-scene load.
             if (_gameContext.TryResolveService(out SceneService sceneService))
-                sceneService.BeginPreload(GetEditorStartupSceneName());
+                sceneService.Load();
 
             _log.Info($"Bootstrap complete. {Registry.Count} services assembled and wired.");
         }
-
-#if UNITY_EDITOR
-        private static string GetEditorStartupSceneName()
-        {
-            string startupSceneName = SessionState.GetString(EditorStartupSceneNameKey, string.Empty);
-            if (!string.IsNullOrEmpty(startupSceneName))
-                SessionState.EraseString(EditorStartupSceneNameKey);
-
-            return startupSceneName;
-        }
-#else
-        private static string GetEditorStartupSceneName() => null;
-#endif
 
         private void OnDestroy()
         {

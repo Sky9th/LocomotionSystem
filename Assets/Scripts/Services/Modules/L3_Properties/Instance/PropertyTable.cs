@@ -70,7 +70,7 @@ namespace RedDust.Properties
         {
             if (!string.IsNullOrEmpty(preset.templateId))
             {
-                var fromRegistry = GameService.Instance.AssetRegistry.FindPropertyTree(preset.templateId);
+                var fromRegistry = GameService.Instance.Assets.FindPropertyTree(preset.templateId);
                 if (fromRegistry != null)
                     return fromRegistry;
                 Debug.LogWarning($"[PropertyTable] templateId='{preset.templateId}' not found in registry, falling back to serialized Template.");

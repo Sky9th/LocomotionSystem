@@ -57,9 +57,12 @@ tech/
 │   ├── README.md
 │   │
 │   ├── L2-event-dispatcher/            # ⛔ ARCHIVED — EventDispatcher 已退役，EventHub 接管
+│   ├── L2-asset-service/               # L2 Service: 资产管理 — 唯一资产入口 + 强引用锚
+│   │   └── asset-service.md              # 模块总览 — API、Boot 初始化、Handle 缓存
+│   │
 │   ├── L2-scene-service/
 │   │   ├── scene-service.md              # ⛔ DEPRECATED — SceneService v1，由 scene-service-loading.md 取代
-│   │   └── scene-service-loading.md      # SceneService v3 — 加载管理中心 (Pipeline: Boot/Scene/Streaming)
+│   │   └── scene-service-loading.md      # SceneService v4 — 加载管理中心（纯场景切换）
 │   ├── L2-time-service/
 │   │   └── time-service.md
 │   ├── L2-game-state-service/

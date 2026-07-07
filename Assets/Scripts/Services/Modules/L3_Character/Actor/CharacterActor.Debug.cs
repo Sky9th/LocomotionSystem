@@ -67,7 +67,7 @@ namespace RedDust.Character
 
         private void DrawGround(Vector3 pos, SCharacterKinematic kin)
         {
-            var gsConfig = GameService.Instance?.AssetRegistry.FindGroundConfig(groundSystemConfigKey);
+            var gsConfig = GameService.Instance?.Assets.FindGroundConfig(groundSystemConfigKey);
             if (gsConfig == null) return;
             float probeHeight = gsConfig.probeHeight;
             float probeRadius = gsConfig.probeRadius;

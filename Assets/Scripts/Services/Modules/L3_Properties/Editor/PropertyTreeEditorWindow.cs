@@ -1351,7 +1351,7 @@ namespace RedDust.Properties.Editor
                 {
                     NodeId = nodeId,
                     Def = string.IsNullOrEmpty(node.DefId)
-                        ? null : GameService.Instance?.AssetRegistry.FindPropertyDef(node.DefId),
+                        ? null : GameService.Instance?.Assets.FindPropertyDef(node.DefId),
                     IsLocal = isLocal,
                 };
                 _centerNodeIndex[nodeId] = displayNode;

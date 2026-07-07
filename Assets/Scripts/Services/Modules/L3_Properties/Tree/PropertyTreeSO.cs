@@ -202,7 +202,7 @@ namespace RedDust.Properties
 
         private static PropertyDefSO ResolveDef(string defId)
         {
-            var def = GameService.Instance?.AssetRegistry.FindPropertyDef(defId);
+            var def = GameService.Instance?.Assets.FindPropertyDef(defId);
             if (def == null)
                 Debug.LogWarning($"[PropertyTree] DefId '{defId}' not found in Registry.");
             return def;

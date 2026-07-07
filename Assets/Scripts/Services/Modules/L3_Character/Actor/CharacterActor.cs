@@ -26,15 +26,15 @@ namespace RedDust.Character
         [SerializeField] private bool isPlayer;
 
         [Header("Config")]
-        [Tooltip("GroundSystemConfigSO asset name，从 GameRegistry 查找。")]
+        [Tooltip("GroundSystemConfigSO asset name，从 Assets 查找。")]
         [SerializeField] private string groundSystemConfigKey = "GroundSystemConfigSO";
 
         [Header("Animation")]
-        [Tooltip("CharacterAnimationProfileSO asset name，从 GameRegistry 查找。")]
+        [Tooltip("CharacterAnimationProfileSO asset name，从 Assets 查找。")]
         [SerializeField] private string animationProfileKey = "HumanAnimationProfile";
 
         [Header("Audio")]
-        [Tooltip("CharacterAudioConfigSO asset name，从 GameRegistry 查找。")]
+        [Tooltip("CharacterAudioConfigSO asset name，从 Assets 查找。")]
         [SerializeField] private string audioConfigKey = "CharacterAudioConfigSO";
 
         [Header("Model")]
@@ -60,8 +60,8 @@ namespace RedDust.Character
         public bool IsPlayer => isPlayer;
 
         // ── Config SO ──
-        internal CharacterAnimationProfileSO CharacterAnimationProfile => GameService.Instance?.AssetRegistry.FindAnimProfile(animationProfileKey);
-        internal CharacterAudioConfigSO CharacterAudioConfig => GameService.Instance?.AssetRegistry.FindAudioConfig(audioConfigKey);
+        internal CharacterAnimationProfileSO CharacterAnimationProfile => GameService.Instance?.Assets.FindAnimProfile(animationProfileKey);
+        internal CharacterAudioConfigSO CharacterAudioConfig => GameService.Instance?.Assets.FindAudioConfig(audioConfigKey);
 
         // ── Animation ──
         internal bool ForwardRootMotion => forwardRootMotion;
@@ -122,7 +122,7 @@ namespace RedDust.Character
                 ability: ability, reactor: reactor, pathfinding: pathfindingAgent,
                 modelRoot: modelRoot, rig: characterRig,
                 animationProfile: CharacterAnimationProfile,
-                groundSystemConfig: GameService.Instance?.AssetRegistry.FindGroundConfig(groundSystemConfigKey),
+                groundSystemConfig: GameService.Instance?.Assets.FindGroundConfig(groundSystemConfigKey),
                 audioConfig: CharacterAudioConfig,
                 upperBodyMask: upperBodyMask, armMask: armMask, additiveMask: additiveMask,
                 facialMask: facialMask, headMask: headMask, footMask: footMask,

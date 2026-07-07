@@ -15,7 +15,7 @@ namespace RedDust.Player
     public class PlayerService : ModuleChildMono, IGameplaySessionHandler
     {
         [Header("Identity")]
-        [Tooltip("CharacterDefSO asset name，从 GameRegistry 查找。")]
+        [Tooltip("CharacterDefSO asset name，从 Assets 查找。")]
         [SerializeField] private string characterDefKey = "Human";
 
         [Header("Spawn")]
@@ -24,7 +24,7 @@ namespace RedDust.Player
         [Header("Test — 临时生成")]
         [Tooltip("CharacterDefSO key")]
         [SerializeField] private string zombieDefKey = "Zombie";
-        [Tooltip("ItemDefSO key，从 GameRegistry 查找。")]
+        [Tooltip("ItemDefSO key，从 Assets 查找。")]
         [SerializeField] private string bladeDefKey = "Blade";
         [SerializeField] private string pistolDefKey = "Pistol";
         [SerializeField] private string backpackDefKey = "Backpack";
@@ -101,10 +101,10 @@ namespace RedDust.Player
             if (playerStartAnchor == null)
                 playerStartAnchor = GameObject.Find("PlayerStart");
 
-            var characterDef = GameService.Instance.AssetRegistry.FindCharacter(characterDefKey);
+            var characterDef = GameService.Instance.Assets.FindCharacter(characterDefKey);
             if (characterDef == null)
             {
-                Debug.LogError($"[PlayerService] CharacterDef '{characterDefKey}' not found in GameRegistry.", this);
+                Debug.LogError($"[PlayerService] CharacterDef '{characterDefKey}' not found in Assets.", this);
                 return;
             }
 
@@ -160,7 +160,7 @@ namespace RedDust.Player
             }
 
             // Zombie 在玩家右侧 3 米
-            var zombieDef = GameService.Instance.AssetRegistry.FindCharacter(zombieDefKey);
+            var zombieDef = GameService.Instance.Assets.FindCharacter(zombieDefKey);
             if (zombieDef != null)
             {
                 var pos = playerStartAnchor.transform.position + Vector3.forward * 3f;
@@ -171,16 +171,16 @@ namespace RedDust.Player
             else { Debug.LogWarning($"[PlayerService] CharacterDef '{zombieDefKey}' not found in Registry."); }
 
             // Backpack → Back，武器进背包
-            var backpackDef = GameService.Instance.AssetRegistry.FindItem<ItemDefSO>(backpackDefKey);
+            var backpackDef = GameService.Instance.Assets.FindItem<ItemDefSO>(backpackDefKey);
             if (backpackDef == null)
             {
-                Debug.LogError($"[PlayerService] ItemDef '{backpackDefKey}' not found in GameRegistry — no backpack spawned.");
+                Debug.LogError($"[PlayerService] ItemDef '{backpackDefKey}' not found in Assets — no backpack spawned.");
                 return;
             }
-            var bladeDef = GameService.Instance.AssetRegistry.FindItem<ItemDefSO>(bladeDefKey);
-            if (bladeDef == null) Debug.LogWarning($"[PlayerService] bladeDef '{bladeDefKey}' not found in GameRegistry.");
-            var pistolDef = GameService.Instance.AssetRegistry.FindItem<ItemDefSO>(pistolDefKey);
-            if (pistolDef == null) Debug.LogWarning($"[PlayerService] pistolDef '{pistolDefKey}' not found in GameRegistry.");
+            var bladeDef = GameService.Instance.Assets.FindItem<ItemDefSO>(bladeDefKey);
+            if (bladeDef == null) Debug.LogWarning($"[PlayerService] bladeDef '{bladeDefKey}' not found in Assets.");
+            var pistolDef = GameService.Instance.Assets.FindItem<ItemDefSO>(pistolDefKey);
+            if (pistolDef == null) Debug.LogWarning($"[PlayerService] pistolDef '{pistolDefKey}' not found in Assets.");
 
             const string backpackId = "test_backpack";
             spawnRequestEvent.Raise(new SEntitySpawnRequest(backpackDef, backpackId, null));

@@ -21,6 +21,7 @@ namespace RedDust.UI
         [SerializeField] private CanvasGroup loadingCanvasGroup;
 
         private EventHub _eventHub;
+        private SceneService _sceneService;
         private readonly Dictionary<UIScreenId, PanelState> screenStates = new();
         private readonly Dictionary<UIOverlayId, PanelState> overlayStates = new();
         private UIScreen currentScreen;
@@ -45,6 +46,7 @@ namespace RedDust.UI
         public override void OnWire()
         {
             if (!GameContext.Instance.TryResolveService(out _eventHub)) return;
+            GameContext.Instance.TryResolveService(out _sceneService);
             _eventHub.Get<GameStateChangedEvent>().Register(HandleGameState);
             _eventHub.Get<PlayerSpawnedEvent>().Register(HandlePlayerSpawned);
             _eventHub.Get<SceneTransitionEvent>().Register(HandleSceneTransition);
@@ -196,7 +198,7 @@ namespace RedDust.UI
                         screenStates.Remove(currentScreenId);
                         currentScreen = null;
                         hasCurrentScreen = false;
-                        _eventHub.Get<SceneRequestEvent>().Raise(new SSceneRequest(null, SceneRequestType.Unload));
+                        _sceneService.Load(SceneId.MainMenu);
                     });
                     return;
                 }
@@ -206,7 +208,7 @@ namespace RedDust.UI
                 hasCurrentScreen = false;
             }
 
-            _eventHub.Get<SceneRequestEvent>().Raise(new SSceneRequest(null, SceneRequestType.Unload));
+            _sceneService.Load(SceneId.MainMenu);
         }
 
         public void RequestResume()
@@ -220,6 +222,11 @@ namespace RedDust.UI
         }
 
         // ---- Internal ----
+
+        private static SceneId ParseSceneId(string name)
+        {
+            return System.Enum.TryParse<SceneId>(name, out var id) ? id : SceneId.MainMenu;
+        }
 
         private void StartSceneTransition(string sceneName, EGameState targetState)
         {
@@ -238,7 +245,7 @@ namespace RedDust.UI
                         screenStates.Remove(currentScreenId);
                         currentScreen = null;
                         hasCurrentScreen = false;
-                        _eventHub.Get<SceneRequestEvent>().Raise(new SSceneRequest(sceneName, SceneRequestType.Load));
+                        _sceneService.Load(ParseSceneId(sceneName));
                     });
                     return;
                 }
@@ -248,7 +255,7 @@ namespace RedDust.UI
                 hasCurrentScreen = false;
             }
 
-            _eventHub.Get<SceneRequestEvent>().Raise(new SSceneRequest(sceneName, SceneRequestType.Load));
+            _sceneService.Load(ParseSceneId(sceneName));
         }
 
         private void HandleSceneTransition(SSceneTransition evt)

@@ -27,7 +27,7 @@ namespace RedDust.Ability
         public PassiveAbilitySO[] ResolvedPassives { get; private set; } = System.Array.Empty<PassiveAbilitySO>();
 
         /// <summary>
-        /// 创建技能森林并注入天生技能树。ids 为 treeId 字符串数组，经 GameRegistry 解析。
+        /// 创建技能森林并注入天生技能树。ids 为 treeId 字符串数组，经 Assets 解析。
         /// null / 空数组 = 无天生树（后续通过 SetInnateTrees 添加）。
         /// </summary>
         public AbilityForest(string[] innateTreeIds)
@@ -45,7 +45,7 @@ namespace RedDust.Ability
         private void AddInnateTrees(string[] treeIds)
         {
             if (treeIds == null || treeIds.Length == 0) return;
-            var trees = GameService.Instance.AssetRegistry.ResolveAbilityTrees(treeIds);
+            var trees = GameService.Instance.Assets.ResolveAbilityTrees(treeIds);
             if (trees.Length == 0) return;
             foreach (var t in trees)
                 AddTreeInternal(t, "innate");
