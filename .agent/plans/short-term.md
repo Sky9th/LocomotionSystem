@@ -177,7 +177,7 @@
 | S5.0 | **受击动画管线** | HitReactionDriver + DriverArbiter 抢占 + LocomotionAnimationSetSO hitReaction 字段 | ~1天 | ✅ 完成 |
 | S5.1 | Footstep 事件桥接 | `BaseLayer.FootstepCallback → AnimationBrain.OnFootstep → CharacterAudio` | 🔒 延后 — 俯视角脚步声优先级低，桥接代码已注释留占位 |
 | S5.2 | **Head Look IK** | 安装 Animation Rigging 包 + 新建 `HeadLookIK` | ~1天 | 🔒 延后 — 俯视角优先级低，旧代码已清除留占位 |
-| S5.3 | Crawl 动画 mixer | `BaseMovingState` + `LocomotionAnimationSetSO` + `crawlMixer` | ~0.5天 | ⏳ |
+| S5.3 | Crawl 动画 mixer | `BaseMovingState` + `LocomotionAnimationSetSO` + `crawlMixer` | ~0.5天 | 🔒 延后 — 俯视角优先级低 |
 | S5.4 | AirLand 分级落地 | Gait 参数混合 `landLight/landHard` LinearMixer | ~0.5天 | ⏳ |
 | S5.5 | Traversal 动画迁移 | `TraversalDriver` → `TraversalAnimationSetSO` | ~0.5天 | ⏳ |
 

@@ -20,8 +20,16 @@ namespace RedDust.Pathfinding
                 return;
             }
 
-            graph.Scan();
-            _log.Info("Assembled and graph scanned.");
+            var data = graph.data;
+            if (data.cacheStartup && data.file_cachedStartup != null)
+            {
+                _log.Info("Assembled — graphs loaded from cache, scan skipped.");
+            }
+            else
+            {
+                graph.Scan();
+                _log.Info("Assembled — graph scanned (no cache).");
+            }
 
             GameContext.Instance.RegisterService(this);
         }

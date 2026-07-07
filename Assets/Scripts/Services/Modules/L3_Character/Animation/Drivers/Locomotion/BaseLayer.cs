@@ -20,6 +20,7 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
         private ITransition lastPlayedTransition;
         private AnimancerState currentAnimState;
 
+        internal AnimancerState CurrentAnimState => currentAnimState;
         internal LocomotionAnimationSetSO AnimSet { get; private set; }
 
         /// <summary>非 null 时 IdleState 使用此 clip，忽略 AnimSet.idleL。Partial grip 静止时使用。</summary>

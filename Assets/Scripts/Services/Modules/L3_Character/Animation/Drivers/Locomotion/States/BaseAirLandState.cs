@@ -25,7 +25,6 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
 
         public override bool CanExitState => true;
 
-        // TODO: 按 Gait 参数混合 landLight/landHard LinearMixer（0=Idle, 1=Walk, 2=Run/Sprint）
         public override void OnEnterState()
         {
             var fallDist = Owner.MaxFallDistance;
@@ -38,7 +37,17 @@ namespace RedDust.Character.Animation.Drivers.Locomotion
                 Owner.ForceSetState(BaseStateKey.Idle);
                 return;
             }
+
             Owner.Play(transition);
+
+            // Gait 驱动 LinearMixer blend 参数: 0=Idle, 1=Walk, 2=Run/Sprint
+            var state = Owner.CurrentAnimState as LinearMixerState;
+            if (state != null)
+            {
+                int gait = (int)Owner.Ctx.Discrete.Gait;
+                state.Parameter = Mathf.Min((float)gait, 2f);
+            }
+
             Owner.Rig?.SetSuppressGroundLock(true);
         }
 
