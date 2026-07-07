@@ -37,7 +37,7 @@ namespace RedDust.GameScene
             _loader = new SceneLoader(addressables, this);
             _gate = new TransitionGate(_boot, _loader, _progress, _eventHub);
             _boot.Initialize(addressables, _gate, _progress);
-            _boot.RegisterAll(BootTaskComposer.CreateAll(addressables));
+            _boot.RegisterAll(BootTaskComposer.CreateAll());
 
             _eventHub.Get<SceneRequestEvent>().Register(HandleSceneRequest);
         }

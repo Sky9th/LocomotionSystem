@@ -168,6 +168,9 @@ namespace RedDust.Character
 
         // ── Grip Tags ──
 
+        /// <summary>Suppress per-frame log after first successful sync. Reset on domain reload.</summary>
+        private bool _gripTagsLogged;
+
         /// <summary>
         /// 从所有装备 Entity 的 Common/Tags 同步全部标签到 ctx.OwnedGripTags。
         /// 动画系统用 Equip.Grip.* 选动画集，AbilityForest 用 Weapon.* 过滤技能树。
@@ -183,16 +186,32 @@ namespace RedDust.Character
             if (!hasEquipment) return;
 
             ctx.OwnedGripTags.Clear();
+            int tagCount = 0;
             foreach (var entity in container.AllItems())
             {
                 var tags = entity.Properties?.GetTagList(CharacterConst.PropertyPath.CommonTags);
-                if (tags == null) continue;
+                if (tags == null)
+                {
+                    if (!_gripTagsLogged)
+                        Debug.LogWarning($"[CharacterEquipment] {ctx.Root.name}: entity '{entity.Id}' (preset='{(entity.Preset != null ? entity.Preset.name : "NULL")}') has no Common/Tags — Properties={entity.Properties != null}.");
+                    continue;
+                }
 
                 foreach (var tag in tags)
                 {
                     if (!string.IsNullOrEmpty(tag))
+                    {
                         ctx.OwnedGripTags.AddTag(tag);
+                        tagCount++;
+                    }
                 }
+            }
+
+            if (!_gripTagsLogged && tagCount > 0)
+            {
+                _gripTagsLogged = true;
+                var allTags = ctx.OwnedGripTags.GetAll();
+                Debug.Log($"[CharacterEquipment] {ctx.Root.name}: synced {tagCount} grip tags from equipment: [{string.Join(", ", allTags)}]");
             }
         }
     }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using RedDust.Core;
 using UnityEngine;
 
 namespace RedDust.Properties
@@ -38,8 +39,9 @@ namespace RedDust.Properties
         /// <summary>从 PropertyPresetSO 创建 Table。解析 Tree 结构 → 写值（覆写优先，否则取 Def 默认值）。</summary>
         public static PropertyTable FromPreset(PropertyPresetSO preset)
         {
-            if (preset?.Template == null) { Debug.LogError("[PropertyTable] PropertyPresetSO or Template is null"); return null; }
-            var props = new PropertyTable(preset.Template.ResolveStructure());
+            var tree = ResolveTree(preset);
+            if (tree == null) { Debug.LogError($"[PropertyTable] Cannot resolve PropertyTreeSO for preset '{preset?.name}' — both templateId and serialized Template are null."); return null; }
+            var props = new PropertyTable(tree.ResolveStructure());
             var overrides = ParseOverrides(preset.OverridesJson, props._minOverrides, props._maxOverrides);
 
             foreach (var (path, d) in props._structure)
@@ -57,6 +59,23 @@ namespace RedDust.Properties
 
             // TODO: 行为配置入口——PropertyPresetSO 显式声明 consume/restore 后再创建 FloatState
             return props;
+        }
+
+        /// <summary>
+        /// Resolve a PropertyTreeSO for the preset.
+        /// If preset.templateId is set → look up from PropertyTreeRegistry (Addressables path).
+        /// Otherwise fall back to preset.Template (serialized reference, backward compatible).
+        /// </summary>
+        private static PropertyTreeSO ResolveTree(PropertyPresetSO preset)
+        {
+            if (!string.IsNullOrEmpty(preset.templateId))
+            {
+                var fromRegistry = GameService.Instance.AssetRegistry.FindPropertyTree(preset.templateId);
+                if (fromRegistry != null)
+                    return fromRegistry;
+                Debug.LogWarning($"[PropertyTable] templateId='{preset.templateId}' not found in registry, falling back to serialized Template.");
+            }
+            return preset.Template;
         }
 
         /// <summary>私有构造，只分配字典。值填充由 Build 完成。</summary>

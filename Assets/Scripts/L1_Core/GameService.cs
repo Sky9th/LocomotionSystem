@@ -1,4 +1,5 @@
 using RedDust.Core.Events;
+using RedDust.Entities;
 using RedDust.GameState;
 using RedDust.GameScene;
 using RedDust.Shared;
@@ -24,6 +25,9 @@ namespace RedDust.Core
 
         public static GameService Instance { get; private set; }
 
+        /// <summary>Centralized boot-asset registry. Populated by BootPipeline, consumed by all services.</summary>
+        public GameRegistry AssetRegistry { get; private set; }
+
         private GameContext _gameContext;
         private EventHub _eventHub;
         private bool _sessionWasActive;
@@ -41,6 +45,7 @@ namespace RedDust.Core
 
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            AssetRegistry = new GameRegistry();
 
             DG.Tweening.DOTween.defaultTimeScaleIndependent = true;
 

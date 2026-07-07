@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RedDust.Core;
 using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
@@ -348,7 +349,6 @@ namespace RedDust.Properties.Editor
                     PropertyTreeEditorPopups.NewTreeDialog.Show((name, parent) => { CreateTree(name, parent); RefreshTreeList(); });
                 if (EditorButton.Draw("Refresh", size: EditorButtonSize.Small))
                 {
-                    PropertyDefinitionRegistry.Invalidate();
                     RefreshTreeList();
                     RefreshDefPool();
                 }
@@ -1326,7 +1326,6 @@ namespace RedDust.Properties.Editor
             _centerFoldouts.Clear();
             if (_tree == null) return;
 
-            PropertyDefinitionRegistry.Invalidate();
             var allNodes = _tree.ResolveAllNodes(out var ancestorConflicts);
 
             // Cache inherited NodeIds for name-conflict checks (AddFolder, TryRenameFolder, etc.)
@@ -1352,7 +1351,7 @@ namespace RedDust.Properties.Editor
                 {
                     NodeId = nodeId,
                     Def = string.IsNullOrEmpty(node.DefId)
-                        ? null : PropertyDefinitionRegistry.FindById(node.DefId),
+                        ? null : GameService.Instance?.AssetRegistry.FindPropertyDef(node.DefId),
                     IsLocal = isLocal,
                 };
                 _centerNodeIndex[nodeId] = displayNode;
@@ -1653,7 +1652,6 @@ namespace RedDust.Properties.Editor
 
         private void RefreshAfterEdit()
         {
-            PropertyDefinitionRegistry.Invalidate();
             LoadOwnNodes(); BuildCenterTree(); RefreshUsedDefs(); Repaint();
         }
 

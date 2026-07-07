@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using RedDust.Core;
 using UnityEngine;
 
 namespace RedDust.Properties
@@ -201,7 +202,7 @@ namespace RedDust.Properties
 
         private static PropertyDefSO ResolveDef(string defId)
         {
-            var def = PropertyDefinitionRegistry.FindById(defId);
+            var def = GameService.Instance?.AssetRegistry.FindPropertyDef(defId);
             if (def == null)
                 Debug.LogWarning($"[PropertyTree] DefId '{defId}' not found in Registry.");
             return def;

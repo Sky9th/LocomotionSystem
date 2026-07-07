@@ -1,15 +1,15 @@
-using System.Collections;
-
 namespace RedDust.GameScene
 {
     /// <summary>
-    /// A task that must complete before the first content scene activates.
-    /// Registered with BootPipeline during OnWire. Typical uses: asset preloading,
-    /// SDK init, shader warmup, config validation.
+    /// A boot-phase task that extracts its required assets from the catalog
+    /// and performs initialization (e.g. registries, caches).
+    ///
+    /// Tasks no longer load assets themselves; the BootPipeline loads all
+    /// "boot" Addressables once and passes the catalog to each task in order.
     /// </summary>
     public interface IBootTask
     {
         string Description { get; }
-        IEnumerator Execute();
+        void Resolve(BootAssetCatalog catalog);
     }
 }

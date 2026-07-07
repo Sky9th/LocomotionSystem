@@ -1,5 +1,4 @@
 using UnityEngine;
-using RedDust.Container;
 using RedDust.Properties;
 
 namespace RedDust.Character

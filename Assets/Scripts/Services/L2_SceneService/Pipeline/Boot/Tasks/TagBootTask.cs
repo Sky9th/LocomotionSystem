@@ -1,51 +1,33 @@
-using System.Collections;
 using System.Collections.Generic;
 using RedDust.Core;
-using RedDust.Addressables;
 using UnityEngine;
 
 namespace RedDust.GameScene
 {
     /// <summary>
-    /// Boot task: loads all RdTagDefSO assets and rebuilds FullTag caches
-    /// in root-first order, fixing Build-side OnEnable ordering issues.
+    /// Boot task: rebuilds FullTag caches for all RdTagDefSOs in the catalog
+    /// in BFS root-first order, fixing build-side OnEnable deserialization ordering.
     /// </summary>
     public class TagBootTask : IBootTask
     {
-        private readonly AddressablesService _addressables;
+        public string Description => "Rebuilding tag caches...";
 
-        public string Description => "Loading tag definitions...";
-
-        public TagBootTask(AddressablesService addressables)
+        public void Resolve(BootAssetCatalog catalog)
         {
-            _addressables = addressables;
+            var tags = catalog.Get<RdTagDefSO>();
+            RebuildAllCaches(tags);
         }
 
-        public IEnumerator Execute()
-        {
-            bool done = false;
-            var label = SceneAssetLabel.Boot.ToLabelStrings()[0];
-            _addressables.LoadByLabel<RdTagDefSO>(label, tags =>
-            {
-                RebuildAllCaches(tags);
-                var sb = new System.Text.StringBuilder();
-                sb.AppendLine($"[TagBootTask] === {tags.Count} RdTagDefSOs ===");
-                foreach (var t in tags)
-                    sb.AppendLine($"  {t.FullTag}  depth={t.Depth}  parent='{(t.Parent != null ? t.Parent.FullTag : "(root)")}'");
-                Debug.Log(sb.ToString());
-                done = true;
-            });
+        // --- RebuildAllCaches (same as before, but takes List<RdTagDefSO>) ---
 
-            while (!done)
-                yield return null;
-        }
-
-        /// <summary>
-        /// BFS from roots (parent == null) down to leaves.
-        /// Guarantees parent.FullTag is valid before child rebuilds.
-        /// </summary>
-        private static void RebuildAllCaches(List<RdTagDefSO> allTags)
+        public static void RebuildAllCaches(List<RdTagDefSO> loadedTags)
         {
+            var allInMemory = Resources.FindObjectsOfTypeAll<RdTagDefSO>();
+            var allTags = new HashSet<RdTagDefSO>(allInMemory);
+            int loadedCount = loadedTags.Count;
+            int totalInMemory = allTags.Count;
+            int missedByLabel = totalInMemory - loadedCount;
+
             var refreshed = new HashSet<RdTagDefSO>();
             var queue = new Queue<RdTagDefSO>();
 
@@ -76,12 +58,24 @@ namespace RedDust.GameScene
             {
                 if (refreshed.Add(tag))
                 {
-                    Debug.LogWarning($"[TagBootTask] Tag '{tag.name}' has broken parent chain — refreshing as root.");
+                    Debug.LogWarning($"[TagBootTask] Tag '{tag.name}' (leaf='{tag.LeafName}') has broken parent chain — refreshing as root.");
                     tag.RefreshCache();
                 }
             }
 
-            Debug.Log($"[TagBootTask] Rebuilt {allTags.Count} tag caches.");
+            Debug.Log($"[TagBootTask] Rebuilt {refreshed.Count} tag caches (loaded={loadedCount}, totalInMemory={totalInMemory}, missedByLabel={missedByLabel}).");
+
+            if (missedByLabel > 0)
+            {
+                var sb = new System.Text.StringBuilder();
+                sb.Append($"[TagBootTask] {missedByLabel} tags were loaded via scene references (not Addressables label):");
+                foreach (var tag in allTags)
+                {
+                    if (!loadedTags.Contains(tag))
+                        sb.Append($"\n  {tag.name} → FullTag='{tag.FullTag}'  depth={tag.Depth}");
+                }
+                Debug.Log(sb.ToString());
+            }
         }
     }
 }

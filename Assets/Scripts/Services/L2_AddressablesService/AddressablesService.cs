@@ -17,6 +17,9 @@ namespace RedDust.Addressables
         private readonly Dictionary<string, AsyncOperationHandle> _handleCache = new();
         private Shared.LogChannel _log;
 
+        /// <summary>Labels that are never released — system-level assets that persist for the session.</summary>
+        private static readonly HashSet<string> PinnedLabels = new() { "boot" };
+
         public bool IsInitialized { get; private set; }
 
         public override void OnAssemble()
@@ -60,11 +63,13 @@ namespace RedDust.Addressables
 
         /// <summary>
         /// Load all assets with the given label. Results are delivered via callback when complete.
-        /// The handle is cached; subsequent calls with the same label return instantly (no re-load).
+        /// The handle is cached per (type, label) pair; subsequent calls with the same pair
+        /// return the cached result instantly (no re-load).
         /// </summary>
         public void LoadByLabel<T>(string label, Action<List<T>> onComplete) where T : UnityEngine.Object
         {
-            if (_handleCache.TryGetValue(label, out var cached))
+            var cacheKey = $"{typeof(T).Name}:{label}";
+            if (_handleCache.TryGetValue(cacheKey, out var cached))
             {
                 // Already loaded — invoke callback immediately with cached result
                 if (cached.Status == AsyncOperationStatus.Succeeded && cached.Result is IList<T> list)
@@ -92,7 +97,7 @@ namespace RedDust.Addressables
                 }
             };
 
-            _handleCache[label] = handle;
+            _handleCache[cacheKey] = handle;
         }
 
         /// <summary>Release all cached handles. Called on session teardown.</summary>
@@ -104,14 +109,26 @@ namespace RedDust.Addressables
             IsInitialized = false;
         }
 
-        /// <summary>Release a specific label's handle.</summary>
+        /// <summary>Release a specific label's handle for all types. Pinned labels (e.g. "boot") are ignored.</summary>
         public void Release(string label)
         {
-            if (_handleCache.TryGetValue(label, out var handle))
+            if (PinnedLabels.Contains(label))
             {
-                UnityAddressables.Release(handle);
-                _handleCache.Remove(label);
+                _log.Info($"Release('{label}') skipped — label is pinned (system-level assets).");
+                return;
             }
+
+            var keysToRemove = new List<string>();
+            foreach (var kv in _handleCache)
+            {
+                if (kv.Key.EndsWith($":{label}"))
+                {
+                    UnityAddressables.Release(kv.Value);
+                    keysToRemove.Add(kv.Key);
+                }
+            }
+            foreach (var key in keysToRemove)
+                _handleCache.Remove(key);
         }
 
         private void OnDestroy()

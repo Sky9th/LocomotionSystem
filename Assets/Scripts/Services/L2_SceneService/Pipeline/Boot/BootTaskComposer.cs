@@ -1,23 +1,25 @@
 using System.Collections.Generic;
-using RedDust.Addressables;
 
 namespace RedDust.GameScene
 {
     /// <summary>
     /// 定义 boot 阶段 Task 列表和顺序。新增数据领域只改这一个文件。
-    /// Scene 层 Task 在 <see cref="Scene.SceneTaskComposer"/>。
+    /// Tasks no longer take AddressablesService — the Pipeline loads everything.
     /// </summary>
     public static class BootTaskComposer
     {
-        public static List<IBootTask> CreateAll(AddressablesService addressables)
+        public static List<IBootTask> CreateAll()
         {
             return new List<IBootTask>
             {
-                new TagBootTask(addressables),          // Tag 最先 — 其他 SO 可能引用 Tag.FullTag
-                new PropertyBootTask(addressables),
-                new AbilityBootTask(addressables),
-                new ItemBootTask(addressables),
-                new CharacterBootTask(addressables),
+                new TagBootTask(),                // Tag 最先 — FullTag 缓存重建
+                new PropertyBootTask(),
+                new PropertyTreeBootTask(),
+                new AbilityBootTask(),
+                new ItemBootTask(),
+                new CharacterBootTask(),
+                new ConfigBootTask(),
+                new TagFinalizeTask(),            // 最后 — 全量 Tag FullTag 重建
             };
         }
     }

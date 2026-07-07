@@ -1,48 +1,41 @@
-using System.Collections;
 using System.Collections.Generic;
-using RedDust.Addressables;
+using RedDust.Core;
+using RedDust.Entities;
 using RedDust.Items;
+using RedDust.Properties;
 using UnityEngine;
 
 namespace RedDust.GameScene
 {
+    /// <summary>
+    /// Boot task: registers all item/weapon presets into ItemRegistry.
+    /// </summary>
     public class ItemBootTask : IBootTask
     {
-        private readonly AddressablesService _addressables;
+        public string Description => "Registering item presets...";
 
-        public string Description => "Loading item definitions...";
-
-        public ItemBootTask(AddressablesService addressables)
+        public void Resolve(BootAssetCatalog catalog)
         {
-            _addressables = addressables;
-        }
+            var items = catalog.Get<ItemDefSO>();
+            var melees = catalog.Get<MeleeWeaponSO>();
+            var ranged = catalog.Get<RangedWeaponSO>();
 
-        public IEnumerator Execute()
-        {
-            var label = SceneAssetLabel.Boot.ToLabelStrings()[0];
-            var items = new List<ItemDefSO>();
-            var melees = new List<MeleeWeaponSO>();
-            var ranged = new List<RangedWeaponSO>();
-            int remaining = 3;
-            bool done = false;
+            var allPresets = new List<PropertyPresetSO>();
+            allPresets.AddRange(items);
+            allPresets.AddRange(melees);
+            allPresets.AddRange(ranged);
 
-            _addressables.LoadByLabel<ItemDefSO>(label, r => { items = r; if (--remaining <= 0) done = true; });
-            _addressables.LoadByLabel<MeleeWeaponSO>(label, r => { melees = r; if (--remaining <= 0) done = true; });
-            _addressables.LoadByLabel<RangedWeaponSO>(label, r => { ranged = r; if (--remaining <= 0) done = true; });
-
-            while (!done)
-                yield return null;
+            GameService.Instance.AssetRegistry.InitItems(allPresets);
 
             int total = items.Count + melees.Count + ranged.Count;
             var sb = new System.Text.StringBuilder();
-            sb.AppendLine($"[ItemBootTask] === {total} item assets (Item={items.Count}, MeleeWeapon={melees.Count}, RangedWeapon={ranged.Count}) ===");
-
+            sb.AppendLine($"[ItemBootTask] === {total} item assets registered (Item={items.Count}, MeleeWeapon={melees.Count}, RangedWeapon={ranged.Count}) ===");
             foreach (var i in items)
-                sb.AppendLine($"  [Item] {i.name}  prefab={PrefabName(i.Prefab)}  overrides={i.OverridesJson}");
+                sb.AppendLine($"  [Item] {i.name}  prefab={PrefabName(i.Prefab)}");
             foreach (var m in melees)
-                sb.AppendLine($"  [MeleeWeapon] {m.name}  prefab={PrefabName(m.Prefab)}  overrides={m.OverridesJson}");
+                sb.AppendLine($"  [MeleeWeapon] {m.name}  prefab={PrefabName(m.Prefab)}");
             foreach (var r in ranged)
-                sb.AppendLine($"  [RangedWeapon] {r.name}  prefab={PrefabName(r.Prefab)}  overrides={r.OverridesJson}");
+                sb.AppendLine($"  [RangedWeapon] {r.name}  prefab={PrefabName(r.Prefab)}");
             Debug.Log(sb.ToString());
         }
 

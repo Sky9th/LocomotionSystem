@@ -13,6 +13,9 @@ namespace RedDust.Properties
         [Tooltip("PropertyTreeSO 模板——定义这个预设有哪些属性。")]
         public PropertyTreeSO Template;
 
+        [Tooltip("模板 ID（Asset name）。Addressables 路径的查找键，填充后 FromPreset 优先查 PropertyTreeRegistry 而非序列化引用。")]
+        public string templateId;
+
         [TextArea(3, 20)]
         [Tooltip("变种覆写 JSON。覆写 Tree 中声明的属性的默认值。格式与 PropertyComponent.OverridesJson 一致。")]
         public string OverridesJson;

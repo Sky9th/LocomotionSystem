@@ -227,7 +227,6 @@ namespace RedDust.Properties.Editor
                 onImport: path =>
                 {
                     var result = PropertyImporter.ImportFromFile(path);
-                    PropertyDefinitionRegistry.Invalidate();
                     return result;
                 },
                 onExport: path => File.WriteAllText(path, PropertyImporter.ExportToJson())

@@ -1,5 +1,6 @@
 using RedDust.Character.Kinematic;
 using RedDust.Character.Locomotion;
+using RedDust.Core;
 using RedDust.Shared;
 using UnityEngine;
 #if UNITY_EDITOR
@@ -66,8 +67,10 @@ namespace RedDust.Character
 
         private void DrawGround(Vector3 pos, SCharacterKinematic kin)
         {
-            float probeHeight = groundSystemConfig.probeHeight;
-            float probeRadius = groundSystemConfig.probeRadius;
+            var gsConfig = GameService.Instance?.AssetRegistry.FindGroundConfig(groundSystemConfigKey);
+            if (gsConfig == null) return;
+            float probeHeight = gsConfig.probeHeight;
+            float probeRadius = gsConfig.probeRadius;
 
             var origin = pos + Vector3.up * probeHeight;
             var maxDist = probeHeight + 10f;

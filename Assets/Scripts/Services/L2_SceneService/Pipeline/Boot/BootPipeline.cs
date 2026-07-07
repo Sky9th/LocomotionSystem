@@ -3,14 +3,20 @@ using System.Collections.Generic;
 using RedDust.Addressables;
 using RedDust.Core;
 using RedDust.Shared;
+using UnityEngine;
 
 namespace RedDust.GameScene
 {
     /// <summary>
     /// Collects and runs IBootTasks sequentially, then loads the first content scene.
-    /// Splits readiness into two flags to avoid deadlock with TransitionGate:
+    ///
+    /// Splits readiness into two flags:
     ///   BootTasksComplete — set after all tasks finish (TransitionGate gates on this).
     ///   IsReady — set after the first scene fully loads.
+    ///
+    /// v2: BootPipeline now loads ALL "boot" Addressables once, populates a
+    /// BootAssetCatalog, and calls each task's Resolve(catalog) in order.
+    /// Tasks no longer load assets independently.
     /// </summary>
     public class BootPipeline : IGameplaySessionHandler
     {
@@ -40,14 +46,15 @@ namespace RedDust.GameScene
         }
 
         /// <summary>
-        /// Run all boot tasks → load scene-configs → build config registry → load first scene.
-        /// Called once by SceneService.BeginPreload.
+        /// 1. Init Addressables
+        /// 2. Load all "boot" assets once
+        /// 3. Build catalog → Resolve each task in order
+        /// 4. Load the first scene
         /// </summary>
         public IEnumerator Run(SceneLoadConfigSO firstSceneConfig)
         {
             _log.Info("Boot pipeline started.");
 
-            // Init Addressables
             _progress.Publish("Initializing...", 0f);
             yield return _addressables.InitializeAsync();
 
@@ -58,20 +65,39 @@ namespace RedDust.GameScene
                 yield break;
             }
 
-            // Run registered boot tasks
-            int total = _tasks.Count;
-            int current = 0;
+            // ── Phase 1: Load all "boot" assets in one shot ──
+            _progress.Publish("Loading boot assets...", 0.1f);
+            var assets = new List<Object>();
+            bool loadDone = false;
+            var label = SceneAssetLabel.Boot.ToLabelStrings()[0];
+            _addressables.LoadByLabel<Object>(label, r => { assets = r; loadDone = true; });
+            while (!loadDone)
+                yield return null;
 
-            foreach (var task in _tasks)
+            Debug.Log($"[BootPipeline] Loaded {assets.Count} boot assets.");
+
+            // ── Phase 2: Build catalog + index by type ──
+            var catalog = new BootAssetCatalog(assets);
+
+            // Keep catalog alive on GameRegistry to maintain strong references against
+            // Addressables native-side teardown during scene transitions.
+            if (GameService.Instance != null)
+                GameService.Instance.AssetRegistry.SetCatalog(catalog);
+
+            // ── Phase 3: Resolve each task ──
+            int total = _tasks.Count;
+            for (int i = 0; i < total; i++)
             {
-                _progress.Publish(task.Description, (float)current / total);
-                yield return task.Execute();
-                current++;
+                var task = _tasks[i];
+                _progress.Publish(task.Description, 0.1f + (0.8f * i / total));
+                Debug.Log($"[BootPipeline] Running: {task.Description}");
+                task.Resolve(catalog);
             }
 
             BootTasksComplete = true;
 
-            // Load the first scene
+            // ── Phase 4: Load the first scene ──
+            _progress.Publish("Loading scene...", 0.95f);
             yield return _gate.Begin(firstSceneConfig, null);
 
             IsReady = true;

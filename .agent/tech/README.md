@@ -73,6 +73,7 @@ tech/
 │   │   ├── entity-service.md          # 模块总览 — 引用模型、数据流、API、设计决策
 │   │   ├── entity.md                  # Entity — 纯 C# 数据模型（Id + Preset + Properties）
 │   │   └── entity-service-impl.md     # EntityService — 实现详解（Register / Spawn / Despawn）
+      │   └── game-registry.md           # GameRegistry — 集中化 SO 注册表（8 个字典 + ResolveAbilityTrees）
 │   │
 │   ├── L2-item-service/                # L2 Service: 物品身份索引 + 跨容器移动协调
 │   │   └── README.md

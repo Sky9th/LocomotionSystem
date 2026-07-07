@@ -26,16 +26,16 @@ namespace RedDust.Character
         [SerializeField] private bool isPlayer;
 
         [Header("Config")]
-        [SerializeField] private GroundSystemConfigSO groundSystemConfig;
+        [Tooltip("GroundSystemConfigSO asset name，从 GameRegistry 查找。")]
+        [SerializeField] private string groundSystemConfigKey = "GroundSystemConfigSO";
 
         [Header("Animation")]
-        [SerializeField] private CharacterAnimationProfileSO characterAnimationProfile;
-
-        [Header("Ability")]
-        [SerializeField] private AbilityTreeSO[] innateTrees;
+        [Tooltip("CharacterAnimationProfileSO asset name，从 GameRegistry 查找。")]
+        [SerializeField] private string animationProfileKey = "HumanAnimationProfile";
 
         [Header("Audio")]
-        [SerializeField] private CharacterAudioConfigSO characterAudioConfig;
+        [Tooltip("CharacterAudioConfigSO asset name，从 GameRegistry 查找。")]
+        [SerializeField] private string audioConfigKey = "CharacterAudioConfigSO";
 
         [Header("Model")]
         [SerializeField] private GameObject modelPrefab;
@@ -60,8 +60,8 @@ namespace RedDust.Character
         public bool IsPlayer => isPlayer;
 
         // ── Config SO ──
-        internal CharacterAnimationProfileSO CharacterAnimationProfile => characterAnimationProfile;
-        internal CharacterAudioConfigSO CharacterAudioConfig => characterAudioConfig;
+        internal CharacterAnimationProfileSO CharacterAnimationProfile => GameService.Instance?.AssetRegistry.FindAnimProfile(animationProfileKey);
+        internal CharacterAudioConfigSO CharacterAudioConfig => GameService.Instance?.AssetRegistry.FindAudioConfig(audioConfigKey);
 
         // ── Animation ──
         internal bool ForwardRootMotion => forwardRootMotion;
@@ -114,16 +114,16 @@ namespace RedDust.Character
             // ── pre-assemble: 创建 C# 子模块（构造自注册到 Registry）──
             characterRig = new CharacterRig(transform, modelRoot);
 
-            abilityForest = new AbilityForest(innateTrees);
+            abilityForest = new AbilityForest(new[] { "Human_Innate", "Pistol_Innate", "Sword_Innate", "Human_InnatePassives" });
 
             buildCtx = new CharacterBuildContext(
                 root: transform, eventHub: eventHub,
                 identity: identity,
                 ability: ability, reactor: reactor, pathfinding: pathfindingAgent,
                 modelRoot: modelRoot, rig: characterRig,
-                animationProfile: characterAnimationProfile,
-                groundSystemConfig: groundSystemConfig,
-                audioConfig: characterAudioConfig,
+                animationProfile: CharacterAnimationProfile,
+                groundSystemConfig: GameService.Instance?.AssetRegistry.FindGroundConfig(groundSystemConfigKey),
+                audioConfig: CharacterAudioConfig,
                 upperBodyMask: upperBodyMask, armMask: armMask, additiveMask: additiveMask,
                 facialMask: facialMask, headMask: headMask, footMask: footMask,
                 forwardRootMotion: forwardRootMotion,
@@ -144,8 +144,10 @@ namespace RedDust.Character
         protected override void Start()
         {
             base.Start();  // Registry.OnWireAll() — 子模块完成初始化
+
             buildCtx.Animation = characterAnimation;
             buildCtx.Container = identity.Entity?.NestedContainer;
+
             // TODO: 饥饿/体力是测试代码。Actor 不应内联属性变化逻辑。
             buildCtx.Properties.AddModifier(new FloatModifier { Owner = this, TargetPath = CharacterConst.PropertyPath.Vitals.Hunger, Frequency = ModifierFrequency.PerSecond, Delta = -0.01f });
             buildCtx.Properties.AddModifier(new FloatModifier { Owner = this, TargetPath = CharacterConst.PropertyPath.Vitals.Stamina, Frequency = ModifierFrequency.PerSecond, Delta = 25f });
