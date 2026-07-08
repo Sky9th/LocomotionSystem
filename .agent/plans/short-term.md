@@ -1,9 +1,9 @@
 # 短期开发计划
 
-> 更新: 2026-07-07
-> 分支: `feature/ability-pipeline`
+> 更新: 2026-07-08
+> 分支: `feature/phase5-item-economy`
 > 原则: 每步有可玩增量，先完成基础设施再铺玩法
-> 前置: Character 模块重构 ✅ · Properties 系统 ✅ · Animation 重构 ✅ · Ability 数据资产 ✅ · AbilityTreeSO ✅ · EntityService + Container ✅ · Tag 6 域 339 标签 ✅ · Equipment→技能闭环 ✅ · PropertyTree Equipment 层重构 ✅ · Ability Pipeline 8 State 全就位 ✅ · S1-S5 全部完成 ✅
+> 前置: Character 模块重构 ✅ · Properties 系统 ✅ · Animation 重构 ✅ · Ability 数据资产 ✅ · AbilityTreeSO ✅ · EntityService + Container ✅ · Tag 6 域 339 标签 ✅ · Equipment→技能闭环 ✅ · PropertyTree Equipment 层重构 ✅ · Ability Pipeline 8 State 全就位 ✅ · S1-S5 全部完成 ✅ · 道具数据 49 件落地 ✅
 
 ---
 
@@ -42,7 +42,7 @@
 | L3 | 吸收结算 — 护盾伤害吸收 | 护盾系统未设计 |
 | L4 | 霸体阈值判定 | 霸体值属性体系 |
 | L5 | ComputeDamage 交叉乘积按 element tag 匹配 | — |
-| L6 | RangedWeaponSO 临时 SO 泄漏 | — |
+| L6 | RangedWeaponSO 临时 SO 泄漏 | ✅ 已修复 — v0.42.0 沿容器链查找弹药返回 DamageEffectSO |
 | L7 | AddBuffTags 默认 owner=null | — |
 | L8 | Reactor ApplyEffects 确认 public/private | — |
 | L9 | 伤害类型转换 — 防弹衣穿刺→钝伤 | 防弹衣系统未就位 |
@@ -66,8 +66,9 @@
 ```
 S1-S5 ✅ 全部完成 ──── Phase 4 封闭
     │
-    └── Phase 5 — 物品经济 ← 当前
-         ├── P5.1 物品能存在于世界上
+    └── Phase 5 — 物品经济 [施工中]
+         ├── P5.0 基础设施 + 道具数据 ✅ (v0.42.0)
+         ├── P5.1 物品能存在于世界上 ← 下一步
          ├── P5.2 玩家能拾取物品
          ├── P5.3 玩家能看到背包
          ├── P5.4 玩家能装备/卸下物品
@@ -94,20 +95,18 @@ S1-S5 ✅ 全部完成 ──── Phase 4 封闭
 
 ---
 
-### P5.0 — 基础设施补完（前置）
+### P5.0 — 基础设施 + 道具数据 ✅
 
-> S4 完成了 Addressables 加载管道重构（`AssetService` + `RunBootInit` + `AssetCatalog`），
-> 资产加载从 `AssetDatabase` 直引切换为 Addressables `boot` label。
-> 这带来两个前置问题：① 现有 Importer/Exporter 的资产引用可能断裂；
-> ② ItemDefSO 缺少 Editor 和 ImporterExporter——创建物品只能手动改 YAML 或 Inspector。
+> ✅ v0.42.0 完成。Equipment/Ammo/Consumable 三个 Editor + ImportExport 已就位，49 件道具数据全量落地。
 
-| # | 任务 | 说明 |
+| # | 任务 | 状态 |
 |---|------|------|
-| P5.0a | **ItemEditor 窗口** | 新建 `ItemEditorWindow`：左侧物品列表（按类型分组：Item/MeleeWeapon/RangedWeapon），右侧编辑 Template + OverridesJson + Prefab。参考 AbilityEditorWindow 三面板布局。ItemDefSO 零 C# 字段，编辑核心是 PropertyTree 覆写 |
-| P5.0b | **ItemImportExport** | 新建 `ItemImportExport.cs` + `ItemImportWindow`：JSON 导入/导出物品。字段：type（Item/MeleeWeapon/RangedWeapon）、name、templateId、overridesJson、prefabGuid。复用共享 `EditorImportExport` 组件 |
-| P5.0c | **Addressables 兼容验证** | 验证 PropertyImporter / AbilityImporter / TagImporter 等现有导入导出在 Addressables 迁移后仍正常——特别是 Template 引用（`templateId` vs GUID）和跨资产引用解析 |
+| P5.0a | ItemEditor 窗口 | ✅ Equipment/Ammo/Consumable 三个独立 EditorWindow |
+| P5.0b | ItemImportExport | ✅ 三个 Import-Export + JSON 文件，EntityImporter 支持按 entityType 分子目录，PropertyImporter 支持 update 已有 Tree |
+| P5.0c | Addressables 兼容 | ✅ 验证通过 |
+| P5.0d | **道具数据落地** | ✅ 49 件成品道具（防具10+容器3+近战6+热武7+弹药12+消耗品11），Ballistic DamageEffectSO x4，AmmoBase PropertyTree + Weapon/ATK，AmmoSO/RangedWeaponSO 伤害管道接通 |
 
-**已有基础**：`ItemDefSO : PropertyPresetSO`（Template/templateId/OverridesJson/Prefab）、`EditorImportExport` 共享 UI、`PropertyImportExport` / `AbilityImportExport` 参考模式、`AssetCatalog.InitItems()` 加载路径
+**产出**：`equipment_all.json`(26) + `ammo_all.json`(12) + `consumable_all.json`(11)，PolygonApocalypse Prefab 19 个映射，tags_all.json fullTag 补全
 
 ### 任务拆解
 
