@@ -25,6 +25,10 @@ namespace RedDust.Weapon.Editor
         };
 
         protected override string GetDefaultAssetDir() => "Assets/Data/Entities/Weapons";
+
+        protected override string GetAssetDirForType(Type soType) => soType == typeof(MeleeWeaponSO)
+            ? "Assets/Data/Entities/Weapons/Melee"
+            : "Assets/Data/Entities/Weapons/Ranged";
         protected override Action OpenImportWindow() => WeaponImportWindow.Open;
 
         protected override (string label, string assetName)[] GetTemplatePresets(Type selectedType)

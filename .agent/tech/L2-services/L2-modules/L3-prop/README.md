@@ -58,7 +58,7 @@ L3_Prop/
 
 | 工具 | 菜单 | 说明 |
 |------|------|------|
-| PropEditorWindow | `RedDust/Prop Editor` | EntityEditorWindow 子类，创建菜单含 6 种子类型 |
+| PropEditorWindow | `RedDust/Prop Editor` | EntityEditorWindow 子类，创建菜单含 6 种子类型。覆写 `GetAssetDirForType` — 按类型路由到 `Props/{Armor,Consumable,Ammo,Tool,Container,Material}/` |
 | PropImportWindow | `RedDust/Prop Import-Export` | JSON 导入/导出，支持 6 种 entityType 标签 |
 
 ## 未来规划

@@ -245,12 +245,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0837949fe042f774da20a4aaaddaae81
-    m_Address: Assets/Data/Entities/Equipment
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - boot
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 08398d1242a8f9549a796752565772cf
     m_Address: Assets/Data/Properties/Definitions/Float/Loyalty.asset
     m_ReadOnly: 0
@@ -1009,12 +1003,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2dbad4b4ca00b6b4d857c8dfca5afe83
     m_Address: Assets/Data/Tags/Ability/Definition/Active/Melee/TwoHanded/Polearm/Tag_Block.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - boot
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2dbeaabf436772646aa3130340225d86
-    m_Address: Assets/Data/Entities/Equipment/Backpack.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot

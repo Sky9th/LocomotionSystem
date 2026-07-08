@@ -29,6 +29,17 @@ namespace RedDust.Prop.Editor
         };
 
         protected override string GetDefaultAssetDir() => "Assets/Data/Entities/Props";
+
+        protected override string GetAssetDirForType(Type soType) => soType switch
+        {
+            _ when soType == typeof(ArmorSO) => "Assets/Data/Entities/Props/Armor",
+            _ when soType == typeof(ConsumableSO) => "Assets/Data/Entities/Props/Consumable",
+            _ when soType == typeof(AmmoSO) => "Assets/Data/Entities/Props/Ammo",
+            _ when soType == typeof(ToolSO) => "Assets/Data/Entities/Props/Tool",
+            _ when soType == typeof(ContainerSO) => "Assets/Data/Entities/Props/Container",
+            _ when soType == typeof(MaterialSO) => "Assets/Data/Entities/Props/Material",
+            _ => "Assets/Data/Entities/Props",
+        };
         protected override Action OpenImportWindow() => PropImportWindow.Open;
 
         protected override (string label, string assetName)[] GetTemplatePresets(Type selectedType) => selectedType switch

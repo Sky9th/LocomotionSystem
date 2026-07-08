@@ -56,6 +56,9 @@ namespace RedDust.Entities.Editor
         /// <summary>新建资产的默认目录。</summary>
         protected abstract string GetDefaultAssetDir();
 
+        /// <summary>按 SO 类型返回资产目录。默认回退到 GetDefaultAssetDir()。</summary>
+        protected virtual string GetAssetDirForType(Type soType) => GetDefaultAssetDir();
+
         /// <summary>AssetDatabase.FindAssets 过滤字符串（如 "t:WeaponDefSO"）。</summary>
         protected abstract string GetAssetFilter();
 
@@ -968,7 +971,7 @@ namespace RedDust.Entities.Editor
 
         protected void CreateAsset(Type soType)
         {
-            var dir = GetDefaultAssetDir();
+            var dir = GetAssetDirForType(soType);
             if (!AssetDatabase.IsValidFolder(dir))
             {
                 var parts = dir.Split('/');

@@ -56,7 +56,7 @@ L3_Weapon/
 
 | 工具 | 菜单 | 说明 |
 |------|------|------|
-| WeaponEditorWindow | `RedDust/Weapon Editor` | EntityEditorWindow 子类，编辑 MeleeWeaponSO / RangedWeaponSO |
+| WeaponEditorWindow | `RedDust/Weapon Editor` | EntityEditorWindow 子类，编辑 MeleeWeaponSO / RangedWeaponSO。覆写 `GetAssetDirForType` — MeleeWeaponSO → `Weapons/Melee/`，RangedWeaponSO → `Weapons/Ranged/` |
 | WeaponImportWindow | `RedDust/Weapon Import-Export` | JSON 导入/导出，EntityImporter 引擎驱动 |
 
 ## 未来规划
