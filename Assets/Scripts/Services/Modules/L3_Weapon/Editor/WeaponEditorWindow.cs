@@ -26,5 +26,14 @@ namespace RedDust.Weapon.Editor
 
         protected override string GetDefaultAssetDir() => "Assets/Data/Entities/Weapons";
         protected override Action OpenImportWindow() => WeaponImportWindow.Open;
+
+        protected override (string label, string assetName)[] GetTemplatePresets(Type selectedType)
+        {
+            if (selectedType == typeof(MeleeWeaponSO))
+                return new[] { ("Weapon Base", "WeaponBase"), ("Melee Weapon", "MeleeWeapon"), ("Axe", "Axe"), ("Blade", "Blade"), ("Blunt", "Blunt"), ("Polearm", "Polearm") };
+            if (selectedType == typeof(RangedWeaponSO))
+                return new[] { ("Weapon Base", "WeaponBase"), ("Ranged Weapon", "RangedWeapon"), ("Firearm", "Firearm"), ("Pistol", "Pistol"), ("Rifle", "Rifle"), ("Shotgun", "Shotgun"), ("Bow", "Bow"), ("Throwable", "Throwable") };
+            return new[] { ("Weapon Base", "WeaponBase"), ("Melee Weapon", "MeleeWeapon"), ("Ranged Weapon", "RangedWeapon"), ("Firearm", "Firearm"), ("Pistol", "Pistol"), ("Rifle", "Rifle"), ("Shotgun", "Shotgun"), ("Bow", "Bow"), ("Throwable", "Throwable"), ("Axe", "Axe"), ("Blade", "Blade"), ("Blunt", "Blunt"), ("Polearm", "Polearm") };
+        }
     }
 }

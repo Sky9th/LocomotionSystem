@@ -1391,6 +1391,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3e7602caf028e1742a4efa4add0b0409
+    m_Address: Assets/Data/Entities/Buildings/NewBuildingDef.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3ed989c74977b4d4c87920f3e8419c23
     m_Address: Assets/Data/Tags/Ability/Definition/Active/Lockpicking/Tag_SecurityCheck.asset
     m_ReadOnly: 0

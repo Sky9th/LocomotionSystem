@@ -35,6 +35,7 @@
 | `GetAssetFilter()` | abstract | ✅ | `"t:WeaponDefSO"` |
 | `GetCreateMenuItems()` | abstract | ✅ | `[("Melee Weapon", typeof(MeleeWeaponSO)), ...]` |
 | `GetDefaultAssetDir()` | abstract | ✅ | `"Assets/Data/Entities/Weapons"` |
+| `GetTemplatePresets(Type)` | virtual | 否 | 返回 `(label, assetName)[]`。null=回退 ObjectField。selectedType 为当前实体 C# 类型 |
 | `OpenImportWindow()` | virtual | 否 | `WeaponImportWindow.Open` |
 | `DrawExtraToolbarButtons()` | virtual | 否 | — |
 | `DrawCategorySpecificSection()` | virtual | 否 | — |

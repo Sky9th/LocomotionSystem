@@ -30,5 +30,16 @@ namespace RedDust.Prop.Editor
 
         protected override string GetDefaultAssetDir() => "Assets/Data/Entities/Props";
         protected override Action OpenImportWindow() => PropImportWindow.Open;
+
+        protected override (string label, string assetName)[] GetTemplatePresets(Type selectedType) => selectedType switch
+        {
+            _ when selectedType == typeof(ArmorSO) => new[] { ("Armor Base", "ArmorBase"), ("Body Armor", "BodyArmor"), ("Head Armor", "HeadArmor"), ("Leg Armor", "LegArmor") },
+            _ when selectedType == typeof(ConsumableSO) => new[] { ("Consumable Base", "ConsumableBase"), ("Food", "Food"), ("Medical", "Medical") },
+            _ when selectedType == typeof(AmmoSO) => new[] { ("Ammo Base", "AmmoBase"), ("Pistol Ammo", "PistolAmmo"), ("Rifle Ammo", "RifleAmmo"), ("Shotgun Shell", "ShotgunShell") },
+            _ when selectedType == typeof(ToolSO) => new[] { ("Tool Base", "ToolBase"), ("Repair Kit", "RepairKit"), ("Seed", "Seed") },
+            _ when selectedType == typeof(ContainerSO) => new[] { ("Backpack", "Backpack") },
+            _ when selectedType == typeof(MaterialSO) => new[] { ("Material", "Material") },
+            _ => null,
+        };
     }
 }

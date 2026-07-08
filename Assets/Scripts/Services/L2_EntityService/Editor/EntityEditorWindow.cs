@@ -83,6 +83,9 @@ namespace RedDust.Entities.Editor
         /// <summary>打开当前类别对应的 Import/Export 窗口（null = 无按钮）。</summary>
         protected virtual Action OpenImportWindow() => null;
 
+        /// <summary>预设模板下拉列表。selectedType 为当前实体的 C# 类型，可用于按子类过滤。</summary>
+        protected virtual (string label, string assetName)[] GetTemplatePresets(Type selectedType) => null;
+
         // ═══════════════════════════════════════════════════
         //  Lifecycle
         // ═══════════════════════════════════════════════════
@@ -337,19 +340,7 @@ namespace RedDust.Entities.Editor
                 EditorGUILayout.BeginHorizontal();
                 EditorLabel.Draw("Template", LabelWidth);
                 GUILayout.Space(EditorTokens.Pad);
-                var newTemplate = EditorInput.ObjectField<PropertyTreeSO>(_selectedPreset.Template);
-                if (newTemplate != _selectedPreset.Template)
-                {
-                    if (_selectedPreset.Template != null && _overrideValues.Count > 0)
-                    {
-                        if (!EditorUtility.DisplayDialog("Template Change",
-                            "Changing the template will clear all property overrides. Continue?", "Change", "Cancel"))
-                            return;
-                    }
-                    _selectedPreset.Template = newTemplate;
-                    _hasChanges = true;
-                    SelectPreset(_selectedPreset);
-                }
+                DrawTemplateField();
                 EditorGUILayout.EndHorizontal();
 
                 EditorCard.Gap(EditorTokens.Pad / 2);
@@ -366,6 +357,84 @@ namespace RedDust.Entities.Editor
                 }
                 EditorGUILayout.EndHorizontal();
             });
+        }
+
+        /// <summary>Template 字段：有预设列表用下拉按钮，否则回退 ObjectField。</summary>
+        private void DrawTemplateField()
+        {
+            var presets = GetTemplatePresets(_selectedPreset?.GetType());
+            if (presets == null || presets.Length == 0)
+            {
+                // Fallback: raw ObjectField
+                var newTemplate = EditorInput.ObjectField<PropertyTreeSO>(_selectedPreset.Template);
+                if (newTemplate != _selectedPreset.Template)
+                    ApplyTemplateChange(newTemplate);
+                return;
+            }
+
+            // Resolve preset names → SO references (cached)
+            var presetSOs = ResolvePresetSOs(presets);
+
+            // Find current selection index
+            int currentIndex = -1;
+            var currentName = _selectedPreset.Template != null ? _selectedPreset.Template.name : null;
+            for (int i = 0; i < presetSOs.Length; i++)
+            {
+                if (presetSOs[i] != null && presetSOs[i].name == currentName)
+                { currentIndex = i; break; }
+            }
+
+            var displayLabel = currentIndex >= 0 ? presets[currentIndex].label : "None";
+            if (GUILayout.Button(displayLabel, EditorStyles.popup, GUILayout.MinWidth(120f)))
+            {
+                var menu = new GenericMenu();
+                menu.AddItem(new GUIContent("None"), currentIndex < 0, () => ApplyTemplateChange(null));
+                menu.AddSeparator("");
+                for (int i = 0; i < presets.Length; i++)
+                {
+                    var capturedIndex = i;
+                    var so = presetSOs[i];
+                    var label = so != null ? presets[i].label : presets[i].label + " (missing)";
+                    if (so != null)
+                        menu.AddItem(new GUIContent(label), currentIndex == capturedIndex,
+                            () => ApplyTemplateChange(so));
+                    else
+                        menu.AddDisabledItem(new GUIContent(label));
+                }
+                menu.ShowAsContext();
+            }
+        }
+
+        private void ApplyTemplateChange(PropertyTreeSO newTemplate)
+        {
+            if (newTemplate == _selectedPreset.Template) return;
+
+            if (_selectedPreset.Template != null && _overrideValues.Count > 0)
+            {
+                if (!EditorUtility.DisplayDialog("Template Change",
+                    "Changing the template will clear all property overrides. Continue?", "Change", "Cancel"))
+                    return;
+            }
+            _selectedPreset.Template = newTemplate;
+            _hasChanges = true;
+            SelectPreset(_selectedPreset);
+        }
+
+        private static PropertyTreeSO[] ResolvePresetSOs((string label, string assetName)[] presets)
+        {
+            var result = new PropertyTreeSO[presets.Length];
+            var guids = AssetDatabase.FindAssets("t:PropertyTreeSO");
+            var nameToSO = new Dictionary<string, PropertyTreeSO>();
+            foreach (var guid in guids)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                var so = AssetDatabase.LoadAssetAtPath<PropertyTreeSO>(path);
+                if (so != null && !nameToSO.ContainsKey(so.name))
+                    nameToSO[so.name] = so;
+            }
+            for (int i = 0; i < presets.Length; i++)
+                nameToSO.TryGetValue(presets[i].assetName, out result[i]);
+            return result;
         }
 
         // ── Property Overrides ──
