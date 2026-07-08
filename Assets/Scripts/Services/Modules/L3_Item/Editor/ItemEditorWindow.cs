@@ -38,7 +38,7 @@ namespace RedDust.Items.Editor
         //  Lifecycle
         // ═══════════════════════════════════════════════════
 
-        [MenuItem("RedDust/Item Editor")]
+        [MenuItem("RedDust/Item Editor", priority = 7)]
         private static void Open() => GetWindow<ItemEditorWindow>("Item Editor");
 
         private void OnEnable()
@@ -105,7 +105,7 @@ namespace RedDust.Items.Editor
                 if (EditorButton.Default("Refresh", EditorButtonSize.Medium))
                     RefreshItemList();
                 if (EditorButton.Default("Import/Export", EditorButtonSize.Medium))
-                    Debug.Log("[ItemEditor] Import/Export — not yet implemented.");
+                    ItemImportWindow.Open();
 
                 GUILayout.FlexibleSpace();
 
@@ -935,8 +935,16 @@ namespace RedDust.Items.Editor
         {
             var menu = new GenericMenu();
             menu.AddItem(new GUIContent("Item"), false, () => CreateAsset<ItemDefSO>());
-            menu.AddItem(new GUIContent("Melee Weapon"), false, () => CreateAsset<MeleeWeaponSO>());
-            menu.AddItem(new GUIContent("Ranged Weapon"), false, () => CreateAsset<RangedWeaponSO>());
+            menu.AddSeparator("");
+            menu.AddItem(new GUIContent("Weapon/Melee Weapon"), false, () => CreateAsset<MeleeWeaponSO>());
+            menu.AddItem(new GUIContent("Weapon/Ranged Weapon"), false, () => CreateAsset<RangedWeaponSO>());
+            menu.AddSeparator("");
+            menu.AddItem(new GUIContent("Armor"), false, () => CreateAsset<ArmorSO>());
+            menu.AddItem(new GUIContent("Ammo"), false, () => CreateAsset<AmmoSO>());
+            menu.AddItem(new GUIContent("Consumable"), false, () => CreateAsset<ConsumableSO>());
+            menu.AddItem(new GUIContent("Container"), false, () => CreateAsset<ContainerSO>());
+            menu.AddItem(new GUIContent("Material"), false, () => CreateAsset<MaterialSO>());
+            menu.AddItem(new GUIContent("Tool"), false, () => CreateAsset<ToolSO>());
             menu.ShowAsContext();
         }
 

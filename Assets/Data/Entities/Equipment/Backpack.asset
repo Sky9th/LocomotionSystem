@@ -11,7 +11,9 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88e7de01cba5b3d46863f0f1e374a0a9, type: 3}
   m_Name: Backpack
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: dfb12c954eea5d442bba0a4efc1bc5f5, type: 2}
-  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Backpack\",\"Entity.Equipment.Backpack\",\"Entity.Item.Container\"]"}]}'
+  OverridesJson: "{\n    \"Overrides\": [\n        {\n            \"Path\": \"Common/Tags\",\n           
+    \"Value\": \"[\\\"Backpack\\\",\\\"Entity.Item.Container\\\"]\",\n           
+    \"Min\": \"\",\n            \"Max\": \"\"\n        }\n    ]\n}"
   Prefab: {fileID: 0}

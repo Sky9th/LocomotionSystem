@@ -2,56 +2,17 @@
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
-using UnityEngine;
 
 namespace RedDust.Shared.EditorUI
 {
+    /// <summary>
+    /// Addressables label 管理工具。Import 流程中创建新资产后调用 EnsureBootLabel。
+    /// </summary>
     public static class DataLabelTools
     {
-        [MenuItem("RedDust/Data/Tag All Data as 'boot'")]
-        public static void TagAllData()
-        {
-            TagFolder("Assets/Data", "boot");
-        }
-
-        [MenuItem("RedDust/Data/Tag Prototype Art as 'prototype-art'")]
-        public static void TagPrototypeArt()
-        {
-            TagFolder("Assets/Art/PolygonPrototype", "prototype-art");
-        }
-
-        private static void TagFolder(string folder, string label)
-        {
-            var settings = AddressableAssetSettingsDefaultObject.Settings;
-            if (settings == null)
-            {
-                Debug.LogError("[DataLabelTools] No AddressableAssetSettings found.");
-                return;
-            }
-
-            var targetGroup = settings.DefaultGroup;
-            var guids = AssetDatabase.FindAssets("t:Object", new[] { folder });
-            int tagged = 0;
-
-            foreach (var guid in guids)
-            {
-                var entry = settings.FindAssetEntry(guid);
-                if (entry == null)
-                    entry = settings.CreateOrMoveEntry(guid, targetGroup);
-                if (!entry.labels.Contains(label))
-                {
-                    entry.SetLabel(label, true, true);
-                    tagged++;
-                }
-            }
-
-            AssetDatabase.SaveAssets();
-            Debug.Log($"[DataLabelTools] Tagged {tagged} of {guids.Length} assets in '{folder}' with label '{label}'.");
-        }
-
         /// <summary>
-        /// Ensure a single asset is registered in Addressables and tagged with "boot".
-        /// Called by importers after AssetDatabase.CreateAsset to make new assets available in builds.
+        /// 将单个资产注册到 Addressables 并标记 "boot" label。
+        /// Importer 在 AssetDatabase.CreateAsset 后调用，确保新资产在 Build 中可用。
         /// </summary>
         public static void EnsureBootLabel(string assetPath)
         {
