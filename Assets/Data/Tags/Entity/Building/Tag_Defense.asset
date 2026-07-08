@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c66336c3653bee49af7bbe63976fdd4, type: 3}
-  m_Name: Human
+  m_Script: {fileID: 11500000, guid: bfea3729713ca0e4ab41941d3888d820, type: 3}
+  m_Name: Tag_Defense
   m_EditorClassIdentifier: 
-  Template: {fileID: 11400000, guid: 3cdba62ac873c3b4fac8c20ab25863bc, type: 2}
-  OverridesJson: 
-  Prefab: {fileID: 8667043660662020576, guid: 4c0627a5cad7b734c8c24cbdadfe712f, type: 3}
+  leafName: Defense
+  parent: {fileID: 11400000, guid: 0b10f4f62532e3d45a8c604f490bb825, type: 2}
+  description: "\u9632\u5FA1\u5EFA\u7B51"

@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c66336c3653bee49af7bbe63976fdd4, type: 3}
-  m_Name: Human
+  m_Script: {fileID: 11500000, guid: bfea3729713ca0e4ab41941d3888d820, type: 3}
+  m_Name: Tag_Station
   m_EditorClassIdentifier: 
-  Template: {fileID: 11400000, guid: 3cdba62ac873c3b4fac8c20ab25863bc, type: 2}
-  OverridesJson: 
-  Prefab: {fileID: 8667043660662020576, guid: 4c0627a5cad7b734c8c24cbdadfe712f, type: 3}
+  leafName: Station
+  parent: {fileID: 11400000, guid: 1961e52aa6f7e5e438e3ef06e34cdc6d, type: 2}
+  description: "\u5DE5\u4F5C\u53F0"

@@ -2,5 +2,20 @@
   "version": "1.0",
   "description": "Test data — SceneItem entities. Generated 2026-07-08.",
   "category": "SceneItem",
-  "entities": []
+  "entities": [
+    {
+      "entityType": null,
+      "name": "Barrel",
+      "templateName": "Environment",
+      "overridesJson": "",
+      "prefabGuid": ""
+    },
+    {
+      "entityType": null,
+      "name": "WoodenCrate",
+      "templateName": "Entity",
+      "overridesJson": "",
+      "prefabGuid": ""
+    }
+  ]
 }

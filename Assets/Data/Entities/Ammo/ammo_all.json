@@ -2,5 +2,27 @@
   "version": "1.0",
   "description": "Test data — Ammo entities. Generated 2026-07-08.",
   "category": "Ammo",
-  "entities": []
+  "entities": [
+    {
+      "entityType": null,
+      "name": "PistolAmmo",
+      "templateName": "PistolAmmo",
+      "overridesJson": "",
+      "prefabGuid": ""
+    },
+    {
+      "entityType": null,
+      "name": "RifleAmmo",
+      "templateName": "RifleAmmo",
+      "overridesJson": "",
+      "prefabGuid": ""
+    },
+    {
+      "entityType": null,
+      "name": "ShotgunShell",
+      "templateName": "ShotgunShell",
+      "overridesJson": "",
+      "prefabGuid": ""
+    }
+  ]
 }

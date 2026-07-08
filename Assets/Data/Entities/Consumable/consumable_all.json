@@ -2,5 +2,34 @@
   "version": "1.0",
   "description": "Test data — Consumable entities. Generated 2026-07-08.",
   "category": "Consumable",
-  "entities": []
+  "entities": [
+    {
+      "entityType": "Consumable",
+      "name": "CannedFood",
+      "templateName": "Food",
+      "overridesJson": "",
+      "prefabGuid": ""
+    },
+    {
+      "entityType": "Consumable",
+      "name": "Bandage",
+      "templateName": "Medical",
+      "overridesJson": "",
+      "prefabGuid": ""
+    },
+    {
+      "entityType": "Material",
+      "name": "WoodLog",
+      "templateName": "Material",
+      "overridesJson": "",
+      "prefabGuid": ""
+    },
+    {
+      "entityType": "Material",
+      "name": "WheatSeed",
+      "templateName": "Seed",
+      "overridesJson": "",
+      "prefabGuid": ""
+    }
+  ]
 }

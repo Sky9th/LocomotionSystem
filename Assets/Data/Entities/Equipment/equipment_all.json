@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "description": "Test data — Weapon entities (MeleeWeapon + RangedWeapon). Generated 2026-07-08. (category updated to Equipment)",
+  "description": "Test data — Equipment entities (MeleeWeapon + RangedWeapon). Generated 2026-07-08.",
   "category": "Equipment",
   "entities": [
     {
@@ -49,7 +49,7 @@
       "entityType": "RangedWeapon",
       "name": "Pistol",
       "templateName": "Pistol",
-      "overridesJson": "{\"Overrides\": [{\"Path\": \"Common/Icon\", \"Value\": \"d4e7f0a1b2c3d4e5f6a7b8c9d0e1f2a3\"}, {\"Path\": \"Common/Tags\", \"Value\": \"[\\\"Entity.Equipment.Weapon.Ranged.Pistol\\\", \\\"Grip.Ranged.Pistol2H\\\"]\"}, {\"Path\": \"Slots/Scope\", \"Value\": \"{\\\"SlotId\\\":\\\"Scope\\\",\\\"AcceptTags\\\":[\\\"Attachment.Scope\\\"],\\\"Capacity\\\":1,\\\"WeightLimit\\\":0.0}\"}]}",
+      "overridesJson": "{\"Overrides\": [{\"Path\": \"Common/Icon\", \"Value\": \"d4e7f0a1b2c3d4e5f6a7b8c9d0e1f2a3\"}, {\"Path\": \"Common/Tags\", \"Value\": \"[\\\"Entity.Equipment.Weapon.Ranged.Pistol\\\", \\\"Grip.Ranged.Pistol2H\\\"]\"}, {\"Path\": \"Slots/Scope\", \"Value\": \"{\\\"SlotId\\\":\\\"Scope\\\",\\\"AcceptTags\\\":[\\\"Entity.Equipment.Attachment.Scope\\\"],\\\"Capacity\\\":1,\\\"WeightLimit\\\":0.0}\"}]}",
       "prefabGuid": "151fe3144103e1440900697f4b29c68e"
     },
     {

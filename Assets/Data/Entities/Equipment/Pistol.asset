@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 228120e2bfd64e24a8545577ecb3ec95, type: 3}
+  m_Name: Pistol
+  m_EditorClassIdentifier: 
+  Template: {fileID: 11400000, guid: d07b40a576e56764aa15afde97dc3383, type: 2}
+  OverridesJson: '{"Overrides": [{"Path": "Common/Icon", "Value": "d4e7f0a1b2c3d4e5f6a7b8c9d0e1f2a3"},
+    {"Path": "Common/Tags", "Value": "[\"Entity.Equipment.Weapon.Ranged.Pistol\",
+    \"Grip.Ranged.Pistol2H\"]"}, {"Path": "Slots/Scope", "Value": "{\"SlotId\":\"Scope\",\"AcceptTags\":[\"Entity.Equipment.Attachment.Scope\"],\"Capacity\":1,\"WeightLimit\":0.0}"}]}'
+  Prefab: {fileID: 1111015175407080, guid: 151fe3144103e1440900697f4b29c68e, type: 3}

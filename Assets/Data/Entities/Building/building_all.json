@@ -14,14 +14,14 @@
       "entityType": null,
       "name": "WoodenWall",
       "templateName": "Building",
-      "overridesJson": "{\"Overrides\":[{\"Path\":\"Common/Tags\",\"Value\":\"[\\\"Building.Defense.Wall\\\",\\\"Material.Wood\\\"]\"},{\"Path\":\"Building/DEF_Building\",\"Value\":\"100\"}]}",
+      "overridesJson": "{\"Overrides\":[{\"Path\":\"Common/Tags\",\"Value\":\"[\\\"Entity.Building.Defense.Wall\\\",\\\"Entity.Consumable.Material.Wood\\\"]\"},{\"Path\":\"Building/DEF_Building\",\"Value\":\"100\"}]}",
       "prefabGuid": ""
     },
     {
       "entityType": null,
       "name": "Workbench",
       "templateName": "Building",
-      "overridesJson": "{\"Overrides\":[{\"Path\":\"Common/Tags\",\"Value\":\"[\\\"Building.Crafting.Station\\\",\\\"Material.Wood\\\"]\"}]}",
+      "overridesJson": "{\"Overrides\":[{\"Path\":\"Common/Tags\",\"Value\":\"[\\\"Entity.Building.Crafting.Station\\\",\\\"Entity.Consumable.Material.Wood\\\"]\"}]}",
       "prefabGuid": ""
     },
     {

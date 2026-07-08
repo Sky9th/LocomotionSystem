@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c66336c3653bee49af7bbe63976fdd4, type: 3}
-  m_Name: Human
+  m_Script: {fileID: 11500000, guid: bf34646fdce8f9e49a9bc5116538fef6, type: 3}
+  m_Name: RifleAmmo
   m_EditorClassIdentifier: 
-  Template: {fileID: 11400000, guid: 3cdba62ac873c3b4fac8c20ab25863bc, type: 2}
+  Template: {fileID: 11400000, guid: b98b5ac9b018d7a4982485064cbf829f, type: 2}
   OverridesJson: 
-  Prefab: {fileID: 8667043660662020576, guid: 4c0627a5cad7b734c8c24cbdadfe712f, type: 3}
+  Prefab: {fileID: 0}

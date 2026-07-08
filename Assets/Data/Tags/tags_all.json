@@ -335,6 +335,13 @@
     {"name":"Tag_Material","parent":"Entity.Consumable","description":"材料"},
     {"name":"Tag_Building","parent":"Entity","description":"建筑 — 放置在世界中、有防御值"},
     {"name":"Tag_SceneItem","parent":"Entity","description":"场景物品 — 环境交互物"},
+    {"name":"Tag_Defense","parent":"Entity.Building","description":"防御建筑"},
+    {"name":"Tag_Wall","parent":"Entity.Building.Defense","description":"墙壁"},
+    {"name":"Tag_Crafting","parent":"Entity.Building","description":"制作建筑"},
+    {"name":"Tag_Station","parent":"Entity.Building.Crafting","description":"工作台"},
+    {"name":"Tag_Wood","parent":"Entity.Consumable.Material","description":"木材"},
+    {"name":"Tag_Attachment","parent":"Entity.Equipment","description":"武器配件 — 瞄具/消音器/弹匣等"},
+    {"name":"Tag_Scope","parent":"Entity.Equipment.Attachment","description":"瞄准镜"},
 
     {"name":"Tag_Grip","parent":null,"description":"握持标签根 — 独立域，GripAnimationTableSO 消费"},
     {"name":"Tag_Melee","parent":"Grip","description":"近战握法"},

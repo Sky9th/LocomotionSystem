@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4c66336c3653bee49af7bbe63976fdd4, type: 3}
-  m_Name: Human
+  m_Name: Survivor
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: 3cdba62ac873c3b4fac8c20ab25863bc, type: 2}
-  OverridesJson: 
-  Prefab: {fileID: 8667043660662020576, guid: 4c0627a5cad7b734c8c24cbdadfe712f, type: 3}
+  OverridesJson: '{"Overrides":[{"Path":"Vitals/HP","Value":"120"},{"Path":"Vitals/MaxStamina","Value":"110"}]}'
+  Prefab: {fileID: 0}
