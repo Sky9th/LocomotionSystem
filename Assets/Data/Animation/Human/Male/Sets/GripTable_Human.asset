@@ -19,10 +19,10 @@ MonoBehaviour:
     animationSet: {fileID: 11400000, guid: 11f11b6d47e584c47a9f80461d84a0bd, type: 2}
     combatSet: {fileID: 11400000, guid: b78ac8dbebd25e7469c529247ac00579, type: 2}
   - gripTag: {fileID: 11400000, guid: 084fd9735b6c6824083c01813a0bea8a, type: 2}
-    weaponTypeTag: {fileID: 11400000, guid: 8fd15cc8d0571b143a0564f2c9dc1f3e, type: 2}
+    weaponTypeTag: {fileID: 11400000, guid: 9a4ef3ee178542f4c8270ca4e520875e, type: 2}
     animationSet: {fileID: 11400000, guid: c81796de84b39354ba6838e6c932ceff, type: 2}
     combatSet: {fileID: 11400000, guid: 7e306c7c743684845bd63c8192939b86, type: 2}
   - gripTag: {fileID: 11400000, guid: dfbed699ddaa7854a8de021f7998d138, type: 2}
-    weaponTypeTag: {fileID: 11400000, guid: 63f34b1adeceab2408926be904f32039, type: 2}
+    weaponTypeTag: {fileID: 11400000, guid: dc0d322ce3870e6459b0ca4f46205732, type: 2}
     animationSet: {fileID: 11400000, guid: 3d7a9b5ae6dd1094ea49d7386e239c37, type: 2}
     combatSet: {fileID: 11400000, guid: 9c3a17e9b10a83c479db465b06871794, type: 2}

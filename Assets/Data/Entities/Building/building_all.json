@@ -1,0 +1,35 @@
+{
+  "version": "1.0",
+  "description": "Test data — Building entities. Generated 2026-07-08. (category updated to Building)",
+  "category": "Building",
+  "entities": [
+    {
+      "entityType": null,
+      "name": "NewBuildingDef",
+      "templateName": null,
+      "overridesJson": "",
+      "prefabGuid": ""
+    },
+    {
+      "entityType": null,
+      "name": "WoodenWall",
+      "templateName": "Building",
+      "overridesJson": "{\"Overrides\":[{\"Path\":\"Common/Tags\",\"Value\":\"[\\\"Building.Defense.Wall\\\",\\\"Material.Wood\\\"]\"},{\"Path\":\"Building/DEF_Building\",\"Value\":\"100\"}]}",
+      "prefabGuid": ""
+    },
+    {
+      "entityType": null,
+      "name": "Workbench",
+      "templateName": "Building",
+      "overridesJson": "{\"Overrides\":[{\"Path\":\"Common/Tags\",\"Value\":\"[\\\"Building.Crafting.Station\\\",\\\"Material.Wood\\\"]\"}]}",
+      "prefabGuid": ""
+    },
+    {
+      "entityType": null,
+      "name": "StorageBox",
+      "templateName": "Building",
+      "overridesJson": "",
+      "prefabGuid": ""
+    }
+  ]
+}

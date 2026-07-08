@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leafName: Entity
   parent: {fileID: 0}
-  description: "\u5B9E\u4F53\u6807\u7B7E\u6839 \u2014 Entity \u7CFB\u7EDF\u4EA7\u51FA"
+  description: "\u5B9E\u4F53\u6807\u7B7E\u6839 \u2014 Entity \u7CFB\u7EDF\u4EA7\u51FA\uFF0C\u5BF9\u9F50
+    PropertyTree \u5206\u7C7B"

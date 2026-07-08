@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: Chest
   Description: "\u8EAF\u5E72\u9632\u5177\u69FD\u4F4D\uFF08\u80F8\u7532/\u80CC\u5FC3\uFF09\u3002\u9ED8\u8BA4\u63A5\u53D7
-    Armor.Body \u6807\u7B7E\u7269\u54C1\u3002NodeId \u7528 Chest \u4EE5\u907F Human
-    \u6811 Body \u6587\u4EF6\u5939\u540C\u540D\u51B2\u7A81\u3002"
+    Entity.Equipment.Armor.Chest \u6807\u7B7E\u7269\u54C1\u3002NodeId \u7528 Chest
+    \u4EE5\u907F Human \u6811 Body \u6587\u4EF6\u5939\u540C\u540D\u51B2\u7A81\u3002"
   Type: 8
   IsDeprecated: 0
   StructTypeName: RedDust.Container.SlotDef
-  DefaultJson: '{"AcceptTags":["Entity.Armor.Body"],"Capacity":1}'
+  DefaultJson: '{"AcceptTags":["Entity.Equipment.Armor.Chest"],"Capacity":1}'

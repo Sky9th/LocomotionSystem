@@ -10,14 +10,14 @@ namespace RedDust.Character.Editor
         private static readonly EntityImportConfig Config = new()
         {
             Category = "Character", Breadcrumb = "L3_Character · JSON ↔ .asset",
-            DataRoot = "Assets/Data/Entities/Characters", AssetFilter = "t:CharacterDefSO",
+            DataRoot = "Assets/Data/Entities/Character", AssetFilter = "t:CharacterDefSO",
             DefaultFileName = "characters_export",
             TypeMap = null,
             DefaultType = typeof(CharacterDefSO),
             BuildPreview = BuildPreview,
         };
 
-        private string _filePath, _previewText;
+        private string _filePath = "Assets/Data/Entities/Character/character_all.json", _previewText;
         private (int created, int updated, int skipped, List<string> errors) _result;
 
         [MenuItem("RedDust/Character Import-Export", priority = 32)]

@@ -23,7 +23,7 @@ namespace RedDust.Character.Editor
             ("Character", typeof(CharacterDefSO)),
         };
 
-        protected override string GetDefaultAssetDir() => "Assets/Data/Entities/Characters";
+        protected override string GetDefaultAssetDir() => "Assets/Data/Entities/Character";
         protected override Action OpenImportWindow() => CharacterImportWindow.Open;
 
         protected override (string label, string assetName)[] GetTemplatePresets(Type selectedType) => new[]

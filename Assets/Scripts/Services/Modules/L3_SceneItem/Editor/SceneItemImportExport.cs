@@ -10,14 +10,14 @@ namespace RedDust.SceneItem.Editor
         private static readonly EntityImportConfig Config = new()
         {
             Category = "SceneItem", Breadcrumb = "L3_SceneItem · JSON ↔ .asset",
-            DataRoot = "Assets/Data/Entities/SceneItems", AssetFilter = "t:SceneItemDefSO",
+            DataRoot = "Assets/Data/Entities/SceneItem", AssetFilter = "t:SceneItemDefSO",
             DefaultFileName = "sceneitems_export",
             TypeMap = null,
             DefaultType = typeof(SceneItemDefSO),
             BuildPreview = BuildPreview,
         };
 
-        private string _filePath, _previewText;
+        private string _filePath = "Assets/Data/Entities/SceneItem/sceneitem_all.json", _previewText;
         private (int created, int updated, int skipped, List<string> errors) _result;
 
         [MenuItem("RedDust/Scene Item Import-Export", priority = 34)]

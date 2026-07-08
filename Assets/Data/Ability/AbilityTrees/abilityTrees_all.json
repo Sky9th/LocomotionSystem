@@ -34,9 +34,9 @@
     {
       "treeId": "Sword_Innate",
       "displayName": "刀剑基础技法",
-      "description": "持刀/剑类武器时的基础技能。compatibleWeaponTags 匹配 Entity.Weapon.Melee.Blade。",
+      "description": "持刀/剑类武器时的基础技能。compatibleWeaponTags 匹配 Entity.Equipment.Weapon.Melee.Blade。",
       "treeTags": ["Ability.Tree.Innate"],
-      "compatibleWeaponTags": ["Entity.Weapon.Melee.Blade"],
+      "compatibleWeaponTags": ["Entity.Equipment.Weapon.Melee.Blade"],
       "compatibleGripTags": ["Grip.Melee.OneHanded"],
       "exclusiveGroup": "",
       "nodes": [
@@ -89,7 +89,7 @@
       "displayName": "手枪基础射击",
       "description": "持手枪时的基础射击技能。",
       "treeTags": ["Ability.Tree.Innate"],
-      "compatibleWeaponTags": ["Entity.Weapon.Ranged.Pistol"],
+      "compatibleWeaponTags": ["Entity.Equipment.Weapon.Ranged.Pistol"],
       "compatibleGripTags": ["Grip.Ranged.Pistol2H"],
       "exclusiveGroup": "",
       "nodes": [

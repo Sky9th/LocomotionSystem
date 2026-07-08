@@ -19,7 +19,7 @@ MonoBehaviour:
   treeTags:
   - {fileID: 11400000, guid: 374974b8bd8c98d46af1bd15c54b9f47, type: 2}
   compatibleWeaponTags:
-  - {fileID: 11400000, guid: 8fd15cc8d0571b143a0564f2c9dc1f3e, type: 2}
+  - {fileID: 11400000, guid: 9a4ef3ee178542f4c8270ca4e520875e, type: 2}
   compatibleGripTags:
   - {fileID: 11400000, guid: 084fd9735b6c6824083c01813a0bea8a, type: 2}
   exclusiveGroup: 

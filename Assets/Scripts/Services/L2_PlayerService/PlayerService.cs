@@ -1,13 +1,14 @@
 using System;
 using RedDust.Character;
+using RedDust.Ammo;
+using RedDust.Consumable;
 using RedDust.Core;
 using RedDust.Core.Events;
 using RedDust.Entities;
+using RedDust.Equipment;
 using RedDust.GameInput;
 using RedDust.GameScene;
-using RedDust.Prop;
 using RedDust.Properties;
-using RedDust.Weapon;
 using UnityEngine;
 
 namespace RedDust.Player

@@ -1214,7 +1214,7 @@ namespace RedDust.Character.Animation
 
     public class AnimationImportWindow : EditorWindow
     {
-        private string _filePath;
+        private string _filePath = "Assets/Data/Animation/animation_all.json";
         private string _previewText;
         private (int created, int updated, int skipped, List<string> errors) _result;
 

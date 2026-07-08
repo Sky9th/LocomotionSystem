@@ -7,11 +7,12 @@ using RedDust.Character;
 using RedDust.Character.Animation;
 using RedDust.Character.Audio;
 using RedDust.Character.Kinematic;
+using RedDust.Ammo;
+using RedDust.Consumable;
 using RedDust.Core;
-using RedDust.Prop;
+using RedDust.Equipment;
 using RedDust.Properties;
 using RedDust.SceneItem;
-using RedDust.Weapon;
 using RedDust.Shared;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -153,8 +154,9 @@ namespace RedDust.Assets
             catalog.InitAbilityTrees(index.Get<AbilityTreeSO>());
 
             var items = new List<PropertyPresetSO>();
-            items.AddRange(index.Get<WeaponDefSO>());
-            items.AddRange(index.Get<PropDefSO>());
+            items.AddRange(index.Get<EquipmentDefSO>());
+            items.AddRange(index.Get<AmmoDefSO>());
+            items.AddRange(index.Get<ConsumableDefSO>());
             items.AddRange(index.Get<SceneItemDefSO>());
             items.AddRange(index.Get<BuildingDefSO>());
             catalog.InitItems(items);

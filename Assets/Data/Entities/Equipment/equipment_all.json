@@ -1,0 +1,63 @@
+{
+  "version": "1.0",
+  "description": "Test data — Weapon entities (MeleeWeapon + RangedWeapon). Generated 2026-07-08. (category updated to Equipment)",
+  "category": "Equipment",
+  "entities": [
+    {
+      "entityType": "MeleeWeapon",
+      "name": "Axe",
+      "templateName": "Axe",
+      "overridesJson": "",
+      "prefabGuid": ""
+    },
+    {
+      "entityType": "MeleeWeapon",
+      "name": "Blade",
+      "templateName": "Blade",
+      "overridesJson": "{\"Overrides\": [{\"Path\": \"Common/Tags\", \"Value\": \"[\\\"Entity.Equipment.Weapon.Melee.Blade\\\", \\\"Grip.Melee.OneHanded\\\"]\"}, {\"Path\": \"Weapon/ATK\", \"Value\": \"[\\\"89b724ec839edd94d92ec037a1cb074a\\\"]\"}]}",
+      "prefabGuid": "bef05be41376b52498b91573c3ff5a3b"
+    },
+    {
+      "entityType": "MeleeWeapon",
+      "name": "Blunt",
+      "templateName": "Blunt",
+      "overridesJson": "",
+      "prefabGuid": ""
+    },
+    {
+      "entityType": "MeleeWeapon",
+      "name": "Polearm",
+      "templateName": "Polearm",
+      "overridesJson": "",
+      "prefabGuid": ""
+    },
+    {
+      "entityType": "RangedWeapon",
+      "name": "Bow",
+      "templateName": "Bow",
+      "overridesJson": "",
+      "prefabGuid": ""
+    },
+    {
+      "entityType": "RangedWeapon",
+      "name": "HuntingRifle",
+      "templateName": "Rifle",
+      "overridesJson": "",
+      "prefabGuid": ""
+    },
+    {
+      "entityType": "RangedWeapon",
+      "name": "Pistol",
+      "templateName": "Pistol",
+      "overridesJson": "{\"Overrides\": [{\"Path\": \"Common/Icon\", \"Value\": \"d4e7f0a1b2c3d4e5f6a7b8c9d0e1f2a3\"}, {\"Path\": \"Common/Tags\", \"Value\": \"[\\\"Entity.Equipment.Weapon.Ranged.Pistol\\\", \\\"Grip.Ranged.Pistol2H\\\"]\"}, {\"Path\": \"Slots/Scope\", \"Value\": \"{\\\"SlotId\\\":\\\"Scope\\\",\\\"AcceptTags\\\":[\\\"Attachment.Scope\\\"],\\\"Capacity\\\":1,\\\"WeightLimit\\\":0.0}\"}]}",
+      "prefabGuid": "151fe3144103e1440900697f4b29c68e"
+    },
+    {
+      "entityType": "RangedWeapon",
+      "name": "Shotgun",
+      "templateName": "Shotgun",
+      "overridesJson": "",
+      "prefabGuid": ""
+    }
+  ]
+}

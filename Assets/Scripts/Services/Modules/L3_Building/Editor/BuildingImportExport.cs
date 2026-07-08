@@ -10,14 +10,14 @@ namespace RedDust.Building.Editor
         private static readonly EntityImportConfig Config = new()
         {
             Category = "Building", Breadcrumb = "L3_Building · JSON ↔ .asset",
-            DataRoot = "Assets/Data/Entities/Buildings", AssetFilter = "t:BuildingDefSO",
+            DataRoot = "Assets/Data/Entities/Building", AssetFilter = "t:BuildingDefSO",
             DefaultFileName = "buildings_export",
             TypeMap = null,
             DefaultType = typeof(BuildingDefSO),
             BuildPreview = BuildPreview,
         };
 
-        private string _filePath, _previewText;
+        private string _filePath = "Assets/Data/Entities/Building/building_all.json", _previewText;
         private (int created, int updated, int skipped, List<string> errors) _result;
 
         [MenuItem("RedDust/Building Import-Export", priority = 33)]

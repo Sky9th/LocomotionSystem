@@ -23,7 +23,7 @@ namespace RedDust.SceneItem.Editor
             ("Scene Item", typeof(SceneItemDefSO)),
         };
 
-        protected override string GetDefaultAssetDir() => "Assets/Data/Entities/SceneItems";
+        protected override string GetDefaultAssetDir() => "Assets/Data/Entities/SceneItem";
         protected override Action OpenImportWindow() => SceneItemImportWindow.Open;
 
         protected override (string label, string assetName)[] GetTemplatePresets(Type selectedType) => new[]

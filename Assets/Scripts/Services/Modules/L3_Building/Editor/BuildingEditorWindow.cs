@@ -23,7 +23,7 @@ namespace RedDust.Building.Editor
             ("Building", typeof(BuildingDefSO)),
         };
 
-        protected override string GetDefaultAssetDir() => "Assets/Data/Entities/Buildings";
+        protected override string GetDefaultAssetDir() => "Assets/Data/Entities/Building";
         protected override Action OpenImportWindow() => BuildingImportWindow.Open;
 
         protected override (string label, string assetName)[] GetTemplatePresets(Type selectedType) => new[]

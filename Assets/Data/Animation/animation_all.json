@@ -5492,13 +5492,13 @@
                 },
                 {
                     "gripTag": "Grip.Ranged.Pistol2H",
-                    "weaponTypeTag": "Entity.Weapon.Ranged.Pistol",
+                    "weaponTypeTag": "Entity.Equipment.Weapon.Ranged.Pistol",
                     "animationSet": "Human/Male/Sets/Locomotion/LocomotionSet_1H_Sidearm_Relax",
                     "combatSet": "Human/Male/Sets/Locomotion/LocomotionSet_1H_Sidearm_Combat"
                 },
                 {
                     "gripTag": "Grip.Melee.OneHanded",
-                    "weaponTypeTag": "Entity.Weapon.Melee.Blade",
+                    "weaponTypeTag": "Entity.Equipment.Weapon.Melee.Blade",
                     "animationSet": "Human/Male/Sets/Locomotion/LocomotionSet_1H_Blade_Relax",
                     "combatSet": "Human/Male/Sets/Locomotion/LocomotionSet_1H_Blade_Combat"
                 }

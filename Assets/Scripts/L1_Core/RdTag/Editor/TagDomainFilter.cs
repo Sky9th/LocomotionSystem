@@ -15,8 +15,9 @@ namespace RedDust.Core.Editor
         public const string ABILITY_TREE       = "Ability.Tree";
         public const string ABILITY_EXECUTE    = "Ability.Execute";
         public const string IDENTITY           = "Identity";
-        public const string ENTITY_WEAPON      = "Entity.Weapon";
-        public const string ENTITY_ITEM        = "Entity.Item";
+        public const string ENTITY_EQUIPMENT       = "Entity.Equipment";
+        public const string ENTITY_EQUIPMENT_WEAPON = "Entity.Equipment.Weapon";
+        public const string ENTITY_CONSUMABLE       = "Entity.Consumable";
         public const string BODY               = "Body";
         public const string GRIP               = "Grip";
         public const string GRIP_MELEE         = "Grip.Melee";
@@ -29,7 +30,7 @@ namespace RedDust.Core.Editor
         public const string EXTRA_EXCLUSION_TAGS       = ABILITY_DEFINITION;
         public const string TARGET_REQUIRED_TAG        = IDENTITY;
         public const string TREE_TAGS                  = ABILITY_TREE;
-        public const string COMPATIBLE_WEAPON_TAGS     = ENTITY_WEAPON;
+        public const string COMPATIBLE_WEAPON_TAGS     = ENTITY_EQUIPMENT_WEAPON;
         public const string COMPATIBLE_GRIP_TAGS       = GRIP;
         public const string EFFECT_TAG_DAMAGE          = ABILITY_DAMAGE;
         public const string EFFECT_TAG_IMPACT          = ABILITY_IMPACT;

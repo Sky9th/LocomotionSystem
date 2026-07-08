@@ -15,12 +15,12 @@ MonoBehaviour:
   treeId: Sword_Innate
   displayName: "\u5200\u5251\u57FA\u7840\u6280\u6CD5"
   description: "\u6301\u5200/\u5251\u7C7B\u6B66\u5668\u65F6\u7684\u57FA\u7840\u6280\u80FD\u3002compatibleWeaponTags
-    \u5339\u914D Entity.Weapon.Melee.Blade\u3002"
+    \u5339\u914D Entity.Equipment.Weapon.Melee.Blade\u3002"
   icon: {fileID: 0}
   treeTags:
   - {fileID: 11400000, guid: 374974b8bd8c98d46af1bd15c54b9f47, type: 2}
   compatibleWeaponTags:
-  - {fileID: 11400000, guid: 63f34b1adeceab2408926be904f32039, type: 2}
+  - {fileID: 11400000, guid: dc0d322ce3870e6459b0ca4f46205732, type: 2}
   compatibleGripTags:
   - {fileID: 11400000, guid: dfbed699ddaa7854a8de021f7998d138, type: 2}
   exclusiveGroup: 

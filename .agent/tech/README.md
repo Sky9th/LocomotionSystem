@@ -41,7 +41,7 @@ tech/
 │   ├── gameplay-tag-ability.md          # GameplayTag — Ability 模块产出 Tag 域
 │   ├── gameplay-tag-identity.md         # GameplayTag — Identity 模块产出 Tag 域
 │   ├── gameplay-tag-body.md             # GameplayTag — Character 模块产出 Tag 域（Body）
-│   ├── gameplay-tag-entity.md           # GameplayTag — Entity 系统产出 Tag 域（Weapon + Item）
+│   ├── gameplay-tag-entity.md           # GameplayTag — Entity 系统产出 Tag 域（Equipment/Ammo/Consumable/Actor/Building/SceneItem）
 │   ├── gameplay-tag-grip.md             # GameplayTag — Character/动画域（Grip）
 │   ├── gameplay-tag-noise.md            # GameplayTag — Noise 独立根
 │   ├── gameplay-tag-runtime.md         # GameplayTag struct — 运行时值类型
@@ -155,18 +155,14 @@ tech/
 │       │   ├── property-inventory.md    # Property Inventory — 全量属性与属性树设计（~180 props, 29 trees）
 │       │   └── implementation-plan.md   # 实现计划 — 4 阶段迁移
 │       │
-│       ├── L3-equipment/              # ⛔ DEPRECATED — GearDefSO 模型已被否决
-│       │   │                           # 新架构: ItemDefSO + Container + PropertyTree
-│       │   │                           # 装备 = 物品在身体槽容器中的状态
-│       │   ├── README.md               # 旧设计 — 两层架构 + 三层叠加 + 万物皆 GearDefSO
-│       │   ├── gear-def-so.md           # 旧设计 — GearDefSO 字段详解
-│       │   └── gear-instance.md         # 旧设计 — GearInstance 运行时
+│       ├── L3-equipment/              # L3: 装备系统 — EquipmentDefSO + Weapon/Armor/Tool/Container
+│       │   └── README.md               # 模块总览 — EquipmentDefSO / 5 种子类型
 │       │
-│       ├── L3-weapon/                   # L3: 武器系统 — WeaponDefSO + MeleeWeaponSO + RangedWeaponSO
-│       │   └── README.md               # 模块总览 — WeaponDefSO / 武器属性树
+│       ├── L3-ammo/                    # L3: 弹药系统 — AmmoDefSO + AmmoSO
+│       │   └── README.md               # 模块总览 — AmmoDefSO / 弹药属性树
 │       │
-│       ├── L3-prop/                     # L3: 道具系统 — PropDefSO + Armor/Consumable/Ammo/Tool/Container/Material
-│       │   └── README.md               # 模块总览 — PropDefSO / 道具属性树
+│       ├── L3-consumable/              # L3: 消耗品系统 — ConsumableDefSO + ConsumableSO/MaterialSO
+│       │   └── README.md               # 模块总览 — ConsumableDefSO / 消耗品属性树
 │       │
 │       ├── L3-sceneitem/                # L3: 场景物品 — SceneItemDefSO（家具/装饰物/场景物体）
 │       │   └── README.md               # 模块总览 — SceneItemDefSO / 场景物品属性树
@@ -202,8 +198,9 @@ tech/
 │       ├── L1_Core/
 │       ├── L3_Ability/
 │       ├── L3_Character/
-│       ├── L3_Weapon/
-│       ├── L3_Prop/
+│       ├── L3_Equipment/
+│       ├── L3_Ammo/
+│       ├── L3_Consumable/
 │       ├── L3_SceneItem/
 │       ├── L3_Building/
 │       └── L3_Properties/

@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: LeftFoot
   Description: "\u5DE6\u811A\u978B\u5177\u69FD\u4F4D\u3002\u9ED8\u8BA4\u63A5\u53D7
-    Armor.Foot \u6807\u7B7E\u7269\u54C1\u3002"
+    Entity.Equipment.Armor.Feet \u6807\u7B7E\u7269\u54C1\u3002"
   Type: 8
   IsDeprecated: 0
   StructTypeName: RedDust.Container.SlotDef
-  DefaultJson: '{"AcceptTags":["Entity.Armor.Foot"],"Capacity":1}'
+  DefaultJson: '{"AcceptTags":["Entity.Equipment.Armor.Feet"],"Capacity":1}'
