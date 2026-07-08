@@ -92,7 +92,21 @@ namespace RedDust.Properties.Editor
                 {
                     if (string.IsNullOrWhiteSpace(entry.treeName)) { errors.Add("Skip: tree name empty"); skipped++; continue; }
                     var assetPath = $"{TreesRoot}/{SanitizeFileName(entry.treeName)}.asset";
-                    if (AssetDatabase.LoadAssetAtPath<PropertyTreeSO>(assetPath) != null) { skipped++; continue; }
+                    var existingTree = AssetDatabase.LoadAssetAtPath<PropertyTreeSO>(assetPath);
+                    if (existingTree != null)
+                    {
+                        // Update existing tree's treeJson
+                        var newJson = JsonUtility.ToJson(new PropertyTreeContainer { Nodes = entry.nodes?.ConvertAll(n => new PropertyNode { NodeId = n.nodeId, ParentId = n.parentId, DefId = n.defId }) ?? new() }, true);
+                        if (existingTree.treeJson != newJson)
+                        {
+                            existingTree.treeJson = newJson;
+                            EditorUtility.SetDirty(existingTree);
+                            updated++;
+                        }
+                        else { skipped++; }
+                        treeMap[entry.treeName] = existingTree;
+                        continue;
+                    }
 
                     EnsureDirectory(TreesRoot);
                     var tree = ScriptableObject.CreateInstance<PropertyTreeSO>();

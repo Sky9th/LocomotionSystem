@@ -37,4 +37,7 @@ MonoBehaviour:
     \"\"\n        },\n        {\n            \"NodeId\": \"DamageType\",\n           
     \"ParentId\": \"Tags\",\n            \"DefId\": \"DamageType\"\n        },\n       
     {\n            \"NodeId\": \"Platform\",\n            \"ParentId\": \"Tags\",\n           
-    \"DefId\": \"Platform\"\n        }\n    ]\n}"
+    \"DefId\": \"Platform\"\n        },\n        {\n            \"NodeId\": \"Weapon\",\n           
+    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
+    \"NodeId\": \"ATK\",\n            \"ParentId\": \"Weapon\",\n            \"DefId\":
+    \"ATK\"\n        }\n    ]\n}"

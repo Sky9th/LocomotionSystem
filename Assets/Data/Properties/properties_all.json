@@ -2572,6 +2572,16 @@
           "nodeId": "Platform",
           "parentId": "Tags",
           "defId": "Platform"
+        },
+        {
+          "nodeId": "Weapon",
+          "parentId": "",
+          "defId": ""
+        },
+        {
+          "nodeId": "ATK",
+          "parentId": "Weapon",
+          "defId": "ATK"
         }
       ]
     },

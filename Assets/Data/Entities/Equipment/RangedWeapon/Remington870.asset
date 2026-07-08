@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 228120e2bfd64e24a8545577ecb3ec95, type: 3}
+  m_Name: Remington870
+  m_EditorClassIdentifier: 
+  Template: {fileID: 11400000, guid: d5a74ab38a9d0524f901455e2b995ab1, type: 2}
+  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Equipment.Weapon.Ranged.Shotgun\"]"},
+    {"Path": "Base/Weight", "Value": "3.5"}, {"Path": "Equipment/Durability", "Value":
+    "200", "Max": "200"}, {"Path": "Weapon/NoiseRadius", "Value": "90"}, {"Path":
+    "Weapon/IsTwoHanded", "Value": "true"}, {"Path": "Combat/Accuracy", "Value":
+    "40"}, {"Path": "Combat/ReloadSpeed", "Value": "0.5"}, {"Path": "Combat/MagSize",
+    "Value": "5"}, {"Path": "Combat/AmmoCount", "Value": "5"}, {"Path": "Tags/CompatibleAmmo",
+    "Value": "[\"Ammo.Caliber.12ga\"]"}, {"Path": "Combat/FireRate", "Value": "1.0"},
+    {"Path": "Combat/BarrelLength", "Value": "18"}, {"Path": "Combat/RecoilModifier",
+    "Value": "50"}, {"Path": "Combat/Reliability", "Value": "95"}, {"Path": "Firearm/IsAutomatic",
+    "Value": "false"}, {"Path": "Firearm/GearType", "Value": "Shotgun"}]}'
+  Prefab: {fileID: 1105646471333690, guid: a2458a3a2318bb64ea864a87f6558170, type: 3}

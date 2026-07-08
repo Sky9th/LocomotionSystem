@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf34646fdce8f9e49a9bc5116538fef6, type: 3}
+  m_Name: 9mm_FMJ
+  m_EditorClassIdentifier: 
+  Template: {fileID: 11400000, guid: 0bbd261a2fb93f94987ef34c38ae93c4, type: 2}
+  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Ammo.Caliber.9mm\"]"},
+    {"Path": "Base/Weight", "Value": "0.01"}, {"Path": "Combat/BaseDamage", "Value":
+    "15"}, {"Path": "Combat/Penetration", "Value": "2"}, {"Path": "Combat/NoiseRadius",
+    "Value": "40"}, {"Path": "Combat/BulletWeight", "Value": "115"}, {"Path": "Combat/OverPenetration",
+    "Value": "45"}, {"Path": "Combat/RecoilFactor", "Value": "1.0"}, {"Path": "Combat/AmmoReliability",
+    "Value": "100"}, {"Path": "Combat/FoulingRate", "Value": "1.0"}, {"Path": "Combat/MuzzleVelocity",
+    "Value": "360"}, {"Path": "Weapon/ATK", "Value": "[\"73c7656c90f043b5b92fad4a55dfa3a6\"]"}]}'
+  Prefab: {fileID: 1202029276534874, guid: 86bb9dc1b51ac1b40881bebab79f89cf, type: 3}

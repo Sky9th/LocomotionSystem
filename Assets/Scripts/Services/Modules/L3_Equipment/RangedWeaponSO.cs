@@ -1,26 +1,55 @@
 using RedDust.Ability;
+using RedDust.Container;
 using RedDust.Entities;
 using UnityEngine;
 
 namespace RedDust.Equipment
 {
     /// <summary>
-    /// 远程武器预设。伤害来自弹药 Entity，而非武器自身。
-    /// TODO: 沿容器链递归向下查找弹药 Entity，返回弹药的 DamageEffectSO。
-    /// 1911 → NestedContainer["Magazine"] → magazineEntity
-    ///      → magazineEntity.NestedContainer["Ammo"] → ammoEntity
-    ///      → ammoEntity.Preset.GetDamageEffect(ammoEntity)
+    /// 远程武器预设。伤害来自弹药 Entity——沿容器链向下查找弹药，返回其 DamageEffectSO。
     /// </summary>
     [CreateAssetMenu(menuName = "RedDust/Entity/Ranged Weapon", fileName = "NewRangedWeapon")]
     public class RangedWeaponSO : WeaponDefSO
     {
         public override EffectSO[] GetDamageEffects(Entity entity)
         {
-            // TODO: 临时模拟——递归查弹药容器链拿到弹药 Entity 后，调 ammoEntity.Preset.GetDamageEffects。
-            var fake = ScriptableObject.CreateInstance<DamageEffectSO>();
-            fake.name = "TEMPORARY_RangedDamage";
-            fake.baseValue = 10f;
-            return new EffectSO[] { fake };
+            if (entity == null) return null;
+
+            var ammo = FindAmmoInContainers(entity);
+            if (ammo != null)
+            {
+                var effects = ammo.Preset?.GetDamageEffects(ammo);
+                if (effects != null && effects.Length > 0)
+                    return effects;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// 递归沿容器链查找弹药 Entity。深度优先，最大深度 10。
+        /// </summary>
+        private static Entity FindAmmoInContainers(Entity entity)
+        {
+            return FindAmmoRecursive(entity, 0);
+        }
+
+        private static Entity FindAmmoRecursive(Entity entity, int depth)
+        {
+            if (entity == null || depth > 10) return null;
+            var container = entity.NestedContainer;
+            if (container == null) return null;
+
+            foreach (var item in container.AllItems())
+            {
+                if (item == null) continue;
+                if (item.Preset is Ammo.AmmoDefSO)
+                    return item;
+                var found = FindAmmoRecursive(item, depth + 1);
+                if (found != null) return found;
+            }
+
+            return null;
         }
     }
 }

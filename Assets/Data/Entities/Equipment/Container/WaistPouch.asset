@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2118d5d14afda0244acc57ddfaef79eb, type: 3}
+  m_Name: WaistPouch
+  m_EditorClassIdentifier: 
+  Template: {fileID: 11400000, guid: dfb12c954eea5d442bba0a4efc1bc5f5, type: 2}
+  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Equipment.Container\"]"},
+    {"Path": "Base/Weight", "Value": "0.3"}, {"Path": "Equipment/Durability", "Value":
+    "50", "Max": "50"}, {"Path": "Backpack/CarryWeightBonus", "Value": "5"}, {"Path":
+    "Slots/ContainerSlot", "Value": "{\"SlotId\": \"ContainerSlot\", \"Capacity\":
+    5, \"WeightLimit\": 8.0}"}]}'
+  Prefab: {fileID: 1065290847328510, guid: 8bee817d1f4e2974f970db169ffa5a81, type: 3}

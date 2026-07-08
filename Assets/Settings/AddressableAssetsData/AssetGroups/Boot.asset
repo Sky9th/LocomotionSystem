@@ -143,12 +143,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 044171319e26e3540b768a73e3716636
-    m_Address: Assets/Data/Entities/Equipment/Shotgun.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - boot
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 044e147abd06ed04dbb853a77a35b013
     m_Address: Assets/Data/Properties/Definitions/Float/TimeOfDay.asset
     m_ReadOnly: 0
@@ -443,6 +437,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 10dc2e31ce8f22e49ac2f245b6d8e5d1
+    m_Address: Assets/Data/Entities/Equipment/Container/TacticalBackpack.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 10ffdb1fde0386c4788b17b77dbe9fe3
     m_Address: Assets/Data/Animation/Human/Male/Config/LocomotionAnimationConfigSO.asset
     m_ReadOnly: 0
@@ -475,6 +475,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1227e42d46340a04a9082ac7b9ec8821
     m_Address: Assets/Data/Properties/Definitions/Float/FractureHeal.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 128ba0cc5d1a95543b86ef127db834ba
+    m_Address: Assets/Data/Entities/Ammo/RifleAmmo/762_FMJ.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -827,12 +833,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 24e82023b344dec4592d939b09fc75c1
-    m_Address: Assets/Data/Entities/Equipment/Pistol.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - boot
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 253ffe9d80407384396eba59786733ec
     m_Address: Assets/Data/Tags/Ability/Definition/Active/Ranged/Shotgun/Tag_MeleeStrike.asset
     m_ReadOnly: 0
@@ -877,6 +877,18 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2701f13a3fdcd984a931c95f5b2bd815
     m_Address: Assets/Data/Tags/Ability/Definition/Active/Ranged/Bow/Tag_NormalFire.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 27bf2f3207254f846abb58a5ea7188b7
+    m_Address: Assets/Data/Entities/Ammo/RifleAmmo/556_AP.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28712dc1438b2904097471051ba5c98b
+    m_Address: Assets/Data/Entities/Consumable/Consumable/Painkiller.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -1019,6 +1031,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2f3e5daece3b8e749b6a0175254fb8e2
+    m_Address: Assets/Data/Entities/Equipment/Armor/CombatBoots.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2f5b2bceef0416548a2262a0460fed3d
     m_Address: Assets/Data/Events/Scene
     m_ReadOnly: 0
@@ -1127,8 +1145,20 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 36b6f14464c8e4746af529fbd4a88c15
+    m_Address: Assets/Data/Entities/Equipment/Armor/ScavengerVest.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 36c96e035e2ebb04cb4fa89a71007dd3
     m_Address: Assets/Data/Ability/Effects/Damage/Elemental/DamageMod_Elemental_Poison_Strong.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 36d514eca4b482a4db26f96afa330f93
+    m_Address: Assets/Data/Entities/Ammo/PistolAmmo/9mm_FMJ.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -1169,12 +1199,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 381b2b51b80437742ac1e0278b121a46
-    m_Address: Assets/Data/Entities/Equipment/Polearm.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - boot
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 38d151ba584bb234cb145eeb086e7b25
     m_Address: Assets/Data/Tags/Body/Locomotion/Tag_Idle.asset
     m_ReadOnly: 0
@@ -1183,6 +1207,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 39373f6471b269b47a1813788a1f82db
     m_Address: Assets/Data/Tags/Ability/Definition/Active/Melee/DualWield/Axe/Tag_DoubleCleave.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3953d96ba9131314390893043bd8ada5
+    m_Address: Assets/Data/Entities/Equipment/Armor/TacticalGloves.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -1247,6 +1277,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3b4361105056eff4dafc09069491590f
+    m_Address: Assets/Data/Entities/Equipment/RangedWeapon/SVD.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3bc58fdad46efa545ba77d4296355bed
     m_Address: Assets/Data/Animation/Zombie/TypeB/Sets/Locomotion
     m_ReadOnly: 0
@@ -1259,6 +1295,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3bd29f3e77396624abf8857829aad4f6
+    m_Address: Assets/Data/Entities/Equipment/Container/WaistPouch.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3bd70b6eb3cafb44094d38b7cdd201ef
     m_Address: Assets/Data/Tags/Ability/Definition/Active/Melee/TwoHanded/Tag_Greatsword.asset
     m_ReadOnly: 0
@@ -1267,6 +1309,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3bfa1e8417f6abe45b8f2735bb106bc8
     m_Address: Assets/Data/Animation/Masks/Upper.mask
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3cd05407f2edb934a99825987654bd33
+    m_Address: Assets/Data/Entities/Ammo/PistolAmmo/9mm_JHP.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -1321,6 +1369,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3e64ab820d1c8f241b457ca48dd64097
     m_Address: Assets/Data/Tags/Noise/World/Tag_BodyFall.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3e928649ebaab674e96d0620ef349cbe
+    m_Address: Assets/Data/Entities/Equipment/Armor/ScavengerHood.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -1679,8 +1733,20 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5448232c8e3b7d54d9deebc2602b8148
+    m_Address: Assets/Data/Entities/Equipment/RangedWeapon/AK47.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 54787e99de4e00544a6572d3bae2571b
     m_Address: Assets/Data/Tags/Ability/Definition/Active/Melee/TwoHanded/Tag_Axe2H.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54892bdc64211944d85d84f61c6f3bf0
+    m_Address: Assets/Data/Entities/Consumable/Consumable/Soda.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -1913,6 +1979,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f3a7ea2b5e59924b9e088b3fc513f78
+    m_Address: Assets/Data/Entities/Equipment/MeleeWeapon/Katana.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5f9e3a165541fc04495c935d561957a1
     m_Address: Assets/Data/Tags/Ability/Effect/Buff/Haste/Tag_BerserkerBlood.asset
     m_ReadOnly: 0
@@ -2033,12 +2105,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 66f5c92a9ab7c374d8dc82654dd74f86
-    m_Address: Assets/Data/Entities/Ammo/RifleAmmo.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - boot
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6752b3cf1ea6ac544b0abe94fc99a501
     m_Address: Assets/Data/Ability/Effects/Damage/Physical/Damage_Physical_Bite.asset
     m_ReadOnly: 0
@@ -2111,6 +2177,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6c3b70846a8adcc4e9fe8132af4221c8
+    m_Address: Assets/Data/Entities/Ammo/RifleAmmo/762_Subsonic.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6c7467edd087fcb438a6b253f91a2ae6
     m_Address: Assets/Data/Properties/Definitions/Float/SocialNeed.asset
     m_ReadOnly: 0
@@ -2141,14 +2213,14 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6e6b920217808dd4f9f831bf6586fc61
-    m_Address: Assets/Data/Ability/Effects/Impact/Impact_Heavy.asset
+  - m_GUID: 6e41340155a736e4a9370a603f7758d5
+    m_Address: Assets/Data/Entities/Ammo/RifleAmmo/556_HP.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6e6fefcc3f019344ead81a57ff3f3d58
-    m_Address: Assets/Data/Entities/Equipment/Axe.asset
+  - m_GUID: 6e6b920217808dd4f9f831bf6586fc61
+    m_Address: Assets/Data/Ability/Effects/Impact/Impact_Heavy.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -2215,6 +2287,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 70facfca473305a41b84fd38e444a598
     m_Address: Assets/Data/Ability/Effects/Cost/Stamina/Cost_Stamina_Large.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 71356fef38d5301439285a25d46b820f
+    m_Address: Assets/Data/Entities/Equipment/Armor/TacticalKneepad.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -2329,6 +2407,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 77ed3688e61372642b4e4a80c6fe2297
     m_Address: Assets/Data/Properties/Definitions/AssetRef/AudioProfile.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 781a8828407f8e34eb0bf9c8096e38c8
+    m_Address: Assets/Data/Entities/Ammo/ShotgunShell/12ga_Buck.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -2489,12 +2573,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7eacbebe9efb1c34394b8aa364c36283
-    m_Address: Assets/Data/Entities/Equipment/Blunt.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - boot
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7ead52d130250bf4ab03b5a2074e2323
     m_Address: Assets/Data/Ability/Effects/Execute
     m_ReadOnly: 0
@@ -2567,12 +2645,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8189af01449af854794d448c8d1aad16
-    m_Address: Assets/Data/Entities/Equipment/HuntingRifle.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - boot
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 81d13a138e8468641bc4b613f82d72d3
     m_Address: Assets/Data/Tags/Ability/Tag_Impact.asset
     m_ReadOnly: 0
@@ -2611,6 +2683,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 83c482d3ac818294e8b06aea4da862d7
     m_Address: Assets/Data/Events/Player
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8406e148163a24d4fb72bb4519619189
+    m_Address: Assets/Data/Entities/Equipment/MeleeWeapon/FireAxe.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -2753,6 +2831,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8a623ae6a545b634b85014372634355c
+    m_Address: Assets/Data/Entities/Equipment/Armor/RiotHelmet.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8a8f1b0d06ad3fc429b12ad75aac686a
     m_Address: Assets/Data/Ability/Effects/Damage/Elemental/DamageMod_Elemental_Shock.asset
     m_ReadOnly: 0
@@ -2873,6 +2957,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8e84c0ebef1398c45933b098e004ae56
+    m_Address: Assets/Data/Entities/Consumable/Consumable/BottledWater.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8e9c998a754c59f479a568ea61cd0f61
     m_Address: Assets/Data/Entities/Building/WoodenWall.asset
     m_ReadOnly: 0
@@ -2945,12 +3035,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 907c55382bd5b96448d2defe35054252
-    m_Address: Assets/Data/Entities/Equipment/Blade.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - boot
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 90a8e1117e084470a1960b9b78f8d33a
     m_Address: Assets/Data/Events/Input/System/InputTimeSlow.asset
     m_ReadOnly: 0
@@ -2959,12 +3043,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 90c2e3804886c884ca3ed0db54c64196
     m_Address: Assets/Data/Tags/Ability/Definition/Active/Melee/Shield/Blade/Tag_GuardStance.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - boot
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 90c7a5f1948b71a46ad2dda3819b1416
-    m_Address: Assets/Data/Entities/Ammo/ShotgunShell.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -3017,12 +3095,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 935738fdc874d21459845257cadad6a3
-    m_Address: Assets/Data/Entities/Consumable/WoodLog.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - boot
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 93c538926e350f7469af865b62863e16
     m_Address: Assets/Data/Ability/Definition/Actives/Melee/OneHanded/Blade/Ability_Blade_Thrust.asset
     m_ReadOnly: 0
@@ -3067,6 +3139,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 95107060cecb0e64a8a4605fbf80f942
     m_Address: Assets/Data/Properties/Definitions/Float/RecoilFactor.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 95cd45ee220bb6b4f87933b5765632ef
+    m_Address: Assets/Data/Entities/Equipment/RangedWeapon/MP5.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -3305,6 +3383,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9fe13f00568ff5641a6f4279abe560fb
+    m_Address: Assets/Data/Entities/Consumable/Consumable/CookedMeat.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a01aa26b68e6606469be90aad9e9efca
     m_Address: Assets/Data/Tags/Ability/Definition/Active/Trade/Tag_Investment.asset
     m_ReadOnly: 0
@@ -3331,6 +3415,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a1252680c765a89489d27329f261c936
     m_Address: Assets/Data/Properties/Trees/ShotgunShell.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a163aa5448ccc6c4eb29f6ba20dbed4f
+    m_Address: Assets/Data/Entities/Equipment/Armor/PlateCarrier.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -3389,12 +3479,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a450fe5f84b23c440ac0db224d3aff2b
-    m_Address: Assets/Data/Entities/Equipment/Bow.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - boot
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a480a84b69fcf8c4e932c0341ca2a7f3
     m_Address: Assets/Data/Animation/Zombie/TypeA/Sets/Locomotion/LocomotionSet_TypeA_Combat.asset
     m_ReadOnly: 0
@@ -3427,6 +3511,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a6abd5d4eff582643b2d98d34063b51e
     m_Address: Assets/Data/Properties/Definitions/Float/HealDuration.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6c785fa04b7ee54782eec1ecd092c06
+    m_Address: Assets/Data/Entities/Equipment/Armor/WorkGloves.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -3487,18 +3577,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ab2859b106aa39e448a6bcea4ac09daf
     m_Address: Assets/Data/Properties/Definitions/RdTagList/Tags.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - boot
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: abafd26a51bd27c4eaca80929f3b9b55
-    m_Address: Assets/Data/Entities/Consumable/WheatSeed.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - boot
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: abb8e3772f05a9548aa9e209692accce
-    m_Address: Assets/Data/Entities/Consumable/Bandage.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -3565,6 +3643,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ae0aba835fa167643aa6c08ece627bdb
     m_Address: Assets/Data/Properties/Definitions/RdTag/ConsumableType.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae19b7d3623f59441ada42e91c1065b7
+    m_Address: Assets/Data/Entities/Equipment/MeleeWeapon/Machete.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -3833,6 +3917,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b699c4b2814218d42b425abefa994491
+    m_Address: Assets/Data/Entities/Equipment/RangedWeapon/M4A1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b6c69c414531a0544b3ae8883a111808
     m_Address: Assets/Data/Tags/Ability/Definition/Active/Medical/Tag_Detoxification.asset
     m_ReadOnly: 0
@@ -3893,6 +3983,24 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b94e25a9cc3973042924428987b7c1ce
+    m_Address: Assets/Data/Entities/Consumable/Consumable/Mushroom.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b967993386785b847a99192aaa302b9c
+    m_Address: Assets/Data/Entities/Equipment/RangedWeapon/M1911.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b974edf92d2a765409170f9ac788aa51
+    m_Address: Assets/Data/Entities/Equipment/Container/CanvasBag.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b9782037569a46c499539459927e76a4
     m_Address: Assets/Data/Events/Input/Player/InputJump.asset
     m_ReadOnly: 0
@@ -3907,6 +4015,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ba0c8934bf862d84197b5957704273c1
     m_Address: Assets/Data/Tags/Grip/Melee/Tag_Unarmed.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ba16f92ac63e1bb479370537f2e63a86
+    m_Address: Assets/Data/Entities/Equipment/Armor/ScavengerPants.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -4181,12 +4295,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c606055a0be4afc43a1500154be71ac2
-    m_Address: Assets/Data/Entities/Ammo/PistolAmmo.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - boot
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c6073afbd6b5bd048b94b5bece22e39a
     m_Address: Assets/Data/Tags/Ability/Definition/Active/Melee/Tag_Shield.asset
     m_ReadOnly: 0
@@ -4289,12 +4397,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cad24fb7ff3a81e4998c53392a0618e4
-    m_Address: Assets/Data/Entities/Equipment/Blade.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - boot
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cb162c5dcb5d5f045a7c6fa679394029
     m_Address: Assets/Data/Ability/Definition/Actives/Melee/Unarmed/Ability_Fist_Punch.asset
     m_ReadOnly: 0
@@ -4351,6 +4453,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cd72043da9679dc4789399922606c1e9
     m_Address: Assets/Data/Properties/Definitions/Float/FlashResist_Human.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd81d9eb9c8772e4fb33d427aae6d758
+    m_Address: Assets/Data/Entities/Consumable/Consumable/Bandage.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -4501,6 +4609,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d6a3a4d92fa2b6443bf6a7a460b53cf5
     m_Address: Assets/Data/Properties/Definitions/RdTag/GearType.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d6d921ec6766b344b99fc8a98b28ecd2
+    m_Address: Assets/Data/Entities/Ammo/ShotgunShell/12ga_Slug.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -4763,6 +4877,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dfa1346e8d515664385c2d7b309fd14d
+    m_Address: Assets/Data/Entities/Consumable/Consumable/FirstAidKit.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dfb12c954eea5d442bba0a4efc1bc5f5
     m_Address: Assets/Data/Properties/Trees/Backpack.asset
     m_ReadOnly: 0
@@ -4847,6 +4967,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e2936238dcd95b84bb0ee06ff24dcbc5
+    m_Address: Assets/Data/Entities/Consumable/Consumable/Antibiotic.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e30060ffd4bf3934ca2f62023fd54c49
     m_Address: Assets/Data/Animation/Zombie
     m_ReadOnly: 0
@@ -4859,14 +4985,32 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e46bd0a50ca04944fa59b82d61c1d8b1
+    m_Address: Assets/Data/Entities/Equipment/MeleeWeapon/BaseballBat.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e496acea1d18aac4087b26609beb17fc
     m_Address: Assets/Data/Ability/Activations/Activation_Channel_SuppressiveFire.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e4d44ba1af1d7f84d855acdbf6ff5864
+    m_Address: Assets/Data/Entities/Consumable/Consumable/Beer.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e4de4912452b1e04bb7ba4cf190e6cc9
     m_Address: Assets/Data/Properties/Definitions/Float/MedicalProf.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e4e2a9a00cf43b141b7f4953e0412c17
+    m_Address: Assets/Data/Entities/Equipment/MeleeWeapon/Crowbar.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -4885,6 +5029,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e5bc52160e333974bbbe02086699b9a1
     m_Address: Assets/Data/Properties/Definitions/Float/BulletWeight.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e60cfae90eafd7546802b7a87f3949d3
+    m_Address: Assets/Data/Entities/Equipment/RangedWeapon/HuntingRifle.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -4909,6 +5059,18 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e72cb29259804734b9e5d29800ca635d
     m_Address: Assets/Data/Properties/Definitions/Float/HipFirePenalty.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e7d555d42bcd4d9439f7e04db8d37c45
+    m_Address: Assets/Data/Entities/Ammo/RifleAmmo/762_AP.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e81b222a8f55a094b9baebecbf8b879c
+    m_Address: Assets/Data/Entities/Equipment/Armor/ScavengerSneakers.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -4973,6 +5135,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb6a78948872a5441a62fbb97fcbe8f8
+    m_Address: Assets/Data/Entities/Ammo/ShotgunShell/12ga_Breach.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ebff16cc59745ab4983ee9e1c546efcd
     m_Address: Assets/Data/Tags/Ability/Effect/Debuff/Tag_Taunt.asset
     m_ReadOnly: 0
@@ -4999,12 +5167,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ed38fb434d80a1f4d9dd966f71f57538
     m_Address: Assets/Data/Ability/Definition/Actives/Melee/OneHanded/Blade/Ability_Blade_SlashB.asset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - boot
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ed6eb8d8681880349956461a1a0fff7f
-    m_Address: Assets/Data/Entities/Equipment/Pistol.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -5113,6 +5275,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f1c6cab3160282143a1067e5f9264f4d
     m_Address: Assets/Data/Scene/MainMenuLoadConfig.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f207b28dd8d14734a81914dec87c55ae
+    m_Address: Assets/Data/Entities/Ammo/PistolAmmo/9mm_Subsonic.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -5255,6 +5423,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f781997590d3fa14b89a0bb7137681c7
+    m_Address: Assets/Data/Entities/Equipment/MeleeWeapon/WoodAxe.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f7946471c2b77874baa4fca45500ea1c
     m_Address: Assets/Data/Animation/Zombie/TypeB/Sets
     m_ReadOnly: 0
@@ -5291,8 +5465,8 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f8ad76cadc63f204eb055ae38e202fd9
-    m_Address: Assets/Data/Entities/Consumable/CannedFood.asset
+  - m_GUID: f872045b863e097479b5cf127f11c699
+    m_Address: Assets/Data/Entities/Consumable/Consumable/Bread.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot
@@ -5381,6 +5555,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fbcc22a4448191a4cbd8bbe698f7016b
+    m_Address: Assets/Data/Entities/Ammo/RifleAmmo/556_FMJ.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fbd6fa002c3274249a374dfb79ae8ae5
     m_Address: Assets/Data/Ability/Effects/Cost/Charge/Cost_Charge_Small.asset
     m_ReadOnly: 0
@@ -5417,6 +5597,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fdc2df3df2a30da47966f08b978b3cbd
+    m_Address: Assets/Data/Entities/Consumable/Consumable/CannedBeans.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fdfa6f39eb5712241aa7b199c9c8a799
     m_Address: Assets/Data/Tags/Ability/Effect/DoT/Tag_Poisoned.asset
     m_ReadOnly: 0
@@ -5449,6 +5635,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fe5ef6ec3605e2649a2bc2798c24b4c1
     m_Address: Assets/Data/Tags/Ability/Definition/Active/Melee/Fencing/Rapier/Tag_Feint.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: feab2cd737f75cf49adeccbb6806b9cd
+    m_Address: Assets/Data/Entities/Equipment/RangedWeapon/Remington870.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot

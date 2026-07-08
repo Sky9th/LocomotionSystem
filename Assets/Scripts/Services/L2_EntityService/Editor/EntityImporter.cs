@@ -119,7 +119,11 @@ namespace RedDust.Entities.Editor
                 // Resolve template + prefab
                 templateByName.TryGetValue(entry.templateName ?? "", out var template);
                 var prefab = ResolvePrefab(entry.prefabGuid);
-                var assetPath = $"{config.DataRoot}/{entry.name}.asset";
+                var subDir = GetSubDirectory(entry, config);
+                var assetPath = $"{config.DataRoot}{(string.IsNullOrEmpty(subDir) ? "" : $"/{subDir}")}/{entry.name}.asset";
+                var assetDir = Path.GetDirectoryName(assetPath);
+                if (!Directory.Exists(assetDir))
+                    Directory.CreateDirectory(assetDir);
 
                 // Create or Update
                 if (existingByName.TryGetValue(entry.name, out var existing))
@@ -213,6 +217,23 @@ namespace RedDust.Entities.Editor
                     dict[asset.name] = asset;
             }
             return dict;
+        }
+
+        /// <summary>Derive a subdirectory from entityType. Falls back to templateName for single-type categories (e.g. Ammo).</summary>
+        private static string GetSubDirectory(EntityEntry entry, EntityImportConfig config)
+        {
+            // Multi-type: use entityType label (Armor, MeleeWeapon, RangedWeapon, Container, Consumable, etc.)
+            if (config.TypeMap != null)
+            {
+                var et = entry.entityType;
+                if (!string.IsNullOrEmpty(et)) return et;
+            }
+
+            // Single-type or null entityType: use templateName
+            if (!string.IsNullOrEmpty(entry.templateName))
+                return entry.templateName;
+
+            return null;
         }
 
         private static Dictionary<string, PropertyPresetSO> BuildExistingLookup(EntityImportConfig config)

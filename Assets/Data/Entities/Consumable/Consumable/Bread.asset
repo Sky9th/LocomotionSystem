@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3608e51efd9910248903dc4cfa491c2f, type: 3}
+  m_Name: Bread
+  m_EditorClassIdentifier: 
+  Template: {fileID: 11400000, guid: 8ee708a11e79b16449a2bd2c7e3474a1, type: 2}
+  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Consumable.Food\"]"},
+    {"Path": "Tags/ConsumableType", "Value": "Food"}, {"Path": "Tags/FoodType", "Value":
+    "Grain"}, {"Path": "Base/StackSize", "Value": "5"}, {"Path": "Base/ConsumeTime",
+    "Value": "1.5"}, {"Path": "Nutrition/Nutrition_Val", "Value": "20"}, {"Path":
+    "Nutrition/Hydration", "Value": "0"}, {"Path": "Quality/MoraleBonus", "Value":
+    "5"}, {"Path": "Quality/ShelfLife", "Value": "3"}, {"Path": "Quality/ContaminationRisk",
+    "Value": "5"}]}'
+  Prefab: {fileID: 1129127352818462, guid: ea8fc872ca6a2dd43aff8e9c1cfe6b6d, type: 3}

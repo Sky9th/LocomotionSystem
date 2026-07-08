@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3608e51efd9910248903dc4cfa491c2f, type: 3}
+  m_Name: Soda
+  m_EditorClassIdentifier: 
+  Template: {fileID: 11400000, guid: 8ee708a11e79b16449a2bd2c7e3474a1, type: 2}
+  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Consumable.Food\"]"},
+    {"Path": "Tags/ConsumableType", "Value": "Food"}, {"Path": "Tags/FoodType", "Value":
+    "Drink"}, {"Path": "Base/StackSize", "Value": "10"}, {"Path": "Base/ConsumeTime",
+    "Value": "1.0"}, {"Path": "Nutrition/Nutrition_Val", "Value": "5"}, {"Path":
+    "Nutrition/Hydration", "Value": "30"}, {"Path": "Quality/MoraleBonus", "Value":
+    "8"}, {"Path": "Quality/ShelfLife", "Value": "999"}, {"Path": "Quality/ContaminationRisk",
+    "Value": "0"}]}'
+  Prefab: {fileID: 1847027969511464, guid: 907f8303af992f44289b29cb614b45c5, type: 3}

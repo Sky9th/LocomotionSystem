@@ -2,7 +2,7 @@
 
 > `L3_Character/Equipment/CharacterEquipment.cs` — ModuleChild，每帧 diff BodyContainer 管理武器 GO 创建/销毁 + 同步 GripTag
 
-> **Last Verified**: 2026-07-03
+> **Last Verified**: 2026-07-08
 
 ## 职责
 
@@ -70,6 +70,8 @@ RightHand (bone)
 | CharacterEquipment | WeaponAttachPoint | 获取挂点 Socket |
 | CharacterEquipment | CharacterBuildContext.OwnedGripTags | 写入标签 |
 | CharacterEquipment | CharacterActor | 每帧调用 SyncEquipment |
+| RangedWeaponSO | Entity.NestedContainer | 沿容器链递归查找弹药 Entity |
+| RangedWeaponSO | AmmoSO.GetDamageEffects | 读取弹药 Weapon/ATK DamageEffectSO |
 
 ## 设计决策
 
@@ -79,11 +81,13 @@ RightHand (bone)
 | 删除 `GetAttachPoint()` | `_EquipSocket` 查找逻辑移入 WeaponAttachPoint |
 | Per-frame diff | 用 GoF 做 diff 避免每帧 Instantiate/Destroy |
 | ModuleChild 不是 MonoBehaviour | 与 CharacterActor 所有子模块保持一致 |
+| RangedWeaponSO 伤害来自弹药 | 沿容器链递归查找弹药 Entity，调用 ammo.Preset.GetDamageEffects()。与 MeleeWeaponSO（直读自身 Weapon/ATK）对称 |
 
 ## 未来规划
 
 | 规划 | 状态 | 依赖 |
 |------|------|------|
-| 防具槽（头部/身体/腿） | 待做 | 防具 ItemDefSO |
+| 防具槽（头部/身体/腿） | ✅ 已实现 | ArmorSO + ArmorBase/HeadArmor/BodyArmor/LegArmor Tree |
 | 模型替换时 Despawn 全部 + 刷新 _animator + Respawn | 待做 | Phase 3 ReplaceModel |
 | 背包槽 + 重量系统 | 远期 | InventoryComponent |
+| 可拆卸配件系统 | 延后 | 独立弹匣/瞄具/消音器 Entity + 装卸 UI |

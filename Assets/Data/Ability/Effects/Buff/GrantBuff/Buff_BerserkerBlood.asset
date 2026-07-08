@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Buff_BerserkerBlood
   m_EditorClassIdentifier: 
   effectTag: {fileID: 11400000, guid: 5f9e3a165541fc04495c935d561957a1, type: 2}
-  description: "\u653B\u901F+15%\u79FB\u901F+10%\uFF0C\u6301\u7EED5s\u3002\u51FB\u6740\u89E6\u53D1\u2014\u2014\u72C2\u66B4\u8840\u8109\u3002"
+  description: "\u654F\u6377+50%\uFF0C\u6301\u7EED5s\u3002\u51FB\u6740\u89E6\u53D1\u2014\u2014\u72C2\u66B4\u8840\u8109\u3002"
   duration: 5
   stackable: 0
   maxStacks: 1

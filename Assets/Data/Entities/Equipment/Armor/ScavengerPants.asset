@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0da74ba2f0fc324488f44dbe0729f9e2, type: 3}
+  m_Name: ScavengerPants
+  m_EditorClassIdentifier: 
+  Template: {fileID: 11400000, guid: dc3da3b3e0083b1478afc1cdc889cd1b, type: 2}
+  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Equipment.Armor.Legs\"]"},
+    {"Path": "Base/Weight", "Value": "0.8"}, {"Path": "Equipment/Durability", "Value":
+    "80", "Max": "80"}, {"Path": "Combat/DEF", "Value": "3"}, {"Path": "Combat/Coverage",
+    "Value": "60"}, {"Path": "Combat/TraumaTransfer", "Value": "80"}, {"Path": "Penalty/MoveSpeedPenalty",
+    "Value": "2"}, {"Path": "Penalty/StaminaRegenPenalty", "Value": "2"}, {"Path":
+    "Combat/MoveSpeed", "Value": "5"}]}'
+  Prefab: {fileID: 0}

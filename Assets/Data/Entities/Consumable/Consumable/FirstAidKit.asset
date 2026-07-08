@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3608e51efd9910248903dc4cfa491c2f, type: 3}
+  m_Name: FirstAidKit
+  m_EditorClassIdentifier: 
+  Template: {fileID: 11400000, guid: 7f35ee616ff16314d98d2ab6ee0b2b1b, type: 2}
+  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Consumable.Medical\"]"},
+    {"Path": "Tags/ConsumableType", "Value": "Medical"}, {"Path": "Tags/MedicalType",
+    "Value": "FirstAid"}, {"Path": "Base/StackSize", "Value": "5"}, {"Path": "Base/ConsumeTime",
+    "Value": "5.0"}, {"Path": "Heal/HealAmount", "Value": "40"}, {"Path": "Heal/BleedReduction",
+    "Value": "100"}, {"Path": "Heal/InfectionCleanse", "Value": "50"}, {"Path": "Heal/PainRelief",
+    "Value": "20"}, {"Path": "Heal/HealDuration", "Value": "8.0"}]}'
+  Prefab: {fileID: 1210496204973002, guid: 55e31d9d98e7506428bd5fc800ea4122, type: 3}
