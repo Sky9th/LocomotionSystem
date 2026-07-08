@@ -5,8 +5,9 @@ using RedDust.Core.Events;
 using RedDust.Entities;
 using RedDust.GameInput;
 using RedDust.GameScene;
-using RedDust.Items;
+using RedDust.Prop;
 using RedDust.Properties;
+using RedDust.Weapon;
 using UnityEngine;
 
 namespace RedDust.Player
@@ -171,15 +172,15 @@ namespace RedDust.Player
             else { Debug.LogWarning($"[PlayerService] CharacterDef '{zombieDefKey}' not found in Registry."); }
 
             // Backpack → Back，武器进背包
-            var backpackDef = GameService.Instance.Assets.FindItem<ItemDefSO>(backpackDefKey);
+            var backpackDef = GameService.Instance.Assets.FindItem<ContainerSO>(backpackDefKey);
             if (backpackDef == null)
             {
-                Debug.LogError($"[PlayerService] ItemDef '{backpackDefKey}' not found in Assets — no backpack spawned.");
+                Debug.LogError($"[PlayerService] ContainerDef '{backpackDefKey}' not found in Assets — no backpack spawned.");
                 return;
             }
-            var bladeDef = GameService.Instance.Assets.FindItem<ItemDefSO>(bladeDefKey);
+            var bladeDef = GameService.Instance.Assets.FindItem<MeleeWeaponSO>(bladeDefKey);
             if (bladeDef == null) Debug.LogWarning($"[PlayerService] bladeDef '{bladeDefKey}' not found in Assets.");
-            var pistolDef = GameService.Instance.Assets.FindItem<ItemDefSO>(pistolDefKey);
+            var pistolDef = GameService.Instance.Assets.FindItem<RangedWeaponSO>(pistolDefKey);
             if (pistolDef == null) Debug.LogWarning($"[PlayerService] pistolDef '{pistolDefKey}' not found in Assets.");
 
             const string backpackId = "test_backpack";

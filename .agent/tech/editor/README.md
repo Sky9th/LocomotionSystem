@@ -30,8 +30,12 @@ editor/
 
 | 模块 | 目录 | 源文件 |
 |------|------|--------|
-| Shared | [tools/Shared/](tools/Shared/) | `Assets/Scripts/Shared/Editor/` |
+| Entity | [tools/L2_EntityService/Editor/](tools/L2_EntityService/Editor/) | `Assets/Scripts/Services/L2_EntityService/Editor/` — EntityEditorWindow 抽象基类 + EntityImporter |
 | GameplayTag | [tools/L1_Core/GameplayTag/Editor/](tools/L1_Core/GameplayTag/Editor/) | `Assets/Scripts/L1_Core/GameplayTag/Editor/` |
 | Ability | [tools/L3_Ability/Editor/](tools/L3_Ability/Editor/) | `Assets/Scripts/Services/Modules/L3_Ability/Editor/` |
 | Properties | [tools/L3_Properties/Editor/](tools/L3_Properties/Editor/) | `Assets/Scripts/Services/Modules/L3_Properties/Editor/` |
-| Item | [tools/L3_Item/Editor/](tools/L3_Item/Editor/) | `Assets/Scripts/Services/Modules/L3_Item/Editor/` — ItemEditorWindow (v0.40.7) |
+| Character | [tools/L3_Character/Editor/](tools/L3_Character/Editor/) | `Assets/Scripts/Services/Modules/L3_Character/Editor/` |
+| Weapon | [tools/L3_Weapon/Editor/](tools/L3_Weapon/Editor/) | `Assets/Scripts/Services/Modules/L3_Weapon/Editor/` |
+| Prop | [tools/L3_Prop/Editor/](tools/L3_Prop/Editor/) | `Assets/Scripts/Services/Modules/L3_Prop/Editor/` |
+| Building | [tools/L3_Building/Editor/](tools/L3_Building/Editor/) | `Assets/Scripts/Services/Modules/L3_Building/Editor/` |
+| SceneItem | [tools/L3_SceneItem/Editor/](tools/L3_SceneItem/Editor/) | `Assets/Scripts/Services/Modules/L3_SceneItem/Editor/` |

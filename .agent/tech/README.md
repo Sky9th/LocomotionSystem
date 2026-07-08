@@ -78,8 +78,7 @@ tech/
 │   │   └── entity-service-impl.md     # EntityService — 实现详解（Register / Spawn / Despawn）
       │   └── game-registry.md           # GameRegistry — 集中化 SO 注册表（8 个字典 + ResolveAbilityTrees）
 │   │
-│   ├── L2-item-service/                # L2 Service: 物品身份索引 + 跨容器移动协调
-│   │   └── README.md
+│   ├── L2-item-service/                # ⛔ DELETED — 纯设计文档，无代码落地
 │   │
 │   ├── L2-audio/                       # L2 Service (自身代码: Data/ Structs/)
 │   │   ├── README.md
@@ -163,8 +162,17 @@ tech/
 │       │   ├── gear-def-so.md           # 旧设计 — GearDefSO 字段详解
 │       │   └── gear-instance.md         # 旧设计 — GearInstance 运行时
 │       │
-│       ├── L3-item/                   # L3: 物品系统 — 数据定义 + 运行时实例 + 身份索引
-│       │   └── README.md               # 模块总览 — ItemDefSO / ItemInstance / ItemRegistry
+│       ├── L3-weapon/                   # L3: 武器系统 — WeaponDefSO + MeleeWeaponSO + RangedWeaponSO
+│       │   └── README.md               # 模块总览 — WeaponDefSO / 武器属性树
+│       │
+│       ├── L3-prop/                     # L3: 道具系统 — PropDefSO + Armor/Consumable/Ammo/Tool/Container/Material
+│       │   └── README.md               # 模块总览 — PropDefSO / 道具属性树
+│       │
+│       ├── L3-sceneitem/                # L3: 场景物品 — SceneItemDefSO（家具/装饰物/场景物体）
+│       │   └── README.md               # 模块总览 — SceneItemDefSO / 场景物品属性树
+│       │
+│       ├── L3-building/                 # L3: 建筑系统 — BuildingDefSO
+│       │   └── README.md               # 模块总览 — BuildingDefSO / 建筑属性树
 │       │
 │       ├── L3-identity/               # L3: 实体身份 — GO 侧数据锚点（EntityId + Tags）
 │       │   └── README.md               # ⚠️ 待创建 — Identity.cs 已实现 (BindEntity + Tags)
@@ -190,8 +198,14 @@ tech/
 │       │   ├── EditorCoreLoader.md
 │       │   ├── GameContextEditor.md
 │       │   └── EditorTree.md
+│       ├── Entity/                       # EntityEditor 共享基类
 │       ├── L1_Core/
 │       ├── L3_Ability/
+│       ├── L3_Character/
+│       ├── L3_Weapon/
+│       ├── L3_Prop/
+│       ├── L3_SceneItem/
+│       ├── L3_Building/
 │       └── L3_Properties/
 │
 └── shared/                              # 占位容器: 全局 Helper (不限层级)
