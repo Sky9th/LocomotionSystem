@@ -1,5 +1,5 @@
 # GameContextEditor
-> **源文件**: `Assets/Scripts/Editor/GameContextEditor.cs`
+> **源文件**: `Assets/Scripts/Shared/Editor/GameContextEditor.cs`
 
 自定义 Inspector，运行时显示 GameContext 的 Service Registry 和 Snapshot Cache 状态。
 

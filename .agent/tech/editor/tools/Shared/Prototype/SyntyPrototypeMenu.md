@@ -1,5 +1,5 @@
 # SyntyPrototypeMenu
-> **源文件**: `Assets/Scripts/Editor/SyntyPrototypeMenu.cs`
+> **源文件**: `Assets/Scripts/Shared/Editor/Prototype/SyntyPrototypeMenu.cs`
 
 菜单入口 + 分类扫描逻辑 + 实例化方法 + 数据模型。
 
@@ -7,7 +7,7 @@
 
 ```
 被谁调:
-  用户点击 Window/Synty Prototype 菜单  → Browse()
+  用户点击 RedDust/Synty Prototype Browser 菜单  → Browse()
   SyntyPrototypeBrowser                   → GetCategories() / InstantiateByPath()
   SyntyPrototypeBrowser.PlaceWithMaterial() → InstantiateByPath()
 

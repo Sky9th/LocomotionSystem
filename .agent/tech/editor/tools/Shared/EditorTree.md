@@ -1,5 +1,7 @@
 # EditorTree 完整迁移清单
 
+> **状态**: EffectEditorWindow ✅ 已迁移。AbilityTreeNode / AbilityTreeView 已删除，统一使用 `EditorTreeNode` / `EditorTreeView` (Shared/EditorUI)
+
 > 所有跟 Tree 渲染相关的文件，按影响范围排序。
 
 ## 树渲染组件（3 个自定义 + 1 个内联）

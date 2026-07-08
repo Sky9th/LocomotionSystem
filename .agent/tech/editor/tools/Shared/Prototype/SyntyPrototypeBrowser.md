@@ -1,5 +1,5 @@
 # SyntyPrototypeBrowser
-> **源文件**: `Assets/Scripts/Editor/SyntyPrototypeBrowser.cs`
+> **源文件**: `Assets/Scripts/Shared/Editor/Prototype/SyntyPrototypeBrowser.cs`
 
 EditorWindow，分类展示 PolygonPrototype Prefab 缩略图，支持材质替换和搜索。
 

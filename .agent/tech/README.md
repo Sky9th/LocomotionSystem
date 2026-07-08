@@ -193,17 +193,43 @@ tech/
 │       ├── Shared/
 │       │   ├── EditorCoreLoader.md
 │       │   ├── GameContextEditor.md
-│       │   └── EditorTree.md
-│       ├── Entity/                       # EntityEditor 共享基类
+│       │   ├── EditorTree.md
+│       │   ├── EditorImportExport.md
+│       │   └── Prototype/
+│       │       ├── SyntyPrototypeBrowser.md
+│       │       └── SyntyPrototypeMenu.md
+│       ├── L2_EntityService/
+│       │   ├── EntityEditorWindow.md      # Entity 编辑器抽象基类
+│       │   ├── EntityImporter.md          # JSON 导入/导出引擎
+│       │   └── EntityEditorSubclasses.md  # 6 模块配置速查
 │       ├── L1_Core/
+│       │   └── GameplayTag/
+│       │       └── Editor/
+│       │           ├── TagEditorWindow.md
+│       │           └── TagImportExport.md
 │       ├── L3_Ability/
-│       ├── L3_Character/
-│       ├── L3_Equipment/
-│       ├── L3_Ammo/
-│       ├── L3_Consumable/
-│       ├── L3_SceneItem/
-│       ├── L3_Building/
+│       │   └── Editor/
+│       │       ├── AbilityEditor/
+│       │       │   ├── AbilityEditorWindow.md
+│       │       │   └── AbilityImportExport.md
+│       │       ├── ActivationEditor/
+│       │       │   ├── ActivationEditorWindow.md
+│       │       │   └── ActivationImportExport.md
+│       │       ├── EffectEditor/
+│       │       │   ├── EffectEditorWindow.md
+│       │       │   └── EffectImportExport.md
+│       │       ├── NoiseEditor/
+│       │       │   ├── NoiseEditorWindow.md
+│       │       │   └── NoiseImportExport.md
+│       │       ├── SearchEditor/
+│       │       │   ├── SearchEditorWindow.md
+│       │       │   └── SearchImportExport.md
+│       │       └── _Shared/
+│       │           └── AbilityEditorUtility.md
 │       └── L3_Properties/
+│           └── Editor/
+│               ├── PropertyTreeEditorWindow.md
+│               └── PropertyImportExport.md
 │
 └── shared/                              # 占位容器: 全局 Helper (不限层级)
     ├── README.md

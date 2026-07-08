@@ -1,7 +1,7 @@
 # EditorCoreLoader
-> **源文件**: `Assets/Scripts/Editor/EditorCoreLoader.cs`
+> **源文件**: `Assets/Scripts/Shared/Editor/EditorCoreLoader.cs`
 
-进入 Play Mode 时自动加载 Core.unity，确保 Service 层不缺失。
+进入 Play Mode 时自动将 `playModeStartScene` 设置为 Core.unity，退出时恢复原始设置，确保 Service 层不缺失。
 
 ## 调用链
 
@@ -11,15 +11,16 @@
   EditorApplication.playModeStateChanged → OnPlayModeChanged
 
 调谁:
-  OnPlayModeChanged()        → EditorSceneManager.OpenScene(corePath, Additive)
+  PreparePlayFromCore()      → SessionState.SetString / EditorSceneManager.playModeStartScene
+  RestoreEditorPlayModeScene() → SessionState.GetString / EditorSceneManager.playModeStartScene (恢复)
 ```
 
 ## 耦合模块
 
 | 方向 | 模块 | 关系 |
 |------|------|------|
-| 依赖 | Core 场景 (GameService) | 确保 Core.unity 场景在 Play Mode 开始前已加载 |
-| 依赖 | UnityEditor.SceneManagement | OpenScene / GetSceneByPath 操作场景 |
+| 依赖 | Core 场景 (GameService) | 确保 Core.unity 在 Play Mode 启动场景中被加载 |
+| 依赖 | UnityEditor.SceneManagement | playModeStartScene 操作 |
 
 ## 方法
 
@@ -28,22 +29,30 @@
 static EditorCoreLoader()
 ```
 - **用途**: 注册 Play Mode 状态变更回调
-- **调用者**: Unity Editor 在初始化加载程序集时自动触发 (`[InitializeOnLoad]`)
-- **备注**: 不在这里执行任何场景操作，只注册事件
+- **调用者**: Unity Editor 初始化加载程序集时自动触发 (`[InitializeOnLoad]`)
+- **备注**: 只注册事件，不执行场景操作
 
 ### OnPlayModeChanged()
 ```csharp
 private static void OnPlayModeChanged(PlayModeStateChange change)
 ```
-- **用途**: 检测进入 Play Mode 前的场景状态，确保 Core 已加载
-- **参数**: `change` — Play Mode 状态变更枚举
-- **调用者**: `EditorApplication.playModeStateChanged` 事件
+- **用途**: Play Mode 状态变更时调度 Prepare / Restore
+- **参数**: `change` — PlayModeStateChange 枚举
 - **逻辑**:
-  - 仅响应 `PlayModeStateChange.ExitingEditMode`（进入 Play Mode 前一刻）
-  - 获取当前活跃场景
-  - 如果活跃场景名为 `Core` → 跳过（直接进 Play Mode）
-  - 否则 → 以 Additive 模式打开 `Assets/Scenes/Core.unity`
-- **备注**: 如果开发者在非 Core 场景下进入 Play Mode，Core 会作为叠加场景加载；先检查 Core 场景是否已加载避免重复打开
+  - `ExitingEditMode` → `PreparePlayFromCore()`：设置 Core 为启动场景
+  - `EnteredEditMode` → `RestoreEditorPlayModeScene()`：恢复原始启动场景
+
+### PreparePlayFromCore()
+- **逻辑**:
+  1. 如果当前活跃场景已是 Core → 返回（不做任何事）
+  2. 否则：通过 `SessionState` 保存当前活跃场景名 + 原始 `playModeStartScene` 路径
+  3. 设置 `EditorSceneManager.playModeStartScene` 为 Core.unity 的 SceneAsset
+
+### RestoreEditorPlayModeScene()
+- **逻辑**:
+  1. 从 `SessionState` 读取之前保存的 `playModeStartScene` 路径
+  2. 恢复为原始值（或 null）
+  3. 清除 SessionState 中的临时键
 
 ## 内部机制
 
@@ -51,27 +60,23 @@ private static void OnPlayModeChanged(PlayModeStateChange change)
 ```csharp
 #if UNITY_EDITOR
 ```
-- 整个文件仅在 Editor 环境下编译，不影响 Runtime 构建
+- 整个文件仅在 Editor 环境下编译
 
-### 关键常量
+### SessionState 键
 ```csharp
-var corePath = "Assets/Scenes/Core.unity";  // Core 场景路径
+private const string StartupSceneNameKey = "RedDust.Editor.StartupSceneName";
+private const string PreviousPlayModeStartScenePathKey = "RedDust.Editor.PreviousPlayModeStartScenePath";
 ```
-- 硬编码路径，未来可迁移到 GameProfile 配置
+- `StartupSceneNameKey` — 保存进入 Play Mode 前的活跃场景名
+- `PreviousPlayModeStartScenePathKey` — 保存进入 Play Mode 前 `playModeStartScene` 的原始路径
+
+### 核心路径
+```csharp
+private const string CoreScenePath = "Assets/Scenes/Core.unity";
+```
 
 ## 未来规划
 
 | 规划 | 状态 | 来源 |
 |------|------|------|
 | 无具体规划。 | — | — |
-
-## 依赖的 Unity Editor API
-
-| API | 用途 |
-|-----|------|
-| `InitializeOnLoadAttribute` | 程序集加载时自动运行静态构造 |
-| `EditorApplication.playModeStateChanged` | 监听 Play Mode 状态切换 |
-| `PlayModeStateChange.ExitingEditMode` | 捕获即将进入 Play Mode 的时机 |
-| `EditorSceneManager.OpenScene(OpenSceneMode.Additive)` | 以叠加模式加载场景，不改变当前场景 |
-| `EditorSceneManager.GetSceneByPath()` | 按路径检查场景是否已加载 |
-| `SceneManager.GetActiveScene()` | 获取当前活跃场景 |
