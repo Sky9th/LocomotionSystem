@@ -19,5 +19,6 @@ MonoBehaviour:
     "Value": "60"}, {"Path": "Combat/TraumaTransfer", "Value": "30"}, {"Path": "Penalty/MoveSpeedPenalty",
     "Value": "15"}, {"Path": "Penalty/StaminaRegenPenalty", "Value": "10"}, {"Path":
     "Combat/KnockdownResist", "Value": "20"}, {"Path": "Combat/StanceStability",
-    "Value": "15"}]}'
+    "Value": "15"}, {"Path": "Common/Category", "Value": "Entity.Equipment.Armor.Chest"},
+    {"Path": "Common/Id", "Value": "plate_carrier"}]}'
   Prefab: {fileID: 0}

@@ -18,5 +18,7 @@ MonoBehaviour:
     "Equipment/Durability", "Value": "80", "Max": "80"}, {"Path": "Weapon/AttackSpeed",
     "Value": "1.0"}, {"Path": "Weapon/AttackRange", "Value": "1.3"}, {"Path": "Weapon/NoiseRadius",
     "Value": "15"}, {"Path": "Weapon/IsTwoHanded", "Value": "false"}, {"Path": "Weapon/ATK",
-    "Value": "[\"de87450416f65d2498da30674ab9e9ef\"]"}]}'
+    "Value": "[\"de87450416f65d2498da30674ab9e9ef\"]"}, {"Path": "Common/Category",
+    "Value": "Entity.Equipment.Weapon.Melee.Blunt"}, {"Path": "Common/Id", "Value":
+    "baseball_bat"}]}'
   Prefab: {fileID: 1145237178023060, guid: d855c6cd18605f34dbfdca25cb40d71c, type: 3}

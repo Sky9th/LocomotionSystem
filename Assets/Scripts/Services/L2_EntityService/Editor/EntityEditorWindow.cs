@@ -34,6 +34,8 @@ namespace RedDust.Entities.Editor
         protected Dictionary<string, float> _minOverrides = new();
         protected Dictionary<string, float> _maxOverrides = new();
         protected bool _hasChanges;
+        protected Dictionary<string, List<(string path, PropertyDefSO def)>> _propertyGroups;
+        protected List<string> _propertyGroupOrder;
         protected string _searchFilter = "";
         protected Vector2 _centerScroll;
 
@@ -340,6 +342,29 @@ namespace RedDust.Entities.Editor
         {
             EditorCard.Draw("Basic", () =>
             {
+                // ── Content Id (read-only, 由 Category + Id 派生) ──
+                EditorGUILayout.BeginHorizontal();
+                EditorLabel.Draw("Content Id", LabelWidth);
+                GUILayout.Space(EditorTokens.Pad);
+                _overrideValues.TryGetValue("Common/Category", out var cat);
+                _overrideValues.TryGetValue("Common/Id", out var cid);
+                bool hasId = !string.IsNullOrEmpty(cid);
+                string idForPreview = hasId ? cid : AssetNameToSnakeCase(_selectedPreset.name);
+                string preview;
+                if (!string.IsNullOrEmpty(cat))
+                    preview = $"{cat}.{idForPreview}";
+                else if (hasId)
+                    preview = "(Category not set)";
+                else
+                    preview = $"(fallback: {_selectedPreset.name})";
+                EditorGUI.BeginDisabledGroup(true);
+                EditorInput.TextField(preview);
+                EditorGUI.EndDisabledGroup();
+                EditorGUILayout.EndHorizontal();
+
+                EditorCard.Gap(EditorTokens.Pad / 2);
+
+                // ── Template ──
                 EditorGUILayout.BeginHorizontal();
                 EditorLabel.Draw("Template", LabelWidth);
                 GUILayout.Space(EditorTokens.Pad);
@@ -348,6 +373,7 @@ namespace RedDust.Entities.Editor
 
                 EditorCard.Gap(EditorTokens.Pad / 2);
 
+                // ── Prefab ──
                 EditorGUILayout.BeginHorizontal();
                 EditorLabel.Draw("Prefab", LabelWidth);
                 GUILayout.Space(EditorTokens.Pad);
@@ -360,6 +386,23 @@ namespace RedDust.Entities.Editor
                 }
                 EditorGUILayout.EndHorizontal();
             });
+        }
+
+        private static string AssetNameToSnakeCase(string assetName)
+        {
+            if (string.IsNullOrEmpty(assetName)) return "";
+            // 移除 "New" 前缀 (CreateAsset 的默认命名)
+            var name = assetName.StartsWith("New") ? assetName[3..] : assetName;
+            // 移除 SO 后缀 (如 "MeleeWeapon" 中的 "Weapon" 等保留)
+            // 处理驼峰命名转 snake_case
+            var sb = new System.Text.StringBuilder();
+            for (int i = 0; i < name.Length; i++)
+            {
+                if (i > 0 && char.IsUpper(name[i]) && !char.IsUpper(name[i - 1]))
+                    sb.Append('_');
+                sb.Append(char.ToLowerInvariant(name[i]));
+            }
+            return sb.ToString();
         }
 
         /// <summary>Template 字段：有预设列表用下拉按钮，否则回退 ObjectField。</summary>
@@ -423,18 +466,32 @@ namespace RedDust.Entities.Editor
             SelectPreset(_selectedPreset);
         }
 
-        private static PropertyTreeSO[] ResolvePresetSOs((string label, string assetName)[] presets)
+        private static Dictionary<string, PropertyTreeSO> s_templateCache;
+        private static float s_lastTemplateCacheRefresh;
+
+        private static Dictionary<string, PropertyTreeSO> GetTemplateCache()
         {
-            var result = new PropertyTreeSO[presets.Length];
-            var guids = AssetDatabase.FindAssets("t:PropertyTreeSO");
-            var nameToSO = new Dictionary<string, PropertyTreeSO>();
-            foreach (var guid in guids)
+            var now = (float)EditorApplication.timeSinceStartup;
+            if (s_templateCache != null && now - s_lastTemplateCacheRefresh < 5f)
+                return s_templateCache;
+
+            s_lastTemplateCacheRefresh = now;
+            var dict = new Dictionary<string, PropertyTreeSO>();
+            foreach (var guid in AssetDatabase.FindAssets("t:PropertyTreeSO"))
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
                 var so = AssetDatabase.LoadAssetAtPath<PropertyTreeSO>(path);
-                if (so != null && !nameToSO.ContainsKey(so.name))
-                    nameToSO[so.name] = so;
+                if (so != null && !dict.ContainsKey(so.name))
+                    dict[so.name] = so;
             }
+            s_templateCache = dict;
+            return dict;
+        }
+
+        private static PropertyTreeSO[] ResolvePresetSOs((string label, string assetName)[] presets)
+        {
+            var result = new PropertyTreeSO[presets.Length];
+            var nameToSO = GetTemplateCache();
             for (int i = 0; i < presets.Length; i++)
                 nameToSO.TryGetValue(presets[i].assetName, out result[i]);
             return result;
@@ -444,32 +501,19 @@ namespace RedDust.Entities.Editor
 
         protected virtual void DrawPropertyOverrides()
         {
-            if (_structure == null || _structure.Count == 0)
+            if (_propertyGroups == null || _propertyGroups.Count == 0)
             {
                 EditorCard.Draw("Properties", () =>
                     EditorLabel.Draw("No properties. Select a Template first.", style: EditorTokens.EmptyStateStyle));
                 return;
             }
 
-            var groups = new Dictionary<string, List<(string path, PropertyDefSO def)>>();
-            var groupOrder = new List<string>();
-            foreach (var kv in _structure)
-            {
-                var slash = kv.Key.IndexOf('/');
-                var folder = slash > 0 ? kv.Key.Substring(0, slash) : kv.Key;
-                if (!groups.TryGetValue(folder, out var list))
-                {
-                    groups[folder] = list = new List<(string, PropertyDefSO)>();
-                    groupOrder.Add(folder);
-                }
-                list.Add((kv.Key, kv.Value));
-            }
-            for (int i = 0; i < groupOrder.Count; i++)
+            for (int i = 0; i < _propertyGroupOrder.Count; i++)
             {
                 if (i > 0) EditorCard.Gap(EditorTokens.Pad);
 
-                var folderName = groupOrder[i];
-                var props = groups[folderName];
+                var folderName = _propertyGroupOrder[i];
+                var props = _propertyGroups[folderName];
 
                 EditorCard.Draw(folderName, () =>
                 {
@@ -920,10 +964,28 @@ namespace RedDust.Entities.Editor
                 var parsed = ParseOverrides(preset.OverridesJson, _minOverrides, _maxOverrides);
                 foreach (var (k, v) in parsed)
                     _overrideValues[k] = v;
+
+                // 预计算属性分组（避免 DrawPropertyOverrides 每帧重建）
+                _propertyGroups = new Dictionary<string, List<(string path, PropertyDefSO def)>>();
+                _propertyGroupOrder = new List<string>();
+                foreach (var kv in _structure)
+                {
+                    var slash = kv.Key.IndexOf('/');
+                    var folder = slash > 0 ? kv.Key.Substring(0, slash) : kv.Key;
+                    if (!_propertyGroups.TryGetValue(folder, out var list))
+                    {
+                        list = new List<(string, PropertyDefSO)>();
+                        _propertyGroups[folder] = list;
+                        _propertyGroupOrder.Add(folder);
+                    }
+                    list.Add((kv.Key, kv.Value));
+                }
             }
             else
             {
                 _structure = null;
+                _propertyGroups = null;
+                _propertyGroupOrder = null;
             }
 
             Repaint();
@@ -932,6 +994,16 @@ namespace RedDust.Entities.Editor
         protected void Save()
         {
             if (_selectedPreset == null) return;
+
+            // 首次保存：Id 未设置时从 asset name 自动推导（跳过默认 "New*" 名称）
+            if (!_overrideValues.ContainsKey("Common/Id")
+                && !string.IsNullOrEmpty(_selectedPreset.name)
+                && !_selectedPreset.name.StartsWith("New"))
+            {
+                var autoId = AssetNameToSnakeCase(_selectedPreset.name);
+                if (!string.IsNullOrEmpty(autoId))
+                    _overrideValues["Common/Id"] = autoId;
+            }
 
             var entries = new List<OverrideEntry>();
             foreach (var (path, value) in _overrideValues)

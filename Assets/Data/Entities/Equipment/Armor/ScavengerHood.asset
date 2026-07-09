@@ -18,5 +18,6 @@ MonoBehaviour:
     "80", "Max": "80"}, {"Path": "Combat/DEF", "Value": "3"}, {"Path": "Combat/Coverage",
     "Value": "30"}, {"Path": "Combat/TraumaTransfer", "Value": "80"}, {"Path": "Penalty/MoveSpeedPenalty",
     "Value": "2"}, {"Path": "Penalty/StaminaRegenPenalty", "Value": "2"}, {"Path":
-    "Combat/FlashResist", "Value": "10"}]}'
+    "Combat/FlashResist", "Value": "10"}, {"Path": "Common/Category", "Value": "Entity.Equipment.Armor.Head"},
+    {"Path": "Common/Id", "Value": "scavenger_hood"}]}'
   Prefab: {fileID: 0}

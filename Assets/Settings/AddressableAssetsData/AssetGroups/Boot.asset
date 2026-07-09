@@ -749,6 +749,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - boot
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e37130471742254c87f54cd68f4f259
+    m_Address: Assets/Data/Properties/Definitions/RdTag/Category.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1ea17c26c8190c744896666971c2d232
     m_Address: Assets/Data/Properties/Definitions/Float/BowProf.asset
     m_ReadOnly: 0
@@ -4975,6 +4981,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e30060ffd4bf3934ca2f62023fd54c49
     m_Address: Assets/Data/Animation/Zombie
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - boot
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e349b451485f1bc44a9754f3989e6166
+    m_Address: Assets/Data/Properties/Definitions/String/Id.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - boot

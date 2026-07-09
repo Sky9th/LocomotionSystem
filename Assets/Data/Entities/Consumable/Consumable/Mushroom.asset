@@ -19,5 +19,6 @@ MonoBehaviour:
     "Value": "1.0"}, {"Path": "Nutrition/Nutrition_Val", "Value": "8"}, {"Path":
     "Nutrition/Hydration", "Value": "3"}, {"Path": "Quality/MoraleBonus", "Value":
     "2"}, {"Path": "Quality/ShelfLife", "Value": "2"}, {"Path": "Quality/ContaminationRisk",
-    "Value": "15"}]}'
+    "Value": "15"}, {"Path": "Common/Category", "Value": "Entity.Consumable.Food"},
+    {"Path": "Common/Id", "Value": "mushroom"}]}'
   Prefab: {fileID: 1340215396104624, guid: dd5b1361103cd5645bbabbef12b1a8f7, type: 3}

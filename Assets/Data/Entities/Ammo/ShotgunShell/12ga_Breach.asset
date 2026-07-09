@@ -13,12 +13,14 @@ MonoBehaviour:
   m_Name: 12ga_Breach
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: a1252680c765a89489d27329f261c936, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Ammo.Caliber.12ga\"]"},
+  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Ammo.Caliber.12ga\"]"},
     {"Path": "Base/Weight", "Value": "0.045"}, {"Path": "Combat/BaseDamage", "Value":
     "30"}, {"Path": "Combat/Penetration", "Value": "15"}, {"Path": "Combat/NoiseRadius",
     "Value": "100"}, {"Path": "Combat/BulletWeight", "Value": "438"}, {"Path": "Combat/OverPenetration",
     "Value": "20"}, {"Path": "Combat/RecoilFactor", "Value": "1.3"}, {"Path": "Combat/AmmoReliability",
     "Value": "100"}, {"Path": "Combat/FoulingRate", "Value": "2.0"}, {"Path": "Combat/MuzzleVelocity",
     "Value": "350"}, {"Path": "Combat/PelletCount", "Value": "1"}, {"Path": "Combat/Spread",
-    "Value": "1"}, {"Path": "Weapon/ATK", "Value": "[\"3130083e9e4845879bab814778aea36c\"]"}]}'
+    "Value": "1"}, {"Path": "Weapon/ATK", "Value": "[\"3130083e9e4845879bab814778aea36c\"]"},
+    {"Path": "Common/Category", "Value": "Entity.Ammo.Caliber.12ga"}, {"Path": "Common/Id",
+    "Value": "twelve_ga_breach"}]}'
   Prefab: {fileID: 1890173635108940, guid: 3b0fb3fda92d12a4caa1fd3a00956fd1, type: 3}

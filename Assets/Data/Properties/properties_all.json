@@ -1218,9 +1218,18 @@
         "id": "Description",
         "description": "物品/实体详细描述文本。用于UI Tooltip详情展开。",
         "defaultValue": ""
+      },
+      {
+        "id": "Id",
+        "description": "实体唯一标识。分类内不重复。snake_case。用于构建 contentId。",
+        "defaultValue": ""
       }
     ],
     "_rdTag": [
+      {
+        "id": "Category",
+        "description": "实体主分类标签。用于构建 contentId。TagPicker 限定 Entity.* 域。"
+      },
       {
         "id": "DamageType",
         "description": "伤害类型标签。路由到防御公式（Damage.Physical.Slash→斩抗, Damage.Elemental.Fire→火抗）。AmmoBase使用。"
@@ -1422,6 +1431,16 @@
           "nodeId": "Common",
           "parentId": "",
           "defId": ""
+        },
+        {
+          "nodeId": "Id",
+          "parentId": "Common",
+          "defId": "Id"
+        },
+        {
+          "nodeId": "Category",
+          "parentId": "Common",
+          "defId": "Category"
         },
         {
           "nodeId": "DisplayName",

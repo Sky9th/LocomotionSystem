@@ -18,5 +18,6 @@ MonoBehaviour:
     "60", "Max": "60"}, {"Path": "Combat/DEF", "Value": "2"}, {"Path": "Combat/Coverage",
     "Value": "30"}, {"Path": "Combat/TraumaTransfer", "Value": "90"}, {"Path": "Penalty/MoveSpeedPenalty",
     "Value": "0"}, {"Path": "Penalty/StaminaRegenPenalty", "Value": "0"}, {"Path":
-    "Combat/SneakSpeed", "Value": "10"}]}'
+    "Combat/SneakSpeed", "Value": "10"}, {"Path": "Common/Category", "Value": "Entity.Equipment.Armor.Feet"},
+    {"Path": "Common/Id", "Value": "scavenger_sneakers"}]}'
   Prefab: {fileID: 0}

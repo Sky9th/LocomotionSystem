@@ -19,5 +19,6 @@ MonoBehaviour:
     "Value": "3.0"}, {"Path": "Nutrition/Nutrition_Val", "Value": "30"}, {"Path":
     "Nutrition/Hydration", "Value": "0"}, {"Path": "Quality/MoraleBonus", "Value":
     "8"}, {"Path": "Quality/ShelfLife", "Value": "2"}, {"Path": "Quality/ContaminationRisk",
-    "Value": "10"}]}'
+    "Value": "10"}, {"Path": "Common/Category", "Value": "Entity.Consumable.Food"},
+    {"Path": "Common/Id", "Value": "cooked_meat"}]}'
   Prefab: {fileID: 1849607239603550, guid: 49aef79c0f8b14f409456b1e709dee02, type: 3}

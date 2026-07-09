@@ -20,6 +20,22 @@ namespace RedDust.Core.Editor
         public bool HasCycle { get; private set; }
         public int TotalCount => NodeIndex.Count;
 
+        private static TagTreeModel s_cached;
+        private static float s_lastRefresh;
+
+        /// <summary>获取缓存的 TagTreeModel，5 秒内不重新扫描 AssetDatabase。</summary>
+        public static TagTreeModel GetCached()
+        {
+            var now = (float)EditorApplication.timeSinceStartup;
+            if (s_cached != null && now - s_lastRefresh < 5f)
+                return s_cached;
+
+            s_cached = new TagTreeModel();
+            s_cached.Refresh();
+            s_lastRefresh = now;
+            return s_cached;
+        }
+
         // ── 扫描构建 ──
         public void Refresh()
         {

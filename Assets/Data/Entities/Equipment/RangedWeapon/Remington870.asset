@@ -19,8 +19,10 @@ MonoBehaviour:
     "Weapon/IsTwoHanded", "Value": "true"}, {"Path": "Combat/Accuracy", "Value":
     "40"}, {"Path": "Combat/ReloadSpeed", "Value": "0.5"}, {"Path": "Combat/MagSize",
     "Value": "5"}, {"Path": "Combat/AmmoCount", "Value": "5"}, {"Path": "Tags/CompatibleAmmo",
-    "Value": "[\"Ammo.Caliber.12ga\"]"}, {"Path": "Combat/FireRate", "Value": "1.0"},
-    {"Path": "Combat/BarrelLength", "Value": "18"}, {"Path": "Combat/RecoilModifier",
+    "Value": "[\"Entity.Ammo.Caliber.12ga\"]"}, {"Path": "Combat/FireRate", "Value":
+    "1.0"}, {"Path": "Combat/BarrelLength", "Value": "18"}, {"Path": "Combat/RecoilModifier",
     "Value": "50"}, {"Path": "Combat/Reliability", "Value": "95"}, {"Path": "Firearm/IsAutomatic",
-    "Value": "false"}, {"Path": "Firearm/GearType", "Value": "Shotgun"}]}'
+    "Value": "false"}, {"Path": "Firearm/GearType", "Value": "Shotgun"}, {"Path":
+    "Common/Category", "Value": "Entity.Equipment.Weapon.Ranged.Shotgun"}, {"Path":
+    "Common/Id", "Value": "remington870"}]}'
   Prefab: {fileID: 1105646471333690, guid: a2458a3a2318bb64ea864a87f6558170, type: 3}

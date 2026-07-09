@@ -19,5 +19,6 @@ MonoBehaviour:
     "Value": "2.0"}, {"Path": "Nutrition/Nutrition_Val", "Value": "25"}, {"Path":
     "Nutrition/Hydration", "Value": "5"}, {"Path": "Quality/MoraleBonus", "Value":
     "3"}, {"Path": "Quality/ShelfLife", "Value": "999"}, {"Path": "Quality/ContaminationRisk",
-    "Value": "0"}]}'
+    "Value": "0"}, {"Path": "Common/Category", "Value": "Entity.Consumable.Food"},
+    {"Path": "Common/Id", "Value": "canned_beans"}]}'
   Prefab: {fileID: 1475631568837504, guid: 43c02ad0264295844bda05a0e56a7b21, type: 3}

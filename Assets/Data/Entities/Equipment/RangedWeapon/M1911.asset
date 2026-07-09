@@ -19,10 +19,11 @@ MonoBehaviour:
     "Value": "40"}, {"Path": "Weapon/IsTwoHanded", "Value": "false"}, {"Path": "Combat/Accuracy",
     "Value": "65"}, {"Path": "Combat/ReloadSpeed", "Value": "1.0"}, {"Path": "Combat/MagSize",
     "Value": "7"}, {"Path": "Combat/AmmoCount", "Value": "7"}, {"Path": "Tags/CompatibleAmmo",
-    "Value": "[\"Ammo.Caliber.9mm\"]"}, {"Path": "Combat/FireRate", "Value": "3.0"},
-    {"Path": "Combat/BarrelLength", "Value": "4"}, {"Path": "Combat/RecoilModifier",
+    "Value": "[\"Entity.Ammo.Caliber.9mm\"]"}, {"Path": "Combat/FireRate", "Value":
+    "3.0"}, {"Path": "Combat/BarrelLength", "Value": "4"}, {"Path": "Combat/RecoilModifier",
     "Value": "20"}, {"Path": "Combat/Reliability", "Value": "90"}, {"Path": "Firearm/IsAutomatic",
     "Value": "false"}, {"Path": "Firearm/GearType", "Value": "Pistol"}, {"Path":
     "Pistol/HolsterSpeed", "Value": "1.5"}, {"Path": "Pistol/HipFirePenalty", "Value":
-    "15"}]}'
+    "15"}, {"Path": "Common/Category", "Value": "Entity.Equipment.Weapon.Ranged.Pistol"},
+    {"Path": "Common/Id", "Value": "m1911"}]}'
   Prefab: {fileID: 1562996608389564, guid: a1608518da2a041418e8a5351d223d94, type: 3}

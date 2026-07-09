@@ -33,7 +33,9 @@ entities.append({'entityType':'Consumable','name':'CannedBeans','templateName':'
     {'Path':'Quality/MoraleBonus','Value':'3'},
     {'Path':'Quality/ShelfLife','Value':'999'},
     {'Path':'Quality/ContaminationRisk','Value':'0'},
-]),'prefabGuid':G['Can_01']})
+        {'Path': 'Common/Category', 'Value': 'Entity.Consumable.Food'},
+        {'Path': 'Common/Id', 'Value': 'canned_beans'},
+    ]),'prefabGuid':G['Can_01']})
 
 # ==== Keep & transform: Bandage → complete ====
 entities.append({'entityType':'Consumable','name':'Bandage','templateName':'Medical','overridesJson':ov([
@@ -47,7 +49,9 @@ entities.append({'entityType':'Consumable','name':'Bandage','templateName':'Medi
     {'Path':'Heal/InfectionCleanse','Value':'0'},
     {'Path':'Heal/PainRelief','Value':'0'},
     {'Path':'Heal/HealDuration','Value':'5.0'},
-]),'prefabGuid':G['Tape']})
+        {'Path': 'Common/Category', 'Value': 'Entity.Consumable.Medical'},
+        {'Path': 'Common/Id', 'Value': 'bandage'},
+    ]),'prefabGuid':G['Tape']})
 
 # ==== Food (3 new) ====
 entities.append({'entityType':'Consumable','name':'Bread','templateName':'Food','overridesJson':ov([
@@ -61,7 +65,9 @@ entities.append({'entityType':'Consumable','name':'Bread','templateName':'Food',
     {'Path':'Quality/MoraleBonus','Value':'5'},
     {'Path':'Quality/ShelfLife','Value':'3'},
     {'Path':'Quality/ContaminationRisk','Value':'5'},
-]),'prefabGuid':G['Bread']})
+        {'Path': 'Common/Category', 'Value': 'Entity.Consumable.Food'},
+        {'Path': 'Common/Id', 'Value': 'bread'},
+    ]),'prefabGuid':G['Bread']})
 entities.append({'entityType':'Consumable','name':'CookedMeat','templateName':'Food','overridesJson':ov([
     a_tags(['Entity.Consumable.Food']),
     {'Path':'Tags/ConsumableType','Value':'Food'},
@@ -73,7 +79,9 @@ entities.append({'entityType':'Consumable','name':'CookedMeat','templateName':'F
     {'Path':'Quality/MoraleBonus','Value':'8'},
     {'Path':'Quality/ShelfLife','Value':'2'},
     {'Path':'Quality/ContaminationRisk','Value':'10'},
-]),'prefabGuid':G['Meat_Cooked']})
+        {'Path': 'Common/Category', 'Value': 'Entity.Consumable.Food'},
+        {'Path': 'Common/Id', 'Value': 'cooked_meat'},
+    ]),'prefabGuid':G['Meat_Cooked']})
 entities.append({'entityType':'Consumable','name':'Mushroom','templateName':'Food','overridesJson':ov([
     a_tags(['Entity.Consumable.Food']),
     {'Path':'Tags/ConsumableType','Value':'Food'},
@@ -85,7 +93,9 @@ entities.append({'entityType':'Consumable','name':'Mushroom','templateName':'Foo
     {'Path':'Quality/MoraleBonus','Value':'2'},
     {'Path':'Quality/ShelfLife','Value':'2'},
     {'Path':'Quality/ContaminationRisk','Value':'15'},
-]),'prefabGuid':G['Mushroom']})
+        {'Path': 'Common/Category', 'Value': 'Entity.Consumable.Food'},
+        {'Path': 'Common/Id', 'Value': 'mushroom'},
+    ]),'prefabGuid':G['Mushroom']})
 
 # ==== Drinks (3) ====
 entities.append({'entityType':'Consumable','name':'BottledWater','templateName':'Food','overridesJson':ov([
@@ -99,7 +109,9 @@ entities.append({'entityType':'Consumable','name':'BottledWater','templateName':
     {'Path':'Quality/MoraleBonus','Value':'2'},
     {'Path':'Quality/ShelfLife','Value':'999'},
     {'Path':'Quality/ContaminationRisk','Value':'0'},
-]),'prefabGuid':G['Drink_Bottle']})
+        {'Path': 'Common/Category', 'Value': 'Entity.Consumable.Food'},
+        {'Path': 'Common/Id', 'Value': 'bottled_water'},
+    ]),'prefabGuid':G['Drink_Bottle']})
 entities.append({'entityType':'Consumable','name':'Soda','templateName':'Food','overridesJson':ov([
     a_tags(['Entity.Consumable.Food']),
     {'Path':'Tags/ConsumableType','Value':'Food'},
@@ -111,7 +123,9 @@ entities.append({'entityType':'Consumable','name':'Soda','templateName':'Food','
     {'Path':'Quality/MoraleBonus','Value':'8'},
     {'Path':'Quality/ShelfLife','Value':'999'},
     {'Path':'Quality/ContaminationRisk','Value':'0'},
-]),'prefabGuid':G['Drink']})
+        {'Path': 'Common/Category', 'Value': 'Entity.Consumable.Food'},
+        {'Path': 'Common/Id', 'Value': 'soda'},
+    ]),'prefabGuid':G['Drink']})
 entities.append({'entityType':'Consumable','name':'Beer','templateName':'Food','overridesJson':ov([
     a_tags(['Entity.Consumable.Food']),
     {'Path':'Tags/ConsumableType','Value':'Food'},
@@ -123,7 +137,9 @@ entities.append({'entityType':'Consumable','name':'Beer','templateName':'Food','
     {'Path':'Quality/MoraleBonus','Value':'10'},
     {'Path':'Quality/ShelfLife','Value':'999'},
     {'Path':'Quality/ContaminationRisk','Value':'0'},
-]),'prefabGuid':G['Alcohol']})
+        {'Path': 'Common/Category', 'Value': 'Entity.Consumable.Food'},
+        {'Path': 'Common/Id', 'Value': 'beer'},
+    ]),'prefabGuid':G['Alcohol']})
 
 # ==== Medical (3 new) ====
 entities.append({'entityType':'Consumable','name':'FirstAidKit','templateName':'Medical','overridesJson':ov([
@@ -137,7 +153,9 @@ entities.append({'entityType':'Consumable','name':'FirstAidKit','templateName':'
     {'Path':'Heal/InfectionCleanse','Value':'50'},
     {'Path':'Heal/PainRelief','Value':'20'},
     {'Path':'Heal/HealDuration','Value':'8.0'},
-]),'prefabGuid':G['Shop_Goods']})
+        {'Path': 'Common/Category', 'Value': 'Entity.Consumable.Medical'},
+        {'Path': 'Common/Id', 'Value': 'first_aid_kit'},
+    ]),'prefabGuid':G['Shop_Goods']})
 entities.append({'entityType':'Consumable','name':'Painkiller','templateName':'Medical','overridesJson':ov([
     a_tags(['Entity.Consumable.Medical']),
     {'Path':'Tags/ConsumableType','Value':'Medical'},
@@ -149,7 +167,9 @@ entities.append({'entityType':'Consumable','name':'Painkiller','templateName':'M
     {'Path':'Heal/InfectionCleanse','Value':'0'},
     {'Path':'Heal/PainRelief','Value':'80'},
     {'Path':'Heal/HealDuration','Value':'120.0'},
-]),'prefabGuid':G['Pills']})
+        {'Path': 'Common/Category', 'Value': 'Entity.Consumable.Medical'},
+        {'Path': 'Common/Id', 'Value': 'painkiller'},
+    ]),'prefabGuid':G['Pills']})
 entities.append({'entityType':'Consumable','name':'Antibiotic','templateName':'Medical','overridesJson':ov([
     a_tags(['Entity.Consumable.Medical']),
     {'Path':'Tags/ConsumableType','Value':'Medical'},
@@ -161,7 +181,9 @@ entities.append({'entityType':'Consumable','name':'Antibiotic','templateName':'M
     {'Path':'Heal/InfectionCleanse','Value':'100'},
     {'Path':'Heal/PainRelief','Value':'0'},
     {'Path':'Heal/HealDuration','Value':'10.0'},
-]),'prefabGuid':G['Pills']})
+        {'Path': 'Common/Category', 'Value': 'Entity.Consumable.Medical'},
+        {'Path': 'Common/Id', 'Value': 'antibiotic'},
+    ]),'prefabGuid':G['Pills']})
 
 data = {'version':'1.0','description':'S5 Item Economy — Consumables (Food + Drink + Medical).','category':'Consumable','entities':entities}
 with open('Assets/Data/Entities/Consumable/consumable_all.json','w',encoding='utf-8') as f:

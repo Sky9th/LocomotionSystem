@@ -19,5 +19,6 @@ MonoBehaviour:
     "Value": "1.0"}, {"Path": "Nutrition/Nutrition_Val", "Value": "0"}, {"Path":
     "Nutrition/Hydration", "Value": "40"}, {"Path": "Quality/MoraleBonus", "Value":
     "2"}, {"Path": "Quality/ShelfLife", "Value": "999"}, {"Path": "Quality/ContaminationRisk",
-    "Value": "0"}]}'
+    "Value": "0"}, {"Path": "Common/Category", "Value": "Entity.Consumable.Food"},
+    {"Path": "Common/Id", "Value": "bottled_water"}]}'
   Prefab: {fileID: 1129776882994900, guid: 6f4046d7967c3b74a88971615df168e4, type: 3}

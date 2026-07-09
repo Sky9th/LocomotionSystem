@@ -18,5 +18,6 @@ MonoBehaviour:
     "Value": "Drug"}, {"Path": "Base/StackSize", "Value": "5"}, {"Path": "Base/ConsumeTime",
     "Value": "1.0"}, {"Path": "Heal/HealAmount", "Value": "0"}, {"Path": "Heal/BleedReduction",
     "Value": "0"}, {"Path": "Heal/InfectionCleanse", "Value": "100"}, {"Path": "Heal/PainRelief",
-    "Value": "0"}, {"Path": "Heal/HealDuration", "Value": "10.0"}]}'
+    "Value": "0"}, {"Path": "Heal/HealDuration", "Value": "10.0"}, {"Path": "Common/Category",
+    "Value": "Entity.Consumable.Medical"}, {"Path": "Common/Id", "Value": "antibiotic"}]}'
   Prefab: {fileID: 1337799580505134, guid: 07973e2f008580343949b7f8c06cf72c, type: 3}

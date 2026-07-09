@@ -19,9 +19,11 @@ MonoBehaviour:
     "Value": "35"}, {"Path": "Weapon/IsTwoHanded", "Value": "true"}, {"Path": "Combat/Accuracy",
     "Value": "60"}, {"Path": "Combat/ReloadSpeed", "Value": "0.8"}, {"Path": "Combat/MagSize",
     "Value": "30"}, {"Path": "Combat/AmmoCount", "Value": "30"}, {"Path": "Tags/CompatibleAmmo",
-    "Value": "[\"Ammo.Caliber.9mm\"]"}, {"Path": "Combat/FireRate", "Value": "8.0"},
-    {"Path": "Combat/BarrelLength", "Value": "6"}, {"Path": "Combat/RecoilModifier",
+    "Value": "[\"Entity.Ammo.Caliber.9mm\"]"}, {"Path": "Combat/FireRate", "Value":
+    "8.0"}, {"Path": "Combat/BarrelLength", "Value": "6"}, {"Path": "Combat/RecoilModifier",
     "Value": "15"}, {"Path": "Combat/Reliability", "Value": "92"}, {"Path": "Firearm/IsAutomatic",
     "Value": "true"}, {"Path": "Firearm/GearType", "Value": "SMG"}, {"Path": "Pistol/HolsterSpeed",
-    "Value": "1.0"}, {"Path": "Pistol/HipFirePenalty", "Value": "10"}]}'
+    "Value": "1.0"}, {"Path": "Pistol/HipFirePenalty", "Value": "10"}, {"Path": "Common/Category",
+    "Value": "Entity.Equipment.Weapon.Ranged.Pistol"}, {"Path": "Common/Id", "Value":
+    "mp5"}]}'
   Prefab: {fileID: 1347991933923114, guid: e465d39263959404582f9fdf69f40c53, type: 3}

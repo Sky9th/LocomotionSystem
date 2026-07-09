@@ -1809,6 +1809,12 @@
       "fullTag": "Entity.Equipment.Weapon.Melee.Blade"
     },
     {
+      "name": "Tag_Blunt",
+      "parent": "Entity.Equipment.Weapon.Melee",
+      "description": "单手棍棒/钝器",
+      "fullTag": "Entity.Equipment.Weapon.Melee.Blunt"
+    },
+    {
       "name": "Tag_Axe",
       "parent": "Entity.Equipment.Weapon.Melee",
       "description": "单手斧",
@@ -1945,6 +1951,36 @@
       "parent": "Entity",
       "description": "弹药 — 消耗型战斗资源，有弹道属性",
       "fullTag": "Entity.Ammo"
+    },
+    {
+      "name": "Tag_Caliber",
+      "parent": "Entity.Ammo",
+      "description": "弹药口径",
+      "fullTag": "Entity.Ammo.Caliber"
+    },
+    {
+      "name": "Tag_Caliber_9mm",
+      "parent": "Entity.Ammo.Caliber",
+      "description": "9mm 口径",
+      "fullTag": "Entity.Ammo.Caliber.9mm"
+    },
+    {
+      "name": "Tag_Caliber_556",
+      "parent": "Entity.Ammo.Caliber",
+      "description": "5.56mm 口径",
+      "fullTag": "Entity.Ammo.Caliber.556"
+    },
+    {
+      "name": "Tag_Caliber_762",
+      "parent": "Entity.Ammo.Caliber",
+      "description": "7.62mm 口径",
+      "fullTag": "Entity.Ammo.Caliber.762"
+    },
+    {
+      "name": "Tag_Caliber_12ga",
+      "parent": "Entity.Ammo.Caliber",
+      "description": "12 Gauge 口径",
+      "fullTag": "Entity.Ammo.Caliber.12ga"
     },
     {
       "name": "Tag_Consumable",

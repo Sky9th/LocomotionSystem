@@ -17,5 +17,7 @@ MonoBehaviour:
     {"Path": "Base/Weight", "Value": "0.5"}, {"Path": "Equipment/Durability", "Value":
     "100", "Max": "100"}, {"Path": "Combat/DEF", "Value": "5"}, {"Path": "Combat/Coverage",
     "Value": "30"}, {"Path": "Combat/TraumaTransfer", "Value": "60"}, {"Path": "Penalty/MoveSpeedPenalty",
-    "Value": "2"}, {"Path": "Penalty/StaminaRegenPenalty", "Value": "0"}]}'
+    "Value": "2"}, {"Path": "Penalty/StaminaRegenPenalty", "Value": "0"}, {"Path":
+    "Common/Category", "Value": "Entity.Equipment.Armor.Hands"}, {"Path": "Common/Id",
+    "Value": "tactical_gloves"}]}'
   Prefab: {fileID: 0}

@@ -19,5 +19,6 @@ MonoBehaviour:
     "Value": "70"}, {"Path": "Combat/TraumaTransfer", "Value": "50"}, {"Path": "Penalty/MoveSpeedPenalty",
     "Value": "8"}, {"Path": "Penalty/StaminaRegenPenalty", "Value": "5"}, {"Path":
     "Combat/FlashResist", "Value": "30"}, {"Path": "Combat/NightVision", "Value":
-    "10"}]}'
+    "10"}, {"Path": "Common/Category", "Value": "Entity.Equipment.Armor.Head"}, {"Path":
+    "Common/Id", "Value": "riot_helmet"}]}'
   Prefab: {fileID: 0}

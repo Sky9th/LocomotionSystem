@@ -51,8 +51,7 @@ namespace RedDust.Core.Editor
         public override void OnOpen()
         {
             base.OnOpen();
-            _model = new TagTreeModel();
-            _model.Refresh();
+            _model = TagTreeModel.GetCached();
 
             var roots = _model.Roots;
             if (!string.IsNullOrEmpty(_rootFilter))

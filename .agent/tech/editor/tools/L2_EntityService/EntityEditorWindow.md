@@ -4,7 +4,7 @@
 - **配套**: `EntityImporter.cs` (共享导入引擎) + `EntityImportConfig.cs` (配置对象)
 - **命名空间**: `RedDust.Entities.Editor`
 
-> **Last Verified**: 2026-07-08 | **Verification**: All referenced files exist, signatures match code
+> **Last Verified**: 2026-07-10 | **Verification**: Content Id preview + auto-Id init + performance caches added; all referenced files exist, signatures match code
 
 ## 架构
 

@@ -15,7 +15,10 @@ MonoBehaviour:
   InheritsFrom: {fileID: 0}
   treeJson: "{\n    \"Nodes\": [\n        {\n            \"NodeId\": \"Common\",\n           
     \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
-    \"NodeId\": \"DisplayName\",\n            \"ParentId\": \"Common\",\n           
+    \"NodeId\": \"Id\",\n            \"ParentId\": \"Common\",\n            \"DefId\":
+    \"Id\"\n        },\n        {\n            \"NodeId\": \"Category\",\n           
+    \"ParentId\": \"Common\",\n            \"DefId\": \"Category\"\n        },\n       
+    {\n            \"NodeId\": \"DisplayName\",\n            \"ParentId\": \"Common\",\n           
     \"DefId\": \"DisplayName\"\n        },\n        {\n            \"NodeId\": \"Icon\",\n           
     \"ParentId\": \"Common\",\n            \"DefId\": \"Icon\"\n        },\n       
     {\n            \"NodeId\": \"Weight\",\n            \"ParentId\": \"Common\",\n           

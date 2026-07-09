@@ -18,5 +18,7 @@ MonoBehaviour:
     "150", "Max": "150"}, {"Path": "Combat/DEF", "Value": "10"}, {"Path": "Combat/Coverage",
     "Value": "40"}, {"Path": "Combat/TraumaTransfer", "Value": "60"}, {"Path": "Penalty/MoveSpeedPenalty",
     "Value": "5"}, {"Path": "Penalty/StaminaRegenPenalty", "Value": "3"}, {"Path":
-    "Combat/MoveSpeed", "Value": "3"}, {"Path": "Combat/SneakSpeed", "Value": "3"}]}'
+    "Combat/MoveSpeed", "Value": "3"}, {"Path": "Combat/SneakSpeed", "Value": "3"},
+    {"Path": "Common/Category", "Value": "Entity.Equipment.Armor.Legs"}, {"Path":
+    "Common/Id", "Value": "tactical_kneepad"}]}'
   Prefab: {fileID: 0}

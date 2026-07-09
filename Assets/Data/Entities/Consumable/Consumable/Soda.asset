@@ -19,5 +19,6 @@ MonoBehaviour:
     "Value": "1.0"}, {"Path": "Nutrition/Nutrition_Val", "Value": "5"}, {"Path":
     "Nutrition/Hydration", "Value": "30"}, {"Path": "Quality/MoraleBonus", "Value":
     "8"}, {"Path": "Quality/ShelfLife", "Value": "999"}, {"Path": "Quality/ContaminationRisk",
-    "Value": "0"}]}'
+    "Value": "0"}, {"Path": "Common/Category", "Value": "Entity.Consumable.Food"},
+    {"Path": "Common/Id", "Value": "soda"}]}'
   Prefab: {fileID: 1847027969511464, guid: 907f8303af992f44289b29cb614b45c5, type: 3}

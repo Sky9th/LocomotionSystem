@@ -19,5 +19,6 @@ MonoBehaviour:
     "Value": "50"}, {"Path": "Combat/TraumaTransfer", "Value": "70"}, {"Path": "Penalty/MoveSpeedPenalty",
     "Value": "5"}, {"Path": "Penalty/StaminaRegenPenalty", "Value": "5"}, {"Path":
     "Combat/KnockdownResist", "Value": "5"}, {"Path": "Combat/StanceStability", "Value":
-    "5"}]}'
+    "5"}, {"Path": "Common/Category", "Value": "Entity.Equipment.Armor.Chest"}, {"Path":
+    "Common/Id", "Value": "scavenger_vest"}]}'
   Prefab: {fileID: 0}

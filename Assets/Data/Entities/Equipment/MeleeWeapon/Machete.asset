@@ -18,5 +18,7 @@ MonoBehaviour:
     "Equipment/Durability", "Value": "100", "Max": "100"}, {"Path": "Weapon/AttackSpeed",
     "Value": "1.2"}, {"Path": "Weapon/AttackRange", "Value": "1.2"}, {"Path": "Weapon/NoiseRadius",
     "Value": "10"}, {"Path": "Weapon/IsTwoHanded", "Value": "false"}, {"Path": "Combat/BleedChance",
-    "Value": "15"}, {"Path": "Weapon/ATK", "Value": "[\"89b724ec839edd94d92ec037a1cb074a\"]"}]}'
+    "Value": "15"}, {"Path": "Weapon/ATK", "Value": "[\"89b724ec839edd94d92ec037a1cb074a\"]"},
+    {"Path": "Common/Category", "Value": "Entity.Equipment.Weapon.Melee.Blade"},
+    {"Path": "Common/Id", "Value": "machete"}]}'
   Prefab: {fileID: 1167932600818802, guid: bef05be41376b52498b91573c3ff5a3b, type: 3}

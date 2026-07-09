@@ -18,5 +18,7 @@ MonoBehaviour:
     "Equipment/Durability", "Value": "120", "Max": "120"}, {"Path": "Weapon/AttackSpeed",
     "Value": "0.9"}, {"Path": "Weapon/AttackRange", "Value": "1.1"}, {"Path": "Weapon/NoiseRadius",
     "Value": "12"}, {"Path": "Weapon/IsTwoHanded", "Value": "false"}, {"Path": "Weapon/ATK",
-    "Value": "[\"de87450416f65d2498da30674ab9e9ef\"]"}]}'
+    "Value": "[\"de87450416f65d2498da30674ab9e9ef\"]"}, {"Path": "Common/Category",
+    "Value": "Entity.Equipment.Weapon.Melee.Blunt"}, {"Path": "Common/Id", "Value":
+    "crowbar"}]}'
   Prefab: {fileID: 1750927141268108, guid: 8775c006a5395ff488d9315934a2a901, type: 3}

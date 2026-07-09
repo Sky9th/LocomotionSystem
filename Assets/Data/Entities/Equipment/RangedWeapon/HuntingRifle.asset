@@ -19,9 +19,10 @@ MonoBehaviour:
     "Weapon/IsTwoHanded", "Value": "true"}, {"Path": "Combat/Accuracy", "Value":
     "90"}, {"Path": "Combat/ReloadSpeed", "Value": "0.4"}, {"Path": "Combat/MagSize",
     "Value": "5"}, {"Path": "Combat/AmmoCount", "Value": "5"}, {"Path": "Tags/CompatibleAmmo",
-    "Value": "[\"Ammo.Caliber.762\"]"}, {"Path": "Combat/FireRate", "Value": "1.5"},
-    {"Path": "Combat/BarrelLength", "Value": "22"}, {"Path": "Combat/RecoilModifier",
+    "Value": "[\"Entity.Ammo.Caliber.762\"]"}, {"Path": "Combat/FireRate", "Value":
+    "1.5"}, {"Path": "Combat/BarrelLength", "Value": "22"}, {"Path": "Combat/RecoilModifier",
     "Value": "30"}, {"Path": "Combat/Reliability", "Value": "92"}, {"Path": "Firearm/IsAutomatic",
     "Value": "false"}, {"Path": "Firearm/GearType", "Value": "Rifle"}, {"Path": "Rifle/AimTime",
-    "Value": "1.2"}]}'
+    "Value": "1.2"}, {"Path": "Common/Category", "Value": "Entity.Equipment.Weapon.Ranged.Rifle"},
+    {"Path": "Common/Id", "Value": "hunting_rifle"}]}'
   Prefab: {fileID: 1862461175073062, guid: f8ee5a952b0a300448ad8d17e2ab2584, type: 3}

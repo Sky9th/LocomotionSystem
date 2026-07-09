@@ -17,5 +17,6 @@ MonoBehaviour:
     {"Path": "Base/Weight", "Value": "0.3"}, {"Path": "Equipment/Durability", "Value":
     "50", "Max": "50"}, {"Path": "Backpack/CarryWeightBonus", "Value": "5"}, {"Path":
     "Slots/ContainerSlot", "Value": "{\"SlotId\": \"ContainerSlot\", \"Capacity\":
-    5, \"WeightLimit\": 8.0}"}]}'
+    5, \"WeightLimit\": 8.0}"}, {"Path": "Common/Category", "Value": "Entity.Equipment.Container"},
+    {"Path": "Common/Id", "Value": "waist_pouch"}]}'
   Prefab: {fileID: 1065290847328510, guid: 8bee817d1f4e2974f970db169ffa5a81, type: 3}

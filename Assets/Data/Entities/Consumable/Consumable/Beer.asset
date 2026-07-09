@@ -19,5 +19,6 @@ MonoBehaviour:
     "Value": "2.0"}, {"Path": "Nutrition/Nutrition_Val", "Value": "5"}, {"Path":
     "Nutrition/Hydration", "Value": "20"}, {"Path": "Quality/MoraleBonus", "Value":
     "10"}, {"Path": "Quality/ShelfLife", "Value": "999"}, {"Path": "Quality/ContaminationRisk",
-    "Value": "0"}]}'
+    "Value": "0"}, {"Path": "Common/Category", "Value": "Entity.Consumable.Food"},
+    {"Path": "Common/Id", "Value": "beer"}]}'
   Prefab: {fileID: 1610639356653788, guid: 58ee3df2b81b0de49a953371616e8154, type: 3}

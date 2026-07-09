@@ -19,9 +19,10 @@ MonoBehaviour:
     "Weapon/IsTwoHanded", "Value": "true"}, {"Path": "Combat/Accuracy", "Value":
     "75"}, {"Path": "Combat/ReloadSpeed", "Value": "0.7"}, {"Path": "Combat/MagSize",
     "Value": "30"}, {"Path": "Combat/AmmoCount", "Value": "30"}, {"Path": "Tags/CompatibleAmmo",
-    "Value": "[\"Ammo.Caliber.762\"]"}, {"Path": "Combat/FireRate", "Value": "5.0"},
-    {"Path": "Combat/BarrelLength", "Value": "16"}, {"Path": "Combat/RecoilModifier",
+    "Value": "[\"Entity.Ammo.Caliber.762\"]"}, {"Path": "Combat/FireRate", "Value":
+    "5.0"}, {"Path": "Combat/BarrelLength", "Value": "16"}, {"Path": "Combat/RecoilModifier",
     "Value": "35"}, {"Path": "Combat/Reliability", "Value": "95"}, {"Path": "Firearm/IsAutomatic",
     "Value": "true"}, {"Path": "Firearm/GearType", "Value": "Rifle"}, {"Path": "Rifle/AimTime",
-    "Value": "0.8"}]}'
+    "Value": "0.8"}, {"Path": "Common/Category", "Value": "Entity.Equipment.Weapon.Ranged.Rifle"},
+    {"Path": "Common/Id", "Value": "ak47"}]}'
   Prefab: {fileID: 1900586067242068, guid: ad49a19d2c4adc94b838606a5d459f85, type: 3}

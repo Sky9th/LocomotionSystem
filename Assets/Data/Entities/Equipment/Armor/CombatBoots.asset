@@ -18,5 +18,7 @@ MonoBehaviour:
     "150", "Max": "150"}, {"Path": "Combat/DEF", "Value": "8"}, {"Path": "Combat/Coverage",
     "Value": "50"}, {"Path": "Combat/TraumaTransfer", "Value": "50"}, {"Path": "Penalty/MoveSpeedPenalty",
     "Value": "4"}, {"Path": "Penalty/StaminaRegenPenalty", "Value": "3"}, {"Path":
-    "Combat/MoveSpeed", "Value": "10"}, {"Path": "Combat/SneakSpeed", "Value": "5"}]}'
+    "Combat/MoveSpeed", "Value": "10"}, {"Path": "Combat/SneakSpeed", "Value": "5"},
+    {"Path": "Common/Category", "Value": "Entity.Equipment.Armor.Feet"}, {"Path":
+    "Common/Id", "Value": "combat_boots"}]}'
   Prefab: {fileID: 0}

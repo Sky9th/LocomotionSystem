@@ -129,6 +129,9 @@ namespace RedDust.Properties
             return null;
         }
 
+        /// <summary>读取 RdTag 类型属性的 FullPath 值。如 "Entity.Equipment.Weapon.Melee.Blade"</summary>
+        public string GetRdTag(string path) => GetString(path);
+
         public string[] GetTagList(string path)
         {
             if (_tagLists.TryGetValue(path, out var v)) return v;
