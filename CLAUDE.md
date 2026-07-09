@@ -18,6 +18,16 @@
 - `.agent/README.md` — 文档目录约定
 - `.agent/design/game-overview.md` — 游戏设计文档 (GDD)
 
+## Agent Dispatch Rules
+使用 Agent 前**必须**按任务性质选模型，禁止 `general-purpose` 一把梭：
+
+| 任务性质 | 模型 | 示例 |
+|----------|------|------|
+| 推理、设计、写作文档 | `opus` | 写策划文档、架构设计、复杂重构 |
+| 搜索、收集、修链接、简单修复 | `haiku` | grep 定位、批量修引用、格式化 |
+
+> `sonnet` 和 `fable` 仅在明确知道理由时选用。禁止不带 `model` 参数使用默认。
+
 ## Skills
 - `/agent-doc` — 归档设计/技术文档到 .agent 目录
 

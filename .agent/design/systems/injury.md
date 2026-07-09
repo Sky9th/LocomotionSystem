@@ -2,7 +2,7 @@
 
 > 日期: 2026-05-23
 > 状态: 设计阶段，已确认核心方向
-> 关联: `game-overview.md` 核心系统 / `stats-inventory.md` Vitals 节点
+> 关联: `../game-overview.md` 核心系统 / `../data/stats-inventory.md` Vitals 节点
 
 ---
 
@@ -265,3 +265,8 @@ NPC 与玩家使用**完全相同的伤病系统**，包括：
 | 丧尸化 4 阶段过程 | ✅ | 变身动画/特殊表现 |
 | NPC 完全共用 | ✅ | |
 | 伤疤/永久残疾 | — | 后续 |
+
+## 十一、关联文档
+
+- [npc.md](npc.md) — NPC 完全共用伤病系统
+- [death-save.md](death-save.md) — 伤势致死与丧尸化终结

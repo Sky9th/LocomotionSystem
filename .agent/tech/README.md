@@ -89,6 +89,7 @@ tech/
 │   ├── L2-input/                       # L2 Service (自身代码: Structs/)
 │   │   ├── README.md
 │   │   ├── input-service.md
+│   │   ├── input-bindings.md              #  按键绑定 — Player/UI/System 键鼠映射表
 │   │   ├── events/                     # → EventSO 已迁移至 L1-core/events/
 │   │   └── Structs/
 │   │       ├── SIActionUIEscape.cs
@@ -148,7 +149,9 @@ tech/
 │       │   ├── ability-activation-assets.md # Activation 资产树 — ActivationSO JSON 清单 (~28)
 │       │   ├── ability-noise-assets.md   #  Noise 资产树 — NoiseEventSO JSON 清单 (~44) + Noise Tag (17)
 │       │   ├── ability-tree.md            #  AbilityTreeSO — 一切皆技能树（天赋/套路/种族）
-│       │   └── ability-forest.md          #  AbilityForest — 运行时多来源活跃树集合
+│       │   ├── ability-forest.md          #  AbilityForest — 运行时多来源活跃树集合
+│       │   ├── effect-so.md               #  EffectSO — 架构总览（4 子类 + 管道归属）
+│       │   └── effect-inventory.md        #  Effect Inventory — 全量 Effect 资产 (50 个，含武器基础伤害)
 │       │
 │       ├── L3-properties/               # L3: 通用属性系统 (替代 L3-stats)
 │       │   ├── README.md               # 模块总览 — Schema/Data 分离 + 8 类型 + 继承合并
@@ -234,6 +237,7 @@ tech/
 └── shared/                              # 占位容器: 全局 Helper (不限层级)
     ├── README.md
     ├── data-assets.md
+    ├── localization.md                   #  多语言架构 — 中英官方 + 社区翻译
     ├── logging/
     │   ├── README.md
     │   ├── log-manager.md, log-channel.md, log-level.md

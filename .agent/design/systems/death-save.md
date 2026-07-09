@@ -2,7 +2,7 @@
 
 > 日期: 2026-05-23
 > 状态: 设计阶段
-> 关联: `game-overview.md` NPC 系统 / `injury-system.md` 丧尸化
+> 关联: `../game-overview.md` NPC 系统 / `injury.md` 丧尸化
 
 ---
 
@@ -150,3 +150,8 @@ NPC 死亡后，玩家面临抉择：
 | 角色继承机制 | — | Phase 12+ |
 | 多角色切换 | — | Phase 12+ |
 | 尸体丧尸化 + 收尸 | — | Phase 12+ |
+
+## 八、关联文档
+
+- [injury.md](injury.md) — 丧尸化致死全流程
+- [npc.md](npc.md) — NPC 永久死亡与据点连锁影响

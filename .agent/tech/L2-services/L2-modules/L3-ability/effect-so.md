@@ -30,6 +30,6 @@
 
 | 规划 | 状态 | 来源 |
 |------|------|------|
-| BuffEffectSO | Phase 5+ | effect-inventory.md §5.3 |
-| CleanseEffectSO | Phase 5+ | effect-inventory.md §5.2 |
-| HealEffectSO | Phase 5+ | effect-inventory.md §5.1 |
+| BuffEffectSO | Phase 5+ | [effect-inventory.md](effect-inventory.md) §5.3 |
+| CleanseEffectSO | Phase 5+ | [effect-inventory.md](effect-inventory.md) §5.2 |
+| HealEffectSO | Phase 5+ | [effect-inventory.md](effect-inventory.md) §5.1 |

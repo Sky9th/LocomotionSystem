@@ -1,309 +1,304 @@
-# 长期开发计划
+# 长期开发计划 — A测路线图
 
-> 更新: 2026-07-07
-> 来源: `.agent/design/` GDD + 子系统设计文档
-> 原则: 每步有可玩增量，每个子系统先跑通基本闭环 → 全生态联通 → 数值统一规划
->      **设计文档不设具体数值，所有数值在系统骨架完成后从上至下统一规划**
+> 更新: 2026-07-08 | 剩余时间: ~5 个月
+> A测目标: 系统完整、内容半满、可玩闭环 — 玩家能在 30-60 分钟内体验完整生存循环
 
 ---
 
-## 当前进度
+## 方法论
+
+### 依据：7 款成熟游戏 + 3 套生产方法论
+
+**参考项目**：Project Zomboid / RimWorld / 7 Days to Die / Don't Starve / Subnautica / Valheim / Factorio
+
+**共同规律**：
+
+| 原则 | 证据 |
+|------|------|
+| 核心循环先于一切 | 所有 7 款游戏最早的可玩版本都只包含：角色在地图上→收集资源→转化优势→一个威胁。没有 NPC、没有科技树、没有完整 UI |
+| 系统先于内容 | RimWorld Alpha 1 只有 10% 内容量但 90% 系统完整度。系统产生涌现内容——一个小时的代码胜过一百个小时的手摆内容 |
+| 每层一个可玩闭环 | Factorio 从"一个传送带自动化链"开始。PZ 从"一栋房子的生存体验"开始。每一层做到可玩再加下一层 |
+| Alpha = 系统完整，不是内容完整 | Valheim EA 首发 9 个生物群系只有 6 个可用。Subnautica 首发没有基地建造。目标是"玩家从开局到理解游戏本质"的完整 30-60 分钟体验 |
+| 威胁在核心循环之后 | RimWorld 的袭击者在 Alpha 1 之后。Subnautica 的危险生物在基地建造之后。玩家需要先理解"要保护什么"再被要求保护 |
+
+**生产方法论**：Cerny Method（原型→垂直切片→生产）设计用于向发行商推销，不适用于 solo 自筹资金。**Sylvester 的 Connected Systems Playable**（所有核心系统以粗略形式共存→验证涌现交互是否有趣）是系统驱动游戏的正确模式。
+
+**适用 RedDust 的混合方法**：预生产探索 + 每 Phase 一个垂直切片 + 持续可玩的横向构建。不做 GDD 驱动——做依赖图驱动。
+
+---
+
+## 全局依赖图
 
 ```
-短期:  Ability Pipeline 运行时 (feature/ability-pipeline 分支) — ✅ Phase 4 封闭
-  前置: Character 模块重构 ✅  Properties 系统 ✅  Animation 重构 ✅
-        PropertyTree Equipment 层重构 ✅  Container 系统 ✅
-  目标: Ability Pipeline 8 State + Combat 补完 + 动画补完 — 全部完成
-  已完成:
-    S1  Properties 深度接入 ✅（Physique 删除，GroundLocomotion 公式化）
-    S2  装备→技能闭环 ✅（Entity→Container→GripTags→AbilityForest→ResolvedActives）
-    S3  Ability Pipeline 8 State ✅（Gating→Cost→Windup→Cooldown→Execution→Recovery→Completed/Rejected）
-    S4  Combat 管线补完 ✅（属性修正 + 路径常量 + OnHit 通路 + Damage 类型拆分）
-    S5  动画系统补完 ✅（S5.0 受击动画 + S5.4 AirLand 分级 + S5.5 Traversal 迁移，S5.1-S5.3 延后）
-    Pathfinding 缓存修复 ✅（GraphCache.bytes 尊重，跳过冗余 Scan）
-
-已完成:
-  角色运动 ✅    音效骨架 ✅    数值系统（Properties 替代旧 Stats SO）✅
-  PropertyAgent + Modifier 管道 ✅  HUD UI ✅
-  Module 系统 + 树形生命周期 ✅  ctx 全链路 ✅
-  俯视角切换 ✅   A* 寻路集成 ✅  SO Event Channel ✅
-  Ability 数据资产 ✅ (Search/Activation/Effect/Noise/Passive 全量)
-  GameplayTag → rTag 199 标签 ✅  CharacterCombat 骨架 ✅
-  Animation LinearMixer 统一 + In-line Transition ✅
-  PropertyTree Equipment 层 + 6 分支文档 ✅
-  Container AcceptTags 层级匹配 ✅
-  受击反应管线 ✅ — SDamageInfo.ImpactEffect → HitReactionDriver
-  受击动画数据层 ✅ — LocomotionAnimationSetSO 4 hitReaction 字段
-  DriverArbiter 抢占规则 ✅
-  被动技能管线 ✅ — AbilityForest→SyncInstances + OnEquip/OnHit/OnKill/OnDamaged dispatch
-  FloatAdjunct Max 扩容 ✅ — MaxAdd/MaxMultiply
-  PassiveBarOverlay ✅ — 15Hz 轮询被动技能栏
-
-延期:
-  S5.1 Footstep / S5.2 HeadLook IK / S5.3 Crawl — 俯视角优先级低
-  S4.5 自伤 Amount=0 — 等实际自伤技能需求
-
-设计完成:
-  GDD ✅  伤病系统 ✅  噪音系统 ✅  负重/背包 ✅  死亡/存档 ✅
-  Ability Pipeline 八维度管道 ✅ (2026-06-06)
-  Properties 全量属性体系 ✅ (~185 PropertyDef / 30 Trees)
-  受击反应系统 ✅ (2026-07-05)
-
----
-
-## 施工历史（用于工期校准）
-
-基于 `git log --date=short` 的实际日历日，非预估。
-
-| 日期 | 事项 | commit 数 | 耗时 |
-|------|------|-----------|------|
-| 6/11 | Cost 标签体系 + Effect 标签接入 | 1 | 1天 |
-| 6/12 | EditorForm + SearchEditor + ActivationEditor + 目录重组 | 3 | 1天 |
-| 6/13 | Editor UI 组件化 + Ability 编辑器补全 + FloatAdjunct + BuffEffectSO | 3 | 1天 |
-| 6/14 | EUI 组件架构重构（Slot/回调 + 令牌体系 + 四轮标准化） | 4 | 1天 |
-| 6/15 | EditorTreeView 组件 + 5 个 Editor 迁移 + Card API 简化 + 删除废弃树 | 11 | 1天 |
-| 6/15 | Character 配置集中到 CharacterActor + Model 运行时装配 | 2 | 同天 |
-| 6/16-17 | Module 系统 + 树形生命周期 + ctx 全链路 + Service 标准化 | 3 | 2天 |
-| 6/18-19 | Animation 重构（废弃 State 清理 + SO 重构 + FSM In-line Transition） | 3 | 2天 |
-| 6/19 | PolygonApocalypse 武器导入 + Properties 接管角色物理 | 2 | 1天 |
-| 6/30 | Ability Pipeline StateMachine 框架 + Gating/Cost State + Container AcceptTags 修复 | 1 | 1天 |
-| 7/04 | 受击动画数据层 — LocomotionSet +4 Mixer2D + Importer 扩展 | 1 | 1天 |
-| 7/05 | 受击反应管线 — ImpactEffect→Combat→Animation→Driver 全链路 | 1 | 1天 |
-| 7/06 | S1 Physique 删除 + GroundLocomotion 公式化 + S2 装备闭环 + S3 RecoveryState + S4 Combat 补完 | 4 | 1天 |
-| 7/07 | S5.4 AirLand 分级落地 + S5.5 Traversal 动画迁移 + Pathfinding 缓存修复 | 1 | 1天 |
-
-**节奏特征**:
-- 跨模块架构重构（Module 系统、Animation 重构）≈ **2 天**，约 3 个 commit
-- Editor 工具整批迁移/重构（EditorTreeView、EUI 组件体系）≈ **1-2 天**，4-11 个 commit
-- 单一模块深度改动（Properties 接管物理、Cost 标签）≈ **1 天**，1-2 个 commit
-- 新建组件 + 消费者迁移（类似 AbilityComponent / AbilityDriver）在历史中没有直接对照，但 Module 系统（新建 4 类型 + 迁移 CharacterActor）是 2 天
-
----
-
-## 视角与坐标系约定
-
-游戏为**俯视角**（类似《僵尸毁灭工程》），所有空间计算在 **XZ 地面平面** 上进行。
-
-| 系统 | 坐标系 |
-|------|--------|
-| 移动 | 右键点击地面 → A* Pathfinding 寻路，AIPath 驱动位移 |
-| 角色朝向 | 寻路中 = `desiredVelocity.normalized`（移动方向）；静止 = 保持当前朝向 |
-| 瞄准方向 | 鼠标光标 → 地面 Y=0 投影 → ModelRoot 到鼠标的 XZ 方向 |
-| 技能释放 | Q/E 键 → 以角色前方（`ModelRoot.forward`）为攻击方向 |
-| 敌人感知 | 2D 地面扇形（视觉）+ 圆形半径（听觉） |
-| 寻路 | A\* Pathfinding Project（XZ 平面 GridGraph） |
-| 噪音传播 | 球形半径（3D，视野判定在 XZ） |
-
----
-
-## 子系统全景
-
-```
-RedDust
-├── 1. 战斗系统      — 三层架构(SkillDefSO→CombatComponent→CombatDriver)、Q/E/R/F 四槽、GameplayTag 门控、命中判定管道、6 武器类型扩展
-├── 2. 敌人 AI       — 丧尸感知(听觉+视觉)/追击/攻击、噪音连锁反应
-├── 3. 伤病系统      — 5 伤害类型×3 严重度×2 部位、治疗流程、丧尸化过程
-├── 4. 噪音系统      — 6 级噪音、4 种类型、障碍衰减、丧尸连锁反应、潜行降噪
-├── 5. 资源系统      — 材料/工具/武器/消耗品/零件/知识 六大类、仓库
-├── 6. 负重/背包     — 纯重量制、四级负重、软上限、背包可丢弃
-├── 7. 建造系统      — 网格化建造、建筑耐久/破坏/维修、防御工事
-├── 8. 农业系统      — 开垦/播种/生长/收获
-├── 9. 烹饪系统      — 篝火/灶台、固定食谱、食物→士气联动
-├── 10. NPC 系统     — Rimworld 式征召/指派、工作熟练度成长、永久死亡
-├── 11. 死亡/存档    — 死亡=读档、手动+自动存档、NPC 永久损失
-├── 12. 尸潮系统     — 伪随机触发、规模正相关、构成随机
-├── 13. 科技树       — 图纸消耗型、六条核心线、前置条件 AND 逻辑
-└── 14. 时间/环境    — 日夜交替、季节（后续）、天气（后续）
+                        ┌─────────────────┐
+                        │  Tech Tree (10)  │ ← 需要建造+NPC+农业产出的解锁目标
+                        │  Horde Events(10)│ ← 需要僵尸AI+建造+NPC
+                        │  Tool System(10) │ ← 最浅系统，数据驱动
+                        └──────┬──────────┘
+                               │
+            ┌──────────────────┼──────────────────┐
+            │                  │                  │
+    ┌───────▼──────┐  ┌───────▼──────┐  ┌───────▼──────┐
+    │ Farming(9)   │  │ Cooking(9)   │  │ Morale(9)    │
+    │ 种植+收获    │  │ 食谱+产出    │  │ NPC效率系数  │
+    └───────┬──────┘  └───────┬──────┘  └───────┬──────┘
+            │                  │                  │
+            └──────────────────┼──────────────────┘
+                               │
+                        ┌───────▼──────┐
+                        │  NPC (8)     │ ← 需要角色管线+建造(床位)+生存指标(需求)
+                        │  指令+自主AI │
+                        └───────┬──────┘
+                               │
+            ┌──────────────────┼──────────────────┐
+            │                  │                  │
+    ┌───────▼──────┐  ┌───────▼──────┐  ┌───────▼──────┐
+    │ Building(7)  │  │ Map(6)       │  │ LootSystem(6)│
+    │ 3种基础建筑  │  │ Synty场景    │  │ 战利品表     │
+    └───────┬──────┘  └───────┬──────┘  └───────┬──────┘
+            │                  │                  │
+            └──────────────────┼──────────────────┘
+                               │
+                        ┌───────▼──────┐
+                        │ Zombie AI(5) │ ← 需要Pathfinding+NavMesh+Combat管线
+                        │ 视线+追击    │
+                        └───────┬──────┘
+                               │
+            ┌──────────────────┼──────────────────┐
+            │                  │                  │
+    ┌───────▼──────┐  ┌───────▼──────┐  ┌───────▼──────┐
+    │ Survival(4)  │  │ Time(4)      │  │ Item Econ(1-3)│
+    │ 饥饿/口渴/HP │  │ 昼夜循环     │  │ 物品管线     │
+    └───────┬──────┘  └───────┬──────┘  └───────┬──────┘
+            │                  │                  │
+            └──────────────────┼──────────────────┘
+                               │
+                    ┌───────────▼───────────┐
+                    │ EntityService/Container│ ← Phase 4 已完成
+                    │ PropertyTable/Identity │
+                    └───────────────────────┘
 ```
 
----
+**数字 = Phase 编号。** 同一 Phase 内的系统可以并行开发。
 
-## 开发阶段
-
-每个子系统分两阶段：**基本闭环**（能玩通的最小版本）→ **扩展**（丰富性与打磨）。
-
-### Phase 4: Ability Pipeline + 敌人 AI + 噪音骨架 ✅ 已封闭
-
-> 管道设计: [ability-pipeline-design.md](../tech/L2-services/L2-modules/L3-ability/ability-pipeline-design.md)
-> 施工计划: [short-term.md](short-term.md) — S1-S5 全部完成
-
-**4.1 Ability Pipeline 运行时** ✅：AbilityExecutor（发送中枢 → ②③④⑤ 门控/释放/搜索/效果）+ AbilityReactor（接收中枢 → ⑥⑦ 结算/反应）+ AbilityDriver（③ Windup→Fire→Recovery 动画）+ ⑧ 事件广播。8 State 全就位，Q 键闭环测试通过，被动技能管线完整（OnEquip/OnHit/OnKill/OnDamaged dispatch）。受击反应全链路完成（SDamageInfo.ImpactEffect → CharacterCombat → DriverArbiter → HitReactionDriver）。
-
-**4.1a 日志格式规范化** 🔒 延期 — 管道已完成，此项为独立 quality-of-life 改进，非阻塞。
-
-**4.2 敌人 AI 基础** 🔒 延后到 Phase 5 — 复用 AbilityExecutor + AbilityReactor（纯类，不绑 Player），行为 FSM，听觉感知（消费 SNoiseEvent）+ 视觉感知。
-
-**移入 Phase 5 的能力扩展**（依赖资源/装备系统）：连招系统 ComboWindow、Buff/Debuff（BuffEffectSO 已定义）、多武器切换、熟练度、Circle 搜索落地。
+**关键路径**（最长依赖链）：物品经济 → 时间+生存 → 僵尸 AI → 地图+LootSystem → 建造 → NPC → 农业+烹饪 → 科技树。约 18-20 周顺序执行。通过并行化可以压缩到 ~16 周。
 
 ---
 
-### Phase 5: 资源系统 + 装备落地 + 存档
+## A 测简化策略
 
-> 设计文档: `inventory-weight.md` / `death-mechanics.md` / `equipment-system.md`
-> Properties 已替代旧 Stats SO，装备属性直接进 PropertyTree。
+每个系统标注 A 测范围和被砍内容。原则：**能跑通 ≠ 做完整。**
 
-| 子系统 | 基本闭环 |
-|--------|----------|
-| 物品数据 | ItemDefSO（ID/名称/图标/类型/重量/堆叠上限），引用 PropertyTree |
-| 拾取交互 | 地面物品→点击拾取→进背包 |
-| 背包 UI | 物品列表 + 当前负重/负重上限 + 负重等级标签 |
-| 消耗品 | 食物回饥饿、水回口渴、绷带回 HP、止痛药降疼痛 |
-| 负重 | 每物品有重量 → 总负重 vs 负重上限 → 轻/中/重/超载四级 |
-| 存档 | 暂停菜单手动存档 + 据点自动存档 → 3 手动槽 + 1 自动槽 |
-| **GearInstance 工厂** | `GearDefSO` Properties 迁移 → `GearInstance` 运行时个体 |
-| **装备槽位** | `EquipmentComponent` + `AbilitySlotManager`（替换 Actor 临时槽位）|
-| **战斗扩展** | Buff/Debuff（BuffEffectSO 已定义）、多武器切换、熟练度 |
+| 系统 | A 测范围 | 砍掉 |
+|------|---------|------|
+| **生存指标** | 饥饿、口渴、体力、HP。随时间递减。消耗品恢复 | 血液/感染/体温/意识/疼痛/完整伤病系统/六维属性 |
+| **昼夜** | 24 分钟=1 天。灯光旋转。简单 ClockOverlay | 季节/天气/夜间机制变化 |
+| **僵尸 AI** | 视线检测。追击。近身攻击。 | 噪音连锁/尸群协同/搜索行为/僵尸变种 |
+| **地图** | 小镇中心+农田+森林。Synty 预组合建筑 | 多区域/地下/载具道路 |
+| **LootSystem** | 5 张战利品表。加权独立投骰。`LootContainer` 组件 | 区域驱动/容器重生/品质系统 |
+| **建造** | 木墙/木地板/木门。自由摆放+碰撞检测 | 旋转/网格/多种材料/工作站/农田 |
+| **NPC** | 2 个 NPC。跟随/待命指令。饿了吃、困了睡 | 框选/工作分配/技能成长/招募对话/工具绑定 |
+| **农业** | 1 种作物(土豆)。种植→等待天数→收获 | 多种作物/留种/土壤质量/NPC 种植 |
+| **烹饪** | 1 个设施(篝火)。1 个食谱(烤土豆) | 灶台/多种食谱/NPC 烹饪/食谱发现 |
+| **科技树** | 6 节点(每线1个)。蓝图物品→消耗→标记解锁 | 树形可视化/AND 前置/多种解锁效果 |
+| **工具** | 斧/锄/锤。PropertyTable 耐久度。修理=消耗材料 | 全工具类型/效率公式/NPC 绑定 |
+| **士气** | 单 float。热餐+1，无屋顶-1。乘上工作效率 | 食物多样性/舒适度/社交/无聊 |
+| **尸潮** | 每 7 天夜晚触发。8-12 僵尸从地图边缘刷出 | 伪随机触发/评分系统/强度缩放/多路进攻 |
+| **存档** | EntityService.All→JSON。单存档槽。手动保存 | 多存档/自动保存/版本迁移/增量快照 |
 
-**可玩增量**: 地上有东西→捡→负重增加→取舍。捡到新武器→装备→技能槽替换。吃食物回饥饿→存档回家。
+### 永久延后（A 测不做）
 
-**不做的**: 六大类完整分类、仓库系统、工具耐久/维修、大背包/军用背包。
-
----
-
-### Phase 6: 建造基础
-
-| 子系统 | 基本闭环 |
-|--------|----------|
-| 建造模式 | 按 B 进入建造、鼠标选位置、点击确认 |
-| 基础建筑 | 木墙、木门、木地板（各 1 种） |
-| 材料消耗 | 建造消耗木材（从背包扣除） |
-| 建筑耐久 | 墙体有 HP，丧尸可攻击破坏 |
-
-**可玩增量**: 采集木材→打开建造→放置墙壁→围出安全区→丧尸被挡在外面。
-
-**不做的**: 高级材料（石头/金属）、工作台/家具、拆除回收、网格吸附优化。
+| 系统 | 理由 |
+|------|------|
+| 完整伤病系统 | HP 受伤足够提供张力 |
+| 噪音系统（运行时） | NoiseEventSO 资产已有(~44)，但接入僵尸 AI 是复杂度倍乘器 |
+| 武器熟练度成长 | 战斗已闭环，熟练度是增量加法 |
+| NPC 招募/对话 | 硬编码 2 个 NPC 直接刷在基地旁 |
+| 载具系统 | GDD 已将载具列入暂缓内容 |
 
 ---
 
-### Phase 7: 时间与日夜
+## Phase 路线
 
-| 子系统 | 基本闭环 |
-|--------|----------|
-| 时间系统 | 游戏内时钟（24 分钟 = 1 天，加速演示） |
-| 日夜光照 | Directional Light 旋转 + 强度/色温变化 |
-| 视野限制 | 夜晚玩家视野缩小，丧尸视野不变 |
-| ClockOverlay | HUD 显示当前时间和天数 |
+### 相对工作量标记
 
-**可玩增量**: 天会黑→视野变差→丧尸在暗处更危险→天亮恢复→昼夜节奏建立。
+**S** = Small (2-4天) · **M** = Medium (1-2周) · **L** = Large (2-4周)
 
-**不做的**: 四季、天气、温度系统、作物生长绑定（先做固定计时）。
+时间线约 20 周。代码预算 ~12-14 周 + 内容/打磨 ~6-8 周。
 
 ---
 
-### Phase 8: 农业 + 烹饪
+### Phase 5 — 物品经济 🔄 施工中
 
-| 子系统 | 基本闭环 |
-|--------|----------|
-| 农业 | 锄头开垦→播种（1 种作物）→固定天数生长→收获 |
-| 烹饪 | 篝火设施→1 个基础食谱（烤肉）→消耗食材→产出食物 |
-| 士气 | NPC 吃好食物→工作效率微幅提升（简化版） |
+> 切片 A: "物品存在于世界" — 地上看到物品→捡起→背包看到→装备→使用消耗品。
 
-**可玩增量**: 开垦农田→种土豆→等生长→收获→篝火烤熟→吃饱→士气提升。
+| # | 任务 | 工作量 | 复用 |
+|---|------|--------|------|
+| P5.1 | GroundItem + ItemService + EntityService 改 | **S** | EntityService 事件管线、Identity 组件 |
+| P5.2 | 拾取交互（跨容器转移） | **S** | RdContainer.Place/Remove、鼠标射线检测 |
+| P5.3 | 背包面板 UI | **M** | UIScreen/UIPanel/UIIconSlot、WeaponBarOverlay 参考 |
+| P5.4 | 装备/卸下 | **S** | CharacterEquipment.SyncEquipment()、SlotBoneMapper |
+| P5.5 | 消耗品使用 | **S** | GetDamageEffects()、AbilityReactor、StackCount |
 
-**不做的**: 多种作物、留种机制、灶台、多食谱、食物变质。
-
----
-
-### Phase 9: NPC 基础
-
-| 子系统 | 基本闭环 |
-|--------|----------|
-| NPC 生成 | 1-2 名 NPC，基础属性（饥饿/口渴/体力/HP） |
-| 简单指令 | 跟随/停留/工作（点击指定工作点） |
-| 自主 AI | 饿了吃、困了睡、被攻击自卫 |
-| 工具绑定 | 分配工具后可在工作点工作 |
-
-**可玩增量**: 救一个 NPC→带回家→分配工具→让他种田/建造→NPC 自己吃喝睡觉。
-
-**不做的**: 环世界框选、熟练度成长、多 NPC 招募、尸潮行为。
+**详细计划**：见 `.agent/plans/p5.1-world-item-spawn.md`。
 
 ---
 
-### Phase 10: 尸潮基础
+### Phase 6 — 生存威胁
 
-| 子系统 | 基本闭环 |
-|--------|----------|
-| 触发 | 每 N 天一次（固定间隔），有简单预警 |
-| 规模 | 固定数量（10-15 只），从地图边缘生成 |
-| 行为 | 向据点移动、攻击建筑/玩家/NPC |
-| 后效 | 击杀后掉落战利品、短暂安全期 |
+> 切片 B+C: 时间流逝→饥饿→吃喝→昼夜→僵尸→战斗。此时有一个完整的"末日生存"游戏。
 
-**可玩增量**: 预警→准备防御→尸潮来袭→战斗→清理→修理→收集战利品→准备下一次。
+| # | 任务 | 工作量 | 复用 |
+|---|------|--------|------|
+| **Time** | 游戏内时钟（24 分钟=1 天）+ 方向光旋转 + ClockOverlay | **S** | TimeService（timeScale 已有）、UI overlay 模式 |
+| **Stats** | 饥饿/口渴/体力每秒递减，HP 为零=死亡 | **S** | VitalsQuery（路径已有）、PropertyTable、CharacterActor.Update 挂载点 |
+| **Stats HUD** | 生命值/体力/饥饿/口渴 UI 条接入真实数据 | **S** | VitalsOverlay（已有预制体）、UIStatBar |
+| **Death** | HP=0→禁用输入→死亡画面→重新加载 | **S** | CharacterActor + Input 禁用模式 |
+| **Z1** | ZombieDefSO（PropertyPresetSO 子类）+ Prefab + Editor | **S** | PropertyPresetSO 模式、EntityEditorWindow 模板 |
+| **Z2** | ZombieActor 组件（Identity + PropertyTable + 简单 FSM） | **M** | CharacterActor 参考、Animation FSM 模式 |
+| **Z3** | 视线检测（锥形角度+距离+射线遮蔽） | **S** | Unity Physics.Raycast、昼夜视野系数 |
+| **Z4** | 追击+攻击（A* 寻路→近身→SDamageInfo→Combat 管线） | **M** | A* Pathfinding、Combat 管线全链、AbilityReactor |
+| **Z5** | 地图生成（Day 0 散布 N 只，缓慢重生） | **S** | EntityService.SpawnRequest |
 
-**不做的**: 伪随机触发、综合评分关联、构成随机、复杂预警。
+**为什么僵尸放在生存指标之后**：生存指标给"为什么搜刮"提供意义——食物恢复饥饿。僵尸给"为什么紧张"提供压力——被追击需要消耗体力。两者一前一后激活了物品经济的完整闭环。
 
----
-
-### Phase 11: 科技树基础
-
-| 子系统 | 基本闭环 |
-|--------|----------|
-| 图纸系统 | 搜刮获得图纸→科技界面学习→图纸消耗→配方永久解锁 |
-| UI | 列表式科技面板，显示前置条件和已解锁状态 |
-| 节点 | 5-6 个代表性节点（木工基础、基础烹饪、工具维修等） |
-| 解锁效果 | 新配方直接出现在对应菜单中 |
-
-**可玩增量**: 搜到图纸→打开科技面板→学习→获得新配方→制作新东西。
-
-**不做的**: 六条线全部展开、AND 前置条件复杂链路、参数修改类解锁。
+**为什么不做噪音**：噪音是放大器。纯视线僵尸已经产生紧张感。噪音是"每件事都有后果"——等核心 AI 循环稳固后再接线。
 
 ---
 
-### Phase 12+: 全生态联通 + 扩展打磨
+### Phase 7 — 世界落地
 
-此时所有子系统基本闭环跑通，进入扩展阶段：
+> 切片 D: 地图+LootSystem+建造。从"测试空地"升级为"有探索价值的真实世界"。
 
-- **战斗扩展**: 连招系统（ComboWindow + 冷却豁免）、技能效果（击退/眩晕/流血）、投射物系统、完整四阶段判定管道（命中率/破防/暴击/格挡）、死亡系统（Ragdoll + 复活）
-- **伤病扩展**: 医疗熟练度、粉碎性骨折永久惩罚、烧伤分级、丧尸化 4 阶段完整过程
-- **噪音扩展**: 噪音连锁反应（第 2 层）、障碍物衰减、昼夜倍率、环境噪音
-- **敌人扩展**: 视觉感知（光线影响）、尸群协调、特殊感染者
-- **资源扩展**: 六大类完整分类、仓库系统、工具耐久/维修
-- **负重扩展**: 大背包/军用背包、快速使用栏位、睡袋挂载
-- **建造扩展**: 高级材料（石头/金属）、工作台、家具、拆除回收
-- **农业扩展**: 多种作物、留种机制、灶台、多食谱
-- **NPC 扩展**: 环世界框选、多 NPC、熟练度/等级成长、招募对话
-- **死亡扩展**: 角色继承机制（死后切 NPC）、尸体丧尸化、收尸任务、Game Over 条件
-- **尸潮扩展**: 伪随机、综合评分、构成随机、特殊丧尸类型
-- **科技扩展**: 六条线 15-18 节点、复杂前置条件、解锁效果多元化
-- **数值统一规划**: 所有系统的具体数值（消耗速率、伤害值、成长曲线、噪音半径等）从上至下统一设定
-- **资产替换**: 美术资源整合、动画完善、音效补全
+| # | 任务 | 工作量 | 复用 |
+|---|------|--------|------|
+| **M1** | Unity 场景：小镇中心+农田+森林。Synty 预组合建筑 | **L**（内容为主） | Polygon Apocalypse/Town/Farm 套件（已有 19 个 Prefab 映射） |
+| **M2** | NavMesh 烘焙 | **S** | A* Pathfinding Project（已有 GraphCache） |
+| **L1** | LootContainer 组件（MonoBehaviour: lootTableId + isLooted） | **S** | Identity 模式、SceneItem Prefab |
+| **L2** | LootSystem 核心：JSON 加载→加权投骰→调 ItemService.SpawnWorldItem | **M** | ItemService（P5.1 已建）、EntityImporter JSON 模式 |
+| **B1** | BuildMode 输入（B 键切换、鼠标→世界网格、绿/红预览） | **M** | InputService 模式、鼠标到地面投影 |
+| **B2** | 建筑放置：验证（无重叠、有材料）→Instantiate Prefab→容器扣除材料 | **M** | EntityService.SpawnRequest、Container.Remove |
+| **B3** | 3 个建筑 Prefab：木墙/木地板/木门（Synty 资产+碰撞体） | **S** | Polygon Apocalypse 建造套件 |
+| **B4** | 建筑耐久度：墙体 HP→僵尸攻击→墙体破坏 | **S** | SDamageInfo→Combat 管线、PropertyTable(Durability) |
+
+**为什么地图代码量小但工作量大**：地图是手摆 Synty 预制体的内容工作。可以和 Phase 6 代码并行（独力开发者交替"写代码日"和"摆场景日"）。LootSystem 代码是简单加权随机——真正的工作是设计战利品表 JSON 条目。
+
+**为什么建造只做 3 种 Prefab**：目标是回答"玩家能创造防御僵尸的边界吗？"——木墙/木地板/木门足以回答。旋转、网格、多种材料是 Beta 迭代。
 
 ---
 
-## 依赖关系
+### Phase 8 — NPC + 据点
+
+> 切片 E+F: NPC 加入→分配工作→种田→做饭→士气影响效率。激活"种田流"核心差异化。
+
+| # | 任务 | 工作量 | 复用 |
+|---|------|--------|------|
+| **N1** | NPCDefSO + 2 个 NPC 在场景中生成 | **S** | Human PropertyTree（已有 60+ 属性）、CharacterActor（NPC 复用角色系统） |
+| **N2** | 指令系统（点击 NPC→右键下达移动/待命） | **M** | InputService（secondary interact）、A* Pathfinding |
+| **N3** | 自主 AI（无指令时：饿了吃、困了睡、空闲） | **M** | AIService（L2 已注册，实现 OnTick）、VitalsQuery 需求属性 |
+| **N4** | NPC HUD：选择→显示状态→分配跟随/待命 | **S** | UIScreen 模式、Stats 显示模式 |
+| **F1** | 农田：指定地块→耕地 Prefab 生成→种种子 | **S** | BuildMode 放置逻辑、物品消耗管线 |
+| **F2** | 生长计时：种植后 N 个游戏天数→成熟→可收获 | **S** | TimeService.WorldTime、Coroutine/deltaTime |
+| **F3** | 收获：交互→获得作物物品→地块回到耕地状态 | **S** | ItemService.SpawnWorldItem（物品进背包） |
+| **C1** | 篝火 Prefab + 交互打开烹饪 UI | **S** | 建筑放置模式 |
+| **C2** | 食谱：消耗生土豆→产出烤土豆（容器内物品交换） | **S** | Container.Place/Remove |
+| **M1** | 士气计算：每日检查→热餐+1、无屋顶-1→乘上工作速度 | **S** | PropertyTable(Morale 属性)、NPC Update tick |
+
+**为什么 NPC 需要 Phase 7 完成**：NPC 需要床（建造）、食物（烹饪）。代码可以提前写但测试需要这些系统。
+
+---
+
+### Phase 9 — 长期驱动
+
+> 切片 G: 科技树+尸潮+工具。激活"成长→验证→更强"的正向循环。
+
+| # | 任务 | 工作量 | 复用 |
+|---|------|--------|------|
+| **T1** | 蓝图物品类型（ConsumableSO + TechNode 引用） | **S** | ConsumableSO 已有 |
+| **T2** | TechTreeSO 数据（6 节点，ID+名称+前置+解锁效果）+ JSON 导入 | **S** | PropertyTreeSO 模式、JSON 导入工具 |
+| **T3** | 科技面板 UI（显示节点→锁定/可用/已解锁→点击学习） | **M** | UIScreen 模式、EditorTreeView 参考 |
+| **T4** | 解锁效果：发事件→建造/制作系统开启新配方 | **S** | EventHub（每科技节点一个事件） |
+| **H1** | HordeService：追踪天数，每 7 晚从地图边缘生成 N 只僵尸 | **S** | TimeService（WorldDay 事件）、EntityService.SpawnRequest |
+| **H2** | 尸潮寻路：生成的僵尸路径走向玩家位置 | **S** | A*、已有僵尸追击行为 |
+| **Tool** | 工具耐久度：EquipmentDefSO+Durability→使用递减→修复 | **S** | PropertyTable(Durability 在 ToolBase 树中)、EquipmentModule |
+
+**为什么到这一步加速**：所有基础系统存在。科技节点只是标记翻转。尸潮是"生成僵尸+路径走向玩家"——僵尸 AI 已经承担了所有繁重工作。工具是给已有装备添加耐久度字段。
+
+---
+
+### Phase 10 — 收尾
+
+> 切片 H: 存档+内容填充+数值平衡+修 Bug。
+
+| # | 任务 | 工作量 | 复用 |
+|---|------|--------|------|
+| **SV1** | EntitySerializer：遍历 EntityService.All→每个 Entity 写 PropertyTable JSON | **S** | PropertyTable 内置序列化（PropertyImportExport 已有 ToJson/FromJson） |
+| **SV2** | Container 序列化：每个容器写 ContainerSlotRef 列表 | **S** | ContainerSlotRef（已 Serializable struct） |
+| **SV3** | 世界状态：建筑位置、农田地块、僵尸位置→JSON | **M** | EntitySerializer 模式扩展到世界对象 |
+| **SV4** | 加载管线：清空世界→反序列化 Entity→恢复 Container→放置建筑→生成作物 | **M** | EntityService.Register + SpawnRequest |
+| **内容** | 更多战利品表（厨房/药房/五金店/警察局） | **M** | 纯内容工作 |
+| **内容** | 2-3 种额外作物 + 2 个额外食谱 | **S** | 纯数据添加 |
+| **数值** | 调饥饿/口渴消耗速率、僵尸属性、建筑 HP、作物生长期 | **M** | PropertyTable 数值、无代码 |
+| **Bug** | 稳定性通过、A 测构建 | **M** | 缓冲时间 |
+
+---
+
+## 时间线（估算）
 
 ```
-Phase 4 (Ability Pipeline + 敌人 AI) ← 短期计划当前
-    │
-    ├──→ Phase 5 (资源 + 装备 + 存档)
-    │         │
-    │         ├──→ Phase 6 (建造) ──→ Phase 8 (农业+烹饪)
-    │         │         │                    │
-    │         └──→ Phase 9 (NPC) ────────────┤
-    │                                          │
-    └──→ Phase 7 (时间/日夜) ──→ Phase 10 (尸潮) ──┤
-                                                         │
-                                          Phase 11 (科技树)
+周1 周2 周3 周4 周5 周6 周7 周8 周9 周10 周11 周12 周13 周14 周15 周16 周17 周18 周19 周20
+├── 物品经济(5) ──┤
+              ├── 生存+时间(6a) ──┤
+                        ├── 僵尸AI(6b) ──────┤
+                                    ├── 地图+LootSystem(7a) ────┤  (地图可与僵尸并行，交替
+                                    │                             代码日/内容日)
+                                                ├── 建造(7b) ────┤
+                                                        ├── NPC(8a) ────┤
+                                                                ├── 农业烹饪士气(8b) ──┤
+                                                                            ├── 科技尸潮工具(9) ──┤
+                                                                                       ├── 收尾(10) ──┤
 ```
 
-- Phase 4-7 可并行度较高
-- Phase 5 依赖 Phase 4（装备系统接 Ability 管道 ⑤ 伤害载荷）
-- Phase 8 依赖 Phase 5（资源）+ Phase 6（建造篝火）
-- Phase 9 依赖 Phase 5（资源/工具）+ Phase 6（床位）+ Phase 8（食物）
-- Phase 10 依赖 Phase 4 + Phase 6（防御建筑）+ Phase 9（NPC）
-- Phase 11 几乎依赖所有系统
+**关键路径**: 物品经济→建造→NPC→农业→科技树 ≈ 16 周。两个可并行点：
+1. 地图场景可以在 Phase 5 完成后立即开始（零代码依赖）
+2. 时间/昼夜独立于一切——可以和物品经济并行
 
 ---
 
-## 时间预估
+## 风险与底线
 
-| 阶段 | 内容 | 状态 |
-|------|------|------|
-| Phase 4 | Ability Pipeline + Combat 补完 + 动画补完 | ✅ 完成 |
-| Phase 5 | 资源系统 + 装备落地 + 存档 | ← 下一站 |
-| Phase 6-7 | 建造 + 时间日夜 | 后续 |
-| Phase 8-9 | 农业烹饪 + NPC | 后续 |
-| Phase 10-11 | 尸潮 + 科技树 | 后续 |
-| Phase 12+ | 扩展打磨 | 后续 |
+| 最大风险 | 影响 | 缓解 |
+|---------|------|------|
+| 僵尸 AI 超预期耗时 | 阻塞地图/尸潮 | 激进砍范围：仅 Idle/Chase/Attack 三个状态。每秒寻路一次。单一僵尸类型 |
+| 地图内容超时 | 阻塞 LootSystem/建造/所有空间系统 | 用 Synty 预组合建筑（整套房子当一个 Prefab）。接受"平面地图"——仅地面层 |
+| NPC 行为出乎意料地复杂 | 阻塞农业/士气/自动化循环 | 降级为"NPC 是属性修正器"——分配 NPC 到农田 = 作物生长 2x 速度。无可见 NPC 移动/指令 |
+| 建筑放置算法（碰撞/网格）膨胀 | 拖垮整个据点开发 | 切换到 Unity Tilemap 网格吸附。单层 2D 网格，无旋转，建筑是 tile |
+| 整体耗时超出 5 个月 | A 测交付不完整 | **最小可行 A 测**: 物品经济 + 时间 + 生存指标 + 僵尸 AI + 地图 + LootSystem + 存档 |
 
-> 预估基于单人力、每阶段完成可玩增量即交付的原则。实际以里程碑为准，不设硬性截止日。
+---
+
+## 交付标准：A 测 = 什么
+
+| 不是 | 是 |
+|------|-----|
+| 所有内容就位 | 所有系统跑通 |
+| 没有崩溃 | 可接受崩溃 |
+| 画面精美 | 占位资源可以 |
+| 数值平衡 | 数值可调 |
+| 50 小时深度 | **一次 30-60 分钟的完整循环体验** |
+
+**A 测的通过条件**：一个外部玩家从进入游戏开始，能在 30-60 分钟内理解"这是什么游戏"并想继续玩。所有核心系统（生成→拾取→装备→消耗→建造→战斗→生存）都在运转，即使每个系统只有最小内容量。
+
+---
+
+### 参考来源
+
+- **RimWorld 构建序列**: Tynan Sylvester "The Simulation Dream" (2013) + Kickstarter 更新 + Alpha 1-3 changelogs
+- **Project Zomboid**: 2011 技术演示 + Rezzed "How (Not) To Make a Game" + 14 年构建历史
+- **7 Days to Die**: Alpha 1-21 全量 changelog + Kickstarter 策略
+- **Don't Starve**: ECS/Prefab 架构 + `SetPristine()` 客户端/服务器分离
+- **Subnautica**: GDC 2019 事后分析 + "Earliest Access" 策略
+- **Valheim**: Good Enough 原则 + 3 biome 故意空置 + 单人程序员前 5 个月
+- **Factorio**: 传送带优化 (FFF #176) + 实体原型继承链
+- **Cerny Method**: D.I.C.E. Summit 2002 + GameRes 中文翻译
+- **Solo Dev 生产**: Wayline 生存游戏 solo 开发指南 + Toño Game Consultants 范围管理

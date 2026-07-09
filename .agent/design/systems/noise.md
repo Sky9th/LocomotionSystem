@@ -2,7 +2,7 @@
 
 > 日期: 2026-05-23
 > 状态: 设计阶段
-> 关联: `game-overview.md` 丧尸 AI / `injury-system.md` 伤病 / `stats-inventory.md` CombatNoise
+> 关联: `../game-overview.md` 丧尸 AI / `injury.md` 伤病 / `../data/stats-inventory.md` CombatNoise
 
 ---
 
@@ -239,20 +239,9 @@ CombatNoise = 武器基础噪音 × 移动倍率
 
 ### 噪音事件数据
 
-```csharp
-// 噪音事件 — 通过 EventDispatcher 发布
-struct SNoiseEvent
-{
-    Vector3 sourcePosition;  // 声源世界坐标
-    float radius;            // 最终传播半径（考虑衰减）
-    int level;               // 噪音等级 1-6
-    ENoiseType type;         // HumanActivity / WeaponExplosion / Environment / ZombieCall
-    GameObject source;       // 声源对象
-    int cascadeDepth;        // 连锁层级（0=原始噪音，1=第一层丧尸叫声，2=第二层）
-}
-```
+噪音事件的核心字段：声源世界坐标、最终传播半径（考虑衰减）、噪音等级 1-6、噪音类型（人类活动/武器爆炸/环境/丧尸叫声）、连锁层级（0=原始噪音，1=第一层丧尸叫声，2=第二层）。
 
-丧尸 AI 系统订阅 SNoiseEvent，根据类型和连锁层级决定反应行为。
+丧尸 AI 系统订阅噪音事件，根据类型和连锁层级决定反应行为。具体数据结构见 [gameplay-tag-noise.md](../../tech/L1-core/gameplay-tag-noise.md)。
 
 ---
 
@@ -276,3 +265,8 @@ struct SNoiseEvent
 | 投掷物引开丧尸 | — | 物品系统完成后 |
 | 车辆噪音（未来） | — | |
 | 天气对噪音影响（雨/雾） | — | |
+
+## 十二、关联文档
+
+- [combat/README.md](combat/README.md) — 热武器噪音等级定义
+- [horde.md](horde.md) — 尸潮连锁反应与噪音触发

@@ -149,28 +149,11 @@ EffectSO 资产根据"谁决定这个数值"分为三类：
 AbilityExecutor 在 ⑤ Effects 阶段：
 1. 遍历 Ability.targetEffects[]（通常为空，Cost 走 selfEffects）
 2. 从装备系统获取 DamageSource
-3. 用装备基底构造 SResolvedHit.IncomingDamage
+3. 用装备基底构造命中伤害
 4. 经 IEffectModifier 链（近战有力量修正，枪械无）
 5. 发送到目标 HitReactionComponent
 
-```
-AbilityExecutor.TryActivate():
-  ...
-  ⑤ Effects:
-    weapon = Equipment.GetWeapon()
-    if (weapon != null)
-        effect = weapon.GetDamageEffect()
-        hit.IncomingDamage = effect.baseDamage   // 装备地基
-    else
-        hit.IncomingDamage = 0                   // 空手
-
-    // IEffectModifier 链: 只有近战注册了回调
-    EffectCallback?.Invoke(ctx, hit, target)
-    // → 力量加成、武器熟练度等只对近战生效
-
-    target.HitReactionComponent.Resolve(hit)
-  ...
-```
+具体实现见 [ability-pipeline-design.md](../../../tech/L2-services/L2-modules/L3-ability/ability-pipeline-design.md)。
 
 ## 设计决策记录
 
@@ -181,3 +164,10 @@ AbilityExecutor.TryActivate():
 | 医疗物品决定治疗量，医术不改变 | 绷带的吸收量是物理属性。医术影响包扎速度和感染概率，不影响吸血量。 |
 | 投掷物伤害固定 | 火焰温度不随投掷者改变。投掷力量影响距离和精度，不影响伤害。 |
 | 弹药本身是 Damage Effect，枪是发射器 | FMJ/JHP/AP 是三种不同的物理物体——对应三个不同的 EffectSO。换弹 = 换装备，不是换技能。 |
+
+## 关联文档
+
+- [npc.md](../npc.md) — NPC 共用伤害模型
+- [skills.md](skills.md) — Ability 层技能动作设计
+- [proficiency.md](proficiency.md) — 熟练度对伤害修正的影响
+- [ability-pipeline-design.md](../../../tech/L2-services/L2-modules/L3-ability/ability-pipeline-design.md) — 伤害管道技术实现

@@ -2,7 +2,7 @@
 
 > 日期: 2026-05-23
 > 状态: 设计阶段
-> 关联: `game-overview.md` 资源与工具系统 / `stats-inventory.md` Movement 节点 / `injury-system.md` 伤病
+> 关联: `../game-overview.md` 资源与工具系统 / `../data/stats-inventory.md` Movement 节点 / `injury.md` 伤病
 
 ---
 
@@ -227,3 +227,8 @@ Attributes
 | 物品 Tooltip | ✅ | |
 | 快速使用栏位 | — | 物品系统扩展 |
 | 睡袋/护甲挂载 | — | 后续 |
+
+## 十一、关联文档
+
+- [base/resources-tools.md](base/resources-tools.md) — 物品重量值设定
+- [npc.md](npc.md) — NPC 负重与携带逻辑

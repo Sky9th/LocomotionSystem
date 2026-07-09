@@ -18,21 +18,32 @@
 .agent/
 ├── README.md
 ├── VERSION.md
-├── design/
-│   ├── game-overview.md
-│   ├── l1-l5-layering.md
-│   ├── damage-source-model.md
-│   ├── effect-inventory.md
-│   ├── equipment-system.md
-│   ├── audio-system.md
-│   ├── death-mechanics.md
-│   ├── injury-system.md
-│   ├── input-bindings.md
-│   ├── inventory-weight.md
-│   ├── noise-system.md
-│   ├── stats-inventory.md
-│   ├── stats-system.md
-│   └── ui-system.md
+├── design/                              ← 策划文档 (WHY)
+│   ├── README.md                       ← 策划文档索引
+│   ├── game-overview.md                ← GDD 总览 — 定位、世界观摘要、系统全景、核心循环
+│   ├── systems/
+│   │   ├── combat/                     ← 战斗系统
+│   │   │   ├── README.md               ← 总览：操作 + 6 武器类型
+│   │   │   ├── skills.md               ← 技能：Ability 动作模式、武器-技能绑定
+│   │   │   ├── proficiency.md          ← 熟练度：成长、命中/暴击、近战vs枪械
+│   │   │   └── damage-model.md         ← 伤害模型：装备地基 + 管道修正
+│   │   ├── base/                       ← 据点建设
+│   │   │   ├── README.md               ← 总览：4 子系统协作
+│   │   │   ├── building.md             ← 建造：网格化/分类/耐久/拆除
+│   │   │   ├── tech-tree.md            ← 科技树：图纸/前置/解锁
+│   │   │   ├── resources-tools.md      ← 资源工具：六大类/耐久维修/存储
+│   │   │   └── farming-cooking.md      ← 农业烹饪：种植→收获→食谱→士气
+│   │   ├── npc.md                      ← NPC：指挥/工作/成长/招募 + 士气
+│   │   ├── horde.md                    ← 尸潮：触发/规模/构成/行为/后效
+│   │   ├── injury.md                   ← 伤病：部位/5伤害类型/治疗/丧尸化
+│   │   ├── death-save.md               ← 死亡与存档
+│   │   ├── noise.md                    ← 噪音：6等级/传播/丧尸反应
+│   │   └── inventory-weight.md         ← 负重与背包
+│   ├── world/
+│   │   ├── setting.md                  ← 世界观：八重岛/母体雾区/封锁/结局
+│   │   └── spore-erosion-rules.md      ← 孢子侵蚀抗性梯度
+│   └── data/
+│       └── stats-inventory.md          ← 全量 Stats 属性树
 ├── tech/
 │   ├── README.md                       ← 技术文档索引
 │   ├── conventions/
@@ -63,6 +74,7 @@
 │   ├── long-term.md
 │   └── short-term.md
 ├── references/
+│   ├── art-assets/                    ← PolygonApocalypse Prefab 清单 (1820 个)
 │   └── asset-license-tracker.md
 ├── sessions/
 │   ├── 2025-04-29-locomotion-snapshot.md

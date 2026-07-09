@@ -2,7 +2,7 @@
 
 > 日期: 2026-05-11
 > 用途: 设计 SO 管理方案的结构化参考
-> 关联: `stats-system.md`
+> 关联: `../tech/L2-services/L2-modules/L3-stats/README.md`
 > 能力标注: Consumable = IStatConsumable, Cumulative = IStatCumulative, Derived = IStatDerived
 > 未标注 = 纯 Min/Max/Default（无特殊接口）
 
@@ -200,4 +200,12 @@ Game Stats
     └── FuseTime                   引信时间              Bounded
 ```
 
-> **注意**: 本文档为 Stat 设计目录（WHAT），实际的 StatsTreeSO 继承链和 stat 分配见 `tech/.../tree/actor-tree-design.md` 和 `equipment-tree-design.md`。本文档计数（72 Character stats + Weapon/Building/Zombie/Environment/Tool/Armor/Throwable）与 Tree 设计中通过继承链去重后的最终统计可能不同。
+> **注意**: 本文档为 Stat 设计目录（WHAT），实际的 StatsTreeSO 继承链和 stat 分配见 [actor-tree-design.md](../tech/L2-services/L2-modules/L3-stats/tree/actor-tree-design.md) 和 [equipment-tree-design.md](../tech/L2-services/L2-modules/L3-stats/tree/equipment-tree-design.md)。本文档计数（72 Character stats + Weapon/Building/Zombie/Environment/Tool/Armor/Throwable）与 Tree 设计中通过继承链去重后的最终统计可能不同。
+
+## 关联文档
+
+- [damage-model.md](../systems/combat/damage-model.md) — 伤害模型中的 Stats 联动（ATK/DEF/Penetration）
+- [injury.md](../systems/injury.md) — 伤病系统与 Vitals 节点的联动
+- [inventory-weight.md](../systems/inventory-weight.md) — 负重系统与 Movement 节点的联动
+- [noise.md](../systems/noise.md) — 噪音系统与 CombatNoise 节点的联动
+- [stats README](../tech/L2-services/L2-modules/L3-stats/README.md) — Stats 系统技术实现
