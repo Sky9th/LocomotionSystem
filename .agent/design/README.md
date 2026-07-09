@@ -29,7 +29,8 @@ design/
 │   ├── death-save.md            ← 死亡与存档
 │   ├── noise.md                 ← 噪音系统：6等级/传播/丧尸反应/连锁
 │   ├── inventory-weight.md      ← 负重与背包
-│   └── mod.md                   ← Mod 系统：社区创作支撑/零代码门槛/Steam Workshop
+│   ├── mod.md                   ← Mod 系统：社区创作支撑/零代码门槛/Steam Workshop
+│   └── mod-json-reference.md     ← Mod JSON 格式手册：物品/实体/技能/配方字段参考+示例
 │
 ├── world/                       ← 世界观设定
 │   ├── setting.md               ← 八重岛/母体雾区/封锁/幸存者/结局
@@ -57,5 +58,6 @@ design/
 | 尸潮怎么来？ | [systems/horde.md](systems/horde.md) |
 | 受伤怎么办？ | [systems/injury.md](systems/injury.md) |
 | Mod 怎么做？ | [systems/mod.md](systems/mod.md) |
+| Mod JSON 怎么写？ | [systems/mod-json-reference.md](systems/mod-json-reference.md) |
 | 世界什么样？ | [world/setting.md](world/setting.md) |
 | 有哪些属性？ | [data/stats-inventory.md](data/stats-inventory.md) |

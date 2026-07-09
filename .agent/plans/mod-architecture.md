@@ -1,6 +1,9 @@
-# Mod 社区支撑 — 架构方案
+> ⚠️ **已废弃** — 被 [mod-community-decision-record.md](mod-community-decision-record.md) 取代。
+> 原方案在 10 项战略决策缺失下直接跳到了代码结构（ModService.cs、GameRegistry 方法签名），
+> 未回答 Mod 深度边界、ID 体系、数据主权、存档策略、平台策略等前置问题。
+> 新文档包含完整的四轮辩论论证链 + 6 角度评议团审查结论。
 
-> 决策：游戏官方支持中英双语，通过数据外部化 + Steam Workshop 构建丰富的 Mod 社区
+# Mod 社区支撑 — 架构方案（已废弃）
 
 ---
 

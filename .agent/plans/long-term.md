@@ -1,6 +1,6 @@
 # 长期开发计划 — A测路线图
 
-> 更新: 2026-07-08 | 剩余时间: ~5 个月
+> 更新: 2026-07-09 | 剩余时间: ~5 个月
 > A测目标: 系统完整、内容半满、可玩闭环 — 玩家能在 30-60 分钟内体验完整生存循环
 
 ---
@@ -24,6 +24,21 @@
 **生产方法论**：Cerny Method（原型→垂直切片→生产）设计用于向发行商推销，不适用于 solo 自筹资金。**Sylvester 的 Connected Systems Playable**（所有核心系统以粗略形式共存→验证涌现交互是否有趣）是系统驱动游戏的正确模式。
 
 **适用 RedDust 的混合方法**：预生产探索 + 每 Phase 一个垂直切片 + 持续可玩的横向构建。不做 GDD 驱动——做依赖图驱动。
+
+### Mod 架构约束（跨所有 Phase）
+
+> 详见 `.agent/tech/mod-architecture-framework.md`。Mod 不是"一个功能"——是贯穿所有开发阶段的架构约束。
+
+| 约束 | 含义 | 违反的代价 |
+|------|------|-----------|
+| **contentId 先于资产** | 每个内容 SO 有 `category.subcategory.name` 格式的显式 ID | 以后重命名 = 批量改资产 + 断引用 |
+| **public = Mod contract** | 每个 `public` 方法 Mod 作者可以调，签名的改动是 breaking change | 改了 = Mod 断裂 |
+| **不 sealed 管道核心类** | EffectSO、PropertyPresetSO 等不加 `sealed` | Mod 无法继承扩展 | ⚠️ AbilityReactor/AbilityExecutor 已确认 sealed——P3 修复 |
+| **全对象替换** | Mod 覆盖官方内容时整对象替换，非字段合并 | 复杂度在引擎侧而非 Mod 作者侧 |
+
+**前置准备**（现在补）：`PropertyPresetSO` 加 `contentId` 字段，AssetCatalog 改为 contentId 查找，现有 SO 分配规范 ID。
+
+**后续**：Phase 5 开始每个模块对照 `mod-architecture-framework.md` 的检查清单。
 
 ---
 
@@ -128,6 +143,25 @@
 
 ---
 
+---
+
+### Phase 1-4 — 基础设施 ✅ 已完成
+
+> 2025-04 ~ 2026-07。从 locomotion 到 combat pipeline 全链。
+
+| Phase | 内容 | 关键产出 |
+|-------|------|---------|
+| 1 | Locomotion 完结 | HeadLook + Footstep |
+| 1.5 | 音效骨架 | AudioSetSO / AudioChannel / CharacterAudio |
+| 2 | 通用数值系统 | StatsTreeSO → 后来重构为 L3_Properties |
+| 2.5 | Stats 管理 | Rule 分层架构（5 行为模式） |
+| 3 | HUD UI | uGUI 重建：UIScreen/Overlay/Panel + MainMenu + VitalsOverlay |
+| 4 | 战斗 + 技能管线 | 俯视角切换 + A* 寻路 + S1-S5（Properties 集成 → 装备技能闭环 → 8 状态管道 → 战斗管道收尾 → 动画增强） |
+
+> ⚠️ **Mod 补课待办**：Phase 1-4 建造时没有 Mod 约束。需要补 contentId 字段、AssetCatalog 标准化、关键类可扩展性确认。**详见 `short-term.md` 前置准备。**
+
+---
+
 ### Phase 5 — 物品经济 🔄 施工中
 
 > 切片 A: "物品存在于世界" — 地上看到物品→捡起→背包看到→装备→使用消耗品。
@@ -141,6 +175,8 @@
 | P5.5 | 消耗品使用 | **S** | GetDamageEffects()、AbilityReactor、StackCount |
 
 **详细计划**：见 `.agent/plans/p5.1-world-item-spawn.md`。
+
+**Mod 义务**：新物品 SO 按 `category.subcategory.name` 命名 contentId。ItemService 公开 API 用 IItemReadOnly 不暴露 PropertyTable 内部。装备操作的 EffectSO 调用链预留 virtual。
 
 ---
 
@@ -164,6 +200,8 @@
 
 **为什么不做噪音**：噪音是放大器。纯视线僵尸已经产生紧张感。噪音是"每件事都有后果"——等核心 AI 循环稳固后再接线。
 
+**Mod 义务**：生存指标递减公式用 delegate（Mod 可换公式）。僵尸 AI 状态机走 interface 注册（Mod 可加新状态）。ZombieDefSO 创建时走 contentId。
+
 ---
 
 ### Phase 7 — 世界落地
@@ -184,6 +222,8 @@
 **为什么地图代码量小但工作量大**：地图是手摆 Synty 预制体的内容工作。可以和 Phase 6 代码并行（独力开发者交替"写代码日"和"摆场景日"）。LootSystem 代码是简单加权随机——真正的工作是设计战利品表 JSON 条目。
 
 **为什么建造只做 3 种 Prefab**：目标是回答"玩家能创造防御僵尸的边界吗？"——木墙/木地板/木门足以回答。旋转、网格、多种材料是 Beta 迭代。
+
+**Mod 义务**：战利品表 JSON 格式对 Mod 可见（Mod 可新增/覆写）。建筑 Prefab 引用走 contentId 而非直接 Unity 引用。BuildMode 验证逻辑数据驱动（Mod 可加新建筑类型）。
 
 ---
 
@@ -206,6 +246,8 @@
 
 **为什么 NPC 需要 Phase 7 完成**：NPC 需要床（建造）、食物（烹饪）。代码可以提前写但测试需要这些系统。
 
+**Mod 义务**：NPC 行为树走 interface 注册（Mod 可加新行为）。食谱 JSON 对 Mod 可见。士气公式用 delegate。
+
 ---
 
 ### Phase 9 — 长期驱动
@@ -224,6 +266,8 @@
 
 **为什么到这一步加速**：所有基础系统存在。科技节点只是标记翻转。尸潮是"生成僵尸+路径走向玩家"——僵尸 AI 已经承担了所有繁重工作。工具是给已有装备添加耐久度字段。
 
+**Mod 义务**：科技树节点 Mod 可新增（数据驱动）。尸潮规则 JSON 可配置。工具类型走 GameplayTag（Mod 注册新 tag 即可加新工具）。
+
 ---
 
 ### Phase 10 — 收尾
@@ -240,6 +284,8 @@
 | **内容** | 2-3 种额外作物 + 2 个额外食谱 | **S** | 纯数据添加 |
 | **数值** | 调饥饿/口渴消耗速率、僵尸属性、建筑 HP、作物生长期 | **M** | PropertyTable 数值、无代码 |
 | **Bug** | 稳定性通过、A 测构建 | **M** | 缓冲时间 |
+
+**Mod 义务**：存档 header 预留 `activeMods: [{modId, version}]`。存档读写用 contentId（不存 asset name 或 GUID）。
 
 ---
 

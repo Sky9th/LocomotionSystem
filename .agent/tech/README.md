@@ -27,6 +27,7 @@
 ```
 tech/
 ├── README.md                           # 本文件
+├── mod-architecture-framework.md        # 🔧 Mod 架构框架 — 开发约束、模块落地指南、分阶段路线图（跨层级）
 │
 ├── L1-core/                            # Layer 1: GameManager 根
 │   ├── README.md
@@ -246,6 +247,9 @@ tech/
     └── utility/
         ├── README.md
         └── gizmo-debug-utility.md
+
+└── reference/                          # 第三方技术引用与调研
+    ├── hybridclr-integration.md        # HybridCLR 技术分析 — 运行时选型、特性矩阵、接入策略
 ```
 
 ## 迁移来源
