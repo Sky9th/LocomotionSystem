@@ -76,3 +76,6 @@ Packages/packages-lock.json
 
 # A* Example Scenes (121 MB, not needed)
 Packages/com.arongranberg.astar/ExampleScenes~/
+HybridCLRData/
+/hybridclr/
+/il2cpp_plus/

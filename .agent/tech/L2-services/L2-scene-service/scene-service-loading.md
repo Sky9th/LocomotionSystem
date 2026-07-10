@@ -4,7 +4,7 @@
 >
 > **v4 — 2026-07-07。** Boot 管线迁出至 [AssetService](../L2-asset-service/asset-service.md)，SceneService 回归纯粹的场景切换。
 >
-> **Last Verified**: 2026-07-07
+> **Last Verified**: 2026-07-10
 
 ## 状态标记
 
@@ -121,6 +121,7 @@ GameService.Start()
         labels = ["boot", ...sceneLabels]       // 首次包含 boot
         并行加载: Scene + Labels
         AssetService.RunBootInit()              // sync — 8 Registry Init
+        AssetService.LoadAOTMetadata(cb)        // async — HybridCLR 66 AOT metadata assemblies
         SetActiveScene(loadedScene)
 ```
 

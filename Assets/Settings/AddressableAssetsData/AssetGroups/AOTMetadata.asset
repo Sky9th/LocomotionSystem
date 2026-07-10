@@ -1,0 +1,421 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: AOTMetadata
+  m_EditorClassIdentifier: 
+  m_GroupName: AOTMetadata
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 4fb981de01dbe694ba7cc8242194f138
+  m_SerializeEntries:
+  - m_GUID: 0522d92fbe2efda479056c204e8374b9
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.UnityWebRequestModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0547b701ab67e394f8c70ea7c73dca24
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/Cinemachine.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 135fb1c2204798c418b44263ad02f3f0
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/Unity.ResourceManager.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1ee09485b9e1be746bdeb4cbeea91a83
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/Unity.Collections.LowLevel.ILSupport.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2186fd74741d68e49b83e65b61bbbd7d
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.AIModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2cd1643caadae6449bff5b6b3046ea71
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/Kybernetik.Animancer.FSM.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2f64c61b80ab091438190c71975489ee
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.TextRenderingModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3115bc01a58afa34d9690f3225f00839
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.TilemapModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 390b097884d8f3a4ab2e5d7f2960eaab
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.AssetBundleModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 44d41c1b9b5143b4aa1835f313cccdd8
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/System.Xml.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 484b38781d5c2f242b539c3979d03da4
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.VRModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 522594d4c3d907d40962659e7f0e8fd0
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/Pathfinding.Ionic.Zip.Reduced.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 524ff455969a153409f49280d75adccc
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.UnityWebRequestAssetBundleModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 564430c40776a7a408a6f5af1ef48b67
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.SpriteMaskModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 58ed40238639ab149b7d529e9a7d26ec
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.TextCoreFontEngineModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 59f32636dc7484447ba942711a82bdd0
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.SharedInternalsModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5ac7a1fc6cb35a9448d5dae6f8e601e7
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/Unity.RenderPipelines.Universal.Runtime.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 60cbc394151f6cd49b635c4f3fa30d4c
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.IMGUIModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 64f29c134215f174292c52424cfbc25b
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/Mono.Security.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 68358900f23fc4c418a668cb524b2a09
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.UnityAnalyticsModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69757abd0bfe478408ba00dc7aa7b397
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/DOTween.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6b5ffa8667916ec478d68d80e946be90
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/Unity.TextMeshPro.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 70bfb1485881331429a0289ce67c5c93
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/Unity.Collections.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 71727d5620f76fe4caf5da46e64a49f9
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.AudioModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 72dd523d6632ab546be6a47eef87b025
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/Unity.Addressables.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 73152b42a1a4d3742b2b01c0888e22e1
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/mscorlib.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7ad997d6a4105ca4a854593ca876d21b
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.ParticleSystemModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c9ac2734e8921f4e8b2b7ff6a1477bb
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/Unity.InputSystem.ForUI.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e2fa85a8c62ebe4abf8f1e0ff7a703f
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/PackageTools.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8357f875f97e5944cb3f1b2aa309b4e4
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.InputLegacyModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8b63bbebbd9dd114c8d36453f6031da8
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.AnimationModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 94b84a0f45b8c9e408d36ea49d5ab9a9
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.UIModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9e5a4c8b668226941aae9c8433b27752
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/Unity.Mathematics.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a2ca750a7e369314c93bec594b77050f
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.SpriteShapeModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a5db9e8c7d69bf348aaaa3292159f87b
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/Assembly-CSharp-firstpass.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a654c26fc9e074d48992df49d264a5da
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/Unity.Timeline.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a776b231b7ad26540bc7f577fa1d401c
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.PropertiesModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a9e527fc82b023446ae9adef60e91504
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.InputModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b3906ea1f79e618418932b46fd310c72
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/AstarPathfindingProject.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b4f5c28ad18bb6b4aae78a58ae63666c
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.VideoModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6a11f9e3afa4fb489b6e40552ec2f7e
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.UIElementsModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b923c57bdfebe284eb558b1298b381cb
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/Assembly-CSharp.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bf87370f8a5ba904b8f65d2d578b3473
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.XRModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c0fcc8c3d3817be4996e85e5857c3a9f
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/System.Configuration.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1a346d150922204c8b7a5b8ee8089eb
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.CoreModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c564fc366c523414d9eb7015bb1b6e4e
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.PhysicsModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c75056125f2ec7a44a4288a83fbd1e9d
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.Physics2DModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cb6c8892feaf949449383edca3376c82
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.AndroidJNIModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cbde30ce0dc415d47923268ea6d40e45
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/Unity.InputSystem.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d0c9f467750c3364f8485c2e27320282
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dd7446efd79a3324bbf50b0d71ef5815
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.SubsystemsModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e6fca730a8774fb448eb411b3bd9f8a8
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/Unity.Burst.Unsafe.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e88792cb8ef05f44d8f64648562ae177
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/Kybernetik.Animancer.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e895912a2484a8049b805f5ab01131a3
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.JSONSerializeModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8b23e9abd7c5a44eb61236c262a124b
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/System.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e942a0878a8afdb449d96f1b9f107d76
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.UI.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e9abd1981cc2a5040890f8537d46448a
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.DirectorModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e9bad1ed1235aed48bd356dd8c2c034b
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/Unity.Burst.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea9078f87fc285a43852e910fc997207
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/System.Core.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef981797cd8e41d468a5f68860b3dc18
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/Unity.RenderPipelines.Core.Runtime.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f402916dd93f32b4e9bfdce0eaf11054
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/Drawing.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f95f70d9707a8ee4e987fc13017ddd39
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.GridModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa706852c39fb624586d66e179865f25
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.TerrainModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa7ca9c1433bbce48b3e1aacd55c0f9f
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.TextCoreTextEngineModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd86344efb0fb9a4b9c0cc143a738544
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/Unity.RenderPipeline.Universal.ShaderLibrary.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe8075a2ebc75414ab0a73539f5a4cc7
+    m_Address: Assets/Settings/HybridCLR/AOTMetadata/UnityEngine.VFXModule.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - aot-metadata
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 390bfb95ac401ee47b247a882d1c12d0, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: cc1d859b9d3f4c544a629569b419163e, type: 2}
+    - {fileID: 11400000, guid: 9e826dbd49aaa7641b87ccdb3b969c1e, type: 2}

@@ -4,7 +4,7 @@
 >
 > **v1 — 2026-07-07。** 替代原 `L2_AddressablesService` + 消除 `L2_SceneService/Pipeline/Boot/` 12 文件。
 >
-> **Last Verified**: 2026-07-07
+> **Last Verified**: 2026-07-10
 
 ## 模块结构
 
@@ -35,6 +35,7 @@ SceneService.TransitionTo(config)
        └─ TransitionGate.Begin(config)
             └─ AssetService.LoadByLabels(["boot", ...sceneLabels])
             └─ AssetService.RunBootInit()  // 首次执行 Registry 初始化
+            └─ AssetService.LoadAOTMetadata(cb)  // HybridCLR AOT 补充元数据加载
 ```
 
 ## 公开 API
@@ -51,6 +52,9 @@ void ReleaseLabel(string[] labels);       // 跳过 pinned labels
 // Boot
 bool BootAssetsLoaded { get; }
 void RunBootInit();                       // 同步, idempotent — Registry 初始化
+
+// HybridCLR
+void LoadAOTMetadata(Action onComplete);  // 异步，通过 Addressables 加载 aot-metadata label 的 TextAsset → RuntimeApi.LoadMetadataForAOTAssembly
 ```
 
 ## Pinned Labels

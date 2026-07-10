@@ -96,6 +96,11 @@ namespace RedDust.GameScene
             while (!done) yield return null;
 
             _assetService.RunBootInit();
+
+            // Load HybridCLR AOT metadata before any mod loading
+            bool metadataDone = false;
+            _assetService.LoadAOTMetadata(() => { metadataDone = true; });
+            while (!metadataDone) yield return null;
         }
 
         public void OnGameplaySessionEnd()

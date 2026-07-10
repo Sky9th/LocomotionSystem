@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 30a8037b395a8f64f89350136707929f
   m_currentHash:
     serializedVersion: 2
-    Hash: d8be35e3968ce97636d631ffd6ee80a5
+    Hash: ca6055f7cdf90e93ee053af7c74d7a69
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -46,6 +46,7 @@ MonoBehaviour:
   m_GroupAssets:
   - {fileID: 11400000, guid: 1043ae5489c2e73428216fe0277177f8, type: 2}
   - {fileID: 11400000, guid: b6e931f7202675c47af7f2502d7f3246, type: 2}
+  - {fileID: 11400000, guid: 373a414b9dd454a4b898ddd3b1e28c0c, type: 2}
   - {fileID: 11400000, guid: bed2fc23ef3627345810e5ff29be0bb5, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
@@ -91,6 +92,7 @@ MonoBehaviour:
     - boot
     - scene-configs
     - prototype-art
+    - aot-metadata
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 7b13e7125ff415f42b5ed0ce91d68ac1, type: 2}

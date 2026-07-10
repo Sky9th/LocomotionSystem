@@ -174,6 +174,45 @@ namespace RedDust.Assets
         }
 
         // ═══════════════════════════════════════════════
+        // HybridCLR
+        // ═══════════════════════════════════════════════
+
+        /// <summary>
+        /// Load AOT supplementary metadata for HybridCLR. Must complete before any external
+        /// Mod C# DLL is loaded — otherwise the interpreter cannot resolve AOT types.
+        /// </summary>
+        public void LoadAOTMetadata(System.Action onComplete)
+        {
+            const string label = "aot-metadata";
+            var handle = UnityAddressables.LoadAssetsAsync<UnityEngine.TextAsset>(
+                new List<string> { label }, null, UnityAddressables.MergeMode.Union);
+
+            handle.Completed += op =>
+            {
+                if (op.Status == AsyncOperationStatus.Succeeded)
+                {
+                    int loaded = 0;
+                    foreach (var asset in op.Result)
+                    {
+                        if (asset == null) continue;
+                        var err = HybridCLR.RuntimeApi.LoadMetadataForAOTAssembly(
+                            asset.bytes, HybridCLR.HomologousImageMode.SuperSet);
+                        if (err != HybridCLR.LoadImageErrorCode.OK)
+                            Debug.LogWarning($"[AssetService] AOT metadata failed: {asset.name} → {err}");
+                        else
+                            loaded++;
+                    }
+                    Debug.Log($"[AssetService] AOT metadata loaded: {loaded} assemblies.");
+                }
+                else
+                {
+                    Debug.LogWarning($"[AssetService] No AOT metadata found, Mod support unavailable: {op.OperationException}");
+                }
+                onComplete?.Invoke();
+            };
+        }
+
+        // ═══════════════════════════════════════════════
         // Session
         // ═══════════════════════════════════════════════
 
