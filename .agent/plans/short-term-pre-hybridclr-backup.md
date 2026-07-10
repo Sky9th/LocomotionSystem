@@ -7,89 +7,99 @@
 
 ---
 
-## 主攻：HybridCLR 接入 + 首个测试 Mod
+## 前置准备 — Mod 架构补课
 
-> 不要再辩论 xLua vs HybridCLR。接入 → 写一个测试 Mod → 自己当 Mod 作者 → 跑通了，辩论自动结束。
-
-### Step 1: HybridCLR 接入（1 session）
-
-目标：IL2CPP 构建下 `Assembly.Load(byte[])` 能工作。
-
-| # | 操作 | 说明 |
-|---|------|------|
-| 1.1 | 安装 HybridCLR 包 | Package Manager → `https://github.com/focus-creative-games/hybridclr_unity.git` |
-| 1.2 | 初始化 | `HybridCLR → Installer → Install` |
-| 1.3 | 配置 PlayerSettings | Scripting Backend = IL2CPP，Api Compatibility = .NET Framework（需从 .NET Standard 2.1 切换） |
-| 1.4 | `Generate → All` | 产出 `HybridCLRData/AssembliesPostIl2CppStrip/{platform}/` |
-| 1.5 | 补充元数据接入 Addressables | 创建 `AOTMetadata` Group → 元数据 DLL 重命名 `.bytes` → 打 `aot-metadata` label → 构建时随 boot 标签打包 |
-| 1.6 | 运行时加载补充元数据 | `AssetService` 加载 `aot-metadata` label → `RuntimeApi.LoadMetadataForAOTAssembly()` |
-| 1.7 | 验证 | 空场景 build → 启动 → 日志确认 HybridCLR 初始化成功 → `Assembly.Load(byte[])` 不抛异常 |
-
-### Step 2: 第一个测试 Mod（1 session）
-
-目标：自己站在 Mod 作者立场，从零写一个能跑进游戏的 C# Mod。
-
-| # | 操作 | 说明 |
-|---|------|------|
-| 2.1 | 建 Mod 项目 | 独立 `.csproj`（非 Unity 项目），引用 `RedDust.Api.dll` 存根（从 game 的 AOT 程序集提取） |
-| 2.2 | 写 Mod 逻辑 | 新增一件物品（如 `TestSword`），游戏启动时注册到 GameRegistry，打一条 `Debug.Log` |
-| 2.3 | 编译 DLL | `dotnet build` → 产出 `MyMod.dll` |
-| 2.4 | 放 Mods/ 文件夹 | `persistentDataPath/Mods/MyMod/manifest.json + mod.dll` |
-| 2.5 | 游戏侧加载 Mod | 最小 `ModLoader`：扫描 `Mods/` → `Assembly.Load(File.ReadAllBytes(dllPath))` → 反射找到 `[ModEntry]` → 调用 `Initialize()` |
-| 2.6 | 验证 | 启动游戏 → 日志输出 Mod 注册消息 → `GameRegistry` 中多了一件 `TestSword` |
-
-### Step 3: 串联 + 记录（1 session）
-
-| # | 操作 | 说明 |
-|---|------|------|
-| 3.1 | 记录 Mod 作者工作流 | 站在自己的体验：哪些步骤顺畅？哪些卡住了？缺什么文档？ |
-| 3.2 | 记录 API 缺口 | Mod 代码里想调但调不到的 public API——记录下来，不现在补 |
-| 3.3 | 输出 | 更新 `mod-json-reference.md` 补充 C# Mod 实战经验 + 更新 `hybridclr-integration.md` 修正踩坑记录 |
-
-### 这个阶段不出什么
-
-- ❌ 不出 `ModService.cs` 完整实现——只写最小 `ModLoader` 够跑测试
-- ❌ 不写 Mod 管理 UI
-- ❌ 不写 Workshop 集成
-- ❌ 不写 C# Mod 文档——Step 3 的记录是文档的原料，不是文档本身
-
----
-
-## S0 基础设施（与主攻并行）
-
-> HybridCLR 接入期间，Phase 5 物品经济继续推进。contentId 是物品经济的硬依赖——不因为 Mod 实验而搁置。
+> Mod 框架已定稿。以下是项目如果在 Day 1 就有 Mod 约束应该做的事——现在补上。**和 Phase 5 并行推进，不阻塞物品经济开发。**
 
 ### 🔴 P0：PropertyPresetSO 加 contentId 字段
+
+**为什么是 P0**：Phase 5 正在建物品。不现在做，以后 15 个子类 + 50+ 资产批量重命名。
 
 | 步骤 | 操作 | 文件 |
 |------|------|------|
 | P0.1 | `PropertyPresetSO` 加 `public string contentId;` | `L3_Properties/Definition/PropertyPresetSO.cs` |
 | P0.2 | Editor 中 contentId 默认 = asset name（迁移兼容） | `EntityEditorWindow` 基类 |
 | P0.3 | 新物品按 `category.subcategory.name` 规范填写 contentId | Phase 5 每个新 SO 创建时 |
-| P0.4 | P5.0 已有 49 件物品 contentId 回填 | 批量赋值规范 ID |
+| P0.4 | P5.0 已有 49 件物品 contentId 回填 | 批量赋值规范 ID（当前默认 = asset name，如 `CannedBeans` → `item.consumable.food.canned_beans`） |
 
-命名示例：见 [mod-architecture-framework.md](../tech/mod-architecture-framework.md#31-contentid-命名规范)。
+**命名示例**：
+```
+MeleeWeapon:   item.weapon.melee.iron_sword
+RangedWeapon:  item.weapon.ranged.pistol.glock_17
+Throwable:     item.weapon.thrown.frag_grenade
+Armor Head:    item.armor.head.steel_helmet
+Armor Body:    item.armor.body.steel_vest
+Armor Leg:     item.armor.leg.steel_greaves
+Ammo:          item.ammo.pistol.nine_mm           ← FMJ/JHP 是 StatOverride，不进 contentId
+Tool:          item.tool.axe_steel
+Container:     item.container.backpack_hiking
+Consumable:    item.consumable.medical.bandage
+Food:          item.consumable.food.canned_beans
+Material:      item.consumable.material.wood_plank
+Character:     entity.human.player_male
+Zombie:        entity.zombie.runner
+AbilityTree:   ability.innate.human_base
+Building:      building.defense.wooden_wall       ← Phase 7，约定先行
+SceneItem:     sceneitem.furniture.wooden_chair    ← Phase 7，约定先行
+```
 
-### 🟡 P1：AssetCatalog 改为 contentId 查找（条件触发）
+### 🟡 P1：AssetCatalog 改为 contentId 查找
 
-> ⚠️ 只在主攻 3 session 完成后才启动。Mod 验证优先于重构。
+> ⚠️ 2 session。AssetCatalog 有 8 个注册表，需分批切换。
 
 | 步骤 | 操作 | 文件 |
 |------|------|------|
 | P1.1 | Items + Characters 注册表 contentId 优先，asset name fallback | `AssetCatalog.cs` |
-| P1.2 | 其余注册表 contentId 优先 | `AssetCatalog.cs` |
-| P1.3 | `PlayerService` 硬编码引用改为 contentId | `PlayerService.cs`（~5 处） |
+| P1.2 | 其余 6 个注册表 contentId 优先（PropertyTrees/AnimProfiles 等） | `AssetCatalog.cs` |
+| P1.3 | `PlayerService` 中硬编码引用改为 contentId | `PlayerService.cs`（`"Human"`, `"Blade"` 等 ~5 处） |
 
-### 🟢 P2：Phase 1-4 关键类 sealed 审查（不改代码，只标注）
+### 🟡 P1：Entity 加 ContentId 字段
 
-> 不改代码。仅输出"需要改的类清单"，P3 以后修复。
+| 步骤 | 操作 | 文件 |
+|------|------|------|
+| P1.4 | `Entity` 加 `public string ContentId { get; }` | `Entity.cs` |
+| P1.5 | 构造函数/Register 时从 Preset.contentId 赋值 | `EntityService.cs` |
 
-| 审查项 | 状态 |
-|--------|------|
-| **AbilityReactor** | ⚠️ 已确认 `sealed`——需改 |
-| **AbilityExecutor** | ⚠️ 已确认 `sealed`——需改 |
-| EffectSO 层级 | 待审查——base 是否有 sealed？叶子类是否有 sealed？ |
-| HitReaction DriverArbiter | ⚠️ 抢占规则已确认 hardcode——需提取接口 |
+### 🟡 P1：AbilityTreeSO 加 contentId
+
+| 步骤 | 操作 | 文件 |
+|------|------|------|
+| P1.6 | `AbilityTreeSO` 加 `public string contentId;`（保留 `treeId` fallback） | `AbilityTreeSO.cs` |
+
+### 🟢 P2：Phase 1-4 关键类审查
+
+> 不改代码，只逐项确认。标注"需修改"的条目。
+
+| 审查项 | 模块 | 确认什么 |
+|--------|------|---------|
+| EffectSO | L3_Ability | base class 是否 `sealed`？——预期 ✅ virtual |
+| Ability 管道状态 | L3_Ability | 8 状态类是否 `sealed`？StateMachine 能否注册新状态？ |
+| AbilityReactor 回调 | L3_Ability | 5 回调 delegate 数量是否固定？Mod 能否加新回调？ |
+| **AbilityReactor sealed** | L3_Ability | ⚠️ 已确认 `sealed`——**需修改**（Mod 框架要求不 sealed） |
+| **AbilityExecutor sealed** | L3_Ability | ⚠️ 已确认 `sealed`——**需修改**（同上） |
+| RdContainer | L3_Container | 操作 Entity 具体类型——Mod 自定义 Entity 子类能否兼容？ |
+| CharacterEquipment | L3_Character | SyncEquipment 槽位从 `SlotDef[]` 来（数据驱动 ✅），但槽位定义在 CharacterBuildContext——是否 hardcode？ |
+| Phase 2.5 Rule 基类 | L3_Character | 类名可能不是 `*Rule`——需先定位实际文件，再确认 sealed/可注册性 |
+| HitReaction | L3_Character | ⚠️ DriverArbiter 抢占规则已确认 hardcode——**需修改**（提取为 IAnimationArbiter 接口） |
+| L2 Service public API | L2 全服务 | EntityService/PlayerService/AssetService 等——暴露了哪些 internal 实现？ |
+| Character 模块 sealed | L3_Character | 18+ `internal sealed` 类——哪些将来需升为 public？ |
+
+### ⚪ P3：远期的锦上添花
+
+> S2 根据社区反馈做。不改代码，只标注。
+
+- 管道状态机可扩展性增强
+- Locomotion/生存指标公式 → delegate
+- 装备槽位可注册
+- AbilityReactor / AbilityExecutor 解 sealed（破坏性变更，需评估影响）
+
+### ⚪ P3：远期的锦上添花
+
+> S2 根据社区反馈做。不改代码，只标注。
+
+- 管道状态机可扩展性增强
+- Locomotion/生存指标公式 → delegate
+- 装备槽位可注册
 
 ---
 
