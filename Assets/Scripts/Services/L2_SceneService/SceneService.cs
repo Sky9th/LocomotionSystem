@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RedDust.Assets;
 using RedDust.Core;
 using RedDust.Core.Events;
+using RedDust.Modding;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -101,6 +102,12 @@ namespace RedDust.GameScene
             bool metadataDone = false;
             _assetService.LoadAOTMetadata(() => { metadataDone = true; });
             while (!metadataDone) yield return null;
+
+            // Load mods now that HybridCLR AOT metadata is ready.
+            // Mod DLLs reference AOT types; LoadMetadataForAOTAssembly must
+            // complete first so the HybridCLR interpreter can resolve them.
+            if (GameContext.Instance.TryResolveService(out ModService modService))
+                modService.LoadAllMods();
         }
 
         public void OnGameplaySessionEnd()

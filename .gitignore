@@ -79,3 +79,6 @@ Packages/com.arongranberg.astar/ExampleScenes~/
 HybridCLRData/
 /hybridclr/
 /il2cpp_plus/
+
+# Mods — runtime directory, each dev/modder populates their own
+/Mods/

@@ -81,6 +81,13 @@ tech/
 │   │
 │   ├── L2-item-service/                # ⛔ DELETED — 纯设计文档，无代码落地
 │   │
+│   ├── L2-mod-service/                  # L2 Service: Mod 管理 — 外部 C# DLL 扫描/加载/初始化
+│   │   ├── mod-service.md               # 模块总览 — 调用链、API、设计决策
+│   │   ├── mod-entry-attribute.md       # ModEntryAttribute — [ModEntry] 标记属性
+│   │   ├── imod-entry.md                # IModEntry — void Initialize() 入口接口
+│   │   ├── mod-manifest.md              # ModManifest — manifest.json 反序列化
+│   │   └── mod-service-impl.md          # ModService 实现详解 — 加载流程、错误处理
+│   │
 │   ├── L2-audio/                       # L2 Service (自身代码: Data/ Structs/)
 │   │   ├── README.md
 │   │   ├── audio-manager.md
