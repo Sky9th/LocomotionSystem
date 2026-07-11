@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.GameInput
+namespace RedDust.Services.Input
 {
     /// <summary>
     /// 单轴输入载荷。

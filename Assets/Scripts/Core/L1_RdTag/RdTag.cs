@@ -1,6 +1,7 @@
+using RedDust.Core.RdTag;
 using System;
 
-namespace RedDust.Core
+namespace RedDust.Core.RdTag
 {
     /// <summary>
     /// 层级标签运行时值类型。轻量、HashSet 友好、零装箱，对标 UE FrTag。

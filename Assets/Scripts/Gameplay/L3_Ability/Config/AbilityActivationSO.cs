@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 技能「怎么放」的完整定义。封装激活方式、动画、阶段时机。

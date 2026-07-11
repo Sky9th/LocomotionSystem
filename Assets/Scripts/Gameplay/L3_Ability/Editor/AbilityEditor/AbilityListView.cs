@@ -6,7 +6,7 @@ using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     public static class AbilityListView
     {

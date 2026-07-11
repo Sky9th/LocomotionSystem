@@ -1,8 +1,8 @@
 using System;
-using RedDust.Entities.Editor;
+using RedDust.Services.EntityService.Editor;
 using UnityEditor;
 
-namespace RedDust.Consumable.Editor
+namespace RedDust.Gameplay.Consumable.Editor
 {
     /// <summary>
     /// 消耗品编辑器。编辑 ConsumableSO / MaterialSO 预设。

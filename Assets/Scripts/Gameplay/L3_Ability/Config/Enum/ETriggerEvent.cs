@@ -1,4 +1,4 @@
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 被动技能触发事件类型。

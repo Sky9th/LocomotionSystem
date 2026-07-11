@@ -1,9 +1,10 @@
+using RedDust.Core.Modules;
 using UnityEngine;
-using RedDust.Audio;
-using RedDust.Core;
-using RedDust.Character.Animation;
+using RedDust.Services.Audio;
+using RedDust.Core.Events;
+using RedDust.Gameplay.Character.Animation;
 
-namespace RedDust.Character.Audio
+namespace RedDust.Gameplay.Character.Audio
 {
     public sealed class CharacterAudio : ModuleChildMono
     {

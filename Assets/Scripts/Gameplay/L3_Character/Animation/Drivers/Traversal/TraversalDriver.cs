@@ -1,10 +1,10 @@
 using UnityEngine;
 using Animancer;
-using RedDust.Character.Animation;
-using RedDust.Character;
-using RedDust.Character.Kinematic;
+using RedDust.Gameplay.Character.Animation;
+using RedDust.Gameplay.Character;
+using RedDust.Gameplay.Character.Kinematic;
 
-namespace RedDust.Character.Animation.Drivers.Traversal
+namespace RedDust.Gameplay.Character.Animation.Drivers.Traversal
 {
     internal sealed class TraversalDriver : BaseAnimationDriver
     {

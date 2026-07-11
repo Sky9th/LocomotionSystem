@@ -1,7 +1,7 @@
 using UnityEngine;
-using RedDust.Properties;
+using RedDust.Gameplay.Properties;
 
-namespace RedDust.SceneItem
+namespace RedDust.Gameplay.SceneItem
 {
     /// <summary>
     /// 场景物品预设（家具/装饰物/场景物体）。

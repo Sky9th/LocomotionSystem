@@ -1,7 +1,7 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
 
-namespace RedDust.Properties.Editor
+namespace RedDust.Gameplay.Properties.Editor
 {
     /// <summary>
     /// Tree item node for the PropertyTree list. Represents one PropertyTreeSO

@@ -1,7 +1,8 @@
-using RedDust.Core;
+using RedDust.Core.RdTag;
+using RedDust.Core.Events;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 技能定义抽象基类。ActiveAbilitySO（主动）和 PassiveAbilitySO（被动）的公共根。

@@ -1,4 +1,4 @@
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 主动技能管道状态。每个值对应一个 State 类。

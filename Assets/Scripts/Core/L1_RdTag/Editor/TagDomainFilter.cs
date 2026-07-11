@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
-namespace RedDust.Core.Editor
+using RedDust.Core.RdTag;
+namespace RedDust.Core.RdTag.Editor
 {
     /// <summary>
     /// Tag 域过滤器 — 集中定义每个 Tag 字段应该选择哪个根下的标签。

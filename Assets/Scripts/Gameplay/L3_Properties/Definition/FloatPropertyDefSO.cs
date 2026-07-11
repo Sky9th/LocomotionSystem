@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using UnityEngine;
 
-namespace RedDust.Properties
+namespace RedDust.Gameplay.Properties
 {
     [CreateAssetMenu(fileName = "FloatDefinition", menuName = "RedDust/Properties/Float Definition")]
     public class FloatPropertyDefSO : PropertyDefSO

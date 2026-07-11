@@ -1,9 +1,10 @@
+using RedDust.Core.RdTag;
 using System;
-using RedDust.Core;
-using RedDust.Properties;
+using RedDust.Core.Events;
+using RedDust.Gameplay.Properties;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// Buff/Debuff 效果。向目标注入 FloatAdjunct（只读修正） + RdTag，

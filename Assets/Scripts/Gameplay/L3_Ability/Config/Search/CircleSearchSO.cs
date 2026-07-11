@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 圆形搜索。OverlapSphere 自身周围。旋风斩、战吼、光环。Phase 4.2+ 实现。

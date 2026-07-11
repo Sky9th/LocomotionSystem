@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 斩杀效果。目标 HP 低于阈值时即死。

@@ -1,3 +1,4 @@
+using RedDust.Core.RdTag;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,7 +6,7 @@ using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 
-namespace RedDust.Properties.Editor
+namespace RedDust.Gameplay.Properties.Editor
 {
     /// <summary>
     /// Popup dialogs for the Property Tree Editor: NewTree + CreateDef.

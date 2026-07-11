@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.Character.Animation
+namespace RedDust.Gameplay.Character.Animation
 {
     public enum EDriverType { Ability, Traversal, HitReaction }
 

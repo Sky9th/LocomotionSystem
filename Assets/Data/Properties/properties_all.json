@@ -1333,91 +1333,91 @@
       {
         "id": "Slots",
         "description": "[Fallback] 通用容器槽位定义。推荐使用特定槽位 PropertyDef（RightHand/Head/Chest/Pouch/Scope 等），各自有独立 AcceptTags 默认值。本定义仅用于无特殊需求的槽位。",
-        "structTypeName": "RedDust.Container.SlotDef",
+        "structTypeName": "RedDust.Gameplay.Container.SlotDef",
         "defaultJson": "{\"Capacity\":1}"
       },
       {
         "id": "RightHand",
         "description": "主手武器槽位。默认接受 Weapon 标签物品。",
-        "structTypeName": "RedDust.Container.SlotDef",
+        "structTypeName": "RedDust.Gameplay.Container.SlotDef",
         "defaultJson": "{\"AcceptTags\":[\"Entity.Equipment.Weapon\"],\"Capacity\":1}"
       },
       {
         "id": "LeftHand",
         "description": "副手武器/盾牌槽位。默认接受 Entity.Equipment.Weapon 或 Entity.Equipment.Armor.Shield 标签物品。",
-        "structTypeName": "RedDust.Container.SlotDef",
+        "structTypeName": "RedDust.Gameplay.Container.SlotDef",
         "defaultJson": "{\"AcceptTags\":[\"Entity.Equipment.Weapon\",\"Entity.Equipment.Armor.Shield\"],\"Capacity\":1}"
       },
       {
         "id": "Head",
         "description": "头部防具槽位。默认接受 Entity.Equipment.Armor.Head 标签物品。",
-        "structTypeName": "RedDust.Container.SlotDef",
+        "structTypeName": "RedDust.Gameplay.Container.SlotDef",
         "defaultJson": "{\"AcceptTags\":[\"Entity.Equipment.Armor.Head\"],\"Capacity\":1}"
       },
       {
         "id": "Chest",
         "description": "躯干防具槽位（胸甲/背心）。默认接受 Entity.Equipment.Armor.Chest 标签物品。NodeId 用 Chest 以避 Human 树 Body 文件夹同名冲突。",
-        "structTypeName": "RedDust.Container.SlotDef",
+        "structTypeName": "RedDust.Gameplay.Container.SlotDef",
         "defaultJson": "{\"AcceptTags\":[\"Entity.Equipment.Armor.Chest\"],\"Capacity\":1}"
       },
       {
         "id": "LeftLeg",
         "description": "左腿防具槽位。默认接受 Entity.Equipment.Armor.Legs 标签物品。",
-        "structTypeName": "RedDust.Container.SlotDef",
+        "structTypeName": "RedDust.Gameplay.Container.SlotDef",
         "defaultJson": "{\"AcceptTags\":[\"Entity.Equipment.Armor.Legs\"],\"Capacity\":1}"
       },
       {
         "id": "RightLeg",
         "description": "右腿防具槽位。默认接受 Entity.Equipment.Armor.Legs 标签物品。",
-        "structTypeName": "RedDust.Container.SlotDef",
+        "structTypeName": "RedDust.Gameplay.Container.SlotDef",
         "defaultJson": "{\"AcceptTags\":[\"Entity.Equipment.Armor.Legs\"],\"Capacity\":1}"
       },
       {
         "id": "LeftFoot",
         "description": "左脚鞋具槽位。默认接受 Entity.Equipment.Armor.Feet 标签物品。",
-        "structTypeName": "RedDust.Container.SlotDef",
+        "structTypeName": "RedDust.Gameplay.Container.SlotDef",
         "defaultJson": "{\"AcceptTags\":[\"Entity.Equipment.Armor.Feet\"],\"Capacity\":1}"
       },
       {
         "id": "RightFoot",
         "description": "右脚鞋具槽位。默认接受 Entity.Equipment.Armor.Feet 标签物品。",
-        "structTypeName": "RedDust.Container.SlotDef",
+        "structTypeName": "RedDust.Gameplay.Container.SlotDef",
         "defaultJson": "{\"AcceptTags\":[\"Entity.Equipment.Armor.Feet\"],\"Capacity\":1}"
       },
       {
         "id": "Back",
         "description": "背部槽位（背包）。默认接受 Entity.Equipment.Container 标签物品。可嵌套子容器。",
-        "structTypeName": "RedDust.Container.SlotDef",
+        "structTypeName": "RedDust.Gameplay.Container.SlotDef",
         "defaultJson": "{\"AcceptTags\":[\"Entity.Equipment.Container\"],\"Capacity\":1}"
       },
       {
         "id": "Pouch",
         "description": "胸挂/弹匣袋槽位。防弹背心等装备的子槽位。默认接受 Magazine 标签物品。",
-        "structTypeName": "RedDust.Container.SlotDef",
+        "structTypeName": "RedDust.Gameplay.Container.SlotDef",
         "defaultJson": "{\"AcceptTags\":[\"Magazine\"],\"Capacity\":1}"
       },
       {
         "id": "ContainerSlot",
         "description": "通用容器槽位。背包等容器的内部格子。AcceptTags 为空=接受所有物品。TODO: nodeId 与 defId 相同时可简化——树节点只列 defId，运行时以 defId 为 slot key，省去 nodeId 冗余。",
-        "structTypeName": "RedDust.Container.SlotDef",
+        "structTypeName": "RedDust.Gameplay.Container.SlotDef",
         "defaultJson": "{\"AcceptTags\":[],\"Capacity\":20}"
       },
       {
         "id": "Scope",
         "description": "瞄准镜附件槽位。枪械的子槽位。默认接受 Attachment.Scope 标签物品。",
-        "structTypeName": "RedDust.Container.SlotDef",
+        "structTypeName": "RedDust.Gameplay.Container.SlotDef",
         "defaultJson": "{\"AcceptTags\":[\"Attachment.Scope\"],\"Capacity\":1}"
       },
       {
         "id": "Magazine",
         "description": "弹匣附件槽位。枪械的子槽位。默认接受 Attachment.Magazine 标签物品。",
-        "structTypeName": "RedDust.Container.SlotDef",
+        "structTypeName": "RedDust.Gameplay.Container.SlotDef",
         "defaultJson": "{\"AcceptTags\":[\"Attachment.Magazine\"],\"Capacity\":1}"
       },
       {
         "id": "Muzzle",
         "description": "枪口装置附件槽位。枪械的子槽位。默认接受 Attachment.Muzzle 标签物品。",
-        "structTypeName": "RedDust.Container.SlotDef",
+        "structTypeName": "RedDust.Gameplay.Container.SlotDef",
         "defaultJson": "{\"AcceptTags\":[\"Attachment.Muzzle\"],\"Capacity\":1}"
       }
     ]

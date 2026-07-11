@@ -1,6 +1,6 @@
 using System;
 
-namespace RedDust.Modding
+namespace RedDust.Services.ModService
 {
     /// <summary>
     /// Serializable manifest matching manifest.json. Parsed by JsonUtility.

@@ -1,4 +1,4 @@
-namespace RedDust.GameState
+namespace RedDust.Services.GameState
 {
     /// <summary>
     /// Event payload requesting a game state transition.

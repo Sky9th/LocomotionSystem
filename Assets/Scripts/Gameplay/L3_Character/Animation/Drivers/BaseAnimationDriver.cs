@@ -1,9 +1,10 @@
+using RedDust.Core.Modules;
 using UnityEngine;
-using RedDust.Core;
-using RedDust.Character.Animation;
-using RedDust.Character;
+using RedDust.Core.Events;
+using RedDust.Gameplay.Character.Animation;
+using RedDust.Gameplay.Character;
 
-namespace RedDust.Character.Animation.Drivers
+namespace RedDust.Gameplay.Character.Animation.Drivers
 {
     internal abstract class BaseAnimationDriver : ModuleChildMono, ICharacterAnimationDriver
     {

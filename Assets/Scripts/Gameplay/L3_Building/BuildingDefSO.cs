@@ -1,7 +1,7 @@
 using UnityEngine;
-using RedDust.Properties;
+using RedDust.Gameplay.Properties;
 
-namespace RedDust.Building
+namespace RedDust.Gameplay.Building
 {
     /// <summary>
     /// 建筑预设。继承 PropertyPresetSO。

@@ -1,6 +1,6 @@
 using System;
 
-namespace RedDust.Properties
+namespace RedDust.Gameplay.Properties
 {
     /// <summary>
     /// 标记一个 struct 可用于 PropertyType.Struct 属性。

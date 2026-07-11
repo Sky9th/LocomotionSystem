@@ -1,6 +1,7 @@
+using RedDust.Core.Modules;
 using UnityEngine;
 
-namespace RedDust.Core
+namespace RedDust.Core.Modules
 {
     public abstract class ModuleChild : IModuleChild
     {

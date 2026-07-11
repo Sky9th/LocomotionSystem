@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RedDust.Character
+namespace RedDust.Gameplay.Character
 {
     /// <summary>
     /// SlotId → HumanBodyBones 映射。

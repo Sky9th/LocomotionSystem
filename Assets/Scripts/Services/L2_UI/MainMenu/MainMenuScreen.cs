@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.UI
+namespace RedDust.Services.UI
 {
 
     public class MainMenuScreen : UIScreen

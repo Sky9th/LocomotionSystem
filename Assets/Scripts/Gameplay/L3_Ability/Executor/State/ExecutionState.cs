@@ -1,9 +1,10 @@
+using RedDust.Core.RdTag;
 using System.Collections.Generic;
-using RedDust.Core;
-using RedDust.Entities;
+using RedDust.Core.Events;
+using RedDust.Services.EntityService;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// ⑤ 效果载荷 + 逐 hit 结算。Fire 帧物理查询（Cone/Ray/Circle → ctx.Targets）→ 构造伤害 → Reactor 落地。

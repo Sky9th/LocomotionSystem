@@ -1,8 +1,8 @@
 using System;
-using RedDust.Entities.Editor;
+using RedDust.Services.EntityService.Editor;
 using UnityEditor;
 
-namespace RedDust.Equipment.Editor
+namespace RedDust.Gameplay.Equipment.Editor
 {
     /// <summary>
     /// 装备编辑器。编辑 MeleeWeaponSO / RangedWeaponSO / ArmorSO / ToolSO / ContainerSO 预设。

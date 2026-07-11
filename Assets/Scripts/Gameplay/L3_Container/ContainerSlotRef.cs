@@ -1,6 +1,6 @@
 using System;
 
-namespace RedDust.Container
+namespace RedDust.Gameplay.Container
 {
     /// <summary>
     /// 容器槽位轻量定位符——用于 L2_ItemService 索引和跨容器 Transfer。

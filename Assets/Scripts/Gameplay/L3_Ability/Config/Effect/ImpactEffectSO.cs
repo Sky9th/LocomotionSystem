@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 冲击效果。硬直 + 击退。防御侧拿 staggerValue 跟自身霸体阈值比较，自行决定反应。

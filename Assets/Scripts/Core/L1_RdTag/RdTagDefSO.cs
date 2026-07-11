@@ -1,6 +1,7 @@
+using RedDust.Core.RdTag;
 using UnityEngine;
 
-namespace RedDust.Core
+namespace RedDust.Core.RdTag
 {
     /// <summary>
     /// RdTag 的 ScriptableObject 定义资产。

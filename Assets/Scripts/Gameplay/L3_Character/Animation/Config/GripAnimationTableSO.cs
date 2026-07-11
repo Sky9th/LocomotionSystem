@@ -1,7 +1,8 @@
-using RedDust.Core;
+using RedDust.Core.RdTag;
+using RedDust.Core.Events;
 using UnityEngine;
 
-namespace RedDust.Character.Animation
+namespace RedDust.Gameplay.Character.Animation
 {
     [System.Serializable]
     public struct GripAnimationEntry

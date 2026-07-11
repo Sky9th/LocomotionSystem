@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using RedDust.Entities;
+using RedDust.Services.EntityService;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 主动技能管道执行上下文。Start 时填充，管道结束后外部可读取全貌。

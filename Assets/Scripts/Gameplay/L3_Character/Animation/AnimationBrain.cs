@@ -1,16 +1,17 @@
+using RedDust.Core.Modules;
 using UnityEngine;
 using Animancer;
-using RedDust.Core;
-using RedDust.Character.Animation.Drivers;
-using RedDust.Character.Animation.Drivers.Locomotion;
-using RedDust.Character.Animation.Drivers.Traversal;
-using RedDust.Character.Animation.Drivers.Ability;
-using RedDust.Character.Animation.Drivers.HitReaction;
-using RedDust.Character.Animation;
-using RedDust.Character;
-using RedDust.Character.Kinematic;
+using RedDust.Core.Events;
+using RedDust.Gameplay.Character.Animation.Drivers;
+using RedDust.Gameplay.Character.Animation.Drivers.Locomotion;
+using RedDust.Gameplay.Character.Animation.Drivers.Traversal;
+using RedDust.Gameplay.Character.Animation.Drivers.Ability;
+using RedDust.Gameplay.Character.Animation.Drivers.HitReaction;
+using RedDust.Gameplay.Character.Animation;
+using RedDust.Gameplay.Character;
+using RedDust.Gameplay.Character.Kinematic;
 
-namespace RedDust.Character.Animation
+namespace RedDust.Gameplay.Character.Animation
 {
     [DisallowMultipleComponent]
     public sealed class AnimationBrain : ModuleHub, IModuleChild

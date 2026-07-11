@@ -1,9 +1,9 @@
 using UnityEngine;
 using Animancer;
-using RedDust.Character.Animation;
-using RedDust.Character;
+using RedDust.Gameplay.Character.Animation;
+using RedDust.Gameplay.Character;
 
-namespace RedDust.Character.Animation.Drivers.HitReaction
+namespace RedDust.Gameplay.Character.Animation.Drivers.HitReaction
 {
     /// <summary>
     /// 受击动画 CustomData 结构体。由 CharacterCombat 构建，HitReactionDriver.OnStarted 解包。

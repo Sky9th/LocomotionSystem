@@ -1,15 +1,16 @@
 #if UNITY_EDITOR
+using RedDust.Core.RdTag;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using RedDust.Core;
-using RedDust.Ability.Editor;
+using RedDust.Core.Events;
+using RedDust.Gameplay.Ability.Editor;
 using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>AbilityTree 节点 DTO——对应 SAbilityTreeNode。</summary>
     [Serializable]

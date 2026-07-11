@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace RedDust.Character.Locomotion
+namespace RedDust.Gameplay.Character.Locomotion
 {
     [Serializable]
     public struct SCharacterMotor

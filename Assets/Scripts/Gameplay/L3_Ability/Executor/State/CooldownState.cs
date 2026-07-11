@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// ⑦ 冷却施加。冷却从 Activation 入口开始，与 Fire+Recovery 重叠。

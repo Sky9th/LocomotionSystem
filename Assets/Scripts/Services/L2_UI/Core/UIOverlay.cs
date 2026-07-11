@@ -1,7 +1,7 @@
 using DG.Tweening;
 using UnityEngine;
 
-namespace RedDust.UI
+namespace RedDust.Services.UI
 {
 
     public abstract class UIOverlay : MonoBehaviour
@@ -10,7 +10,7 @@ namespace RedDust.UI
         [SerializeField] private float fadeDuration = 0.2f;
 
         protected UIService uiService;
-        protected float DeltaTime => Time.unscaledDeltaTime;
+        protected float DeltaTime => UnityEngine.Time.unscaledDeltaTime;
 
         public void Initialize(UIService manager)
         {

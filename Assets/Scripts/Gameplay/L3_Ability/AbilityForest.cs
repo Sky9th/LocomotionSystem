@@ -1,8 +1,10 @@
+using RedDust.Core.GameService;
+using RedDust.Core.RdTag;
 using System.Collections.Generic;
-using RedDust.Core;
+using RedDust.Core.Events;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     internal class ActiveTree
     {

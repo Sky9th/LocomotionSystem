@@ -1,4 +1,4 @@
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 技能事件类型。

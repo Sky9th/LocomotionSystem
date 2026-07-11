@@ -1,11 +1,13 @@
+using RedDust.Core.GameContext;
+using RedDust.Core.Modules;
 using System;
 using System.Collections.Generic;
-using RedDust.Core;
-using RedDust.GameState;
+using RedDust.Core.Events;
+using RedDust.Services.GameState;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace RedDust.GameInput
+namespace RedDust.Services.Input
 {
     /// <summary>
     /// 输入服务。遍历 InputActionAsset 的所有 Action，

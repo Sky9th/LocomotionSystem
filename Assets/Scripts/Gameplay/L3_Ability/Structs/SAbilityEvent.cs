@@ -1,4 +1,4 @@
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 技能事件载荷。发布给 UI 层（冷却图标、激活反馈、拒绝原因）。

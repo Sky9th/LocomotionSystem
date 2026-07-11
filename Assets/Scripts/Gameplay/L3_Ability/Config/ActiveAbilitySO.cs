@@ -1,7 +1,8 @@
-using RedDust.Core;
+using RedDust.Core.RdTag;
+using RedDust.Core.Events;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 单个技能的完整数据定义。纯配置，无运行时状态。

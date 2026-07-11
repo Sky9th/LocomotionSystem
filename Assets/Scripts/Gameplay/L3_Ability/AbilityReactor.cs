@@ -1,9 +1,9 @@
-using RedDust.Core;
+using RedDust.Core.Modules;
 using RedDust.Core.Events;
-using RedDust.Properties;
+using RedDust.Gameplay.Properties;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 技能反应器。挂载在 Target 侧，对应 AbilityExecutor 的发送端。

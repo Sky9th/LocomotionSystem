@@ -1,5 +1,5 @@
-using RedDust.Ability;
-using RedDust.Core;
+using RedDust.Gameplay.Ability;
+using RedDust.Core.Events;
 using UnityEngine;
 
 namespace RedDust.Core.Events

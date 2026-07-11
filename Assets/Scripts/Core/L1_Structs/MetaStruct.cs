@@ -1,6 +1,7 @@
+using RedDust.Core.Structs;
 using System;
 
-namespace RedDust.Core
+namespace RedDust.Core.Structs
 {
     /// <summary>
     /// Base metadata snapshot embedded in every struct that lives under

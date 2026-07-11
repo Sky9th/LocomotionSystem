@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.Consumable
+namespace RedDust.Gameplay.Consumable
 {
     /// <summary>
     /// 材料预设。零 C# 字段。

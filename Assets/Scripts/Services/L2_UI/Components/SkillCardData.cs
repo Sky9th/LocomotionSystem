@@ -1,8 +1,8 @@
 using System.Text;
-using RedDust.Ability;
+using RedDust.Gameplay.Ability;
 using UnityEngine;
 
-namespace RedDust.UI
+namespace RedDust.Services.UI
 {
     /// <summary>
     /// 技能卡展示数据。从 ActiveAbilitySO 提取的纯展示层数据。

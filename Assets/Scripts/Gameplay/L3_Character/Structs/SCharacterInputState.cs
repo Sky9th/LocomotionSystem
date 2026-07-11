@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.Character
+namespace RedDust.Gameplay.Character
 {
     /// <summary>
     /// 角色原始输入状态——外部系统（PlayerService/AIService）每帧写入的"旋钮面板"。

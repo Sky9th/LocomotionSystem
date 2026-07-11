@@ -1,8 +1,8 @@
-using RedDust.Ability;
-using RedDust.Entities;
+using RedDust.Gameplay.Ability;
+using RedDust.Services.EntityService;
 using UnityEngine;
 
-namespace RedDust.Ammo
+namespace RedDust.Gameplay.Ammo
 {
     /// <summary>
     /// 弹药预设。覆写 GetDamageEffects 从 PropertyTree Weapon/ATK 读 DamageEffectSO。

@@ -1,7 +1,7 @@
 using UnityEngine;
-using RedDust.Properties;
+using RedDust.Gameplay.Properties;
 
-namespace RedDust.Character
+namespace RedDust.Gameplay.Character
 {
     /// <summary>
     /// 角色属性预设。继承 PropertyPresetSO。

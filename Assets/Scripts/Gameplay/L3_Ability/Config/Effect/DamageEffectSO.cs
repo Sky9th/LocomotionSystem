@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 伤害通道。只来自实体（武器/身体/陷阱/投掷物/环境），不来自技能。

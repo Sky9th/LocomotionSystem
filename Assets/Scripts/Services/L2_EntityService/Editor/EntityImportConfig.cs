@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace RedDust.Entities.Editor
+namespace RedDust.Services.EntityService.Editor
 {
     /// <summary>
     /// 统一 Entity DTO — 替代各类别独立的 XxxEntry。

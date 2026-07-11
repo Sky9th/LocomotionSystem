@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// ③ 前摇计时。等待 windupDuration / animationSpeed，前摇结束后进 CooldownState。

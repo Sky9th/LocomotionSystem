@@ -1,6 +1,6 @@
-using RedDust.Properties;
+using RedDust.Gameplay.Properties;
 
-namespace RedDust.Equipment
+namespace RedDust.Gameplay.Equipment
 {
     /// <summary>
     /// 装备预设基类。Weapon / Armor / Tool / Container 的共同父类。

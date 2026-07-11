@@ -1,4 +1,4 @@
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 击退方向。ImpactEffectSO 使用。

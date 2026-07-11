@@ -1,4 +1,6 @@
-namespace RedDust.Character
+using RedDust.Gameplay.Container;
+using RedDust.Core.RdTag;
+namespace RedDust.Gameplay.Character
 {
     /// <summary>
     /// Character 模块全局常量 — PropertyTree 路径 / RdTag FullTag / 槽位 ID。

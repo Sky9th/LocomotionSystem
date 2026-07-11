@@ -1,4 +1,4 @@
-namespace RedDust.Entities
+namespace RedDust.Services.EntityService
 {
     /// <summary>
     /// 请求销毁实体 GO（Entity 数据保留）。由外部系统发布，

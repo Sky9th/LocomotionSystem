@@ -1,4 +1,4 @@
-namespace RedDust.Character
+namespace RedDust.Gameplay.Character
 {
     /// <summary>
     /// 战备形态——身体放松走动还是进入战斗戒备。

@@ -1,3 +1,4 @@
+using RedDust.Core.RdTag;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,7 +7,7 @@ using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 
-namespace RedDust.Core.Editor
+namespace RedDust.Core.RdTag.Editor
 {
     /// <summary>
     /// RdTag JSON 导入工具。

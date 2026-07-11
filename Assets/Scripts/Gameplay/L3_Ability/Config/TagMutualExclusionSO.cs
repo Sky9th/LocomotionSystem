@@ -1,7 +1,8 @@
-using RedDust.Core;
+using RedDust.Core.RdTag;
+using RedDust.Core.Events;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 标签互斥规则（全局资产，一份）。

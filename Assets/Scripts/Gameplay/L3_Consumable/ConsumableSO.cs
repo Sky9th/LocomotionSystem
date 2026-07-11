@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.Consumable
+namespace RedDust.Gameplay.Consumable
 {
     /// <summary>
     /// 消耗品预设（Food + Medical 共用）。零 C# 字段。

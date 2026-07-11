@@ -1,7 +1,7 @@
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace RedDust.Character.Pathfinding
+namespace RedDust.Gameplay.Character.Pathfinding
 {
     public class PathfindingTester : MonoBehaviour
     {

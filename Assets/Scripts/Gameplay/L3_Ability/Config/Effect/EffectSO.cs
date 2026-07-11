@@ -1,7 +1,8 @@
-using RedDust.Core;
+using RedDust.Core.RdTag;
+using RedDust.Core.Events;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 游戏效果抽象基类。所有效果——伤害、硬直、消耗、噪音、冷却、Buff——统一管道。

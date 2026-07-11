@@ -1,7 +1,8 @@
+using RedDust.Core.RdTag;
 using System;
 using UnityEngine;
 
-namespace RedDust.Properties
+namespace RedDust.Gameplay.Properties
 {
     public class PropertyDefSO : ScriptableObject
     {

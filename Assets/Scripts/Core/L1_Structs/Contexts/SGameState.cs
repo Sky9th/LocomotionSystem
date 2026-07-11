@@ -1,7 +1,9 @@
+using RedDust.Core.GameContext;
+using RedDust.Core.Structs;
 using System;
-using RedDust.GameState;
+using RedDust.Services.GameState;
 
-namespace RedDust.Core
+namespace RedDust.Core.Structs
 {
     /// <summary>
     /// Immutable snapshot describing the current and previous game states. Used both

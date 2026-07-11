@@ -1,6 +1,6 @@
 using System;
 
-namespace RedDust.Properties
+namespace RedDust.Gameplay.Properties
 {
     /// <summary>
     /// Tree node serialized into PropertyTreeSO.treeJson.

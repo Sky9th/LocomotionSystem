@@ -1,11 +1,12 @@
+using RedDust.Core.RdTag;
 using System.Collections.Generic;
-using RedDust.Entities;
+using RedDust.Services.EntityService;
 using UnityEngine;
-using RedDust.Core;
-using RedDust.Properties;
-using RedDust.Character.Animation;
+using RedDust.Core.Events;
+using RedDust.Gameplay.Properties;
+using RedDust.Gameplay.Character.Animation;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     [DisallowMultipleComponent]
     public sealed class AbilityExecutor : MonoBehaviour

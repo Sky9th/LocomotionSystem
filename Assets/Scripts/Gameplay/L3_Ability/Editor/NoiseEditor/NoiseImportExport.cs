@@ -1,15 +1,16 @@
 #if UNITY_EDITOR
+using RedDust.Core.RdTag;
 using System;
 using RedDust.Shared.EditorUI;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using RedDust.Core;
-using RedDust.Ability.Editor;
+using RedDust.Core.Events;
+using RedDust.Gameplay.Ability.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     [Serializable]
     public class NoiseEntry

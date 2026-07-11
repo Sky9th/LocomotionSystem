@@ -1,8 +1,9 @@
+using RedDust.Gameplay.Ability;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RedDust.Properties
+namespace RedDust.Gameplay.Properties
 {
     /// <summary>
     /// 单个 Float 属性的运行时状态。由 PropertyTable 内部持有。
@@ -122,7 +123,7 @@ namespace RedDust.Properties
                 float addSum = 0f, multProd = 1f, maxAdd = 0f, maxMult = 1f;
                 foreach (var a in _adjuncts)
                 {
-                    if (a.Owner is RedDust.Ability.AbilityInstance { IsActive: false }) continue;
+                    if (a.Owner is RedDust.Gameplay.Ability.AbilityInstance { IsActive: false }) continue;
                     addSum += a.ValueAdd; multProd *= a.ValueMultiply;
                     maxAdd += a.MaxAdd; maxMult *= a.MaxMultiply;
                 }
@@ -217,7 +218,7 @@ namespace RedDust.Properties
             if (_adjuncts.Count > 0)
                 _adjuncts.RemoveAll(a =>
                     (a.ExpiryTime > 0f && a.ExpiryTime <= Time.time)
-                    || (a.Owner is RedDust.Ability.AbilityInstance { IsActive: false }));
+                    || (a.Owner is RedDust.Gameplay.Ability.AbilityInstance { IsActive: false }));
         }
 
         private void TickConsume(float dt)

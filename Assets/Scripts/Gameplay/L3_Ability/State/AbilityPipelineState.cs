@@ -1,4 +1,4 @@
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// Ability Pipeline State 基类。在 <see cref="IState{SActiveAbilityContext}"/> 上加 <see cref="Id"/>，

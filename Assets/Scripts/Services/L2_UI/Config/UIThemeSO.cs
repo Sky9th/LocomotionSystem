@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace RedDust.UI
+namespace RedDust.Services.UI
 {
 
     [CreateAssetMenu(fileName = "UIThemeSO", menuName = "RedDust/UI/Theme")]

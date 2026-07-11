@@ -1,4 +1,5 @@
-using RedDust.Core;
+using RedDust.Core.Structs;
+using RedDust.Core.Events;
 using UnityEngine;
 
 namespace RedDust.Core.Events

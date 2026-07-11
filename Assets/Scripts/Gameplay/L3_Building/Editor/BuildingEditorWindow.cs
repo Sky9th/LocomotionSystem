@@ -1,9 +1,9 @@
 using System;
-using RedDust.Building;
-using RedDust.Entities.Editor;
+using RedDust.Gameplay.Building;
+using RedDust.Services.EntityService.Editor;
 using UnityEditor;
 
-namespace RedDust.Building.Editor
+namespace RedDust.Gameplay.Building.Editor
 {
     /// <summary>
     /// 建筑编辑器。编辑 BuildingDefSO 预设。

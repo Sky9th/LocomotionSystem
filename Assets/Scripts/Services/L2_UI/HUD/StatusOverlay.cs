@@ -1,6 +1,7 @@
+using RedDust.Core.GameContext;
 using UnityEngine;
 
-namespace RedDust.UI
+namespace RedDust.Services.UI
 {
 
     public class StatusOverlay : UIOverlay

@@ -1,9 +1,14 @@
 #if UNITY_EDITOR
-using System; using System.Collections.Generic; using System.IO;
-using RedDust.Entities.Editor; using RedDust.SceneItem; using RedDust.Shared.EditorUI;
-using UnityEditor; using UnityEngine;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using RedDust.Services.EntityService.Editor;
+using RedDust.Gameplay.SceneItem;
+using RedDust.Shared.EditorUI;
+using UnityEditor;
+using UnityEngine;
 
-namespace RedDust.SceneItem.Editor
+namespace RedDust.Gameplay.SceneItem.Editor
 {
     public class SceneItemImportWindow : EditorWindow
     {

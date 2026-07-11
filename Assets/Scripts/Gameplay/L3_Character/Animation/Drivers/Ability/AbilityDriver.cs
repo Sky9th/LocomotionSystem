@@ -1,10 +1,10 @@
-using RedDust.Ability;
-using RedDust.Character;
-using RedDust.Character.Animation;
+using RedDust.Gameplay.Ability;
+using RedDust.Gameplay.Character;
+using RedDust.Gameplay.Character.Animation;
 using Animancer;
 using UnityEngine;
 
-namespace RedDust.Character.Animation.Drivers.Ability
+namespace RedDust.Gameplay.Character.Animation.Drivers.Ability
 {
     /// <summary>
     /// 技能动画驱动。外部构建 AnimationRequest（DriverType=Ability）→ brain.SubmitRequest(request)

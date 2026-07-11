@@ -1,9 +1,10 @@
+using RedDust.Core.Modules;
 using Pathfinding;
 using UnityEngine;
-using RedDust.Core;
-using RedDust.Character.Locomotion;
+using RedDust.Core.Events;
+using RedDust.Gameplay.Character.Locomotion;
 
-namespace RedDust.Character.Pathfinding
+namespace RedDust.Gameplay.Character.Pathfinding
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Seeker), typeof(AIPath))]

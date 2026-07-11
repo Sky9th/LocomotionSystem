@@ -1,6 +1,6 @@
-using RedDust.Properties;
+using RedDust.Gameplay.Properties;
 
-namespace RedDust.Consumable
+namespace RedDust.Gameplay.Consumable
 {
     /// <summary>
     /// 消耗品预设基类。Consumable / Material 的共同父类。

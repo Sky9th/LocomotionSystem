@@ -1,4 +1,5 @@
-namespace RedDust.Core
+using RedDust.Core.Modules;
+namespace RedDust.Core.Modules
 {
     /// <summary>
     /// 模块树子节点协议。每个阶段的职责边界：

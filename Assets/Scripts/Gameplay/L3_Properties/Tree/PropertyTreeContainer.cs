@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace RedDust.Properties
+namespace RedDust.Gameplay.Properties
 {
     /// <summary>
     /// JSON serialization wrapper for a list of PropertyNode.

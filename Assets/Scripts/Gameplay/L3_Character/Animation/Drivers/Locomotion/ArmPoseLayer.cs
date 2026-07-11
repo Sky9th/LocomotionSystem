@@ -1,8 +1,8 @@
 using Animancer;
-using RedDust.Character;
-using RedDust.Character.Locomotion;
+using RedDust.Gameplay.Character;
+using RedDust.Gameplay.Character.Locomotion;
 
-namespace RedDust.Character.Animation.Drivers.Locomotion
+namespace RedDust.Gameplay.Character.Animation.Drivers.Locomotion
 {
     /// <summary>
     /// Arm 层武器姿态管理。仅在 LocomotionDriver 活跃时工作。

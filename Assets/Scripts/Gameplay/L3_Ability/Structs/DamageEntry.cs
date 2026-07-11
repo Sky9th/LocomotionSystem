@@ -1,6 +1,7 @@
-using RedDust.Core;
+using RedDust.Core.RdTag;
+using RedDust.Core.Events;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 单通道伤害数据。每个 DamageEntry 对应一个实体伤害通道（武器/身体），

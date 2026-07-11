@@ -1,8 +1,8 @@
 using Animancer;
 using UnityEngine;
-using RedDust.Character;
+using RedDust.Gameplay.Character;
 
-namespace RedDust.Character.Animation
+namespace RedDust.Gameplay.Character.Animation
 {
     /// <summary>
     /// 单套 Locomotion 动画引用集合 — 仅包含 FSM 实际使用的字段。

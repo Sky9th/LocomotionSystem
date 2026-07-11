@@ -1,7 +1,8 @@
-using RedDust.Character;
+using RedDust.Gameplay.Container;
+using RedDust.Gameplay.Character;
 using UnityEngine;
 
-namespace RedDust.Entities
+namespace RedDust.Services.EntityService
 {
     /// <summary>
     /// Entity 的命令门面——外部系统通过此模块向实体下达命令。

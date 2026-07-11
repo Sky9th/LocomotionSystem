@@ -1,7 +1,8 @@
+using RedDust.Core.RdTag;
 using System;
 using UnityEngine;
 
-namespace RedDust.Properties
+namespace RedDust.Gameplay.Properties
 {
     [CreateAssetMenu(fileName = "RdTagListDefinition", menuName = "RedDust/Properties/RdTag List Definition")]
     public class RdTagListPropertyDefSO : PropertyDefSO

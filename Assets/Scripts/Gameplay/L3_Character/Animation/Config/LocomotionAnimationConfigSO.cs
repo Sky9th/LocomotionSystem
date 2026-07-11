@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.Character.Animation
+namespace RedDust.Gameplay.Character.Animation
 {
     /// <summary>
     /// Scriptable configuration describing how locomotion animation

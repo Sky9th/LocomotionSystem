@@ -1,9 +1,9 @@
 using UnityEngine;
 using Animancer;
-using RedDust.Character.Animation;
-using RedDust.Character;
+using RedDust.Gameplay.Character.Animation;
+using RedDust.Gameplay.Character;
 
-namespace RedDust.Character.Animation.Drivers.Locomotion
+namespace RedDust.Gameplay.Character.Animation.Drivers.Locomotion
 {
     internal sealed class LocomotionDriver : BaseAnimationDriver
     {

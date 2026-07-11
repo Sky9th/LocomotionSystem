@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using RedDust.Core.RdTag;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 
-namespace RedDust.Core.Editor
+namespace RedDust.Core.RdTag.Editor
 {
     public class TagEditorWindow : EditorWindow
     {

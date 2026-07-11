@@ -1,9 +1,9 @@
 using System;
-using RedDust.Character;
-using RedDust.Entities.Editor;
+using RedDust.Gameplay.Character;
+using RedDust.Services.EntityService.Editor;
 using UnityEditor;
 
-namespace RedDust.Character.Editor
+namespace RedDust.Gameplay.Character.Editor
 {
     /// <summary>
     /// 角色编辑器。编辑 CharacterDefSO 预设。

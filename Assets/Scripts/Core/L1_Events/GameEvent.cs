@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RedDust.Core
+namespace RedDust.Core.Events
 {
     /// <summary>
     /// 非泛型事件通道标记——用于任意通道的类型约束。

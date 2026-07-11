@@ -1,10 +1,11 @@
+using RedDust.Core.RdTag;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using RedDust.Core;
+using RedDust.Core.Events;
 using UnityEngine;
 
-namespace RedDust.Properties
+namespace RedDust.Gameplay.Properties
 {
     /// <summary>
     /// 运行时属性平表。静态工厂 FromPreset() 从 PropertyPresetSO 构造。

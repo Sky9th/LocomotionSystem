@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     [CustomEditor(typeof(PassiveAbilitySO))]
     public class PassiveAbilitySOEditor : UnityEditor.Editor

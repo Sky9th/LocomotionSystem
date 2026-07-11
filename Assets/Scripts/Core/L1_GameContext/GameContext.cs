@@ -1,9 +1,10 @@
+using RedDust.Core.GameContext;
 using System;
 using System.Collections.Generic;
 using RedDust.Shared;
 using UnityEngine;
 
-namespace RedDust.Core
+namespace RedDust.Core.GameContext
 {
     [DisallowMultipleComponent]
     public class GameContext : MonoBehaviour

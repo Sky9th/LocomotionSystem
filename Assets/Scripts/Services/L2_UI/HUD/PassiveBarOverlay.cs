@@ -1,9 +1,9 @@
 using System;
-using RedDust.Ability;
-using RedDust.Entities;
+using RedDust.Gameplay.Ability;
+using RedDust.Services.EntityService;
 using UnityEngine;
 
-namespace RedDust.UI
+namespace RedDust.Services.UI
 {
     /// <summary>
     /// 被动技能栏 Overlay。展示当前生效的被动技能图标和冷却状态。

@@ -1,8 +1,10 @@
+using RedDust.Gameplay.Container;
+using RedDust.Core.RdTag;
 using System;
 using UnityEngine;
-using RedDust.Properties;
+using RedDust.Gameplay.Properties;
 
-namespace RedDust.Container
+namespace RedDust.Gameplay.Container
 {
     /// <summary>
     /// 容器槽位定义——描述一个独立容纳空间。

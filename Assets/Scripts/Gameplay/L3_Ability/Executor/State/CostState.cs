@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using RedDust.Properties;
+using RedDust.Gameplay.Properties;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// ④ 资源消耗。双阶段：预检（全部可负担?）→ 扣除。

@@ -1,9 +1,9 @@
-using RedDust.Ability;
-using RedDust.Container;
-using RedDust.Entities;
+using RedDust.Gameplay.Ability;
+using RedDust.Gameplay.Container;
+using RedDust.Services.EntityService;
 using UnityEngine;
 
-namespace RedDust.Equipment
+namespace RedDust.Gameplay.Equipment
 {
     /// <summary>
     /// 远程武器预设。伤害来自弹药 Entity——沿容器链向下查找弹药，返回其 DamageEffectSO。

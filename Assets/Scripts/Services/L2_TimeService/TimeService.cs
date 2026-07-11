@@ -1,11 +1,13 @@
-using RedDust.Core;
+using RedDust.Core.GameContext;
+using RedDust.Core.Structs;
+using RedDust.Core.Modules;
 using RedDust.Core.Events;
-using RedDust.GameInput;
-using RedDust.GameState;
-using RedDust.GameScene;
+using RedDust.Services.Input;
+using RedDust.Services.GameState;
+using RedDust.Services.Scene;
 using UnityEngine;
 
-namespace RedDust.GameTime
+namespace RedDust.Services.Time
 {
     public class TimeService : ModuleChildMono
     {
@@ -19,7 +21,7 @@ namespace RedDust.GameTime
 
         public override void OnAssemble()
         {
-            defaultScale = Mathf.Max(Time.timeScale, minScale);
+            defaultScale = Mathf.Max(UnityEngine.Time.timeScale, minScale);
 
             GameContext.Instance.RegisterService(this);
         }
@@ -41,7 +43,7 @@ namespace RedDust.GameTime
             if (!payload.IsRequested) return;
             if (isSceneLoading || isGamePaused) return;
             defaultScale = minScale;
-            Time.timeScale = defaultScale;
+            UnityEngine.Time.timeScale = defaultScale;
         }
 
         private void HandleTimeResume(SButtonInputPayload payload)
@@ -49,7 +51,7 @@ namespace RedDust.GameTime
             if (!payload.IsRequested) return;
             if (isSceneLoading || isGamePaused) return;
             defaultScale = maxScale;
-            Time.timeScale = defaultScale;
+            UnityEngine.Time.timeScale = defaultScale;
         }
 
         // ── Scene / GameState Events ──
@@ -68,7 +70,7 @@ namespace RedDust.GameTime
 
         private void ApplyFreeze()
         {
-            Time.timeScale = (isSceneLoading || isGamePaused) ? 0f : defaultScale;
+            UnityEngine.Time.timeScale = (isSceneLoading || isGamePaused) ? 0f : defaultScale;
         }
 
         // ── Lifecycle ──
@@ -94,7 +96,7 @@ namespace RedDust.GameTime
         private void RestoreDefaultScale()
         {
             if (Application.isPlaying)
-                Time.timeScale = defaultScale;
+                UnityEngine.Time.timeScale = defaultScale;
         }
     }
 }

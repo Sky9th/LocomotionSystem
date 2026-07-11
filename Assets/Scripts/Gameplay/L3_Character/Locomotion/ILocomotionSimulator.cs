@@ -1,7 +1,7 @@
-using RedDust.Character;
-using RedDust.Character.Animation;
+using RedDust.Gameplay.Character;
+using RedDust.Gameplay.Character.Animation;
 
-namespace RedDust.Character.Locomotion
+namespace RedDust.Gameplay.Character.Locomotion
 {
     internal interface ILocomotionSimulator
     {

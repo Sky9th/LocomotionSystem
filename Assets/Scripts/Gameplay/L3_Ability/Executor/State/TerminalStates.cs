@@ -1,4 +1,4 @@
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>拒绝终态。永远返回自身。</summary>
     public class RejectedState : AbilityPipelineState

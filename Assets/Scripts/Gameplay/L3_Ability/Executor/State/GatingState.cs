@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// ② 门控检查。冷却 → 互斥 → 外部条件，三道闸门串联。

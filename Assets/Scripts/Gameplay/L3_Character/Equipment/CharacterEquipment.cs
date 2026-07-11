@@ -1,10 +1,11 @@
+using RedDust.Core.Modules;
 using System.Collections.Generic;
-using RedDust.Container;
-using RedDust.Core;
-using RedDust.Entities;
+using RedDust.Gameplay.Container;
+using RedDust.Core.Events;
+using RedDust.Services.EntityService;
 using UnityEngine;
 
-namespace RedDust.Character
+namespace RedDust.Gameplay.Character
 {
     /// <summary>
     /// L4 装备子模块 — 临时方案。

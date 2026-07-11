@@ -1,4 +1,4 @@
-namespace RedDust.Character
+namespace RedDust.Gameplay.Character
 {
     public enum EMovementGait
     {

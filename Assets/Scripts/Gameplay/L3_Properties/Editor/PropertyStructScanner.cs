@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 
-namespace RedDust.Properties.Editor
+namespace RedDust.Gameplay.Properties.Editor
 {
     /// <summary>
     /// Editor 工具—扫描所有 [PropertyStruct] 标记的 struct，提供下拉选择。

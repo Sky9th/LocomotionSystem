@@ -1,7 +1,7 @@
-using RedDust.Core;
+using RedDust.Core.Events;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 单次命中结果。ExecutionState 产出，Reactor / VFX / Audio / UI 消费。

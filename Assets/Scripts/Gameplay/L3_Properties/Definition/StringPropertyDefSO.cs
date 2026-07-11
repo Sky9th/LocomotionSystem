@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace RedDust.Properties
+namespace RedDust.Gameplay.Properties
 {
     [CreateAssetMenu(fileName = "StringDefinition", menuName = "RedDust/Properties/String Definition")]
     public class StringPropertyDefSO : PropertyDefSO

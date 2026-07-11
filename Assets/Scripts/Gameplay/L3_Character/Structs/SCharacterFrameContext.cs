@@ -1,7 +1,7 @@
-using RedDust.Character.Kinematic;
-using RedDust.Character.Locomotion;
+using RedDust.Gameplay.Character.Kinematic;
+using RedDust.Gameplay.Character.Locomotion;
 
-namespace RedDust.Character
+namespace RedDust.Gameplay.Character
 {
     public struct SCharacterFrameContext
     {

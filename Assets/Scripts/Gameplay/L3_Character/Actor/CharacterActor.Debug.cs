@@ -1,13 +1,14 @@
-using RedDust.Character.Kinematic;
-using RedDust.Character.Locomotion;
-using RedDust.Core;
+using RedDust.Core.GameService;
+using RedDust.Gameplay.Character.Kinematic;
+using RedDust.Gameplay.Character.Locomotion;
+using RedDust.Core.Events;
 using RedDust.Shared;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace RedDust.Character
+namespace RedDust.Gameplay.Character
 {
     public partial class CharacterActor
     {

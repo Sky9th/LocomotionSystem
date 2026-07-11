@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// ⑧ 后摇等待。动画收尾段——刀收回/枪回落/手势收拢。

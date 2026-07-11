@@ -1,4 +1,4 @@
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 状态机中的单个状态。TContext 为状态共享上下文，ref 传递保证 struct 场景零拷贝可变。

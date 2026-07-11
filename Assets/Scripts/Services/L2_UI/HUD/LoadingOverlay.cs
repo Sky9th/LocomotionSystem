@@ -1,11 +1,11 @@
-using RedDust.Core;
+using RedDust.Core.GameContext;
 using RedDust.Core.Events;
-using RedDust.GameScene;
+using RedDust.Services.Scene;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace RedDust.UI
+namespace RedDust.Services.UI
 {
 
     public class LoadingOverlay : UIOverlay

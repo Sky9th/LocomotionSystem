@@ -1,12 +1,15 @@
+using RedDust.Core.GameService;
+using RedDust.Core.GameContext;
+using RedDust.Core.Modules;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using RedDust.Core;
+using RedDust.Core.Events;
 using RedDust.Shared;
 using UnityEngine;
 
-namespace RedDust.Modding
+namespace RedDust.Services.ModService
 {
     /// <summary>
     /// L2 service: Mod loader. Scans mod folders, reads manifest.json,

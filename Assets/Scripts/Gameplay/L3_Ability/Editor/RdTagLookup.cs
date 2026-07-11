@@ -1,9 +1,10 @@
 #if UNITY_EDITOR
+using RedDust.Core.RdTag;
 using System.Collections.Generic;
-using RedDust.Core;
+using RedDust.Core.Events;
 using UnityEditor;
 
-namespace RedDust.Ability.Editor
+namespace RedDust.Gameplay.Ability.Editor
 {
     /// <summary>
     /// Editor 共享工具 — 全量 RdTagDefSO 按 FullTag 查表。

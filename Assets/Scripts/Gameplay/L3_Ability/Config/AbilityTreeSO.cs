@@ -1,8 +1,9 @@
+using RedDust.Core.RdTag;
 using System;
-using RedDust.Core;
+using RedDust.Core.Events;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 技能树节点——树内的一个可解锁单元。

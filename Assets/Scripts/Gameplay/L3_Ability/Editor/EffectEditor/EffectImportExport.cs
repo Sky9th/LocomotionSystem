@@ -1,16 +1,17 @@
 #if UNITY_EDITOR
+using RedDust.Core.RdTag;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using RedDust.Core;
-using RedDust.Ability.Editor;
-using RedDust.Properties;
+using RedDust.Core.Events;
+using RedDust.Gameplay.Ability.Editor;
+using RedDust.Gameplay.Properties;
 using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// Effect JSON 导入/导出工具。

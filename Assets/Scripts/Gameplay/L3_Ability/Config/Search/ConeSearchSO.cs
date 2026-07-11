@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 扇形搜索。OverlapSphere + 前方角度过滤。横斩、霰弹。

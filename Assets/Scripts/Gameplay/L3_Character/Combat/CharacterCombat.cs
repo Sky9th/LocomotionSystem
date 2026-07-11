@@ -1,12 +1,12 @@
-using RedDust.Ability;
-using RedDust.Character.Animation;
-using RedDust.Character.Animation.Drivers.HitReaction;
-using RedDust.Core;
+using RedDust.Core.Modules;
+using RedDust.Gameplay.Ability;
+using RedDust.Gameplay.Character.Animation;
+using RedDust.Gameplay.Character.Animation.Drivers.HitReaction;
 using RedDust.Core.Events;
-using RedDust.Properties;
+using RedDust.Gameplay.Properties;
 using UnityEngine;
 
-namespace RedDust.Character.Combat
+namespace RedDust.Gameplay.Character.Combat
 {
     /// <summary>
     /// 战斗中枢。桥接 Ability 管道与 Character 属性系统。

@@ -1,8 +1,9 @@
+using RedDust.Core.Modules;
 using UnityEngine;
-using RedDust.Character;
-using RedDust.Core;
+using RedDust.Gameplay.Character;
+using RedDust.Core.Events;
 
-namespace RedDust.Character.Kinematic
+namespace RedDust.Gameplay.Character.Kinematic
 {
     internal sealed class CharacterKinematic : ModuleChild
     {

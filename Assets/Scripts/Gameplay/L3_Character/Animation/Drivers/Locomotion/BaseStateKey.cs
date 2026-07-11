@@ -1,4 +1,4 @@
-namespace RedDust.Character.Animation.Drivers.Locomotion
+namespace RedDust.Gameplay.Character.Animation.Drivers.Locomotion
 {
     internal enum BaseStateKey
     {

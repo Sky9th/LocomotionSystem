@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace RedDust.GameInput.Editor
+namespace RedDust.Services.Input.Editor
 {
     [CustomEditor(typeof(InputService))]
     public class InputServiceEditor : UnityEditor.Editor

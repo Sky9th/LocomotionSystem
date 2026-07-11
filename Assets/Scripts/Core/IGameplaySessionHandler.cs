@@ -1,4 +1,5 @@
-namespace RedDust.Core
+using RedDust.Core.GameService;
+namespace RedDust.Core.GameService
 {
     /// <summary>
     /// Implement on a BaseService that owns state scoped to one gameplay session.

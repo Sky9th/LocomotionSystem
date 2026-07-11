@@ -1,6 +1,6 @@
 using System;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 连招衔接定义。当前技能 → 下一技能的单条映射。

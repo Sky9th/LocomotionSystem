@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace RedDust.Properties
+namespace RedDust.Gameplay.Properties
 {
     [CreateAssetMenu(fileName = "BoolDefinition", menuName = "RedDust/Properties/Bool Definition")]
     public class BoolPropertyDefSO : PropertyDefSO

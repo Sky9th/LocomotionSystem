@@ -1,6 +1,6 @@
 using System;
 
-namespace RedDust.Properties
+namespace RedDust.Gameplay.Properties
 {
     /// <summary>速率上下文。修改器通过 OnApplyRate 修改 Addend / Multiplier 影响 Tick 速率。</summary>
     public class RateContext

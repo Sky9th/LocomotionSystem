@@ -1,6 +1,7 @@
-using RedDust.Core;
-using RedDust.Entities;
-using RedDust.Properties;
+using RedDust.Core.RdTag;
+using RedDust.Core.Events;
+using RedDust.Services.EntityService;
+using RedDust.Gameplay.Properties;
 using UnityEngine;
 
 namespace RedDust

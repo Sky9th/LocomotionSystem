@@ -1,8 +1,8 @@
-using RedDust.Ability;
-using RedDust.Entities;
-using RedDust.Properties;
+using RedDust.Gameplay.Ability;
+using RedDust.Services.EntityService;
+using RedDust.Gameplay.Properties;
 
-namespace RedDust.Equipment
+namespace RedDust.Gameplay.Equipment
 {
     /// <summary>
     /// 武器预设基类。覆盖 GetDamageEffects 从 Weapon/ATK 读 DamageEffectSO[]。

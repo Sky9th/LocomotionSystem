@@ -1,13 +1,15 @@
-using RedDust.Ability;
-using RedDust.Core;
-using RedDust.Character.Animation;
-using RedDust.Character.Audio;
-using RedDust.Character.Kinematic;
-using RedDust.Character.Pathfinding;
-using RedDust.Properties;
+using RedDust.Gameplay.Container;
+using RedDust.Core.RdTag;
+using RedDust.Gameplay.Ability;
+using RedDust.Core.Events;
+using RedDust.Gameplay.Character.Animation;
+using RedDust.Gameplay.Character.Audio;
+using RedDust.Gameplay.Character.Kinematic;
+using RedDust.Gameplay.Character.Pathfinding;
+using RedDust.Gameplay.Properties;
 using UnityEngine;
 
-namespace RedDust.Character
+namespace RedDust.Gameplay.Character
 {
     /// <summary>
     /// Character 子模块统一依赖上下文。

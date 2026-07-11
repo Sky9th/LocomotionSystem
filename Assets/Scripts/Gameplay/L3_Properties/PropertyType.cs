@@ -1,4 +1,5 @@
-namespace RedDust.Properties
+using RedDust.Core.RdTag;
+namespace RedDust.Gameplay.Properties
 {
     public enum PropertyType
     {

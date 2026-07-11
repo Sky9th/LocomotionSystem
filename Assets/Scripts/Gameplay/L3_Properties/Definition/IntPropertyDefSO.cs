@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using UnityEngine;
 
-namespace RedDust.Properties
+namespace RedDust.Gameplay.Properties
 {
     [CreateAssetMenu(fileName = "IntDefinition", menuName = "RedDust/Properties/Int Definition")]
     public class IntPropertyDefSO : PropertyDefSO

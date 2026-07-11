@@ -1,10 +1,11 @@
 #if UNITY_EDITOR
+using RedDust.Core.RdTag;
 using System;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using RedDust.Shared.EditorUI;
-namespace RedDust.Core.Editor
+namespace RedDust.Core.RdTag.Editor
 {
     /// <summary>
     /// 可嵌入的标签选择器 Popup。

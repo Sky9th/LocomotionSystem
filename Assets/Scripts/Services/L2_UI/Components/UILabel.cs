@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace RedDust.UI
+namespace RedDust.Services.UI
 {
 
     public enum UITextStyle { Title, Subtitle, Body, Button, Small }

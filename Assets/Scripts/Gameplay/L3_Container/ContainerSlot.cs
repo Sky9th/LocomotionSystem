@@ -1,8 +1,9 @@
+using RedDust.Gameplay.Container;
 using System.Collections.Generic;
-using RedDust.Entities;
+using RedDust.Services.EntityService;
 using UnityEngine;
 
-namespace RedDust.Container
+namespace RedDust.Gameplay.Container
 {
     /// <summary>
     /// 单个槽位的运行时状态。由 Container 持有和管理。

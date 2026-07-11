@@ -18,5 +18,5 @@ MonoBehaviour:
     AcceptTags \u9ED8\u8BA4\u503C\u3002\u672C\u5B9A\u4E49\u4EC5\u7528\u4E8E\u65E0\u7279\u6B8A\u9700\u6C42\u7684\u69FD\u4F4D\u3002"
   Type: 8
   IsDeprecated: 0
-  StructTypeName: RedDust.Container.SlotDef
+  StructTypeName: RedDust.Gameplay.Container.SlotDef
   DefaultJson: '{"Capacity":1}'

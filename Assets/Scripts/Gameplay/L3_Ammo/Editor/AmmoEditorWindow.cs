@@ -1,8 +1,8 @@
 using System;
-using RedDust.Entities.Editor;
+using RedDust.Services.EntityService.Editor;
 using UnityEditor;
 
-namespace RedDust.Ammo.Editor
+namespace RedDust.Gameplay.Ammo.Editor
 {
     /// <summary>
     /// 弹药编辑器。编辑 AmmoSO 预设。

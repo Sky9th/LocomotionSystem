@@ -1,3 +1,4 @@
+using RedDust.Core.RdTag;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,7 +7,7 @@ using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 
-namespace RedDust.Properties.Editor
+namespace RedDust.Gameplay.Properties.Editor
 {
     /// <summary>
     /// PropertyDefSO + PropertyTreeSO JSON 导入/导出。

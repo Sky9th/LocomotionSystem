@@ -1,7 +1,8 @@
+using RedDust.Core.RdTag;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RedDust.Core
+namespace RedDust.Core.RdTag
 {
     /// <summary>
     /// RdTag 集合，管理实体当前持有的所有标签。

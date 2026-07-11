@@ -1,19 +1,21 @@
+using RedDust.Core.GameService;
+using RedDust.Core.Modules;
 using System.Collections.Generic;
-using RedDust.Core;
+using RedDust.Core.Events;
 using UnityEngine;
-using RedDust.Character.Animation;
-using RedDust.Character.Animation.Drivers.Ability;
-using RedDust.Character.Kinematic;
-using RedDust.Character.Pathfinding;
-using RedDust.Character.Locomotion;
-using RedDust.Ability;
-using RedDust.Character.Audio;
-using RedDust.Character.Combat;
-using RedDust.Properties;
+using RedDust.Gameplay.Character.Animation;
+using RedDust.Gameplay.Character.Animation.Drivers.Ability;
+using RedDust.Gameplay.Character.Kinematic;
+using RedDust.Gameplay.Character.Pathfinding;
+using RedDust.Gameplay.Character.Locomotion;
+using RedDust.Gameplay.Ability;
+using RedDust.Gameplay.Character.Audio;
+using RedDust.Gameplay.Character.Combat;
+using RedDust.Gameplay.Properties;
 using Animancer;
 using Animancer.TransitionLibraries;
 
-namespace RedDust.Character
+namespace RedDust.Gameplay.Character
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(EventHub))]

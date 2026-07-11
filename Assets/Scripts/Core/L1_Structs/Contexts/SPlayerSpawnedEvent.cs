@@ -1,6 +1,7 @@
+using RedDust.Core.Structs;
 using UnityEngine;
 
-namespace RedDust.Core
+namespace RedDust.Core.Structs
 {
     /// <summary>
     /// Event payload emitted when a player character has been spawned into the world.

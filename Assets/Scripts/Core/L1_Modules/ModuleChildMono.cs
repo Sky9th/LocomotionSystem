@@ -1,6 +1,7 @@
+using RedDust.Core.Modules;
 using UnityEngine;
 
-namespace RedDust.Core
+namespace RedDust.Core.Modules
 {
     /// <summary>
     /// MB 子模块基类。不自注册——由父 ModuleHub.Awake 通过 GetComponentsInChildren 扫描发现并注册。

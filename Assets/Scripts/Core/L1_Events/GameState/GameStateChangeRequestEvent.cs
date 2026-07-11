@@ -1,5 +1,5 @@
-using RedDust.Core;
-using RedDust.GameState;
+using RedDust.Core.Events;
+using RedDust.Services.GameState;
 using UnityEngine;
 
 namespace RedDust.Core.Events

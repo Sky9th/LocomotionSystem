@@ -1,9 +1,14 @@
 #if UNITY_EDITOR
-using System; using System.Collections.Generic; using System.IO;
-using RedDust.Character; using RedDust.Entities.Editor; using RedDust.Shared.EditorUI;
-using UnityEditor; using UnityEngine;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using RedDust.Gameplay.Character;
+using RedDust.Services.EntityService.Editor;
+using RedDust.Shared.EditorUI;
+using UnityEditor;
+using UnityEngine;
 
-namespace RedDust.Character.Editor
+namespace RedDust.Gameplay.Character.Editor
 {
     public class CharacterImportWindow : EditorWindow
     {

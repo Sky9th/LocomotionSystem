@@ -1,11 +1,12 @@
 #if UNITY_EDITOR
+using RedDust.Core.RdTag;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace RedDust.Core.Editor
+namespace RedDust.Core.RdTag.Editor
 {
     /// <summary>
     /// 标签工厂。强制非跨级链式创建，事务式（失败回滚）。

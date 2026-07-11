@@ -1,13 +1,14 @@
 #if UNITY_EDITOR
+using RedDust.Core.RdTag;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using RedDust.Core;
+using RedDust.Core.Events;
 using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// Ability Editor 数据模型。扫描 AssetDatabase，缓存所有 Ability 及子资产。

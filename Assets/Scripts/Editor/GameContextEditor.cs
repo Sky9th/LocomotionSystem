@@ -1,7 +1,8 @@
 #if UNITY_EDITOR
+using GC = RedDust.Core.GameContext.GameContext;
 using System;
 using System.Collections.Generic;
-using RedDust.Core;
+using RedDust.Core.Events;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ namespace RedDust.Shared
     /// Custom inspector that surfaces GameContext runtime registries so designers
     /// can inspect which services and snapshot structs are currently cached.
     /// </summary>
-    [CustomEditor(typeof(GameContext))]
+    [CustomEditor(typeof(GC))]
     public class GameContextEditor : Editor
 {
     private bool showServices = true;
@@ -21,7 +22,7 @@ namespace RedDust.Shared
     {
         DrawDefaultInspector();
 
-        var context = (GameContext)target;
+        var context = (GC)target;
 
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("Runtime Overview", EditorStyles.boldLabel);

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace RedDust.Character.Kinematic
+namespace RedDust.Gameplay.Character.Kinematic
 {
     [Serializable]
     public struct SGroundContact

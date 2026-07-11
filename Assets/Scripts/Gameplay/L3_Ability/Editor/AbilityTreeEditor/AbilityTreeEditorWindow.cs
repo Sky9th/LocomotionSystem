@@ -6,7 +6,7 @@ using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// AbilityTree Import-Export 窗口。使用共享 EditorImportExport 组件。

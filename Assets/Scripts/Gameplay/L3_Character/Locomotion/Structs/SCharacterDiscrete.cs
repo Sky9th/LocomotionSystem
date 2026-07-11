@@ -1,6 +1,6 @@
 using System;
 
-namespace RedDust.Character.Locomotion
+namespace RedDust.Gameplay.Character.Locomotion
 {
     [Serializable]
     public readonly struct SCharacterDiscrete

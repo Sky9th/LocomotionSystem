@@ -1,6 +1,7 @@
+using RedDust.Core.GameService;
 using UnityEngine;
 
-namespace RedDust.Core
+namespace RedDust.Core.GameService
 {
     /// <summary>
     /// Global configuration entry point for the game.

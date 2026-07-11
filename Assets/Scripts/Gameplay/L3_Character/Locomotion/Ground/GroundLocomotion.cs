@@ -1,12 +1,13 @@
-using RedDust.Character;
-using RedDust.Character.Animation;
-using RedDust.Character.Kinematic;
-using RedDust.Character.Pathfinding;
-using RedDust.Container;
-using RedDust.Core;
+using RedDust.Core.Modules;
+using RedDust.Gameplay.Character;
+using RedDust.Gameplay.Character.Animation;
+using RedDust.Gameplay.Character.Kinematic;
+using RedDust.Gameplay.Character.Pathfinding;
+using RedDust.Gameplay.Container;
+using RedDust.Core.Events;
 using UnityEngine;
 
-namespace RedDust.Character.Locomotion
+namespace RedDust.Gameplay.Character.Locomotion
 {
     internal sealed class GroundLocomotion : ModuleChild, ILocomotionSimulator
     {

@@ -1,7 +1,8 @@
+using RedDust.Core.GameContext;
 using System;
 using UnityEngine;
 
-namespace RedDust.Core
+namespace RedDust.Core.Structs
 {
     /// <summary>
     /// Immutable snapshot describing the currently active gameplay camera.

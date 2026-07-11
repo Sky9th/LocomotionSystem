@@ -1,9 +1,13 @@
 #if UNITY_EDITOR
-using System; using System.Collections.Generic; using System.IO;
-using RedDust.Entities.Editor; using RedDust.Shared.EditorUI;
-using UnityEditor; using UnityEngine;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using RedDust.Services.EntityService.Editor;
+using RedDust.Shared.EditorUI;
+using UnityEditor;
+using UnityEngine;
 
-namespace RedDust.Equipment.Editor
+namespace RedDust.Gameplay.Equipment.Editor
 {
     public class EquipmentImportWindow : EditorWindow
     {

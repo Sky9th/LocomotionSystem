@@ -1,6 +1,7 @@
+using RedDust.Core.Modules;
 using System.Collections.Generic;
 
-namespace RedDust.Core
+namespace RedDust.Core.Modules
 {
     public sealed class ModuleRegistry
     {

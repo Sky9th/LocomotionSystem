@@ -1,7 +1,8 @@
+using RedDust.Core.RdTag;
 using UnityEditor;
 using UnityEngine;
 
-namespace RedDust.Properties.Editor
+namespace RedDust.Gameplay.Properties.Editor
 {
     /// <summary>
     /// Custom Inspector for PropertyDefSO. Shows only the field groups

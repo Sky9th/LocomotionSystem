@@ -6,7 +6,7 @@ using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 右栏子资产选择器。Picker 模式：搜索 + 列表 + Select/Cancel。

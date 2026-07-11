@@ -1,9 +1,10 @@
+using RedDust.Core.GameService;
 using System.Collections.Generic;
 using System.Linq;
-using RedDust.Core;
+using RedDust.Core.Events;
 using UnityEngine;
 
-namespace RedDust.Properties
+namespace RedDust.Gameplay.Properties
 {
     /// <summary>
     /// Schema table for an entity type. Defines which properties exist (structure only, no values).

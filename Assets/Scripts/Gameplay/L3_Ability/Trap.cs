@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 陷阱实体。通过 OnTriggerEnter → NotifyPassiveEvent 触发被动技能管线。

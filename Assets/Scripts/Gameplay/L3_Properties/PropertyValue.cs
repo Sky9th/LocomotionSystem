@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace RedDust.Properties
+namespace RedDust.Gameplay.Properties
 {
     [Serializable]
     public struct PropertyValue

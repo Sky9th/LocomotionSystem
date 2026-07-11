@@ -1,4 +1,4 @@
-namespace RedDust.Properties
+namespace RedDust.Gameplay.Properties
 {
     /// <summary>
     /// 只读修正。挂在 FloatState 上，读取 Effective 时叠加，不改 Current。

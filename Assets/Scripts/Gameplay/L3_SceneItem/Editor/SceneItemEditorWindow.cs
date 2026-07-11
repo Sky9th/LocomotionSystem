@@ -1,9 +1,9 @@
 using System;
-using RedDust.Entities.Editor;
-using RedDust.SceneItem;
+using RedDust.Services.EntityService.Editor;
+using RedDust.Gameplay.SceneItem;
 using UnityEditor;
 
-namespace RedDust.SceneItem.Editor
+namespace RedDust.Gameplay.SceneItem.Editor
 {
     /// <summary>
     /// 场景物品编辑器。编辑 SceneItemDefSO 预设（家具/装饰物/场景物体）。

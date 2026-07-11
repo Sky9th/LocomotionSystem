@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.Equipment
+namespace RedDust.Gameplay.Equipment
 {
     /// <summary>
     /// 工具预设。零 C# 字段。

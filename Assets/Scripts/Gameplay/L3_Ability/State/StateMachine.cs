@@ -1,4 +1,4 @@
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 泛型状态机。只负责流转——不关心 TState 是什么、TContext 里有什么。

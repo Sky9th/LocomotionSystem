@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.Equipment
+namespace RedDust.Gameplay.Equipment
 {
     /// <summary>
     /// 防具预设。零 C# 字段，属性全在 PropertyTree。

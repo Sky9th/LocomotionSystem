@@ -1,8 +1,9 @@
+using RedDust.Gameplay.Container;
 using System.Collections.Generic;
-using RedDust.Entities;
+using RedDust.Services.EntityService;
 using UnityEngine;
 
-namespace RedDust.Container
+namespace RedDust.Gameplay.Container
 {
     /// <summary>
     /// 实体容器——管理 Entity 的放置、取出、过滤和 Tick。

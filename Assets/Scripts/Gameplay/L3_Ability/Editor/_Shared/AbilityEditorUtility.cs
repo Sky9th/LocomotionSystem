@@ -1,12 +1,12 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
 using System.IO;
-using RedDust.Core;
-using RedDust.Properties;
+using RedDust.Core.Events;
+using RedDust.Gameplay.Properties;
 using UnityEditor;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// Ability Editor 共用工具。树操作、数组操作、摘要函数、Search 工具。

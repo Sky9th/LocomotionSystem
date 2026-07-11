@@ -1,12 +1,12 @@
 using Animancer;
 using Animancer.FSM;
 using UnityEngine;
-using RedDust.Character;
-using RedDust.Character.Animation;
-using RedDust.Character.Kinematic;
-using RedDust.Character.Locomotion;
+using RedDust.Gameplay.Character;
+using RedDust.Gameplay.Character.Animation;
+using RedDust.Gameplay.Character.Kinematic;
+using RedDust.Gameplay.Character.Locomotion;
 
-namespace RedDust.Character.Animation.Drivers.Locomotion
+namespace RedDust.Gameplay.Character.Animation.Drivers.Locomotion
 {
     internal sealed class BaseLayer
     {

@@ -1,8 +1,10 @@
+using RedDust.Core.GameContext;
+using RedDust.Core.Modules;
 using System.Collections.Generic;
-using RedDust.Core;
+using RedDust.Core.Events;
 using UnityEngine;
 
-namespace RedDust.Audio
+namespace RedDust.Services.Audio
 {
     public enum AudioChannelType
     {

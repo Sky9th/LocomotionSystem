@@ -1,11 +1,16 @@
+using RedDust.Services.AssetService;
+using GameContextType = RedDust.Core.GameContext.GameContext;
+using RedDust.Core.GameService;
+using RedDust.Core.Structs;
+using RedDust.Core.Modules;
 using RedDust.Core.Events;
-using RedDust.Assets;
-using RedDust.GameState;
-using RedDust.GameScene;
+using AssetService = RedDust.Services.AssetService.AssetService;
+using RedDust.Services.GameState;
+using RedDust.Services.Scene;
 using RedDust.Shared;
 using UnityEngine;
 
-namespace RedDust.Core
+namespace RedDust.Core.GameService
 {
     /// <summary>
     /// L1 root. Inherits ModuleHub — child L2 services are auto-discovered in Awake
@@ -20,7 +25,7 @@ namespace RedDust.Core
         /// <summary>Centralized asset catalog. Populated by AssetService during boot, queried by all services.</summary>
         public AssetCatalog Assets { get; private set; }
 
-        private GameContext _gameContext;
+        private GameContextType _gameContext;
         private EventHub _eventHub;
         private bool _sessionWasActive;
         private LogChannel _log;
@@ -47,7 +52,7 @@ namespace RedDust.Core
             // Actively instantiate GameContext so it is ready before any child module.
             var go = new GameObject("GameContext");
             go.transform.SetParent(transform);
-            _gameContext = go.AddComponent<GameContext>();
+            _gameContext = go.AddComponent<GameContextType>();
             _gameContext.Initialize();
             _log.Info("GameContext instantiated and initialized.");
 

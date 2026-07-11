@@ -1,18 +1,19 @@
 #if UNITY_EDITOR
+using RedDust.Core.RdTag;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using Animancer;
-using RedDust.Core;
-using RedDust.Ability.Editor;
+using RedDust.Core.Events;
+using RedDust.Gameplay.Ability.Editor;
 using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace RedDust.Character.Animation
+namespace RedDust.Gameplay.Character.Animation
 {
     // ═══════════════════════════════════════════════════════════════
     // DTO Classes

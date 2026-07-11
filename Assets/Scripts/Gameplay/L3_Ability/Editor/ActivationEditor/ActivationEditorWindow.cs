@@ -7,7 +7,7 @@ using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 独立 Activation 编辑器。浏览、创建、编辑所有 AbilityActivationSO 资产。

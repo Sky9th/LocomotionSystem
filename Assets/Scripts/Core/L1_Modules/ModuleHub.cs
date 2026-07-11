@@ -1,6 +1,7 @@
+using RedDust.Core.Modules;
 using UnityEngine;
 
-namespace RedDust.Core
+namespace RedDust.Core.Modules
 {
     /// <summary>
     /// Module 树父节点。不实现 IModuleChild（需要既父又子的 Hub 显式添加接口）。

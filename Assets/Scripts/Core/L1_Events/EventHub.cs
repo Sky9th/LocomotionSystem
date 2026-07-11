@@ -1,8 +1,9 @@
+using RedDust.Core.Modules;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RedDust.Core
+namespace RedDust.Core.Events
 {
     /// <summary>
     /// 事件通道汇入点。ModuleChildMono，挂载在 ModuleHub 所在 GameObject。

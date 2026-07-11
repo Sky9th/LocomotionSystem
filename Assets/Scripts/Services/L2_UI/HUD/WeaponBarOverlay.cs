@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using RedDust.Character;
-using RedDust.Entities;
+using RedDust.Gameplay.Character;
+using RedDust.Services.EntityService;
 using UnityEngine;
 
-namespace RedDust.UI
+namespace RedDust.Services.UI
 {
     /// <summary>
     /// 武器栏 Overlay。动态槽位——身体装备几个就几个槽位。

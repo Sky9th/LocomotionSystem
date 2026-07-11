@@ -1,7 +1,7 @@
-using RedDust.Properties;
+using RedDust.Gameplay.Properties;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 资源消耗/恢复效果。正=消耗, 负=恢复。

@@ -1,7 +1,7 @@
 using Animancer;
 using UnityEngine;
 
-namespace RedDust.Character.Animation.Drivers.Locomotion
+namespace RedDust.Gameplay.Character.Animation.Drivers.Locomotion
 {
     internal sealed class BaseAirLandState : LocomotionLayerFsmState<BaseLayer>
     {

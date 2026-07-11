@@ -1,7 +1,7 @@
-using RedDust.Properties;
+using RedDust.Gameplay.Properties;
 using UnityEngine;
 
-namespace RedDust.UI
+namespace RedDust.Services.UI
 {
     public class VitalsOverlay : UIOverlay
     {

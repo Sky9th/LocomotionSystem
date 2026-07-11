@@ -8,7 +8,7 @@ using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 独立 Search 编辑器。浏览、创建、编辑所有 AbilitySearchSO 资产。

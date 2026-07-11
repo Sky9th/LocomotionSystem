@@ -1,4 +1,4 @@
-namespace RedDust.UI
+namespace RedDust.Services.UI
 {
     public enum UIOverlayId
     {

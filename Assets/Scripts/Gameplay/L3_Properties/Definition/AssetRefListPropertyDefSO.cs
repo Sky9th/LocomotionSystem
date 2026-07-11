@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RedDust.Properties
+namespace RedDust.Gameplay.Properties
 {
     [CreateAssetMenu(fileName = "AssetRefListDefinition", menuName = "RedDust/Properties/Asset Ref List Definition")]
     public class AssetRefListPropertyDefSO : PropertyDefSO

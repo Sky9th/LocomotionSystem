@@ -1,6 +1,6 @@
-using RedDust.Properties;
+using RedDust.Gameplay.Properties;
 
-namespace RedDust.Ammo
+namespace RedDust.Gameplay.Ammo
 {
     /// <summary>
     /// 弹药预设基类。PropertyTree 父模板 = AmmoBase

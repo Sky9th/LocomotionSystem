@@ -1,4 +1,4 @@
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 受击反应等级。ImpactEffectSO 资产配置，CharacterCombat 据此选择 LocomotionAnimationSetSO 对应动画。

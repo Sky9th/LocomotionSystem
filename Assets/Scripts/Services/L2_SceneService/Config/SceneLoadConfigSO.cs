@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RedDust.GameScene
+namespace RedDust.Services.Scene
 {
     public enum LoadMode { FullTransition, AdditiveWithFade, Streaming }
     public enum CurtainType { LoadingScreen, BriefFade, None }

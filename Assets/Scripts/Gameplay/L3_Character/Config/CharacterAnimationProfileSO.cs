@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.Character.Animation
+namespace RedDust.Gameplay.Character.Animation
 {
     /// <summary>
     /// 角色动画总领资产。一份资产涵盖该角色类型的所有动画配置与引用集。

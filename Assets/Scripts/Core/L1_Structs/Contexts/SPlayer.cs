@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace RedDust.Core
+namespace RedDust.Core.Structs
 {
     /// <summary>
     /// Immutable snapshot describing the player character identity.

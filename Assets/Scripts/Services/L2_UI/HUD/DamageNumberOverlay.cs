@@ -1,11 +1,12 @@
+
+using RedDust.Core.GameContext;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
-using RedDust.Ability;
-using RedDust.Core;
+using RedDust.Gameplay.Ability;
 using RedDust.Core.Events;
 
-namespace RedDust.UI
+namespace RedDust.Services.UI
 {
     /// <summary>
     /// 伤害飘字 Overlay — Screen Space 方案。
@@ -26,7 +27,7 @@ namespace RedDust.UI
         [SerializeField] private float screenOffsetY = 50f;
 
         [Header("Camera")]
-        [SerializeField] private Camera worldCamera;
+        [SerializeField] private UnityEngine.Camera worldCamera;
 
         private EventHub _eventHub;
         private HitEvent _hitEvent;
@@ -52,7 +53,7 @@ namespace RedDust.UI
             if (!TrySubscribe()) return;
 
             if (worldCamera == null)
-                worldCamera = Camera.main;
+                worldCamera = UnityEngine.Camera.main;
 
             if (widgetPrefab == null)
             {
@@ -193,7 +194,7 @@ namespace RedDust.UI
         private void TestDamage()
         {
             if (!Application.isPlaying || widgetPrefab == null) return;
-            if (worldCamera == null) worldCamera = Camera.main;
+            if (worldCamera == null) worldCamera = UnityEngine.Camera.main;
             if (worldCamera == null) return;
 
             var widget = GetWidget();

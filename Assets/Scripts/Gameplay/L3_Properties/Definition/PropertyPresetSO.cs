@@ -1,8 +1,8 @@
 using UnityEngine;
-using RedDust.Ability;
-using RedDust.Entities;
+using RedDust.Gameplay.Ability;
+using RedDust.Services.EntityService;
 
-namespace RedDust.Properties
+namespace RedDust.Gameplay.Properties
 {
     /// <summary>
     /// 属性预设基类。绑定 PropertyTreeSO（结构）与 OverridesJson（变种覆写值）。

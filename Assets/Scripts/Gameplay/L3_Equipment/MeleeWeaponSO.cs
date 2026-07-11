@@ -1,8 +1,8 @@
-using RedDust.Ability;
-using RedDust.Entities;
+using RedDust.Gameplay.Ability;
+using RedDust.Services.EntityService;
 using UnityEngine;
 
-namespace RedDust.Equipment
+namespace RedDust.Gameplay.Equipment
 {
     /// <summary>
     /// 近战武器预设。覆写 GetDamageEffects，从 PropertyTree 的 Weapon/ATK 读取所有 DamageEffectSO。

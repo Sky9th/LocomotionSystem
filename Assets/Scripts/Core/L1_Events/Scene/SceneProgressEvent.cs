@@ -1,4 +1,4 @@
-using RedDust.GameScene;
+using RedDust.Services.Scene;
 using UnityEngine;
 
 namespace RedDust.Core.Events

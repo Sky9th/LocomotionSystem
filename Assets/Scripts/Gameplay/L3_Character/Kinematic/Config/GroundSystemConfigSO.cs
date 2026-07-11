@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.Character.Kinematic
+namespace RedDust.Gameplay.Character.Kinematic
 {
     /// <summary>
     /// 地面/障碍物探测与锁地参数——物理系统调参，与角色本身无关。

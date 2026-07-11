@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using RedDust.Entities;
+using RedDust.Services.EntityService;
 using UnityEngine;
 
-namespace RedDust.Ability
+namespace RedDust.Gameplay.Ability
 {
     /// <summary>
     /// 技能管道。持有 <see cref="StateMachine{SActiveAbilityContext}"/>。

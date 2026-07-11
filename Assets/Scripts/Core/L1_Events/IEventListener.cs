@@ -1,4 +1,4 @@
-namespace RedDust.Core
+namespace RedDust.Core.Events
 {
     /// <summary>
     /// 事件监听者接口。任何需要订阅 SO Event Channel 的模块实现此接口，

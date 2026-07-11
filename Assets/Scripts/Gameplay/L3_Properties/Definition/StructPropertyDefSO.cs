@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace RedDust.Properties
+namespace RedDust.Gameplay.Properties
 {
     [CreateAssetMenu(fileName = "StructDefinition", menuName = "RedDust/Properties/Struct Definition")]
     public class StructPropertyDefSO : PropertyDefSO
