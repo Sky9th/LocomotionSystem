@@ -3,6 +3,7 @@ using System.Linq;
 using RedDust.Container;
 using RedDust.Core;
 using RedDust.Properties;
+using RedDust.Character;
 using UnityEngine;
 
 namespace RedDust.Entities
@@ -23,6 +24,9 @@ namespace RedDust.Entities
         [SerializeField] private EntitySpawnedEvent spawnedEvent;
         [SerializeField] private EntityDespawnRequestEvent despawnRequestEvent;
         [SerializeField] private EntityDespawnedEvent despawnedEvent;
+
+        [Header("Prefabs")]
+        [SerializeField] private GameObject defaultItemPrefab;
 
         private readonly Dictionary<string, Entity> _entities = new();
 
@@ -47,7 +51,6 @@ namespace RedDust.Entities
 
         private void OnSpawnRequest(SEntitySpawnRequest req)
         {
-            // ── 无效请求 ──
             if (req.Preset == null && string.IsNullOrEmpty(req.EntityId))
             {
                 Debug.LogError("[EntityService] SpawnRequest: both Preset and EntityId are null.");
@@ -57,24 +60,13 @@ namespace RedDust.Entities
             // ── 新 Entity 创建 ──
             if (req.Preset != null)
             {
-                if (req.Position.HasValue && req.Preset.Prefab == null)
-                {
-                    Debug.LogError($"[EntityService] SpawnRequest: Preset '{req.Preset.name}' has null Prefab.");
-                    return;
-                }
-
                 var id = req.EntityId ?? System.Guid.NewGuid().ToString();
                 var entity = new Entity(id, req.Preset);
                 Register(entity);
 
                 if (req.Position.HasValue)
                 {
-                    var go = Instantiate(req.Preset.Prefab, req.Position.Value, req.Rotation);
-                    go.name = entity.Id;
-                    var identity = go.GetComponent<Identity>() ?? go.AddComponent<Identity>();
-                    identity.BindEntity(entity.Id);
-                    identity.Entity = entity;
-                    identity.SetProperties(entity.Properties);
+                    var go = CreateGameObject(entity, req.Position.Value, req.Rotation);
                     entity.View = go;
                     spawnedEvent?.Raise(new SEntitySpawned(entity.Id, entity.Preset, go));
                 }
@@ -101,24 +93,54 @@ namespace RedDust.Entities
 
             if (existing.HasView)
             {
-                Debug.LogError($"[EntityService] SpawnRequest: entity '{req.EntityId}' already has a View. Despawn first.");
+                Debug.LogError($"[EntityService] SpawnRequest: entity '{req.EntityId}' already has a View.");
                 return;
             }
 
-            if (existing.Preset.Prefab == null)
-            {
-                Debug.LogError($"[EntityService] SpawnRequest: entity '{req.EntityId}' Preset has null Prefab.");
-                return;
-            }
-
-            var go2 = Instantiate(existing.Preset.Prefab, req.Position.Value, req.Rotation);
-            go2.name = existing.Id;
-            var id2 = go2.GetComponent<Identity>() ?? go2.AddComponent<Identity>();
-            id2.BindEntity(existing.Id);
-            id2.Entity = existing;
-            id2.SetProperties(existing.Properties);
+            var go2 = CreateGameObject(existing, req.Position.Value, req.Rotation);
             existing.View = go2;
             spawnedEvent?.Raise(new SEntitySpawned(existing.Id, existing.Preset, go2));
+        }
+
+        private GameObject CreateGameObject(Entity entity, Vector3 pos, Quaternion rot)
+        {
+            GameObject go;
+            if (entity.Preset is CharacterDefSO)
+            {
+                // TODO: 角色后续也走 Common/VisualPrefab（同物品路径）
+                // TODO: 远期角色使用模块化装配，届时 CreateGameObject 再重构
+                if (entity.Preset.Prefab == null)
+                {
+                    Debug.LogError($"[EntityService] Character '{entity.Preset.name}' has null Prefab.");
+                    return null;
+                }
+                go = Instantiate(entity.Preset.Prefab, pos, rot);
+                go.name = entity.Id;
+                var identity = go.GetComponent<Identity>() ?? go.AddComponent<Identity>();
+                identity.BindEntity(entity.Id);
+                identity.Entity = entity;
+                identity.SetProperties(entity.Properties);
+                return go;
+            }
+
+            // 物品：VisualPrefab → defaultItemPrefab → Cube
+            var visualPrefab = entity.Properties.GetAsset<GameObject>("Common/VisualPrefab");
+            if (visualPrefab != null)
+                go = Instantiate(visualPrefab, pos, rot);
+            else if (defaultItemPrefab != null)
+                go = Instantiate(defaultItemPrefab, pos, rot);
+            else
+                go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                go.transform.localScale = Vector3.one * 0.3f;
+
+            go.name = entity.Id;
+            go.transform.position = pos;
+            go.transform.rotation = rot;
+            var id = go.AddComponent<Identity>();
+            id.BindEntity(entity.Id);
+            id.Entity = entity;
+            id.SetProperties(entity.Properties);
+            return go;
         }
 
         private void OnDespawnRequest(SEntityDespawnRequest req)

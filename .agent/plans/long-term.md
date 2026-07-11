@@ -1,6 +1,6 @@
 # 长期开发计划 — A测路线图
 
-> 更新: 2026-07-09 | 剩余时间: ~5 个月
+> 更新: 2026-07-10 | 剩余时间: ~5 个月
 > A测目标: 系统完整、内容半满、可玩闭环 — 玩家能在 30-60 分钟内体验完整生存循环
 
 ---
@@ -157,8 +157,9 @@
 | 2.5 | Stats 管理 | Rule 分层架构（5 行为模式） |
 | 3 | HUD UI | uGUI 重建：UIScreen/Overlay/Panel + MainMenu + VitalsOverlay |
 | 4 | 战斗 + 技能管线 | 俯视角切换 + A* 寻路 + S1-S5（Properties 集成 → 装备技能闭环 → 8 状态管道 → 战斗管道收尾 → 动画增强） |
+| Mod 补课 | HybridCLR 接入 + Mod 闭环 | IL2CPP `Assembly.Load()` + L2 ModService + 端到端外部 DLL 加载验证 ✅ |
 
-> ⚠️ **Mod 补课待办**：Phase 1-4 建造时没有 Mod 约束。需要补 contentId 字段、AssetCatalog 标准化、关键类可扩展性确认。**详见 `short-term.md` 前置准备。**
+> ⚠️ **Mod 补课待办**：contentId 字段、AssetCatalog 标准化、关键类可扩展性确认。**详见 `short-term.md` S0 基础设施。**
 
 ---
 

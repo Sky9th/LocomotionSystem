@@ -38,7 +38,9 @@ namespace RedDust.Character
 
         public override void OnWire()
         {
-            _animator = ctx.ModelRoot?.GetComponent<Animator>();
+            // Use Unity's overloaded != null — C# ?. bypasses fake-null detection for destroyed objects
+            if (ctx.ModelRoot != null)
+                _animator = ctx.ModelRoot.GetComponent<Animator>();
         }
 
         /// <summary>

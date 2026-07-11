@@ -1,78 +1,58 @@
 # 短期开发计划
 
-> 更新: 2026-07-09 | 分支: `feature/phase5-item-economy`
-> 聚焦: 前置准备（Mod 补课）+ Phase 5 物品经济（P5.1 → P5.5）
+> 更新: 2026-07-10 | 分支: `feature/phase5-item-economy`
+> 聚焦: Phase 5 物品经济（P5.1 → P5.5）
 > 长期路线: 见 `.agent/plans/long-term.md`
 > Mod 框架: 见 `.agent/tech/mod-architecture-framework.md`
 
 ---
 
-## 主攻：HybridCLR 接入 + 首个测试 Mod
+## ✅ Mod 补课 — HybridCLR 接入 + Mod 闭环（已完成）
 
-> 不要再辩论 xLua vs HybridCLR。接入 → 写一个测试 Mod → 自己当 Mod 作者 → 跑通了，辩论自动结束。
+> 2026-07-10 · 2 sessions · `feature/hybridclr-mod-verification`
 
-### Step 1: HybridCLR 接入（1 session）
+| 里程碑 | 产出 | Commit |
+|--------|------|--------|
+| HybridCLR 社区版接入 | IL2CPP 获得 `Assembly.Load(byte[])` 能力，66 AOT 元数据通过 Addressables 加载 | `ee054aad` |
+| L2 ModService 基础设施 | `[ModEntry]` + `IModEntry` 接口，`ModManifest` JSON 解析，扫描 `Mods/` → 反射加载 → 调用 `Initialize()` | `fa945104` |
 
-目标：IL2CPP 构建下 `Assembly.Load(byte[])` 能工作。
+**已验证**: Editor 下端到端闭环——外部 C# DLL 编译 → 放入 Mods/ → 游戏加载执行 → `Debug.Log` 输出。
 
-| # | 操作 | 说明 |
-|---|------|------|
-| 1.1 | 安装 HybridCLR 包 | Package Manager → `https://github.com/focus-creative-games/hybridclr_unity.git` |
-| 1.2 | 初始化 | `HybridCLR → Installer → Install` |
-| 1.3 | 配置 PlayerSettings | Scripting Backend = IL2CPP，Api Compatibility = .NET Framework（需从 .NET Standard 2.1 切换） |
-| 1.4 | `Generate → All` | 产出 `HybridCLRData/AssembliesPostIl2CppStrip/{platform}/` |
-| 1.5 | 补充元数据接入 Addressables | 创建 `AOTMetadata` Group → 元数据 DLL 重命名 `.bytes` → 打 `aot-metadata` label → 构建时随 boot 标签打包 |
-| 1.6 | 运行时加载补充元数据 | `AssetService` 加载 `aot-metadata` label → `RuntimeApi.LoadMetadataForAOTAssembly()` |
-| 1.7 | 验证 | 空场景 build → 启动 → 日志确认 HybridCLR 初始化成功 → `Assembly.Load(byte[])` 不抛异常 |
+详见: [hybridclr-integration](../.agent/sessions/2026-07-10-hybridclr-integration.md) · [mod-service](../.agent/sessions/2026-07-10-mod-service-infrastructure.md)
 
-### Step 2: 第一个测试 Mod（1 session）
+### 已知缺口（记录，不阻塞 Phase 5）
 
-目标：自己站在 Mod 作者立场，从零写一个能跑进游戏的 C# Mod。
-
-| # | 操作 | 说明 |
-|---|------|------|
-| 2.1 | 建 Mod 项目 | 独立 `.csproj`（非 Unity 项目），引用 `RedDust.Api.dll` 存根（从 game 的 AOT 程序集提取） |
-| 2.2 | 写 Mod 逻辑 | 新增一件物品（如 `TestSword`），游戏启动时注册到 GameRegistry，打一条 `Debug.Log` |
-| 2.3 | 编译 DLL | `dotnet build` → 产出 `MyMod.dll` |
-| 2.4 | 放 Mods/ 文件夹 | `persistentDataPath/Mods/MyMod/manifest.json + mod.dll` |
-| 2.5 | 游戏侧加载 Mod | 最小 `ModLoader`：扫描 `Mods/` → `Assembly.Load(File.ReadAllBytes(dllPath))` → 反射找到 `[ModEntry]` → 调用 `Initialize()` |
-| 2.6 | 验证 | 启动游戏 → 日志输出 Mod 注册消息 → `GameRegistry` 中多了一件 `TestSword` |
-
-### Step 3: 串联 + 记录（1 session）
-
-| # | 操作 | 说明 |
-|---|------|------|
-| 3.1 | 记录 Mod 作者工作流 | 站在自己的体验：哪些步骤顺畅？哪些卡住了？缺什么文档？ |
-| 3.2 | 记录 API 缺口 | Mod 代码里想调但调不到的 public API——记录下来，不现在补 |
-| 3.3 | 输出 | 更新 `mod-json-reference.md` 补充 C# Mod 实战经验 + 更新 `hybridclr-integration.md` 修正踩坑记录 |
-
-### 这个阶段不出什么
-
-- ❌ 不出 `ModService.cs` 完整实现——只写最小 `ModLoader` 够跑测试
-- ❌ 不写 Mod 管理 UI
-- ❌ 不写 Workshop 集成
-- ❌ 不写 C# Mod 文档——Step 3 的记录是文档的原料，不是文档本身
+| 缺口 | 优先级 | 说明 |
+|------|--------|------|
+| `link.xml` 为空 | P1 | IL2CPP stripping 可能裁掉 Mod 引用的 public 类型 |
+| 依赖拓扑排序 | P1 | Mod 加载顺序未按 `dependencies[]` 排序 |
+| ID 冲突检测 + `loadPriority` | P1 | 同名 Mod 无冲突检测 |
+| IL2CPP Build 验证 | P1 | 仅在 Editor 验证，未做独立 Build 测试 |
+| Mod 管理 UI | P2 | 无 Mod 列表/启用禁用 UI |
+| Workshop 集成 | P3 | Steam Workshop 上传下载 |
 
 ---
 
-## S0 基础设施（与主攻并行）
+## S0 基础设施（与 Phase 5 并行推进）
 
-> HybridCLR 接入期间，Phase 5 物品经济继续推进。contentId 是物品经济的硬依赖——不因为 Mod 实验而搁置。
+> contentId 是物品经济的硬依赖——Phase 5 推进过程中逐步完成。
 
-### 🔴 P0：PropertyPresetSO 加 contentId 字段
+### 🔴 P0：PropertyPresetSO 加 contentId 字段 ✅
 
-| 步骤 | 操作 | 文件 |
+> 实际实现：不走 C# 字段，走 PropertyTree 节点 + ContentIdUtility。数据在 PropertyTable 中，Mod 可寻址。
+
+| 步骤 | 操作 | 状态 |
 |------|------|------|
-| P0.1 | `PropertyPresetSO` 加 `public string contentId;` | `L3_Properties/Definition/PropertyPresetSO.cs` |
-| P0.2 | Editor 中 contentId 默认 = asset name（迁移兼容） | `EntityEditorWindow` 基类 |
-| P0.3 | 新物品按 `category.subcategory.name` 规范填写 contentId | Phase 5 每个新 SO 创建时 |
-| P0.4 | P5.0 已有 49 件物品 contentId 回填 | 批量赋值规范 ID |
+| P0.1 | `PropertyTree` 新增 `Common/Category` (RdTag) + `Common/Id` (string) 节点 | ✅ |
+| P0.2 | `ContentIdUtility`：从 PropertyTable 拼 contentId = `{category}.{id}` | ✅ |
+| P0.3 | `EntityEditorWindow` 首次保存时自动从 asset name 推导 `Common/Id`（snake_case） | ✅ |
+| P0.4 | 49 件道具 contentId 回填（11 Consumable + 26 Equipment + 12 Ammo） | ✅ |
 
-命名示例：见 [mod-architecture-framework.md](../tech/mod-architecture-framework.md#31-contentid-命名规范)。
+**优于原方案**：contentId 在数据层而非 Unity 对象层——Mod 覆写 PropertyTree 值即可改变 contentId，无需继承 SO 类。
 
-### 🟡 P1：AssetCatalog 改为 contentId 查找（条件触发）
+### 🟡 P1：AssetCatalog 改为 contentId 查找
 
-> ⚠️ 只在主攻 3 session 完成后才启动。Mod 验证优先于重构。
+> Mod 闭环已验证，可以启动。与 Phase 5 开发协调，不阻塞 P5.1。
 
 | 步骤 | 操作 | 文件 |
 |------|------|------|

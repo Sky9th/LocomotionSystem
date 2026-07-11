@@ -14,7 +14,32 @@ namespace RedDust.Entities
         private readonly Entity _entity;
 
         private CharacterActor _character;
-        private CharacterActor Character => _character ??= _entity.View?.GetComponent<CharacterActor>();
+
+        /// <summary>
+        /// 缓存的 CharacterActor 引用。
+        /// 注意：必须使用 Unity 重载的 == null（而非 C# ?. / ??=）检测已销毁的 UnityEngine.Object。
+        /// C# null-conditional 运算符绕过 Unity 的 fake-null 重载，导致 MissingReferenceException。
+        /// 因此 getter 最后一步将销毁引用转为真正的 null，确保调用方的 ?. 能正确短路。
+        /// </summary>
+        private CharacterActor Character
+        {
+            get
+            {
+                // Unity overloaded == null: true for both real null AND destroyed objects
+                if (_character == null)
+                {
+                    // HasView uses Unity's != null overload — correctly false for destroyed GO
+                    if (_entity.HasView)
+                        _character = _entity.View.GetComponent<CharacterActor>();
+                }
+
+                // If _character is still "Unity null" (destroyed), null it out so callers'
+                // C# ?. operators correctly short-circuit instead of touching native memory.
+                if (_character == null)
+                    _character = null; // destroyed ref → real null
+                return _character;
+            }
+        }
 
         internal EntityCommandModule(Entity entity) { _entity = entity; }
 

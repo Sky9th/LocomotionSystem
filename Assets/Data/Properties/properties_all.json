@@ -1468,6 +1468,11 @@
           "defId": "Description"
         },
         {
+          "nodeId": "VisualPrefab",
+          "parentId": "Common",
+          "defId": "VisualPrefab"
+        },
+        {
           "nodeId": "Slots",
           "parentId": "",
           "defId": ""
@@ -2035,11 +2040,6 @@
           "nodeId": "Presentation",
           "parentId": "",
           "defId": ""
-        },
-        {
-          "nodeId": "VisualPrefab",
-          "parentId": "Presentation",
-          "defId": "VisualPrefab"
         },
         {
           "nodeId": "Behavior",

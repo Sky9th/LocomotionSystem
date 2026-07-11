@@ -99,10 +99,17 @@ namespace RedDust.Entities
             {
                 if (_ability == null)
                 {
-                    var actor = _entity.View?.GetComponent<CharacterActor>();
-                    var ctx = actor?.BuildContext;
-                    if (ctx != null)
-                        _ability = new AbilityQuery(ctx.Ability, ctx.AbilityForest);
+                    // Use Unity's overloaded != null — C# ?. bypasses fake-null detection
+                    if (_entity.View != null)
+                    {
+                        var actor = _entity.View.GetComponent<CharacterActor>();
+                        if (actor != null)
+                        {
+                            var ctx = actor.BuildContext;
+                            if (ctx != null)
+                                _ability = new AbilityQuery(ctx.Ability, ctx.AbilityForest);
+                        }
+                    }
                 }
                 return _ability;
             }

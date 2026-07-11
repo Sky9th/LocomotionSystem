@@ -1,16 +1,14 @@
 # ⛔ API 章节过时 — Spawn/Despawn 已改为事件驱动
 
-> **Status**: 本文档 API 章节描述的 `Register()`, `Spawn()`, `Despawn()` 公开方法已不存在。
-> 当前架构：`Register()` 变为 private，Spawn/Despawn 通过 `SEntitySpawnRequest` / `SEntityDespawnRequest` 事件通道驱动。
-> **以 `L2_EntityService/EntityService.cs` 代码为准。**
-> **最后验证**: 2026-07-03
+> **Status**: API 章节已更新。CreateGameObject 统一入口，Spawn/Despawn 事件驱动。
+> **最后验证**: 2026-07-11
 
 ---
 
 # EntityService — 实体管理服务
 
 > `L2_EntityService/EntityService.cs` · L2 服务
-> **Last Verified**: 2026-06-27 | **Verification**: 2026-06-27 架构重塑，全部字段重新验证。
+> **Last Verified**: 2026-07-11
 
 ## 层级定位
 
@@ -97,7 +95,7 @@ EntityService 发布:
   
   放入地面:
     → EntityService.Spawn(entity.Id, position)
-    → Instantiate(GroundItemPrefab) → GroundItem.Init(entity)
+    → CreateGameObject() — VisualPrefab → defaultItemPrefab → Cube
   
   捡进背包:
     → EntityService.Despawn(entity.Id)  ← GroundItem GO 销毁

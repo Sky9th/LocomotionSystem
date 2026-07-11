@@ -23,10 +23,6 @@ namespace RedDust.Player
         [Header("Test — 临时生成")]
         [Tooltip("CharacterDefSO key")]
         [SerializeField] private string zombieDefKey = "Zombie";
-        [Tooltip("ItemDefSO key，从 Assets 查找。")]
-        [SerializeField] private string bladeDefKey = "Blade";
-        [SerializeField] private string pistolDefKey = "Pistol";
-        [SerializeField] private string backpackDefKey = "Backpack";
 
         [Header("Event Channels")]
         [SerializeField] private EntitySpawnRequestEvent spawnRequestEvent;
@@ -146,71 +142,71 @@ namespace RedDust.Player
 
         private void SpawnTestEntities()
         {
-            if (!GameContext.Instance.TryResolveService<EntityService>(out var entityService))
-            {
-                Debug.LogError("[PlayerService] EntityService not found — spawn aborted.");
-                return;
-            }
-
             if (_playerEntity == null)
             {
                 Debug.LogError("[PlayerService] Player entity not found.");
                 return;
             }
 
-            // Zombie 在玩家右侧 3 米
-            var zombieDef = GameService.Instance.Assets.FindCharacter(zombieDefKey);
-            if (zombieDef != null)
-            {
-                var pos = playerStartAnchor.transform.position + Vector3.forward * 3f;
-                pos += Vector3.up * 3f;
-                spawnRequestEvent.Raise(new SEntitySpawnRequest(zombieDef, "test_zombie", pos));
-                Debug.Log($"[PlayerService] Spawned zombie at {pos}");
-            }
-            else { Debug.LogWarning($"[PlayerService] CharacterDef '{zombieDefKey}' not found in Registry."); }
+            // // Zombie 在玩家右侧 3 米
+            // var zombieDef = GameService.Instance.Assets.FindCharacter(zombieDefKey);
+            // if (zombieDef != null)
+            // {
+            //     var pos = playerStartAnchor.transform.position + Vector3.forward * 3f;
+            //     pos += Vector3.up * 3f;
+            //     spawnRequestEvent.Raise(new SEntitySpawnRequest(zombieDef, "test_zombie", pos));
+            //     Debug.Log($"[PlayerService] Spawned zombie at {pos}");
+            // }
+            // else { Debug.LogWarning($"[PlayerService] CharacterDef '{zombieDefKey}' not found in Registry."); }
 
-            // Backpack → Back，武器进背包
-            var backpackDef = GameService.Instance.Assets.FindItem<ContainerSO>(backpackDefKey);
-            if (backpackDef == null)
-            {
-                Debug.LogError($"[PlayerService] ContainerDef '{backpackDefKey}' not found in Assets — no backpack spawned.");
-                return;
-            }
-            var bladeDef = GameService.Instance.Assets.FindItem<MeleeWeaponSO>(bladeDefKey);
-            if (bladeDef == null) Debug.LogWarning($"[PlayerService] bladeDef '{bladeDefKey}' not found in Assets.");
-            var pistolDef = GameService.Instance.Assets.FindItem<RangedWeaponSO>(pistolDefKey);
-            if (pistolDef == null) Debug.LogWarning($"[PlayerService] pistolDef '{pistolDefKey}' not found in Assets.");
+            // // Backpack → Back，武器进背包
+            // var backpackDef = GameService.Instance.Assets.FindItem<ContainerSO>(backpackDefKey);
+            // if (backpackDef == null)
+            // {
+            //     Debug.LogError($"[PlayerService] ContainerDef '{backpackDefKey}' not found in Assets — no backpack spawned.");
+            //     return;
+            // }
+            var bladeDef = GameService.Instance.Assets.FindItem<MeleeWeaponSO>("Machete");
+            var pistolDef = GameService.Instance.Assets.FindItem<RangedWeaponSO>("M1911");
 
-            const string backpackId = "test_backpack";
-            spawnRequestEvent.Raise(new SEntitySpawnRequest(backpackDef, backpackId, null));
-            var bp = entityService.Get(backpackId);
-            if (bp == null)
-            {
-                Debug.LogError($"[PlayerService] Spawn backpack failed.", this);
-                return;
-            }
-
-            _playerEntity.Command.Place("Back", bp);
-
-            // Blade → 背包
+            // P5.1: ground items near player
             if (bladeDef != null)
-            {
-                const string bladeId = "test_blade";
-                spawnRequestEvent.Raise(new SEntitySpawnRequest(bladeDef, bladeId, null));
-                var blade = entityService.Get(bladeId);
-                if (blade != null)
-                    bp.Command.Place("ContainerSlot", blade);
-            }
-
-            // Pistol → 背包
+                spawnRequestEvent.Raise(new SEntitySpawnRequest(bladeDef, "test_blade_ground",
+                    playerStartAnchor.transform.position + Vector3.left * 2f));
             if (pistolDef != null)
-            {
-                const string pistolId = "test_pistol";
-                spawnRequestEvent.Raise(new SEntitySpawnRequest(pistolDef, pistolId, null));
-                var pistol = entityService.Get(pistolId);
-                if (pistol != null)
-                    bp.Command.Place("ContainerSlot", pistol);
-            }
+                spawnRequestEvent.Raise(new SEntitySpawnRequest(pistolDef, "test_pistol_ground",
+                    playerStartAnchor.transform.position + Vector3.right * 2f));
+
+            // const string backpackId = "test_backpack";
+            // spawnRequestEvent.Raise(new SEntitySpawnRequest(backpackDef, backpackId, null));
+            // var bp = entityService.Get(backpackId);
+            // if (bp == null)
+            // {
+            //     Debug.LogError($"[PlayerService] Spawn backpack failed.", this);
+            //     return;
+            // }
+
+            // _playerEntity.Command.Place("Back", bp);
+
+            // // Blade → 背包
+            // if (bladeDef != null)
+            // {
+            //     const string bladeId = "test_blade";
+            //     spawnRequestEvent.Raise(new SEntitySpawnRequest(bladeDef, bladeId, null));
+            //     var blade = entityService.Get(bladeId);
+            //     if (blade != null)
+            //         bp.Command.Place("ContainerSlot", blade);
+            // }
+
+            // // Pistol → 背包
+            // if (pistolDef != null)
+            // {
+            //     const string pistolId = "test_pistol";
+            //     spawnRequestEvent.Raise(new SEntitySpawnRequest(pistolDef, pistolId, null));
+            //     var pistol = entityService.Get(pistolId);
+            //     if (pistol != null)
+            //         bp.Command.Place("ContainerSlot", pistol);
+            // }
         }
 
         public void OnGameplaySessionEnd()

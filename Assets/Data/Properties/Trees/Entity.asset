@@ -25,5 +25,7 @@ MonoBehaviour:
     \"DefId\": \"Weight\"\n        },\n        {\n            \"NodeId\": \"Tags\",\n           
     \"ParentId\": \"Common\",\n            \"DefId\": \"Tags\"\n        },\n       
     {\n            \"NodeId\": \"Description\",\n            \"ParentId\": \"Common\",\n           
-    \"DefId\": \"Description\"\n        },\n        {\n            \"NodeId\": \"Slots\",\n           
-    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        }\n    ]\n}"
+    \"DefId\": \"Description\"\n        },\n        {\n            \"NodeId\": \"VisualPrefab\",\n           
+    \"ParentId\": \"Common\",\n            \"DefId\": \"VisualPrefab\"\n        },\n       
+    {\n            \"NodeId\": \"Slots\",\n            \"ParentId\": \"\",\n           
+    \"DefId\": \"\"\n        }\n    ]\n}"

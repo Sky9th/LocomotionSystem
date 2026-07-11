@@ -18,10 +18,8 @@ MonoBehaviour:
     \"NodeId\": \"Durability\",\n            \"ParentId\": \"Equipment\",\n           
     \"DefId\": \"Durability\"\n        },\n        {\n            \"NodeId\": \"Presentation\",\n           
     \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
-    \"NodeId\": \"VisualPrefab\",\n            \"ParentId\": \"Presentation\",\n           
-    \"DefId\": \"VisualPrefab\"\n        },\n        {\n            \"NodeId\": \"Behavior\",\n           
-    \"ParentId\": \"\",\n            \"DefId\": \"\"\n        },\n        {\n           
-    \"NodeId\": \"AnimationProfile\",\n            \"ParentId\": \"Behavior\",\n           
-    \"DefId\": \"AnimationProfile\"\n        },\n        {\n            \"NodeId\":
-    \"AudioProfile\",\n            \"ParentId\": \"Behavior\",\n            \"DefId\":
-    \"AudioProfile\"\n        }\n    ]\n}"
+    \"NodeId\": \"Behavior\",\n            \"ParentId\": \"\",\n            \"DefId\":
+    \"\"\n        },\n        {\n            \"NodeId\": \"AnimationProfile\",\n           
+    \"ParentId\": \"Behavior\",\n            \"DefId\": \"AnimationProfile\"\n       
+    },\n        {\n            \"NodeId\": \"AudioProfile\",\n            \"ParentId\":
+    \"Behavior\",\n            \"DefId\": \"AudioProfile\"\n        }\n    ]\n}"

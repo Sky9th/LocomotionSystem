@@ -906,8 +906,8 @@ MonoBehaviour:
   m_ShowCameraFrustum: 1
   m_IgnoreTimeScale: 0
   m_WorldUpOverride: {fileID: 0}
-  m_UpdateMethod: 0
-  m_BlendUpdateMethod: 0
+  m_UpdateMethod: 2
+  m_BlendUpdateMethod: 1
   m_DefaultBlend:
     m_Style: 1
     m_Time: 2
@@ -973,6 +973,8 @@ MonoBehaviour:
   despawnRequestEvent: {fileID: 11400000, guid: b2695415bfb5ea44e8362d8e2daa7920,
     type: 2}
   despawnedEvent: {fileID: 11400000, guid: 4c46ce5b3d91dac43add70a33bdd49cf, type: 2}
+  defaultItemPrefab: {fileID: 1770571109050598, guid: 26ebce2f78526014da0d1b69d835b6e9,
+    type: 3}
 --- !u!1 &6974227687109179904
 GameObject:
   m_ObjectHideFlags: 0
@@ -1020,9 +1022,6 @@ MonoBehaviour:
   characterDefKey: Human
   playerStartAnchor: {fileID: 0}
   zombieDefKey: Zombie
-  bladeDefKey: Blade
-  pistolDefKey: Pistol
-  backpackDefKey: Backpack
   spawnRequestEvent: {fileID: 11400000, guid: 877c0c04f407c59419120d30b11b5548, type: 2}
   spawnedEvent: {fileID: 11400000, guid: 6a8a4979991f50f46a7094ac95fcd532, type: 2}
   despawnRequestEvent: {fileID: 11400000, guid: b2695415bfb5ea44e8362d8e2daa7920,
