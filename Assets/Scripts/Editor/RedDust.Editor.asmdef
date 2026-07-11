@@ -1,0 +1,23 @@
+{
+    "name": "RedDust.Editor",
+    "rootNamespace": "RedDust.Editor",
+    "references": [
+        "RedDust.Runtime",
+        "Unity.Addressables",
+        "Unity.Addressables.Editor",
+        "Unity.InputSystem",
+        "Kybernetik.Animancer",
+        "AstarPathfindingProject"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
