@@ -1022,6 +1022,10 @@ namespace RedDust.Entities.Editor
             var container = new OverrideContainer { Overrides = entries };
             _selectedPreset.OverridesJson = JsonUtility.ToJson(container, true);
 
+            // 同步 Common/Id 到 PropertyPresetSO._contentId（运行时无 JSON Parse 直接读取）
+            if (_overrideValues.TryGetValue("Common/Id", out var commonId) && !string.IsNullOrEmpty(commonId))
+                _selectedPreset.SetContentId(commonId);
+
             EditorUtility.SetDirty(_selectedPreset);
             AssetDatabase.SaveAssets();
 

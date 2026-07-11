@@ -13,11 +13,6 @@ MonoBehaviour:
   m_Name: FirstAidKit
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: 7f35ee616ff16314d98d2ab6ee0b2b1b, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Consumable.Medical\"]"},
-    {"Path": "Tags/ConsumableType", "Value": "Medical"}, {"Path": "Tags/MedicalType",
-    "Value": "FirstAid"}, {"Path": "Base/StackSize", "Value": "5"}, {"Path": "Base/ConsumeTime",
-    "Value": "5.0"}, {"Path": "Heal/HealAmount", "Value": "40"}, {"Path": "Heal/BleedReduction",
-    "Value": "100"}, {"Path": "Heal/InfectionCleanse", "Value": "50"}, {"Path": "Heal/PainRelief",
-    "Value": "20"}, {"Path": "Heal/HealDuration", "Value": "8.0"}, {"Path": "Common/Category",
-    "Value": "Entity.Consumable.Medical"}, {"Path": "Common/Id", "Value": "first_aid_kit"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Consumable.Medical\"]"},{"Path":"Tags/ConsumableType","Value":"Medical"},{"Path":"Tags/MedicalType","Value":"FirstAid"},{"Path":"Base/StackSize","Value":"5"},{"Path":"Base/ConsumeTime","Value":"5.0"},{"Path":"Heal/HealAmount","Value":"40"},{"Path":"Heal/BleedReduction","Value":"100"},{"Path":"Heal/InfectionCleanse","Value":"50"},{"Path":"Heal/PainRelief","Value":"20"},{"Path":"Heal/HealDuration","Value":"8.0"},{"Path":"Common/Category","Value":"Entity.Consumable.Medical"},{"Path":"Common/Id","Value":"Entity.Consumable.Medical.first_aid_kit"}]}'
   Prefab: {fileID: 1210496204973002, guid: 55e31d9d98e7506428bd5fc800ea4122, type: 3}
+  _contentId: Entity.Consumable.Medical.first_aid_kit

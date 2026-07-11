@@ -13,13 +13,7 @@ MonoBehaviour:
   m_Name: FireAxe
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: 20b716d799f4b61499e98df7782f3727, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Equipment.Weapon.Melee.Axe\",
-    \"Grip.Melee.OneHanded\"]"}, {"Path": "Base/Weight", "Value": "4.0"}, {"Path":
-    "Equipment/Durability", "Value": "120", "Max": "120"}, {"Path": "Weapon/AttackSpeed",
-    "Value": "0.7"}, {"Path": "Weapon/AttackRange", "Value": "1.0"}, {"Path": "Weapon/NoiseRadius",
-    "Value": "20"}, {"Path": "Weapon/IsTwoHanded", "Value": "true"}, {"Path": "Combat/BleedChance",
-    "Value": "5"}, {"Path": "Combat/ArmorPierce", "Value": "25"}, {"Path": "Weapon/ATK",
-    "Value": "[\"89b724ec839edd94d92ec037a1cb074a\"]"}, {"Path": "Common/Category",
-    "Value": "Entity.Equipment.Weapon.Melee.Axe"}, {"Path": "Common/Id", "Value":
-    "fire_axe"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Equipment.Weapon.Melee.Axe\",
+    \"Grip.Melee.OneHanded\"]"},{"Path":"Base/Weight","Value":"4.0"},{"Path":"Equipment/Durability","Value":"120","Max":"120"},{"Path":"Weapon/AttackSpeed","Value":"0.7"},{"Path":"Weapon/AttackRange","Value":"1.0"},{"Path":"Weapon/NoiseRadius","Value":"20"},{"Path":"Weapon/IsTwoHanded","Value":"true"},{"Path":"Combat/BleedChance","Value":"5"},{"Path":"Combat/ArmorPierce","Value":"25"},{"Path":"Weapon/ATK","Value":"[\"89b724ec839edd94d92ec037a1cb074a\"]"},{"Path":"Common/Category","Value":"Entity.Equipment.Weapon.Melee.Axe"},{"Path":"Common/Id","Value":"Entity.Equipment.Weapon.Melee.Axe.fire_axe"}]}'
   Prefab: {fileID: 1400711587830432, guid: cec5944b3fba5e643b7558cbd3366cd4, type: 3}
+  _contentId: Entity.Equipment.Weapon.Melee.Axe.fire_axe

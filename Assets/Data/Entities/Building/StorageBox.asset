@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: StorageBox
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: 2b1da34e330b18647a89606d1e57279a, type: 2}
-  OverridesJson: 
+  OverridesJson: '{"Overrides":[{"Path":"Common/Category","Value":"Entity.Building"},{"Path":"Common/Id","Value":"Entity.Building.storage_box"}]}'
   Prefab: {fileID: 0}
+  _contentId: Entity.Building.storage_box

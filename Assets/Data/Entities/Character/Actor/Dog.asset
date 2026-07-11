@@ -10,8 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4c66336c3653bee49af7bbe63976fdd4, type: 3}
-  m_Name: Survivor
+  m_Name: Dog
   m_EditorClassIdentifier: 
-  Template: {fileID: 11400000, guid: 3cdba62ac873c3b4fac8c20ab25863bc, type: 2}
-  OverridesJson: '{"Overrides":[{"Path":"Vitals/HP","Value":"120"},{"Path":"Vitals/MaxStamina","Value":"110"}]}'
+  Template: {fileID: 11400000, guid: 0cd1ff450cd0cc8469486957c060e538, type: 2}
+  OverridesJson: '{"Overrides":[{"Path":"Common/Category","Value":"Entity.Character"},{"Path":"Common/Id","Value":"Entity.Character.dog"}]}'
   Prefab: {fileID: 0}
+  _contentId: Entity.Character.dog

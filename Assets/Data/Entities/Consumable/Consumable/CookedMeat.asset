@@ -13,12 +13,6 @@ MonoBehaviour:
   m_Name: CookedMeat
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: 8ee708a11e79b16449a2bd2c7e3474a1, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Consumable.Food\"]"},
-    {"Path": "Tags/ConsumableType", "Value": "Food"}, {"Path": "Tags/FoodType", "Value":
-    "Meat"}, {"Path": "Base/StackSize", "Value": "5"}, {"Path": "Base/ConsumeTime",
-    "Value": "3.0"}, {"Path": "Nutrition/Nutrition_Val", "Value": "30"}, {"Path":
-    "Nutrition/Hydration", "Value": "0"}, {"Path": "Quality/MoraleBonus", "Value":
-    "8"}, {"Path": "Quality/ShelfLife", "Value": "2"}, {"Path": "Quality/ContaminationRisk",
-    "Value": "10"}, {"Path": "Common/Category", "Value": "Entity.Consumable.Food"},
-    {"Path": "Common/Id", "Value": "cooked_meat"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Consumable.Food\"]"},{"Path":"Tags/ConsumableType","Value":"Food"},{"Path":"Tags/FoodType","Value":"Meat"},{"Path":"Base/StackSize","Value":"5"},{"Path":"Base/ConsumeTime","Value":"3.0"},{"Path":"Nutrition/Nutrition_Val","Value":"30"},{"Path":"Nutrition/Hydration","Value":"0"},{"Path":"Quality/MoraleBonus","Value":"8"},{"Path":"Quality/ShelfLife","Value":"2"},{"Path":"Quality/ContaminationRisk","Value":"10"},{"Path":"Common/Category","Value":"Entity.Consumable.Food"},{"Path":"Common/Id","Value":"Entity.Consumable.Food.cooked_meat"}]}'
   Prefab: {fileID: 1849607239603550, guid: 49aef79c0f8b14f409456b1e709dee02, type: 3}
+  _contentId: Entity.Consumable.Food.cooked_meat

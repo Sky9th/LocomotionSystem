@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: Barrel
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: 4b8a77b9241a1224dbde941dbdd0efed, type: 2}
-  OverridesJson: 
+  OverridesJson: '{"Overrides":[{"Path":"Common/Category","Value":"Entity.SceneItem"},{"Path":"Common/Id","Value":"Entity.SceneItem.barrel"}]}'
   Prefab: {fileID: 0}
+  _contentId: Entity.SceneItem.barrel

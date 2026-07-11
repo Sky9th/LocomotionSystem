@@ -13,16 +13,6 @@ MonoBehaviour:
   m_Name: M4A1
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: 3d2b96ca960bd974d88ca691c64ef68a, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Equipment.Weapon.Ranged.Rifle\"]"},
-    {"Path": "Base/Weight", "Value": "3.5"}, {"Path": "Equipment/Durability", "Value":
-    "300", "Max": "300"}, {"Path": "Weapon/NoiseRadius", "Value": "80"}, {"Path":
-    "Weapon/IsTwoHanded", "Value": "true"}, {"Path": "Combat/Accuracy", "Value":
-    "85"}, {"Path": "Combat/ReloadSpeed", "Value": "0.7"}, {"Path": "Combat/MagSize",
-    "Value": "30"}, {"Path": "Combat/AmmoCount", "Value": "30"}, {"Path": "Tags/CompatibleAmmo",
-    "Value": "[\"Entity.Ammo.Caliber.556\"]"}, {"Path": "Combat/FireRate", "Value":
-    "6.0"}, {"Path": "Combat/BarrelLength", "Value": "14"}, {"Path": "Combat/RecoilModifier",
-    "Value": "30"}, {"Path": "Combat/Reliability", "Value": "96"}, {"Path": "Firearm/IsAutomatic",
-    "Value": "true"}, {"Path": "Firearm/GearType", "Value": "Rifle"}, {"Path": "Rifle/AimTime",
-    "Value": "0.6"}, {"Path": "Common/Category", "Value": "Entity.Equipment.Weapon.Ranged.Rifle"},
-    {"Path": "Common/Id", "Value": "m4a1"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Equipment.Weapon.Ranged.Rifle\"]"},{"Path":"Base/Weight","Value":"3.5"},{"Path":"Equipment/Durability","Value":"300","Max":"300"},{"Path":"Weapon/NoiseRadius","Value":"80"},{"Path":"Weapon/IsTwoHanded","Value":"true"},{"Path":"Combat/Accuracy","Value":"85"},{"Path":"Combat/ReloadSpeed","Value":"0.7"},{"Path":"Combat/MagSize","Value":"30"},{"Path":"Combat/AmmoCount","Value":"30"},{"Path":"Tags/CompatibleAmmo","Value":"[\"Entity.Ammo.Caliber.556\"]"},{"Path":"Combat/FireRate","Value":"6.0"},{"Path":"Combat/BarrelLength","Value":"14"},{"Path":"Combat/RecoilModifier","Value":"30"},{"Path":"Combat/Reliability","Value":"96"},{"Path":"Firearm/IsAutomatic","Value":"true"},{"Path":"Firearm/GearType","Value":"Rifle"},{"Path":"Rifle/AimTime","Value":"0.6"},{"Path":"Common/Category","Value":"Entity.Equipment.Weapon.Ranged.Rifle"},{"Path":"Common/Id","Value":"Entity.Equipment.Weapon.Ranged.Rifle.m4a1"}]}'
   Prefab: {fileID: 1263777055603640, guid: d9f9bf1ca5142254ba3a359ff4a34b3e, type: 3}
+  _contentId: Entity.Equipment.Weapon.Ranged.Rifle.m4a1

@@ -13,12 +13,7 @@ MonoBehaviour:
   m_Name: Crowbar
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: 8bd68e70c93f855469faf61d6ac0637a, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Equipment.Weapon.Melee.Blunt\",
-    \"Grip.Melee.OneHanded\"]"}, {"Path": "Base/Weight", "Value": "3.0"}, {"Path":
-    "Equipment/Durability", "Value": "120", "Max": "120"}, {"Path": "Weapon/AttackSpeed",
-    "Value": "0.9"}, {"Path": "Weapon/AttackRange", "Value": "1.1"}, {"Path": "Weapon/NoiseRadius",
-    "Value": "12"}, {"Path": "Weapon/IsTwoHanded", "Value": "false"}, {"Path": "Weapon/ATK",
-    "Value": "[\"de87450416f65d2498da30674ab9e9ef\"]"}, {"Path": "Common/Category",
-    "Value": "Entity.Equipment.Weapon.Melee.Blunt"}, {"Path": "Common/Id", "Value":
-    "crowbar"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Equipment.Weapon.Melee.Blunt\",
+    \"Grip.Melee.OneHanded\"]"},{"Path":"Base/Weight","Value":"3.0"},{"Path":"Equipment/Durability","Value":"120","Max":"120"},{"Path":"Weapon/AttackSpeed","Value":"0.9"},{"Path":"Weapon/AttackRange","Value":"1.1"},{"Path":"Weapon/NoiseRadius","Value":"12"},{"Path":"Weapon/IsTwoHanded","Value":"false"},{"Path":"Weapon/ATK","Value":"[\"de87450416f65d2498da30674ab9e9ef\"]"},{"Path":"Common/Category","Value":"Entity.Equipment.Weapon.Melee.Blunt"},{"Path":"Common/Id","Value":"Entity.Equipment.Weapon.Melee.Blunt.crowbar"}]}'
   Prefab: {fileID: 1750927141268108, guid: 8775c006a5395ff488d9315934a2a901, type: 3}
+  _contentId: Entity.Equipment.Weapon.Melee.Blunt.crowbar

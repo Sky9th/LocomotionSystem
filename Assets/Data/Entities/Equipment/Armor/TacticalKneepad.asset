@@ -13,12 +13,6 @@ MonoBehaviour:
   m_Name: TacticalKneepad
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: dc3da3b3e0083b1478afc1cdc889cd1b, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Equipment.Armor.Legs\"]"},
-    {"Path": "Base/Weight", "Value": "2.0"}, {"Path": "Equipment/Durability", "Value":
-    "150", "Max": "150"}, {"Path": "Combat/DEF", "Value": "10"}, {"Path": "Combat/Coverage",
-    "Value": "40"}, {"Path": "Combat/TraumaTransfer", "Value": "60"}, {"Path": "Penalty/MoveSpeedPenalty",
-    "Value": "5"}, {"Path": "Penalty/StaminaRegenPenalty", "Value": "3"}, {"Path":
-    "Combat/MoveSpeed", "Value": "3"}, {"Path": "Combat/SneakSpeed", "Value": "3"},
-    {"Path": "Common/Category", "Value": "Entity.Equipment.Armor.Legs"}, {"Path":
-    "Common/Id", "Value": "tactical_kneepad"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Equipment.Armor.Legs\"]"},{"Path":"Base/Weight","Value":"2.0"},{"Path":"Equipment/Durability","Value":"150","Max":"150"},{"Path":"Combat/DEF","Value":"10"},{"Path":"Combat/Coverage","Value":"40"},{"Path":"Combat/TraumaTransfer","Value":"60"},{"Path":"Penalty/MoveSpeedPenalty","Value":"5"},{"Path":"Penalty/StaminaRegenPenalty","Value":"3"},{"Path":"Combat/MoveSpeed","Value":"3"},{"Path":"Combat/SneakSpeed","Value":"3"},{"Path":"Common/Category","Value":"Entity.Equipment.Armor.Legs"},{"Path":"Common/Id","Value":"Entity.Equipment.Armor.Legs.tactical_kneepad"}]}'
   Prefab: {fileID: 0}
+  _contentId: Entity.Equipment.Armor.Legs.tactical_kneepad

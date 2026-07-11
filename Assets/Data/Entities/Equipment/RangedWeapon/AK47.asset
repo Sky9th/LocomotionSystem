@@ -13,16 +13,6 @@ MonoBehaviour:
   m_Name: AK47
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: 3d2b96ca960bd974d88ca691c64ef68a, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Equipment.Weapon.Ranged.Rifle\"]"},
-    {"Path": "Base/Weight", "Value": "4.3"}, {"Path": "Equipment/Durability", "Value":
-    "300", "Max": "300"}, {"Path": "Weapon/NoiseRadius", "Value": "85"}, {"Path":
-    "Weapon/IsTwoHanded", "Value": "true"}, {"Path": "Combat/Accuracy", "Value":
-    "75"}, {"Path": "Combat/ReloadSpeed", "Value": "0.7"}, {"Path": "Combat/MagSize",
-    "Value": "30"}, {"Path": "Combat/AmmoCount", "Value": "30"}, {"Path": "Tags/CompatibleAmmo",
-    "Value": "[\"Entity.Ammo.Caliber.762\"]"}, {"Path": "Combat/FireRate", "Value":
-    "5.0"}, {"Path": "Combat/BarrelLength", "Value": "16"}, {"Path": "Combat/RecoilModifier",
-    "Value": "35"}, {"Path": "Combat/Reliability", "Value": "95"}, {"Path": "Firearm/IsAutomatic",
-    "Value": "true"}, {"Path": "Firearm/GearType", "Value": "Rifle"}, {"Path": "Rifle/AimTime",
-    "Value": "0.8"}, {"Path": "Common/Category", "Value": "Entity.Equipment.Weapon.Ranged.Rifle"},
-    {"Path": "Common/Id", "Value": "ak47"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Equipment.Weapon.Ranged.Rifle\"]"},{"Path":"Base/Weight","Value":"4.3"},{"Path":"Equipment/Durability","Value":"300","Max":"300"},{"Path":"Weapon/NoiseRadius","Value":"85"},{"Path":"Weapon/IsTwoHanded","Value":"true"},{"Path":"Combat/Accuracy","Value":"75"},{"Path":"Combat/ReloadSpeed","Value":"0.7"},{"Path":"Combat/MagSize","Value":"30"},{"Path":"Combat/AmmoCount","Value":"30"},{"Path":"Tags/CompatibleAmmo","Value":"[\"Entity.Ammo.Caliber.762\"]"},{"Path":"Combat/FireRate","Value":"5.0"},{"Path":"Combat/BarrelLength","Value":"16"},{"Path":"Combat/RecoilModifier","Value":"35"},{"Path":"Combat/Reliability","Value":"95"},{"Path":"Firearm/IsAutomatic","Value":"true"},{"Path":"Firearm/GearType","Value":"Rifle"},{"Path":"Rifle/AimTime","Value":"0.8"},{"Path":"Common/Category","Value":"Entity.Equipment.Weapon.Ranged.Rifle"},{"Path":"Common/Id","Value":"Entity.Equipment.Weapon.Ranged.Rifle.ak47"}]}'
   Prefab: {fileID: 1900586067242068, guid: ad49a19d2c4adc94b838606a5d459f85, type: 3}
+  _contentId: Entity.Equipment.Weapon.Ranged.Rifle.ak47

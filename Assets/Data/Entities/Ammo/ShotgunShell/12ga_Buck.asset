@@ -13,14 +13,6 @@ MonoBehaviour:
   m_Name: 12ga_Buck
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: a1252680c765a89489d27329f261c936, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Ammo.Caliber.12ga\"]"},
-    {"Path": "Base/Weight", "Value": "0.04"}, {"Path": "Combat/BaseDamage", "Value":
-    "50"}, {"Path": "Combat/Penetration", "Value": "4"}, {"Path": "Combat/NoiseRadius",
-    "Value": "90"}, {"Path": "Combat/BulletWeight", "Value": "438"}, {"Path": "Combat/OverPenetration",
-    "Value": "30"}, {"Path": "Combat/RecoilFactor", "Value": "1.0"}, {"Path": "Combat/AmmoReliability",
-    "Value": "100"}, {"Path": "Combat/FoulingRate", "Value": "1.2"}, {"Path": "Combat/MuzzleVelocity",
-    "Value": "400"}, {"Path": "Combat/PelletCount", "Value": "8"}, {"Path": "Combat/Spread",
-    "Value": "12"}, {"Path": "Weapon/ATK", "Value": "[\"3130083e9e4845879bab814778aea36c\"]"},
-    {"Path": "Common/Category", "Value": "Entity.Ammo.Caliber.12ga"}, {"Path": "Common/Id",
-    "Value": "twelve_ga_buck"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Ammo.Caliber.12ga\"]"},{"Path":"Base/Weight","Value":"0.04"},{"Path":"Combat/BaseDamage","Value":"50"},{"Path":"Combat/Penetration","Value":"4"},{"Path":"Combat/NoiseRadius","Value":"90"},{"Path":"Combat/BulletWeight","Value":"438"},{"Path":"Combat/OverPenetration","Value":"30"},{"Path":"Combat/RecoilFactor","Value":"1.0"},{"Path":"Combat/AmmoReliability","Value":"100"},{"Path":"Combat/FoulingRate","Value":"1.2"},{"Path":"Combat/MuzzleVelocity","Value":"400"},{"Path":"Combat/PelletCount","Value":"8"},{"Path":"Combat/Spread","Value":"12"},{"Path":"Weapon/ATK","Value":"[\"3130083e9e4845879bab814778aea36c\"]"},{"Path":"Common/Category","Value":"Entity.Ammo.Caliber.12ga"},{"Path":"Common/Id","Value":"Entity.Ammo.Caliber.12ga.twelve_ga_buck"}]}'
   Prefab: {fileID: 1890173635108940, guid: 3b0fb3fda92d12a4caa1fd3a00956fd1, type: 3}
+  _contentId: Entity.Ammo.Caliber.12ga.twelve_ga_buck

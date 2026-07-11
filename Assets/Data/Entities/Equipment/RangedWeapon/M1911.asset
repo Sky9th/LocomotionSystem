@@ -13,17 +13,7 @@ MonoBehaviour:
   m_Name: M1911
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: d07b40a576e56764aa15afde97dc3383, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Equipment.Weapon.Ranged.Pistol\",
-    \"Grip.Ranged.Pistol2H\"]"}, {"Path": "Base/Weight", "Value": "1.1"}, {"Path":
-    "Equipment/Durability", "Value": "150", "Max": "150"}, {"Path": "Weapon/NoiseRadius",
-    "Value": "40"}, {"Path": "Weapon/IsTwoHanded", "Value": "false"}, {"Path": "Combat/Accuracy",
-    "Value": "65"}, {"Path": "Combat/ReloadSpeed", "Value": "1.0"}, {"Path": "Combat/MagSize",
-    "Value": "7"}, {"Path": "Combat/AmmoCount", "Value": "7"}, {"Path": "Tags/CompatibleAmmo",
-    "Value": "[\"Entity.Ammo.Caliber.9mm\"]"}, {"Path": "Combat/FireRate", "Value":
-    "3.0"}, {"Path": "Combat/BarrelLength", "Value": "4"}, {"Path": "Combat/RecoilModifier",
-    "Value": "20"}, {"Path": "Combat/Reliability", "Value": "90"}, {"Path": "Firearm/IsAutomatic",
-    "Value": "false"}, {"Path": "Firearm/GearType", "Value": "Pistol"}, {"Path":
-    "Pistol/HolsterSpeed", "Value": "1.5"}, {"Path": "Pistol/HipFirePenalty", "Value":
-    "15"}, {"Path": "Common/Category", "Value": "Entity.Equipment.Weapon.Ranged.Pistol"},
-    {"Path": "Common/Id", "Value": "m1911"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Equipment.Weapon.Ranged.Pistol\",
+    \"Grip.Ranged.Pistol2H\"]"},{"Path":"Base/Weight","Value":"1.1"},{"Path":"Equipment/Durability","Value":"150","Max":"150"},{"Path":"Weapon/NoiseRadius","Value":"40"},{"Path":"Weapon/IsTwoHanded","Value":"false"},{"Path":"Combat/Accuracy","Value":"65"},{"Path":"Combat/ReloadSpeed","Value":"1.0"},{"Path":"Combat/MagSize","Value":"7"},{"Path":"Combat/AmmoCount","Value":"7"},{"Path":"Tags/CompatibleAmmo","Value":"[\"Entity.Ammo.Caliber.9mm\"]"},{"Path":"Combat/FireRate","Value":"3.0"},{"Path":"Combat/BarrelLength","Value":"4"},{"Path":"Combat/RecoilModifier","Value":"20"},{"Path":"Combat/Reliability","Value":"90"},{"Path":"Firearm/IsAutomatic","Value":"false"},{"Path":"Firearm/GearType","Value":"Pistol"},{"Path":"Pistol/HolsterSpeed","Value":"1.5"},{"Path":"Pistol/HipFirePenalty","Value":"15"},{"Path":"Common/Category","Value":"Entity.Equipment.Weapon.Ranged.Pistol"},{"Path":"Common/Id","Value":"Entity.Equipment.Weapon.Ranged.Pistol.m1911"}]}'
   Prefab: {fileID: 1562996608389564, guid: a1608518da2a041418e8a5351d223d94, type: 3}
+  _contentId: Entity.Equipment.Weapon.Ranged.Pistol.m1911

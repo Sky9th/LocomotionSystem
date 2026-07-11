@@ -13,11 +13,6 @@ MonoBehaviour:
   m_Name: Bandage
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: 7f35ee616ff16314d98d2ab6ee0b2b1b, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Consumable.Medical\"]"},
-    {"Path": "Tags/ConsumableType", "Value": "Medical"}, {"Path": "Tags/MedicalType",
-    "Value": "Bandage"}, {"Path": "Base/StackSize", "Value": "20"}, {"Path": "Base/ConsumeTime",
-    "Value": "3.0"}, {"Path": "Heal/HealAmount", "Value": "10"}, {"Path": "Heal/BleedReduction",
-    "Value": "100"}, {"Path": "Heal/InfectionCleanse", "Value": "0"}, {"Path": "Heal/PainRelief",
-    "Value": "0"}, {"Path": "Heal/HealDuration", "Value": "5.0"}, {"Path": "Common/Category",
-    "Value": "Entity.Consumable.Medical"}, {"Path": "Common/Id", "Value": "bandage"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Consumable.Medical\"]"},{"Path":"Tags/ConsumableType","Value":"Medical"},{"Path":"Tags/MedicalType","Value":"Bandage"},{"Path":"Base/StackSize","Value":"20"},{"Path":"Base/ConsumeTime","Value":"3.0"},{"Path":"Heal/HealAmount","Value":"10"},{"Path":"Heal/BleedReduction","Value":"100"},{"Path":"Heal/InfectionCleanse","Value":"0"},{"Path":"Heal/PainRelief","Value":"0"},{"Path":"Heal/HealDuration","Value":"5.0"},{"Path":"Common/Category","Value":"Entity.Consumable.Medical"},{"Path":"Common/Id","Value":"Entity.Consumable.Medical.bandage"}]}'
   Prefab: {fileID: 1185187841381110, guid: e228fc92e8af2974b932665a3d01b206, type: 3}
+  _contentId: Entity.Consumable.Medical.bandage

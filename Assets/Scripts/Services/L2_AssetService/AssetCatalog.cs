@@ -5,6 +5,7 @@ using RedDust.Character.Animation;
 using RedDust.Character.Audio;
 using RedDust.Character.Kinematic;
 using RedDust.Properties;
+using RedDust.Shared;
 using UnityEngine;
 
 namespace RedDust.Assets
@@ -15,8 +16,7 @@ namespace RedDust.Assets
     /// </summary>
     public class AssetCatalog
     {
-        private Dictionary<string, CharacterDefSO> _characters;
-        private Dictionary<string, PropertyPresetSO> _items;
+        private Dictionary<string, PropertyPresetSO> _byContentId = new();
         private Dictionary<string, AbilityTreeSO> _abilityTrees;
         private Dictionary<string, PropertyDefSO> _propertyDefs;
         private Dictionary<string, PropertyTreeSO> _propertyTrees;
@@ -28,51 +28,32 @@ namespace RedDust.Assets
         // Init (called by AssetService.RunBootInit)
         // ═══════════════════════════════════════════════════════════════
 
-        public void InitCharacters(List<CharacterDefSO> defs)
+        public void InitPresets(List<PropertyPresetSO> presets)
         {
-            _characters = new Dictionary<string, CharacterDefSO>();
-
-
-            if (defs == null) return;
-
-            foreach (var d in defs)
-            {
-                if (d == null || (object)d == null || string.IsNullOrEmpty(d.name))
-                {
-                    Debug.LogWarning("[AssetCatalog] Character: skipping null/invalid entry.");
-                    continue;
-                }
-                var key = d.name;
-                if (_characters.ContainsKey(key))
-                {
-                    Debug.LogWarning($"[AssetCatalog] Character: duplicate key '{key}' — skipping.");
-                    continue;
-                }
-                _characters[key] = d;
-            }
-
-            Debug.Log($"[AssetCatalog] Characters initialized: {_characters.Count} entries [{string.Join(", ", _characters.Keys)}]");
-        }
-
-        public void InitItems(List<PropertyPresetSO> presets)
-        {
-            _items = new Dictionary<string, PropertyPresetSO>();
+            _byContentId = new Dictionary<string, PropertyPresetSO>();
 
             if (presets == null) return;
 
+            int count = 0;
             foreach (var p in presets)
             {
                 if (p == null) continue;
-                var key = p.name;
-                if (_items.ContainsKey(key))
+                if (string.IsNullOrEmpty(p.ContentId))
                 {
-                    Debug.LogWarning($"[AssetCatalog] Item: duplicate key '{key}' — skipping.");
+                    Debug.LogWarning($"[AssetCatalog] Skipping preset '{p.name}': ContentId is null or empty.");
                     continue;
                 }
-                _items[key] = p;
+                var key = CommonConstants.OfficialNamespace + p.ContentId;
+                if (_byContentId.ContainsKey(key))
+                {
+                    Debug.LogWarning($"[AssetCatalog] Item: duplicate contentId '{key}' — skipping.");
+                    continue;
+                }
+                _byContentId[key] = p;
+                count++;
             }
 
-            Debug.Log($"[AssetCatalog] Items initialized: {_items.Count} entries [{string.Join(", ", _items.Keys)}]");
+            Debug.Log($"[AssetCatalog] Presets initialized: {count} entries\n  [{string.Join(", ", _byContentId.Keys)}]");
         }
 
         public void InitAbilityTrees(List<AbilityTreeSO> trees)
@@ -175,19 +156,37 @@ namespace RedDust.Assets
 
         public CharacterDefSO FindCharacter(string key)
         {
-            if (_characters == null) return null;
-            if (_characters.TryGetValue(key, out var def))
-                return def;
-            Debug.LogError($"[AssetCatalog] Character key '{key}' not found. Available ({_characters.Count}): [{string.Join(", ", _characters.Keys)}]");
+            // 1. 带前缀 → 精确匹配
+            if (_byContentId.TryGetValue(key, out var preset))
+            {
+                if (preset is CharacterDefSO def) return def;
+                Debug.LogWarning($"[AssetCatalog] Key '{key}' resolved to '{preset.GetType().Name}', not CharacterDefSO.");
+                return null;
+            }
+
+            // 2. 不带前缀 → 自动补官方命名空间
+            if (_byContentId.TryGetValue(CommonConstants.OfficialNamespace + key, out preset))
+            {
+                if (preset is CharacterDefSO def) return def;
+                Debug.LogWarning($"[AssetCatalog] Key '{CommonConstants.OfficialNamespace}{key}' resolved to '{preset.GetType().Name}', not CharacterDefSO.");
+                return null;
+            }
+
+            Debug.LogError($"[AssetCatalog] Character key '{key}' not found.");
             return null;
         }
 
         public PropertyPresetSO FindItem(string key)
         {
-            if (_items == null) return null;
-            if (_items.TryGetValue(key, out var preset))
+            // 1. 带前缀 → 精确匹配（跨命名空间引用/覆写，如 "MyMod.x"）
+            if (_byContentId.TryGetValue(key, out var preset))
                 return preset;
-            Debug.LogError($"[AssetCatalog] Item key '{key}' not found. Available ({_items.Count}): [{string.Join(", ", _items.Keys)}]");
+
+            // 2. 不带前缀 → 自动补官方命名空间
+            if (_byContentId.TryGetValue(CommonConstants.OfficialNamespace + key, out preset))
+                return preset;
+
+            Debug.LogError($"[AssetCatalog] Item key '{key}' not found.");
             return null;
         }
 
@@ -263,8 +262,6 @@ namespace RedDust.Assets
             return config;
         }
 
-
-        // ── Helpers ──
 
     }
 }

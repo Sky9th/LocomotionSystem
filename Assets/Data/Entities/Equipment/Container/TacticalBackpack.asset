@@ -13,10 +13,7 @@ MonoBehaviour:
   m_Name: TacticalBackpack
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: dfb12c954eea5d442bba0a4efc1bc5f5, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Equipment.Container\"]"},
-    {"Path": "Base/Weight", "Value": "1.5"}, {"Path": "Equipment/Durability", "Value":
-    "150", "Max": "150"}, {"Path": "Backpack/CarryWeightBonus", "Value": "25"}, {"Path":
-    "Slots/ContainerSlot", "Value": "{\"SlotId\": \"ContainerSlot\", \"Capacity\":
-    20, \"WeightLimit\": 35.0}"}, {"Path": "Common/Category", "Value": "Entity.Equipment.Container"},
-    {"Path": "Common/Id", "Value": "tactical_backpack"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Equipment.Container\"]"},{"Path":"Base/Weight","Value":"1.5"},{"Path":"Equipment/Durability","Value":"150","Max":"150"},{"Path":"Backpack/CarryWeightBonus","Value":"25"},{"Path":"Slots/ContainerSlot","Value":"{\"SlotId\":
+    \"ContainerSlot\", \"Capacity\": 20, \"WeightLimit\": 35.0}"},{"Path":"Common/Category","Value":"Entity.Equipment.Container"},{"Path":"Common/Id","Value":"Entity.Equipment.Container.tactical_backpack"}]}'
   Prefab: {fileID: 1545841837244914, guid: cb46091a4e57def4f9b8086e79682f49, type: 3}
+  _contentId: Entity.Equipment.Container.tactical_backpack

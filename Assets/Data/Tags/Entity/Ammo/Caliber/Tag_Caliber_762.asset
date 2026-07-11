@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c66336c3653bee49af7bbe63976fdd4, type: 3}
-  m_Name: Zombie
+  m_Script: {fileID: 11500000, guid: bfea3729713ca0e4ab41941d3888d820, type: 3}
+  m_Name: Tag_Caliber_762
   m_EditorClassIdentifier: 
-  Template: {fileID: 11400000, guid: 3cdba62ac873c3b4fac8c20ab25863bc, type: 2}
-  OverridesJson: 
-  Prefab: {fileID: 8667043660662020576, guid: 506c4f73f1825ed4f97f06cdf259ac78, type: 3}
+  leafName: Caliber_762
+  parent: {fileID: 11400000, guid: 5828e52e8abb33e45a5706404fc57e5c, type: 2}
+  description: "7.62mm \u53E3\u5F84"

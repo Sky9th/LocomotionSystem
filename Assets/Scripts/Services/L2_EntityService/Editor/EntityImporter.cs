@@ -197,7 +197,29 @@ namespace RedDust.Entities.Editor
             target.Template = template;
             target.OverridesJson = entry.overridesJson;
             target.Prefab = prefab;
+            SyncContentId(target, entry.overridesJson);
         }
+
+        private static void SyncContentId(PropertyPresetSO target, string overridesJson)
+        {
+            var container = new ContentIdContainer();
+            JsonUtility.FromJsonOverwrite(overridesJson, container);
+            foreach (var o in container.Overrides)
+            {
+                if (o.Path == "Common/Id")
+                {
+                    target.SetContentId(o.Value);
+                    Debug.Log($"[EntityImporter] SyncContentId: '{target.name}' → contentId='{o.Value}'");
+                    return;
+                }
+            }
+        }
+
+        [Serializable]
+        private class ContentIdEntry { public string Path; public string Value; }
+
+        [Serializable]
+        private class ContentIdContainer { public List<ContentIdEntry> Overrides = new(); }
 
         public static GameObject ResolvePrefab(string guid)
         {

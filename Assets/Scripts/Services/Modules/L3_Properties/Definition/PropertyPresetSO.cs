@@ -20,6 +20,14 @@ namespace RedDust.Properties
         [Tooltip("实体 Prefab。EntityService.Spawn 时 Instantiate。")]
         public GameObject Prefab;
 
+        [SerializeField]
+        private string _contentId;
+
+        /// <summary>Mod 可寻址的稳定标识符（如 Entity.Equipment.Weapon.Melee.Blade.machete）。Editor 保存时自动写入，运行时只读。</summary>
+        public string ContentId => _contentId;
+
+        public void SetContentId(string id) => _contentId = id;
+
         /// <summary>
         /// 从实体实例提取装备伤害效果。
         /// 武器预设（MeleeWeaponSO / RangedWeaponSO 等）覆写。

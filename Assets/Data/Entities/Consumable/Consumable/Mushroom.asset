@@ -13,12 +13,6 @@ MonoBehaviour:
   m_Name: Mushroom
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: 8ee708a11e79b16449a2bd2c7e3474a1, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Consumable.Food\"]"},
-    {"Path": "Tags/ConsumableType", "Value": "Food"}, {"Path": "Tags/FoodType", "Value":
-    "Vegetable"}, {"Path": "Base/StackSize", "Value": "10"}, {"Path": "Base/ConsumeTime",
-    "Value": "1.0"}, {"Path": "Nutrition/Nutrition_Val", "Value": "8"}, {"Path":
-    "Nutrition/Hydration", "Value": "3"}, {"Path": "Quality/MoraleBonus", "Value":
-    "2"}, {"Path": "Quality/ShelfLife", "Value": "2"}, {"Path": "Quality/ContaminationRisk",
-    "Value": "15"}, {"Path": "Common/Category", "Value": "Entity.Consumable.Food"},
-    {"Path": "Common/Id", "Value": "mushroom"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Consumable.Food\"]"},{"Path":"Tags/ConsumableType","Value":"Food"},{"Path":"Tags/FoodType","Value":"Vegetable"},{"Path":"Base/StackSize","Value":"10"},{"Path":"Base/ConsumeTime","Value":"1.0"},{"Path":"Nutrition/Nutrition_Val","Value":"8"},{"Path":"Nutrition/Hydration","Value":"3"},{"Path":"Quality/MoraleBonus","Value":"2"},{"Path":"Quality/ShelfLife","Value":"2"},{"Path":"Quality/ContaminationRisk","Value":"15"},{"Path":"Common/Category","Value":"Entity.Consumable.Food"},{"Path":"Common/Id","Value":"Entity.Consumable.Food.mushroom"}]}'
   Prefab: {fileID: 1340215396104624, guid: dd5b1361103cd5645bbabbef12b1a8f7, type: 3}
+  _contentId: Entity.Consumable.Food.mushroom

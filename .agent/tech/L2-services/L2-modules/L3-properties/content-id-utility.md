@@ -1,6 +1,12 @@
 # ContentIdUtility
 
-> **Last Verified**: 2026-07-10 | **Verification**: Referenced files exist, signatures match code
+> [!WARNING] DELETED — 2026-07-11
+> `ContentIdUtility.cs` 已删除。`Common/Id` 现存储完整路径（`Entity.Equipment.Weapon.Melee.Blade.machete`），不再需要 `BuildContentId` Category+Id 拼接。
+> `rd.` 前缀移至 `CommonConstants.OfficialNamespace`。contentId 由 `PropertyPresetSO._contentId` 字段直接提供。
+>
+> 详见 [2026-07-11-p1-contentid-catalog.md](../../../sessions/2026-07-11-p1-contentid-catalog.md)
+
+# ContentIdUtility
 
 **File**: `Assets/Scripts/Services/Modules/L3_Properties/ContentIdUtility.cs`
 

@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: Workbench
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: 2b1da34e330b18647a89606d1e57279a, type: 2}
-  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Building.Crafting.Station\",\"Entity.Consumable.Material.Wood\"]"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Building.Crafting.Station\",\"Entity.Consumable.Material.Wood\"]"},{"Path":"Common/Category","Value":"Entity.Building"},{"Path":"Common/Id","Value":"Entity.Building.workbench"}]}'
   Prefab: {fileID: 0}
+  _contentId: Entity.Building.workbench

@@ -1,6 +1,6 @@
 # 短期开发计划
 
-> 更新: 2026-07-10 | 分支: `feature/phase5-item-economy`
+> 更新: 2026-07-11 | 分支: `feature/phase5-item-economy`
 > 聚焦: Phase 5 物品经济（P5.1 → P5.5）
 > 长期路线: 见 `.agent/plans/long-term.md`
 > Mod 框架: 见 `.agent/tech/mod-architecture-framework.md`
@@ -80,8 +80,8 @@ Phase 4 ✅ ──── 战斗/动画/属性/技能管线全封闭
     │
 Phase 5 🔄 ──── 物品经济
     ├── P5.0 基础设施 + 道具数据 ✅ (v0.42.0)
-    ├── P5.1 物品能存在于世界上 ← 当前
-    ├── P5.2 玩家能拾取物品
+    ├── P5.1 物品能存在于世界上 ✅
+    ├── P5.2 玩家能拾取物品 ← 当前
     ├── P5.3 玩家能看到背包
     ├── P5.4 玩家能装备/卸下物品
     └── P5.5 玩家能使用消耗品
@@ -111,23 +111,33 @@ Phase 5 🔄 ──── 物品经济
 
 ---
 
-### P5.1 — 物品能存在于世界上
+### P5.1 — 物品能存在于世界上 ✅
 
-> 玩家走进房间，地上有物品。它们有坐标，能被看到。
+> 2026-07-11 · 1 session · commit `75df7526`
 
-| # | 任务 | 说明 |
-|---|------|------|
-| P5.1a | **GroundItem 组件** | 新建 L3 组件：泛型地面物品视图，从 Entity 数据构建 3D 模型，fallback 立方体解决空 Prefab |
-| P5.1b | **EntityService 改造** | 按 `preset is CharacterDefSO` 分流——角色走原有 Prefab，物品走 GroundItem 泛型 Prefab |
-| P5.1c | **GroundItem.prefab** | Unity Editor 手工创建：Identity + GroundItem + SphereCollider(isTrigger) + fallback Mesh |
-| P5.1d | **ItemService 创建** | L2 服务：EntityId→世界坐标索引 + SpawnWorldItem + GetNearbyItems |
-| P5.1e | **测试验证** | PlayerService.SpawnTestEntities 中生成一个 CannedBeans 在地上，验证 3D 模型可见 |
+玩家走进房间，地上有物品——坐标可见。
 
-**详细计划**: `.agent/plans/p5.1-world-item-spawn.md`
+**实际产出**（与原计划有偏差）：
 
-**已有基础**: EntityService 事件管线、Identity 组件、PropertyPresetSO.Prefab 字段、AssetCatalog.FindItem
+| 产出 | 说明 |
+|------|------|
+| **AssetRef 运行时修复** | `AssetRefPropertyDefSO.Load()` → `Addressables.LoadAssetAsync(guid).WaitForCompletion()` + static cache，移除 `#if UNITY_EDITOR` 分裂。Editor + Build + Mod catalog 统一路径 |
+| **VisualPrefab 迁移** | `properties_all.json` — `VisualPrefab` 从 `Equipment/Presentation` 迁至 `Entity/Common`，全实体类型继承，Mod 可覆写 |
+| **EntityService.CreateGameObject()** | 统一入口：角色 → `Preset.Prefab`，物品 → `Common/VisualPrefab` → CoinBag → Cube 三级 fallback |
+| **GroundItem.cs 删除** | 物品生成无需独立 Prefab 或组件，`AddComponent<Identity>()` 直接绑数据 |
 
-**Mod 义务**：ItemService 公开 API 走 `IItemReadOnly` 接口，不暴露 PropertyTable 内部。测试代码用 contentId 而非 asset name（`FindItem("item.consumable.food.canned_beans")`）。
+**架构决策**：
+- VisualPrefab 放 `Common/` 而非 `Presentation/`——ConsumableBase/AmmoBase 不继承 Equipment，需通过 Entity 根树才可见
+- AssetRef 值统一为 GUID——Mod SDK 发布 `.bundle + catalog_*.json`，`LoadContentCatalogAsync` 后 GUID 天然可解析
+- 测试代码硬编码 asset name——等 P1 AssetCatalog 支持 contentId 查找后再改
+
+**已知缺口**：
+- [ ] AssetCatalog 仍用 SO `.name` 查找（非 contentId）—— P1 待办
+- [ ] Build 未验证——仅在 Editor Play Mode 测试
+- [ ] Mod catalog 加载未实现——未来 Mod SDK 部分
+- [ ] 角色仍走 `Preset.Prefab` 路径——标注 TODO 后续迁移
+
+**Session**: [2026-07-11-p5.1-item-spawn.md](../.agent/sessions/2026-07-11-p5.1-item-spawn.md)
 
 ---
 
@@ -137,10 +147,11 @@ Phase 5 🔄 ──── 物品经济
 
 | # | 任务 | 说明 |
 |---|------|------|
-| P5.2a | **拾取交互** | 鼠标射线检测 GroundItem → 触发拾取 |
+| P5.2a | **拾取交互** | 鼠标射线检测物品 GameObject（Identity 组件）→ 触发拾取 |
 | P5.2b | **跨容器转移** | 物品从地面 → 角色背包容器（原子操作，失败回滚） |
+| P5.2c | **ItemService 创建** | L2 服务：EntityId→世界坐标索引 + SpawnWorldItem + GetNearbyItems（P5.1 未做，P5.2 补齐） |
 
-**已有基础**: RdContainer.Place/Remove/CanAccept、CharacterBuildContext.Container、InventoryQuery
+**已有基础**: RdContainer.Place/Remove/CanAccept、CharacterBuildContext.Container、InventoryQuery、EntityService.CreateGameObject()（物品生成统一入口）
 
 **Mod 义务**：跨容器转移是引擎操作——不暴露给 Mod，但转移结果通过 event 通知（Mod 可订阅）。
 

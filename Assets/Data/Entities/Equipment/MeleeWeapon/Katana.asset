@@ -13,12 +13,7 @@ MonoBehaviour:
   m_Name: Katana
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: 05ded621eb3328c4382b8fdc9a620a31, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Equipment.Weapon.Melee.Blade\",
-    \"Grip.Melee.OneHanded\"]"}, {"Path": "Base/Weight", "Value": "1.2"}, {"Path":
-    "Equipment/Durability", "Value": "120", "Max": "120"}, {"Path": "Weapon/AttackSpeed",
-    "Value": "1.4"}, {"Path": "Weapon/AttackRange", "Value": "1.5"}, {"Path": "Weapon/NoiseRadius",
-    "Value": "8"}, {"Path": "Weapon/IsTwoHanded", "Value": "false"}, {"Path": "Combat/BleedChance",
-    "Value": "20"}, {"Path": "Weapon/ATK", "Value": "[\"89b724ec839edd94d92ec037a1cb074a\"]"},
-    {"Path": "Common/Category", "Value": "Entity.Equipment.Weapon.Melee.Blade"},
-    {"Path": "Common/Id", "Value": "katana"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Equipment.Weapon.Melee.Blade\",
+    \"Grip.Melee.OneHanded\"]"},{"Path":"Base/Weight","Value":"1.2"},{"Path":"Equipment/Durability","Value":"120","Max":"120"},{"Path":"Weapon/AttackSpeed","Value":"1.4"},{"Path":"Weapon/AttackRange","Value":"1.5"},{"Path":"Weapon/NoiseRadius","Value":"8"},{"Path":"Weapon/IsTwoHanded","Value":"false"},{"Path":"Combat/BleedChance","Value":"20"},{"Path":"Weapon/ATK","Value":"[\"89b724ec839edd94d92ec037a1cb074a\"]"},{"Path":"Common/Category","Value":"Entity.Equipment.Weapon.Melee.Blade"},{"Path":"Common/Id","Value":"Entity.Equipment.Weapon.Melee.Blade.katana"}]}'
   Prefab: {fileID: 1104172259794306, guid: c93dc5e6b62380f499e6ec8328bc0160, type: 3}
+  _contentId: Entity.Equipment.Weapon.Melee.Blade.katana

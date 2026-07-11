@@ -13,12 +13,6 @@ MonoBehaviour:
   m_Name: Soda
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: 8ee708a11e79b16449a2bd2c7e3474a1, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Consumable.Food\"]"},
-    {"Path": "Tags/ConsumableType", "Value": "Food"}, {"Path": "Tags/FoodType", "Value":
-    "Drink"}, {"Path": "Base/StackSize", "Value": "10"}, {"Path": "Base/ConsumeTime",
-    "Value": "1.0"}, {"Path": "Nutrition/Nutrition_Val", "Value": "5"}, {"Path":
-    "Nutrition/Hydration", "Value": "30"}, {"Path": "Quality/MoraleBonus", "Value":
-    "8"}, {"Path": "Quality/ShelfLife", "Value": "999"}, {"Path": "Quality/ContaminationRisk",
-    "Value": "0"}, {"Path": "Common/Category", "Value": "Entity.Consumable.Food"},
-    {"Path": "Common/Id", "Value": "soda"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Consumable.Food\"]"},{"Path":"Tags/ConsumableType","Value":"Food"},{"Path":"Tags/FoodType","Value":"Drink"},{"Path":"Base/StackSize","Value":"10"},{"Path":"Base/ConsumeTime","Value":"1.0"},{"Path":"Nutrition/Nutrition_Val","Value":"5"},{"Path":"Nutrition/Hydration","Value":"30"},{"Path":"Quality/MoraleBonus","Value":"8"},{"Path":"Quality/ShelfLife","Value":"999"},{"Path":"Quality/ContaminationRisk","Value":"0"},{"Path":"Common/Category","Value":"Entity.Consumable.Food"},{"Path":"Common/Id","Value":"Entity.Consumable.Food.soda"}]}'
   Prefab: {fileID: 1847027969511464, guid: 907f8303af992f44289b29cb614b45c5, type: 3}
+  _contentId: Entity.Consumable.Food.soda

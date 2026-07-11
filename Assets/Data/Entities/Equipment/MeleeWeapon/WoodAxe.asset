@@ -13,12 +13,7 @@ MonoBehaviour:
   m_Name: WoodAxe
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: 20b716d799f4b61499e98df7782f3727, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Equipment.Weapon.Melee.Axe\",
-    \"Grip.Melee.OneHanded\"]"}, {"Path": "Base/Weight", "Value": "3.0"}, {"Path":
-    "Equipment/Durability", "Value": "80", "Max": "80"}, {"Path": "Weapon/AttackSpeed",
-    "Value": "0.8"}, {"Path": "Weapon/AttackRange", "Value": "0.8"}, {"Path": "Weapon/NoiseRadius",
-    "Value": "18"}, {"Path": "Weapon/IsTwoHanded", "Value": "false"}, {"Path": "Combat/ArmorPierce",
-    "Value": "15"}, {"Path": "Weapon/ATK", "Value": "[\"89b724ec839edd94d92ec037a1cb074a\"]"},
-    {"Path": "Common/Category", "Value": "Entity.Equipment.Weapon.Melee.Axe"}, {"Path":
-    "Common/Id", "Value": "wood_axe"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Equipment.Weapon.Melee.Axe\",
+    \"Grip.Melee.OneHanded\"]"},{"Path":"Base/Weight","Value":"3.0"},{"Path":"Equipment/Durability","Value":"80","Max":"80"},{"Path":"Weapon/AttackSpeed","Value":"0.8"},{"Path":"Weapon/AttackRange","Value":"0.8"},{"Path":"Weapon/NoiseRadius","Value":"18"},{"Path":"Weapon/IsTwoHanded","Value":"false"},{"Path":"Combat/ArmorPierce","Value":"15"},{"Path":"Weapon/ATK","Value":"[\"89b724ec839edd94d92ec037a1cb074a\"]"},{"Path":"Common/Category","Value":"Entity.Equipment.Weapon.Melee.Axe"},{"Path":"Common/Id","Value":"Entity.Equipment.Weapon.Melee.Axe.wood_axe"}]}'
   Prefab: {fileID: 1879840880504514, guid: 14b9097cb10b27d40a35dc944853603d, type: 3}
+  _contentId: Entity.Equipment.Weapon.Melee.Axe.wood_axe

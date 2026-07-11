@@ -7,28 +7,28 @@
       "entityType": null,
       "name": "NewBuildingDef",
       "templateName": null,
-      "overridesJson": "",
+      "overridesJson": "{\"Overrides\":[{\"Path\":\"Common/Category\",\"Value\":\"Entity.Building\"},{\"Path\":\"Common/Id\",\"Value\":\"Entity.Building.building_def\"}]}",
       "prefabGuid": ""
     },
     {
       "entityType": null,
       "name": "WoodenWall",
       "templateName": "Building",
-      "overridesJson": "{\"Overrides\":[{\"Path\":\"Common/Tags\",\"Value\":\"[\\\"Entity.Building.Defense.Wall\\\",\\\"Entity.Consumable.Material.Wood\\\"]\"},{\"Path\":\"Building/DEF_Building\",\"Value\":\"100\"}]}",
+      "overridesJson": "{\"Overrides\":[{\"Path\":\"Common/Tags\",\"Value\":\"[\\\"Entity.Building.Defense.Wall\\\",\\\"Entity.Consumable.Material.Wood\\\"]\"},{\"Path\":\"Building/DEF_Building\",\"Value\":\"100\"},{\"Path\":\"Common/Category\",\"Value\":\"Entity.Building\"},{\"Path\":\"Common/Id\",\"Value\":\"Entity.Building.wooden_wall\"}]}",
       "prefabGuid": ""
     },
     {
       "entityType": null,
       "name": "Workbench",
       "templateName": "Building",
-      "overridesJson": "{\"Overrides\":[{\"Path\":\"Common/Tags\",\"Value\":\"[\\\"Entity.Building.Crafting.Station\\\",\\\"Entity.Consumable.Material.Wood\\\"]\"}]}",
+      "overridesJson": "{\"Overrides\":[{\"Path\":\"Common/Tags\",\"Value\":\"[\\\"Entity.Building.Crafting.Station\\\",\\\"Entity.Consumable.Material.Wood\\\"]\"},{\"Path\":\"Common/Category\",\"Value\":\"Entity.Building\"},{\"Path\":\"Common/Id\",\"Value\":\"Entity.Building.workbench\"}]}",
       "prefabGuid": ""
     },
     {
       "entityType": null,
       "name": "StorageBox",
       "templateName": "Building",
-      "overridesJson": "",
+      "overridesJson": "{\"Overrides\":[{\"Path\":\"Common/Category\",\"Value\":\"Entity.Building\"},{\"Path\":\"Common/Id\",\"Value\":\"Entity.Building.storage_box\"}]}",
       "prefabGuid": ""
     }
   ]

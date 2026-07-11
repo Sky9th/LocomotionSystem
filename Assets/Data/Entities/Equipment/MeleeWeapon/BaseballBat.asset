@@ -13,12 +13,7 @@ MonoBehaviour:
   m_Name: BaseballBat
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: 8bd68e70c93f855469faf61d6ac0637a, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Equipment.Weapon.Melee.Blunt\",
-    \"Grip.Melee.OneHanded\"]"}, {"Path": "Base/Weight", "Value": "2.0"}, {"Path":
-    "Equipment/Durability", "Value": "80", "Max": "80"}, {"Path": "Weapon/AttackSpeed",
-    "Value": "1.0"}, {"Path": "Weapon/AttackRange", "Value": "1.3"}, {"Path": "Weapon/NoiseRadius",
-    "Value": "15"}, {"Path": "Weapon/IsTwoHanded", "Value": "false"}, {"Path": "Weapon/ATK",
-    "Value": "[\"de87450416f65d2498da30674ab9e9ef\"]"}, {"Path": "Common/Category",
-    "Value": "Entity.Equipment.Weapon.Melee.Blunt"}, {"Path": "Common/Id", "Value":
-    "baseball_bat"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Equipment.Weapon.Melee.Blunt\",
+    \"Grip.Melee.OneHanded\"]"},{"Path":"Base/Weight","Value":"2.0"},{"Path":"Equipment/Durability","Value":"80","Max":"80"},{"Path":"Weapon/AttackSpeed","Value":"1.0"},{"Path":"Weapon/AttackRange","Value":"1.3"},{"Path":"Weapon/NoiseRadius","Value":"15"},{"Path":"Weapon/IsTwoHanded","Value":"false"},{"Path":"Weapon/ATK","Value":"[\"de87450416f65d2498da30674ab9e9ef\"]"},{"Path":"Common/Category","Value":"Entity.Equipment.Weapon.Melee.Blunt"},{"Path":"Common/Id","Value":"Entity.Equipment.Weapon.Melee.Blunt.baseball_bat"}]}'
   Prefab: {fileID: 1145237178023060, guid: d855c6cd18605f34dbfdca25cb40d71c, type: 3}
+  _contentId: Entity.Equipment.Weapon.Melee.Blunt.baseball_bat

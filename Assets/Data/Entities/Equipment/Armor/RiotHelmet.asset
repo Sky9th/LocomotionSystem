@@ -13,12 +13,6 @@ MonoBehaviour:
   m_Name: RiotHelmet
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: ba2ae1ef8ed8c91438e368a053822efc, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Equipment.Armor.Head\"]"},
-    {"Path": "Base/Weight", "Value": "2.5"}, {"Path": "Equipment/Durability", "Value":
-    "150", "Max": "150"}, {"Path": "Combat/DEF", "Value": "8"}, {"Path": "Combat/Coverage",
-    "Value": "70"}, {"Path": "Combat/TraumaTransfer", "Value": "50"}, {"Path": "Penalty/MoveSpeedPenalty",
-    "Value": "8"}, {"Path": "Penalty/StaminaRegenPenalty", "Value": "5"}, {"Path":
-    "Combat/FlashResist", "Value": "30"}, {"Path": "Combat/NightVision", "Value":
-    "10"}, {"Path": "Common/Category", "Value": "Entity.Equipment.Armor.Head"}, {"Path":
-    "Common/Id", "Value": "riot_helmet"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Equipment.Armor.Head\"]"},{"Path":"Base/Weight","Value":"2.5"},{"Path":"Equipment/Durability","Value":"150","Max":"150"},{"Path":"Combat/DEF","Value":"8"},{"Path":"Combat/Coverage","Value":"70"},{"Path":"Combat/TraumaTransfer","Value":"50"},{"Path":"Penalty/MoveSpeedPenalty","Value":"8"},{"Path":"Penalty/StaminaRegenPenalty","Value":"5"},{"Path":"Combat/FlashResist","Value":"30"},{"Path":"Combat/NightVision","Value":"10"},{"Path":"Common/Category","Value":"Entity.Equipment.Armor.Head"},{"Path":"Common/Id","Value":"Entity.Equipment.Armor.Head.riot_helmet"}]}'
   Prefab: {fileID: 0}
+  _contentId: Entity.Equipment.Armor.Head.riot_helmet

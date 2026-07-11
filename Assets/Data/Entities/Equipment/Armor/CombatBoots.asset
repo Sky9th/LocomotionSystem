@@ -13,12 +13,6 @@ MonoBehaviour:
   m_Name: CombatBoots
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: dc3da3b3e0083b1478afc1cdc889cd1b, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Equipment.Armor.Feet\"]"},
-    {"Path": "Base/Weight", "Value": "2.0"}, {"Path": "Equipment/Durability", "Value":
-    "150", "Max": "150"}, {"Path": "Combat/DEF", "Value": "8"}, {"Path": "Combat/Coverage",
-    "Value": "50"}, {"Path": "Combat/TraumaTransfer", "Value": "50"}, {"Path": "Penalty/MoveSpeedPenalty",
-    "Value": "4"}, {"Path": "Penalty/StaminaRegenPenalty", "Value": "3"}, {"Path":
-    "Combat/MoveSpeed", "Value": "10"}, {"Path": "Combat/SneakSpeed", "Value": "5"},
-    {"Path": "Common/Category", "Value": "Entity.Equipment.Armor.Feet"}, {"Path":
-    "Common/Id", "Value": "combat_boots"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Equipment.Armor.Feet\"]"},{"Path":"Base/Weight","Value":"2.0"},{"Path":"Equipment/Durability","Value":"150","Max":"150"},{"Path":"Combat/DEF","Value":"8"},{"Path":"Combat/Coverage","Value":"50"},{"Path":"Combat/TraumaTransfer","Value":"50"},{"Path":"Penalty/MoveSpeedPenalty","Value":"4"},{"Path":"Penalty/StaminaRegenPenalty","Value":"3"},{"Path":"Combat/MoveSpeed","Value":"10"},{"Path":"Combat/SneakSpeed","Value":"5"},{"Path":"Common/Category","Value":"Entity.Equipment.Armor.Feet"},{"Path":"Common/Id","Value":"Entity.Equipment.Armor.Feet.combat_boots"}]}'
   Prefab: {fileID: 0}
+  _contentId: Entity.Equipment.Armor.Feet.combat_boots

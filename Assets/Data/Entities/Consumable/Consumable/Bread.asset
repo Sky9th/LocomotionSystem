@@ -13,12 +13,6 @@ MonoBehaviour:
   m_Name: Bread
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: 8ee708a11e79b16449a2bd2c7e3474a1, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Consumable.Food\"]"},
-    {"Path": "Tags/ConsumableType", "Value": "Food"}, {"Path": "Tags/FoodType", "Value":
-    "Grain"}, {"Path": "Base/StackSize", "Value": "5"}, {"Path": "Base/ConsumeTime",
-    "Value": "1.5"}, {"Path": "Nutrition/Nutrition_Val", "Value": "20"}, {"Path":
-    "Nutrition/Hydration", "Value": "0"}, {"Path": "Quality/MoraleBonus", "Value":
-    "5"}, {"Path": "Quality/ShelfLife", "Value": "3"}, {"Path": "Quality/ContaminationRisk",
-    "Value": "5"}, {"Path": "Common/Category", "Value": "Entity.Consumable.Food"},
-    {"Path": "Common/Id", "Value": "bread"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Consumable.Food\"]"},{"Path":"Tags/ConsumableType","Value":"Food"},{"Path":"Tags/FoodType","Value":"Grain"},{"Path":"Base/StackSize","Value":"5"},{"Path":"Base/ConsumeTime","Value":"1.5"},{"Path":"Nutrition/Nutrition_Val","Value":"20"},{"Path":"Nutrition/Hydration","Value":"0"},{"Path":"Quality/MoraleBonus","Value":"5"},{"Path":"Quality/ShelfLife","Value":"3"},{"Path":"Quality/ContaminationRisk","Value":"5"},{"Path":"Common/Category","Value":"Entity.Consumable.Food"},{"Path":"Common/Id","Value":"Entity.Consumable.Food.bread"}]}'
   Prefab: {fileID: 1129127352818462, guid: ea8fc872ca6a2dd43aff8e9c1cfe6b6d, type: 3}
+  _contentId: Entity.Consumable.Food.bread

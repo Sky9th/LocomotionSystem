@@ -13,12 +13,6 @@ MonoBehaviour:
   m_Name: ScavengerVest
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: 9fc8da94bf739d846b35bfeb5f5bea92, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Equipment.Armor.Chest\"]"},
-    {"Path": "Base/Weight", "Value": "1.5"}, {"Path": "Equipment/Durability", "Value":
-    "80", "Max": "80"}, {"Path": "Combat/DEF", "Value": "5"}, {"Path": "Combat/Coverage",
-    "Value": "50"}, {"Path": "Combat/TraumaTransfer", "Value": "70"}, {"Path": "Penalty/MoveSpeedPenalty",
-    "Value": "5"}, {"Path": "Penalty/StaminaRegenPenalty", "Value": "5"}, {"Path":
-    "Combat/KnockdownResist", "Value": "5"}, {"Path": "Combat/StanceStability", "Value":
-    "5"}, {"Path": "Common/Category", "Value": "Entity.Equipment.Armor.Chest"}, {"Path":
-    "Common/Id", "Value": "scavenger_vest"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Equipment.Armor.Chest\"]"},{"Path":"Base/Weight","Value":"1.5"},{"Path":"Equipment/Durability","Value":"80","Max":"80"},{"Path":"Combat/DEF","Value":"5"},{"Path":"Combat/Coverage","Value":"50"},{"Path":"Combat/TraumaTransfer","Value":"70"},{"Path":"Penalty/MoveSpeedPenalty","Value":"5"},{"Path":"Penalty/StaminaRegenPenalty","Value":"5"},{"Path":"Combat/KnockdownResist","Value":"5"},{"Path":"Combat/StanceStability","Value":"5"},{"Path":"Common/Category","Value":"Entity.Equipment.Armor.Chest"},{"Path":"Common/Id","Value":"Entity.Equipment.Armor.Chest.scavenger_vest"}]}'
   Prefab: {fileID: 0}
+  _contentId: Entity.Equipment.Armor.Chest.scavenger_vest

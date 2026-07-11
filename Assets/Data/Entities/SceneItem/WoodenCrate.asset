@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: WoodenCrate
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: 99b9d61c396ebf9419ddd86c3740fbf8, type: 2}
-  OverridesJson: 
+  OverridesJson: '{"Overrides":[{"Path":"Common/Category","Value":"Entity.SceneItem"},{"Path":"Common/Id","Value":"Entity.SceneItem.wooden_crate"}]}'
   Prefab: {fileID: 0}
+  _contentId: Entity.SceneItem.wooden_crate

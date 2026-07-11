@@ -13,11 +13,6 @@ MonoBehaviour:
   m_Name: ScavengerHood
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: ba2ae1ef8ed8c91438e368a053822efc, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Equipment.Armor.Head\"]"},
-    {"Path": "Base/Weight", "Value": "0.5"}, {"Path": "Equipment/Durability", "Value":
-    "80", "Max": "80"}, {"Path": "Combat/DEF", "Value": "3"}, {"Path": "Combat/Coverage",
-    "Value": "30"}, {"Path": "Combat/TraumaTransfer", "Value": "80"}, {"Path": "Penalty/MoveSpeedPenalty",
-    "Value": "2"}, {"Path": "Penalty/StaminaRegenPenalty", "Value": "2"}, {"Path":
-    "Combat/FlashResist", "Value": "10"}, {"Path": "Common/Category", "Value": "Entity.Equipment.Armor.Head"},
-    {"Path": "Common/Id", "Value": "scavenger_hood"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Equipment.Armor.Head\"]"},{"Path":"Base/Weight","Value":"0.5"},{"Path":"Equipment/Durability","Value":"80","Max":"80"},{"Path":"Combat/DEF","Value":"3"},{"Path":"Combat/Coverage","Value":"30"},{"Path":"Combat/TraumaTransfer","Value":"80"},{"Path":"Penalty/MoveSpeedPenalty","Value":"2"},{"Path":"Penalty/StaminaRegenPenalty","Value":"2"},{"Path":"Combat/FlashResist","Value":"10"},{"Path":"Common/Category","Value":"Entity.Equipment.Armor.Head"},{"Path":"Common/Id","Value":"Entity.Equipment.Armor.Head.scavenger_hood"}]}'
   Prefab: {fileID: 0}
+  _contentId: Entity.Equipment.Armor.Head.scavenger_hood

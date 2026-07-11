@@ -13,13 +13,6 @@ MonoBehaviour:
   m_Name: 556_HP
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: b98b5ac9b018d7a4982485064cbf829f, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Ammo.Caliber.556\"]"},
-    {"Path": "Base/Weight", "Value": "0.011"}, {"Path": "Combat/BaseDamage", "Value":
-    "50"}, {"Path": "Combat/Penetration", "Value": "4"}, {"Path": "Combat/NoiseRadius",
-    "Value": "80"}, {"Path": "Combat/BulletWeight", "Value": "55"}, {"Path": "Combat/OverPenetration",
-    "Value": "15"}, {"Path": "Combat/RecoilFactor", "Value": "0.9"}, {"Path": "Combat/AmmoReliability",
-    "Value": "100"}, {"Path": "Combat/FoulingRate", "Value": "1.0"}, {"Path": "Combat/MuzzleVelocity",
-    "Value": "950"}, {"Path": "Weapon/ATK", "Value": "[\"50e517b9f83d434e9404abd78c151076\"]"},
-    {"Path": "Common/Category", "Value": "Entity.Ammo.Caliber.556"}, {"Path": "Common/Id",
-    "Value": "556_hp"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Ammo.Caliber.556\"]"},{"Path":"Base/Weight","Value":"0.011"},{"Path":"Combat/BaseDamage","Value":"50"},{"Path":"Combat/Penetration","Value":"4"},{"Path":"Combat/NoiseRadius","Value":"80"},{"Path":"Combat/BulletWeight","Value":"55"},{"Path":"Combat/OverPenetration","Value":"15"},{"Path":"Combat/RecoilFactor","Value":"0.9"},{"Path":"Combat/AmmoReliability","Value":"100"},{"Path":"Combat/FoulingRate","Value":"1.0"},{"Path":"Combat/MuzzleVelocity","Value":"950"},{"Path":"Weapon/ATK","Value":"[\"50e517b9f83d434e9404abd78c151076\"]"},{"Path":"Common/Category","Value":"Entity.Ammo.Caliber.556"},{"Path":"Common/Id","Value":"Entity.Ammo.Caliber.556.556_hp"}]}'
   Prefab: {fileID: 1851930539644918, guid: f0fc41b28f2a6a943a204ab9ba84bc87, type: 3}
+  _contentId: Entity.Ammo.Caliber.556.556_hp

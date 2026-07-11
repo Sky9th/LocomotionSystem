@@ -13,11 +13,6 @@ MonoBehaviour:
   m_Name: Antibiotic
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: 7f35ee616ff16314d98d2ab6ee0b2b1b, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Consumable.Medical\"]"},
-    {"Path": "Tags/ConsumableType", "Value": "Medical"}, {"Path": "Tags/MedicalType",
-    "Value": "Drug"}, {"Path": "Base/StackSize", "Value": "5"}, {"Path": "Base/ConsumeTime",
-    "Value": "1.0"}, {"Path": "Heal/HealAmount", "Value": "0"}, {"Path": "Heal/BleedReduction",
-    "Value": "0"}, {"Path": "Heal/InfectionCleanse", "Value": "100"}, {"Path": "Heal/PainRelief",
-    "Value": "0"}, {"Path": "Heal/HealDuration", "Value": "10.0"}, {"Path": "Common/Category",
-    "Value": "Entity.Consumable.Medical"}, {"Path": "Common/Id", "Value": "antibiotic"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Consumable.Medical\"]"},{"Path":"Tags/ConsumableType","Value":"Medical"},{"Path":"Tags/MedicalType","Value":"Drug"},{"Path":"Base/StackSize","Value":"5"},{"Path":"Base/ConsumeTime","Value":"1.0"},{"Path":"Heal/HealAmount","Value":"0"},{"Path":"Heal/BleedReduction","Value":"0"},{"Path":"Heal/InfectionCleanse","Value":"100"},{"Path":"Heal/PainRelief","Value":"0"},{"Path":"Heal/HealDuration","Value":"10.0"},{"Path":"Common/Category","Value":"Entity.Consumable.Medical"},{"Path":"Common/Id","Value":"Entity.Consumable.Medical.antibiotic"}]}'
   Prefab: {fileID: 1337799580505134, guid: 07973e2f008580343949b7f8c06cf72c, type: 3}
+  _contentId: Entity.Consumable.Medical.antibiotic

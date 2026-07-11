@@ -7,14 +7,14 @@
       "entityType": null,
       "name": "Barrel",
       "templateName": "Environment",
-      "overridesJson": "",
+      "overridesJson": "{\"Overrides\":[{\"Path\":\"Common/Category\",\"Value\":\"Entity.SceneItem\"},{\"Path\":\"Common/Id\",\"Value\":\"Entity.SceneItem.barrel\"}]}",
       "prefabGuid": ""
     },
     {
       "entityType": null,
       "name": "WoodenCrate",
       "templateName": "Entity",
-      "overridesJson": "",
+      "overridesJson": "{\"Overrides\":[{\"Path\":\"Common/Category\",\"Value\":\"Entity.SceneItem\"},{\"Path\":\"Common/Id\",\"Value\":\"Entity.SceneItem.wooden_crate\"}]}",
       "prefabGuid": ""
     }
   ]

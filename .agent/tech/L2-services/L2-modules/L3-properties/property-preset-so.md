@@ -1,7 +1,7 @@
 # PropertyPresetSO — 属性预设基类
 
 > `L3_Properties/Definition/PropertyPresetSO.cs` · 技术文档 · 2026-06-26
-> **Last Verified**: 2026-06-27 | **Verification**: Prefab field added. All referenced files exist.
+> **Last Verified**: 2026-07-11 | **Verification**: _contentId field added. All referenced files exist.
 
 ## 层级定位
 
@@ -49,6 +49,17 @@ public GameObject Prefab;
 ```
 - **用途**: 实体 GO 载体 Prefab。EntityService.Spawn 时 Instantiate
 - **备注**: 不同 Preset 指向不同 Prefab（Player.prefab、NPC.prefab、GroundItem.prefab 等）
+
+### _contentId
+```csharp
+[SerializeField, HideInInspector]
+private string _contentId;
+public string ContentId => _contentId;
+public void SetContentId(string id) => _contentId = id;
+```
+- **用途**: Mod 可寻址的稳定标识符。格式为完整 itemPath（`Entity.Equipment.Weapon.Melee.Blade.machete`），不含命名空间前缀
+- **写入时机**: Editor Save（`EntityEditorWindow.Save`）+ JSON Import（`EntityImporter.SyncContentId`）。运行时只读
+- **备注**: `AssetCatalog.InitPresets` 读取后加 `CommonConstants.OfficialNamespace` 前缀作为 `_byContentId` 的 key
 
 ## 设计决策
 

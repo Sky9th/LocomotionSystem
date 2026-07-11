@@ -159,9 +159,8 @@ namespace RedDust.Assets
             items.AddRange(index.Get<ConsumableDefSO>());
             items.AddRange(index.Get<SceneItemDefSO>());
             items.AddRange(index.Get<BuildingDefSO>());
-            catalog.InitItems(items);
-
-            catalog.InitCharacters(index.Get<CharacterDefSO>());
+            items.AddRange(index.Get<CharacterDefSO>());
+            catalog.InitPresets(items);
             catalog.InitAnimProfiles(index.Get<CharacterAnimationProfileSO>());
             catalog.InitGroundConfigs(index.Get<GroundSystemConfigSO>());
             catalog.InitAudioConfigs(index.Get<CharacterAudioConfigSO>());

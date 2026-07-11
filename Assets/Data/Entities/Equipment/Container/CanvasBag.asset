@@ -13,10 +13,7 @@ MonoBehaviour:
   m_Name: CanvasBag
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: dfb12c954eea5d442bba0a4efc1bc5f5, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Equipment.Container\"]"},
-    {"Path": "Base/Weight", "Value": "0.5"}, {"Path": "Equipment/Durability", "Value":
-    "50", "Max": "50"}, {"Path": "Backpack/CarryWeightBonus", "Value": "10"}, {"Path":
-    "Slots/ContainerSlot", "Value": "{\"SlotId\": \"ContainerSlot\", \"Capacity\":
-    10, \"WeightLimit\": 15.0}"}, {"Path": "Common/Category", "Value": "Entity.Equipment.Container"},
-    {"Path": "Common/Id", "Value": "canvas_bag"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Equipment.Container\"]"},{"Path":"Base/Weight","Value":"0.5"},{"Path":"Equipment/Durability","Value":"50","Max":"50"},{"Path":"Backpack/CarryWeightBonus","Value":"10"},{"Path":"Slots/ContainerSlot","Value":"{\"SlotId\":
+    \"ContainerSlot\", \"Capacity\": 10, \"WeightLimit\": 15.0}"},{"Path":"Common/Category","Value":"Entity.Equipment.Container"},{"Path":"Common/Id","Value":"Entity.Equipment.Container.canvas_bag"}]}'
   Prefab: {fileID: 1782812692589456, guid: d2051d753ee09c3479f2236184af0281, type: 3}
+  _contentId: Entity.Equipment.Container.canvas_bag

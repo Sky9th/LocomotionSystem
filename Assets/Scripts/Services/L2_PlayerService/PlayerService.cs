@@ -13,16 +13,10 @@ namespace RedDust.Player
     [DisallowMultipleComponent]
     public class PlayerService : ModuleChildMono, IGameplaySessionHandler
     {
-        [Header("Identity")]
-        [Tooltip("CharacterDefSO asset name，从 Assets 查找。")]
-        [SerializeField] private string characterDefKey = "Human";
+        private const string CharacterDefKey = "Entity.Character.human";
 
         [Header("Spawn")]
         [SerializeField] private GameObject playerStartAnchor;
-
-        [Header("Test — 临时生成")]
-        [Tooltip("CharacterDefSO key")]
-        [SerializeField] private string zombieDefKey = "Zombie";
 
         [Header("Event Channels")]
         [SerializeField] private EntitySpawnRequestEvent spawnRequestEvent;
@@ -96,10 +90,10 @@ namespace RedDust.Player
             if (playerStartAnchor == null)
                 playerStartAnchor = GameObject.Find("PlayerStart");
 
-            var characterDef = GameService.Instance.Assets.FindCharacter(characterDefKey);
+            var characterDef = GameService.Instance.Assets.FindCharacter(CharacterDefKey);
             if (characterDef == null)
             {
-                Debug.LogError($"[PlayerService] CharacterDef '{characterDefKey}' not found in Assets.", this);
+                Debug.LogError($"[PlayerService] CharacterDef '{CharacterDefKey}' not found in Assets.", this);
                 return;
             }
 
@@ -149,7 +143,7 @@ namespace RedDust.Player
             }
 
             // // Zombie 在玩家右侧 3 米
-            // var zombieDef = GameService.Instance.Assets.FindCharacter(zombieDefKey);
+            // var zombieDef = GameService.Instance.Assets.FindCharacter("Zombie");
             // if (zombieDef != null)
             // {
             //     var pos = playerStartAnchor.transform.position + Vector3.forward * 3f;
@@ -157,17 +151,17 @@ namespace RedDust.Player
             //     spawnRequestEvent.Raise(new SEntitySpawnRequest(zombieDef, "test_zombie", pos));
             //     Debug.Log($"[PlayerService] Spawned zombie at {pos}");
             // }
-            // else { Debug.LogWarning($"[PlayerService] CharacterDef '{zombieDefKey}' not found in Registry."); }
+            // else { Debug.LogWarning($"[PlayerService] CharacterDef 'Zombie' not found in Registry."); }
 
             // // Backpack → Back，武器进背包
-            // var backpackDef = GameService.Instance.Assets.FindItem<ContainerSO>(backpackDefKey);
+            // var backpackDef = GameService.Instance.Assets.FindItem<ContainerSO>("Backpack");
             // if (backpackDef == null)
             // {
-            //     Debug.LogError($"[PlayerService] ContainerDef '{backpackDefKey}' not found in Assets — no backpack spawned.");
+            //     Debug.LogError($"[PlayerService] ContainerDef 'Backpack' not found in Assets — no backpack spawned.");
             //     return;
             // }
-            var bladeDef = GameService.Instance.Assets.FindItem<MeleeWeaponSO>("Machete");
-            var pistolDef = GameService.Instance.Assets.FindItem<RangedWeaponSO>("M1911");
+            var bladeDef = GameService.Instance.Assets.FindItem<MeleeWeaponSO>("Entity.Equipment.Weapon.Melee.Blade.machete");
+            var pistolDef = GameService.Instance.Assets.FindItem<RangedWeaponSO>("Entity.Equipment.Weapon.Ranged.Pistol.m1911");
 
             // P5.1: ground items near player
             if (bladeDef != null)

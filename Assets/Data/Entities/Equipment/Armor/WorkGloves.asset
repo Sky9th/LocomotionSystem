@@ -13,11 +13,6 @@ MonoBehaviour:
   m_Name: WorkGloves
   m_EditorClassIdentifier: 
   Template: {fileID: 11400000, guid: dde941a44d00660488fa0654ac1fb6e1, type: 2}
-  OverridesJson: '{"Overrides": [{"Path": "Common/Tags", "Value": "[\"Entity.Equipment.Armor.Hands\"]"},
-    {"Path": "Base/Weight", "Value": "0.2"}, {"Path": "Equipment/Durability", "Value":
-    "50", "Max": "50"}, {"Path": "Combat/DEF", "Value": "2"}, {"Path": "Combat/Coverage",
-    "Value": "20"}, {"Path": "Combat/TraumaTransfer", "Value": "100"}, {"Path": "Penalty/MoveSpeedPenalty",
-    "Value": "0"}, {"Path": "Penalty/StaminaRegenPenalty", "Value": "0"}, {"Path":
-    "Common/Category", "Value": "Entity.Equipment.Armor.Hands"}, {"Path": "Common/Id",
-    "Value": "work_gloves"}]}'
+  OverridesJson: '{"Overrides":[{"Path":"Common/Tags","Value":"[\"Entity.Equipment.Armor.Hands\"]"},{"Path":"Base/Weight","Value":"0.2"},{"Path":"Equipment/Durability","Value":"50","Max":"50"},{"Path":"Combat/DEF","Value":"2"},{"Path":"Combat/Coverage","Value":"20"},{"Path":"Combat/TraumaTransfer","Value":"100"},{"Path":"Penalty/MoveSpeedPenalty","Value":"0"},{"Path":"Penalty/StaminaRegenPenalty","Value":"0"},{"Path":"Common/Category","Value":"Entity.Equipment.Armor.Hands"},{"Path":"Common/Id","Value":"Entity.Equipment.Armor.Hands.work_gloves"}]}'
   Prefab: {fileID: 0}
+  _contentId: Entity.Equipment.Armor.Hands.work_gloves

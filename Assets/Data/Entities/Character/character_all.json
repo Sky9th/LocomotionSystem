@@ -7,28 +7,28 @@
       "entityType": null,
       "name": "Human",
       "templateName": "Human",
-      "overridesJson": "",
+      "overridesJson": "{\"Overrides\":[{\"Path\":\"Common/Category\",\"Value\":\"Entity.Character\"},{\"Path\":\"Common/Id\",\"Value\":\"Entity.Character.human\"}]}",
       "prefabGuid": "4c0627a5cad7b734c8c24cbdadfe712f"
     },
     {
       "entityType": null,
       "name": "Zombie",
       "templateName": "Human",
-      "overridesJson": "",
+      "overridesJson": "{\"Overrides\":[{\"Path\":\"Common/Category\",\"Value\":\"Entity.Character\"},{\"Path\":\"Common/Id\",\"Value\":\"Entity.Character.zombie\"}]}",
       "prefabGuid": "506c4f73f1825ed4f97f06cdf259ac78"
     },
     {
       "entityType": null,
       "name": "Survivor",
       "templateName": "Human",
-      "overridesJson": "{\"Overrides\":[{\"Path\":\"Vitals/HP\",\"Value\":\"120\"},{\"Path\":\"Vitals/MaxStamina\",\"Value\":\"110\"}]}",
+      "overridesJson": "{\"Overrides\":[{\"Path\":\"Vitals/HP\",\"Value\":\"120\"},{\"Path\":\"Vitals/MaxStamina\",\"Value\":\"110\"},{\"Path\":\"Common/Category\",\"Value\":\"Entity.Character\"},{\"Path\":\"Common/Id\",\"Value\":\"Entity.Character.survivor\"}]}",
       "prefabGuid": ""
     },
     {
       "entityType": null,
       "name": "Dog",
       "templateName": "Actor",
-      "overridesJson": "",
+      "overridesJson": "{\"Overrides\":[{\"Path\":\"Common/Category\",\"Value\":\"Entity.Character\"},{\"Path\":\"Common/Id\",\"Value\":\"Entity.Character.dog\"}]}",
       "prefabGuid": ""
     }
   ]
