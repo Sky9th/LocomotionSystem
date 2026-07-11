@@ -1,4 +1,4 @@
-namespace RedDust.GameScene
+namespace RedDust.Services.Scene
 {
     public enum SceneTransitionPhase { Started, Completed }
 

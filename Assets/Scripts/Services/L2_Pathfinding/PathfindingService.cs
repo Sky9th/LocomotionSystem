@@ -1,9 +1,12 @@
+using RedDust.Core.GameContext;
+using RedDust.Core.GameService;
+using RedDust.Core.Modules;
 using Pathfinding;
-using RedDust.Core;
+using RedDust.Core.Events;
 using RedDust.Shared;
 using UnityEngine;
 
-namespace RedDust.Pathfinding
+namespace RedDust.Services.Pathfinding
 {
     public class PathfindingService : ModuleChildMono, IGameplaySessionHandler
     {

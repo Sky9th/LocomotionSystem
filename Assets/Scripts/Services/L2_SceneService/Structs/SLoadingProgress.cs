@@ -1,4 +1,4 @@
-namespace RedDust.GameScene
+namespace RedDust.Services.Scene
 {
     /// <summary>
     /// Loading progress payload. Published via LoadingProgressEvent.

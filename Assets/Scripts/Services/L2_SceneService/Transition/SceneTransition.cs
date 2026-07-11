@@ -1,11 +1,11 @@
+using RedDust.Core.GameService;
 using System.Collections;
-using RedDust.Assets;
-using RedDust.Core;
+using AS = RedDust.Services.AssetService.AssetService;
 using RedDust.Core.Events;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace RedDust.GameScene
+namespace RedDust.Services.Scene
 {
     /// <summary>
     /// Pure scene transition: parallel scene + asset loading, weighted progress,
@@ -13,12 +13,12 @@ namespace RedDust.GameScene
     /// </summary>
     public class SceneTransition : IGameplaySessionHandler
     {
-        private readonly AssetService _assetService;
+        private readonly AS _assetService;
         private readonly EventHub _eventHub;
 
         private bool _isTransitioning;
 
-        public SceneTransition(AssetService assetService, EventHub eventHub)
+        public SceneTransition(AS assetService, EventHub eventHub)
         {
             _assetService = assetService;
             _eventHub = eventHub;
@@ -84,7 +84,7 @@ namespace RedDust.GameScene
 
             // Min display time to prevent flash
             float elapsed = 0f;
-            while (elapsed < config.MinDisplayTime) { elapsed += Time.unscaledDeltaTime; yield return null; }
+            while (elapsed < config.MinDisplayTime) { elapsed += UnityEngine.Time.unscaledDeltaTime; yield return null; }
 
             _eventHub?.Get<SceneTransitionEvent>()?.Raise(
                 new SSceneTransition(config.SceneName, prevName, SceneTransitionPhase.Completed));

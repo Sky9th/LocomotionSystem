@@ -1,9 +1,9 @@
 using System.Text;
-using RedDust.Ability;
+using RedDust.Gameplay.Ability;
 using TMPro;
 using UnityEngine;
 
-namespace RedDust.UI
+namespace RedDust.Services.UI
 {
     /// <summary>
     /// 技能管道调试 Overlay。右上角固定，开发工具。

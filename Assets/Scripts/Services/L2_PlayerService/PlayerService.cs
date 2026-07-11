@@ -1,14 +1,19 @@
+using ES = RedDust.Services.EntityService.EntityService;
+using RedDust.Core.GameContext;
+using RedDust.Gameplay.Container;
+using RedDust.Core.GameService;
+using RedDust.Core.Structs;
+using RedDust.Core.Modules;
 using System;
-using RedDust.Character;
-using RedDust.Core;
+using RedDust.Gameplay.Character;
 using RedDust.Core.Events;
-using RedDust.Entities;
-using RedDust.Equipment;
-using RedDust.GameInput;
-using RedDust.GameScene;
+using RedDust.Services.EntityService;
+using RedDust.Gameplay.Equipment;
+using RedDust.Services.Input;
+using RedDust.Services.Scene;
 using UnityEngine;
 
-namespace RedDust.Player
+namespace RedDust.Services.Player
 {
     [DisallowMultipleComponent]
     public class PlayerService : ModuleChildMono, IGameplaySessionHandler
@@ -118,7 +123,7 @@ namespace RedDust.Player
             playerInstance = e.View;
             playerEntityId = e.EntityId;
 
-            if (GameContext.Instance.TryResolveService<EntityService>(out var es))
+            if (GameContext.Instance.TryResolveService<ES>(out var es))
                 _playerEntity = es.Get(e.EntityId);
 
             GameContext.Instance.UpdateSnapshot(

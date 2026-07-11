@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RedDust.UI
+namespace RedDust.Services.UI
 {
 
     [CreateAssetMenu(fileName = "UIPanelConfigSO", menuName = "RedDust/UI/Panel Config")]

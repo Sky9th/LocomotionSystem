@@ -6,7 +6,7 @@
 
 | 位置 | 命名格式 | 示例 |
 |------|---------|------|
-| **代码目录** (`Assets/Scripts/`) | L1/L2/L3 用 `L{N}_{PascalCase}`，L4/L5 及占位容器不带 L | `L1_Core/`, `L2_Audio/`, `L3_Character/`, `Animation/`, `Drivers/`, `Services/` |
+| **代码目录** (`Assets/Scripts/`) | 容器目录无前缀（`Core/`, `Services/`, `Gameplay/`），模块目录 L2/L3 用 `L{N}_{PascalCase}`，L4/L5 无 L | `Core/`, `Services/L2_Audio/`, `Gameplay/L3_Character/`, `Animation/`, `Drivers/` |
 | **文档目录** (`.agent/tech/`) | `L{N}-{kebab-case}`，纯文档不随 Unity 风格 | `L1-core/`, `L2-audio/`, `L4-animation/`, `L5-drivers/` |
 
 > **为什么不同？** 代码目录跟 Unity 项目惯例（PascalCase），文档目录保持 kebab-case 便于阅读。两者表示同一架构层级，仅命名风格不同。
@@ -15,9 +15,9 @@
 
 | 层级 | 定义 | 判断标准 | 示例 |
 |------|------|---------|------|
-| **L1** | 根管理层 | 持有所有 Service，无业务逻辑 | `L1_Core/` |
-| **L2** | 系统服务 | 继承 BaseService，协调 L1↔L3 | `L2_Audio/`, `L2_Input/`, `L2_UI/` |
-| **L3** | 领域模块 | 独立领域，不隶属单一 L2，可被多个 Service 共用 | `L3_Character/`, `L3_Ability/` |
+| **L1** | 根管理层 | 持有所有 Service，无业务逻辑 | `Core/` |
+| **L2** | 系统服务 | 继承 BaseService，协调 L1↔L3 | `Services/L2_Audio/`, `Services/L2_Input/`, `Services/L2_UI/` |
+| **L3** | 领域模块 | 独立领域，不隶属单一 L2，可被多个 Service 共用 | `Gameplay/L3_Character/`, `Gameplay/L3_Ability/` |
 | **L4** | 领域子系统 | L3 内部的**不同领域子系统**，承担独立功能 | `Animation/`, `Kinematic/`, `Locomotion/`, `Stats/`, `Audio/`, `Combat/` |
 | **L5** | 子系统的子系统 | L4 内部的**附属子系统**，承担其下一级独立功能 | `Drivers/`（如 `Animation/Drivers/Locomotion/`） |
 
@@ -265,7 +265,7 @@ tech/
 
 | 新位置 | 旧来源 | 状态 |
 |--------|--------|------|
-| L1_Core/ | L1-core/ | 直接迁移 |
+| Core/ | L1-core/ | 直接迁移，v0.45.4 由 `L1_Core/` 重命名 |
 | Services/L2_EventDispatcher/ | L2-services/EventDispatcher | 重组 |
 | Services/L2_SceneService/ | L2-services/SceneService | 重组 |
 | Services/L2_TimeService/ | L2-services/TimeService | 重组 |
@@ -275,12 +275,12 @@ tech/
 | Services/L2_Audio/ | L3-audio/ | 提升至 L2 |
 | Services/L2_Input/ | L3-input/ | 提升至 L2 |
 | Services/L2_UI/ | L3-ui/ | 提升至 L2 |
-| Services/Modules/L3_Character/ | L3-character/ | 直接迁移 |
-| Services/Modules/L3_Stats/ | (已删除，由 L3-properties 替代) | — |
-| Services/Modules/L3_Pathfinding/ | L3-pathfinding/ | 直接迁移 |
+| Gameplay/L3_Character/ | L3-character/ | v0.45.4 由 `Services/Modules/` 迁入 `Gameplay/` |
+| Gameplay/L3_Stats/ | (已删除，由 L3-properties 替代) | — |
+| Gameplay/L3_Pathfinding/ | L3-pathfinding/ | v0.45.4 迁入 `Gameplay/` |
 | Shared/Logging/ | L3-logging/ | 移至 Shared |
-| Shared/Editor/ | L3-editor/ | 移至 Shared |
 | Shared/Utility/ | L3-utility/ | 移至 Shared |
+| Scripts/Editor/ | Shared/Editor/ (原 L3-editor) | v0.45.4 搬迁至独立 Editor 目录 |
 
 ## 层级规则
 
@@ -302,10 +302,10 @@ tech/
 
 | 类型 | 代码目录 (`Assets/Scripts/`) | 文档目录 (`.agent/tech/`) |
 |------|---------------------------|---------------------------|
-| 占位容器 | `Services/`, `Modules/`, `Shared/` | `L2-services/`, `L2-modules/`, `shared/` |
-| L1 层级 | `L1_Core/` | `L1-core/` |
-| L2 层级 | `L2_{Name}/` | `L2-{name}/` |
-| L3 层级 | `L3_{Name}/` | `L3-{name}/` |
+| 占位容器 | `Core/`, `Services/`, `Gameplay/`, `Shared/` | `L1-core/`, `L2-services/`, 文档按 L3-{name} |
+| L1 层级 | `Core/L1_{Name}/` | `L1-{name}/` |
+| L2 层级 | `Services/L2_{Name}/` | `L2-{name}/` |
+| L3 层级 | `Gameplay/L3_{Name}/` | `L3-{name}/` |
 | L4 子系统 | `{Name}/` (L3 直属子系统，无前缀) | `{name}/` |
 | L5 子子系统 | `{Name}/` (L4 直属子系统，无前缀) | `{name}/` |
 

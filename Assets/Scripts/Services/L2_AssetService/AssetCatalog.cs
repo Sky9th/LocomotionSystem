@@ -1,14 +1,15 @@
+using RedDust.Core.GameService;
 using System.Collections.Generic;
-using RedDust.Ability;
-using RedDust.Character;
-using RedDust.Character.Animation;
-using RedDust.Character.Audio;
-using RedDust.Character.Kinematic;
-using RedDust.Properties;
+using RedDust.Gameplay.Ability;
+using RedDust.Gameplay.Character;
+using RedDust.Gameplay.Character.Animation;
+using RedDust.Gameplay.Character.Audio;
+using RedDust.Gameplay.Character.Kinematic;
+using RedDust.Gameplay.Properties;
 using RedDust.Shared;
 using UnityEngine;
 
-namespace RedDust.Assets
+namespace RedDust.Services.AssetService
 {
     /// <summary>
     /// Centralized catalog of all boot-loaded ScriptableObject assets.

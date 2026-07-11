@@ -1,14 +1,18 @@
+using ES = RedDust.Services.EntityService.EntityService;
+using RedDust.Core.GameContext;
+using RedDust.Core.GameService;
+using RedDust.Core.Structs;
+using RedDust.Core.Modules;
 using System.Collections.Generic;
 using DG.Tweening;
-using RedDust.Core;
 using RedDust.Core.Events;
-using RedDust.Entities;
-using RedDust.GameState;
-using RedDust.Properties;
-using RedDust.GameScene;
+using RedDust.Services.EntityService;
+using RedDust.Services.GameState;
+using RedDust.Gameplay.Properties;
+using RedDust.Services.Scene;
 using UnityEngine;
 
-namespace RedDust.UI
+namespace RedDust.Services.UI
 {
 
     public class UIService : ModuleChildMono, IGameplaySessionHandler
@@ -353,7 +357,7 @@ namespace RedDust.UI
         {
             if (!evt.IsLocalPlayer) return;
             if (!string.IsNullOrEmpty(evt.EntityId)
-                && GameContext.Instance.TryResolveService<EntityService>(out var es))
+                && GameContext.Instance.TryResolveService<ES>(out var es))
                 _playerEntity = es.Get(evt.EntityId);
         }
 

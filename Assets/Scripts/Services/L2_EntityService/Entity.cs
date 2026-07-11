@@ -1,8 +1,8 @@
-using RedDust.Container;
-using RedDust.Properties;
+using RedDust.Gameplay.Container;
+using RedDust.Gameplay.Properties;
 using UnityEngine;
 
-namespace RedDust.Entities
+namespace RedDust.Services.EntityService
 {
     /// <summary>
     /// 游戏实体数据——所有可持久对象的基类。

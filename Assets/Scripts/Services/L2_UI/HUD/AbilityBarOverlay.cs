@@ -1,9 +1,9 @@
 using System;
-using RedDust.Ability;
-using RedDust.Entities;
+using RedDust.Gameplay.Ability;
+using RedDust.Services.EntityService;
 using UnityEngine;
 
-namespace RedDust.UI
+namespace RedDust.Services.UI
 {
     /// <summary>
     /// 技能栏 Overlay。动态槽位 + 事件驱动激活 + hover 弹出 SkillCard。

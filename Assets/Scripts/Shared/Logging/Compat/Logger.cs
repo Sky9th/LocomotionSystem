@@ -1,9 +1,10 @@
+using RedDust.Core.Structs;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-using RedDust.Core;
+using RedDust.Core.Events;
 using UnityEngine;
 
 namespace RedDust.Shared

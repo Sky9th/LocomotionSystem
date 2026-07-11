@@ -1,0 +1,193 @@
+#if UNITY_EDITOR
+using RedDust.Core.RdTag;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using RedDust.Shared.EditorUI;
+using UnityEditor;
+using UnityEngine;
+
+namespace RedDust.Core.RdTag.Editor
+{
+    /// <summary>
+    /// 标签树数据模型。扫描 AssetDatabase 中所有 RdTagDefSO，
+    /// 按 parent 引用构建多叉树，提供查找和搜索。
+    /// </summary>
+    public class TagTreeModel
+    {
+        public Dictionary<string, RdTagDefSO> AllTags = new();
+        public Dictionary<string, EditorTreeNode> NodeIndex = new();
+        public List<EditorTreeNode> Roots = new();
+        public bool HasCycle { get; private set; }
+        public int TotalCount => NodeIndex.Count;
+
+        private static TagTreeModel s_cached;
+        private static float s_lastRefresh;
+
+        /// <summary>获取缓存的 TagTreeModel，5 秒内不重新扫描 AssetDatabase。</summary>
+        public static TagTreeModel GetCached()
+        {
+            var now = (float)EditorApplication.timeSinceStartup;
+            if (s_cached != null && now - s_lastRefresh < 5f)
+                return s_cached;
+
+            s_cached = new TagTreeModel();
+            s_cached.Refresh();
+            s_lastRefresh = now;
+            return s_cached;
+        }
+
+        // ── 扫描构建 ──
+        public void Refresh()
+        {
+            AllTags.Clear();
+            NodeIndex.Clear();
+            Roots.Clear();
+            HasCycle = false;
+
+            var guids = AssetDatabase.FindAssets("t:RdTagDefSO");
+            var tagList = new List<RdTagDefSO>();
+
+            foreach (var guid in guids)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                var tag = AssetDatabase.LoadAssetAtPath<RdTagDefSO>(path);
+                if (tag == null || string.IsNullOrEmpty(tag.FullTag)) continue;
+                AllTags[tag.FullTag] = tag;
+                tagList.Add(tag);
+            }
+
+            // 先建所有节点
+            foreach (var tag in tagList)
+            {
+                var node = new EditorTreeNode
+                {
+                    DisplayName = tag.LeafName,
+                    FullPath = tag.FullTag,
+                    Depth = tag.Depth,
+                    IsFolder = false,
+                    UserData = tag,
+                };
+                NodeIndex[tag.FullTag] = node;
+            }
+
+            // 连接父子关系
+            foreach (var tag in tagList)
+            {
+                var node = NodeIndex[tag.FullTag];
+                if (tag.Parent != null && AllTags.TryGetValue(tag.Parent.FullTag, out var parentTag))
+                {
+                    var parentNode = NodeIndex[parentTag.FullTag];
+                    node.Parent = parentNode;
+                    parentNode.Children.Add(node);
+                    parentNode.IsFolder = true;
+                }
+            }
+
+            // 收集根 + 循环检测
+            var visited = new HashSet<RdTagDefSO>();
+            foreach (var tag in tagList)
+            {
+                if (tag.Parent == null)
+                {
+                    if (!HasCycleInChain(tag, visited))
+                        Roots.Add(NodeIndex[tag.FullTag]);
+                }
+            }
+
+            // 排序
+            Roots.Sort((a, b) => string.CompareOrdinal(a.DisplayName, b.DisplayName));
+            SortChildrenRecursive(Roots);
+        }
+
+        private bool HasCycleInChain(RdTagDefSO start, HashSet<RdTagDefSO> visited)
+        {
+            var current = start;
+            var path = new HashSet<RdTagDefSO>();
+            while (current != null)
+            {
+                if (!path.Add(current))
+                {
+                    HasCycle = true;
+                    return true;
+                }
+                current = current.Parent;
+            }
+            return false;
+        }
+
+        private static void SortChildrenRecursive(List<EditorTreeNode> nodes)
+        {
+            foreach (var n in nodes)
+            {
+                n.Children.Sort((a, b) => string.CompareOrdinal(a.DisplayName, b.DisplayName));
+                SortChildrenRecursive(n.Children);
+            }
+        }
+
+        // ── 查找 ──
+        public EditorTreeNode Find(string fullTag)
+        {
+            NodeIndex.TryGetValue(fullTag ?? "", out var node);
+            return node;
+        }
+
+        // ── 搜索 ──
+        public List<EditorTreeNode> Search(string query, string rootFilter = null)
+        {
+            var results = new List<EditorTreeNode>();
+            if (string.IsNullOrEmpty(query)) return results;
+
+            var q = query.ToLowerInvariant();
+
+            foreach (var kv in NodeIndex)
+            {
+                if (!kv.Value.FullPath.ToLowerInvariant().Contains(q)
+                    && !kv.Value.DisplayName.ToLowerInvariant().Contains(q))
+                    continue;
+
+                if (!string.IsNullOrEmpty(rootFilter))
+                {
+                    var filter = rootFilter.TrimEnd('.');
+                    if (!kv.Value.FullPath.StartsWith(filter, StringComparison.OrdinalIgnoreCase))
+                        continue;
+                }
+
+                results.Add(kv.Value);
+            }
+
+            results.Sort((a, b) =>
+            {
+                int Score(EditorTreeNode n)
+                {
+                    var ft = n.FullPath.ToLowerInvariant();
+                    var ln = n.DisplayName.ToLowerInvariant();
+                    if (ft == q) return 0;
+                    if (ft.StartsWith(q)) return 1;
+                    if (ln.StartsWith(q)) return 2;
+                    return 3;
+                }
+                return Score(a).CompareTo(Score(b));
+            });
+
+            return results;
+        }
+
+        // ── 获取缺失祖先 ──
+        public List<string> GetMissingAncestors(string fullTag)
+        {
+            var missing = new List<string>();
+            var segments = fullTag.Split('.');
+            var accumulated = "";
+            for (int i = 0; i < segments.Length - 1; i++)
+            {
+                accumulated = i == 0 ? segments[i] : $"{accumulated}.{segments[i]}";
+                if (!NodeIndex.ContainsKey(accumulated))
+                    missing.Add(accumulated);
+            }
+            return missing;
+        }
+
+    }
+}
+#endif

@@ -1,7 +1,9 @@
-using RedDust.Core;
+using RedDust.Core.GameContext;
+using RedDust.Core.Modules;
+using RedDust.Core.Events;
 using UnityEngine;
 
-namespace RedDust.AI
+namespace RedDust.Services.AI
 {
     /// <summary>
     /// AI Service — 集中处理所有 NPC 的行为驱动。

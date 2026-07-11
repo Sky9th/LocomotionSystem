@@ -1,0 +1,27 @@
+{
+    "name": "RedDust.Runtime",
+    "rootNamespace": "RedDust",
+    "references": [
+        "Unity.Addressables",
+        "Unity.ResourceManager",
+        "Cinemachine",
+        "Unity.InputSystem",
+        "Kybernetik.Animancer",
+        "Kybernetik.Animancer.FSM",
+        "AstarPathfindingProject",
+        "Drawing",
+        "PackageTools",
+        "Unity.TextMeshPro",
+        "HybridCLR.Runtime",
+        "DOTween.Modules"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

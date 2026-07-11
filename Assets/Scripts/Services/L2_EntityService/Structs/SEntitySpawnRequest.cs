@@ -1,7 +1,7 @@
-using RedDust.Properties;
+using RedDust.Gameplay.Properties;
 using UnityEngine;
 
-namespace RedDust.Entities
+namespace RedDust.Services.EntityService
 {
     /// <summary>
     /// 请求生成实体。由外部系统发布。

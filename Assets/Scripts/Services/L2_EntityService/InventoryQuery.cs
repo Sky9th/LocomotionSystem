@@ -1,9 +1,10 @@
+using RedDust.Gameplay.Container;
 using System.Collections.Generic;
 using System.Linq;
-using RedDust.Character;
+using RedDust.Gameplay.Character;
 using UnityEngine;
 
-namespace RedDust.Entities
+namespace RedDust.Services.EntityService
 {
     /// <summary>
     /// 容器物品查询（L2）—— 具体类, 无接口。
@@ -16,7 +17,7 @@ namespace RedDust.Entities
     /// </summary>
     public class InventoryQuery
     {
-        private readonly Container.RdContainer _container;
+        private readonly RdContainer _container;
 
         // ═══════════════════════════════════════════════════════════════
         // 深层递归缓存 —— key = "{entityId}/{slotPath}"
@@ -67,7 +68,7 @@ namespace RedDust.Entities
         /// 递归收集：遍历 container 所有槽位，将物品写入 cache，然后深入物品的 NestedContainer。
         /// </summary>
         private static void CollectRecursive(
-            Container.RdContainer container,
+            RdContainer container,
             string parentPath,
             Dictionary<string, Entity> cache,
             int depth)
@@ -125,7 +126,7 @@ namespace RedDust.Entities
         /// <summary>容器中物品总数（去重前）</summary>
         public int ItemCount => _container?.AllItems()?.Count() ?? 0;
 
-        internal InventoryQuery(Container.RdContainer container)
+        internal InventoryQuery(RdContainer container)
         {
             _container = container;
         }

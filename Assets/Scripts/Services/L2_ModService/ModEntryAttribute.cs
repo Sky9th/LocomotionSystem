@@ -1,6 +1,6 @@
 using System;
 
-namespace RedDust.Modding
+namespace RedDust.Services.ModService
 {
     /// <summary>
     /// Marks a class as a Mod entry point. The loader invokes IModEntry.Initialize()

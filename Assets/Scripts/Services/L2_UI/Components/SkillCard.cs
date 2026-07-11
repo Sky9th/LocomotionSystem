@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace RedDust.UI
+namespace RedDust.Services.UI
 {
     /// <summary>
     /// 技能详情卡片。在技能槽 hover/选中时弹出，展示图标、名称、效果、冷却、连招等完整信息。

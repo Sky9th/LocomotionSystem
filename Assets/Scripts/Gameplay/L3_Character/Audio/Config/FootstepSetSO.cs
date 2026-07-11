@@ -1,0 +1,15 @@
+using UnityEngine;
+using RedDust.Services.Audio;
+
+namespace RedDust.Gameplay.Character.Audio
+{
+    [CreateAssetMenu(fileName = "FootstepSetSO", menuName = "RedDust/Audio/Footstep Set")]
+    public class FootstepSetSO : AudioSetSO
+    {
+        public AudioClip clip;
+
+        [Header("Settings")]
+        [Range(0f, 1f)] public float baseVolume = 0.8f;
+        [Range(0f, 0.5f)] public float pitchVariation;
+    }
+}

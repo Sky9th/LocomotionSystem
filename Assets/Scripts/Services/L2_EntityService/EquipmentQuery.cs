@@ -1,8 +1,9 @@
+using RedDust.Gameplay.Container;
 using System.Collections.Generic;
 using System.Linq;
-using RedDust.Character;
+using RedDust.Gameplay.Character;
 
-namespace RedDust.Entities
+namespace RedDust.Services.EntityService
 {
     /// <summary>
     /// 身体装备槽位查询（L3）—— 具体类, 无接口。
@@ -13,7 +14,7 @@ namespace RedDust.Entities
     /// </summary>
     public class EquipmentQuery
     {
-        private readonly Container.RdContainer _bodyContainer;
+        private readonly RdContainer _bodyContainer;
 
         /// <summary>获取指定槽位的装备（如 "RightHand", "Head"）</summary>
         public Entity GetEquipped(string slotId)
@@ -30,7 +31,7 @@ namespace RedDust.Entities
         /// <summary>右手武器（便捷属性）</summary>
         public Entity RightHand => GetEquipped("RightHand");
 
-        internal EquipmentQuery(Container.RdContainer bodyContainer)
+        internal EquipmentQuery(RdContainer bodyContainer)
         {
             _bodyContainer = bodyContainer;
         }

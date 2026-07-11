@@ -1,6 +1,8 @@
-using RedDust.Core;
+using RedDust.Core.GameContext;
+using RedDust.Core.Structs;
+using RedDust.Core.Modules;
 using RedDust.Core.Events;
-using RedDust.GameInput;
+using RedDust.Services.Input;
 using UnityEngine;
 using RedDust.Shared;
 
@@ -8,7 +10,7 @@ using RedDust.Shared;
 using UnityEditor;
 #endif
 
-namespace RedDust.GameState
+namespace RedDust.Services.GameState
 {
 	/// <summary>
 	/// Central authority for high-level game state transitions. Other systems request

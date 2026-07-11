@@ -1,12 +1,14 @@
+using RedDust.Core.GameContext;
+using RedDust.Core.Modules;
 using System.Collections.Generic;
 using System.Linq;
-using RedDust.Container;
-using RedDust.Core;
-using RedDust.Properties;
-using RedDust.Character;
+using RedDust.Gameplay.Container;
+using RedDust.Core.Events;
+using RedDust.Gameplay.Properties;
+using RedDust.Gameplay.Character;
 using UnityEngine;
 
-namespace RedDust.Entities
+namespace RedDust.Services.EntityService
 {
     /// <summary>
     /// 实体管理服务——所有 Entity 数据的唯一拥有者。
@@ -217,7 +219,7 @@ namespace RedDust.Entities
                 return;
             }
 
-            entity.NestedContainer = new Container.RdContainer($"{entity.Id}/Storage", slotDefs.ToArray());
+            entity.NestedContainer = new RdContainer($"{entity.Id}/Storage", slotDefs.ToArray());
         }
 
         /// <summary>按 Id 检索实体。未找到返回 null。</summary>

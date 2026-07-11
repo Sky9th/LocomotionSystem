@@ -1,24 +1,28 @@
+using RedDust.Core.GameContext;
+using RedDust.Core.GameService;
+using RedDust.Core.RdTag;
+using RedDust.Core.Modules;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using RedDust.Ability;
-using RedDust.Building;
-using RedDust.Character;
-using RedDust.Character.Animation;
-using RedDust.Character.Audio;
-using RedDust.Character.Kinematic;
-using RedDust.Ammo;
-using RedDust.Consumable;
-using RedDust.Core;
-using RedDust.Equipment;
-using RedDust.Properties;
-using RedDust.SceneItem;
+using RedDust.Gameplay.Ability;
+using RedDust.Gameplay.Building;
+using RedDust.Gameplay.Character;
+using RedDust.Gameplay.Character.Animation;
+using RedDust.Gameplay.Character.Audio;
+using RedDust.Gameplay.Character.Kinematic;
+using RedDust.Gameplay.Ammo;
+using RedDust.Gameplay.Consumable;
+using RedDust.Core.Events;
+using RedDust.Gameplay.Equipment;
+using RedDust.Gameplay.Properties;
+using RedDust.Gameplay.SceneItem;
 using RedDust.Shared;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityAddressables = UnityEngine.AddressableAssets.Addressables;
 
-namespace RedDust.Assets
+namespace RedDust.Services.AssetService
 {
     /// <summary>
     /// L2 asset hub. Handles Addressables lifecycle, label caching, boot init, and GC anchoring.

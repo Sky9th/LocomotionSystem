@@ -20,5 +20,5 @@ MonoBehaviour:
     \u5197\u4F59\u3002"
   Type: 8
   IsDeprecated: 0
-  StructTypeName: RedDust.Container.SlotDef
+  StructTypeName: RedDust.Gameplay.Container.SlotDef
   DefaultJson: '{"AcceptTags":[],"Capacity":20}'

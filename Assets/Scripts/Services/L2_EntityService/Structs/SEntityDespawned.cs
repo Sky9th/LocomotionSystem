@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedDust.Entities
+namespace RedDust.Services.EntityService
 {
     /// <summary>
     /// 实体 GO 已销毁通知。EntityService 在 Despawn 后发布。

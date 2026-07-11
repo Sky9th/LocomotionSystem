@@ -18,5 +18,5 @@ MonoBehaviour:
     \u4EE5\u907F Human \u6811 Body \u6587\u4EF6\u5939\u540C\u540D\u51B2\u7A81\u3002"
   Type: 8
   IsDeprecated: 0
-  StructTypeName: RedDust.Container.SlotDef
+  StructTypeName: RedDust.Gameplay.Container.SlotDef
   DefaultJson: '{"AcceptTags":["Entity.Equipment.Armor.Chest"],"Capacity":1}'

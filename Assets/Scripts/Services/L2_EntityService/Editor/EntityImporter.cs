@@ -2,14 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using RedDust.Core;
-using RedDust.Properties;
+using RedDust.Core.Events;
+using RedDust.Gameplay.Properties;
 using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace RedDust.Entities.Editor
+namespace RedDust.Services.EntityService.Editor
 {
     /// <summary>
     /// Entity Import/Export 共享引擎。

@@ -1,4 +1,4 @@
-namespace RedDust.Modding
+namespace RedDust.Services.ModService
 {
     /// <summary>
     /// Contract for mod entry points. Mod authors implement this on a class

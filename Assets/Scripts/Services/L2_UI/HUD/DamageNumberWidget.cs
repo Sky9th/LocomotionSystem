@@ -2,7 +2,7 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
-namespace RedDust.UI
+namespace RedDust.Services.UI
 {
     /// <summary>
     /// 单个浮动伤害数字 — Screen Space Overlay 版本。

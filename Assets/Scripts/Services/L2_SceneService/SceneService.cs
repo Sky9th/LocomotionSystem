@@ -1,16 +1,18 @@
+using MS = RedDust.Services.ModService.ModService;
+using RedDust.Core.GameContext;
+using RedDust.Core.GameService;
+using RedDust.Core.Modules;
 using System.Collections;
 using System.Collections.Generic;
-using RedDust.Assets;
-using RedDust.Core;
+using AS = RedDust.Services.AssetService.AssetService;
 using RedDust.Core.Events;
-using RedDust.Modding;
 using UnityEngine;
 
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace RedDust.GameScene
+namespace RedDust.Services.Scene
 {
     /// <summary>
     /// L2 scene loading hub.
@@ -25,7 +27,7 @@ namespace RedDust.GameScene
         [SerializeField] private List<SceneLoadConfigSO> _configs = new();
 
         private EventHub _eventHub;
-        private AssetService _assetService;
+        private AS _assetService;
         private SceneTransition _gate;
         private SceneLoadConfigSO _currentConfig;
 
@@ -106,7 +108,7 @@ namespace RedDust.GameScene
             // Load mods now that HybridCLR AOT metadata is ready.
             // Mod DLLs reference AOT types; LoadMetadataForAOTAssembly must
             // complete first so the HybridCLR interpreter can resolve them.
-            if (GameContext.Instance.TryResolveService(out ModService modService))
+            if (GameContext.Instance.TryResolveService(out MS modService))
                 modService.LoadAllMods();
         }
 

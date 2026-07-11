@@ -1,10 +1,13 @@
+using RedDust.Core.GameContext;
+using RedDust.Core.GameService;
+using RedDust.Core.Structs;
+using RedDust.Core.Modules;
 using Cinemachine;
-using RedDust.Core;
 using RedDust.Core.Events;
 using RedDust.Shared;
 using UnityEngine;
 
-namespace RedDust.GameCamera
+namespace RedDust.Services.Camera
 {
     [DefaultExecutionOrder(-400)]
     [DisallowMultipleComponent]
@@ -179,7 +182,7 @@ namespace RedDust.GameCamera
 
         private CinemachineBrain FindCinemachineBrain()
         {
-            var mainCamera = Camera.main;
+            var mainCamera = UnityEngine.Camera.main;
             if (mainCamera != null && mainCamera.TryGetComponent(out CinemachineBrain brainOnMain))
             {
                 return brainOnMain;
@@ -238,7 +241,7 @@ namespace RedDust.GameCamera
             var outputCamera = cameraBrain != null ? cameraBrain.OutputCamera : null;
             if (outputCamera == null) return (Vector3.zero, false);
 
-            var ray = outputCamera.ScreenPointToRay(Input.mousePosition);
+            var ray = outputCamera.ScreenPointToRay(UnityEngine.Input.mousePosition);
             var groundPlane = new Plane(Vector3.up, Vector3.zero);
 
             if (groundPlane.Raycast(ray, out float distance))

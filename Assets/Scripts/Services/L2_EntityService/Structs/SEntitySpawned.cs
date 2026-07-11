@@ -1,7 +1,7 @@
-using RedDust.Properties;
+using RedDust.Gameplay.Properties;
 using UnityEngine;
 
-namespace RedDust.Entities
+namespace RedDust.Services.EntityService
 {
     /// <summary>
     /// 实体 GO 生成完成通知。EntityService 在 Spawn 成功后发布。

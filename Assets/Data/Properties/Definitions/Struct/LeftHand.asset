@@ -17,5 +17,5 @@ MonoBehaviour:
     Entity.Equipment.Weapon \u6216 Entity.Equipment.Armor.Shield \u6807\u7B7E\u7269\u54C1\u3002"
   Type: 8
   IsDeprecated: 0
-  StructTypeName: RedDust.Container.SlotDef
+  StructTypeName: RedDust.Gameplay.Container.SlotDef
   DefaultJson: '{"AcceptTags":["Entity.Equipment.Weapon","Entity.Equipment.Armor.Shield"],"Capacity":1}'

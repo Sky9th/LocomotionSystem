@@ -1,8 +1,9 @@
-using RedDust.Character;
-using RedDust.Properties;
+using RedDust.Gameplay.Container;
+using RedDust.Gameplay.Character;
+using RedDust.Gameplay.Properties;
 using UnityEngine;
 
-namespace RedDust.Entities
+namespace RedDust.Services.EntityService
 {
     /// <summary>
     /// Entity 的只读查询门面——始终可用，无论 Entity 是否有 spawned GO。
@@ -32,7 +33,7 @@ namespace RedDust.Entities
         public int StackCount => _entity.StackCount;
         public int MaxStackSize => _entity.MaxStackSize;
         public bool CanStack => _entity.CanStack;
-        public Container.RdContainer NestedContainer => _entity.NestedContainer;
+        public RdContainer NestedContainer => _entity.NestedContainer;
         public bool HasView => _entity.HasView;
         public GameObject View => _entity.View;
 

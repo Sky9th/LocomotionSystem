@@ -1,7 +1,7 @@
-using RedDust.Character;
-using RedDust.Properties;
+using RedDust.Gameplay.Character;
+using RedDust.Gameplay.Properties;
 
-namespace RedDust.Entities
+namespace RedDust.Services.EntityService
 {
     /// <summary>
     /// 生理特征查询——L1 层，始终可用。

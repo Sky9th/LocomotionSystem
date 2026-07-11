@@ -1,18 +1,18 @@
 #if UNITY_EDITOR
+using RedDust.Core.RdTag.Editor;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using RedDust.Container;
-using RedDust.Core;
-using RedDust.Core.Editor;
-using RedDust.Properties;
+using RedDust.Gameplay.Container;
+using RedDust.Core.Events;
+using RedDust.Gameplay.Properties;
 using RedDust.Shared.EditorUI;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace RedDust.Entities.Editor
+namespace RedDust.Services.EntityService.Editor
 {
     /// <summary>
     /// EntityEditor 抽象基类。提供通用的 PropertyPresetSO 编辑 UI（三栏布局、属性表单、保存/新建/删除）。

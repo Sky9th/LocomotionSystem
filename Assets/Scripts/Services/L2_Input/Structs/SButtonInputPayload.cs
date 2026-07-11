@@ -1,4 +1,4 @@
-namespace RedDust.GameInput
+namespace RedDust.Services.Input
 {
     /// <summary>
     /// 按钮型输入载荷。
